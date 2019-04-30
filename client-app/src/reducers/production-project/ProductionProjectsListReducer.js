@@ -1,4 +1,4 @@
-export default function (state = { isLoading: false }, action) {
+export default function(state = { isLoading: false }, action) {
     switch (action.type) {
         case 'FETCH_PRODUCTION_PROJECTS_LOADING':
             return {

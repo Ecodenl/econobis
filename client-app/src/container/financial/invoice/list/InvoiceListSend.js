@@ -1,16 +1,15 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
-import InvoiceDetailsAPI from "../../../../api/invoice/InvoiceDetailsAPI";
-import {hashHistory} from "react-router";
-import InputDate from "../../../../components/form/InputDate";
+import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
+import { hashHistory } from 'react-router';
+import InputDate from '../../../../components/form/InputDate';
 import validator from 'validator';
-import moment from "moment/moment";
-import {connect} from "react-redux";
-import {setError} from "../../../../actions/general/ErrorActions";
+import moment from 'moment/moment';
+import { connect } from 'react-redux';
+import { setError } from '../../../../actions/general/ErrorActions';
 
 class InvoiceListSend extends Component {
-
     constructor(props) {
         super(props);
 
@@ -18,9 +17,9 @@ class InvoiceListSend extends Component {
             dateCollection: '',
             errors: {
                 dateCollection: false,
-            }
+            },
         };
-    };
+    }
 
     confirmAction = event => {
         event.preventDefault();
@@ -34,7 +33,7 @@ class InvoiceListSend extends Component {
         let hasErrors = false;
 
         if (this.props.paymentType === 'collection') {
-            const {dateCollection} = this.state;
+            const { dateCollection } = this.state;
 
             // Validation
             let errors = {};
@@ -49,17 +48,15 @@ class InvoiceListSend extends Component {
                 hasErrors = true;
             }
 
-            this.setState({...this.state, errors: errors});
+            this.setState({ ...this.state, errors: errors });
 
             if (!hasErrors) {
-                InvoiceDetailsAPI.send(this.props.invoiceId, dateCollection).then((payload) => {
+                InvoiceDetailsAPI.send(this.props.invoiceId, dateCollection).then(payload => {
                     hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
                 });
             }
-        }
-
-        else {
-            InvoiceDetailsAPI.send(this.props.invoiceId, null).then((payload) => {
+        } else {
+            InvoiceDetailsAPI.send(this.props.invoiceId, null).then(payload => {
                 hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
             });
         }
@@ -68,61 +65,60 @@ class InvoiceListSend extends Component {
     handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
-            [name]: value
+            [name]: value,
         });
     };
 
-
     render() {
-        const {dateCollection} = this.state;
+        const { dateCollection } = this.state;
 
         return (
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
                 title="Factuur verzenden"
-                buttonConfirmText={"Verzenden"}
+                buttonConfirmText={'Verzenden'}
             >
-                {this.props.paymentType === 'collection' &&
-                <div className="row">
-                    <InputDate
-                        divSize={'col-xs-12'}
-                        label="Incasso datum"
-                        name="dateCollection"
-                        value={dateCollection}
-                        onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
-                        error={this.state.errors.dateCollection}
-                    />
-                </div>
-                }
-                {this.props.paymentType === 'collection' &&
-                <div className="row">
-                    <div className={'col-sm-12 margin-10-bottom'}>
-                    <span>
-                       De incasso datum moet minimaal x dagen later zijn dan de datum waarop je het sepa incasso bestand upload bij je bank. En maximaal x maanden na de upload datum. Informeer bij jou bank welke data zij handhaven.
-                     <br/>
-                     <br/>
-                        <ul>
-                        <li>Bij Triodos is dat minimaal 2 werkdagen en maximaal 2 maanden</li>
-                    </ul>
-                    </span>
+                {this.props.paymentType === 'collection' && (
+                    <div className="row">
+                        <InputDate
+                            divSize={'col-xs-12'}
+                            label="Incasso datum"
+                            name="dateCollection"
+                            value={dateCollection}
+                            onChangeAction={this.handleInputChangeDate}
+                            required={'required'}
+                            error={this.state.errors.dateCollection}
+                        />
                     </div>
-                </div>
-                }
+                )}
+                {this.props.paymentType === 'collection' && (
+                    <div className="row">
+                        <div className={'col-sm-12 margin-10-bottom'}>
+                            <span>
+                                De incasso datum moet minimaal x dagen later zijn dan de datum waarop je het sepa
+                                incasso bestand upload bij je bank. En maximaal x maanden na de upload datum. Informeer
+                                bij jou bank welke data zij handhaven.
+                                <br />
+                                <br />
+                                <ul>
+                                    <li>Bij Triodos is dat minimaal 2 werkdagen en maximaal 2 maanden</li>
+                                </ul>
+                            </span>
+                        </div>
+                    </div>
+                )}
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                    <span>
-                        Wilt u deze factuur verzenden?
-                    </span>
+                        <span>Wilt u deze factuur verzenden?</span>
                     </div>
                 </div>
             </Modal>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         canCreateInvoices: state.administrationDetails.canCreateInvoices,
     };
@@ -134,4 +130,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceListSend);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvoiceListSend);

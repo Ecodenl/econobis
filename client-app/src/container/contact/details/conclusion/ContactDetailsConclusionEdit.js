@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import ContactDetailsAPI from '../../../../api/contact/ContactDetailsAPI';
 
 import { fetchContactDetails } from '../../../../actions/contact/ContactDetailsActions';
-import InputDate from "../../../../components/form/InputDate";
+import InputDate from '../../../../components/form/InputDate';
 
 class ContactDetailsConclusionEdit extends Component {
     constructor(props) {
@@ -30,8 +30,8 @@ class ContactDetailsConclusionEdit extends Component {
             errors: {
                 ownedBy: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -42,7 +42,7 @@ class ContactDetailsConclusionEdit extends Component {
             ...this.state,
             contact: {
                 ...this.state.contact,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -50,35 +50,35 @@ class ContactDetailsConclusionEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {contact} = this.state;
+        const { contact } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty('' + contact.ownedById)){
+        if (validator.isEmpty('' + contact.ownedById)) {
             errors.ownedBy = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ContactDetailsAPI.updateContactOwner(contact.id, contact.ownedById).then(payload => {
-            this.props.fetchContactDetails(contact.id);
-            this.props.switchToView();
-        });
+            ContactDetailsAPI.updateContactOwner(contact.id, contact.ownedById).then(payload => {
+                this.props.fetchContactDetails(contact.id);
+                this.props.switchToView();
+            });
     };
 
     render() {
-        const {createdBy, updatedBy, ownedById, createdAt, updatedAt}  = this.state.contact;
+        const { createdBy, updatedBy, ownedById, createdAt, updatedAt } = this.state.contact;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
-                        label={"Eigenaar"}
-                        size={"col-sm-6"}
-                        name={"ownedById"}
+                        label={'Eigenaar'}
+                        size={'col-sm-6'}
+                        name={'ownedById'}
                         options={this.props.users}
                         value={ownedById}
                         optionName={'fullName'}
@@ -87,59 +87,59 @@ class ContactDetailsConclusionEdit extends Component {
                     />
                 </div>
                 <div className="row">
-                    <InputText
-                        label={"Gemaakt door"}
-                        name={"createdBy"}
-                        value={createdBy}
-                        readOnly={true}
-                    />
-                    <InputText
-                        label={"Laatste update door"}
-                        name={"updatedBy"}
-                        value={updatedBy}
-                        readOnly={true}
-                    />
+                    <InputText label={'Gemaakt door'} name={'createdBy'} value={createdBy} readOnly={true} />
+                    <InputText label={'Laatste update door'} name={'updatedBy'} value={updatedBy} readOnly={true} />
                 </div>
                 <div className="row">
                     <InputDate
-                        label={"Gemaakt op"}
-                        size={"col-sm-6"}
-                        name={"createdAt"}
+                        label={'Gemaakt op'}
+                        size={'col-sm-6'}
+                        name={'createdAt'}
                         value={createdAt ? moment(createdAt.date).format('LL') : 'Onbekend'}
                         readOnly={true}
                     />
                     <InputDate
-                        label={"Laatste update op"}
-                        size={"col-sm-6"}
-                        name={"updatedAt"}
+                        label={'Laatste update op'}
+                        size={'col-sm-6'}
+                        name={'updatedAt'}
                         value={updatedAt ? moment(updatedAt.date).format('LL') : 'Onbekend'}
                         readOnly={true}
                     />
                 </div>
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchContactDetails: (id) => {
+    fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contact: state.contactDetails,
         users: state.systemData.users,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsConclusionEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsConclusionEdit);

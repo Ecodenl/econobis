@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import TeamDetailsUsersView from './TeamDetailsUsersView';
-import TeamDetailsUsersItemDelete from "./TeamDetailsUsersDelete";
-import {connect} from "react-redux";
+import TeamDetailsUsersItemDelete from './TeamDetailsUsersDelete';
+import { connect } from 'react-redux';
 
 class TeamDetailsUsersItem extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class TeamDetailsUsersItem extends Component {
 
             user: props.user,
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -32,7 +32,7 @@ class TeamDetailsUsersItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -46,22 +46,18 @@ class TeamDetailsUsersItem extends Component {
                     toggleDelete={this.toggleDelete}
                     user={this.state.user}
                 />
-                {
-                    this.state.showDelete && this.props.permissions.createTeam &&
-                    <TeamDetailsUsersItemDelete
-                        toggleDelete={this.toggleDelete}
-                        userId={this.state.user.id}
-                    />
-                }
+                {this.state.showDelete && this.props.permissions.createTeam && (
+                    <TeamDetailsUsersItemDelete toggleDelete={this.toggleDelete} userId={this.state.user.id} />
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(TeamDetailsUsersItem);

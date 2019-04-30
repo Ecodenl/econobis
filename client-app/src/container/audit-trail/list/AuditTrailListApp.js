@@ -9,8 +9,8 @@ import AuditTrailList from './AuditTrailList';
 import AuditTrailListToolbar from './AuditTrailListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
-import PanelBody from "../../../components/panel/PanelBody";
-import AuditTrailAPI from "../../../api/audit-trail/AuditTrailAPI";
+import PanelBody from '../../../components/panel/PanelBody';
+import AuditTrailAPI from '../../../api/audit-trail/AuditTrailAPI';
 
 class AuditTrailListApp extends Component {
     constructor(props) {
@@ -28,14 +28,14 @@ class AuditTrailListApp extends Component {
     componentDidMount() {
         this.fetchAuditTrailData();
 
-        AuditTrailAPI.fetchAuditTrailModels().then((payload) => {
+        AuditTrailAPI.fetchAuditTrailModels().then(payload => {
             this.setState({ models: payload });
         });
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearAuditTrail();
-    };
+    }
 
     fetchAuditTrailData() {
         setTimeout(() => {
@@ -44,40 +44,38 @@ class AuditTrailListApp extends Component {
             const pagination = { limit: 20, offset: this.props.auditTrailPagination.offset };
 
             this.props.fetchAuditTrail(filters, sorts, pagination);
-        },100 );
-    };
+        }, 100);
+    }
 
     resetAuditTrailFilters() {
         this.props.clearFilterAuditTrail();
 
         this.fetchAuditTrailData();
-    };
+    }
 
     onSubmitFilter() {
         this.props.clearAuditTrail();
 
-        this.props.setAuditTrailPagination({page: 0, offset: 0});
+        this.props.setAuditTrailPagination({ page: 0, offset: 0 });
 
         this.fetchAuditTrailData();
-    };
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setAuditTrailPagination({page, offset});
+        this.props.setAuditTrailPagination({ page, offset });
 
         this.fetchAuditTrailData();
-    };
+    }
 
     render() {
         return (
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <AuditTrailListToolbar
-                            resetAuditTrailFilters={() => this.resetAuditTrailFilters()}
-                        />
+                        <AuditTrailListToolbar resetAuditTrailFilters={() => this.resetAuditTrailFilters()} />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
@@ -92,11 +90,11 @@ class AuditTrailListApp extends Component {
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         auditTrail: state.auditTrail.list,
         auditTrailFilters: state.auditTrail.filters,
@@ -105,8 +103,14 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchAuditTrail, clearAuditTrail, clearFilterAuditTrail, setAuditTrailPagination }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        { fetchAuditTrail, clearAuditTrail, clearFilterAuditTrail, setAuditTrailPagination },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuditTrailListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AuditTrailListApp);

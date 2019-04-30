@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 import moment from 'moment';
 moment.locale('nl');
 
@@ -9,7 +9,7 @@ import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
 import InputSelect from '../../../components/form/InputSelect';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
 import ButtonText from '../../../components/button/ButtonText';
-import InputText from "../../../components/form/InputText";
+import InputText from '../../../components/form/InputText';
 
 class IntakeNewFormGeneral extends Component {
     constructor(props) {
@@ -23,10 +23,10 @@ class IntakeNewFormGeneral extends Component {
                 statusId: '1',
                 sourceIds: '',
                 intakeReasonIds: '',
-                note: ''
+                note: '',
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -37,27 +37,27 @@ class IntakeNewFormGeneral extends Component {
             ...this.state,
             intake: {
                 ...this.state.intake,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleSourceIds = (selectedOption) => {
+    handleSourceIds = selectedOption => {
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                sourceIds: selectedOption
+                sourceIds: selectedOption,
             },
         });
     };
 
-    handleIntakeReasonsIds = (selectedOption) => {
+    handleIntakeReasonsIds = selectedOption => {
         this.setState({
             ...this.state,
             intake: {
                 ...this.state.intake,
-                intakeReasonIds: selectedOption
+                intakeReasonIds: selectedOption,
             },
         });
     };
@@ -65,7 +65,7 @@ class IntakeNewFormGeneral extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {intake} = this.state;
+        const { intake } = this.state;
 
         if (intake.intakeReasonIds.length > 0) {
             intake.intakeReasonIds = intake.intakeReasonIds.split(',');
@@ -75,33 +75,37 @@ class IntakeNewFormGeneral extends Component {
             intake.sourceIds = intake.sourceIds.split(',');
         }
 
-        IntakeDetailsAPI.newIntake(intake).then((payload) => {
+        IntakeDetailsAPI.newIntake(intake).then(payload => {
             hashHistory.push(`/intake/${payload.data.id}`);
         });
-
     };
 
     render() {
-        const {addressId, statusId, sourceIds, campaignId, intakeReasonIds, note} = this.state.intake;
-        const {addresses = [], fullName} = this.props.contactDetails;
+        const { addressId, statusId, sourceIds, campaignId, intakeReasonIds, note } = this.state.intake;
+        const { addresses = [], fullName } = this.props.contactDetails;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputText
-                        name={'contact'}
-                        label={'Contact'}
-                        value={fullName}
-                        readOnly={true}
-                    />
+                    <InputText name={'contact'} label={'Contact'} value={fullName} readOnly={true} />
                     <div className="form-group col-sm-6">
-                        <label htmlFor="addressId" className="col-sm-6">Adres</label>
-                        <div className='col-sm-6'>
-                            <select className="form-control input-sm" id="addressId" name="addressId" value={addressId}
-                                    onChange={this.handleInputChange}>
+                        <label htmlFor="addressId" className="col-sm-6">
+                            Adres
+                        </label>
+                        <div className="col-sm-6">
+                            <select
+                                className="form-control input-sm"
+                                id="addressId"
+                                name="addressId"
+                                value={addressId}
+                                onChange={this.handleInputChange}
+                            >
                                 {addresses.map((address, i) => {
-                                    return <option key={i}
-                                                   value={address.id}>{address.street + ' ' + address.number}</option>
+                                    return (
+                                        <option key={i} value={address.id}>
+                                            {address.street + ' ' + address.number}
+                                        </option>
+                                    );
                                 })}
                             </select>
                         </div>
@@ -117,8 +121,8 @@ class IntakeNewFormGeneral extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputSelect
-                        label={"Status"}
-                        size={"col-sm-6"}
+                        label={'Status'}
+                        size={'col-sm-6'}
                         name="statusId"
                         value={statusId}
                         options={this.props.intakeStatuses}
@@ -147,11 +151,17 @@ class IntakeNewFormGeneral extends Component {
                     <div className="form-group col-sm-12">
                         <div className="row">
                             <div className="col-sm-3">
-                                <label htmlFor="note" className="col-sm-12">Opmerking van bewoner</label>
+                                <label htmlFor="note" className="col-sm-12">
+                                    Opmerking van bewoner
+                                </label>
                             </div>
                             <div className="col-sm-8">
-                                <textarea name='note' value={note} onChange={this.handleInputChange}
-                                          className="form-control input-sm"/>
+                                <textarea
+                                    name="note"
+                                    value={note}
+                                    onChange={this.handleInputChange}
+                                    className="form-control input-sm"
+                                />
                             </div>
                         </div>
                     </div>
@@ -159,15 +169,15 @@ class IntakeNewFormGeneral extends Component {
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </div>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         intakeStatuses: state.systemData.intakeStatuses,
         intakeSources: state.systemData.intakeSources,
@@ -178,4 +188,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(IntakeNewFormGeneral);
+export default connect(
+    mapStateToProps,
+    null
+)(IntakeNewFormGeneral);

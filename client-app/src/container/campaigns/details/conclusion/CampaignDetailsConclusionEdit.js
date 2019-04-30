@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import validator from 'validator';
 
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
+import PanelFooter from '../../../../components/panel/PanelFooter';
 
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 
 import { fetchCampaign } from '../../../../actions/campaign/CampaignDetailsActions';
-import InputDate from "../../../../components/form/InputDate";
+import InputDate from '../../../../components/form/InputDate';
 
 class CampaignFormEdit extends Component {
     constructor(props) {
@@ -28,8 +28,8 @@ class CampaignFormEdit extends Component {
             errors: {
                 ownedBy: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -40,7 +40,7 @@ class CampaignFormEdit extends Component {
             ...this.state,
             campaign: {
                 ...this.state.campaign,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -48,41 +48,36 @@ class CampaignFormEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {campaign} = this.state;
+        const { campaign } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty('' + campaign.ownedById)){
+        if (validator.isEmpty('' + campaign.ownedById)) {
             errors.ownedBy = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        CampaignDetailsAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
-            this.props.fetchCampaign(campaign.id);
-            this.props.switchToView();
-        });
+            CampaignDetailsAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
+                this.props.fetchCampaign(campaign.id);
+                this.props.switchToView();
+            });
     };
 
     render() {
-        const {createdBy, ownedById, createdAt}  = this.state.campaign;
+        const { createdBy, ownedById, createdAt } = this.state.campaign;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
-                    <InputText
-                        label={"Gemaakt door"}
-                        name={"createdBy"}
-                        value={createdBy}
-                        readOnly={true}
-                    />
+                    <InputText label={'Gemaakt door'} name={'createdBy'} value={createdBy} readOnly={true} />
                     <InputSelect
-                        label={"Verantwoordelijke"}
-                        size={"col-sm-6"}
-                        name={"ownedById"}
+                        label={'Verantwoordelijke'}
+                        size={'col-sm-6'}
+                        name={'ownedById'}
                         options={this.props.users}
                         value={ownedById}
                         optionName={'fullName'}
@@ -92,38 +87,48 @@ class CampaignFormEdit extends Component {
                 </div>
                 <div className="row">
                     <InputDate
-                        label={"Gemaakt op"}
-                        size={"col-sm-6"}
-                        name={"createdAt"}
-                        value={ createdAt ? createdAt.date : '' }
+                        label={'Gemaakt op'}
+                        size={'col-sm-6'}
+                        name={'createdAt'}
+                        value={createdAt ? createdAt.date : ''}
                         readOnly={true}
                     />
                 </div>
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                    onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                    value={"Submit"}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={this.handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: (id) => {
+    fetchCampaign: id => {
         dispatch(fetchCampaign(id));
     },
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         campaign: state.campaignDetails,
         users: state.systemData.users,
-    }
+    };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CampaignFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CampaignFormEdit);

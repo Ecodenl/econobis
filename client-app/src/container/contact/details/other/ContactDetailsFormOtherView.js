@@ -11,25 +11,13 @@ const ContactDetailsFormOtherView = props => {
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
-                <ViewText
-                    label="IBAN"
-                    value={iban}
-                />
-                <ViewText
-                    label={"Voornaam partner"}
-                    value={firstNamePartner}
-                />
+                <ViewText label="IBAN" value={iban} />
+                <ViewText label={'Voornaam partner'} value={firstNamePartner} />
             </div>
 
             <div className="row">
-                <ViewText
-                    label="IBAN t.n.v."
-                    value={ibanAttn}
-                />
-                <ViewText
-                    label={"Achternaam partner"}
-                    value={lastNamePartner}
-                />
+                <ViewText label="IBAN t.n.v." value={ibanAttn} />
+                <ViewText label={'Achternaam partner'} value={lastNamePartner} />
             </div>
 
             <div className="row">
@@ -41,21 +29,17 @@ const ContactDetailsFormOtherView = props => {
             </div>
 
             <div className="row">
-                <ViewText
-                    label={"Aansprakelijkheid"}
-                    value={liable ? 'Ja' : 'Nee'}
-                />
+                <ViewText label={'Aansprakelijkheid'} value={liable ? 'Ja' : 'Nee'} />
                 <ViewText
                     label="Aansprakelijkheidsbedrag"
-                    value={'€ ' + liabilityAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                    value={'€ ' + liabilityAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 />
             </div>
-
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
     };

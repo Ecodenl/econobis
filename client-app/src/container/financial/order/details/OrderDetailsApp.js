@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchOrderDetails } from '../../../../actions/order/OrderDetailsActions';
@@ -6,16 +6,16 @@ import OrderDetailsToolbar from './OrderDetailsToolbar';
 import OrderDetailsForm from './OrderDetailsForm';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import OrderDetailsHarmonica from "./OrderDetailsHarmonica";
+import OrderDetailsHarmonica from './OrderDetailsHarmonica';
 
 class OrderDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchOrderDetails(this.props.params.id);
-    };
+    }
 
     render() {
         return (
@@ -23,8 +23,8 @@ class OrderDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
-                                < OrderDetailsToolbar />
+                            <PanelBody className={'panel-small'}>
+                                <OrderDetailsToolbar />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -35,24 +35,27 @@ class OrderDetailsApp extends Component {
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        <OrderDetailsHarmonica/>
+                        <OrderDetailsHarmonica />
                     </PanelBody>
                 </Panel>
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         orderDetails: state.orderDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchOrderDetails: (id) => {
+    fetchOrderDetails: id => {
         dispatch(fetchOrderDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(OrderDetailsApp);

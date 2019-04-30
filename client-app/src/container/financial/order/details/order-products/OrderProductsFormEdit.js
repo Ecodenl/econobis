@@ -4,13 +4,24 @@ import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import InputDate from "../../../../../components/form/InputDate";
-import moment from "moment/moment";
+import InputDate from '../../../../../components/form/InputDate';
+import moment from 'moment/moment';
 
 moment.locale('nl');
 
 const OrderProductsFormEdit = props => {
-    const {product, description, amount, amountReduction, percentageReduction, dateStart, dateEnd, dateLastInvoice, datePeriodStartFirstInvoice, variablePrice} = props.orderProduct;
+    const {
+        product,
+        description,
+        amount,
+        amountReduction,
+        percentageReduction,
+        dateStart,
+        dateEnd,
+        dateLastInvoice,
+        datePeriodStartFirstInvoice,
+        variablePrice,
+    } = props.orderProduct;
 
     return (
         <div>
@@ -19,14 +30,14 @@ const OrderProductsFormEdit = props => {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Ordernummer"}
-                                name={"order"}
+                                label={'Ordernummer'}
+                                name={'order'}
                                 value={props.orderDetails ? props.orderDetails.number : ''}
                                 readOnly={true}
                             />
                             <InputText
-                                label={"Product"}
-                                name={"product"}
+                                label={'Product'}
+                                name={'product'}
                                 value={product ? product.name : ''}
                                 readOnly={true}
                             />
@@ -34,72 +45,91 @@ const OrderProductsFormEdit = props => {
 
                         <div className="row">
                             <InputText
-                                label={"Omschrijving"}
-                                id={"description"}
-                                name={"description"}
+                                label={'Omschrijving'}
+                                id={'description'}
+                                name={'description'}
                                 value={description}
                                 readOnly={true}
                             />
                             <InputText
-                                label={"Aantal"}
+                                label={'Aantal'}
                                 type={'number'}
-                                id={"amount"}
-                                name={"amount"}
+                                id={'amount'}
+                                name={'amount'}
                                 value={amount}
                                 onChangeAction={props.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={props.errors.amount}
                             />
                         </div>
 
                         <div className="row">
                             <InputText
-                                label={"Kortingspercentage"}
+                                label={'Kortingspercentage'}
                                 type={'number'}
-                                id={"percentageReduction"}
-                                name={"percentageReduction"}
+                                id={'percentageReduction'}
+                                name={'percentageReduction'}
                                 value={percentageReduction}
                                 onChangeAction={props.handleInputChange}
                             />
-                            {variablePrice !== null ?
+                            {variablePrice !== null ? (
                                 <InputText
-                                    label={"Prijs ex. BTW"}
-                                    name={"variablePrice"}
+                                    label={'Prijs ex. BTW'}
+                                    name={'variablePrice'}
                                     type={'number'}
                                     value={variablePrice}
                                     onChangeAction={props.handleInputChangeVariablePrice}
                                     error={props.errors.variablePrice}
-                                    required={(variablePrice !== null) && "required"}
+                                    required={variablePrice !== null && 'required'}
                                 />
-                                :
+                            ) : (
                                 <InputText
-                                    label={"Prijs incl. BTW"}
-                                    name={"price"}
-                                    value={'€' + props.orderProduct.product.priceInclVat.toLocaleString('nl', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    })}
+                                    label={
+                                        props.orderProduct.product.currentPrice.inputInclVat
+                                            ? 'Prijs incl. BTW'
+                                            : 'Prijs excl. BTW'
+                                    }
+                                    name={'price'}
+                                    value={
+                                        props.orderProduct.product.currentPrice.inputInclVat
+                                            ? '€' +
+                                              props.orderProduct.product.currentPrice.priceInclVat.toLocaleString(
+                                                  'nl',
+                                                  {
+                                                      minimumFractionDigits: 2,
+                                                      maximumFractionDigits: 2,
+                                                  }
+                                              )
+                                            : '€' +
+                                              props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
+                                                  minimumFractionDigits: 2,
+                                                  maximumFractionDigits: 2,
+                                              })
+                                    }
                                     readOnly={true}
                                 />
-                            }
+                            )}
                         </div>
 
                         <div className="row">
                             <InputText
-                                label={"Kortingsbedrag"}
+                                label={'Kortingsbedrag'}
                                 type={'number'}
-                                id={"amountReduction"}
-                                name={"amountReduction"}
+                                id={'amountReduction'}
+                                name={'amountReduction'}
                                 value={amountReduction}
                                 onChangeAction={props.handleInputChange}
                             />
                             <InputText
-                                label={"Totaalbedrag"}
-                                name={"totalPrice"}
-                                value={'€' + props.totalPrice.toLocaleString('nl', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
+                                label={'Totaalbedrag'}
+                                name={'totalPrice'}
+                                value={
+                                    '€' +
+                                    props.totalPrice.toLocaleString('nl', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2,
+                                    })
+                                }
                                 readOnly={true}
                             />
                         </div>
@@ -110,7 +140,7 @@ const OrderProductsFormEdit = props => {
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={props.handleInputChangeStartDate}
-                                required={"required"}
+                                required={'required'}
                                 error={props.errors.dateStart}
                             />
                             <InputDate
@@ -123,7 +153,7 @@ const OrderProductsFormEdit = props => {
                             />
                         </div>
 
-                        {!dateLastInvoice && product.durationId !== 'none' &&
+                        {!dateLastInvoice && product.durationId !== 'none' && (
                             <div className="row">
                                 <InputDate
                                     label="1ste factuurperiode start op"
@@ -132,11 +162,19 @@ const OrderProductsFormEdit = props => {
                                     onChangeAction={props.handleInputChangeDate}
                                 />
                             </div>
-
-                        }
+                        )}
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={props.cancelEdit}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={props.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={props.cancelEdit}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={props.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>

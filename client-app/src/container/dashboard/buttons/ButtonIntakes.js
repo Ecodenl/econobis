@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 
 import IntakesAPI from './../../../api/intake/IntakesAPI';
 
@@ -9,13 +9,13 @@ class ButtonIntakes extends Component {
 
         this.state = {
             amountActiveIntakes: '-',
-        }
-    };
+        };
+    }
 
     componentWillMount() {
         IntakesAPI.getAmountActive().then(payload => {
             this.setState({
-                amountActiveIntakes: payload
+                amountActiveIntakes: payload,
             });
         });
     }
@@ -30,7 +30,7 @@ class ButtonIntakes extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

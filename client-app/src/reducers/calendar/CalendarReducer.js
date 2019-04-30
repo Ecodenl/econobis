@@ -1,4 +1,4 @@
-export default function (state = { date: '', view: 'week' }, action) {
+export default function(state = { date: '', view: 'week' }, action) {
     switch (action.type) {
         case 'SET_SELECTED_DATE':
             return {

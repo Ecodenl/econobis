@@ -6,14 +6,13 @@ export const fetchWebforms = () => {
 
 export const clearWebforms = () => {
     return {
-        type: 'CLEAR_WEBFORMS'
+        type: 'CLEAR_WEBFORMS',
     };
 };
 
-export const deleteWebform = (id) => {
-    return  {
+export const deleteWebform = id => {
+    return {
         type: 'DELETE_WEBFORM',
         id,
     };
 };
-

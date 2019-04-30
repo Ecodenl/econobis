@@ -1,5 +1,5 @@
 import { put, call } from 'redux-saga/effects';
-import DocumentDetailsAPI from "../../api/document/DocumentDetailsAPI";
+import DocumentDetailsAPI from '../../api/document/DocumentDetailsAPI';
 
 export function* fetchDocumentDetailsSaga({ id }) {
     try {

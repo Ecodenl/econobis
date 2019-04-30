@@ -4,10 +4,13 @@ import { connect } from 'react-redux';
 import ParticipantDetailsToolbar from './ParticipantDetailsToolbar';
 import ParticipantDetailsForm from './ParticipantDetailsForm';
 import ParticipantDetailsHarmonica from './ParticipantDetailsHarmonica';
-import Panel from "../../../../../components/panel/Panel";
+import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 
-import { fetchParticipantProductionProjectDetails, clearParticipantProductionProject } from '../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
+import {
+    fetchParticipantProductionProjectDetails,
+    clearParticipantProductionProject,
+} from '../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
 
 class ParticipantDetailsApp extends Component {
     constructor(props) {
@@ -20,32 +23,32 @@ class ParticipantDetailsApp extends Component {
 
     componentWillUnmount() {
         this.props.clearParticipantProductionProject();
-    };
+    }
 
     render() {
         return (
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <ParticipantDetailsToolbar/>
+                        <ParticipantDetailsToolbar />
                     </div>
 
                     <div className="col-md-12">
-                        <ParticipantDetailsForm/>
+                        <ParticipantDetailsForm />
                     </div>
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        <ParticipantDetailsHarmonica/>
+                        <ParticipantDetailsHarmonica />
                     </PanelBody>
                 </Panel>
             </div>
-        )
+        );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchParticipantProductionProjectDetails: (id) => {
+    fetchParticipantProductionProjectDetails: id => {
         dispatch(fetchParticipantProductionProjectDetails(id));
     },
     clearParticipantProductionProject: () => {
@@ -53,4 +56,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ParticipantDetailsApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ParticipantDetailsApp);

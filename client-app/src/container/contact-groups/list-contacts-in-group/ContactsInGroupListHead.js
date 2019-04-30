@@ -2,11 +2,11 @@ import React from 'react';
 
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
-const ContactsInGroupListHead = (props) => {
+const ContactsInGroupListHead = props => {
     return (
         <tr className="thead-title-quaternary">
             <DataTableHeadTitle RowClassName={'hidden-xs'} title={'#'} width={'3%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'5%'}  />
+            <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'5%'} />
             <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'11%'} />
             <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Adres'} width={'12%'} />
             <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Postcode'} width={'7%'} />

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import InvoiceDetailsFormGeneralView from './InvoiceDetailsFormGeneralView';
 
@@ -10,10 +10,10 @@ class InvoiceDetailsFormGeneral extends Component {
     render() {
         return (
             <div>
-                <InvoiceDetailsFormGeneralView/>
+                <InvoiceDetailsFormGeneralView />
             </div>
         );
     }
-};
+}
 
 export default InvoiceDetailsFormGeneral;

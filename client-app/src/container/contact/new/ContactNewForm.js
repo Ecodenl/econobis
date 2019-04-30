@@ -5,7 +5,7 @@ import ContactNewFormGeneral from './ContactNewFormGeneral';
 const ContactNewForm = props => {
     return (
         <div>
-            <ContactNewFormGeneral type={props.type} organisationId={props.organisationId}/>
+            <ContactNewFormGeneral type={props.type} organisationId={props.organisationId} />
         </div>
     );
 };

@@ -5,7 +5,7 @@ export function* fetchTeamDetailsSaga({ id }) {
     try {
         yield put({ type: 'IS_LOADING' });
         const teamDetails = yield call(TeamDetailsAPI.fetchTeamDetails, id);
-        yield put({ type: 'FETCH_TEAM_DETAILS_SUCCESS',teamDetails });
+        yield put({ type: 'FETCH_TEAM_DETAILS_SUCCESS', teamDetails });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_TEAM_DETAILS_ERROR', error });
@@ -13,9 +13,9 @@ export function* fetchTeamDetailsSaga({ id }) {
     }
 }
 
-export function* deleteTeamUserSaga({teamId, userId }) {
+export function* deleteTeamUserSaga({ teamId, userId }) {
     try {
-        yield call(TeamDetailsAPI.deleteTeamUser, {teamId, userId });
+        yield call(TeamDetailsAPI.deleteTeamUser, { teamId, userId });
         yield put({ type: 'DELETE_TEAM_USER_SUCCESS', userId });
     } catch (error) {
         yield put({ type: 'DELETE_TEAM_USER_ERROR', error });
@@ -31,7 +31,7 @@ export function* updateTeamDetailsSaga({ team, switchToView }) {
         yield put({ type: 'UPDATE_TEAM_SUCCESS', teamDetails });
 
         // Reload system data after updating user
-        yield put({ type: 'FETCH_SYSTEM_DATA'});
+        yield put({ type: 'FETCH_SYSTEM_DATA' });
         // Switch back to view callback fn
         yield switchToView();
     } catch (error) {

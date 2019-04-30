@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
 import { fetchMeasure } from '../../../../actions/measure/MeasureDetailsActions';
-import MeasureAPI from "../../../../api/measure/MeasureAPI";
+import MeasureAPI from '../../../../api/measure/MeasureAPI';
 
-const MeasureDetailsSupplierItemDelete = (props) => {
+const MeasureDetailsSupplierItemDelete = props => {
     const confirmAction = () => {
         MeasureAPI.detachSupplier(props.measureId, props.supplierId).then(() => {
             props.fetchMeasure(props.measureId);
@@ -22,23 +22,23 @@ const MeasureDetailsSupplierItemDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze organisatie verwijderen als leverancier van deze maatregel?</p>
-
-
-
         </Modal>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         measureId: state.measureDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchMeasure: (id) => {
+    fetchMeasure: id => {
         dispatch(fetchMeasure(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetailsSupplierItemDelete);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MeasureDetailsSupplierItemDelete);

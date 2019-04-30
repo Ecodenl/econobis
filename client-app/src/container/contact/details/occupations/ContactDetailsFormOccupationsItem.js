@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 import { isEqual } from 'lodash';
 
 import OccupationAPI from '../../../../api/contact/OccupationAPI';
-import {fetchContactDetails} from '../../../../actions/contact/ContactDetailsActions';
+import { fetchContactDetails } from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormOccupationsView from './ContactDetailsFormOccupationsView';
 import ContactDetailsFormOccupationsEdit from './ContactDetailsFormOccupationsEdit';
 import ContactDetailsFormOccupationsDelete from './ContactDetailsFormOccupationsDelete';
-import moment from "moment/moment";
+import moment from 'moment/moment';
 moment.locale('nl');
-import ContactsAPI from "../../../../api/contact/ContactsAPI";
+import ContactsAPI from '../../../../api/contact/ContactsAPI';
 
 class ContactDetailsFormOccupationsItem extends Component {
     constructor(props) {
@@ -35,15 +35,15 @@ class ContactDetailsFormOccupationsItem extends Component {
                 occupationIdError: false,
             },
             peekLoading: {
-                contacts: true
+                contacts: true,
             },
         };
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.occupation, nextProps.occupation)){
+        if (!isEqual(this.state.occupation, nextProps.occupation)) {
             this.setState({
                 ...this.state,
                 occupation: {
@@ -56,10 +56,10 @@ class ContactDetailsFormOccupationsItem extends Component {
                 },
             });
         }
-    };
+    }
 
     componentDidMount() {
-        ContactsAPI.getContactsPeek().then((payload) => {
+        ContactsAPI.getContactsPeek().then(payload => {
             this.setState({
                 contacts: payload,
                 peekLoading: {
@@ -85,11 +85,11 @@ class ContactDetailsFormOccupationsItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
@@ -109,7 +109,7 @@ class ContactDetailsFormOccupationsItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     handleInputChange = event => {
@@ -121,31 +121,31 @@ class ContactDetailsFormOccupationsItem extends Component {
             ...this.state,
             occupation: {
                 ...this.state.occupation,
-                [name]: value
+                [name]: value,
             },
         });
     };
 
-    handleStartDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+    handleStartDate = date => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
         this.setState({
             ...this.state,
             occupation: {
                 ...this.state.occupation,
-                startDate: formattedDate
+                startDate: formattedDate,
             },
         });
     };
 
-    handleEndDate = (date) => {
-        const formattedDate = (date ? moment(date).format('Y-MM-DD') : '');
+    handleEndDate = date => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
         this.setState({
             ...this.state,
             occupation: {
                 ...this.state.occupation,
-                endDate: formattedDate
+                endDate: formattedDate,
             },
         });
     };
@@ -153,7 +153,7 @@ class ContactDetailsFormOccupationsItem extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {occupation} = this.state;
+        const { occupation } = this.state;
 
         let errors = {};
         let hasErrors = false;
@@ -168,19 +168,19 @@ class ContactDetailsFormOccupationsItem extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        OccupationAPI.updateOccupation(occupation).then((payload) => {
-            this.props.fetchContactDetails(this.props.id);
+            OccupationAPI.updateOccupation(occupation).then(payload => {
+                this.props.fetchContactDetails(this.props.id);
 
-            this.closeEdit();
-        });
+                this.closeEdit();
+            });
     };
 
-    deleteOccupation = (occupation) => {
-        OccupationAPI.deleteOccupation(occupation).then((payload) => {
+    deleteOccupation = occupation => {
+        OccupationAPI.deleteOccupation(occupation).then(payload => {
             this.props.fetchContactDetails(this.props.id);
         });
     };
@@ -190,10 +190,10 @@ class ContactDetailsFormOccupationsItem extends Component {
             ...this.state,
             occupation: {
                 ...this.state.occupation,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
+    }
 
     render() {
         return (
@@ -208,8 +208,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                     occupation={this.state.occupation}
                     primaryOccupation={this.props.primaryOccupation}
                 />
-                {
-                    this.state.showEdit &&
+                {this.state.showEdit && (
                     <ContactDetailsFormOccupationsEdit
                         occupation={this.state.occupation}
                         handleInputChange={this.handleInputChange}
@@ -224,31 +223,33 @@ class ContactDetailsFormOccupationsItem extends Component {
                         handleReactSelectChange={this.handleReactSelectChange}
                         primaryOccupation={this.props.primaryOccupation}
                     />
-                }
-                {
-                    this.state.showDelete &&
+                )}
+                {this.state.showDelete && (
                     <ContactDetailsFormOccupationsDelete
                         closeDeleteItemModal={this.toggleDelete}
                         deleteOccupation={this.deleteOccupation}
                         occupation={this.state.occupation}
                         primaryOccupation={this.props.primaryOccupation}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         id: state.contactDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchContactDetails: (id) => {
+    fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormOccupationsItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormOccupationsItem);

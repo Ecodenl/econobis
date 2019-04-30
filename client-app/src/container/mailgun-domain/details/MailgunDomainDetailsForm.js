@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -6,9 +6,9 @@ import { fetchMailgunDomainDetails } from '../../../actions/mailgun-domain/Mailg
 import MailgunDomainDetailsFormGeneral from './general/MailgunDomainDetailsFormGeneral';
 
 class MailgunDomainDetailsForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -16,29 +16,25 @@ class MailgunDomainDetailsForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van mailgun domein.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.mailgunDomainDetails)) {
+        } else if (isEmpty(this.props.mailgunDomainDetails)) {
             loadingText = 'Geen mailgun domein gevonden!';
-        }
-        else {
+        } else {
             loading = false;
         }
 
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <MailgunDomainDetailsFormGeneral />
-                </div>
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <MailgunDomainDetailsFormGeneral />
+            </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         mailgunDomainDetails: state.mailgunDomainDetails,
         isLoading: state.loadingData.isLoading,
@@ -47,9 +43,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchMailgunDomainDetails: (id) => {
+    fetchMailgunDomainDetails: id => {
         dispatch(fetchMailgunDomainDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MailgunDomainDetailsForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MailgunDomainDetailsForm);

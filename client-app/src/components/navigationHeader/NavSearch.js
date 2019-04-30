@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import GeneralSearchAPI from "../../api/general/GeneralSearchAPI";
-import GeneralSearchModal from "../../container/general-search/list/GeneralSearchModal";
+import GeneralSearchAPI from '../../api/general/GeneralSearchAPI';
+import GeneralSearchModal from '../../container/general-search/list/GeneralSearchModal';
 
 class NavSearch extends Component {
     constructor(props) {
@@ -19,18 +19,18 @@ class NavSearch extends Component {
 
     toggleSearchModal = () => {
         this.setState({
-            showSearchResults: !this.state.showSearchResults
+            showSearchResults: !this.state.showSearchResults,
         });
     };
 
     closeSearchModal = () => {
         this.setState({
-            showSearchResults: false
+            showSearchResults: false,
         });
     };
 
-    changeSearchText(event){
-        this.setState({searchText: event.target.value});
+    changeSearchText(event) {
+        this.setState({ searchText: event.target.value });
     }
 
     searchText(event) {
@@ -38,8 +38,8 @@ class NavSearch extends Component {
 
         if (this.state.searchText.length > 1) {
             this.closeSearchModal();
-            GeneralSearchAPI.search(this.state.searchText.toLowerCase()).then((payload) => {
-                this.setState({data: payload});
+            GeneralSearchAPI.search(this.state.searchText.toLowerCase()).then(payload => {
+                this.setState({ data: payload });
                 this.toggleSearchModal();
             });
         }
@@ -48,16 +48,25 @@ class NavSearch extends Component {
     render() {
         return (
             <form onSubmit={this.searchText}>
-            <div className="input-group">
-                <span className="input-group-addon" id="basic-addon1"><span className="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-                <input type='text' onChange={this.changeSearchText} value={this.state.searchText} placeholder="Zoeken..." className="form-control" aria-describedby="basic-addon1" />
+                <div className="input-group">
+                    <span className="input-group-addon" id="basic-addon1">
+                        <span className="glyphicon glyphicon-search" aria-hidden="true" />
+                    </span>
+                    <input
+                        type="text"
+                        onChange={this.changeSearchText}
+                        value={this.state.searchText}
+                        placeholder="Zoeken..."
+                        className="form-control"
+                        aria-describedby="basic-addon1"
+                    />
 
-                {this.state.showSearchResults &&
-                <GeneralSearchModal closeModal={this.toggleSearchModal} records={this.state.data}/>
-                }
-            </div>
+                    {this.state.showSearchResults && (
+                        <GeneralSearchModal closeModal={this.toggleSearchModal} records={this.state.data} />
+                    )}
+                </div>
             </form>
-        )
+        );
     }
 }
 

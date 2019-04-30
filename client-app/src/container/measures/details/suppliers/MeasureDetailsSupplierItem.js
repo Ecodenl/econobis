@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import MeasureDetailsSupplierView from './MeasureDetailsSupplierView';
-import MeasureDetailsSupplierItemDelete from "./MeasureDetailsSupplierItemDelete";
+import MeasureDetailsSupplierItemDelete from './MeasureDetailsSupplierItemDelete';
 
 class MeasureDetailsSupplierItem extends Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class MeasureDetailsSupplierItem extends Component {
                 ...props.supplier,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -33,7 +33,7 @@ class MeasureDetailsSupplierItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -47,16 +47,15 @@ class MeasureDetailsSupplierItem extends Component {
                     toggleDelete={this.toggleDelete}
                     supplier={this.state.supplier}
                 />
-                {
-                    this.state.showDelete &&
+                {this.state.showDelete && (
                     <MeasureDetailsSupplierItemDelete
                         toggleDelete={this.toggleDelete}
                         supplierId={this.state.supplier.id}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 export default MeasureDetailsSupplierItem;

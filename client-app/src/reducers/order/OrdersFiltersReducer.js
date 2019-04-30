@@ -26,14 +26,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_NUMBER_FILTER_ORDERS':
             return {
                 ...state,
                 number: {
                     ...state.number,
                     data: action.number,
-                }
+                },
             };
         case 'SET_DATE_NEXT_INVOICE_FILTER_ORDERS':
             return {
@@ -41,7 +41,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 dateNextInvoice: {
                     ...state.dateNextInvoice,
                     data: action.dateNextInvoice,
-                }
+                },
             };
         case 'SET_SUBJECT_FILTER_ORDERS':
             return {
@@ -49,7 +49,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 subject: {
                     ...state.subject,
                     data: action.subject,
-                }
+                },
             };
         case 'SET_CONTACT_FILTER_ORDERS':
             return {
@@ -57,7 +57,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 contact: {
                     ...state.contact,
                     data: action.contact,
-                }
+                },
             };
         case 'SET_PAYMENT_TYPE_ID_FILTER_ORDERS':
             return {
@@ -65,7 +65,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 paymentTypeId: {
                     ...state.paymentTypeId,
                     data: action.paymentTypeId,
-                }
+                },
             };
         case 'SET_STATUS_ID_FILTER_ORDERS':
             return {
@@ -73,7 +73,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
+                },
             };
         case 'CLEAR_FILTER_ORDERS':
             return {

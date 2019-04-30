@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteMailboxUser } from '../../../../actions/mailbox/MailboxDetailsActions';
 
-const EmailAttachmentsDelete = (props) => {
+const EmailAttachmentsDelete = props => {
     const confirmAction = () => {
         props.deleteAttachment(props.attachment.name);
         props.toggleDelete();
@@ -19,7 +19,6 @@ const EmailAttachmentsDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze bijlage verwijderen?</p>
-
         </Modal>
     );
 };

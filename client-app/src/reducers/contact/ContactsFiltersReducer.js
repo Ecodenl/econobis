@@ -38,18 +38,18 @@ const filtersReducerDefaultState = {
     createdAt: {
         field: 'createdAt',
         data: '',
-    }
+    },
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_NUMBER_FILTER':
             return {
                 ...state,
                 number: {
                     ...state.number,
                     data: action.number,
-                }
+                },
             };
         case 'SET_TYPE_FILTER':
             return {
@@ -57,7 +57,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 typeId: {
                     ...state.typeId,
                     data: action.typeId,
-                }
+                },
             };
         case 'SET_FULL_NAME_FILTER':
             return {
@@ -65,7 +65,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 fullName: {
                     ...state.fullName,
                     data: action.fullName,
-                }
+                },
             };
         case 'SET_STREET_AND_NUMBER_FILTER':
             return {
@@ -73,7 +73,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 streetAndNumber: {
                     ...state.streetAndNumber,
                     data: action.streetAndNumber,
-                }
+                },
             };
         case 'SET_POSTAL_CODE_FILTER':
             return {
@@ -81,7 +81,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 postalCode: {
                     ...state.postalCode,
                     data: action.postalCode,
-                }
+                },
             };
         case 'SET_CITY_FILTER':
             return {
@@ -89,7 +89,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 city: {
                     ...state.city,
                     data: action.city,
-                }
+                },
             };
         case 'SET_EMAIL_ADDRESS_FILTER':
             return {
@@ -97,7 +97,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 emailAddress: {
                     ...state.emailAddress,
                     data: action.emailAddress,
-                }
+                },
             };
         case 'SET_PHONE_NUMBER_FILTER':
             return {
@@ -105,7 +105,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 phoneNumber: {
                     ...state.phoneNumber,
                     data: action.phoneNumber,
-                }
+                },
             };
         case 'SET_STATUS_FILTER':
             return {
@@ -113,7 +113,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
+                },
             };
         case 'SET_CREATED_AT_FILTER':
             return {
@@ -121,7 +121,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 createdAt: {
                     ...state.createdAt,
                     data: action.createdAt,
-                }
+                },
             };
         case 'CLEAR_FILTER_CONTACTS':
             return {

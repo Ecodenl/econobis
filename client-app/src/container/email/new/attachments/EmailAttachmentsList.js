@@ -1,29 +1,29 @@
 import React from 'react';
 
-import EmailAttachmentsItem from "./EmailAttachmentsItem";
+import EmailAttachmentsItem from './EmailAttachmentsItem';
 
-const EmailAttachmentsList = ({attachments, deleteAttachment}) => {
+const EmailAttachmentsList = ({ attachments, deleteAttachment }) => {
     return (
         <div>
             <div className="row border header">
                 <div className="col-sm-11">Bestand</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                attachments.length > 0 ?
-                    attachments.map(attachment => {
-                        return <EmailAttachmentsItem
+            {attachments.length > 0 ? (
+                attachments.map(attachment => {
+                    return (
+                        <EmailAttachmentsItem
                             key={attachment.name}
                             attachment={attachment}
                             deleteAttachment={deleteAttachment}
-                        />;
-                    })
-                    :
-                    <div>Geen bijlagen bekend.</div>
-            }
+                        />
+                    );
+                })
+            ) : (
+                <div>Geen bijlagen bekend.</div>
+            )}
         </div>
     );
 };
 
 export default EmailAttachmentsList;
-

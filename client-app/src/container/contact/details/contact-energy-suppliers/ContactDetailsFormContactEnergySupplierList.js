@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import ContactDetailsFormContactEnergySupplierItem from "./ContactDetailsFormContactEnergySupplierItem";
+import ContactDetailsFormContactEnergySupplierItem from './ContactDetailsFormContactEnergySupplierItem';
 
 const ContactDetailsFormContactEnergySupplierList = props => {
     return (
@@ -14,24 +14,25 @@ const ContactDetailsFormContactEnergySupplierList = props => {
                 <div className="col-sm-2">Mogelijke overstap datum</div>
                 <div className="col-sm-1">Klantnummer</div>
                 <div className="col-sm-1">Huidige</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.contactEnergySuppliers.length > 0 ?
-                    props.contactEnergySuppliers.map(contactEnergySupplier => {
-                        return <ContactDetailsFormContactEnergySupplierItem
+            {props.contactEnergySuppliers.length > 0 ? (
+                props.contactEnergySuppliers.map(contactEnergySupplier => {
+                    return (
+                        <ContactDetailsFormContactEnergySupplierItem
                             key={contactEnergySupplier.id}
                             contactEnergySupplier={contactEnergySupplier}
-                        />;
-                    })
-                    :
-                    <div>Geen energieleveranciers bekend.</div>
-            }
+                        />
+                    );
+                })
+            ) : (
+                <div>Geen energieleveranciers bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactEnergySuppliers: state.contactDetails.contactEnergySuppliers,
     };

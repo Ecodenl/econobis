@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 class ParticipantDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -15,7 +15,7 @@ class ParticipantDetailsHarmonica extends Component {
         };
 
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -23,16 +23,19 @@ class ParticipantDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
+    }
+
+    newDocument = type => {
+        hashHistory.push(
+            `/document/nieuw/${type}/productie-project/${this.props.participant.productionProjectId}/participant/${
+                this.props.participant.id
+            }/contact/${this.props.participant.contact.id}`
+        );
     };
 
-
-    newDocument = (type) => {
-        hashHistory.push(`/document/nieuw/${type}/productie-project/${this.props.participant.productionProjectId}/participant/${this.props.participant.id}/contact/${this.props.participant.contact.id}`);
-    };
-
-    render(){
+    render() {
         return (
             <div className="margin-10-top">
                 <DocumentHarmonica
@@ -42,11 +45,11 @@ class ParticipantDetailsHarmonica extends Component {
                     documentCount={this.props.participant.documentCount}
                 />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         participant: state.participantProductionProjectDetails,
     };

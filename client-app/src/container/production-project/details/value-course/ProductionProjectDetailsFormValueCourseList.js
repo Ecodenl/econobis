@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import ProductionProjectDetailsFormValueCourseItem from "./ProductionProjectDetailsFormValueCourseItem";
+import ProductionProjectDetailsFormValueCourseItem from './ProductionProjectDetailsFormValueCourseItem';
 
 const ProductionProjectDetailsFormValueCourseList = props => {
     return (
@@ -11,24 +11,22 @@ const ProductionProjectDetailsFormValueCourseList = props => {
                 <div className="col-sm-2">Datum</div>
                 <div className="col-sm-3">Boekwaarde</div>
                 <div className="col-sm-3">Overdrachtswaarde</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.valueCourses.length > 0 ?
-                    props.valueCourses.map(valueCourse => {
-                        return <ProductionProjectDetailsFormValueCourseItem
-                            key={valueCourse.id}
-                            valueCourse={valueCourse}
-                        />;
-                    })
-                    :
-                    <div>Geen waardeverloop bekend.</div>
-            }
+            {props.valueCourses.length > 0 ? (
+                props.valueCourses.map(valueCourse => {
+                    return (
+                        <ProductionProjectDetailsFormValueCourseItem key={valueCourse.id} valueCourse={valueCourse} />
+                    );
+                })
+            ) : (
+                <div>Geen waardeverloop bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         valueCourses: state.productionProjectDetails.valueCourses,
     };

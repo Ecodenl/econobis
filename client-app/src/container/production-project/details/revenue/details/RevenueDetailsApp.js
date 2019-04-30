@@ -17,27 +17,27 @@ class RevenueDetailsApp extends Component {
 
     componentWillUnmount() {
         this.props.clearRevenue();
-    };
+    }
 
     render() {
         return (
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <RevenueDetailsToolbar/>
+                        <RevenueDetailsToolbar />
                     </div>
 
                     <div className="col-md-12">
-                        <RevenueDetailsForm/>
+                        <RevenueDetailsForm />
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
-    fetchRevenue: (id) => {
+    fetchRevenue: id => {
         dispatch(fetchRevenue(id));
     },
     clearRevenue: () => {
@@ -45,4 +45,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(RevenueDetailsApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(RevenueDetailsApp);

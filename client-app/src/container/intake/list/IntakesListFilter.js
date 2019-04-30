@@ -10,22 +10,22 @@ import {
     setFilterMeasureRequested,
     setFilterIntakeStatus,
 } from '../../../actions/intake/IntakesFiltersActions';
-import DataTableFilterDate from "../../../components/dataTable/DataTableFilterDate";
+import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const IntakesListFilter = props => {
-    const onIntakeDateChange = (selectedDay) => {
-        if(selectedDay === undefined){
+    const onIntakeDateChange = selectedDay => {
+        if (selectedDay === undefined) {
             props.setIntakeDateFilter('');
-        }else{
+        } else {
             props.setIntakeDateFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
-    const onFullNameChange = (e) => {
+    const onFullNameChange = e => {
         props.setFilterFullName(e.target.value);
     };
 
-    const onAddressChange = (e) => {
+    const onAddressChange = e => {
         props.setFilterIntakeAddress(e.target.value);
 
         setTimeout(() => {
@@ -33,7 +33,7 @@ const IntakesListFilter = props => {
         }, 100);
     };
 
-    const onMeasureRequestedChange = (e) => {
+    const onMeasureRequestedChange = e => {
         props.setFilterMeasureRequested(e.target.value);
 
         setTimeout(() => {
@@ -41,7 +41,7 @@ const IntakesListFilter = props => {
         }, 100);
     };
 
-    const onStatusChange = (e) => {
+    const onStatusChange = e => {
         props.setFilterIntakeStatus(e.target.value);
 
         setTimeout(() => {
@@ -51,52 +51,87 @@ const IntakesListFilter = props => {
 
     return (
         <tr className="thead-filter">
-            { props.showCheckbox && <td><input type="checkbox" value={ props.checkedAllCheckboxes } onChange={props.selectAllCheckboxes} /></td> }
-            <DataTableFilterDate value={ props.filters.createdAt.data && props.filters.createdAt.data } onChangeAction={onIntakeDateChange} />
-
-            <th><input type="text" className="form-control input-sm" value={ props.filters.fullName.data} onChange={onFullNameChange} /></th>
-            <th><input type="text" className="form-control input-sm" value={ props.filters.address.data} onChange={onAddressChange} /></th>
+            {props.showCheckbox && (
+                <td>
+                    <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
+                </td>
+            )}
+            <DataTableFilterDate
+                value={props.filters.createdAt.data && props.filters.createdAt.data}
+                onChangeAction={onIntakeDateChange}
+            />
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.measureRequested.data } onChange={onMeasureRequestedChange}>
-                    <option/>
-                    {
-                        props.measureCategories.map((measureCategory) => {
-                            return <option key={measureCategory.id } value={ measureCategory.id }>{ measureCategory.name }</option>
-                        })
-                    }
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.fullName.data}
+                    onChange={onFullNameChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.address.data}
+                    onChange={onAddressChange}
+                />
+            </th>
+
+            <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.measureRequested.data}
+                    onChange={onMeasureRequestedChange}
+                >
+                    <option />
+                    {props.measureCategories.map(measureCategory => {
+                        return (
+                            <option key={measureCategory.id} value={measureCategory.id}>
+                                {measureCategory.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.statusId.data } onChange={onStatusChange}>
-                    <option/>
-                    {
-                        props.intakeStatuses.map((intakeStatus) => {
-                            return <option key={intakeStatus.id } value={ intakeStatus.id }>{ intakeStatus.name }</option>
-                        })
-                    }
+                <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
+                    <option />
+                    {props.intakeStatuses.map(intakeStatus => {
+                        return (
+                            <option key={intakeStatus.id} value={intakeStatus.id}>
+                                {intakeStatus.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
-            <th/>
+            <th />
         </tr>
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     filters: state.intakes.filters,
     intakeStatuses: state.systemData.intakeStatuses,
     measureCategories: state.systemData.measureCategories,
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({
-        setIntakeDateFilter,
-        setFilterFullName,
-        setFilterIntakeAddress,
-        setFilterMeasureRequested,
-        setFilterIntakeStatus,
-    }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            setIntakeDateFilter,
+            setFilterFullName,
+            setFilterIntakeAddress,
+            setFilterMeasureRequested,
+            setFilterIntakeStatus,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntakesListFilter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(IntakesListFilter);

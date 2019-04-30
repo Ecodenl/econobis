@@ -3,7 +3,14 @@ import axios from 'axios';
 const URL_PARTICIPANT_PRODUCTION_PROJECT = `${URL_API}/api/production-project/participant`;
 
 export default {
-    fetchParticipantsProductionProject: ({ filters, extraFilters, sorts, pagination, filterType, fetchFromProductionProject }) => {
+    fetchParticipantsProductionProject: ({
+        filters,
+        extraFilters,
+        sorts,
+        pagination,
+        filterType,
+        fetchFromProductionProject,
+    }) => {
         const requestUrl = `${URL_PARTICIPANT_PRODUCTION_PROJECT}/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -16,7 +23,7 @@ export default {
                 limit: pagination.limit,
                 offset: pagination.offset,
                 filterType: filterType,
-                fetchFromProductionProject: fetchFromProductionProject
+                fetchFromProductionProject: fetchFromProductionProject,
             },
         });
     },
@@ -31,7 +38,7 @@ export default {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
-                fetchFromProductionProject: fetchFromProductionProject
+                fetchFromProductionProject: fetchFromProductionProject,
             },
         });
     },
@@ -41,14 +48,14 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
     createParticipantReport: (templateId, emailTemplateId, subject, participantIds) => {
@@ -56,12 +63,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {participantIds: participantIds, subject: subject})
+        return axios
+            .post(requestUrl, { participantIds: participantIds, subject: subject })
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     previewPDF: (templateId, emailTemplateId, participantIds) => {
@@ -69,8 +76,7 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {participantIds: [participantIds]}, {responseType: 'blob'});
-
+        return axios.post(requestUrl, { participantIds: [participantIds] }, { responseType: 'blob' });
     },
 
     previewEmail: (templateId, emailTemplateId, participantIds) => {
@@ -78,12 +84,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {participantIds: [participantIds]})
+        return axios
+            .post(requestUrl, { participantIds: [participantIds] })
             .then(response => response.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     saveAsGroup: ({ filters, extraFilters, filterType, saveFromProductionProject }) => {

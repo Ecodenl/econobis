@@ -38,14 +38,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_EMAIL_DATE':
             return {
                 ...state,
                 date: {
                     ...state.date,
                     data: action.date,
-                }
+                },
             };
         case 'SET_FILTER_EMAIL_MAILBOX':
             return {
@@ -53,7 +53,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 mailbox: {
                     ...state.mailbox,
                     data: action.mailbox,
-                }
+                },
             };
         case 'SET_FILTER_EMAIL_SENT_BY':
             return {
@@ -61,23 +61,23 @@ export default (state = filtersReducerDefaultState, action) => {
                 sentBy: {
                     ...state.sentBy,
                     data: action.sentBy,
-                }
+                },
             };
         case 'SET_FILTER_EMAIL_TO':
-        return {
-            ...state,
-            to: {
-                ...state.to,
-                data: action.to,
-            }
-        };
+            return {
+                ...state,
+                to: {
+                    ...state.to,
+                    data: action.to,
+                },
+            };
         case 'SET_FILTER_EMAIL_CONTACT':
             return {
                 ...state,
                 contact: {
                     ...state.contact,
                     data: action.contact,
-                }
+                },
             };
         case 'SET_FILTER_EMAIL_SUBJECT':
             return {
@@ -85,7 +85,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 subject: {
                     ...state.subject,
                     data: action.subject,
-                }
+                },
             };
         case 'SET_FILTER_EMAIL_STATUS_ID':
             return {
@@ -93,7 +93,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 statusId: {
                     ...state.statusId,
                     data: action.statusId,
-                }
+                },
             };
         case 'SET_FILTER_EMAIL_RESPONSIBLE_NAME':
             return {
@@ -101,7 +101,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 responsibleName: {
                     ...state.responsibleName,
                     data: action.responsibleName,
-                }
+                },
             };
         case 'SET_FILTER_EMAIL_ME':
             return {
@@ -109,7 +109,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 me: {
                     ...state.me,
                     data: action.me,
-                }
+                },
             };
         case 'CLEAR_FILTER_EMAIL':
             return {

@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import DocumentHarmonica from "./DocumentHarmonica";
-import NoteHarmonica from "./NoteHarmonica";
+import DocumentHarmonica from './DocumentHarmonica';
+import NoteHarmonica from './NoteHarmonica';
 
 class HousingFileDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -20,20 +20,19 @@ class HousingFileDetailsHarmonica extends Component {
         this.newNote = this.newNote.bind(this);
         this.newDocument = this.newDocument.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     newTask() {
         hashHistory.push(`/taak/nieuw/woningdossier/${this.props.id}`);
-    };
+    }
 
     newNote() {
         hashHistory.push(`/taak/nieuw/afgehandeld/woningdossier/${this.props.id}`);
-    };
+    }
 
     newDocument(type) {
         hashHistory.push(`/document/nieuw/${type}/woningdossier/${this.props.id}`);
-    };
-
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -41,10 +40,10 @@ class HousingFileDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
-    render(){
+    }
+    render() {
         return (
             <div className="col-md-12 margin-10-top">
                 <NoteHarmonica
@@ -60,14 +59,14 @@ class HousingFileDetailsHarmonica extends Component {
                     documentCount={this.props.housingFileDetails.documentCount}
                 />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         housingFileDetails: state.housingFileDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 

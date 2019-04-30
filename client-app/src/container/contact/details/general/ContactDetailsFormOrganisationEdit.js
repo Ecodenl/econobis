@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import validator from 'validator';
@@ -8,9 +8,9 @@ import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
-import PanelFooter from "../../../../components/panel/PanelFooter";
-import * as ibantools from "ibantools";
-import InputToggle from "../../../../components/form/InputToggle";
+import PanelFooter from '../../../../components/panel/PanelFooter';
+import * as ibantools from 'ibantools';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
@@ -37,8 +37,8 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 name: false,
                 iban: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -49,7 +49,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             ...this.state,
             organisation: {
                 ...this.state.organisation,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -57,54 +57,65 @@ class ContactDetailsFormOrganisationEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { organisation }  = this.state;
+        const { organisation } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(organisation.iban && !validator.isEmpty(organisation.iban + '')){
+        if (organisation.iban && !validator.isEmpty(organisation.iban + '')) {
             if (!ibantools.isValidIBAN(organisation.iban)) {
                 errors.iban = true;
                 hasErrors = true;
             }
         }
 
-        if(validator.isEmpty(organisation.name + '')){
+        if (validator.isEmpty(organisation.name + '')) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        OrganisationAPI.updateOrganisation(organisation).then((payload) => {
+            OrganisationAPI.updateOrganisation(organisation).then(payload => {
                 this.props.updateOrganisation(payload);
                 this.props.switchToView();
             });
     };
 
     render() {
-        const { number, name, chamberOfCommerceNumber, vatNumber, createdAt, newsletter, didAgreeAvg, website, iban, ibanAttn } = this.state.organisation;
+        const {
+            number,
+            name,
+            chamberOfCommerceNumber,
+            vatNumber,
+            createdAt,
+            newsletter,
+            didAgreeAvg,
+            website,
+            iban,
+            ibanAttn,
+        } = this.state.organisation;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputText
-                        label={"Contactnummer"}
+                        label={'Contactnummer'}
                         divSize={'col-xs-12'}
-                        name={"number"}
+                        name={'number'}
                         value={number}
-                        readOnly={ true }
+                        readOnly={true}
                     />
                 </div>
 
                 <div className="row">
                     <InputText
-                        label={"Gemaakt op"}
+                        label={'Gemaakt op'}
                         divSize={'col-xs-12'}
-                        name={"createdAt"}
-                        value={ moment(createdAt).format('DD-MM-Y')  }
-                        readOnly={ true }
+                        name={'createdAt'}
+                        value={moment(createdAt).format('DD-MM-Y')}
+                        readOnly={true}
                     />
                 </div>
 
@@ -112,10 +123,10 @@ class ContactDetailsFormOrganisationEdit extends Component {
                     <InputText
                         label="Naam"
                         divSize={'col-xs-12'}
-                        name={"name"}
+                        name={'name'}
                         value={name}
                         onChangeAction={this.handleInputChange}
-                        required={"required"}
+                        required={'required'}
                         error={this.state.errors.name}
                     />
                 </div>
@@ -163,9 +174,9 @@ class ContactDetailsFormOrganisationEdit extends Component {
 
                 <div className="row">
                     <InputText
-                        label={"Website"}
+                        label={'Website'}
                         divSize={'col-xs-12'}
-                        name={"website"}
+                        name={'website'}
                         value={website}
                         onChangeAction={this.handleInputChange}
                     />
@@ -174,9 +185,9 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 <div className="row">
                     <InputToggle
                         className={'field-to-be-removed'}
-                        label={"Nieuwsbrief"}
+                        label={'Nieuwsbrief'}
                         divSize={'col-xs-12'}
-                        name={"newsletter"}
+                        name={'newsletter'}
                         value={newsletter}
                         onChangeAction={this.handleInputChange}
                     />
@@ -194,25 +205,32 @@ class ContactDetailsFormOrganisationEdit extends Component {
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.switchToView}/>
-                        <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit}/>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={this.props.switchToView}
+                        />
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
                     </div>
                 </PanelFooter>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         contactDetails: state.contactDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    updateOrganisation: (id) => {
+    updateOrganisation: id => {
         dispatch(updateOrganisation(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormOrganisationEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormOrganisationEdit);

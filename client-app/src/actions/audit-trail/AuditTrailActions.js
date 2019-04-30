@@ -9,6 +9,6 @@ export const fetchAuditTrail = (filters, sorts, pagination) => {
 
 export const clearAuditTrail = () => {
     return {
-        type: 'CLEAR_AUDIT_TRAIL'
+        type: 'CLEAR_AUDIT_TRAIL',
     };
 };

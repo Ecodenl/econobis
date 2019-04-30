@@ -1,8 +1,8 @@
-export const fetchTeamDetails = (id) => {
+export const fetchTeamDetails = id => {
     return {
         type: 'FETCH_TEAM_DETAILS',
         id,
-    }
+    };
 };
 
 export const updateTeam = (team, switchToView) => {
@@ -10,10 +10,10 @@ export const updateTeam = (team, switchToView) => {
         type: 'UPDATE_TEAM',
         team,
         switchToView,
-    }
+    };
 };
 
-export const newTeamUser = (teamUser) => {
+export const newTeamUser = teamUser => {
     return {
         type: 'NEW_TEAM_USER',
         teamUser,

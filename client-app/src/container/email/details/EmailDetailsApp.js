@@ -6,7 +6,7 @@ import EmailDetailsForm from './EmailDetailsForm';
 import EmailAPI from './../../../api/email/EmailAPI';
 
 import { fetchEmail, clearEmail } from '../../../actions/email/EmailDetailsActions';
-import {browserHistory} from "react-router";
+import { browserHistory } from 'react-router';
 
 class EmailDetailsApp extends Component {
     constructor(props) {
@@ -22,9 +22,9 @@ class EmailDetailsApp extends Component {
 
     componentWillUnmount() {
         this.props.clearEmail();
-    };
+    }
 
-    refreshEmail(){
+    refreshEmail() {
         this.props.clearEmail();
         this.props.fetchEmail(this.props.params.id);
     }
@@ -35,8 +35,7 @@ class EmailDetailsApp extends Component {
             EmailAPI.moveToFolder(this.props.email.id, 'sent').then(() => {
                 this.refreshEmail();
             });
-        }
-        else {
+        } else {
             EmailAPI.moveToFolder(this.props.email.id, 'inbox').then(() => {
                 this.refreshEmail();
             });
@@ -48,8 +47,7 @@ class EmailDetailsApp extends Component {
             EmailAPI.moveToFolder(this.props.email.id, 'removed').then(() => {
                 this.refreshEmail();
             });
-        }
-        else if (this.props.email.folder === 'removed') {
+        } else if (this.props.email.folder === 'removed') {
             EmailAPI.deleteEmail(this.props.email.id).then(() => {
                 browserHistory.goBack();
             });
@@ -61,26 +59,26 @@ class EmailDetailsApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <EmailDetailsToolbar removeEmail={this.removeEmail} id={this.props.params.id}/>
+                        <EmailDetailsToolbar removeEmail={this.removeEmail} id={this.props.params.id} />
                     </div>
 
                     <div className="col-md-12">
-                        <EmailDetailsForm restoreEmail={this.restoreEmail}/>
+                        <EmailDetailsForm restoreEmail={this.restoreEmail} />
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         email: state.email,
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchEmail: (id) => {
+    fetchEmail: id => {
         dispatch(fetchEmail(id));
     },
     clearEmail: () => {
@@ -88,4 +86,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(EmailDetailsApp);

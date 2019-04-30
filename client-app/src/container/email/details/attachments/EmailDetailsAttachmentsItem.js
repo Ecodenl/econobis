@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import EmailDetailsAttachmentView from './EmailDetailsAttachmentView';
 
@@ -14,7 +14,7 @@ class EmailDetailsAttachmentsItem extends Component {
                 ...props.attachment,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -43,6 +43,6 @@ class EmailDetailsAttachmentsItem extends Component {
             </div>
         );
     }
-};
+}
 
 export default EmailDetailsAttachmentsItem;

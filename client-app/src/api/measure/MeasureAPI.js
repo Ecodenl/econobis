@@ -8,25 +8,25 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
+            .catch(error => {
                 console.log(error);
-            },
-            );
+            });
     },
 
-    fetchMeasure: (id) => {
+    fetchMeasure: id => {
         const requestUrl = `${URL_MEASURE}/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     updateMeasure: (id, data) => {
@@ -34,12 +34,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     storeFaq: (measureId, data) => {
@@ -47,37 +47,38 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    deleteFaq: (id) => {
+    deleteFaq: id => {
         const requestUrl = `${URL_MEASURE}/faq/${id}/delete`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    updateFaq: (faq) => {
+    updateFaq: faq => {
         const requestUrl = `${URL_MEASURE}/faq/${faq.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, faq)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, faq)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return error.response;
             });
     },
@@ -87,12 +88,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     detachSupplier: (measureId, organisationId) => {
@@ -100,12 +101,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     associateOpportunity: (measureId, opportunityId) => {
@@ -113,12 +114,12 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios
+            .post(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     peekMeasures: () => {
@@ -126,13 +127,13 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 };

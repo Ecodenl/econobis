@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { isEqual } from 'lodash';
 
 import RevenuesListFormView from './RevenuesListFormView';
@@ -16,7 +16,7 @@ class RevenuesListFormItem extends Component {
                 ...props.revenue,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -25,7 +25,7 @@ class RevenuesListFormItem extends Component {
         });
     };
 
-    onLineLeave= () => {
+    onLineLeave = () => {
         this.setState({
             showActionButtons: false,
             highlightLine: '',
@@ -33,7 +33,7 @@ class RevenuesListFormItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -47,16 +47,12 @@ class RevenuesListFormItem extends Component {
                     toggleDelete={this.toggleDelete}
                     revenue={this.state.revenue}
                 />
-                {
-                    this.state.showDelete &&
-                    <RevenuesListFormDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.revenue}
-                    />
-                }
+                {this.state.showDelete && (
+                    <RevenuesListFormDelete closeDeleteItemModal={this.toggleDelete} {...this.props.revenue} />
+                )}
             </div>
         );
     }
-};
+}
 
 export default RevenuesListFormItem;

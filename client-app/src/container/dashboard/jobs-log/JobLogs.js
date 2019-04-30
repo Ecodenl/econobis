@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import JobLogsList from './JobLogsList';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import PanelHeader from '../../../components/panel/PanelHeader';
-import JobAPI from "../../../api/job/JobAPI";
+import JobAPI from '../../../api/job/JobAPI';
 
 class JobLogs extends Component {
     constructor(props) {
@@ -12,13 +12,13 @@ class JobLogs extends Component {
 
         this.state = {
             jobs: [],
-        }
+        };
     }
 
     componentWillMount() {
         JobAPI.getLastJobs().then(payload => {
             this.setState({
-                jobs: payload.data
+                jobs: payload.data,
             });
         });
     }
@@ -32,8 +32,7 @@ class JobLogs extends Component {
                     </PanelHeader>
                     <PanelBody>
                         <div className="col-md-12">
-                            <JobLogsList
-                                jobs={this.state.jobs}/>
+                            <JobLogsList jobs={this.state.jobs} />
                         </div>
                     </PanelBody>
                 </Panel>
@@ -41,6 +40,5 @@ class JobLogs extends Component {
         );
     }
 }
-
 
 export default JobLogs;

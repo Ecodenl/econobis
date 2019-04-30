@@ -30,14 +30,14 @@ const filtersReducerDefaultState = {
 };
 
 export default (state = filtersReducerDefaultState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case 'SET_FILTER_TASK_CREATED_AT':
             return {
                 ...state,
                 createdAt: {
                     ...state.createdAt,
                     data: action.createdAt,
-                }
+                },
             };
         case 'SET_FILTER_TASK_TYPE_ID':
             return {
@@ -45,7 +45,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 typeId: {
                     ...state.typeId,
                     data: action.typeId,
-                }
+                },
             };
         case 'SET_FILTER_TASK_NOTE':
             return {
@@ -53,7 +53,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 note: {
                     ...state.note,
                     data: action.note,
-                }
+                },
             };
         case 'SET_FILTER_TASK_CONTACT_FULL_NAME':
             return {
@@ -61,7 +61,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 contactFullName: {
                     ...state.contactFullName,
                     data: action.contactFullName,
-                }
+                },
             };
         case 'SET_FILTER_TASK_DATE_PLANNED_START':
             return {
@@ -69,7 +69,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 datePlannedStart: {
                     ...state.datePlannedStart,
                     data: action.datePlannedStart,
-                }
+                },
             };
         case 'SET_FILTER_TASK_RESPONSIBLE_NAME':
             return {
@@ -77,7 +77,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 responsibleName: {
                     ...state.responsibleName,
                     data: action.responsibleName,
-                }
+                },
             };
         case 'SET_FILTER_TASK_ME':
             return {
@@ -85,7 +85,7 @@ export default (state = filtersReducerDefaultState, action) => {
                 me: {
                     ...state.me,
                     data: action.me,
-                }
+                },
             };
         case 'CLEAR_FILTER_TASKS':
             return {

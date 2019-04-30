@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import AdministrationDetailsSepasView from './AdministrationDetailsSepasView';
-import fileDownload from "js-file-download";
-import AdministrationDetailsAPI from "../../../../api/administration/AdministrationDetailsAPI";
-import AdministrationDetailsSepasDelete from "./AdministrationDetailsSepasDelete";
+import fileDownload from 'js-file-download';
+import AdministrationDetailsAPI from '../../../../api/administration/AdministrationDetailsAPI';
+import AdministrationDetailsSepasDelete from './AdministrationDetailsSepasDelete';
 
 class AdministrationDetailsSepasItem extends Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class AdministrationDetailsSepasItem extends Component {
                 ...props.sepa,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -33,14 +33,14 @@ class AdministrationDetailsSepasItem extends Component {
         });
     };
 
-    downloadSepa = (id) => {
-        AdministrationDetailsAPI.downloadSepa(id).then((payload) => {
+    downloadSepa = id => {
+        AdministrationDetailsAPI.downloadSepa(id).then(payload => {
             fileDownload(payload.data, payload.headers['x-filename']);
         });
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -55,16 +55,12 @@ class AdministrationDetailsSepasItem extends Component {
                     downloadSepa={this.downloadSepa}
                     toggleDelete={this.toggleDelete}
                 />
-                {
-                    this.state.showDelete &&
-                    <AdministrationDetailsSepasDelete
-                        toggleDelete={this.toggleDelete}
-                        sepaId={this.state.sepa.id}
-                    />
-                }
+                {this.state.showDelete && (
+                    <AdministrationDetailsSepasDelete toggleDelete={this.toggleDelete} sepaId={this.state.sepa.id} />
+                )}
             </div>
         );
     }
-};
+}
 
 export default AdministrationDetailsSepasItem;

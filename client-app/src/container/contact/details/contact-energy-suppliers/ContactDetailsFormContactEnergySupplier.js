@@ -1,11 +1,11 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactDetailsFormContactEnergySupplierList from './ContactDetailsFormContactEnergySupplierList';
 import ContactDetailsFormContactEnergySupplierNew from './ContactDetailsFormContactEnergySupplierNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class ContactDetailsFormContactEnergySupplier extends Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class ContactDetailsFormContactEnergySupplier extends Component {
     toggleShowNew = () => {
         this.setState({
             showNew: !this.state.showNew,
-        })
+        });
     };
 
     render() {
@@ -27,28 +27,31 @@ class ContactDetailsFormContactEnergySupplier extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Energieleveranciers</span>
-                    {(this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) &&
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}><span
-                        className="glyphicon glyphicon-plus"/></a>
-                    }
+                    {(this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
                         <ContactDetailsFormContactEnergySupplierList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        { this.state.showNew && <ContactDetailsFormContactEnergySupplierNew toggleShowNew={this.toggleShowNew} /> }
+                        {this.state.showNew && (
+                            <ContactDetailsFormContactEnergySupplierNew toggleShowNew={this.toggleShowNew} />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(ContactDetailsFormContactEnergySupplier);

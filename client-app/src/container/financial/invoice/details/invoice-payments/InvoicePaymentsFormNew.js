@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import InvoiceDetailsAPI from '../../../../../api/invoice/InvoiceDetailsAPI';
-import {fetchInvoiceDetails} from '../../../../../actions/invoice/InvoiceDetailsActions';
+import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import validator from "validator";
-import InputDate from "../../../../../components/form/InputDate";
-import moment from "moment/moment";
+import validator from 'validator';
+import InputDate from '../../../../../components/form/InputDate';
+import moment from 'moment/moment';
 
 class InvoicePaymentsFormNew extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class InvoicePaymentsFormNew extends Component {
             payment: {
                 invoiceId: this.props.invoiceDetails.id,
                 amount: '',
-                datePaid: moment()
+                datePaid: moment(),
             },
             errors: {
                 amount: false,
@@ -29,7 +29,7 @@ class InvoicePaymentsFormNew extends Component {
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -37,15 +37,12 @@ class InvoicePaymentsFormNew extends Component {
         const name = target.name;
 
         this.setState({
-                ...this.state,
-                payment: {
-                    ...this.state.payment,
-                    [name]: value
-                },
-
+            ...this.state,
+            payment: {
+                ...this.state.payment,
+                [name]: value,
             },
-        );
-
+        });
     };
 
     handleInputChangeDate(value, name) {
@@ -53,45 +50,39 @@ class InvoicePaymentsFormNew extends Component {
             ...this.state,
             payment: {
                 ...this.state.payment,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {payment} = this.state;
+        const { payment } = this.state;
 
         let errors = {};
         let hasErrors = false;
-
 
         if (validator.isEmpty(payment.amount + '')) {
             errors.amount = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(payment.datePaid + '')) {
             errors.datePaid = true;
             hasErrors = true;
         }
-        ;
-
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        InvoiceDetailsAPI.newPayment(payment).then((payload) => {
-            this.props.fetchInvoiceDetails(payment.invoiceId);
-            this.props.toggleShowNew();
-        });
+            InvoiceDetailsAPI.newPayment(payment).then(payload => {
+                this.props.fetchInvoiceDetails(payment.invoiceId);
+                this.props.toggleShowNew();
+            });
     };
 
     render() {
-
-        const {amount, datePaid} = this.state.payment;
+        const { amount, datePaid } = this.state.payment;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -99,12 +90,12 @@ class InvoicePaymentsFormNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Bedrag"}
-                                id={"amount"}
-                                name={"amount"}
+                                label={'Bedrag'}
+                                id={'amount'}
+                                name={'amount'}
                                 value={amount}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.amount}
                             />
                             <InputDate
@@ -112,35 +103,44 @@ class InvoicePaymentsFormNew extends Component {
                                 name="datePaid"
                                 value={datePaid}
                                 onChangeAction={this.handleInputChangeDate}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.datePaid}
                             />
                         </div>
 
-
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"}
-                                        onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"}
-                                        value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         invoiceDetails: state.invoiceDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
+    fetchInvoiceDetails: id => {
         dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoicePaymentsFormNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvoicePaymentsFormNew);

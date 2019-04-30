@@ -6,6 +6,6 @@ export const fetchEmailTemplates = () => {
 
 export const clearEmailTemplates = () => {
     return {
-        type: 'CLEAR_EMAIL_TEMPLATES'
+        type: 'CLEAR_EMAIL_TEMPLATES',
     };
 };

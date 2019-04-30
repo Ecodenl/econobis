@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import ContactEnergySupplierAPI from '../../../../api/contact/ContactEnergySupplierAPI';
-import {newContactEnergySupplier} from '../../../../actions/contact/ContactDetailsActions';
+import { newContactEnergySupplier } from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import validator from "validator";
-import InputToggle from "../../../../components/form/InputToggle";
-import InputDate from "../../../../components/form/InputDate";
+import validator from 'validator';
+import InputToggle from '../../../../components/form/InputToggle';
+import InputDate from '../../../../components/form/InputDate';
 
 class ContactDetailsFormContactEnergySupplierNew extends Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                 contactEnergySupplyStatusId: '',
                 switchDate: '',
                 esNumber: '',
-                isCurrentSupplier: false
+                isCurrentSupplier: false,
             },
             errors: {
                 energySupplierId: false,
@@ -36,7 +36,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -47,7 +47,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
             ...this.state,
             contactEnergySupplier: {
                 ...this.state.contactEnergySupplier,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -57,10 +57,10 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
             ...this.state,
             contactEnergySupplier: {
                 ...this.state.contactEnergySupplier,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -70,29 +70,38 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-
-        if(validator.isEmpty(contactEnergySupplier.energySupplierId)){
+        if (validator.isEmpty(contactEnergySupplier.energySupplierId)) {
             errors.energySupplierId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(contactEnergySupplier.contactEnergySupplyTypeId)){
+        if (validator.isEmpty(contactEnergySupplier.contactEnergySupplyTypeId)) {
             errors.contactEnergySupplyTypeId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            ContactEnergySupplierAPI.newContactEnergySupplier(contactEnergySupplier).then((payload) => {
+            ContactEnergySupplierAPI.newContactEnergySupplier(contactEnergySupplier).then(payload => {
                 this.props.newContactEnergySupplier(payload);
                 this.props.toggleShowNew();
             });
     };
 
     render() {
-        const {energySupplierId, contactEnergySupplyTypeId, memberSince, eanElectricity, eanGas, contactEnergySupplyStatusId, switchDate, esNumber, isCurrentSupplier } = this.state.contactEnergySupplier;
+        const {
+            energySupplierId,
+            contactEnergySupplyTypeId,
+            memberSince,
+            eanElectricity,
+            eanGas,
+            contactEnergySupplyStatusId,
+            switchDate,
+            esNumber,
+            isCurrentSupplier,
+        } = this.state.contactEnergySupplier;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -100,23 +109,23 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputSelect
-                                label={"Energieleverancier"}
+                                label={'Energieleverancier'}
                                 id="energySupplierId"
-                                name={"energySupplierId"}
+                                name={'energySupplierId'}
                                 options={this.props.energySuppliers}
                                 value={energySupplierId}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.energySupplierId}
                             />
                             <InputSelect
-                                label={"Type"}
+                                label={'Type'}
                                 id="contactEnergySupplyTypeId"
-                                name={"contactEnergySupplyTypeId"}
+                                name={'contactEnergySupplyTypeId'}
                                 options={this.props.contactEnergySupplierTypes}
                                 value={contactEnergySupplyTypeId}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.contactEnergySupplyTypeId}
                             />
                         </div>
@@ -129,9 +138,9 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputText
-                                label={"EAN electriciteit"}
-                                id={"eanElectricity"}
-                                name={"eanElectricity"}
+                                label={'EAN electriciteit'}
+                                id={'eanElectricity'}
+                                name={'eanElectricity'}
                                 value={eanElectricity}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -139,16 +148,16 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 
                         <div className="row">
                             <InputText
-                                label={"EAN gas"}
-                                id={"eanGas"}
-                                name={"eanGas"}
+                                label={'EAN gas'}
+                                id={'eanGas'}
+                                name={'eanGas'}
                                 value={eanGas}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
-                                label={"Overstap status"}
+                                label={'Overstap status'}
                                 id="contactEnergySupplyStatusId"
-                                name={"contactEnergySupplyStatusId"}
+                                name={'contactEnergySupplyStatusId'}
                                 options={this.props.contactEnergySupplierStatus}
                                 value={contactEnergySupplyStatusId}
                                 onChangeAction={this.handleInputChange}
@@ -163,9 +172,9 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputText
-                                label={"Klantnummer"}
-                                id={"esNumber"}
-                                name={"esNumber"}
+                                label={'Klantnummer'}
+                                id={'esNumber'}
+                                name={'esNumber'}
                                 value={esNumber}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -173,25 +182,34 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 
                         <div className="row">
                             <InputToggle
-                                label={"Is huidige leverancier"}
-                                name={"isCurrentSupplier"}
+                                label={'Is huidige leverancier'}
+                                name={'isCurrentSupplier'}
                                 value={isCurrentSupplier}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         energySuppliers: state.systemData.energySuppliers,
         contactEnergySupplierStatus: state.systemData.contactEnergySupplierStatus,
@@ -201,9 +219,12 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newContactEnergySupplier: (contactEnergySupplier) => {
+    newContactEnergySupplier: contactEnergySupplier => {
         dispatch(newContactEnergySupplier(contactEnergySupplier));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormContactEnergySupplierNew);

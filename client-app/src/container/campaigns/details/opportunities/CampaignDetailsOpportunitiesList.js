@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import CampaignDetailsOpportunityItem from "./CampaignDetailsOpportunityItem";
+import CampaignDetailsOpportunityItem from './CampaignDetailsOpportunityItem';
 
 const CampaignDetailsOpportunitiesList = props => {
     return (
@@ -13,27 +13,22 @@ const CampaignDetailsOpportunitiesList = props => {
                 <div className="col-sm-3">Maatregel categorie</div>
                 <div className="col-sm-1">Status</div>
                 <div className="col-sm-1">Aantal offertes</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.opportunities.length > 0 ?
-                    props.opportunities.map(opportunity => {
-                        return <CampaignDetailsOpportunityItem
-                            key={opportunity.id}
-                            opportunity={opportunity}
-                        />;
-                    })
-                    :
-                    <div>Geen kansen bekend.</div>
-            }
+            {props.opportunities.length > 0 ? (
+                props.opportunities.map(opportunity => {
+                    return <CampaignDetailsOpportunityItem key={opportunity.id} opportunity={opportunity} />;
+                })
+            ) : (
+                <div>Geen kansen bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         opportunities: state.campaignDetails.opportunities,
     };
 };
 export default connect(mapStateToProps)(CampaignDetailsOpportunitiesList);
-

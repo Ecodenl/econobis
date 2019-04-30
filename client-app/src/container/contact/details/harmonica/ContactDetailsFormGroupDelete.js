@@ -2,7 +2,7 @@ import React from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 
-const ContactDetailsContactFromGroupDelete = (props) => {
+const ContactDetailsContactFromGroupDelete = props => {
     const confirmAction = () => {
         props.deleteContactFromGroup(props.group.pivot.contact_group_id, props.group.pivot.contact_id);
         props.closeDeleteItemModal();
@@ -16,7 +16,9 @@ const ContactDetailsContactFromGroupDelete = (props) => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p className="modal-text">Verwijder groep: <strong> { props.group.name } </strong></p>
+            <p className="modal-text">
+                Verwijder groep: <strong> {props.group.name} </strong>
+            </p>
         </Modal>
     );
 };

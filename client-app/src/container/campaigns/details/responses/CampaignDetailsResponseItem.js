@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import CampaignDetailsResponseView from './CampaignDetailsResponseView';
-import CampaignDetailsResponseItemDelete from "./CampaignDetailsReponseItemDelete";
+import CampaignDetailsResponseItemDelete from './CampaignDetailsReponseItemDelete';
 
 class CampaignDetailsResponseItem extends Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class CampaignDetailsResponseItem extends Component {
                 ...props.response,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -33,7 +33,7 @@ class CampaignDetailsResponseItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -47,16 +47,15 @@ class CampaignDetailsResponseItem extends Component {
                     toggleDelete={this.toggleDelete}
                     response={this.state.response}
                 />
-                {
-                    this.state.showDelete &&
+                {this.state.showDelete && (
                     <CampaignDetailsResponseItemDelete
                         toggleDelete={this.toggleDelete}
                         contactId={this.state.response.contact.id}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 export default CampaignDetailsResponseItem;

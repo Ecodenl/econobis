@@ -1,11 +1,27 @@
 import React from 'react';
-import Panel from "../../../components/panel/Panel";
+import Panel from '../../../components/panel/Panel';
 
-import EmailAnswerAttachments from "./attachments/EmailAnswerAttachments";
-import EmailAnswerFormGeneral from "./general/EmailAnswerFormGeneral";
+import EmailAnswerAttachments from './attachments/EmailAnswerAttachments';
+import EmailAnswerFormGeneral from './general/EmailAnswerFormGeneral';
 
-const EmailAnswerForm = ({emailTemplates, mailboxAddresses, handleFromIds, handleEmailTemplates, email, emailAddresses, errors, hasLoaded, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
-
+const EmailAnswerForm = ({
+    emailTemplates,
+    mailboxAddresses,
+    handleFromIds,
+    handleEmailTemplates,
+    email,
+    emailAddresses,
+    errors,
+    hasLoaded,
+    handleSubmit,
+    handleToIds,
+    handleCcIds,
+    handleBccIds,
+    handleInputChange,
+    handleTextChange,
+    addAttachment,
+    deleteAttachment,
+}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -26,8 +42,11 @@ const EmailAnswerForm = ({emailTemplates, mailboxAddresses, handleFromIds, handl
                     mailboxAddresses={mailboxAddresses}
                 />
 
-                <EmailAnswerAttachments attachments={email.attachments} addAttachment={addAttachment} deleteAttachment={deleteAttachment} />
-
+                <EmailAnswerAttachments
+                    attachments={email.attachments}
+                    addAttachment={addAttachment}
+                    deleteAttachment={deleteAttachment}
+                />
             </Panel>
         </form>
     );

@@ -6,8 +6,8 @@ import HousingFileDetailsToolbar from './HousingFileDetailsToolbar';
 import HousingFileDetailsForm from './HousingFileDetailsForm';
 import HousingFileDetailsHarmonica from './harmonica/HousingFileDetailsHarmonica';
 
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
+import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../components/panel/Panel';
 
 class HousingFileDetailsApp extends Component {
     constructor(props) {
@@ -20,30 +20,33 @@ class HousingFileDetailsApp extends Component {
 
     render() {
         return (
-          <div className="row">
-              <div className="col-md-9">
-              <div className="col-md-12">
-                      <HousingFileDetailsToolbar />
+            <div className="row">
+                <div className="col-md-9">
+                    <div className="col-md-12">
+                        <HousingFileDetailsToolbar />
                     </div>
 
-              <div className="col-md-12">
-                      <HousingFileDetailsForm />
+                    <div className="col-md-12">
+                        <HousingFileDetailsForm />
                     </div>
                 </div>
-              <Panel className="col-md-3" >
-                  <PanelBody>
-                    <HousingFileDetailsHarmonica id={this.props.params.id}/>
-                  </PanelBody>
-              </Panel>
+                <Panel className="col-md-3">
+                    <PanelBody>
+                        <HousingFileDetailsHarmonica id={this.props.params.id} />
+                    </PanelBody>
+                </Panel>
             </div>
         );
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchHousingFileDetails: (id) => {
+    fetchHousingFileDetails: id => {
         dispatch(fetchHousingFileDetails(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(HousingFileDetailsApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(HousingFileDetailsApp);

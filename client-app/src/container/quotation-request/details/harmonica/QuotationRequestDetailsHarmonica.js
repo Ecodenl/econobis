@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import DocumentHarmonica from "./DocumentHarmonica";
-import EmailSentHarmonica from "./EmailSentHarmonica";
+import DocumentHarmonica from './DocumentHarmonica';
+import EmailSentHarmonica from './EmailSentHarmonica';
 
 class HousingFileDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -19,16 +19,15 @@ class HousingFileDetailsHarmonica extends Component {
         this.newDocument = this.newDocument.bind(this);
         this.newEmail = this.newEmail.bind(this);
         this.toggleShowList = this.toggleShowList.bind(this);
-    };
+    }
 
     newEmail() {
         hashHistory.push(`/email/nieuw`);
-    };
+    }
 
     newDocument(type) {
         hashHistory.push(`/document/nieuw/${type}/offerteverzoek/${this.props.id}`);
-    };
-
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -36,10 +35,10 @@ class HousingFileDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
-    render(){
+    }
+    render() {
         return (
             <div className="col-md-12 margin-10-top">
                 <EmailSentHarmonica
@@ -55,14 +54,14 @@ class HousingFileDetailsHarmonica extends Component {
                     documentCount={this.props.quotationRequestDetails.documentCount}
                 />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         quotationRequestDetails: state.quotationRequestDetails,
-        permissions: state.meDetails.permissions
+        permissions: state.meDetails.permissions,
     };
 };
 

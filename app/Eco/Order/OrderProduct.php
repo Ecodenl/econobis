@@ -33,41 +33,55 @@ class OrderProduct extends Model
 
     public function getTotalPriceInclVatAndReductionAttribute()
     {
-        $price = 0;
+        $priceInclVat = 0;
+        $inputInclVat = false;
+        if ($this->product->currentPrice) {
+            $inputInclVat = $this->product->currentPrice->input_incl_vat;
+        }
+        $vat_percentage = $this->product->currentPrice->vat_percentage;
 
-        if($this->variable_price) {
-            $productPrice = $this->variable_price;
+        if($inputInclVat){
+            $productPrice = $this->product->currentPrice->price_incl_vat;
+            $priceInclVat = ($this->amount * $productPrice);
+            if ($this->percentage_reduction) {
+                if($priceInclVat < 0){
+                    $priceInclVat = ($priceInclVat * ((100 + $this->percentage_reduction) / 100));
+                }
+                else {
+                    $priceInclVat = ($priceInclVat * ((100 - $this->percentage_reduction) / 100));
+                }
+            }
+            if ($this->amount_reduction) {
+                $priceInclVat = $priceInclVat - $this->amount_reduction;
+            }
 
-            $vatPercentage = $this->product->currentPrice->vat_percentage;
+        } else {
+            //indien invoer prijs excl. BTW is geweest, dan kortingsbedragen over excl. BTW bepalen en resultaat incl. BTW
+            if ($this->variable_price) {
+                //Indien variabele prijs (is ook excl.)
+                $productPrice = $this->variable_price;
+            } else {
+                $productPrice = $this->product->currentPrice->price;
+            }
+            $price = ($this->amount * $productPrice);
 
-
-            if($vatPercentage !== null && $vatPercentage !== 0){
-                $productPrice = $productPrice + ($productPrice*($vatPercentage / 100));
+            //indien invoer prijs excl. BTW is geweest, dan kortingsbedragen over excl. BTW bepalen en resultaat incl. BTW
+            if ($this->percentage_reduction) {
+                if ($price < 0) {
+                    $price = ($price * ((100 + $this->percentage_reduction) / 100));
+                } else {
+                    $price = ($price * ((100 - $this->percentage_reduction) / 100));
+                }
+            }
+            if ($this->amount_reduction) {
+                $price -= $this->amount_reduction;
+            }
+            if ($vat_percentage) {
+                $priceInclVat = ($price + ($price * ($vat_percentage / 100)));
             }
         }
-        else{
-            $productPrice = $this->product->price_incl_vat;
-        }
 
-        $price += ($this->amount
-            * $productPrice);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
-            }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
-            }
-        }
-
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
-        }
-
-        return $price;
+        return $priceInclVat;
 
     }
 
@@ -84,17 +98,14 @@ class OrderProduct extends Model
             $productPrice = $this->product->current_price->price;
         }
 
-        $price += ($this->amount
-            * $productPrice);
+        $price += ($this->amount * $productPrice);
 
         if ($this->percentage_reduction) {
             if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
+                $price = ($price * ((100 + $this->percentage_reduction) / 100));
             }
             else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
+                $price = ($price * ((100 - $this->percentage_reduction) / 100));
             }
         }
 

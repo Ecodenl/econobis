@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import AddressAPI from '../../../../api/contact/AddressAPI';
-import {newAddress, unsetPrimaryAddresses} from '../../../../actions/contact/ContactDetailsActions';
+import { newAddress, unsetPrimaryAddresses } from '../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from "../../../../components/form/InputSelect";
+import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import validator from "validator";
-import InputToggle from "../../../../components/form/InputToggle";
+import validator from 'validator';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ContactDetailsFormAddressNew extends Component {
     constructor(props) {
@@ -32,8 +32,8 @@ class ContactDetailsFormAddressNew extends Component {
                 postalCode: false,
                 number: false,
             },
-        }
-    };
+        };
+    }
 
     handleInputPicoChange = event => {
         const target = event.target;
@@ -44,23 +44,28 @@ class ContactDetailsFormAddressNew extends Component {
             ...this.state,
             address: {
                 ...this.state.address,
-                [name]: value
+                [name]: value,
             },
         });
         setTimeout(() => {
-            const {address} = this.state;
-            if (!validator.isEmpty(address.postalCode) && validator.isPostalCode(address.postalCode, 'NL') && !validator.isEmpty(address.number) && validator.isEmpty(address.city) && validator.isEmpty(address.street)) {
-                AddressAPI.getPicoAddress(address.postalCode, address.number).then((payload) => {
+            const { address } = this.state;
+            if (
+                !validator.isEmpty(address.postalCode) &&
+                validator.isPostalCode(address.postalCode, 'NL') &&
+                !validator.isEmpty(address.number) &&
+                validator.isEmpty(address.city) &&
+                validator.isEmpty(address.street)
+            ) {
+                AddressAPI.getPicoAddress(address.postalCode, address.number).then(payload => {
                     this.setState({
                         ...this.state,
                         address: {
                             ...this.state.address,
                             street: payload.street,
-                            city: payload.city
+                            city: payload.city,
                         },
                     });
                 });
-
             }
         }, 100);
     };
@@ -74,7 +79,7 @@ class ContactDetailsFormAddressNew extends Component {
             ...this.state,
             address: {
                 ...this.state.address,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -90,27 +95,27 @@ class ContactDetailsFormAddressNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(!validator.isPostalCode(address.postalCode, 'any')){
+        if (!validator.isPostalCode(address.postalCode, 'any')) {
             errors.postalCode = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(address.number)){
+        if (validator.isEmpty(address.number)) {
             errors.number = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(address.typeId)){
+        if (validator.isEmpty(address.typeId)) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            AddressAPI.newAddress(address).then((payload) => {
-                if(address.primary){
+            AddressAPI.newAddress(address).then(payload => {
+                if (address.primary) {
                     this.props.unsetPrimaryAddresses();
                 }
                 this.props.newAddress(payload);
@@ -119,7 +124,7 @@ class ContactDetailsFormAddressNew extends Component {
     };
 
     render() {
-        const {street, number, addition, postalCode, city, typeId, primary, countryId } = this.state.address;
+        const { street, number, addition, postalCode, city, typeId, primary, countryId } = this.state.address;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -127,34 +132,38 @@ class ContactDetailsFormAddressNew extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Postcode"}
-                                size={"col-sm-4"}
-                                name={"postalCode"}
+                                label={'Postcode'}
+                                size={'col-sm-4'}
+                                name={'postalCode'}
                                 value={postalCode}
-                                onChangeAction={ this.handleInputPicoChange }
-                                required={"required"}
+                                onChangeAction={this.handleInputPicoChange}
+                                required={'required'}
                                 error={this.state.errors.postalCode}
                             />
                             <div className="form-group col-sm-6">
-                                <label htmlFor={ 'number' } className={`col-sm-6 required`}>{ "Nummer" }</label>
+                                <label htmlFor={'number'} className={`col-sm-6 required`}>
+                                    {'Nummer'}
+                                </label>
                                 <div className={`col-sm-4`}>
                                     <input
-                                        type={ 'number' }
-                                        className={`form-control input-sm ` + (this.state.errors.number ? 'has-error' : '')}
-                                        id={ "number" }
-                                        name= { "number" }
-                                        value={ number }
-                                        onChange={ this.handleInputPicoChange }
+                                        type={'number'}
+                                        className={
+                                            `form-control input-sm ` + (this.state.errors.number ? 'has-error' : '')
+                                        }
+                                        id={'number'}
+                                        name={'number'}
+                                        value={number}
+                                        onChange={this.handleInputPicoChange}
                                     />
                                 </div>
                                 <div className={`col-sm-2`}>
                                     <input
-                                        type={ 'text' }
+                                        type={'text'}
                                         className={`form-control input-sm`}
-                                        id={ "addition" }
-                                        name= { "addition" }
-                                        value={ addition }
-                                        onChange={ this.handleInputChange }
+                                        id={'addition'}
+                                        name={'addition'}
+                                        value={addition}
+                                        onChange={this.handleInputChange}
                                     />
                                 </div>
                             </div>
@@ -162,18 +171,18 @@ class ContactDetailsFormAddressNew extends Component {
 
                         <div className="row">
                             <InputText
-                                label={"Adres"}
-                                id={"adres"}
-                                size={"col-sm-6"}
-                                name={"street"}
+                                label={'Adres'}
+                                id={'adres'}
+                                size={'col-sm-6'}
+                                name={'street'}
                                 value={street}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={"Plaats"}
-                                id={"plaats"}
-                                size={"col-sm-6"}
-                                name={"city"}
+                                label={'Plaats'}
+                                id={'plaats'}
+                                size={'col-sm-6'}
+                                name={'city'}
                                 value={city}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -181,19 +190,19 @@ class ContactDetailsFormAddressNew extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={"Type"}
+                                label={'Type'}
                                 id="type"
-                                size={"col-sm-6"}
-                                name={"typeId"}
+                                size={'col-sm-6'}
+                                name={'typeId'}
                                 options={this.props.addressTypes}
                                 value={typeId}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.typeId}
                             />
                             <InputToggle
-                                label={"Primair adres"}
-                                name={"primary"}
+                                label={'Primair adres'}
+                                name={'primary'}
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -201,10 +210,10 @@ class ContactDetailsFormAddressNew extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={"Land"}
+                                label={'Land'}
                                 id="countryId"
-                                size={"col-sm-6"}
-                                name={"countryId"}
+                                size={'col-sm-6'}
+                                name={'countryId'}
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
@@ -212,17 +221,26 @@ class ContactDetailsFormAddressNew extends Component {
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         addressTypes: state.systemData.addressTypes,
         countries: state.systemData.countries,
@@ -231,7 +249,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    newAddress: (id) => {
+    newAddress: id => {
         dispatch(newAddress(id));
     },
     unsetPrimaryAddresses: () => {
@@ -239,4 +257,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormAddressNew);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactDetailsFormAddressNew);

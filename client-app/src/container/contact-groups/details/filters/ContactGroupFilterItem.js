@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactGroupFilterView from './ContactGroupFilterView';
 
@@ -13,7 +13,7 @@ class ContactGroupFilterItem extends Component {
                 ...props.filter,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -39,6 +39,6 @@ class ContactGroupFilterItem extends Component {
             </div>
         );
     }
-};
+}
 
 export default ContactGroupFilterItem;

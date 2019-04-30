@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
-import DocumentHarmonica from "./harmonica/DocumentHarmonica";
+import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 class MeasureDetailsHarmonica extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -16,7 +16,7 @@ class MeasureDetailsHarmonica extends Component {
 
         this.toggleShowList = this.toggleShowList.bind(this);
         this.newDocument = this.newDocument.bind(this);
-    };
+    }
 
     toggleShowList(name) {
         this.setState({
@@ -24,15 +24,15 @@ class MeasureDetailsHarmonica extends Component {
             toggleShowList: {
                 ...this.state.toggleShowList,
                 [name]: !this.state.toggleShowList[name],
-            }
+            },
         });
-    };
+    }
 
     newDocument(type) {
         hashHistory.push(`/document/nieuw/${type}/maatregel/${this.props.measureDetails.id}`);
-    };
+    }
 
-    render(){
+    render() {
         return (
             <div className="col-md-12 margin-10-top">
                 <DocumentHarmonica
@@ -42,11 +42,11 @@ class MeasureDetailsHarmonica extends Component {
                     documentCount={this.props.measureDetails.documentCount}
                 />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         measureDetails: state.measureDetails,
     };

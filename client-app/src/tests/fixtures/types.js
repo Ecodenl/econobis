@@ -1,10 +1,10 @@
 export default [
     {
         id: 1,
-        name: 'Persoon'
+        name: 'Persoon',
     },
     {
         id: 2,
-        name: 'Organisatie'
-    }
+        name: 'Organisatie',
+    },
 ];

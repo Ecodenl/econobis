@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../../components/dataTable/DataTableHeadTitleAndSort';
 import { setOrdersSortsFilter } from '../../../../actions/order/OrdersSortsActions';
-import DataTableHeadTitle from "../../../../components/dataTable/DataTableHeadTitle";
+import DataTableHeadTitle from '../../../../components/dataTable/DataTableHeadTitle';
 
-const OrdersListHead = (props) => {
+const OrdersListHead = props => {
     const setSorts = (field, order) => {
         props.setOrdersSortsFilter(field, order);
 
@@ -16,15 +16,23 @@ const OrdersListHead = (props) => {
 
     return (
         <tr className="thead-title">
-            {props.showSelectOrdersToCreate &&
-            <th width="5%"></th>
-            }
+            {props.showSelectOrdersToCreate && <th width="5%" />}
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'dateNextInvoice'} title={'Volgende factuur datum'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'dateNextInvoice'}
+                title={'Volgende factuur datum'}
+                width={'10%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort sortColumn={'subject'} title={'Onderwerp'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={'Bedrag incl. BTW'} width={'15%'}/>
-            <DataTableHeadTitleAndSort sortColumn={'paymentTypeId'} title={'Betaalwijze'} width={'12%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={'Bedrag incl. BTW'} width={'15%'} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'paymentTypeId'}
+                title={'Betaalwijze'}
+                width={'12%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'12%'} setSorts={setSorts} />
             <th width="9%" />
         </tr>
@@ -37,4 +45,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(OrdersListHead);
+export default connect(
+    null,
+    mapDispatchToProps
+)(OrdersListHead);

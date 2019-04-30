@@ -141,17 +141,20 @@ class MailboxNewForm extends Component {
 
         // If no errors send form
         !hasErrors &&
-            this.setState(currentState => ({ loading: !currentState.loading }), () => {
-                MailboxAPI.newMailbox(mailbox)
-                    .then(payload => {
-                        this.props.fetchSystemData();
-                        hashHistory.push(`/mailbox/${payload.data.data.id}`);
-                    })
-                    .catch(function(error) {
-                        console.log(error);
-                        alert('Er is iets misgegaan bij het opslaan. Herlaad de pagina.')
-                    });
-            });
+            this.setState(
+                currentState => ({ loading: !currentState.loading }),
+                () => {
+                    MailboxAPI.newMailbox(mailbox)
+                        .then(payload => {
+                            this.props.fetchSystemData();
+                            hashHistory.push(`/mailbox/${payload.data.data.id}`);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                            alert('Er is iets misgegaan bij het opslaan. Herlaad de pagina.');
+                        });
+                }
+            );
     };
 
     render() {
@@ -355,5 +358,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(MailboxNewForm);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MailboxNewForm);

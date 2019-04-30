@@ -1,8 +1,8 @@
-export const fetchProductDetails = (id) => {
+export const fetchProductDetails = id => {
     return {
         type: 'FETCH_PRODUCT_DETAILS',
         id,
-    }
+    };
 };
 
 export const updateProduct = (product, switchToView) => {
@@ -10,10 +10,10 @@ export const updateProduct = (product, switchToView) => {
         type: 'UPDATE_PRODUCT',
         product,
         switchToView,
-    }
+    };
 };
 
-export const addProductPriceHistory = (priceHistory) => {
+export const addProductPriceHistory = priceHistory => {
     return {
         type: 'ADD_PRODUCT_PRICE_HISTORY',
         priceHistory,

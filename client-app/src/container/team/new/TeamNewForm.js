@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
+import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../components/panel/Panel';
 import TeamDetailsAPI from '../../../api/team/TeamDetailsAPI';
-import {fetchSystemData} from "../../../actions/general/SystemDataActions";
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 
 class TeamNewForm extends Component {
     constructor(props) {
@@ -18,13 +18,12 @@ class TeamNewForm extends Component {
             team: {
                 id: '',
                 name: '',
-
             },
             errors: {
                 name: false,
             },
         };
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -35,7 +34,7 @@ class TeamNewForm extends Component {
             ...this.state,
             team: {
                 ...this.state.team,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -43,27 +42,29 @@ class TeamNewForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { team }  = this.state;
+        const { team } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(team.name)){
+        if (validator.isEmpty(team.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            TeamDetailsAPI.newTeam(team).then((payload) => {
-                this.props.fetchSystemData();
-                hashHistory.push(`/team/${payload.data.data.id}`);
-            }).catch(function (error) {
-                console.log(error)
-            });
+            TeamDetailsAPI.newTeam(team)
+                .then(payload => {
+                    this.props.fetchSystemData();
+                    hashHistory.push(`/team/${payload.data.data.id}`);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
     };
 
     render() {
@@ -76,10 +77,10 @@ class TeamNewForm extends Component {
                         <div className="row">
                             <InputText
                                 label="Naam"
-                                name={"name"}
+                                name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.name}
                             />
                         </div>
@@ -87,14 +88,19 @@ class TeamNewForm extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
 const mapDispatchToProps = dispatch => ({
     fetchSystemData: () => {
@@ -102,4 +108,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(TeamNewForm);
+export default connect(
+    null,
+    mapDispatchToProps
+)(TeamNewForm);

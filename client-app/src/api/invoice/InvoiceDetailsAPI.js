@@ -3,45 +3,47 @@ import axios from 'axios';
 const URL_INVOICE = `${URL_API}/api/invoice`;
 
 export default {
-    fetchInvoiceDetails: function (id) {
+    fetchInvoiceDetails: function(id) {
         const requestUrl = `${URL_INVOICE}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
-    },
-
-    newInvoice: (invoice) => {
-        const requestUrl = `${URL_INVOICE}`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios.post(requestUrl, invoice)
-            .then(function (response) {
-                return response.data;
-            })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    updateInvoice: (invoice) => {
+    newInvoice: invoice => {
+        const requestUrl = `${URL_INVOICE}`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios
+            .post(requestUrl, invoice)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
+    updateInvoice: invoice => {
         const requestUrl = `${URL_INVOICE}/${invoice.id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, invoice)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, invoice)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
@@ -51,75 +53,78 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        document.body.style.cursor='wait';
+        document.body.style.cursor = 'wait';
 
-        let response = axios.post(requestUrl, {'ids': invoiceIds, 'datePaid': datePaid});
+        let response = axios.post(requestUrl, { ids: invoiceIds, datePaid: datePaid });
 
-        document.body.style.cursor='default';
+        document.body.style.cursor = 'default';
 
         return response;
     },
 
-    sendNotification: (invoiceId) => {
+    sendNotification: invoiceId => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
+        return axios
+            .post(requestUrl)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    sendNotifications: (invoiceIds) => {
+    sendNotifications: invoiceIds => {
         const requestUrl = `${URL_INVOICE}/send-notifications`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {ids: invoiceIds})
-            .then(function (response) {
+        return axios
+            .post(requestUrl, { ids: invoiceIds })
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    sendNotificationsPost: (invoiceIds) => {
+    sendNotificationsPost: invoiceIds => {
         const requestUrl = `${URL_INVOICE}/send-notifications-post`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        document.body.style.cursor='wait';
-        let response = axios.post(requestUrl, {'ids': invoiceIds} , {responseType: 'blob'});
-        document.body.style.cursor='default';
+        document.body.style.cursor = 'wait';
+        let response = axios.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
+        document.body.style.cursor = 'default';
         return response;
     },
 
-    sendNotificationPost: (invoiceId) => {
+    sendNotificationPost: invoiceId => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification-post`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        document.body.style.cursor='wait';
-        let response = axios.post(requestUrl, {}, {responseType: 'blob'});
-        document.body.style.cursor='default';
+        document.body.style.cursor = 'wait';
+        let response = axios.post(requestUrl, {}, { responseType: 'blob' });
+        document.body.style.cursor = 'default';
         return response;
     },
 
-    setIrrecoverable: (invoiceId) => {
+    setIrrecoverable: invoiceId => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/irrecoverable`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
+        return axios
+            .post(requestUrl)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
@@ -129,11 +134,12 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {'dateCollection': dateCollection})
-            .then(function (response) {
+        return axios
+            .post(requestUrl, { dateCollection: dateCollection })
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
@@ -143,7 +149,7 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {'dateCollection': dateCollection}, {responseType: 'blob'});
+        return axios.post(requestUrl, { dateCollection: dateCollection }, { responseType: 'blob' });
     },
 
     sendAll: (invoiceIds, dateCollection) => {
@@ -151,11 +157,15 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        document.body.style.cursor='wait';
+        document.body.style.cursor = 'wait';
 
-        let response = axios.post(requestUrl, {'ids': invoiceIds, 'dateCollection': dateCollection} , {responseType: 'blob'});
+        let response = axios.post(
+            requestUrl,
+            { ids: invoiceIds, dateCollection: dateCollection },
+            { responseType: 'blob' }
+        );
 
-        document.body.style.cursor='default';
+        document.body.style.cursor = 'default';
 
         return response;
     },
@@ -165,102 +175,111 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        document.body.style.cursor='wait';
-        let response = axios.post(requestUrl, {'ids': invoiceIds, 'dateCollection': dateCollection} , {responseType: 'blob'});
-        document.body.style.cursor='default';
+        document.body.style.cursor = 'wait';
+        let response = axios.post(
+            requestUrl,
+            { ids: invoiceIds, dateCollection: dateCollection },
+            { responseType: 'blob' }
+        );
+        document.body.style.cursor = 'default';
         return response;
     },
 
-    createSepaForInvoiceIds: (invoiceIds) => {
+    createSepaForInvoiceIds: invoiceIds => {
         const requestUrl = `${URL_INVOICE}/create-sepa-for-invoice-ids`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        document.body.style.cursor='wait';
-        let response = axios.post(requestUrl, {'ids': invoiceIds}, {responseType: 'blob'});
-        document.body.style.cursor='default';
+        document.body.style.cursor = 'wait';
+        let response = axios.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
+        document.body.style.cursor = 'default';
         return response;
     },
 
-    newPayment: (payment) => {
+    newPayment: payment => {
         const requestUrl = `${URL_INVOICE}/${payment.invoiceId}/payment/new`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, payment)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, payment)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    updatePayment: (payment) => {
+    updatePayment: payment => {
         const requestUrl = `${URL_INVOICE}/${payment.id}/payment/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, payment)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, payment)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    deletePayment: (paymentId) => {
+    deletePayment: paymentId => {
         const requestUrl = `${URL_INVOICE}/payment/${paymentId}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
+        return axios
+            .post(requestUrl)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    deleteInvoiceProduct: (invoiceProductId) => {
+    deleteInvoiceProduct: invoiceProductId => {
         const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProductId}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
+        return axios
+            .post(requestUrl)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    download: (id) => {
+    download: id => {
         const requestUrl = `${URL_INVOICE}/${id}/download`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl, {responseType: 'blob'});
+        return axios.get(requestUrl, { responseType: 'blob' });
     },
 
-    getEmailPreview: (id) => {
+    getEmailPreview: id => {
         const requestUrl = `${URL_INVOICE}/${id}/email-preview`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    newInvoiceProduct: (invoiceProduct) => {
+    newInvoiceProduct: invoiceProduct => {
         const requestUrl = `${URL_INVOICE}/invoice-product`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -273,10 +292,10 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, {'invoiceProduct': invoiceProduct, 'product': product});
+        return axios.post(requestUrl, { invoiceProduct: invoiceProduct, product: product });
     },
 
-    updateInvoiceProduct: (invoiceProduct) => {
+    updateInvoiceProduct: invoiceProduct => {
         const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProduct.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -284,12 +303,11 @@ export default {
         return axios.post(requestUrl, invoiceProduct);
     },
 
-    deleteInvoice: (id) => {
+    deleteInvoice: id => {
         const requestUrl = `${URL_INVOICE}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         return axios.post(requestUrl);
     },
-
 };

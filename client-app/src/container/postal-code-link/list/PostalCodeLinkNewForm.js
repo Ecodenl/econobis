@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from "../../../components/panel/PanelBody";
-import Panel from "../../../components/panel/Panel";
+import PanelBody from '../../../components/panel/PanelBody';
+import Panel from '../../../components/panel/Panel';
 import PostalCodeLinkAPI from '../../../api/postal-code-link/PostalCodeLinkAPI';
 
 class PostalCodeLinkNewForm extends Component {
@@ -16,14 +16,13 @@ class PostalCodeLinkNewForm extends Component {
                 id: '',
                 postalCodeMain: '',
                 postalCodeLink: '',
-
             },
             errors: {
                 postalCodeMain: false,
                 postalCodeLink: false,
             },
         };
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -34,7 +33,7 @@ class PostalCodeLinkNewForm extends Component {
             ...this.state,
             postalCodeLink: {
                 ...this.state.postalCodeLink,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -42,32 +41,42 @@ class PostalCodeLinkNewForm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { postalCodeLink }  = this.state;
+        const { postalCodeLink } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(postalCodeLink.postalCodeMain) || postalCodeLink.postalCodeMain < 999 || postalCodeLink.postalCodeMain > 9999){
+        if (
+            validator.isEmpty(postalCodeLink.postalCodeMain) ||
+            postalCodeLink.postalCodeMain < 999 ||
+            postalCodeLink.postalCodeMain > 9999
+        ) {
             errors.postalCodeMain = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(postalCodeLink.postalCodeLink) || postalCodeLink.postalCodeLink < 999 || postalCodeLink.postalCodeLink > 9999){
+        if (
+            validator.isEmpty(postalCodeLink.postalCodeLink) ||
+            postalCodeLink.postalCodeLink < 999 ||
+            postalCodeLink.postalCodeLink > 9999
+        ) {
             errors.postalCodeLink = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            PostalCodeLinkAPI.newPostalCodeLink(postalCodeLink).then((payload) => {
-                this.props.toggleShowNew();
-                this.props.refreshPostalCodeLinksData();
-            }).catch(function (error) {
-                console.log(error)
-            });
+            PostalCodeLinkAPI.newPostalCodeLink(postalCodeLink)
+                .then(payload => {
+                    this.props.toggleShowNew();
+                    this.props.refreshPostalCodeLinksData();
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
     };
 
     render() {
@@ -83,10 +92,10 @@ class PostalCodeLinkNewForm extends Component {
                                 type="number"
                                 min={'999'}
                                 max={'9999'}
-                                name={"postalCodeMain"}
+                                name={'postalCodeMain'}
                                 value={postalCodeMain}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.postalCodeMain}
                             />
                             <InputText
@@ -94,10 +103,10 @@ class PostalCodeLinkNewForm extends Component {
                                 type="number"
                                 min={'999'}
                                 max={'9999'}
-                                name={"postalCodeLink"}
+                                name={'postalCodeLink'}
                                 value={postalCodeLink}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.postalCodeLink}
                             />
                         </div>
@@ -105,15 +114,23 @@ class PostalCodeLinkNewForm extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
-
+    }
+}
 
 export default PostalCodeLinkNewForm;

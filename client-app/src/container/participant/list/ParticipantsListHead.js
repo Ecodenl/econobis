@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
 import { setParticipantsProductionProjectSortsFilter } from '../../../actions/participants-production-project/ParticipantsProductionProjectSortsActions';
-import DataTableHeadTitle from "../../../components/dataTable/DataTableHeadTitle";
+import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
-const ParticipantsListHead = (props) => {
+const ParticipantsListHead = props => {
     const setSorts = (field, order) => {
         props.setParticipantsProductionProjectSortsFilter(field, order);
 
@@ -23,10 +23,25 @@ const ParticipantsListHead = (props) => {
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Plaats'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitle title={'Productie project'} width={'8%'} />
-            <DataTableHeadTitle title={'Huidig aantal participaties'} width={'9%'}/>
-            <DataTableHeadTitleAndSort sortColumn={'participationStatusId'} title={'Participatie status'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'dateRegister'} title={'Datum inschrijving participatie'} width={'9%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'energySupplier'} title={'Energie leverancier'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={'Huidig aantal participaties'} width={'9%'} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'participationStatusId'}
+                title={'Participatie status'}
+                width={'8%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
+                sortColumn={'dateRegister'}
+                title={'Datum inschrijving participatie'}
+                width={'9%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
+                sortColumn={'energySupplier'}
+                title={'Energie leverancier'}
+                width={'9%'}
+                setSorts={setSorts}
+            />
             <th width="5%" />
         </tr>
     );
@@ -38,4 +53,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ParticipantsListHead);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ParticipantsListHead);

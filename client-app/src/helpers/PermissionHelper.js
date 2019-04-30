@@ -17,7 +17,7 @@ export default function(ComposedComponent, permission) {
         }
 
         render() {
-            return <ComposedComponent {...this.props} />
+            return <ComposedComponent {...this.props} />;
         }
     }
 

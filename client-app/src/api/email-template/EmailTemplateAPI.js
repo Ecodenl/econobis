@@ -11,56 +11,56 @@ export default {
         return axios.get(requestUrl);
     },
 
-    fetchEmailTemplate: (id) => {
+    fetchEmailTemplate: id => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    fetchEmailTemplateWithUser: (id) => {
+    fetchEmailTemplateWithUser: id => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/with-user/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    storeEmailTemplate: (data) => {
+    storeEmailTemplate: data => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    updateEmailTemplate: (data) => {
+    updateEmailTemplate: data => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${data.id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.post(requestUrl, data)
+        return axios
+            .post(requestUrl, data)
             .then(response => response.data.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
     fetchEmailTemplatesPeek: () => {
@@ -68,22 +68,21 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    deleteEmailTemplate: (id) => {
+    deleteEmailTemplate: id => {
         const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
+        return axios.post(requestUrl);
     },
-
 };
-

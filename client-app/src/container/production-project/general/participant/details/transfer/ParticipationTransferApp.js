@@ -8,8 +8,8 @@ import ParticipationTransferToolbar from './ParticipationTransferToolbar';
 import ParticipationTransfer from './ParticipationTransfer';
 
 import ParticipantProductionProjectDetailsAPI from '../../../../../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
-import Panel from "../../../../../../components/panel/Panel";
-import PanelBody from "../../../../../../components/panel/PanelBody";
+import Panel from '../../../../../../components/panel/Panel';
+import PanelBody from '../../../../../../components/panel/PanelBody';
 
 class ParticipationTransferApp extends Component {
     constructor(props) {
@@ -40,11 +40,13 @@ class ParticipationTransferApp extends Component {
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
-    };
+    }
 
     componentWillMount() {
-        ParticipantProductionProjectDetailsAPI.getContactsMembershipPeek(this.state.participationTransfer.participationId).then((payload) => {
-            payload.unshift({id: '0', fullName: "Teruggave energieleverancier"});
+        ParticipantProductionProjectDetailsAPI.getContactsMembershipPeek(
+            this.state.participationTransfer.participationId
+        ).then(payload => {
+            payload.unshift({ id: '0', fullName: 'Teruggave energieleverancier' });
             this.setState({
                 contacts: payload,
                 peekLoading: {
@@ -54,13 +56,15 @@ class ParticipationTransferApp extends Component {
             });
         });
 
-        ParticipantProductionProjectDetailsAPI.fetchParticipantProductionProject(this.state.participationTransfer.participationId).then(payload => {
+        ParticipantProductionProjectDetailsAPI.fetchParticipantProductionProject(
+            this.state.participationTransfer.participationId
+        ).then(payload => {
             this.setState({
                 participation: payload,
                 participationTransfer: {
                     ...this.state.participationTransfer,
                     productionProjectId: payload.productionProject.id,
-                    participationWorth: payload.productionProject.participationWorth
+                    participationWorth: payload.productionProject.participationWorth,
                 },
             });
         });
@@ -75,7 +79,7 @@ class ParticipationTransferApp extends Component {
             ...this.state,
             participationTransfer: {
                 ...this.state.participationTransfer,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -85,70 +89,70 @@ class ParticipationTransferApp extends Component {
             ...this.state,
             participationTransfer: {
                 ...this.state.participationTransfer,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({
             ...this.state,
             participationTransfer: {
                 ...this.state.participationTransfer,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
 
-        const {participationTransfer} = this.state;
+        const { participationTransfer } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(participationTransfer.transferToContactId + '')){
+        if (validator.isEmpty(participationTransfer.transferToContactId + '')) {
             errors.transferToContactId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(participationTransfer.participationsAmount + '')){
-            errors.participationsAmount = true;
-            hasErrors = true;
-        };
-
-        if(participationTransfer.participationsAmount > this.state.participation.participationsCurrent){
+        if (validator.isEmpty(participationTransfer.participationsAmount + '')) {
             errors.participationsAmount = true;
             hasErrors = true;
         }
 
-        if(participationTransfer.participationsAmount <= 0){
+        if (participationTransfer.participationsAmount > this.state.participation.participationsCurrent) {
             errors.participationsAmount = true;
             hasErrors = true;
         }
 
-        if(validator.isEmpty(participationTransfer.participationWorth + '')){
+        if (participationTransfer.participationsAmount <= 0) {
+            errors.participationsAmount = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(participationTransfer.participationWorth + '')) {
             errors.participationWorth = true;
             hasErrors = true;
-        };
+        }
 
-        if(participationTransfer.participationWorth < 0){
+        if (participationTransfer.participationWorth < 0) {
             errors.participationWorth = true;
             hasErrors = true;
-        };
+        }
 
-        if(participationTransfer.didSign === false){
+        if (participationTransfer.didSign === false) {
             errors.didSign = true;
             hasErrors = true;
         }
-        
+
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ParticipantProductionProjectDetailsAPI.transferParticipation(participationTransfer).then(payload => {
-            hashHistory.push(`/productie-project/participant/${participationTransfer.participationId}`);
-        });
+            ParticipantProductionProjectDetailsAPI.transferParticipation(participationTransfer).then(payload => {
+                hashHistory.push(`/productie-project/participant/${participationTransfer.participationId}`);
+            });
     };
 
     render() {
@@ -179,10 +183,10 @@ class ParticipationTransferApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default ParticipationTransferApp;

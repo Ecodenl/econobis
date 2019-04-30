@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -21,10 +21,10 @@ class ContactDetailFormNoteItem extends Component {
                 id: props.note.id,
                 note: props.note.note,
                 createdAt: props.note.createdAt ? moment(props.note.createdAt.date).format('DD-MM-Y') : '',
-                createdBy: props.note.createdBy
+                createdBy: props.note.createdBy,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -41,11 +41,11 @@ class ContactDetailFormNoteItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
@@ -55,7 +55,7 @@ class ContactDetailFormNoteItem extends Component {
                 id: this.props.note.id,
                 note: this.props.note.note,
                 createdAt: this.props.note.createdAt ? moment(this.props.note.createdAt.date).format('DD-MM-Y') : '',
-                createdBy: this.props.note.createdBy
+                createdBy: this.props.note.createdBy,
             },
         });
 
@@ -63,7 +63,7 @@ class ContactDetailFormNoteItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     handleInputChange = event => {
@@ -71,7 +71,7 @@ class ContactDetailFormNoteItem extends Component {
             ...this.state,
             note: {
                 ...this.state.note,
-                note: event.target.value
+                note: event.target.value,
             },
         });
     };
@@ -81,7 +81,7 @@ class ContactDetailFormNoteItem extends Component {
 
         const { note } = this.state;
 
-        ContactNoteAPI.updateNote(note).then((payload) => {
+        ContactNoteAPI.updateNote(note).then(payload => {
             this.props.dispatch(contactDetailsActions.updateNote(payload));
             this.closeEdit();
         });
@@ -99,8 +99,7 @@ class ContactDetailFormNoteItem extends Component {
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                 />
-                {
-                    this.state.showEdit &&
+                {this.state.showEdit && (
                     <ContactDetailsFormNoteEdit
                         note={this.state.note}
                         handleInputChange={this.handleInputChange}
@@ -108,17 +107,13 @@ class ContactDetailFormNoteItem extends Component {
                         errorType={this.state.errorType}
                         cancelEdit={this.cancelEdit}
                     />
-                }
-                {
-                    this.state.showDelete &&
-                    <ContactDetailsFormNoteDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        {...this.props.note}
-                    />
-                }
+                )}
+                {this.state.showDelete && (
+                    <ContactDetailsFormNoteDelete closeDeleteItemModal={this.toggleDelete} {...this.props.note} />
+                )}
             </div>
         );
     }
-};
+}
 
 export default connect()(ContactDetailFormNoteItem);

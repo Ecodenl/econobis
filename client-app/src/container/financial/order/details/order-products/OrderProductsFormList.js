@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import OrderProductsFormItem from "./OrderProductsFormItem";
+import OrderProductsFormItem from './OrderProductsFormItem';
 
 const OrderProductsFormList = props => {
     return (
@@ -15,24 +15,20 @@ const OrderProductsFormList = props => {
                 <div className="col-sm-1">Prijs incl. BTW/jaar</div>
                 <div className="col-sm-1">Begin datum</div>
                 <div className="col-sm-1">Eind datum</div>
-                <div className="col-sm-1"></div>
+                <div className="col-sm-1" />
             </div>
-            {
-                props.orderProducts.length > 0 ?
-                    props.orderProducts.map(orderProduct => {
-                        return <OrderProductsFormItem
-                            key={orderProduct.id}
-                            orderProduct={orderProduct}
-                        />;
-                    })
-                    :
-                    <div>Geen orderregels bekend.</div>
-            }
+            {props.orderProducts.length > 0 ? (
+                props.orderProducts.map(orderProduct => {
+                    return <OrderProductsFormItem key={orderProduct.id} orderProduct={orderProduct} />;
+                })
+            ) : (
+                <div>Geen orderregels bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         orderProducts: state.orderDetails.orderProducts,
     };

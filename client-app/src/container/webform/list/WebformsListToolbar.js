@@ -13,26 +13,30 @@ const WebformsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={"glyphicon-refresh"} onClickAction={props.refreshWebformsData} />
-                    {
-                        props.permissions.manageWebform &&
-                        <ButtonIcon iconName={"glyphicon-plus"} onClickAction={newWebform}/>
-                    }
+                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.refreshWebformsData} />
+                    {props.permissions.manageWebform && (
+                        <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newWebform} />
+                    )}
                 </div>
             </div>
-            <div className="col-md-4"><h3 className="text-center table-title">Webformulieren</h3></div>
             <div className="col-md-4">
-                <div className="pull-right">Resultaten: { props.webforms ? props.webforms.length : 0 }</div>
+                <h3 className="text-center table-title">Webformulieren</h3>
+            </div>
+            <div className="col-md-4">
+                <div className="pull-right">Resultaten: {props.webforms ? props.webforms.length : 0}</div>
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        webforms: state.webforms
+        webforms: state.webforms,
     };
 };
 
-export default connect(mapStateToProps, null)(WebformsListToolbar);
+export default connect(
+    mapStateToProps,
+    null
+)(WebformsListToolbar);

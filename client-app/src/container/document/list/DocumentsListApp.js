@@ -4,42 +4,41 @@ import { connect } from 'react-redux';
 import { fetchDocuments, clearDocuments } from '../../../actions/document/DocumentsActions';
 import DocumentsListToolbar from './DocumentsListToolbar';
 import DocumentsList from './DocumentsList';
-import filterHelper from "../../../helpers/FilterHelper";
-import {setDocumentsPagination} from "../../../actions/document/DocumentsPaginationActions";
-import {clearFilterDocuments} from "../../../actions/document/DocumentFiltersActions";
-import {bindActionCreators} from "redux";
-
+import filterHelper from '../../../helpers/FilterHelper';
+import { setDocumentsPagination } from '../../../actions/document/DocumentsPaginationActions';
+import { clearFilterDocuments } from '../../../actions/document/DocumentFiltersActions';
+import { bindActionCreators } from 'redux';
 
 class DocumentsListApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.fetchDocumentsData = this.fetchDocumentsData.bind(this);
         this.resetDocumentsFilters = this.resetDocumentsFilters.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
-    };
+    }
 
     componentDidMount() {
         this.fetchDocumentsData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearDocuments();
-    };
+    }
 
     resetDocumentsFilters() {
         this.props.clearFilterDocuments();
 
         this.fetchDocumentsData();
-    };
+    }
 
     onSubmitFilter() {
         this.props.clearDocuments();
 
-        this.props.setDocumentsPagination({page: 0, offset: 0});
+        this.props.setDocumentsPagination({ page: 0, offset: 0 });
 
         this.fetchDocumentsData();
-    };
+    }
 
     fetchDocumentsData() {
         setTimeout(() => {
@@ -48,17 +47,17 @@ class DocumentsListApp extends Component {
             const pagination = { limit: 20, offset: this.props.documentsPagination.offset };
 
             this.props.fetchDocuments(filters, sorts, pagination);
-        },100 );
-    };
+        }, 100);
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setDocumentsPagination({page, offset});
+        this.props.setDocumentsPagination({ page, offset });
 
         this.fetchDocumentsData();
-    };
+    }
 
     render() {
         return (
@@ -66,9 +65,7 @@ class DocumentsListApp extends Component {
                 <div className="panel panel-default col-md-12">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <DocumentsListToolbar
-                                resetDocumentsFilters={() => this.resetDocumentsFilters()}
-                            />
+                            <DocumentsListToolbar resetDocumentsFilters={() => this.resetDocumentsFilters()} />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <DocumentsList
@@ -77,17 +74,16 @@ class DocumentsListApp extends Component {
                                 documentsPagination={this.props.documentsPagination}
                                 onSubmitFilter={() => this.onSubmitFilter()}
                                 fetchDocumentsData={() => this.fetchDocumentsData()}
-
                             />
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documents: state.documents.list,
         documentsPagination: state.documents.pagination,
@@ -96,8 +92,14 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchDocuments, clearDocuments, clearFilterDocuments, setDocumentsPagination }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        { fetchDocuments, clearDocuments, clearFilterDocuments, setDocumentsPagination },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentsListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentsListApp);

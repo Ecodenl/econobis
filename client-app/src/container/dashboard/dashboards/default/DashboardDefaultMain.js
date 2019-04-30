@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
-import DashboardChartContacts from "./../../diagrams/DashboardChartContacts";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import DashboardChartContacts from './../../diagrams/DashboardChartContacts';
 
 class DashboardDefaultMain extends Component {
     render() {
@@ -11,12 +11,12 @@ class DashboardDefaultMain extends Component {
                 <div className="col-md-6">
                     <Panel>
                         <PanelBody>
-                            <DashboardChartContacts/>
+                            <DashboardChartContacts />
                         </PanelBody>
                     </Panel>
                 </div>
             </div>
-        )
+        );
     }
 }
 

@@ -4,8 +4,8 @@ const Dropzone = require('react-dropzone').default;
 
 import Modal from './Modal';
 
-const UploadModal = ({title, errors, multiple, maxSize, toggleModal, onDropAccepted, onDropRejected}) => {
-    const onDrop = (files) => {
+const UploadModal = ({ title, errors, multiple, maxSize, toggleModal, onDropAccepted, onDropRejected }) => {
+    const onDrop = files => {
         setTimeout(() => {
             onDropAccepted(files);
             toggleModal();
@@ -13,23 +13,29 @@ const UploadModal = ({title, errors, multiple, maxSize, toggleModal, onDropAccep
     };
 
     return (
-        <Modal
-            closeModal={toggleModal}
-            showConfirmAction={false}
-            title={title}
-        >
+        <Modal closeModal={toggleModal} showConfirmAction={false} title={title}>
             <div className="upload-file-content">
-                <Dropzone className="dropzone" onDropAccepted={onDrop.bind(this)} onDropRejected={onDropRejected.bind(this)} maxSize={maxSize} multiple={multiple}>
+                <Dropzone
+                    className="dropzone"
+                    onDropAccepted={onDrop.bind(this)}
+                    onDropRejected={onDropRejected.bind(this)}
+                    maxSize={maxSize}
+                    multiple={multiple}
+                >
                     <p>Klik hier voor het uploaden van een file</p>
-                    <p><strong>of</strong> sleep het bestand hierheen</p>
+                    <p>
+                        <strong>of</strong> sleep het bestand hierheen
+                    </p>
                 </Dropzone>
             </div>
-            {
-                errors.uploadFailed && <p className="has-error-message">Uploaden mislukt. Probeer nogmaals het bestand te uploaden.</p>
-            }
-            {
-                errors.uploadMaxSize && <p className="has-error-message">Uploaden mislukt. Het bestand mag maximaal {maxSize/600000} groot zijn.</p>
-            }
+            {errors.uploadFailed && (
+                <p className="has-error-message">Uploaden mislukt. Probeer nogmaals het bestand te uploaden.</p>
+            )}
+            {errors.uploadMaxSize && (
+                <p className="has-error-message">
+                    Uploaden mislukt. Het bestand mag maximaal {maxSize / 600000} groot zijn.
+                </p>
+            )}
         </Modal>
     );
 };
@@ -38,7 +44,7 @@ UploadModal.defaultProps = {
     errors: {},
     maxSize: 6000000,
     multiple: true,
-    title: 'Upload bestand'
+    title: 'Upload bestand',
 };
 
 UploadModal.propTypes = {

@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {fetchInvoiceDetails} from '../../../../../actions/invoice/InvoiceDetailsActions';
+import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
 import InvoiceProductsFormView from './InvoiceProductsFormView';
-import validator from "validator";
-import InvoiceDetailsAPI from "../../../../../api/invoice/InvoiceDetailsAPI";
-import {isEqual} from "lodash";
-import InvoiceProductsFormEdit from "./InvoiceProductsFormEdit";
-import InvoiceProductsFormDelete from "./InvoiceProductsFormDelete";
+import validator from 'validator';
+import InvoiceDetailsAPI from '../../../../../api/invoice/InvoiceDetailsAPI';
+import { isEqual } from 'lodash';
+import InvoiceProductsFormEdit from './InvoiceProductsFormEdit';
+import InvoiceProductsFormDelete from './InvoiceProductsFormDelete';
 
 class InvoiceProductsFormItem extends Component {
     constructor(props) {
@@ -21,7 +21,9 @@ class InvoiceProductsFormItem extends Component {
             totalPrice: props.invoiceProduct.priceInclVatAndReduction,
             invoiceProduct: {
                 ...props.invoiceProduct,
-                variablePrice: props.invoiceProduct.priceIncVat ? (Math.round(props.invoiceProduct.priceIncVat * 100) / 100) : 0,
+                variablePrice: props.invoiceProduct.priceIncVat
+                    ? Math.round(props.invoiceProduct.priceIncVat * 100) / 100
+                    : 0,
             },
             errors: {
                 amount: false,
@@ -30,24 +32,25 @@ class InvoiceProductsFormItem extends Component {
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.invoiceProduct, nextProps.invoiceProduct)){
+        if (!isEqual(this.state.invoiceProduct, nextProps.invoiceProduct)) {
             this.setState({
                 ...this.state,
                 totalPrice: nextProps.invoiceProduct.priceInclVatAndReduction,
                 invoiceProduct: {
                     ...nextProps.invoiceProduct,
-                    variablePrice: nextProps.invoiceProduct.priceIncVat ? (Math.round(nextProps.invoiceProduct.priceIncVat * 100) / 100) : 0,
+                    variablePrice: nextProps.invoiceProduct.priceIncVat
+                        ? Math.round(nextProps.invoiceProduct.priceIncVat * 100) / 100
+                        : 0,
                 },
             });
         }
-    };
+    }
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     onLineEnter = () => {
@@ -65,17 +68,17 @@ class InvoiceProductsFormItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            invoiceProduct: {...this.props.invoiceProduct},
+            invoiceProduct: { ...this.props.invoiceProduct },
         });
 
         this.closeEdit();
@@ -86,39 +89,44 @@ class InvoiceProductsFormItem extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
+        this.setState(
+            {
                 ...this.state,
                 invoiceProduct: {
                     ...this.state.invoiceProduct,
-                    [name]: value
+                    [name]: value,
                 },
-
             },
             this.updatePrice
         );
-
     };
 
     updatePrice = () => {
         let price = 0;
-        if(this.state.invoiceProduct.variablePrice) {
-            price = validator.isFloat(this.state.invoiceProduct.variablePrice + '') ? this.state.invoiceProduct.variablePrice : 0;
-        }
-        else{
-            price = validator.isFloat(this.props.invoiceProduct.product.priceInclVat + '') ? this.props.invoiceProduct.product.priceInclVat : 0;
+        if (this.state.invoiceProduct.variablePrice) {
+            price = validator.isFloat(this.state.invoiceProduct.variablePrice + '')
+                ? this.state.invoiceProduct.variablePrice
+                : 0;
+        } else {
+            price = validator.isFloat(this.props.invoiceProduct.product.currentPrice.priceInclVat + '')
+                ? this.props.invoiceProduct.product.currentPrice.priceInclVat
+                : 0;
         }
         let amount = validator.isFloat(this.state.invoiceProduct.amount + '') ? this.state.invoiceProduct.amount : 0;
-        let percentageReduction = validator.isFloat(this.state.invoiceProduct.percentageReduction + '') ? this.state.invoiceProduct.percentageReduction : 0;
-        let amountReduction = validator.isFloat(this.state.invoiceProduct.amountReduction + '') ? this.state.invoiceProduct.amountReduction : 0;
+        let percentageReduction = validator.isFloat(this.state.invoiceProduct.percentageReduction + '')
+            ? this.state.invoiceProduct.percentageReduction
+            : 0;
+        let amountReduction = validator.isFloat(this.state.invoiceProduct.amountReduction + '')
+            ? this.state.invoiceProduct.amountReduction
+            : 0;
 
         let totalPrice = 0;
 
-        if(price < 0){
+        if (price < 0) {
             const reduction = parseFloat(100) + parseFloat(percentageReduction);
-            totalPrice = ((price * amount) * ((reduction) / 100)) - amountReduction;
-        }
-        else {
-            totalPrice = ((price * amount) * ((100 - percentageReduction) / 100)) - amountReduction;
+            totalPrice = price * amount * (reduction / 100) - amountReduction;
+        } else {
+            totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
         }
 
         this.setState({
@@ -132,10 +140,10 @@ class InvoiceProductsFormItem extends Component {
             ...this.state,
             invoiceProduct: {
                 ...this.state.invoiceProduct,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -143,27 +151,26 @@ class InvoiceProductsFormItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        const {invoiceProduct} = this.state;
+        const { invoiceProduct } = this.state;
 
         if (validator.isEmpty(invoiceProduct.amount + '')) {
             errors.amount = true;
             hasErrors = true;
-        };
+        }
 
         if (validator.isEmpty(invoiceProduct.description + '')) {
             errors.description = true;
             hasErrors = true;
-        };
+        }
 
-
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        InvoiceDetailsAPI.updateInvoiceProduct(invoiceProduct).then((payload) => {
-            this.props.fetchInvoiceDetails(this.state.invoiceProduct.invoiceId);
-            this.closeEdit();
-        });
+            InvoiceDetailsAPI.updateInvoiceProduct(invoiceProduct).then(payload => {
+                this.props.fetchInvoiceDetails(this.state.invoiceProduct.invoiceId);
+                this.closeEdit();
+            });
     };
 
     handleInputChangeVariablePrice = event => {
@@ -171,18 +178,17 @@ class InvoiceProductsFormItem extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
+        this.setState(
+            {
                 ...this.state,
                 price: value,
                 invoiceProduct: {
                     ...this.state.invoiceProduct,
-                    [name]: value
+                    [name]: value,
                 },
-
             },
             this.updatePrice
         );
-
     };
 
     render() {
@@ -198,8 +204,7 @@ class InvoiceProductsFormItem extends Component {
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
                 />
-                {
-                    this.state.showEdit && this.props.permissions.manageFinancial &&
+                {this.state.showEdit && this.props.permissions.manageFinancial && (
                     <InvoiceProductsFormEdit
                         invoiceDetails={this.props.invoiceDetails}
                         errors={this.state.errors}
@@ -212,31 +217,33 @@ class InvoiceProductsFormItem extends Component {
                         handleInputChangeVariablePrice={this.handleInputChangeVariablePrice}
                         productVariablePrice={this.state.invoiceProduct.product.hasVariablePrice === 'variable'}
                     />
-                }
-                {
-                    this.state.showDelete && this.props.permissions.manageFinancial &&
+                )}
+                {this.state.showDelete && this.props.permissions.manageFinancial && (
                     <InvoiceProductsFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         id={this.state.invoiceProduct.id}
                         invoiceId={this.state.invoiceProduct.invoiceId}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        invoiceDetails: state.invoiceDetails
-    }
+        invoiceDetails: state.invoiceDetails,
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
+    fetchInvoiceDetails: id => {
         dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvoiceProductsFormItem);

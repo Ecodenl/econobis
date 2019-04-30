@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../../../components/modal/Modal';
 import { deleteParticipationTransaction } from '../../../../../../actions/participants-production-project/ParticipantProductionProjectDetailsActions';
 
-const TransactionFormDelete = (props) => {
+const TransactionFormDelete = props => {
     const confirmAction = () => {
         props.deleteParticipationTransaction(props.id);
         props.closeDeleteItemModal();
@@ -19,15 +19,17 @@ const TransactionFormDelete = (props) => {
             title="Verwijderen"
         >
             <p>Verwijder transactie?</p>
-
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteParticipationTransaction: (id) => {
+    deleteParticipationTransaction: id => {
         dispatch(deleteParticipationTransaction(id));
     },
 });
 
-export default connect(null, mapDispatchToProps)(TransactionFormDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(TransactionFormDelete);

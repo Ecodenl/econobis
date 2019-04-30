@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import validator from 'validator';
-import {union} from 'lodash';
+import { union } from 'lodash';
 
 import ConceptForm from './ConceptForm';
 import ConceptToolbar from './ConceptToolbar';
@@ -8,7 +8,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
-import {browserHistory, hashHistory} from "react-router";
+import { browserHistory, hashHistory } from 'react-router';
 
 class ConceptApp extends Component {
     constructor(props) {
@@ -43,72 +43,74 @@ class ConceptApp extends Component {
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.removeEmail = this.removeEmail.bind(this);
-    };
+    }
 
     componentDidMount() {
-        EmailAddressAPI.fetchEmailAddressessPeek().then((payload) => {
+        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
             this.setState({
                 emailAddresses: [...this.state.emailAddresses, ...payload],
             });
         });
 
-        EmailAPI.fetchEmail(this.props.params.id).then((payload) => {
+        EmailAPI.fetchEmail(this.props.params.id).then(payload => {
             const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
 
-            this.setState({
-                ...this.state,
-                email: {
-                    id: payload.id,
-                    from: payload.from,
-                    mailboxId: payload.mailboxId,
-                    to: payload.to ? payload.to.join(',') : '',
-                    cc: payload.cc ? payload.cc.join(',') : '',
-                    bcc: payload.bcc ? payload.bcc.join(',') : '',
-                    subject: payload.subject ? payload.subject : '',
-                    htmlBody: payload.htmlBody ? payload.htmlBody : '',
-                    attachments: payload.attachments ? payload.attachments : '',
+            this.setState(
+                {
+                    ...this.state,
+                    email: {
+                        id: payload.id,
+                        from: payload.from,
+                        mailboxId: payload.mailboxId,
+                        to: payload.to ? payload.to.join(',') : '',
+                        cc: payload.cc ? payload.cc.join(',') : '',
+                        bcc: payload.bcc ? payload.bcc.join(',') : '',
+                        subject: payload.subject ? payload.subject : '',
+                        htmlBody: payload.htmlBody ? payload.htmlBody : '',
+                        attachments: payload.attachments ? payload.attachments : '',
+                    },
+                    emailAddresses: [...this.state.emailAddresses, ...extraOptions],
+                    hasLoaded: true,
                 },
-                emailAddresses: [...this.state.emailAddresses, ...extraOptions],
-                hasLoaded: true,
-            }, () => {
-                if (payload.contactGroupId) {
-                    EmailAPI.fetchEmailGroup(payload.contactGroupId).then((name) => {
+                () => {
+                    if (payload.contactGroupId) {
+                        EmailAPI.fetchEmailGroup(payload.contactGroupId).then(name => {
+                            let emailAddresses = this.state.emailAddresses;
 
-                        let emailAddresses = this.state.emailAddresses;
+                            emailAddresses.push({ id: '@group_' + payload.contactGroupId, name: name });
 
-                        emailAddresses.push({id: '@group_' + payload.contactGroupId, name: name});
+                            let toString = '@group_' + payload.contactGroupId;
 
-                        let toString = '@group_' + payload.contactGroupId;
+                            if (payload.to.length > 0) {
+                                toString = toString + ',' + payload.to.join(',');
+                            }
 
-                        if(payload.to.length > 0){
-                            toString = toString + ',' + payload.to.join(',');
-                        }
-
-                        this.setState({
-                            ...this.state,
-                            emailAddresses: emailAddresses,
-                            email: {
-                                ...this.state.email,
-                                to: toString
-                            },
+                            this.setState({
+                                ...this.state,
+                                emailAddresses: emailAddresses,
+                                email: {
+                                    ...this.state.email,
+                                    to: toString,
+                                },
+                            });
                         });
-                    });
+                    }
                 }
-            });
+            );
         });
-    };
+    }
 
     createExtraOptions(to, cc, bcc) {
         const emailAddresses = union(to, cc, bcc);
 
         let options = [];
 
-        emailAddresses.map((emailAddress) => {
-            options.push({id: emailAddress, name: emailAddress});
+        emailAddresses.map(emailAddress => {
+            options.push({ id: emailAddress, name: emailAddress });
         });
 
         return options;
-    };
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -119,59 +121,58 @@ class ConceptApp extends Component {
             ...this.state,
             email: {
                 ...this.state.email,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleToIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                to: selectedOption
+                to: selectedOption,
             },
         });
-    };
+    }
 
     handleCcIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                cc: selectedOption
+                cc: selectedOption,
             },
         });
-    };
+    }
 
     handleBccIds(selectedOption) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                bcc: selectedOption
+                bcc: selectedOption,
             },
         });
-    };
+    }
 
     handleTextChange(event) {
         this.setState({
             ...this.state,
             email: {
                 ...this.state.email,
-                htmlBody: event.target.getContent(({format: 'raw'}))
+                htmlBody: event.target.getContent({ format: 'raw' }),
             },
         });
-    };
+    }
 
     addAttachment(files) {
-
         const data = new FormData();
 
         files.map((file, key) => {
-            data.append('attachments[' +  key +  ']', file);
+            data.append('attachments[' + key + ']', file);
         });
-        EmailAPI.storeAttachment(this.state.email.id, data).then((payload) => {
+        EmailAPI.storeAttachment(this.state.email.id, data).then(payload => {
             this.setState({
                 ...this.state,
                 email: {
@@ -182,13 +183,13 @@ class ConceptApp extends Component {
         });
     }
 
-    deleteAttachment(name, id){
+    deleteAttachment(name, id) {
         EmailAPI.deleteAttachment(id).then(() => {
             this.setState({
                 ...this.state,
                 email: {
                     ...this.state.email,
-                    attachments: this.state.email.attachments.filter((attachment) => attachment.name !== name),
+                    attachments: this.state.email.attachments.filter(attachment => attachment.name !== name),
                 },
             });
         });
@@ -196,7 +197,7 @@ class ConceptApp extends Component {
 
     setButtonLoading = () => {
         this.setState({
-            buttonLoading: true
+            buttonLoading: true,
         });
     };
 
@@ -209,25 +210,25 @@ class ConceptApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(email.to)){
+        if (validator.isEmpty(email.to)) {
             errors.to = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + email.from)){
+        if (validator.isEmpty('' + email.from)) {
             errors.from = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty('' + email.subject)){
+        if (validator.isEmpty('' + email.subject)) {
             errors.subject = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        if(!hasErrors) {
+        if (!hasErrors) {
             if (email.to.length > 0) {
                 email.to = email.to.split(',');
             }
@@ -247,26 +248,29 @@ class ConceptApp extends Component {
             data.append('subject', email.subject);
             data.append('htmlBody', email.htmlBody);
 
-            if(concept) {
-                EmailAPI.updateConcept(data, this.props.params.id).then(() => {
-                    hashHistory.push(`/emails/concept`);
-                }).catch(function (error) {
-                    console.log(error)
-                });
-            }
-            else{
+            if (concept) {
+                EmailAPI.updateConcept(data, this.props.params.id)
+                    .then(() => {
+                        hashHistory.push(`/emails/concept`);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            } else {
                 this.setButtonLoading();
 
-                EmailAPI.sendConcept(data, this.props.params.id).then(() => {
-                    hashHistory.push(`/emails/sent`);
-                }).catch(function (error) {
-                    console.log(error)
-                });
+                EmailAPI.sendConcept(data, this.props.params.id)
+                    .then(() => {
+                        hashHistory.push(`/emails/sent`);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             }
         }
-    };
+    }
 
-    removeEmail(){
+    removeEmail() {
         EmailAPI.deleteEmail(this.props.params.id).then(() => {
             browserHistory.goBack();
         });
@@ -303,13 +307,12 @@ class ConceptApp extends Component {
                             addAttachment={this.addAttachment}
                             deleteAttachment={this.deleteAttachment}
                         />
-
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default ConceptApp;

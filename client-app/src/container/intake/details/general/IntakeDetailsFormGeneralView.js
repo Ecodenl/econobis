@@ -4,7 +4,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
-import {hashHistory, Link} from "react-router";
+import { hashHistory, Link } from 'react-router';
 
 const IntakeDetailsFormGeneralView = props => {
     const { address, contact, status, sources, campaign, reasons, note } = props.intakeDetails;
@@ -12,62 +12,55 @@ const IntakeDetailsFormGeneralView = props => {
     return (
         <div onClick={props.switchToEdit}>
             <div className="row">
-                <ViewText
-                    label={"Contact"}
-                    value={contact.fullName}
-                    link={contact ? 'contact/' + contact.id : ''}
-                />
+                <ViewText label={'Contact'} value={contact.fullName} link={contact ? 'contact/' + contact.id : ''} />
                 <div className={'col-sm-6'}>
-                    <label htmlFor={ 'address' } className="col-sm-6">{ 'Adres' }</label>
-                    <div className="col-sm-6" id={ 'address' }>
-                        { address && address.housingFile ?
-                            <Link onClick={() => hashHistory.push(`/woningdossier/${address.housingFile.id}`)} className='"link-underline"'> {address && address.street + ' ' + address.number}</Link>
-                            : <div>{address && address.street + ' ' + address.number}</div>
-                        }
+                    <label htmlFor={'address'} className="col-sm-6">
+                        {'Adres'}
+                    </label>
+                    <div className="col-sm-6" id={'address'}>
+                        {address && address.housingFile ? (
+                            <Link
+                                onClick={() => hashHistory.push(`/woningdossier/${address.housingFile.id}`)}
+                                className='"link-underline"'
+                            >
+                                {' '}
+                                {address && address.street + ' ' + address.number}
+                            </Link>
+                        ) : (
+                            <div>{address && address.street + ' ' + address.number}</div>
+                        )}
                     </div>
                 </div>
-
-
-
-
             </div>
 
             <div className="row">
-                <ViewText
-                    label="Campagne"
-                    value={ campaign && campaign.name }
-                />
-                <ViewText
-                    label="Status"
-                    value={status && status.name}
-                />
+                <ViewText label="Campagne" value={campaign && campaign.name} />
+                <ViewText label="Status" value={status && status.name} />
             </div>
 
             <div className="row">
+                <ViewText label={'Aanmeldingsbron'} value={sources && sources.map(source => source.name).join(', ')} />
                 <ViewText
-                    label={"Aanmeldingsbron"}
-                    value={ sources && sources.map((source) => source.name).join(', ') }
-                />
-                <ViewText
-                    label={"Wat is belangrijk"}
-                    value={ reasons && reasons.map((reason) => reason.name).join(', ') }
+                    label={'Wat is belangrijk'}
+                    value={reasons && reasons.map(reason => reason.name).join(', ')}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <div className="col-sm-3">
-                    <label htmlFor="note" className="col-sm-12">Opmerkingen van bewoner</label>
+                    <label htmlFor="note" className="col-sm-12">
+                        Opmerkingen van bewoner
+                    </label>
                 </div>
                 <div className="col-sm-9" id="note">
                     {note}
                 </div>
             </div>
-
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         intakeDetails: state.intakeDetails,
     };

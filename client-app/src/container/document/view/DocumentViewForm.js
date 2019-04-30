@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
-import PdfViewer from "../../../components/pdf/PdfViewer";
-import DocumentDetailsAPI from "../../../api/document/DocumentDetailsAPI";
+import PdfViewer from '../../../components/pdf/PdfViewer';
+import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 
 class DocumentViewForm extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -14,23 +14,25 @@ class DocumentViewForm extends Component {
     }
 
     componentDidMount() {
-       this.downloadFile();
-    };
+        this.downloadFile();
+    }
 
     downloadFile(i = 0) {
-        DocumentDetailsAPI.download(this.props.documentId).then((payload) => {
-            this.setState({
-                file: payload.data,
+        DocumentDetailsAPI.download(this.props.documentId)
+            .then(payload => {
+                this.setState({
+                    file: payload.data,
+                });
+            })
+            .catch(() => {
+                if (i < 2) {
+                    setTimeout(() => {
+                        this.downloadFile(i);
+                    }, 500);
+                }
+                i++;
             });
-        }).catch(() => {
-            if (i < 2) {
-                setTimeout(() => {
-                    this.downloadFile(i);
-                }, 500);
-            }
-            i++;
-        });
-    };
+    }
 
     render() {
         let loadingText = '';
@@ -38,35 +40,26 @@ class DocumentViewForm extends Component {
 
         if (this.props.hasError) {
             loadingText = 'Fout bij het ophalen van document.';
-        }
-        else if (this.props.isLoading) {
+        } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        }
-        else if (isEmpty(this.props.documentDetails)) {
+        } else if (isEmpty(this.props.documentDetails)) {
             loadingText = 'Geen document gevonden!';
-        }
-        else if(!this.state.file){
+        } else if (!this.state.file) {
             loadingText = 'Document van Alfresco halen.';
-        }
-        else {
+        } else {
             loading = false;
         }
-        return (
-            loading ?
-                <div>{loadingText}</div>
-                :
-                <div>
-                    <PdfViewer
-                        file={this.state.file}
-                        scale={this.props.scale}
-                    />
-                </div>
-
+        return loading ? (
+            <div>{loadingText}</div>
+        ) : (
+            <div>
+                <PdfViewer file={this.state.file} scale={this.props.scale} />
+            </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
         isLoading: state.loadingData.isLoading,
@@ -74,4 +67,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentViewForm);
+export default connect(
+    mapStateToProps,
+    null
+)(DocumentViewForm);

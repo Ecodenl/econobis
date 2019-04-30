@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
-import ContactDetailsQuotationItem from "./ContactDetailsQuotationItem";
+import ContactDetailsQuotationItem from './ContactDetailsQuotationItem';
 
 const ContactDetailsQuotationsList = props => {
     return (
@@ -14,25 +14,20 @@ const ContactDetailsQuotationsList = props => {
                 <div className="col-sm-2">Offerte uitgebracht</div>
                 <div className="col-sm-2">Offerte geldig tot</div>
             </div>
-            {
-                props.quotationRequests.length > 0 ?
-                    props.quotationRequests.map(quotation => {
-                        return <ContactDetailsQuotationItem
-                            key={quotation.id}
-                            quotation={quotation}
-                        />;
-                    })
-                    :
-                    <div>Geen offertes bekend.</div>
-            }
+            {props.quotationRequests.length > 0 ? (
+                props.quotationRequests.map(quotation => {
+                    return <ContactDetailsQuotationItem key={quotation.id} quotation={quotation} />;
+                })
+            ) : (
+                <div>Geen offertes bekend.</div>
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         quotationRequests: state.contactDetails.organisation.quotationRequests,
     };
 };
 export default connect(mapStateToProps)(ContactDetailsQuotationsList);
-

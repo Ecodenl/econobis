@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchEmails, clearEmails } from '../../../actions/email/EmailsActions';
-import {setEmailsPagination} from "../../../actions/email/EmailsPaginationActions";
+import { setEmailsPagination } from '../../../actions/email/EmailsPaginationActions';
 import ConceptsInList from './ConceptsInList';
 import ConceptsInListToolbar from './ConceptsInListToolbar';
-import Panel from "../../../components/panel/Panel";
-import PanelBody from "../../../components/panel/PanelBody";
-import filterHelper from "../../../helpers/FilterHelper";
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
+import filterHelper from '../../../helpers/FilterHelper';
 
 class ConceptsInListApp extends Component {
     constructor(props) {
@@ -18,12 +18,12 @@ class ConceptsInListApp extends Component {
     }
 
     componentDidMount() {
-        this.fetchEmailsData()
-    };
+        this.fetchEmailsData();
+    }
 
     componentWillUnmount() {
         this.props.clearEmails();
-    };
+    }
 
     fetchEmailsData() {
         setTimeout(() => {
@@ -31,44 +31,41 @@ class ConceptsInListApp extends Component {
             const filters = {};
             const sorts = {};
             this.props.fetchEmails('concept', filters, sorts, pagination);
-        },100 );
-    };
+        }, 100);
+    }
 
     refreshData() {
         this.props.clearEmails();
-        this.fetchEmailsData()
-    };
+        this.fetchEmailsData();
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setEmailsPagination({page, offset});
+        this.props.setEmailsPagination({ page, offset });
 
         this.fetchEmailsData();
-    };
-
+    }
 
     render() {
         return (
-                <Panel className="col-md-9">
-                    <PanelBody>
-                        <div className="col-md-12 margin-10-top">
-                            <ConceptsInListToolbar
-                                refreshData={this.refreshData}
-                            />
-                        </div>
+            <Panel className="col-md-9">
+                <PanelBody>
+                    <div className="col-md-12 margin-10-top">
+                        <ConceptsInListToolbar refreshData={this.refreshData} />
+                    </div>
 
-                        <div className="col-md-12 margin-10-top">
-                            <ConceptsInList handlePageClick={this.handlePageClick} />
-                        </div>
-                    </PanelBody>
-                </Panel>
-        )
+                    <div className="col-md-12 margin-10-top">
+                        <ConceptsInList handlePageClick={this.handlePageClick} />
+                    </div>
+                </PanelBody>
+            </Panel>
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emailsPagination: state.emails.pagination,
     };
@@ -81,9 +78,12 @@ const mapDispatchToProps = dispatch => ({
     clearEmails: () => {
         dispatch(clearEmails());
     },
-    setEmailsPagination: (pagination) => {
+    setEmailsPagination: pagination => {
         dispatch(setEmailsPagination(pagination));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConceptsInListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ConceptsInListApp);

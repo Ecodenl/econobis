@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactGroupComposedGroupView from './ContactGroupComposedGroupView';
 import ContactGroupComposedGroupDelete from './ContactGroupComposedGroupDelete';
@@ -15,7 +15,7 @@ class ContactGroupComposedGroupItem extends Component {
                 ...props.composedGroup,
             },
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -32,7 +32,7 @@ class ContactGroupComposedGroupItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     render() {
@@ -46,17 +46,16 @@ class ContactGroupComposedGroupItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     composedGroup={this.state.composedGroup}
                 />
-                {
-                    this.state.showDelete &&
+                {this.state.showDelete && (
                     <ContactGroupComposedGroupDelete
                         closeDeleteItemModal={this.toggleDelete}
                         contactGroupId={this.props.contactGroupId}
                         composedGroup={this.state.composedGroup}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 export default ContactGroupComposedGroupItem;

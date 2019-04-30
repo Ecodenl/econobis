@@ -21,14 +21,14 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
     getAmountActive: () => {
@@ -36,26 +36,26 @@ export default {
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
+        return axios
+            .get(requestUrl)
             .then(response => response.data)
-            .catch((error) => {
-                    console.log(error);
-                },
-            );
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    fetchHousingFilesByContact: (contactId) => {
+    fetchHousingFilesByContact: contactId => {
         const requestUrl = `${URL_API}/api/contact/${contactId}/housing-files`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 };

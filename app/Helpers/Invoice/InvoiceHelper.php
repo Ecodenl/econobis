@@ -30,39 +30,52 @@ class InvoiceHelper
             }
 
             $price = 0;
+            $priceInclVat = 0;
+            $vatPercentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
+            $vatFactor = (100 + $vatPercentage) / 100;
             if ($orderProduct->product->currentPrice) {
                 if ($orderProduct->product->currentPrice->has_variable_price) {
-                    $price = $orderProduct->variable_price;
+                    $price        = $orderProduct->variable_price;
+                    $priceInclVat = $orderProduct->variable_price * $vatFactor;
                 } else {
-                    $price = $orderProduct->product->currentPrice->price;
+                    $price        = $orderProduct->product->currentPrice->price;
+                    $priceInclVat = $orderProduct->product->currentPrice->price_incl_vat;
                 }
                 switch ($orderProduct->product->invoice_frequency_id) {
                     case 'monthly':
                         $price = $price * 12;
+                        $priceInclVat = $priceInclVat * 12;
                         break;
                     case 'quarterly':
                         $price = $price * 4;
+                        $priceInclVat = $priceInclVat * 4;
                         break;
                     case 'half-year':
                         $price = $price * 2;
+                        $priceInclVat = $priceInclVat * 2;
                         break;
                     default:
                         $price = $price;
+                        $priceInclVat = $priceInclVat;
                         break;
                 }
 
                 switch ($orderProduct->order->collection_frequency_id) {
                     case 'monthly':
                         $price = $price / 12;
+                        $priceInclVat = $priceInclVat / 12;
                         break;
                     case 'quarterly':
                         $price = $price / 4;
+                        $priceInclVat = $priceInclVat / 4;
                         break;
                     case 'half-year':
                         $price = $price / 2;
+                        $priceInclVat = $priceInclVat / 2;
                         break;
                     default:
                         $price = $price;
+                        $priceInclVat = $priceInclVat;
                         break;
                 }
             }
@@ -74,6 +87,7 @@ class InvoiceHelper
             $invoiceProduct->amount_reduction = $orderProduct->amount_reduction;
             $invoiceProduct->percentage_reduction = $orderProduct->percentage_reduction;
             $invoiceProduct->price = $price;
+            $invoiceProduct->price_incl_vat = $priceInclVat;
             $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;

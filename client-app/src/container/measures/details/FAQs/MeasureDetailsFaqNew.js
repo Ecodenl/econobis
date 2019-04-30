@@ -16,41 +16,40 @@ class MeasureDetailsFaqNew extends Component {
 
         this.state = {
             faq: {
-                question:'',
-                answer:'',
+                question: '',
+                answer: '',
             },
             errors: {
                 question: false,
                 answer: false,
             },
         };
-    };
+    }
 
     handleQuestionChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
-            this.setState({
-                ...this.state,
-                faq: {
-                    question: value,
-                    answer: this.state.faq.answer,
-                }
-
-            });
-    }
+        this.setState({
+            ...this.state,
+            faq: {
+                question: value,
+                answer: this.state.faq.answer,
+            },
+        });
+    };
 
     handleAnswerChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
-            this.setState({
-                ...this.state,
-                faq: {
-                    question: this.state.faq.question,
-                    answer: value,
-                }
-            });
-    }
+        this.setState({
+            ...this.state,
+            faq: {
+                question: this.state.faq.question,
+                answer: value,
+            },
+        });
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -65,25 +64,21 @@ class MeasureDetailsFaqNew extends Component {
                     question: true,
                 },
             });
-        }
-        else if (isEmpty(faq.question)) {
+        } else if (isEmpty(faq.question)) {
             this.setState({
                 ...this.state,
                 errors: {
                     question: true,
                 },
             });
-        }
-        else if (isEmpty(faq.answer)) {
+        } else if (isEmpty(faq.answer)) {
             this.setState({
                 ...this.state,
                 errors: {
                     answer: true,
                 },
             });
-        }
-        else
-        {
+        } else {
             this.setState({
                 ...this.state,
                 errors: {
@@ -96,56 +91,66 @@ class MeasureDetailsFaqNew extends Component {
                 this.props.toggleShowNew();
             });
         }
-
     };
 
     render() {
-        const {question, answer} = this.state.faq;
+        const { question, answer } = this.state.faq;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={"Vraag"}
-                                name={"question"}
+                                label={'Vraag'}
+                                name={'question'}
                                 value={question}
                                 onChangeAction={this.handleQuestionChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.question}
                             />
                             <InputText
-                                label={"Antwoord"}
-                                name={"answer"}
+                                label={'Antwoord'}
+                                name={'answer'}
                                 value={answer}
                                 onChangeAction={this.handleAnswerChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.answer}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Annuleren"} onClickAction={this.props.toggleShowNew}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.toggleShowNew}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         measureId: state.measureDetails.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchMeasure: (id) => {
+    fetchMeasure: id => {
         dispatch(fetchMeasure(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetailsFaqNew);
-
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(MeasureDetailsFaqNew);

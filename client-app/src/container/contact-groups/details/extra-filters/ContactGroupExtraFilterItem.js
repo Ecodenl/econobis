@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactGroupExtraFilterView from './ContactGroupExtraFilterView';
 
@@ -9,7 +9,7 @@ class ContactGroupExtraFilterItem extends Component {
         this.state = {
             highlightLine: '',
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -35,6 +35,6 @@ class ContactGroupExtraFilterItem extends Component {
             </div>
         );
     }
-};
+}
 
 export default ContactGroupExtraFilterItem;

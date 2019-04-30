@@ -1,12 +1,18 @@
 import { put, call } from 'redux-saga/effects';
 import ContactsAPI from '../../api/contact/ContactsAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
-export function* fetchContactsSaga({filters, extraFilters, sorts, pagination, filterType}) {
+export function* fetchContactsSaga({ filters, extraFilters, sorts, pagination, filterType }) {
     try {
         yield put({ type: 'IS_LOADING' });
-        const contacts = yield call(ContactsAPI.fetchContacts, {filters, extraFilters, sorts, pagination, filterType});
-        yield put({ type: 'FETCH_CONTACTS_SUCCESS', contacts })
+        const contacts = yield call(ContactsAPI.fetchContacts, {
+            filters,
+            extraFilters,
+            sorts,
+            pagination,
+            filterType,
+        });
+        yield put({ type: 'FETCH_CONTACTS_SUCCESS', contacts });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_CONTACTS_ERROR', error });

@@ -1,7 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import AdministrationsAPI from '../../api/administration/AdministrationsAPI';
 import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
 export function* fetchAdministrationsSaga() {
     try {

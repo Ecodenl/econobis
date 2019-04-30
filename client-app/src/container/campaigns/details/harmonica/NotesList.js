@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {hashHistory} from 'react-router';
+import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -11,38 +11,37 @@ class NoteList extends Component {
         };
     }
 
-    openItem = (id) => {
+    openItem = id => {
         hashHistory.push(`/taak/${id}`);
     };
 
     render() {
-        const {relatedNotes} = this.props;
+        const { relatedNotes } = this.props;
         return (
             <div>
-                {relatedNotes == '' &&
-                <div>Geen notities gevonden.</div>
-                }
+                {relatedNotes == '' && <div>Geen notities gevonden.</div>}
 
-                {relatedNotes != '' &&
-                <table className="table harmonica-table">
-                    <tbody>
-                    {relatedNotes.map((relatedNote, i) => {
-                        return (
-                            <tr onClick={() => this.openItem(relatedNote.id)} key={i}>
-                                <td className='col-xs-12 clickable'>{moment(relatedNote.createdAt.date).format('L')} - {relatedNote.noteSummary}</td>
-                            </tr>
-                        )
-                    })
-                    }
-                    </tbody>
-                </table>
-                }
+                {relatedNotes != '' && (
+                    <table className="table harmonica-table">
+                        <tbody>
+                            {relatedNotes.map((relatedNote, i) => {
+                                return (
+                                    <tr onClick={() => this.openItem(relatedNote.id)} key={i}>
+                                        <td className="col-xs-12 clickable">
+                                            {moment(relatedNote.createdAt.date).format('L')} - {relatedNote.noteSummary}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         );
-    };
+    }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         relatedNotes: state.campaignDetails.relatedNotes,
     };

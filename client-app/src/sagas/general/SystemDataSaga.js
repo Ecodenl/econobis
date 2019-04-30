@@ -11,7 +11,7 @@ export function* systemDataSaga() {
                 put({ type: 'FETCH_SYSTEM_DATA_SUCCESS', systemData }),
                 put({ type: 'FETCH_SYSTEM_DATA_LOADED' }),
             ]);
-            if(systemData.data.data.appName){
+            if (systemData.data.data.appName) {
                 document.title = systemData.data.data.appName;
             }
             return;

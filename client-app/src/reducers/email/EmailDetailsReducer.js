@@ -1,13 +1,12 @@
-export default function (state = [], action) {
+export default function(state = [], action) {
     switch (action.type) {
         case 'FETCH_EMAIL_SUCCESS':
             return {
                 ...action.email,
             };
         case 'CLEAR_EMAIL':
-            return state.email = [];
+            return (state.email = []);
         default:
             return state;
-
     }
 }

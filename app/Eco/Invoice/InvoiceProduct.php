@@ -31,122 +31,129 @@ class InvoiceProduct extends Model
         return $this->belongsTo(Product::class)->withoutGlobalScope('is_not_one_time');
     }
 
+    public function getAmountReductionAmountAttribute()
+    {
+        $amountReduction = $this->amount_reduction;
+        if ($this->percentage_reduction) {
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
+            if($inputInclVat)
+            {
+                $vatPercentage = $this->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                number_format( $amountReduction = $amountReduction / $vatFactor, 2);
+            }
+        }
+        return $amountReduction;
+
+    }
+
+    public function getAmountReductionPercentageAttribute()
+    {
+        $amountReduction = 0;
+        if ($this->percentage_reduction) {
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
+
+            if($inputInclVat)
+            {
+                $priceInclVat = $this->price_incl_vat;
+                if ($priceInclVat === null) {
+                    $priceInclVat = 0;
+                }
+                $priceInclVat = ($this->amount * $priceInclVat);
+                $amountReduction = number_format( ($priceInclVat * ($this->percentage_reduction / 100) ), 2) ;
+                $vatPercentage = $this->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = number_format( $amountReduction / $vatFactor, 2);
+            }else {
+                $price = $this->price;
+                if ($price === null) {
+                    $price = 0;
+                }
+                $price = ($this->amount * $price);
+                $amountReduction = number_format( ($price * ($this->percentage_reduction) / 100), 2) ;
+            }
+        }
+    return $amountReduction;
+
+    }
+
     public function getPriceInclVatAndReductionAttribute()
     {
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
+        $inputInclVat = false;
+        if ($this->product->currentPrice) {
+            $inputInclVat = $this->product->currentPrice->input_incl_vat;
         }
 
-        $vat_percentage = $this->vat_percentage;
-
-        if($vat_percentage) {
-            $price = ($price + ($price
-                    * ($vat_percentage / 100)));
-        }
-
-        $price = ($this->amount
-            * $price);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
+        if($inputInclVat)
+        {
+            $priceInclVat = $this->price_incl_vat;
+            if ($priceInclVat === null) {
+                $priceInclVat = 0;
             }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
+            $priceInclVat = ($this->amount * $priceInclVat);
+            //indien invoer prijs incl. BTW is geweest, dan kortingsbedragen ook incl. BTW bepalen en eraf halen
+            if ($this->percentage_reduction) {
+                if ($priceInclVat < 0) {
+                    $priceInclVat = number_format( ($priceInclVat * ((100 + $this->percentage_reduction) / 100)), 2) ;
+                } else {
+                    $priceInclVat = number_format( ($priceInclVat * ((100 - $this->percentage_reduction) / 100)), 2) ;
+                }
+            }
+            if ($this->amount_reduction) {
+                $priceInclVat -= $this->amount_reduction;
             }
         }
-
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
+        else{
+            $vatPercentage = $this->vat_percentage;
+            $vatFactor = (100 + $vatPercentage) / 100;
+            $priceExclVat = $this->getPriceExVatInclReductionAttribute();
+            $priceInclVat = number_format( $priceExclVat * $vatFactor, 2) ;
         }
-
-        return $price;
-
+        return $priceInclVat;
     }
 
     public function getPriceExVatInclReductionAttribute()
     {
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
+        $inputInclVat = false;
+        if ($this->product->currentPrice) {
+            $inputInclVat = $this->product->currentPrice->input_incl_vat;
         }
 
-        $price = ($this->amount
-            * $price);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
+        if(!$inputInclVat) {
+            $priceExclVat = $this->price;
+            if ($priceExclVat === null) {
+                $priceExclVat = 0;
             }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
+            $priceExclVat = ($this->amount * $priceExclVat);
+            if ($this->percentage_reduction) {
+                if ($priceExclVat < 0) {
+                    $priceExclVat = number_format( ($priceExclVat * ((100 + $this->percentage_reduction) / 100)), 2) ;
+                } else {
+                    $priceExclVat = number_format( ($priceExclVat * ((100 - $this->percentage_reduction) / 100)), 2) ;
+                }
             }
+            if ($this->amount_reduction) {
+                $priceExclVat -= $this->amount_reduction;
+            }
+        } else {
+            $vatPercentage = $this->vat_percentage;
+            $vatFactor = (100 + $vatPercentage) / 100;
+            $priceInclVat = $this->getPriceInclVatAndReductionAttribute();
+            $priceExclVat = number_format( $priceInclVat / $vatFactor, 2) ;
         }
-
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
-        }
-
-        return $price;
+        return $priceExclVat;
 
     }
 
     public function getAmountVatAttribute()
     {
-        if($this->vat_percentage == 0 || $this->vat_percentage == null){
-            return 0;
-        }
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
-        }
-
-        $price = ($this->amount
-            * $price);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction)
-                        / 100));
-            }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction)
-                        / 100));
-            }
-        }
-
-        if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
-        }
-
-        return ($price * ($this->vat_percentage / 100));
-
+        return ( $this->getPriceInclVatAndReductionAttribute() - $this->getPriceExVatInclReductionAttribute() );
     }
 
-    public function getPriceIncVatAttribute()
-    {
-        $price = $this->price;
-
-        if ($price === null) {
-            $price = 0;
-        }
-
-        $vat_percentage = $this->vat_percentage;
-
-        if($vat_percentage) {
-            $price = ($price + ($price
-                    * ($vat_percentage / 100)));
-        }
-
-        return $price;
-
-    }
 }

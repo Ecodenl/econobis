@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteAdministrationSepa } from '../../../../actions/administration/AdministrationDetailsActions';
 
-const AdministrationDetailsSepasDelete = (props) => {
+const AdministrationDetailsSepasDelete = props => {
     const confirmAction = () => {
         props.deleteAdministrationSepa(props.sepaId);
         props.toggleDelete();
@@ -19,15 +19,17 @@ const AdministrationDetailsSepasDelete = (props) => {
             title="Verwijderen"
         >
             <p>Wil je deze sepa verwijderen?</p>
-
         </Modal>
     );
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteAdministrationSepa: (sepaId) => {
+    deleteAdministrationSepa: sepaId => {
         dispatch(deleteAdministrationSepa(sepaId));
     },
 });
 
-export default connect(null, mapDispatchToProps)(AdministrationDetailsSepasDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(AdministrationDetailsSepasDelete);

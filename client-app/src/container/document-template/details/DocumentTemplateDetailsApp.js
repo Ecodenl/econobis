@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchDocumentTemplate } from '../../../actions/document-templates/DocumentTemplateDetailsActions';
@@ -8,19 +8,19 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 class DocumentTemplateDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchDocumentTemplate(this.props.params.id);
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.params.id !== nextProps.params.id) {
+        if (this.props.params.id !== nextProps.params.id) {
             this.props.fetchDocumentTemplate(nextProps.params.id);
         }
-    };
+    }
 
     render() {
         return (
@@ -28,7 +28,7 @@ class DocumentTemplateDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
+                            <PanelBody className={'panel-small'}>
                                 <DocumentTemplateDetailsToolbar />
                             </PanelBody>
                         </Panel>
@@ -40,20 +40,23 @@ class DocumentTemplateDetailsApp extends Component {
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentTemplateDetails: state.documentTemplateDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchDocumentTemplate: (id) => {
+    fetchDocumentTemplate: id => {
         dispatch(fetchDocumentTemplate(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentTemplateDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentTemplateDetailsApp);

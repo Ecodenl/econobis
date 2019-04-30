@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import JobLogsView from './JobLogsView';
 
@@ -9,7 +9,7 @@ class JobLogs extends Component {
         this.state = {
             job: props.job,
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -35,6 +35,6 @@ class JobLogs extends Component {
             </div>
         );
     }
-};
+}
 
 export default JobLogs;

@@ -3,50 +3,52 @@ import axios from 'axios';
 const URL_HOUSING_FILE = `${URL_API}/api/housing-file`;
 
 export default {
-    fetchHousingFilesDetails: function (id) {
+    fetchHousingFilesDetails: function(id) {
         const requestUrl = `${URL_HOUSING_FILE}/${id}`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl)
-            .then(function (response) {
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
-                    console.log(error);
-                }
-            );
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
-    newHousingFile: (housingFile) => {
+    newHousingFile: housingFile => {
         const requestUrl = `${URL_API}/api/contact/housing-file`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, housingFile)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, housingFile)
+            .then(function(response) {
                 return response.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    updateHousingFile: (housingFile) => {
+    updateHousingFile: housingFile => {
         const requestUrl = `${URL_HOUSING_FILE}/${housingFile.id}/update`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl, housingFile)
-            .then(function (response) {
+        return axios
+            .post(requestUrl, housingFile)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log(error);
             });
     },
 
-    deleteHousingFile: (id) => {
+    deleteHousingFile: id => {
         const requestUrl = `${URL_HOUSING_FILE}/${id}/delete`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -54,7 +56,7 @@ export default {
         return axios.post(requestUrl);
     },
 
-    attachMeasureTaken: (measureTaken) => {
+    attachMeasureTaken: measureTaken => {
         const requestUrl = `${URL_HOUSING_FILE}/measure-taken`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -67,11 +69,12 @@ export default {
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.post(requestUrl)
-            .then(function (response) {
+        return axios
+            .post(requestUrl)
+            .then(function(response) {
                 return response.data.data;
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 return error;
             });
     },

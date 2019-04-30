@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactDetailsFormAddressList from './ContactDetailsFormAddressList';
 import ContactDetailsFormAddressNew from './ContactDetailsFormAddressNew';
@@ -18,7 +18,7 @@ class ContactDetailsFormAddress extends Component {
     toggleShowNew = () => {
         this.setState({
             showNew: !this.state.showNew,
-        })
+        });
     };
 
     render() {
@@ -26,19 +26,21 @@ class ContactDetailsFormAddress extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Adres gegevens</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}><span className="glyphicon glyphicon-plus"/></a>
+                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                        <span className="glyphicon glyphicon-plus" />
+                    </a>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
                         <ContactDetailsFormAddressList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        { this.state.showNew && <ContactDetailsFormAddressNew toggleShowNew={this.toggleShowNew} /> }
+                        {this.state.showNew && <ContactDetailsFormAddressNew toggleShowNew={this.toggleShowNew} />}
                     </div>
                 </PanelBody>
             </Panel>
         );
     }
-};
+}
 
 export default ContactDetailsFormAddress;

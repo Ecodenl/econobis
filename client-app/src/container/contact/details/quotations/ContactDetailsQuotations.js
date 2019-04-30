@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import ContactDetailsQuotationsList from './ContactDetailsQuotationsList';
 import Panel from '../../../../components/panel/Panel';
@@ -18,13 +18,12 @@ class ContactDetailsQuotations extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsQuotationsList/>
+                        <ContactDetailsQuotationsList />
                     </div>
                 </PanelBody>
             </Panel>
         );
     }
 }
-
 
 export default ContactDetailsQuotations;

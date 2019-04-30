@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import PriceHistoryView from './PriceHistoryView';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class PriceHistoryItem extends Component {
     constructor(props) {
@@ -14,7 +14,7 @@ class PriceHistoryItem extends Component {
 
             price: props.price,
         };
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -30,7 +30,6 @@ class PriceHistoryItem extends Component {
         });
     };
 
-
     render() {
         return (
             <div>
@@ -45,12 +44,12 @@ class PriceHistoryItem extends Component {
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
-        permissions: state.meDetails.permissions
-    }
+        permissions: state.meDetails.permissions,
+    };
 };
 
 export default connect(mapStateToProps)(PriceHistoryItem);

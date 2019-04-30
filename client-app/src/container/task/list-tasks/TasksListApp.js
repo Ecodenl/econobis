@@ -9,7 +9,7 @@ import TasksList from './TasksList';
 import TasksListToolbar from './TasksListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
-import PanelBody from "../../../components/panel/PanelBody";
+import PanelBody from '../../../components/panel/PanelBody';
 import { isEmpty } from 'lodash';
 import { setFilterTaskMe } from '../../../actions/task/TasksFiltersActions';
 
@@ -18,7 +18,7 @@ class TasksListApp extends Component {
         super(props);
 
         if (!isEmpty(props.params)) {
-            if(props.params.type === 'eigen'){
+            if (props.params.type === 'eigen') {
                 this.props.setFilterTaskMe(true);
             }
         } else {
@@ -32,20 +32,19 @@ class TasksListApp extends Component {
 
     componentDidMount() {
         this.fetchTasksData();
-    };
+    }
 
     componentWillUnmount() {
         this.props.clearTasks();
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.params.type !== nextProps.params.type){
-            if(!isEmpty(nextProps.params)) {
-                if(nextProps.params.type === 'eigen'){
-                  this.props.setFilterTaskMe(true);
-                };
-            }
-            else {
+        if (this.props.params.type !== nextProps.params.type) {
+            if (!isEmpty(nextProps.params)) {
+                if (nextProps.params.type === 'eigen') {
+                    this.props.setFilterTaskMe(true);
+                }
+            } else {
                 this.props.clearFilterTask();
             }
 
@@ -63,37 +62,36 @@ class TasksListApp extends Component {
 
             //this.props.clearContacts();
             this.props.fetchTasks(filters, sorts, pagination);
-        },100 );
-    };
+        }, 100);
+    }
 
     resetTaskFilters() {
         this.props.clearFilterTask();
 
         this.fetchTasksData();
-    };
+    }
 
     onSubmitFilter() {
         this.props.clearTasks();
 
-        this.props.setTasksPagination({page: 0, offset: 0});
+        this.props.setTasksPagination({ page: 0, offset: 0 });
 
         this.fetchTasksData();
-    };
+    }
 
     handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setTasksPagination({page, offset});
+        this.props.setTasksPagination({ page, offset });
 
         this.fetchTasksData();
-    };
+    }
 
     render() {
-
         let me = false;
 
-        if(this.props.params.type == 'eigen'){
+        if (this.props.params.type == 'eigen') {
             me = true;
         }
 
@@ -101,10 +99,7 @@ class TasksListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <TasksListToolbar
-                            resetTaskFilters={() => this.resetTaskFilters()}
-                            me={me}
-                        />
+                        <TasksListToolbar resetTaskFilters={() => this.resetTaskFilters()} me={me} />
                     </div>
 
                     <div className="col-md-12 margin-10-top">
@@ -118,11 +113,11 @@ class TasksListApp extends Component {
                     </div>
                 </PanelBody>
             </Panel>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         tasks: state.tasks.list,
         tasksFilters: state.tasks.filters,
@@ -131,8 +126,14 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchTasks, clearTasks, clearFilterTask, setTasksPagination, setFilterTaskMe }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        { fetchTasks, clearTasks, clearFilterTask, setTasksPagination, setFilterTaskMe },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TasksListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TasksListApp);

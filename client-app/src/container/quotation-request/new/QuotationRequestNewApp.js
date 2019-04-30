@@ -17,14 +17,13 @@ class QuotationRequestNewApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <QuotationRequestNewForm opportunityId={this.props.params.opportunityId}/>
+                        <QuotationRequestNewForm opportunityId={this.props.params.opportunityId} />
                     </div>
                 </div>
                 <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
-
+}
 
 export default QuotationRequestNewApp;

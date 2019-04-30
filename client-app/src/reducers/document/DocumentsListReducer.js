@@ -1,4 +1,4 @@
-export default function (state = { isLoading: false }, action) {
+export default function(state = { isLoading: false }, action) {
     switch (action.type) {
         case 'FETCH_DOCUMENTS_LOADING':
             return {
@@ -23,9 +23,9 @@ export default function (state = { isLoading: false }, action) {
         case 'DELETE_DOCUMENT_SUCCESS':
             return {
                 ...state,
-                data: state.data.filter((document) => document.id !== action.id),
+                data: state.data.filter(document => document.id !== action.id),
                 meta: {
-                    total: state.meta.total - 1
+                    total: state.meta.total - 1,
                 },
             };
         default:

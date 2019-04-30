@@ -6,14 +6,13 @@ export const fetchPostalCodeLinks = () => {
 
 export const clearPostalCodeLinks = () => {
     return {
-        type: 'CLEAR_POSTAL_CODE_LINKS'
+        type: 'CLEAR_POSTAL_CODE_LINKS',
     };
 };
 
-export const deletePostalCodeLink = (id) => {
-    return  {
+export const deletePostalCodeLink = id => {
+    return {
         type: 'DELETE_POSTAL_CODE_LINK',
         id,
     };
 };
-

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchInvoiceDetails } from '../../../../actions/invoice/InvoiceDetailsActions';
@@ -6,16 +6,16 @@ import InvoiceDetailsToolbar from './InvoiceDetailsToolbar';
 import InvoiceDetailsForm from './InvoiceDetailsForm';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import InvoiceDetailsHarmonica from "./InvoiceDetailsHarmonica";
+import InvoiceDetailsHarmonica from './InvoiceDetailsHarmonica';
 
 class InvoiceDetailsApp extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-    };
+    }
 
     componentDidMount() {
         this.props.fetchInvoiceDetails(this.props.params.id);
-    };
+    }
 
     render() {
         return (
@@ -23,7 +23,7 @@ class InvoiceDetailsApp extends Component {
                 <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
                         <Panel>
-                            <PanelBody className={"panel-small"}>
+                            <PanelBody className={'panel-small'}>
                                 <InvoiceDetailsToolbar />
                             </PanelBody>
                         </Panel>
@@ -35,24 +35,27 @@ class InvoiceDetailsApp extends Component {
                 </div>
                 <Panel className="col-md-3">
                     <PanelBody>
-                        <InvoiceDetailsHarmonica/>
+                        <InvoiceDetailsHarmonica />
                     </PanelBody>
                 </Panel>
             </div>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         invoiceDetails: state.invoiceDetails,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
+    fetchInvoiceDetails: id => {
         dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvoiceDetailsApp);

@@ -1,14 +1,20 @@
 import { put, call } from 'redux-saga/effects';
 import ParticipantProductionProjectDetailsAPI from '../../api/participant-production-project/ParticipantProductionProjectDetailsAPI';
 import ParticipantTransactionAPI from '../../api/participant-production-project/ParticipantTransactionAPI';
-import ParticipantObligationNumberAPI from "../../api/participant-production-project/ParticipantObligationNumberAPI";
-import {browserHistory, hashHistory} from "react-router";
+import ParticipantObligationNumberAPI from '../../api/participant-production-project/ParticipantObligationNumberAPI';
+import { browserHistory, hashHistory } from 'react-router';
 
 export function* fetchParticipantProductionProjectDetailsSaga({ payload }) {
     try {
         yield put({ type: 'IS_LOADING' });
-        const participantProductionProjectDetails = yield call(ParticipantProductionProjectDetailsAPI.fetchParticipantProductionProject, payload);
-        yield put({ type: 'FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS_SUCCESS', participantProductionProjectDetails });
+        const participantProductionProjectDetails = yield call(
+            ParticipantProductionProjectDetailsAPI.fetchParticipantProductionProject,
+            payload
+        );
+        yield put({
+            type: 'FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS_SUCCESS',
+            participantProductionProjectDetails,
+        });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PARTICIPANT_PRODUCTION_PROJECT_DETAILS_ERROR', error });

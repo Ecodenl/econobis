@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Modal from '../../../components/modal/Modal';
 
 class ContactNewFormPersonalDuplicateModal extends Component {
-
     constructor(props) {
         super(props);
-    };
+    }
 
     render() {
         return (
@@ -20,7 +19,7 @@ class ContactNewFormPersonalDuplicateModal extends Component {
                 <span>{this.props.duplicateText}</span>
             </Modal>
         );
-    };
+    }
 }
 
 export default ContactNewFormPersonalDuplicateModal;

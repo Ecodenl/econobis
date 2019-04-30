@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContactGroup } from '../../../actions/contact/ContactGroupsActions';
-import {hashHistory} from "react-router";
+import { hashHistory } from 'react-router';
 
-const ContactGroupDetailsDelete = (props) => {
+const ContactGroupDetailsDelete = props => {
     const confirmAction = () => {
         props.deleteContactGroup(props.id, successAction);
         props.closeDeleteItemModal();
@@ -16,14 +16,14 @@ const ContactGroupDetailsDelete = (props) => {
     };
 
     return (
-      <Modal
-          buttonConfirmText="Verwijder"
-          buttonClassName={'btn-danger'}
-          closeModal={props.closeDeleteItemModal}
-          confirmAction={() => confirmAction()}
-          title="Verwijderen"
-      >
-            Verwijder groep: <strong> { props.name } </strong>
+        <Modal
+            buttonConfirmText="Verwijder"
+            buttonClassName={'btn-danger'}
+            closeModal={props.closeDeleteItemModal}
+            confirmAction={() => confirmAction()}
+            title="Verwijderen"
+        >
+            Verwijder groep: <strong> {props.name} </strong>
         </Modal>
     );
 };
@@ -34,4 +34,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactGroupDetailsDelete);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactGroupDetailsDelete);

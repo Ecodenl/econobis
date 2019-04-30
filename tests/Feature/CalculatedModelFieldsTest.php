@@ -124,11 +124,11 @@ class CalculatedModelFieldsTest extends TestCase
 
         $product = Product::find(1);
         $this->assertEquals(100, $product->current_price->price);
-        $this->assertEquals(121, $product->price_incl_vat);
+        $this->assertEquals(121, $product->current_price->price_incl_vat);
 
         $product = Product::find(2);
         $this->assertEquals(1000, $product->current_price->price);
-        $this->assertEquals(1060, $product->price_incl_vat);
+        $this->assertEquals(1060, $product->current_price->price_incl_vat);
 
         $order = Order::find(2);
         $this->assertEquals(176.26, $order->total_price_incl_vat);

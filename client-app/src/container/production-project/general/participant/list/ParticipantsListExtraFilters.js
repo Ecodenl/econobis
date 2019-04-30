@@ -4,9 +4,9 @@ import Modal from '../../../../../components/modal/Modal';
 import DataTableCustomFilter from '../../../../../components/dataTable/DataTableCustomFilter';
 import ButtonText from '../../../../../components/button/ButtonText';
 import { connect } from 'react-redux';
-import axios from "axios";
-import ProductionProjectsAPI from "../../../../../api/production-project/ProductionProjectsAPI";
-import ContactsAPI from "../../../../../api/contact/ContactsAPI";
+import axios from 'axios';
+import ProductionProjectsAPI from '../../../../../api/production-project/ProductionProjectsAPI';
+import ContactsAPI from '../../../../../api/contact/ContactsAPI';
 
 class ParticipantsListExtraFilters extends Component {
     constructor(props) {
@@ -40,13 +40,14 @@ class ParticipantsListExtraFilters extends Component {
     }
 
     componentDidMount() {
-        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()])
-            .then(axios.spread((productionProjects, contacts) => {
+        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()]).then(
+            axios.spread((productionProjects, contacts) => {
                 this.setState({
                     productionProjects,
                     contacts,
                 });
-            }));
+            })
+        );
     }
 
     closeModal() {
@@ -90,12 +91,11 @@ class ParticipantsListExtraFilters extends Component {
     addFilterRow() {
         const filters = this.state.filters;
 
-        filters[this.state.amountOfFilters] =
-            {
-                field: 'name',
-                type: 'eq',
-                data: '',
-            };
+        filters[this.state.amountOfFilters] = {
+            field: 'name',
+            type: 'eq',
+            data: '',
+        };
 
         setTimeout(() => {
             this.setState({
@@ -197,31 +197,37 @@ class ParticipantsListExtraFilters extends Component {
 
         return (
             <Modal
-            title="Extra filters"
-            buttonConfirmText="Toepassen"
-            confirmAction={this.confirmAction}
+                title="Extra filters"
+                buttonConfirmText="Toepassen"
+                confirmAction={this.confirmAction}
                 closeModal={this.closeModal}
                 buttonCancelText="Sluiten"
                 extraButtonLabel="Maak groep"
                 extraButtonClass="btn-success"
                 extraButtonAction={this.props.saveAsGroup}
-          >
-            <div className="row filter-row">
-                  <h5>
+            >
+                <div className="row filter-row">
+                    <h5>
                         <div className="col-xs-6">
                             <input
-                            onChange={() => this.handleFilterTypeChange('and')}
-                            type="radio" name="type" value="and" id="and"
+                                onChange={() => this.handleFilterTypeChange('and')}
+                                type="radio"
+                                name="type"
+                                value="and"
+                                id="and"
                                 checked={this.state.filterType === 'and'}
                             />
                             <label htmlFor="and">Alle extra filters zijn "EN"</label>
-                    </div>
-                      <div className="col-xs-6">
+                        </div>
+                        <div className="col-xs-6">
                             <input
-                    onChange={() => this.handleFilterTypeChange('or')}
-                    type="radio" name="type" value="or" id="or"
+                                onChange={() => this.handleFilterTypeChange('or')}
+                                type="radio"
+                                name="type"
+                                value="or"
+                                id="or"
                                 checked={this.state.filterType === 'or'}
-                          />
+                            />
                             <label htmlFor="or">Alle extra filters zijn "OF"</label>
                         </div>
                     </h5>
@@ -229,32 +235,38 @@ class ParticipantsListExtraFilters extends Component {
                 <table className="table">
                     <thead>
                         <tr>
-                    <th className="col-md-4">Zoekveld</th>
-                    <th className="col-md-3" />
-                    <th className="col-md-4">Waarde</th>
-                    <th className="col-md-1" />
-                  </tr>
-              </thead>
+                            <th className="col-md-4">Zoekveld</th>
+                            <th className="col-md-3" />
+                            <th className="col-md-4">Waarde</th>
+                            <th className="col-md-1" />
+                        </tr>
+                    </thead>
                     <tbody>
-                {
-                            this.state.filters.length === 0 ? (
-                              <tr><td colSpan={4}>Geen filters gezet.</td></tr>
-                            ) : (
-                                this.state.filters.map((filter, i) => (<DataTableCustomFilter
-                                    key={i} filter={filter} filterNumber={i} fields={fields}
-                                  handleFilterFieldChange={this.handleFilterFieldChange} deleteFilterRow={this.deleteFilterRow}
-                                  handleFilterValueChange={this.handleFilterValueChange}
-                                />))
-                            )
-                        }
-              </tbody>
-              </table>
+                        {this.state.filters.length === 0 ? (
+                            <tr>
+                                <td colSpan={4}>Geen filters gezet.</td>
+                            </tr>
+                        ) : (
+                            this.state.filters.map((filter, i) => (
+                                <DataTableCustomFilter
+                                    key={i}
+                                    filter={filter}
+                                    filterNumber={i}
+                                    fields={fields}
+                                    handleFilterFieldChange={this.handleFilterFieldChange}
+                                    deleteFilterRow={this.deleteFilterRow}
+                                    handleFilterValueChange={this.handleFilterValueChange}
+                                />
+                            ))
+                        )}
+                    </tbody>
+                </table>
                 <div className="row">
                     <div className="col-xs-12 text-right">
                         <ButtonText buttonText="Extra filter" onClickAction={this.addFilterRow} />
-                  </div>
-              </div>
-          </Modal>
+                    </div>
+                </div>
+            </Modal>
         );
     }
 }

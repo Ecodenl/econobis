@@ -9,21 +9,21 @@ const TeamNewApp = () => {
     return (
         <div className="row">
             <div className="col-md-9">
-                        <div className="col-md-12 margin-10-top">
-                            <Panel>
-                                <PanelBody className="panel-small">
-                                    <TeamNewToolbar />
-                                </PanelBody>
-                            </Panel>
-                        </div>
+                <div className="col-md-12 margin-10-top">
+                    <Panel>
+                        <PanelBody className="panel-small">
+                            <TeamNewToolbar />
+                        </PanelBody>
+                    </Panel>
+                </div>
 
-                        <div className="col-md-12 margin-10-top">
-                            <TeamNewForm />
-                        </div>
+                <div className="col-md-12 margin-10-top">
+                    <TeamNewForm />
+                </div>
             </div>
             <div className="col-md-3" />
         </div>
-    )
+    );
 };
 
 export default TeamNewApp;

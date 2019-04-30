@@ -1,12 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 import { isEqual } from 'lodash';
 
 import PhoneNumberApi from '../../../../api/contact/PhoneNumberAPI';
 import {
-    unsetPrimaryAddresses, unsetPrimaryPhoneNumbers,
-    updatePhoneNumber
+    unsetPrimaryAddresses,
+    unsetPrimaryPhoneNumbers,
+    updatePhoneNumber,
 } from '../../../../actions/contact/ContactDetailsActions';
 import ContactDetailsFormPhoneView from './ContactDetailsFormPhoneView';
 import ContactDetailsFormPhoneEdit from './ContactDetailsFormPhoneEdit';
@@ -31,10 +32,10 @@ class ContactDetailFormPhoneItem extends Component {
                 number: false,
             },
         };
-    };
+    }
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.phoneNumber, nextProps.phoneNumber)){
+        if (!isEqual(this.state.phoneNumber, nextProps.phoneNumber)) {
             this.setState({
                 ...this.state,
                 phoneNumber: {
@@ -42,7 +43,7 @@ class ContactDetailFormPhoneItem extends Component {
                 },
             });
         }
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -51,7 +52,7 @@ class ContactDetailFormPhoneItem extends Component {
         });
     };
 
-    onLineLeave= () => {
+    onLineLeave = () => {
         this.setState({
             showActionButtons: false,
             highlightLine: '',
@@ -59,24 +60,24 @@ class ContactDetailFormPhoneItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            phoneNumber: {...this.props.phoneNumber}
+            phoneNumber: { ...this.props.phoneNumber },
         });
 
         this.closeEdit();
     };
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     handleInputChange = event => {
@@ -88,7 +89,7 @@ class ContactDetailFormPhoneItem extends Component {
             ...this.state,
             phoneNumber: {
                 ...this.state.phoneNumber,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -101,22 +102,22 @@ class ContactDetailFormPhoneItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(phoneNumber.number)){
+        if (validator.isEmpty(phoneNumber.number)) {
             errors.number = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(phoneNumber.typeId)){
+        if (validator.isEmpty(phoneNumber.typeId)) {
             errors.typeId = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            PhoneNumberApi.updatePhoneNumber(phoneNumber).then((payload) => {
-                if(phoneNumber.primary){
+            PhoneNumberApi.updatePhoneNumber(phoneNumber).then(payload => {
+                if (phoneNumber.primary) {
                     this.props.unsetPrimaryPhoneNumbers();
                 }
                 this.props.updatePhoneNumber(payload);
@@ -136,8 +137,7 @@ class ContactDetailFormPhoneItem extends Component {
                     toggleDelete={this.toggleDelete}
                     phoneNumber={this.state.phoneNumber}
                 />
-                {
-                    this.state.showEdit &&
+                {this.state.showEdit && (
                     <ContactDetailsFormPhoneEdit
                         phoneNumber={this.state.phoneNumber}
                         handleInputChange={this.handleInputChange}
@@ -146,21 +146,20 @@ class ContactDetailFormPhoneItem extends Component {
                         numberError={this.state.errors.number}
                         cancelEdit={this.cancelEdit}
                     />
-                }
-                {
-                    this.state.showDelete &&
+                )}
+                {this.state.showDelete && (
                     <ContactDetailsFormPhoneDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.phoneNumber}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
 const mapDispatchToProps = dispatch => ({
-    updatePhoneNumber: (id) => {
+    updatePhoneNumber: id => {
         dispatch(updatePhoneNumber(id));
     },
     unsetPrimaryPhoneNumbers: () => {
@@ -168,4 +167,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactDetailFormPhoneItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactDetailFormPhoneItem);

@@ -11,22 +11,22 @@ const UserNewApp = () => {
             <div className="col-md-9">
                 <div className="col-md-12  margin-10-top">
                     <Panel>
-                        <PanelBody className={"panel-small"}>
-                            <UserNewToolbar/>
+                        <PanelBody className={'panel-small'}>
+                            <UserNewToolbar />
                         </PanelBody>
                     </Panel>
                 </div>
                 <div className="col-md-12  margin-10-top">
                     <Panel>
                         <PanelBody>
-                            <UserNewForm/>
+                            <UserNewForm />
                         </PanelBody>
                     </Panel>
                 </div>
             </div>
-            <div className="col-md-3"/>
+            <div className="col-md-3" />
         </div>
-    )
+    );
 };
 
 export default UserNewApp;

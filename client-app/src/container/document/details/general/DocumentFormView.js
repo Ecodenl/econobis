@@ -1,138 +1,110 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
 
-const createMarkup = (value) => {
-    return {__html: value};
+const createMarkup = value => {
+    return { __html: value };
 };
 
 const EmailTemplateFormView = props => {
-    const {id, productionProject, participant, contact, contactGroup, intake, opportunity, documentType, description, documentGroup, filename, template, task, quotationRequest, housingFile, campaign , measure, order} = props.documentDetails;
+    const {
+        id,
+        productionProject,
+        participant,
+        contact,
+        contactGroup,
+        intake,
+        opportunity,
+        documentType,
+        description,
+        documentGroup,
+        filename,
+        template,
+        task,
+        quotationRequest,
+        housingFile,
+        campaign,
+        measure,
+        order,
+    } = props.documentDetails;
 
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText
-                        label={"Contact"}
-                        value={ contact && contact.fullName }
-                    />
-                    <ViewText
-                        label={"Type"}
-                        value={ documentType && documentType.name }
-                    />
+                    <ViewText label={'Contact'} value={contact && contact.fullName} />
+                    <ViewText label={'Type'} value={documentType && documentType.name} />
+                </div>
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <div className="row">
+                    <ViewText label={'Groep'} value={contactGroup && contactGroup.name} />
+                    <ViewText label={'Intake'} value={intake && intake.fullAddress} />
                 </div>
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
                     <ViewText
-                        label={"Groep"}
-                        value={ contactGroup && contactGroup.name }
+                        label={'Kans'}
+                        value={opportunity && opportunity.measureCategory.name + ' ' + opportunity.status.name}
                     />
-                    <ViewText
-                        label={"Intake"}
-                        value={ intake && intake.fullAddress }
-                    />
+                    <ViewText label={'Taak'} value={task && task.name} />
                 </div>
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText
-                        label={"Kans"}
-                        value={ opportunity && (opportunity.measureCategory.name + ' ' + opportunity.status.name) }
-                    />
-                    <ViewText
-                        label={"Taak"}
-                        value={ task && task.name }
-                    />
-                </div>
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText
-                        label={"Offerteverzoek"}
-                        value={ quotationRequest && quotationRequest.name }
-                    />
-                    <ViewText
-                        label={"Woningdossier"}
-                        value={ housingFile && housingFiles.name }
-                    />
+                    <ViewText label={'Offerteverzoek'} value={quotationRequest && quotationRequest.name} />
+                    <ViewText label={'Woningdossier'} value={housingFile && housingFiles.name} />
                 </div>
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText
-                        label={"Productieproject"}
-                        value={ productionProject && productionProject.name }
-                    />
-                    <ViewText
-                        label={"Participant productieproject"}
-                        value={ participant && participant.name }
-                    />
+                    <ViewText label={'Productieproject'} value={productionProject && productionProject.name} />
+                    <ViewText label={'Participant productieproject'} value={participant && participant.name} />
                 </div>
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText
-                        label={"Order"}
-                        value={ order && order.name }
-                    />
+                    <ViewText label={'Order'} value={order && order.name} />
                 </div>
             </div>
 
-            {documentType === 'upload' &&
-            <div className="row" onClick={props.switchToEdit}>
-                <div className="row">
-                    <ViewText
-                        label={"Campagne"}
-                        value={campaign && campaign.name}
-                    />
-                    <ViewText
-                        label={"Maatregel"}
-                        value={measure && measure.name}
-                    />
+            {documentType === 'upload' && (
+                <div className="row" onClick={props.switchToEdit}>
+                    <div className="row">
+                        <ViewText label={'Campagne'} value={campaign && campaign.name} />
+                        <ViewText label={'Maatregel'} value={measure && measure.name} />
+                    </div>
                 </div>
-            </div>
-            }
+            )}
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText
-                        label={"Template"}
-                        value={ template && template.name }
-                    />
+                    <ViewText label={'Template'} value={template && template.name} />
                 </div>
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <div className="col-sm-3">
                     <label>Omschrijving</label>
                 </div>
-                <div className="col-sm-6">
-                    {description}
-                </div>
+                <div className="col-sm-6">{description}</div>
             </div>
             <div className="row margin-30-top" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText
-                        label={"Documentgroep"}
-                        value={ documentGroup && documentGroup.name }
-                    />
-                    <ViewText
-                        label={"Bestandsnaam"}
-                        value={ filename }
-                    />
+                    <ViewText label={'Documentgroep'} value={documentGroup && documentGroup.name} />
+                    <ViewText label={'Bestandsnaam'} value={filename} />
                 </div>
             </div>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         documentDetails: state.documentDetails,
-    }
+    };
 };
 
 export default connect(mapStateToProps)(EmailTemplateFormView);

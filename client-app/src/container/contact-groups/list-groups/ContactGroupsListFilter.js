@@ -7,16 +7,15 @@ import 'react-day-picker/lib/style.css';
 import {
     setFilterContactGroupName,
     setFilterContactGroupStatus,
-    setFilterContactGroupTypeId
+    setFilterContactGroupTypeId,
 } from '../../../actions/contact/ContactGroupsFiltersActions';
 
 const ContactGroupsListFilter = props => {
-
-    const onNameChange = (e) => {
+    const onNameChange = e => {
         props.setFilterContactGroupName(e.target.value);
     };
 
-    const onStatusChange = (e) => {
+    const onStatusChange = e => {
         props.setFilterContactGroupStatus(e.target.value);
 
         setTimeout(() => {
@@ -24,7 +23,7 @@ const ContactGroupsListFilter = props => {
         }, 100);
     };
 
-    const onTypeChange = (e) => {
+    const onTypeChange = e => {
         props.setFilterContactGroupTypeId(e.target.value);
 
         setTimeout(() => {
@@ -34,40 +33,61 @@ const ContactGroupsListFilter = props => {
 
     return (
         <tr className="thead-filter">
-            <th><input type="text" className="form-control input-sm" value={ props.filters.name.data} onChange={onNameChange} /></th>
-            <th/>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.name.data}
+                    onChange={onNameChange}
+                />
+            </th>
+            <th />
 
             <th>
-                <select className="form-control input-sm" value={ props.filters.status.data } onChange={onStatusChange}>
-                    <option/>
-                            <option key={1} value={0}>{ 'Open' }</option>
-                            <option key={2} value={1}>{ 'Gesloten' }</option>
+                <select className="form-control input-sm" value={props.filters.status.data} onChange={onStatusChange}>
+                    <option />
+                    <option key={1} value={0}>
+                        {'Open'}
+                    </option>
+                    <option key={2} value={1}>
+                        {'Gesloten'}
+                    </option>
                 </select>
             </th>
             <th className="hidden-xs hidden-sm">
-                <select className="form-control input-sm" value={ props.filters.typeId.data } onChange={onTypeChange}>
-                    <option/>
-                    { props.contactGroupTypes.map((contactGroupType) => {
-                        return <option key={contactGroupType.id } value={ contactGroupType.id }>{ contactGroupType.name }</option>
-                    }) }
+                <select className="form-control input-sm" value={props.filters.typeId.data} onChange={onTypeChange}>
+                    <option />
+                    {props.contactGroupTypes.map(contactGroupType => {
+                        return (
+                            <option key={contactGroupType.id} value={contactGroupType.id}>
+                                {contactGroupType.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
-            <th/>
+            <th />
         </tr>
     );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     filters: state.contactGroups.filters,
     contactGroupTypes: state.systemData.contactGroupTypes,
 });
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({
-        setFilterContactGroupName,
-        setFilterContactGroupStatus,
-        setFilterContactGroupTypeId
-    }, dispatch);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            setFilterContactGroupName,
+            setFilterContactGroupStatus,
+            setFilterContactGroupTypeId,
+        },
+        dispatch
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupsListFilter);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactGroupsListFilter);

@@ -1,18 +1,18 @@
-export const fetchTaskDetails = (id) => {
+export const fetchTaskDetails = id => {
     return {
         type: 'FETCH_TASK_DETAILS',
-        id
-    }
+        id,
+    };
 };
 
-export const updateTask = (task) => {
+export const updateTask = task => {
     return {
         type: 'UPDATE_TASK_DETAILS',
-        task
-    }
+        task,
+    };
 };
-export const deleteTask = (id) => {
-    return  {
+export const deleteTask = id => {
+    return {
         type: 'DELETE_TASK',
         id,
     };

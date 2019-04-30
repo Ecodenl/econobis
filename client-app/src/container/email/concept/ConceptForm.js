@@ -1,11 +1,23 @@
 import React from 'react';
-import Panel from "../../../components/panel/Panel";
+import Panel from '../../../components/panel/Panel';
 
-import ConceptAttachments from "./attachments/ConceptAttachments";
-import ConceptFormGeneral from "./general/ConceptFormGeneral";
+import ConceptAttachments from './attachments/ConceptAttachments';
+import ConceptFormGeneral from './general/ConceptFormGeneral';
 
-const ConceptNewForm = ({email, emailAddresses, errors, hasLoaded, handleSubmit, handleToIds, handleCcIds, handleBccIds, handleInputChange, handleTextChange, addAttachment, deleteAttachment}) => {
-
+const ConceptNewForm = ({
+    email,
+    emailAddresses,
+    errors,
+    hasLoaded,
+    handleSubmit,
+    handleToIds,
+    handleCcIds,
+    handleBccIds,
+    handleInputChange,
+    handleTextChange,
+    addAttachment,
+    deleteAttachment,
+}) => {
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -22,8 +34,11 @@ const ConceptNewForm = ({email, emailAddresses, errors, hasLoaded, handleSubmit,
                     handleTextChange={handleTextChange}
                 />
 
-                <ConceptAttachments attachments={email.attachments} deleteAttachment={deleteAttachment} addAttachment={addAttachment} />
-
+                <ConceptAttachments
+                    attachments={email.attachments}
+                    deleteAttachment={deleteAttachment}
+                    addAttachment={addAttachment}
+                />
             </Panel>
         </form>
     );

@@ -6,14 +6,13 @@ export const fetchTeams = () => {
 
 export const clearTeams = () => {
     return {
-        type: 'CLEAR_TEAMS'
+        type: 'CLEAR_TEAMS',
     };
 };
 
-export const deleteTeam = (id) => {
-    return  {
+export const deleteTeam = id => {
+    return {
         type: 'DELETE_TEAM',
         id,
     };
 };
-

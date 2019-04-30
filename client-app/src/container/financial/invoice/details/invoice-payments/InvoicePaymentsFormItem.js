@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import InvoiceDetailsAPI from '../../../../../api/invoice/InvoiceDetailsAPI';
-import {fetchInvoiceDetails} from '../../../../../actions/invoice/InvoiceDetailsActions';
+import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
 import InvoicePaymentsFormView from './InvoicePaymentsFormView';
 import InvoicePaymentsFormEdit from './InvoicePaymentsFormEdit';
-import {isEqual} from "lodash";
-import validator from "validator";
-import InvoicePaymentsFormDelete from "./InvoicePaymentsFormDelete";
+import { isEqual } from 'lodash';
+import validator from 'validator';
+import InvoicePaymentsFormDelete from './InvoicePaymentsFormDelete';
 
 class InvoicePaymentsFormItem extends Component {
     constructor(props) {
@@ -28,14 +28,14 @@ class InvoicePaymentsFormItem extends Component {
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-    };
+    }
 
     toggleDelete = () => {
-        this.setState({showDelete: !this.state.showDelete});
+        this.setState({ showDelete: !this.state.showDelete });
     };
 
     componentWillReceiveProps(nextProps) {
-        if(!isEqual(this.state.payment, nextProps.payment)){
+        if (!isEqual(this.state.payment, nextProps.payment)) {
             this.setState({
                 ...this.state,
                 payment: {
@@ -43,7 +43,7 @@ class InvoicePaymentsFormItem extends Component {
                 },
             });
         }
-    };
+    }
 
     onLineEnter = () => {
         this.setState({
@@ -60,17 +60,17 @@ class InvoicePaymentsFormItem extends Component {
     };
 
     openEdit = () => {
-        this.setState({showEdit: true});
+        this.setState({ showEdit: true });
     };
 
     closeEdit = () => {
-        this.setState({showEdit: false});
+        this.setState({ showEdit: false });
     };
 
     cancelEdit = () => {
         this.setState({
             ...this.state,
-            payment: {...this.props.payment},
+            payment: { ...this.props.payment },
         });
 
         this.closeEdit();
@@ -82,27 +82,23 @@ class InvoicePaymentsFormItem extends Component {
         const name = target.name;
 
         this.setState({
-                ...this.state,
-                payment: {
-                    ...this.state.payment,
-                    [name]: value
-                },
-
+            ...this.state,
+            payment: {
+                ...this.state.payment,
+                [name]: value,
             },
-        );
-
+        });
     };
-
 
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
             payment: {
                 ...this.state.payment,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -110,28 +106,24 @@ class InvoicePaymentsFormItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        const {payment} = this.state;
+        const { payment } = this.state;
 
         if (validator.isEmpty(payment.amount + '')) {
             errors.amount = true;
             hasErrors = true;
         }
-        ;
-
         if (validator.isEmpty(payment.datePaid + '')) {
             errors.datePaid = true;
             hasErrors = true;
         }
-        ;
-
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        InvoiceDetailsAPI.updatePayment(payment).then((payload) => {
-            this.props.fetchInvoiceDetails(this.state.payment.invoiceId);
-            this.closeEdit();
-        });
+            InvoiceDetailsAPI.updatePayment(payment).then(payload => {
+                this.props.fetchInvoiceDetails(this.state.payment.invoiceId);
+                this.closeEdit();
+            });
     };
 
     render() {
@@ -146,8 +138,7 @@ class InvoicePaymentsFormItem extends Component {
                     toggleDelete={this.toggleDelete}
                     payment={this.state.payment}
                 />
-                {
-                    this.state.showEdit && this.props.permissions.manageFinancial &&
+                {this.state.showEdit && this.props.permissions.manageFinancial && (
                     <InvoicePaymentsFormEdit
                         errors={this.state.errors}
                         payment={this.state.payment}
@@ -156,30 +147,32 @@ class InvoicePaymentsFormItem extends Component {
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
                     />
-                }
-                {
-                    this.state.showDelete && this.props.permissions.manageFinancial &&
+                )}
+                {this.state.showDelete && this.props.permissions.manageFinancial && (
                     <InvoicePaymentsFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         id={this.state.payment.id}
                         invoiceId={this.state.payment.invoiceId}
                     />
-                }
+                )}
             </div>
         );
     }
-};
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-    }
+    };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchInvoiceDetails: (id) => {
+    fetchInvoiceDetails: id => {
         dispatch(fetchInvoiceDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoicePaymentsFormItem);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvoicePaymentsFormItem);

@@ -1,5 +1,5 @@
-export default function (state= {}, action) {
-    switch(action.type) {
+export default function(state = {}, action) {
+    switch (action.type) {
         case 'FETCH_INTAKE_DETAILS_SUCCESS':
             return {
                 ...state,
@@ -13,17 +13,19 @@ export default function (state= {}, action) {
         case 'NEW_INTAKE_MEASURE_REQUESTED':
             return {
                 ...state,
-                    measuresRequested: [
-                        ...state.measuresRequested,
-                        {
-                            ...action.measure,
-                        }
-                    ]
+                measuresRequested: [
+                    ...state.measuresRequested,
+                    {
+                        ...action.measure,
+                    },
+                ],
             };
         case 'DELETE_INTAKE_MEASURE_REQUESTED_SUCCESS':
             return {
                 ...state,
-                    measuresRequested: state.measuresRequested.filter(measureRequested => measureRequested.id !== action.measureId),
+                measuresRequested: state.measuresRequested.filter(
+                    measureRequested => measureRequested.id !== action.measureId
+                ),
             };
         default:
             return state;

@@ -2,16 +2,36 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ViewText from '../../../../../components/form/ViewText';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from "../../../../../components/panel/PanelBody";
-import moment from "moment/moment";
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import moment from 'moment/moment';
 
 const InvoiceDetailsFormGeneralView = props => {
-
-    const { status, dateRequested, paymentType, paymentTypeId, invoiceText, subject, order, totalPriceInclVatAndReduction,
-        amountOpen, dateSent, datePaymentDue, datePaid,
-        dateReminder1, dateReminder2, dateReminder3, dateExhortation,
-        emailReminder1, emailReminder2, emailReminder3, emailExhortation, dateCollection, emailedTo, sentToName } = props.invoiceDetails;
+    const {
+        status,
+        dateRequested,
+        paymentType,
+        paymentTypeId,
+        invoiceText,
+        subject,
+        order,
+        totalPriceInclVatAndReduction,
+        amountOpen,
+        dateSent,
+        datePaymentDue,
+        datePaid,
+        dateReminder1,
+        dateReminder2,
+        dateReminder3,
+        dateExhortation,
+        emailReminder1,
+        emailReminder2,
+        emailReminder3,
+        emailExhortation,
+        dateCollection,
+        emailedTo,
+        sentToName,
+    } = props.invoiceDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -19,30 +39,21 @@ const InvoiceDetailsFormGeneralView = props => {
                 <PanelBody>
                     <div className="row">
                         <ViewText
-                            label={"Contact"}
+                            label={'Contact'}
                             value={order.contact ? order.contact.fullName : ''}
                             link={order.contact ? 'contact/' + order.contact.id : ''}
                         />
-                        <ViewText
-                            label={"Status"}
-                            value={status ? status.name : ''}
-                        />
+                        <ViewText label={'Status'} value={status ? status.name : ''} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText label={'Betaalwijze'} value={paymentType ? paymentType.name : ''} />
+                        <ViewText label={'Onderwerp'} value={subject ? subject : ''} />
                     </div>
 
                     <div className="row">
                         <ViewText
-                            label={"Betaalwijze"}
-                            value={paymentType ? paymentType.name : ''}
-                        />
-                        <ViewText
-                            label={"Onderwerp"}
-                            value={subject ? subject : ''}
-                        />
-                    </div>
-
-                    <div className="row">
-                        <ViewText
-                            label={"Order"}
+                            label={'Order'}
                             value={order ? order.number : ''}
                             link={order ? 'order/' + order.id : ''}
                         />
@@ -50,7 +61,9 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row margin-20-top margin-20-bottom">
                         <div className="col-sm-3">
-                            <label htmlFor="invoiceText" className="col-sm-12">Opmerking</label>
+                            <label htmlFor="invoiceText" className="col-sm-12">
+                                Opmerking
+                            </label>
                         </div>
                         <div className="col-sm-9" id="invoiceText">
                             {invoiceText ? invoiceText : ''}
@@ -59,107 +72,102 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
-                            label={"Prijs incl. BTW"}
-                            value={ totalPriceInclVatAndReduction ? '€' + totalPriceInclVatAndReduction.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
+                            label={'Prijs incl. BTW'}
+                            value={
+                                totalPriceInclVatAndReduction
+                                    ? '€' +
+                                      totalPriceInclVatAndReduction.toLocaleString('nl', {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : '€0,00'
+                            }
                         />
                         <ViewText
-                            label={"Openstaand bedrag"}
-                            value={ amountOpen ? '€' + amountOpen.toLocaleString('nl',{ minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '€0,00'}
+                            label={'Openstaand bedrag'}
+                            value={
+                                amountOpen
+                                    ? '€' +
+                                      amountOpen.toLocaleString('nl', {
+                                          minimumFractionDigits: 2,
+                                          maximumFractionDigits: 2,
+                                      })
+                                    : '€0,00'
+                            }
                         />
                     </div>
 
                     <div className="row">
-                        {dateSent ?
+                        {dateSent ? (
                             <ViewText
-                                label={"Factuur datum"}
+                                label={'Factuur datum'}
                                 value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''}
                             />
-                            :
+                        ) : (
                             <ViewText
-                                label={"Geplande factuur datum"}
+                                label={'Geplande factuur datum'}
                                 value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
                             />
-                        }
+                        )}
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            label={"Verstuurd naar"}
-                            value={sentToName ? sentToName : ''}
-                        />
-                        <ViewText
-                            label={"Verstuurd naar e-mail"}
-                            value={emailedTo ? emailedTo : ''}
-                        />
+                        <ViewText label={'Verstuurd naar'} value={sentToName ? sentToName : ''} />
+                        <ViewText label={'Verstuurd naar e-mail'} value={emailedTo ? emailedTo : ''} />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={"Herinnering 1 verstuurd"}
+                            label={'Herinnering 1 verstuurd'}
                             value={dateReminder1 ? moment(dateReminder1).format('DD-MM-Y') : ''}
                         />
-                        <ViewText
-                            label={"E-mail herinnering 1"}
-                            value={emailReminder1 ? emailReminder1 : ''}
-                        />
+                        <ViewText label={'E-mail herinnering 1'} value={emailReminder1 ? emailReminder1 : ''} />
                     </div>
 
                     <div className="row">
                         <ViewText
-                            label={"Herinnering 2 verstuurd"}
+                            label={'Herinnering 2 verstuurd'}
                             value={dateReminder2 ? moment(dateReminder2).format('DD-MM-Y') : ''}
                         />
-                        <ViewText
-                            label={"E-mail herinnering 2"}
-                            value={emailReminder2 ? emailReminder2 : ''}
-                        />
+                        <ViewText label={'E-mail herinnering 2'} value={emailReminder2 ? emailReminder2 : ''} />
                     </div>
 
                     <div className="row">
                         <ViewText
-                            label={"Herinnering 3 verstuurd"}
+                            label={'Herinnering 3 verstuurd'}
                             value={dateReminder3 ? moment(dateReminder3).format('DD-MM-Y') : ''}
                         />
-                        <ViewText
-                            label={"E-mail herinnering 3"}
-                            value={emailReminder3 ? emailReminder3 : ''}
-                        />
+                        <ViewText label={'E-mail herinnering 3'} value={emailReminder3 ? emailReminder3 : ''} />
                     </div>
 
                     <div className="row">
                         <ViewText
-                            label={"Aanmaning verstuurd"}
+                            label={'Aanmaning verstuurd'}
                             value={dateExhortation ? moment(dateExhortation).format('DD-MM-Y') : ''}
                         />
-                        <ViewText
-                            label={"E-mail aanmaning"}
-                            value={emailExhortation ? emailExhortation : ''}
-                        />
+                        <ViewText label={'E-mail aanmaning'} value={emailExhortation ? emailExhortation : ''} />
                     </div>
 
                     <div className="row">
-                        {paymentTypeId === 'transfer' ?
+                        {paymentTypeId === 'transfer' ? (
                             <ViewText
-                                label={"Uiterste betaaldatum"}
+                                label={'Uiterste betaaldatum'}
                                 value={datePaymentDue ? moment(datePaymentDue.date).format('DD-MM-Y') : ''}
                             />
-                            :
+                        ) : (
                             <ViewText
-                                label={"Incasso datum"}
+                                label={'Incasso datum'}
                                 value={dateCollection ? moment(dateCollection).format('DD-MM-Y') : ''}
-                            />}
-                        <ViewText
-                            label={"Datum betaald"}
-                            value={datePaid ? moment(datePaid).format('DD-MM-Y') : ''}
-                        />
+                            />
+                        )}
+                        <ViewText label={'Datum betaald'} value={datePaid ? moment(datePaid).format('DD-MM-Y') : ''} />
                     </div>
-
                 </PanelBody>
             </Panel>
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         invoiceDetails: state.invoiceDetails,
     };

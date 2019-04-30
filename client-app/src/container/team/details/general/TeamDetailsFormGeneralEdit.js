@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
@@ -6,8 +6,8 @@ import TeamDetailsAPI from '../../../../api/team/TeamDetailsAPI';
 import { updateTeam } from '../../../../actions/team/TeamDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
-import Panel from "../../../../components/panel/Panel";
-import PanelBody from "../../../../components/panel/PanelBody";
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
 
 class TeamDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -22,7 +22,7 @@ class TeamDetailsFormGeneralEdit extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    };
+    }
 
     handleInputChange(event) {
         const target = event.target;
@@ -33,10 +33,10 @@ class TeamDetailsFormGeneralEdit extends Component {
             ...this.state,
             team: {
                 ...this.state.team,
-                [name]: value
+                [name]: value,
             },
         });
-    };
+    }
 
     handleSubmit(event) {
         event.preventDefault();
@@ -47,17 +47,16 @@ class TeamDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(team.name)){
+        if (validator.isEmpty(team.name)) {
             errors.name = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            this.props.updateTeam(team, this.props.switchToView);
-    };
+        !hasErrors && this.props.updateTeam(team, this.props.switchToView);
+    }
 
     render() {
         const { name } = this.state.team;
@@ -69,10 +68,10 @@ class TeamDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Naam"
-                                name={"name"}
+                                name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
-                                required={"required"}
+                                required={'required'}
                                 error={this.state.errors.name}
                             />
                         </div>
@@ -80,17 +79,26 @@ class TeamDetailsFormGeneralEdit extends Component {
 
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
-                            <ButtonText buttonClassName={"btn-default"} buttonText={"Sluiten"} onClickAction={this.props.switchToView}/>
-                            <ButtonText buttonText={"Opslaan"} onClickAction={this.handleSubmit} type={"submit"} value={"Submit"}/>
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>
             </form>
         );
-    };
-};
+    }
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         teamDetails: state.teamDetails,
     };
@@ -102,4 +110,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsFormGeneralEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TeamDetailsFormGeneralEdit);

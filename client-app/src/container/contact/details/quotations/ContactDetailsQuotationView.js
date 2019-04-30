@@ -3,13 +3,16 @@ import moment from 'moment';
 import { hashHistory } from 'react-router';
 
 const ContactDetailsQuotationView = props => {
-    const {opportunity, dateRecorded, dateReleased, dateValid } = props.quotation;
+    const { opportunity, dateRecorded, dateReleased, dateValid } = props.quotation;
 
     return (
-
-        <div className={`row border ${props.highlightLine}`} onMouseEnter={() => props.onLineEnter()} onMouseLeave={() => props.onLineLeave()}>
+        <div
+            className={`row border ${props.highlightLine}`}
+            onMouseEnter={() => props.onLineEnter()}
+            onMouseLeave={() => props.onLineLeave()}
+        >
             <div onClick={() => hashHistory.push(`/kans/${opportunity.id}`)}>
-                <div className="col-sm-2">{opportunity ? opportunity.number: ''}</div>
+                <div className="col-sm-2">{opportunity ? opportunity.number : ''}</div>
                 <div className="col-sm-2">{opportunity ? opportunity.measureCategory.name : ''}</div>
                 <div className="col-sm-2">{opportunity ? opportunity.status.name : ''}</div>
                 <div className="col-sm-2">{dateRecorded ? moment(dateRecorded).format('L') : ''}</div>

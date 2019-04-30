@@ -45,16 +45,24 @@ const ProjectDetailsFormValueCourseEdit = ({
                     </div>
 
                     <div className="row">
-                        {projectType.codeRef !== 'obligation' ? (
-                            <InputText
-                                label={'Boekwaarde'}
-                                id={'bookWorth'}
-                                name={'bookWorth'}
-                                value={bookWorth}
-                                onChangeAction={handleInputChange}
-                                required={'required'}
-                                error={errors.bookWorthError}
-                            />
+                        <InputText
+                            label={projectType.codeRef !== 'obligation' ? 'Boekwaarde' : 'Hoofdsom'}
+                            id={'bookWorth'}
+                            name={'bookWorth'}
+                            value={bookWorth}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.bookWorthError}
+                        />
+                        <InputText
+                            label={'Boekwaarde'}
+                            id={'bookWorth'}
+                            name={'bookWorth'}
+                            value={bookWorth}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.bookWorthError}
+                        />
                         ) : null}
                         <InputText
                             label={'Overdrachtswaarde'}

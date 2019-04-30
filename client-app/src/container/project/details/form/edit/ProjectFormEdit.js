@@ -182,6 +182,7 @@ class ProjectFormEdit extends Component {
             administration,
             hasPaymentInvoices,
             valueCourses,
+            amountOfParticipants,
         } = this.props.project;
 
         return (
@@ -211,6 +212,7 @@ class ProjectFormEdit extends Component {
                     handleContactGroupIds={this.handleContactGroupIds}
                     errors={this.state.errors}
                     contactGroups={this.state.contactGroups}
+                    amountOfParticipants={amountOfParticipants}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (

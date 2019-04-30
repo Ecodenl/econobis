@@ -118,16 +118,14 @@ class ProjectDetailsFormValueCourseNew extends Component {
                         </div>
 
                         <div className="row">
-                            {this.props.projectType.codeRef !== 'obligation' ? (
-                                <InputText
-                                    label={'Boekwaarde'}
-                                    name={'bookWorth'}
-                                    value={bookWorth}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    error={this.state.errors.bookWorth}
-                                />
-                            ) : null}
+                            <InputText
+                                label={this.props.projectType.codeRef === 'obligation' ? 'Hoofdsom' : ' Boekwaarde'}
+                                name={'bookWorth'}
+                                value={bookWorth}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.bookWorth}
+                            />
                             <InputText
                                 label={'Overdrachtswaarde'}
                                 name={'transferWorth'}

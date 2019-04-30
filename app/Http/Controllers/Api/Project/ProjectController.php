@@ -116,7 +116,7 @@ class ProjectController extends ApiController
         // Create project valuecourse if participationWorth is > 0
         // Only if project type is capital or postal code link capital
         if($project->participation_worth > 0) {
-            if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
+            if($project->projectType->code_ref != 'loan') {
                 $projectValueCourse = new ProjectValueCourse();
 
                 $projectValueCourse->fill([
@@ -193,7 +193,7 @@ class ProjectController extends ApiController
 
                 // Create project valuecourse if participationWorth changed and no valuecourse with bookworth is filled out
                 // Only if project type is capital or postal code link capital
-                if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
+                if($project->projectType->code_ref != 'loan') {
                     $projectValueCourseWithBookWorthCount = $project->projectValueCourses->where('book_worth', '>', '0')->count();
 
                     if($projectValueCourseWithBookWorthCount === 0) {

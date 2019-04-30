@@ -136,9 +136,9 @@ class TwinfieldSalesTransactionHelper
 
         //Salestransaction - Total line maken
         $idTeller = 1;
-        $totaalBedragExcl = $invoice->getTotalPriceExVatInclReductionAttribute();
-        $totaalBedragBtw  = $invoice->getTotalVatAttribute();
-        $totaalBedragIncl = new Money(($totaalBedragExcl + $totaalBedragBtw )*100, $this->currency );
+        $totaalBedragExcl = round($invoice->getTotalPriceExVatInclReductionAttribute() * 100, 0);
+        $totaalBedragBtw  = round($invoice->getTotalVatAttribute() * 100, 0);
+        $totaalBedragIncl = new Money(($totaalBedragExcl + $totaalBedragBtw ), $this->currency );
         $twinfieldTransactionLineTotal = new SalesTransactionLine();
         $twinfieldTransactionLineTotal
             ->setId($idTeller)
@@ -170,8 +170,8 @@ class TwinfieldSalesTransactionHelper
                 $vatData[$vatCodeTwinfield] = ['vatLedgerCode' => $vatLedgerCodeTwinfield, 'vatAmount' => $vatAmountOld + $vatAmount];
             }
 
-            $exclAmount = $invoiceProduct->getPriceExVatInclReductionAttribute();
-            $invoiceDetailExcl = new Money($exclAmount*100, $this->currency );
+            $exclAmount = round($invoiceProduct->getPriceExVatInclReductionAttribute()*100, 0);
+            $invoiceDetailExcl = new Money($exclAmount, $this->currency );
             $twinfieldTransactionLineDetail = new SalesTransactionLine();
             $idTeller++;
             $twinfieldTransactionLineDetail
@@ -192,7 +192,7 @@ class TwinfieldSalesTransactionHelper
 
         //Salestransaction - Vat lines maken (btw bedrag per btw code)
         foreach($vatData as $code => $vatDataDetail) {
-            $invoiceDetailExcl = new Money(($vatDataDetail['vatAmount'])*100, $this->currency );
+            $invoiceDetailExcl = new Money( round(($vatDataDetail['vatAmount'])*100, 0), $this->currency );
             $twinfieldTransactionLineVat = new SalesTransactionLine();
             $idTeller++;
             $twinfieldTransactionLineVat

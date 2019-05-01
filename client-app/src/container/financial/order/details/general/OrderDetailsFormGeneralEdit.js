@@ -12,6 +12,7 @@ import InputSelect from "../../../../../components/form/InputSelect";
 import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
 import InputDate from "../../../../../components/form/InputDate";
 import InputReactSelect from "../../../../../components/form/InputReactSelect";
+import moment from 'moment';
 
 class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class OrderDetailsFormGeneralEdit extends Component {
         this.state = {
             emailTemplates: [],
             showExtraContactInfo: false,
+            collectMandateActive: false,
             order: {
                 id,
                 statusId: statusId ? statusId : '',
@@ -56,21 +58,21 @@ class OrderDetailsFormGeneralEdit extends Component {
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     };
 
-    componentWillMount() {
+    componentDidMount() {
         EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
             this.setState({
-                emailTemplates: payload,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    emailTemplates: false,
+                    emailTemplates: payload,
+                    peekLoading: {
+                        ...this.state.peekLoading,
+                        emailTemplates: false,
+                    },
                 },
-            });
+                this.checkContactCollectMandate);
         });
     };
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: selectedOption
@@ -84,7 +86,6 @@ class OrderDetailsFormGeneralEdit extends Component {
         const name = target.name;
 
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: value
@@ -94,10 +95,47 @@ class OrderDetailsFormGeneralEdit extends Component {
 
     handleInputChangeDate = (value, name) => {
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: value
+            },
+        });
+    };
+    handleInputChangeInvoiceDate = (value, name) => {
+        this.setState({
+                order: {
+                    ...this.state.order,
+                    [name]: value
+                },
+            }, this.checkContactCollectMandate
+        );
+    };
+
+
+    checkContactCollectMandate = () => {
+
+        let paymentTypeId = this.state.order.paymentTypeId;
+        let date = this.state.order.dateNextInvoice;
+        if (!date)
+        {
+            date = moment().format("YYYY-MM-DD");
+        }
+        let contactCollectMandateFirstRun = this.props.contactCollectMandateFirstRun;
+        let contactCollectMandate = this.props.contactCollectMandate;
+        let collectMandateActive = (contactCollectMandate == true);
+        if (contactCollectMandate && contactCollectMandateFirstRun > date)
+        {
+            collectMandateActive =  false;
+        }
+        if (!collectMandateActive)
+        {
+            paymentTypeId =  'transfer';
+        }
+        this.setState({
+            collectMandateActive,
+            order: {
+                ...this.state.order,
+                paymentTypeId,
             },
         });
     };
@@ -226,7 +264,8 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 label={"Betaalwijze"}
                                 id="paymentTypeId"
                                 name={"paymentTypeId"}
-                                options={this.props.orderPaymentTypes}
+                                options={this.state.collectMandateActive ? this.props.orderPaymentTypes : this.props.orderPaymentTypes.filter(orderPaymentType => orderPaymentType.id === 'transfer')}
+                                emptyOption={this.state.collectMandateActive}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
@@ -310,7 +349,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 label="Volgende factuur datum"
                                 value={dateNextInvoice}
                                 name={'dateNextInvoice'}
-                                onChangeAction={this.handleInputChangeDate}
+                                onChangeAction={this.handleInputChangeInvoiceDate}
                             />
                         </div>
                         <div className="row">

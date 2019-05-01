@@ -13,6 +13,8 @@ class OrderDetailsFormGeneral extends Component {
         this.state = {
             contactPerson: '',
             contactEmail: '',
+            contactCollectMandate: false,
+            contactCollectMandateFirstRun: '0000-00-00',
             showEdit: false,
             activeDiv: '',
         };
@@ -25,6 +27,8 @@ class OrderDetailsFormGeneral extends Component {
                 ...this.state,
                 contactPerson: payload.data.contactPerson,
                 contactEmail: payload.data.email,
+                contactCollectMandate: payload.data.collectMandate,
+                contactCollectMandateFirstRun: payload.data.collectMandateFirstRun,
             });
         });
     };
@@ -38,6 +42,8 @@ class OrderDetailsFormGeneral extends Component {
                     ...this.state,
                     contactPerson: payload.data.contactPerson,
                     contactEmail: payload.data.email,
+                    contactCollectMandate: payload.data.collectMandate,
+                    contactCollectMandateFirstRun: payload.data.collectMandateFirstRun,
                 });
             });
         }
@@ -86,6 +92,8 @@ class OrderDetailsFormGeneral extends Component {
                             switchToView={this.switchToView}
                             contactPerson={this.state.contactPerson}
                             contactEmail={this.state.contactEmail}
+                            contactCollectMandate={this.state.contactCollectMandate}
+                            contactCollectMandateFirstRun={this.state.contactCollectMandateFirstRun}
                         />
                         :
                         <OrderDetailsFormGeneralView

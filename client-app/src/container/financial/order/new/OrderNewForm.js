@@ -16,8 +16,6 @@ import InputReactSelect from "../../../../components/form/InputReactSelect";
 import InputDate from "../../../../components/form/InputDate";
 import moment from 'moment';
 
-moment.locale('nl');
-
 class OrderNewForm extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +25,9 @@ class OrderNewForm extends Component {
             emailTemplates: [],
             contactPerson: '',
             contactEmail: '',
+            contactCollectMandate: false,
+            contactCollectMandateFirstRun: null,
+            collectMandateActive: false,
             order: {
                 contactId: props.contactId || '',
                 administrationId: '',
@@ -42,10 +43,10 @@ class OrderNewForm extends Component {
                 ibanAttn: '',
                 poNumber: '',
                 invoiceText: '',
-                dateRequested: moment(),
+                dateRequested: moment().format("YYYY-MM-DD"),
                 dateStart: '',
                 dateEnd: '',
-                dateNextInvoice: moment(),
+                dateNextInvoice: moment().format("YYYY-MM-DD"),
             },
             errors: {
                 contactId: false,
@@ -64,7 +65,7 @@ class OrderNewForm extends Component {
         this.handleReactSelectContactIdChange = this.handleReactSelectContactIdChange.bind(this);
     };
 
-    componentWillMount() {
+    componentDidMount() {
         ContactsAPI.getContactsPeek().then((payload) => {
             this.setState({
                 contacts: payload,
@@ -78,16 +79,12 @@ class OrderNewForm extends Component {
         this.state.order.contactId &&
         OrderDetailsAPI.fetchContactInfoForOrder(this.state.order.contactId).then((payload) => {
             this.setState({
-                ...this.state,
-                contactPerson: payload.data.contactPerson,
-                contactEmail: payload.data.email,
-                order: {
-                    ...this.state.order,
-                    // Uitgezet 05-10-2018, is niet gewenst?
-                    // IBAN: payload.data.iban,
-                    // ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
-                },
-            });
+                    contactPerson: payload.data.contactPerson,
+                    contactEmail: payload.data.email,
+                    contactCollectMandate: payload.data.collectMandate,
+                    contactCollectMandateFirstRun: payload.data.collectMandateFirstRun,
+                }, this.checkContactCollectMandate
+            );
         });
 
         EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
@@ -107,7 +104,6 @@ class OrderNewForm extends Component {
         const name = target.name;
 
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: value
@@ -124,7 +120,6 @@ class OrderNewForm extends Component {
         administration = this.props.administrations.filter((administration) => administration.id == value);
         administration = administration[0];
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 administrationId: administration.id,
@@ -138,42 +133,65 @@ class OrderNewForm extends Component {
 
     handleInputChangeDate = (value, name) => {
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: value
             },
         });
     };
+    handleInputChangeInvoiceDate = (value, name) => {
+        this.setState({
+                order: {
+                    ...this.state.order,
+                    [name]: value
+                },
+            }, this.checkContactCollectMandate
+        );
+    };
 
     handleReactSelectContactIdChange (selectedOption, name) {
 
         OrderDetailsAPI.fetchContactInfoForOrder(selectedOption).then((payload) => {
             this.setState({
-                ...this.state,
                 contactPerson: payload.data.contactPerson,
                 contactEmail: payload.data.email,
+                contactCollectMandate: payload.data.collectMandate,
+                contactCollectMandateFirstRun: payload.data.collectMandateFirstRun,
                 order: {
                     ...this.state.order,
-                    // Uitgezet 05-10-2018, is niet gewenst?
-                    //IBAN: payload.data.iban ? payload.data.iban : '',
-                    //ibanAttn: payload.data.ibanAttn ? payload.data.ibanAttn : ''
+                    [name]: selectedOption
                 },
-            });
+            },
+                this.checkContactCollectMandate);
         });
+    };
 
+    checkContactCollectMandate = () => {
+
+        let paymentTypeId = this.state.order.paymentTypeId;
+        let date = this.state.order.dateNextInvoice;
+        let contactCollectMandateFirstRun = this.state.contactCollectMandateFirstRun;
+        let contactCollectMandate = this.state.contactCollectMandate;
+        let collectMandateActive = (contactCollectMandate == true);
+        if (contactCollectMandate && contactCollectMandateFirstRun > date)
+        {
+            collectMandateActive =  false;
+        }
+        if (!collectMandateActive)
+        {
+            paymentTypeId =  'transfer';
+        }
         this.setState({
-            ...this.state,
+            collectMandateActive,
             order: {
                 ...this.state.order,
-                [name]: selectedOption
+                paymentTypeId,
             },
         });
     };
 
     handleReactSelectChange (selectedOption, name) {
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: selectedOption
@@ -223,7 +241,7 @@ class OrderNewForm extends Component {
             }
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({errors});
 
         // If no errors send form
         if (!hasErrors) {
@@ -316,7 +334,8 @@ class OrderNewForm extends Component {
                                 label={"Betaalwijze"}
                                 id="paymentTypeId"
                                 name={"paymentTypeId"}
-                                options={this.props.orderPaymentTypes}
+                                options={this.state.collectMandateActive ? this.props.orderPaymentTypes : this.props.orderPaymentTypes.filter(orderPaymentType => orderPaymentType.id === 'transfer')}
+                                emptyOption={this.state.collectMandateActive}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
@@ -401,7 +420,7 @@ class OrderNewForm extends Component {
                                 label="Volgende factuur datum"
                                 name="dateNextInvoice"
                                 value={dateNextInvoice}
-                                onChangeAction={this.handleInputChangeDate}
+                                onChangeAction={this.handleInputChangeInvoiceDate}
                             />
                         </div>
 

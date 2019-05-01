@@ -325,6 +325,8 @@ class OrderController extends ApiController
             'contactPerson' => $contact->full_name,
             'iban' => $contact->iban,
             'ibanAttn' => $contact->iban_attn,
+            'collectMandate' => $contact->is_collect_mandate,
+            'collectMandateFirstRun' => $contact->collect_mandate_first_run_date,
         ];
 
         if($contact->isOrganisation()){

@@ -20,7 +20,7 @@ export default function(participation, statusCodeRef) {
         values.dateGranted = participation.dateGranted;
         values.dateContractRetour = participation.dateContractRetour;
         values.datePayment = participation.datePayment;
-        values.startingDate = participation.startingDate;
+        values.dateEntry = participation.dateEntry;
     }
 
     return values;

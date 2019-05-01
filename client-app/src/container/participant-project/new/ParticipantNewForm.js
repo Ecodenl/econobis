@@ -1,23 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
-import { setError } from '../../../actions/general/ErrorActions';
-
-import Panel from '../../../components/panel/Panel';
-import PanelBody from '../../../components/panel/PanelBody';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
-import moment from './ParticipantNewApp';
 
 const ParticipantNewForm = ({
     participation,
     errors,
     handleInputChange,
     handleInputChangeDate,
-    handleProjectChange,
     handleSubmit,
     contacts,
     projects,
@@ -34,7 +26,7 @@ const ParticipantNewForm = ({
         amountFinal,
         dateContractRetour,
         datePayment,
-        startingDate,
+        dateEntry,
     } = participation;
     const status = participantMutationStatuses.find(
         participantMutationStatuses => participantMutationStatuses.id == statusId
@@ -172,12 +164,12 @@ const ParticipantNewForm = ({
                     <div className="row">
                         <InputDate
                             label={'Ingangsdatum'}
-                            name={'startingDate'}
-                            id={'startingDate'}
-                            value={startingDate}
+                            name={'dateEntry'}
+                            id={'dateEntry'}
+                            value={dateEntry}
                             onChangeAction={handleInputChangeDate}
                             required={'required'}
-                            error={errors.startingDate}
+                            error={errors.dateEntry}
                         />
                     </div>
                 </React.Fragment>

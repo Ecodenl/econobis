@@ -51,8 +51,8 @@ export default function(participation, errors, hasErrors, statusCodeRef) {
                 errors.datePayment = true;
                 hasErrors = true;
             }
-            if (!participation.startingDate) {
-                errors.startingDate = true;
+            if (!participation.dateEntry) {
+                errors.dateEntry = true;
                 hasErrors = true;
             }
         }

@@ -14,6 +14,10 @@ use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\ParticipantCSVHelper;
 use App\Helpers\Template\TemplateTableHelper;
@@ -197,6 +201,59 @@ class ParticipationProjectController extends ApiController
 
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
+
+        // Create first mutation
+        $participantMutationStatus = ParticipantMutationStatus::find($data['status_id']);
+
+        switch($participantMutationStatus->code_ref) {
+            case 'interest':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->get();
+                break;
+            case 'option':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('amountOption')->validate('required')->alias('amount_option')->next()
+                    ->date('dateOption')->validate('required|date')->alias('date_option')->next()
+                    ->get();
+                $mutationData['amount'] = $mutationData['amount_option'];
+                break;
+            case 'granted':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('amountGranted')->validate('required')->alias('amount_granted')->next()
+                    ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
+                    ->get();
+                $mutationData['amount'] = $mutationData['amount_granted'];
+                break;
+            case 'final':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('amountFinal')->validate('required')->alias('amount_final')->next()
+                    ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
+                    ->date('dateContractRetour')->validate('required|date')->alias('date_contract_retour')->next()
+                    ->date('datePayment')->validate('required|date')->alias('date_payment')->next()
+                    ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
+                    ->get();
+                $mutationData['amount'] = $mutationData['amount_final'];
+                break;
+        }
+
+        $mutationData['participation_id'] = $participantProject->id;
+        $mutationData['date_creation'] = Carbon::now();
+
+        $participantMutationType = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->first();
+        $mutationData['type_id'] = $participantMutationType->id;
+
+        unset($mutationData['contact_id']);
+        unset($mutationData['project_id']);
+
+        $participantMutation = new ParticipantMutation();
+
+        $participantMutation->fill($mutationData);
+
+        $participantMutation->save();
 
         $message = [];
 

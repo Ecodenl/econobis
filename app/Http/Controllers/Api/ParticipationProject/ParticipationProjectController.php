@@ -182,27 +182,11 @@ class ParticipationProjectController extends ApiController
     public function store(RequestInput $requestInput)
     {
         $this->authorize('manage', ParticipantProject::class);
-
+        // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
             ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
             ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
-            ->date('dateRegister')->validate('nullable|date')->onEmpty(null)->alias('date_register')->next()
-            ->integer('participationsRequested')->alias('participations_requested')->next()
-            ->integer('participationsGranted')->alias('participations_granted')->next()
-            ->integer('participationsSold')->alias('participations_sold')->next()
-            ->integer('participationsRestSale')->alias('participations_rest_sale')->next()
-            ->date('dateContractSend')->validate('nullable|date')->onEmpty(null)->alias('date_contract_send')->next()
-            ->date('dateContractRetour')->validate('nullable|date')->onEmpty(null)->alias('date_contract_retour')->next()
-            ->date('datePayed')->validate('nullable|date')->onEmpty(null)->alias('date_payed')->next()
-            ->boolean('didAcceptAgreement')->alias('did_accept_agreement')->next()
-            ->integer('giftedByContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('gifted_by_contact_id')->next()
-            ->string('ibanPayout')->alias('iban_payout')->next()
-            ->integer('legalRepContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('legal_rep_contact_id')->next()
-            ->string('ibanPayoutAttn')->alias('iban_payout_attn')->next()
-            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->alias('date_end')->next()
-            ->integer('typeId')->validate('nullable|exists:participant_project_payout_type,id')->onEmpty(null)->alias('type_id')->next()
-            ->integer('powerKwhConsumption')->alias('power_kwh_consumption')->next()
             ->get();
 
         $participantProject = new ParticipantProject();
@@ -237,20 +221,11 @@ class ParticipationProjectController extends ApiController
             }
         }
 
-        switch($project->project_type_id) {
-            case 1: //SDE
-                return ['id' => $participantProject->id];
-                break;
-            case 2: //PCR
+        switch($project->projectType->code_ref) {
+            case 'postalcode_link_capital': //Postalcode link capital
                 $this->validatePostalCode($message, $project, $contact);
                 $this->validateUsage($message, $project, $participantProject);
                 $this->validateEnergySupplier($message, $contact);
-                break;
-            case 3: //Investering
-                return ['id' => $participantProject->id];
-                break;
-            case 4: //Rente+aflossing
-                return ['id' => $participantProject->id];
                 break;
             default:
                 return ['id' => $participantProject->id];
@@ -354,42 +329,33 @@ class ParticipationProjectController extends ApiController
         return $this->show($participation);
     }
 
-    public function destroy(ParticipantProject $participantProject, Contact $contact)
+    public function validatePostalCode(&$message, Project $project, Contact $contact)
     {
         $checkText = 'Postcode check: ';
         $primaryAddress = $contact->primaryAddress;
-
         if(!$primaryAddress){
             array_push($message, $checkText . 'Contact heeft geen primair adres.');
             return false;
         }
-
         if(!$project->postal_code){
-            array_push($message, $checkText . 'Productieproject heeft geen postcode.');
+            array_push($message, $checkText . 'Project heeft geen postcode.');
             return false;
         }
-
         $postalCodeAreaContact = substr($primaryAddress->postal_code, 0 , 4);
-
         if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
             array_push($message, $checkText . 'Contact heeft geen geldige postcode op zijn primaire adres.');
             return false;
         }
-
-        $postalCodeAreaProject = substr($project->postal_code, 0 , 4);
-
-        if(!($postalCodeAreaProject > 999 && $postalCodeAreaProject < 9999)){
-            array_push($message, $checkText . 'Productieproject heeft geen geldige postcode.');
+        $postalCodeAreaProductionProject = substr($project->postal_code, 0 , 4);
+        if(!($postalCodeAreaProductionProject > 999 && $postalCodeAreaProductionProject < 9999)){
+            array_push($message, $checkText . 'Project heeft geen geldige postcode.');
             return false;
         }
-
-        $validPostalAreas = PostalCodeLink::where('postalcode_main', $postalCodeAreaProject)->pluck('postalcode_link')->toArray();
-
+        $validPostalAreas = PostalCodeLink::where('postalcode_main', $postalCodeAreaProductionProject)->pluck('postalcode_link')->toArray();
         if(!$validPostalAreas){
-            array_push($message, $checkText . 'Productieproject postcode heeft geen postcoderoos.');
+            array_push($message, $checkText . 'Project postcode heeft geen postcoderoos.');
             return false;
         }
-
         if(!in_array($postalCodeAreaContact, $validPostalAreas)){
             array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' niet gevonden in toegestane postcode(s): ' . implode(', ', $validPostalAreas) . '.');
             return false;
@@ -401,12 +367,12 @@ class ParticipationProjectController extends ApiController
         $checkText = 'Gebruik check: ';
 
         if(!$project->power_kw_available){
-            array_push($message, $checkText . 'Productieproject heeft nog geen opgesteld vermogen.');
+            array_push($message, $checkText . 'Project heeft nog geen opgesteld vermogen.');
             return false;
         }
 
         if(!$project->total_participations){
-            array_push($message, $checkText . 'Productieproject heeft nog geen totaal aantal participaties.');
+            array_push($message, $checkText . 'Project heeft nog geen totaal aantal participaties.');
             return false;
         }
 

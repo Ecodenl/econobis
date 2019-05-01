@@ -6,17 +6,17 @@ export default function(participation, statusCodeRef) {
     };
 
     if (statusCodeRef === 'option') {
-        values.amountOption = participation.amountOption;
+        values.quantityOption = participation.quantityOption;
         values.dateOption = participation.dateOption;
     }
 
     if (statusCodeRef === 'granted') {
-        values.amountGranted = participation.amountGranted;
+        values.quantityGranted = participation.quantityGranted;
         values.dateGranted = participation.dateGranted;
     }
 
     if (statusCodeRef === 'final') {
-        values.amountFinal = participation.amountFinal;
+        values.quantityFinal = participation.quantityFinal;
         values.dateGranted = participation.dateGranted;
         values.dateContractRetour = participation.dateContractRetour;
         values.datePayment = participation.datePayment;

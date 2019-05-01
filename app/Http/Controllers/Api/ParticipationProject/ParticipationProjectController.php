@@ -202,58 +202,9 @@ class ParticipationProjectController extends ApiController
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
 
-        // Create first mutation
         $participantMutationStatus = ParticipantMutationStatus::find($data['status_id']);
-
-        switch($participantMutationStatus->code_ref) {
-            case 'interest':
-                $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-                    ->get();
-                break;
-            case 'option':
-                $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-                    ->integer('amountOption')->validate('required')->alias('amount_option')->next()
-                    ->date('dateOption')->validate('required|date')->alias('date_option')->next()
-                    ->get();
-                $mutationData['amount'] = $mutationData['amount_option'];
-                break;
-            case 'granted':
-                $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-                    ->integer('amountGranted')->validate('required')->alias('amount_granted')->next()
-                    ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
-                    ->get();
-                $mutationData['amount'] = $mutationData['amount_granted'];
-                break;
-            case 'final':
-                $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-                    ->integer('amountFinal')->validate('required')->alias('amount_final')->next()
-                    ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
-                    ->date('dateContractRetour')->validate('required|date')->alias('date_contract_retour')->next()
-                    ->date('datePayment')->validate('required|date')->alias('date_payment')->next()
-                    ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
-                    ->get();
-                $mutationData['amount'] = $mutationData['amount_final'];
-                break;
-        }
-
-        $mutationData['participation_id'] = $participantProject->id;
-        $mutationData['date_creation'] = Carbon::now();
-
-        $participantMutationType = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->first();
-        $mutationData['type_id'] = $participantMutationType->id;
-
-        unset($mutationData['contact_id']);
-        unset($mutationData['project_id']);
-
-        $participantMutation = new ParticipantMutation();
-
-        $participantMutation->fill($mutationData);
-
-        $participantMutation->save();
+        // Create first mutation
+        $this->storeFirstMutation($requestInput, $participantMutationStatus, $participantProject, $project);
 
         $message = [];
 
@@ -629,5 +580,65 @@ class ParticipationProjectController extends ApiController
             $request->input('ids'))->with('contact')->get();
 
         return FullParticipantProject::collection($participations);
+    }
+
+    /**
+     * @param RequestInput $requestInput
+     * @param $data
+     * @param ParticipantProject $participantProject
+     * @param $project
+     */
+    public function storeFirstMutation(RequestInput $requestInput, ParticipantMutationStatus $participantMutationStatus, ParticipantProject $participantProject, $project): void
+    {
+        switch ($participantMutationStatus->code_ref) {
+            case 'interest':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->get();
+                break;
+            case 'option':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('quantityOption')->validate('required')->alias('quantity_option')->next()
+                    ->date('dateOption')->validate('required|date')->alias('date_option')->next()
+                    ->get();
+                $mutationData['quantity'] = $mutationData['quantity_option'];
+                break;
+            case 'granted':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('quantityGranted')->validate('required')->alias('quantity_granted')->next()
+                    ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
+                    ->get();
+                $mutationData['quantity'] = $mutationData['quantity_granted'];
+                break;
+            case 'final':
+                $mutationData = $requestInput
+                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('quantityFinal')->validate('required')->alias('quantity_final')->next()
+                    ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
+                    ->date('dateContractRetour')->validate('required|date')->alias('date_contract_retour')->next()
+                    ->date('datePayment')->validate('required|date')->alias('date_payment')->next()
+                    ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
+                    ->get();
+                $mutationData['quantity'] = $mutationData['quantity_final'];
+                break;
+        }
+
+        $mutationData['participation_id'] = $participantProject->id;
+        $mutationData['date_creation'] = Carbon::now();
+
+        $participantMutationType = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->first();
+        $mutationData['type_id'] = $participantMutationType->id;
+
+        // Remove unnecessary fields from $mutationData
+        unset($mutationData['contact_id']);
+        unset($mutationData['project_id']);
+
+        $participantMutation = new ParticipantMutation();
+
+        $participantMutation->fill($mutationData);
+
+        $participantMutation->save();
     }
 }

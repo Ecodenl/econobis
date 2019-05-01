@@ -13,8 +13,8 @@ export default function(participation, errors, hasErrors, statusCodeRef) {
     } else {
         // Extra check dependable on statusCodeRef
         if (statusCodeRef === 'option') {
-            if (!participation.amountOption) {
-                errors.amountOption = true;
+            if (!participation.quantityOption) {
+                errors.quantityOption = true;
                 hasErrors = true;
             }
             if (!participation.dateOption) {
@@ -24,8 +24,8 @@ export default function(participation, errors, hasErrors, statusCodeRef) {
         }
 
         if (statusCodeRef === 'granted') {
-            if (!participation.amountGranted) {
-                errors.amountGranted = true;
+            if (!participation.quantityGranted) {
+                errors.quantityGranted = true;
                 hasErrors = true;
             }
             if (!participation.dateGranted) {
@@ -35,8 +35,8 @@ export default function(participation, errors, hasErrors, statusCodeRef) {
         }
 
         if (statusCodeRef === 'final') {
-            if (!participation.amountFinal) {
-                errors.amountFinal = true;
+            if (!participation.quantityFinal) {
+                errors.quantityFinal = true;
                 hasErrors = true;
             }
             if (!participation.dateGranted) {

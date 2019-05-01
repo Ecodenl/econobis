@@ -19,11 +19,11 @@ const ParticipantNewForm = ({
         contactId,
         statusId,
         projectId,
-        amountOption,
+        quantityOption,
         dateOption,
-        amountGranted,
+        quantityGranted,
         dateGranted,
-        amountFinal,
+        quantityFinal,
         dateContractRetour,
         datePayment,
         dateEntry,
@@ -76,12 +76,12 @@ const ParticipantNewForm = ({
                 <div className="row">
                     <InputText
                         label={'Aantal optie'}
-                        name={'amountOption'}
-                        id={'amountOption'}
-                        value={amountOption}
+                        name={'quantityOption'}
+                        id={'quantityOption'}
+                        value={quantityOption}
                         onChangeAction={handleInputChange}
                         required={'required'}
-                        error={errors.amountOption}
+                        error={errors.quantityOption}
                     />
 
                     <InputDate
@@ -100,12 +100,12 @@ const ParticipantNewForm = ({
                 <div className="row">
                     <InputText
                         label={'Aantal toegekend'}
-                        name={'amountGranted'}
-                        id={'amountGranted'}
-                        value={amountGranted}
+                        name={'quantityGranted'}
+                        id={'quantityGranted'}
+                        value={quantityGranted}
                         onChangeAction={handleInputChange}
                         required={'required'}
-                        error={errors.amountGranted}
+                        error={errors.quantityGranted}
                     />
                     <InputDate
                         label={'Toewijzingsdatum'}
@@ -124,12 +124,12 @@ const ParticipantNewForm = ({
                     <div className="row">
                         <InputText
                             label={'Aantal definitief'}
-                            name={'amountFinal'}
-                            id={'amountFinal'}
-                            value={amountFinal}
+                            name={'quantityFinal'}
+                            id={'quantityFinal'}
+                            value={quantityFinal}
                             onChangeAction={handleInputChange}
                             required={'required'}
-                            error={errors.amountFinal}
+                            error={errors.quantityFinal}
                         />
                         <InputDate
                             label={'Toewijzingsdatum'}

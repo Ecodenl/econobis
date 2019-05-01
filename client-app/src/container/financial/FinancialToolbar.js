@@ -53,13 +53,13 @@ class FinancialToolbar extends Component {
                         {this.props.administrationDetails.usesTwinfield == true && this.props.administrationDetails.twinfieldIsValid == true &&
                         <ButtonText loading={this.state.syncingToInvoices}
                                     loadText={'Aan het synchroniseren'}
-                                    buttonText={'Facturen naar Twinfield synchroniseren'}
+                                    buttonText={<span><span className="glyphicon glyphicon-refresh" title="Facturen naar Twinfield synchroniseren"/>&nbsp;Facturen</span>}
                                     onClickAction={this.syncInvoicesToTwinfield}/>
                         }
                         {this.props.administrationDetails.usesTwinfield == true && this.props.administrationDetails.twinfieldIsValid == true &&
                         <ButtonText loading={this.state.syncingFromInvoices}
                                     loadText={'Betalingen aan het ophalen'}
-                                    buttonText={'Betalingen van Twinfield ophalen'}
+                                    buttonText={<span><span className="glyphicon glyphicon-refresh" title="Betalingen van Twinfield ophalen"/>&nbsp;Betalingen</span>}
                                     onClickAction={this.syncInvoicesFromTwinfield}/>
                         }
                     </div>

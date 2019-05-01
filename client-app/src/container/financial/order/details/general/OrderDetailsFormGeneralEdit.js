@@ -265,7 +265,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 id="paymentTypeId"
                                 name={"paymentTypeId"}
                                 options={this.state.collectMandateActive ? this.props.orderPaymentTypes : this.props.orderPaymentTypes.filter(orderPaymentType => orderPaymentType.id === 'transfer')}
-                                emptyOption={this.state.collectMandateActive}
+                                emptyOption={false}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}

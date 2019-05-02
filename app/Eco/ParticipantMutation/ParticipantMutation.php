@@ -23,6 +23,7 @@ class ParticipantMutation extends Model
 
     protected $dates = [
         'date_creation',
+        'date_interest',
         'date_option',
         'date_granted',
         'date_contract_retour',

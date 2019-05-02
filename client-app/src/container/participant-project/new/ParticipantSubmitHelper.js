@@ -5,6 +5,11 @@ export default function(participation, statusCodeRef) {
         projectId: participation.projectId,
     };
 
+    if (statusCodeRef === 'interest') {
+        values.quantityInterest = participation.quantityInterest;
+        values.dateInterest = participation.dateInterest;
+    }
+
     if (statusCodeRef === 'option') {
         values.quantityOption = participation.quantityOption;
         values.dateOption = participation.dateOption;

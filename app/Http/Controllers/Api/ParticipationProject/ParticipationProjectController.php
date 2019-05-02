@@ -595,7 +595,10 @@ class ParticipationProjectController extends ApiController
             case 'interest':
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('quantityInterest')->onEmpty(null)->alias('quantity_interest')->next()
+                    ->integer('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
                     ->get();
+                $mutationData['quantity'] = isset($mutationData['quantity_interest']) ? $mutationData['quantity_interest'] : null;
                 break;
             case 'option':
                 $mutationData = $requestInput

@@ -19,6 +19,8 @@ const ParticipantNewForm = ({
         contactId,
         statusId,
         projectId,
+        quantityInterest,
+        dateInterest,
         quantityOption,
         dateOption,
         quantityGranted,
@@ -71,6 +73,26 @@ const ParticipantNewForm = ({
                     error={errors.projectId}
                 />
             </div>
+
+            {statusCodeRef === 'interest' ? (
+                <div className="row">
+                    <InputText
+                        label={'Aantal interesse'}
+                        name={'quantityInterest'}
+                        id={'quantityInterest'}
+                        value={quantityInterest}
+                        onChangeAction={handleInputChange}
+                    />
+
+                    <InputDate
+                        label={'Interesse datum'}
+                        name={'dateInterest'}
+                        id={'dateInterest'}
+                        value={dateInterest}
+                        onChangeAction={handleInputChangeDate}
+                    />
+                </div>
+            ) : null}
 
             {statusCodeRef === 'option' ? (
                 <div className="row">

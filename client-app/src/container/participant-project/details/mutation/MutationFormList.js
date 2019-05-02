@@ -23,7 +23,6 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
     return (
         <div>
             <StyledContainer className="row border header">
-                <StyledColumn columnWidth={'8.5%'}>Aanmaak- datum</StyledColumn>
                 <StyledColumn columnWidth={'12%'}>Type</StyledColumn>
                 <StyledColumn columnWidth={'10%'}>Status</StyledColumn>
                 <StyledColumn columnWidth={'8.5%'}>Betaal datum</StyledColumn>

@@ -20,13 +20,13 @@ class MutationFormListItem extends Component {
             showDelete: false,
             participantMutation: {
                 ...props.participantMutation,
-                dateCreation: props.participantMutation.dateCreation ? props.participantMutation.dateCreation.date : '',
+                dateInterest: props.participantMutation.dateInterest ? props.participantMutation.dateInterest.date : '',
+                dateOption: props.participantMutation.dateOption ? props.participantMutation.dateOption.date : '',
+                dateGranted: props.participantMutation.dateGranted ? props.participantMutation.dateGranted.date : '',
+                dateFinal: props.participantMutation.dateFinal ? props.participantMutation.dateFinal.date : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
             },
-            errors: {
-                dateMutation: false,
-                iban: false,
-            },
+            errors: {},
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -38,8 +38,17 @@ class MutationFormListItem extends Component {
                 ...this.state,
                 participantMutation: {
                     ...this.props.participantMutation,
-                    dateCreation: this.props.participantMutation.dateCreation
-                        ? this.props.participantMutation.dateCreation.date
+                    dateInterest: this.props.participantMutation.dateInterest
+                        ? this.props.participantMutation.dateInterest.date
+                        : '',
+                    dateOption: this.props.participantMutation.dateOption
+                        ? this.props.participantMutation.dateOption.date
+                        : '',
+                    dateGranted: this.props.participantMutation.dateGranted
+                        ? this.props.participantMutation.dateGranted.date
+                        : '',
+                    dateFinal: this.props.participantMutation.dateFinal
+                        ? this.props.participantMutation.dateFinal.date
                         : '',
                     datePayment: this.props.participantMutation.datePayment
                         ? this.props.participantMutation.datePayment.date
@@ -76,8 +85,17 @@ class MutationFormListItem extends Component {
             ...this.state,
             participantMutation: {
                 ...this.props.participantMutation,
-                dateCreation: this.props.participantMutation.dateCreation
-                    ? this.props.participantMutation.dateCreation.date
+                dateInterest: this.props.participantMutation.dateInterest
+                    ? this.props.participantMutation.dateInterest.date
+                    : '',
+                dateOption: this.props.participantMutation.dateOption
+                    ? this.props.participantMutation.dateOption.date
+                    : '',
+                dateGranted: this.props.participantMutation.dateGranted
+                    ? this.props.participantMutation.dateGranted.date
+                    : '',
+                dateFinal: this.props.participantMutation.dateFinal
+                    ? this.props.participantMutation.dateFinal.date
                     : '',
                 datePayment: this.props.participantMutation.datePayment
                     ? this.props.participantMutation.datePayment.date
@@ -98,7 +116,6 @@ class MutationFormListItem extends Component {
         const name = target.name;
 
         this.setState({
-            ...this.state,
             participantMutation: {
                 ...this.state.participantMutation,
                 [name]: value,
@@ -108,7 +125,6 @@ class MutationFormListItem extends Component {
 
     handleInputChangeDate(value, name) {
         this.setState({
-            ...this.state,
             participantMutation: {
                 ...this.state.participantMutation,
                 [name]: value,

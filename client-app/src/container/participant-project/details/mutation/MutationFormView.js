@@ -52,7 +52,6 @@ const MutationFormView = ({
             onMouseLeave={() => onLineLeave()}
         >
             <StyledContainer onClick={openEdit}>
-                <StyledColumn columnWidth={'8.5%'}>{dateCreation ? moment(dateCreation).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'12%'}>{type.name}</StyledColumn>
                 <StyledColumn columnWidth={'10%'}>{status.name}</StyledColumn>
                 <StyledColumn columnWidth={'8.5%'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>

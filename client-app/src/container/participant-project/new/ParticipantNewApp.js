@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
-import validator from 'validator';
-import { browserHistory, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
-import { setError } from '../../../actions/general/ErrorActions';
 
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import * as ibantools from 'ibantools';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import { connect } from 'react-redux';
@@ -205,13 +202,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    setError: (http_code, message) => {
-        dispatch(setError(http_code, message));
-    },
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParticipantNewApp);
+export default connect(mapStateToProps)(ParticipantNewApp);

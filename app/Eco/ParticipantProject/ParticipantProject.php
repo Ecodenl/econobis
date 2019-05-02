@@ -76,7 +76,7 @@ class ParticipantProject extends Model
 
     public function mutations()
     {
-        return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('date_creation', 'desc');
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('id', 'desc');
     }
 
     public function obligationNumbers()

@@ -18,7 +18,6 @@ class ParticipantMutationController extends ApiController
             ->integer('participationId')->validate('required|exists:participation_project,id')->alias('participation_id')->next()
             ->integer('typeId')->validate('required|exists:participant_mutation_types,id')->alias('type_id')->next()
             ->integer('statusId')->onEmpty(null)->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-            ->date('dateCreation')->validate('required|date')->alias('date_creation')->next()
             ->string('entry')->onEmpty('')->next()
             ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
             ->double('amount')->onEmpty(null)->next()
@@ -51,7 +50,6 @@ class ParticipantMutationController extends ApiController
         $data = $requestInput
             ->integer('typeId')->validate('required|exists:participant_mutation_types,id')->alias('type_id')->next()
             ->integer('statusId')->onEmpty(null)->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
-            ->date('dateCreation')->validate('required|date')->alias('date_creation')->next()
             ->string('entry')->onEmpty('')->next()
             ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
             ->double('amount')->onEmpty(null)->next()

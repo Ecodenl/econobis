@@ -158,7 +158,7 @@ class ParticipationProjectController extends ApiController
     {
         $participantProject->load([
             'mutations' => function($query){
-                $query->orderBy('date_creation', 'desc')
+                $query->orderBy('created_at', 'desc')
                     ->orderBy('id', 'desc');
             }
         ]);
@@ -596,7 +596,7 @@ class ParticipationProjectController extends ApiController
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
                     ->integer('quantityInterest')->onEmpty(null)->alias('quantity_interest')->next()
-                    ->integer('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
+                    ->date('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
                     ->get();
                 $mutationData['quantity'] = isset($mutationData['quantity_interest']) ? $mutationData['quantity_interest'] : null;
                 break;
@@ -630,7 +630,6 @@ class ParticipationProjectController extends ApiController
         }
 
         $mutationData['participation_id'] = $participantProject->id;
-        $mutationData['date_creation'] = Carbon::now();
 
         $participantMutationType = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->first();
         $mutationData['type_id'] = $participantMutationType->id;

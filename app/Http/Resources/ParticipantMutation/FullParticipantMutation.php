@@ -22,7 +22,6 @@ class FullParticipantMutation extends Resource
             [
                 'id' => $this->id,
                 'participationId' => $this->participation_id,
-                'dateCreation' => $this->date_creation,
                 'entry' => $this->entry,
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),

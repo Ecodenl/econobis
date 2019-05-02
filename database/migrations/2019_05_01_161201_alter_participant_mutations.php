@@ -28,6 +28,7 @@ class AlterParticipantMutations extends Migration
             $table->date('date_granted')->nullable()->after('date_option');
             $table->date('date_contract_retour')->nullable()->after('date_granted');
             $table->date('date_entry')->nullable()->after('date_payment');
+            $table->dropColumn('date_creation');
         });
     }
 

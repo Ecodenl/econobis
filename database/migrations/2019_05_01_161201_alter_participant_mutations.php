@@ -15,6 +15,9 @@ class AlterParticipantMutations extends Migration
     public function up()
     {
         Schema::table('participant_mutations', function (Blueprint $table) {
+            $table->integer('amount_option')->nullable()->after('amount');
+            $table->integer('amount_granted')->nullable()->after('amount_option');
+            $table->integer('amount_final')->nullable()->after('amount_granted');
             $table->integer('quantity_option')->nullable()->after('quantity');
             $table->integer('quantity_granted')->nullable()->after('quantity_option');
             $table->integer('quantity_final')->nullable()->after('quantity_granted');

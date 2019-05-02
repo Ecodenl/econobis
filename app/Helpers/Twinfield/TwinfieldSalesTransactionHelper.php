@@ -61,18 +61,17 @@ class TwinfieldSalesTransactionHelper
 
             if($response === true){
                 array_push($this->messages, 'Transactie factuur ' . $invoice->number . ' succesvol gesynchroniseerd.');
+                // Indien contact ingesteld op Incasso, maar factuur is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
+                $contact = $invoice->order->contact;
+                if($contact->is_collect_mandate && $invoice->payment_type_id=='transfer')
+                {
+                    $this->setPayStatusNo($invoice);
+                }
             }
             else{
                 //soms zitten in de error message van Twinfield // voor de melding.
                 $response = str_replace('//', '', $response);
                 array_push($this->messages, 'Synchronisatie transactie factuur ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
-            }
-
-            // Indien contact ingesteld op Incasso, maar factuur is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
-            $contact = $invoice->order->contact;
-            if($contact->is_collect_mandate && $invoice->payment_type_id=='transfer')
-            {
-                $this->setPayStatusNo($invoice);
             }
         }
 
@@ -166,7 +165,7 @@ class TwinfieldSalesTransactionHelper
             if($vatCode && $vatCode->id>0)
             {
                 $vatAmount = $invoiceProduct->getAmountVatAttribute();
-                $vatAmountOld  = key_exists( $vatCodeTwinfield, $vatData) ? $vatData[$vatCodeTwinfield]->get('vatAmount') : 0;
+                $vatAmountOld  = isset( $vatData[$vatCodeTwinfield]) ? $vatData[$vatCodeTwinfield]['vatAmount'] : 0;
                 $vatData[$vatCodeTwinfield] = ['vatLedgerCode' => $vatLedgerCodeTwinfield, 'vatAmount' => $vatAmountOld + $vatAmount];
             }
 
@@ -188,7 +187,6 @@ class TwinfieldSalesTransactionHelper
 
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineDetail);
         }
-
 
         //Salestransaction - Vat lines maken (btw bedrag per btw code)
         foreach($vatData as $code => $vatDataDetail) {

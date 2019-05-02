@@ -23,8 +23,11 @@ class MutationFormListItem extends Component {
                 dateInterest: props.participantMutation.dateInterest ? props.participantMutation.dateInterest.date : '',
                 dateOption: props.participantMutation.dateOption ? props.participantMutation.dateOption.date : '',
                 dateGranted: props.participantMutation.dateGranted ? props.participantMutation.dateGranted.date : '',
-                dateFinal: props.participantMutation.dateFinal ? props.participantMutation.dateFinal.date : '',
+                dateContractRetour: props.participantMutation.dateContractRetour
+                    ? props.participantMutation.dateContractRetour.date
+                    : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
+                dateEntry: props.participantMutation.dateEntry ? props.participantMutation.dateEntry.date : '',
             },
             errors: {},
         };
@@ -47,11 +50,14 @@ class MutationFormListItem extends Component {
                     dateGranted: this.props.participantMutation.dateGranted
                         ? this.props.participantMutation.dateGranted.date
                         : '',
-                    dateFinal: this.props.participantMutation.dateFinal
-                        ? this.props.participantMutation.dateFinal.date
+                    dateContractRetour: this.props.participantMutation.dateContractRetour
+                        ? this.props.participantMutation.dateContractRetour.date
                         : '',
                     datePayment: this.props.participantMutation.datePayment
                         ? this.props.participantMutation.datePayment.date
+                        : '',
+                    dateEntry: this.props.participantMutation.dateEntry
+                        ? this.props.participantMutation.dateEntry.date
                         : '',
                 },
             });
@@ -94,11 +100,14 @@ class MutationFormListItem extends Component {
                 dateGranted: this.props.participantMutation.dateGranted
                     ? this.props.participantMutation.dateGranted.date
                     : '',
-                dateFinal: this.props.participantMutation.dateFinal
-                    ? this.props.participantMutation.dateFinal.date
+                dateContractRetour: this.props.participantMutation.dateContractRetour
+                    ? this.props.participantMutation.dateContractRetour.date
                     : '',
                 datePayment: this.props.participantMutation.datePayment
                     ? this.props.participantMutation.datePayment.date
+                    : '',
+                dateEntry: this.props.participantMutation.dateEntry
+                    ? this.props.participantMutation.dateEntry.date
                     : '',
             },
         });

@@ -34,15 +34,14 @@ const MutationFormView = ({
     const {
         type,
         dateCreation,
-        entry,
         status,
         datePayment,
+        dateEntry,
         amount,
         quantity,
         returns,
         payoutKwh,
         indicationOfRestitutionEnergyTax,
-        paidOn,
         deletedAt,
     } = participantMutation;
 
@@ -54,10 +53,10 @@ const MutationFormView = ({
         >
             <StyledContainer onClick={openEdit}>
                 <StyledColumn columnWidth={'8.5%'}>{dateCreation ? moment(dateCreation).format('L') : ''}</StyledColumn>
-                <StyledColumn>{entry}</StyledColumn>
                 <StyledColumn columnWidth={'12%'}>{type.name}</StyledColumn>
                 <StyledColumn columnWidth={'10%'}>{status.name}</StyledColumn>
                 <StyledColumn columnWidth={'8.5%'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'8.5%'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'10%'}>{type.description}</StyledColumn>
                 {(projectTypeCodeRef === 'loan' ||
                     projectTypeCodeRef === 'capital' ||
@@ -72,12 +71,11 @@ const MutationFormView = ({
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
                     <StyledColumn>{indicationOfRestitutionEnergyTax}</StyledColumn>
                 )}
-                <StyledColumn>{paidOn}</StyledColumn>
                 {!deletedAt && (
                     <StyledColumn columnWidth={'6%'}>
                         {showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={openEdit}>
-                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                <span className="glyphicon glyphicon-log-out mybtn-success" />{' '}
                             </a>
                         ) : (
                             ''

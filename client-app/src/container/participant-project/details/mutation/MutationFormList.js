@@ -24,25 +24,24 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
         <div>
             <StyledContainer className="row border header">
                 <StyledColumn columnWidth={'8.5%'}>Aanmaak- datum</StyledColumn>
-                <StyledColumn>Boekstuk</StyledColumn>
                 <StyledColumn columnWidth={'12%'}>Type</StyledColumn>
                 <StyledColumn columnWidth={'10%'}>Status</StyledColumn>
                 <StyledColumn columnWidth={'8.5%'}>Betaal datum</StyledColumn>
+                <StyledColumn columnWidth={'8.5%'}>Ingangs- datum</StyledColumn>
                 <StyledColumn columnWidth={'10%'}>Omschrijving</StyledColumn>
                 {projectTypeCodeRef === 'loan' && <StyledColumn>Lening rekening</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
                     <StyledColumn>Kapitaal rekening</StyledColumn>
                 )}
-                {projectTypeCodeRef === 'obligation' && <StyledColumn>Obligaties</StyledColumn>}
+                {projectTypeCodeRef === 'obligation' && <StyledColumn>Aantal obligaties</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
-                    <StyledColumn>Partici- paties</StyledColumn>
+                    <StyledColumn>Aantal participaties</StyledColumn>
                 )}
                 <StyledColumn>Opbrengst</StyledColumn>
                 {projectTypeCodeRef === 'postalcode_link_capital' && <StyledColumn>kWh</StyledColumn>}
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
                     <StyledColumn>Indicatie teruggave EB €</StyledColumn>
                 )}
-                <StyledColumn>Uitgekeerd op of via</StyledColumn>
                 <StyledColumn columnWidth={'6%'}>&nbsp;</StyledColumn>
             </StyledContainer>
             {participantMutations.length > 0 ? (

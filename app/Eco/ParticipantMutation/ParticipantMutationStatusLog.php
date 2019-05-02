@@ -27,8 +27,8 @@ class ParticipantMutationStatusLog extends Model
         'id', 'name'
     ];
 
-    public function participantMutations()
+    public function participantMutation()
     {
-        return $this->hasMany(ParticipantMutation::class);
+        return $this->belongsTo(ParticipantMutation::class);
     }
 }

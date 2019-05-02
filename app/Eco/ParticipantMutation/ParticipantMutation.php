@@ -47,6 +47,11 @@ class ParticipantMutation extends Model
         return $this->belongsTo(ParticipantMutationStatus::class);
     }
 
+    public function statusLog()
+    {
+        return $this->hasMany(ParticipantMutationStatusLog::class);
+    }
+
     public function createdBy(){
         return $this->belongsTo(User::class);
     }

@@ -37,6 +37,7 @@ class FullParticipantMutation extends Resource
                 'paidOn' => $this->paid_on,
                 'updatedAt' => $this->updated_at,
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
+                'statusLog' => GenericResource::make($this->whenLoaded('statusLog')),
             ];
     }
 }

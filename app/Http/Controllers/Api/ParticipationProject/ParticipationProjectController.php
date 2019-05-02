@@ -175,6 +175,7 @@ class ParticipationProjectController extends ApiController
             'transactions.createdBy',
             'mutations.type',
             'mutations.status',
+            'mutations.statusLog',
             'mutations.updatedBy',
             'obligationNumbers',
             'documents',

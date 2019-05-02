@@ -5,7 +5,9 @@ import LedgerDetailsForm from './LedgerDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import LedgerDetailsAPI from '../../../api/ledger/LedgerDetailsAPI';
-import moment from 'moment';
+import {setError} from "../../../actions/general/ErrorActions";
+import {connect} from "react-redux";
+import {hashHistory} from "react-router";
 
 class LedgerDetailsApp extends Component {
     constructor(props) {
@@ -36,6 +38,18 @@ class LedgerDetailsApp extends Component {
             });
     };
 
+    deleteLedger = (id) => {
+        // Api aanroepen met delete
+        LedgerDetailsAPI.deleteLedger(id)
+            .then(payload => {
+                hashHistory.push(`/grootboekrekeningen`);
+            })
+            .catch(error => {
+                // this.setState({ isLoading: false, hasError: true });
+                this.props.setError(error.response.status, error.response.data.message);
+            });
+    }
+
     updateState = ledger => {
         this.setState({ ledger });
     };
@@ -47,7 +61,7 @@ class LedgerDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-small'}>
-                                <LedgerDetailsToolbar description={this.state.ledger.description || ''} />
+                                <LedgerDetailsToolbar description={this.state.ledger.description || ''} id={this.state.ledger.id} deleteLedger={this.deleteLedger} />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -67,4 +81,10 @@ class LedgerDetailsApp extends Component {
     }
 }
 
-export default LedgerDetailsApp;
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(LedgerDetailsApp);

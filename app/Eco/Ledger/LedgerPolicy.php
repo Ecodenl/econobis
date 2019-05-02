@@ -9,12 +9,7 @@ class LedgerPolicy
 {
     use HandlesAuthorization;
 
-    public function create(User $user)
-    {
-        return $user->hasPermissionTo('manage_financial', 'api');
-    }
-
-    public function update(User $user)
+    public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_financial', 'api');
     }

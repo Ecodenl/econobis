@@ -5,6 +5,9 @@ import LedgersListToolbar from './LedgersListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import LedgerAPI from '../../../api/ledger/LedgerAPI';
+import LedgerDetailsAPI from "../../../api/ledger/LedgerDetailsAPI";
+import {setError} from "../../../actions/general/ErrorActions";
+import {connect} from "react-redux";
 
 class LedgersListApp extends Component {
     constructor(props) {
@@ -32,6 +35,18 @@ class LedgersListApp extends Component {
             });
     };
 
+    deleteLedger = (id) => {
+        // Api aanroepen met delete
+        LedgerDetailsAPI.deleteLedger(id)
+            .then(payload => {
+                this.setState({ledgers: this.state.ledgers.filter(ledger => ledger.id !== id)})
+            })
+            .catch(error => {
+                // this.setState({ isLoading: false, hasError: true });
+                this.props.setError(error.response.status, error.response.data.message);
+            });
+    }
+
     render() {
         return (
             <Panel>
@@ -48,6 +63,7 @@ class LedgersListApp extends Component {
                             ledgers={this.state.ledgers}
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
+                            deleteLedger={this.deleteLedger}
                         />
                     </div>
                 </PanelBody>
@@ -56,4 +72,10 @@ class LedgersListApp extends Component {
     }
 }
 
-export default LedgersListApp;
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(LedgersListApp);

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\Ledger;
 
 use App\Eco\Ledger\Ledger;
+use App\Helpers\Delete\Models\DeleteLedger;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LedgerController extends Controller
 {
@@ -18,7 +20,7 @@ class LedgerController extends Controller
 
     public function store(RequestInput $input, Request $request)
     {
-        $this->authorize('create', Ledger::class);
+        $this->authorize('manage', Ledger::class);
 
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
             ->integer('vatCodeId')->validate('nullable|exists:vat_codes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
@@ -33,7 +35,7 @@ class LedgerController extends Controller
 
     public function update(RequestInput $input, Ledger $ledger)
     {
-        $this->authorize('update', Ledger::class);
+        $this->authorize('manage', Ledger::class);
 
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
             ->integer('vatCodeId')->validate('nullable|exists:vat_codes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
@@ -44,6 +46,29 @@ class LedgerController extends Controller
         $ledger->save();
 
         return GenericResource::make($ledger);
+    }
+
+    public function destroy(Ledger $ledger)
+    {
+        $this->authorize('manage', Ledger::class);
+
+        try {
+            DB::beginTransaction();
+
+            $deleteLedger = new DeleteLedger($ledger);
+            $result = $deleteLedger->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
 }

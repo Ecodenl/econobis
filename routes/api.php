@@ -426,6 +426,7 @@ Route::namespace('Api')
         Route::get('ledger/jory', 'Ledger\LedgerController@jory');
         Route::post('ledger', 'Ledger\LedgerController@store');
         Route::post('ledger/{ledger}', 'Ledger\LedgerController@update');
+        Route::post('ledger/{ledger}/delete', 'Ledger\LedgerController@destroy');
 
         // Jory routes voor ophalen data
         Route::get( 'jory', '\\'.JoryController::class.'@multiple');

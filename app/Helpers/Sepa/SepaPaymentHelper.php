@@ -127,6 +127,16 @@ class SepaPaymentHelper
 
         // Transacties
         foreach($this->invoices AS $invoice){
+
+
+
+            $iban_attn = $invoice->revenueDistribution->contact->iban_attn;
+            if(!$iban_attn)
+            {
+                $iban_attn = $invoice->revenueDistribution->contact->full_name;
+            }
+
+
             $xml .= "\n\t\t\t<CdtTrfTxInf>";
             $xml .= "\n\t\t\t\t<PmtId>";
             $xml .= "\n\t\t\t\t\t<EndToEndId>" . $invoice->number . "</EndToEndId>";
@@ -138,7 +148,7 @@ class SepaPaymentHelper
 
             // Crediteur
             $xml .= "\n\t\t\t\t<Cdtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $invoice->revenueDistribution->contact->full_name . "</Nm>"; // Naam
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $iban_attn . "</Nm>"; // Naam
             $xml .= "\n\t\t\t\t\t<PstlAdr>";
             $xml .= "\n\t\t\t\t\t\t<Ctry>NL</Ctry>";
             $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->address . "</AdrLine>"; // Postcode

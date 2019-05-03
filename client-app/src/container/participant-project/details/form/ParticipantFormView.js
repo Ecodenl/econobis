@@ -52,28 +52,11 @@ const ParticipantFormView = props => {
                     value={project ? project.name : ''}
                     link={project ? 'project/' + project.id : ''}
                 />
-                <ViewText
-                    label={'Contract verstuurd'}
-                    value={dateContractSend ? moment(dateContractSend).format('L') : ''}
-                />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Datum'} value={updatedAt ? moment(updatedAt.date).format('L') : ''} />
-                <ViewText
-                    label={'Contract retour'}
-                    value={dateContractRetour ? moment(dateContractRetour).format('L') : ''}
-                />
-            </div>
-
-            <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Administratie'} value={project.administration ? project.administration.name : ''} />
-                <ViewText label={'Einddatum'} value={dateEnd ? moment(dateEnd.date).format('L') : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Akkoord reglement'} value={didAcceptAgreement ? 'Ja' : 'Nee'} />
-                <ViewText label={'Inschrijfdatum'} value={dateRegister ? moment(dateRegister).format('L') : ''} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Schenker'} value={giftedByContact ? giftedByContact.fullName : ''} />

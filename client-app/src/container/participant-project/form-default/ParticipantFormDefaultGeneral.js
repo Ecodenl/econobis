@@ -13,6 +13,8 @@ import InputToggle from '../../../components/form/InputToggle';
 import ParticipantFormDefaultObligation from './ParticipantFormDefaultObligation';
 import ParticipantFormDefaultCapital from './ParticipantFormDefaultCapital';
 import ParticipantFormDefaultPostalcodeLinkCapital from './ParticipantFormDefaultPostalcodeLinkCapital';
+import ViewText from '../../../components/form/ViewText';
+import moneyPresenter from '../../../helpers/MoneyPresenter';
 
 const ParticipantFormDefaultGeneral = ({
     editForm,
@@ -59,103 +61,17 @@ const ParticipantFormDefaultGeneral = ({
     return (
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
-                {editForm ? (
-                    <InputText
-                        label={'Contact'}
-                        name={'contactName'}
-                        id={'contactName'}
-                        value={contactName}
-                        onChangeAction={() => {}}
-                        readOnly={true}
-                    />
-                ) : (
-                    <InputSelect
-                        label={'Contact'}
-                        name={'contactId'}
-                        id={'contactId'}
-                        options={contacts}
-                        optionName={'fullName'}
-                        value={contactId}
-                        onChangeAction={handleInputChange}
-                        required={'required'}
-                        error={errors.contactId}
-                    />
-                )}
-                <InputSelect
-                    label={'Status'}
-                    name={'statusId'}
-                    id={'statusId'}
-                    options={participantProjectStatuses}
-                    value={statusId}
-                    onChangeAction={handleInputChange}
-                    required={'required'}
-                    error={errors.statusId}
-                />
+                <ViewText label={'Contact'} id={'contactName'} className={'col-sm-6 form-group'} value={contactName} />
+                <ViewText label={'Status(sen)'} id={'statusId'} className={'col-sm-6 form-group'} value={statusId} />
             </div>
 
             <div className="row">
-                {editForm ? (
-                    <InputText
-                        label={'Project'}
-                        name={'projectName'}
-                        id={'projectName'}
-                        value={projectName}
-                        onChangeAction={() => {}}
-                        readOnly={true}
-                    />
-                ) : (
-                    <InputSelect
-                        label={'Project'}
-                        name={'projectId'}
-                        id={'projectId'}
-                        options={projects}
-                        value={projectId}
-                        onChangeAction={handleProjectChange}
-                        required={'required'}
-                        error={errors.projectId}
-                    />
-                )}
-                <InputDate
-                    label={'Contract verstuurd'}
-                    name={'dateContractSend'}
-                    id={'dateContractSend'}
-                    value={dateContractSend}
-                    onChangeAction={handleInputChangeDate}
-                />
-            </div>
-
-            <div className="row">
-                <InputText
-                    label={'Datum'}
-                    name={'updatedAt'}
-                    id={'updatedAt'}
-                    value={updatedAt && moment(updatedAt.date).format('L')}
-                    onChangeAction={() => {}}
-                    readOnly={true}
-                />
-                <InputDate
-                    label={'Contract retour'}
-                    name={'dateContractRetour'}
-                    id={'dateContractRetour'}
-                    value={dateContractRetour}
-                    onChangeAction={handleInputChangeDate}
-                />
-            </div>
-
-            <div className="row">
-                <InputText
+                <ViewText label={'Project'} id={'projectName'} className={'col-sm-6 form-group'} value={projectName} />
+                <ViewText
                     label={'Administratie'}
                     name={'administration'}
+                    className={'col-sm-6 form-group'}
                     value={projectAdministrationName}
-                    readOnly={true}
-                    onChangeAction={() => {}}
-                />
-                <InputDate
-                    label={'Einddatum'}
-                    name={'dateEnd'}
-                    id={'dateEnd'}
-                    value={dateEnd}
-                    onChangeAction={handleInputChangeDate}
                 />
             </div>
 
@@ -166,13 +82,6 @@ const ParticipantFormDefaultGeneral = ({
                     id={'didAcceptAgreement'}
                     value={didAcceptAgreement}
                     onChangeAction={handleInputChange}
-                />
-                <InputDate
-                    label={'Inschrijfdatum'}
-                    name={'dateRegister'}
-                    id={'dateRegister'}
-                    value={dateRegister}
-                    onChangeAction={handleInputChangeDate}
                 />
             </div>
 
@@ -219,13 +128,11 @@ const ParticipantFormDefaultGeneral = ({
             </div>
 
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Totale opbrengsten'}
-                    name={'totalWorthParticipations'}
                     id={'totalWorthParticipations'}
-                    value={'???'}
-                    readOnly={true}
-                    onChangeAction={() => {}}
+                    className={'col-sm-6 form-group'}
+                    value={moneyPresenter(0)}
                 />
                 <InputSelect
                     label={'Uitkeren op'}

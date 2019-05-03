@@ -51,7 +51,7 @@ class FullParticipantMutation extends Resource
                 'updatedAt' => $this->updated_at,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
-                'statusLog' => GenericResource::make($this->whenLoaded('statusLog')),
+                'statusLogs' => FullParticipantMutationStatusLog::collection($this->whenLoaded('statusLog')),
             ];
     }
 }

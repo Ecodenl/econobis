@@ -9,10 +9,10 @@ import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import ViewText from '../../../../components/form/ViewText';
 import ParticipantDetailsMutationConclusion from './conclusion';
+import ParticipantDetailsMutationStatusLog from './status-log';
 
 const MutationFormEdit = ({
     participantMutation,
-    participantMutationOriginal,
     errors,
     handleSubmit,
     handleInputChange,
@@ -265,7 +265,9 @@ const MutationFormEdit = ({
                             </React.Fragment>
                         )}
 
-                        <ParticipantDetailsMutationConclusion participantMutationOriginal={participantMutation} />
+                        <ParticipantDetailsMutationStatusLog statusLogs={participantMutation.statusLogs} />
+
+                        <ParticipantDetailsMutationConclusion participantMutation={participantMutation} />
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText

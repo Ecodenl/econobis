@@ -179,7 +179,6 @@ class MutationFormListItem extends Component {
                 {this.state.showEdit && this.props.permissions.manageFinancial && (
                     <MutationFormEdit
                         participantMutation={this.state.participantMutation}
-                        participantMutationOriginal={this.props.participantMutation}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
                         handleSubmit={this.handleSubmit}

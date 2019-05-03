@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import ParticipantDetailsMutationConclusionView from './View';
-import Panel from '../../../../../components/panel/Panel';
-import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 
-const ParticipantDetailsMutationConclusion = ({ participantMutationOriginal }) => {
+const ParticipantDetailsMutationConclusion = ({ participantMutation }) => {
+    const [showConclusion, toggleConclusion] = useState(false);
+
     return (
-        <Panel>
+        <React.Fragment>
             <PanelHeader>
-                <span className="h5 text-bold">Afsluiting gegevens</span>
-            </PanelHeader>
-            <PanelBody>
-                <div className="col-md-12">
-                    <ParticipantDetailsMutationConclusionView {...participantMutationOriginal} />
+                <div className="row" onClick={() => toggleConclusion(!showConclusion)}>
+                    {showConclusion ? (
+                        <span className="glyphicon glyphicon-menu-down" />
+                    ) : (
+                        <span className="glyphicon glyphicon-menu-right" />
+                    )}
+                    <span className="h5">Afsluiting gegevens</span>
                 </div>
-            </PanelBody>
-        </Panel>
+            </PanelHeader>
+            {showConclusion ? <ParticipantDetailsMutationConclusionView {...participantMutation} /> : null}
+        </React.Fragment>
     );
 };
 

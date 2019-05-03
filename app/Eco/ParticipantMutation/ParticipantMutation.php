@@ -49,7 +49,7 @@ class ParticipantMutation extends Model
 
     public function statusLog()
     {
-        return $this->hasMany(ParticipantMutationStatusLog::class);
+        return $this->hasMany(ParticipantMutationStatusLog::class)->orderBy('id', 'desc');
     }
 
     public function createdBy(){

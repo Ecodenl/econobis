@@ -158,9 +158,8 @@ class ParticipationProjectController extends ApiController
     {
         $participantProject->load([
             'mutations' => function($query){
-                $query->orderBy('created_at', 'desc')
-                    ->orderBy('id', 'desc');
-            }
+                $query->orderBy('id', 'desc');
+            },
         ]);
         $participantProject->load([
             'contact',

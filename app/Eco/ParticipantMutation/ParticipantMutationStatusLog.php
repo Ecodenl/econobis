@@ -31,4 +31,14 @@ class ParticipantMutationStatusLog extends Model
     {
         return $this->belongsTo(ParticipantMutation::class);
     }
+
+    public function fromStatus()
+    {
+        return $this->belongsTo(ParticipantMutationStatus::class);
+    }
+
+    public function toStatus()
+    {
+        return $this->belongsTo(ParticipantMutationStatus::class);
+    }
 }

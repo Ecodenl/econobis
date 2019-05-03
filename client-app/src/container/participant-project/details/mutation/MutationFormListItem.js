@@ -7,7 +7,8 @@ import MutationFormView from './MutationFormView';
 import MutationFormEdit from './MutationFormEdit';
 import MutationFormDelete from './MutationFormDelete';
 import { isEqual } from 'lodash';
-import validator from 'validator';
+import MutationValidateForm from './MutationValidateForm';
+import MutationSubmitHelper from './MutationSubmitHelper';
 
 class MutationFormListItem extends Component {
     constructor(props) {
@@ -149,19 +150,18 @@ class MutationFormListItem extends Component {
 
         const { participantMutation } = this.state;
 
-        if (validator.isEmpty(participantMutation.dateCreation + '')) {
-            errors.dateCreation = true;
-            hasErrors = true;
-        }
+        const validatedForm = MutationValidateForm(participantMutation, errors, hasErrors);
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: validatedForm.errors });
 
-        // If no errors send form
-        !hasErrors &&
-            ParticipantMutationAPI.updateParticipantMutation(participantMutation).then(payload => {
+        if (!validatedForm.hasErrors) {
+            const values = MutationSubmitHelper(participantMutation, this.props.participantMutationStatuses);
+
+            ParticipantMutationAPI.updateParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
                 this.closeEdit();
             });
+        }
     };
 
     render() {
@@ -198,6 +198,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         id: state.participantProjectDetails.id,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };
 

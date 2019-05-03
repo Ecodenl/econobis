@@ -83,6 +83,7 @@ const MutationFormEdit = ({
                                     value={quantityOption}
                                     onChangeAction={handleInputChange}
                                     required={'required'}
+                                    error={errors.quantityOption}
                                 />
                                 <InputDate
                                     label={'Optiedatum'}
@@ -90,6 +91,7 @@ const MutationFormEdit = ({
                                     value={dateOption}
                                     onChangeAction={handleInputChangeDate}
                                     required={'required'}
+                                    error={errors.dateOption}
                                 />
                             </div>
                         )}
@@ -119,6 +121,7 @@ const MutationFormEdit = ({
                                         value={quantityGranted}
                                         onChangeAction={handleInputChange}
                                         required={'required'}
+                                        error={errors.quantityGranted}
                                     />
                                     <InputDate
                                         label={'Toewijzingsdatum'}
@@ -126,6 +129,7 @@ const MutationFormEdit = ({
                                         value={dateGranted}
                                         onChangeAction={handleInputChangeDate}
                                         required={'required'}
+                                        error={errors.dateGranted}
                                     />
                                 </div>
                             </React.Fragment>
@@ -170,13 +174,15 @@ const MutationFormEdit = ({
                                         value={quantityFinal}
                                         onChangeAction={handleInputChange}
                                         required={'required'}
+                                        error={errors.quantityFinal}
                                     />
                                     <InputDate
                                         label={'Ingangsdatum'}
-                                        name={'dateGranted'}
-                                        value={dateGranted}
+                                        name={'dateEntry'}
+                                        value={dateEntry}
                                         onChangeAction={handleInputChangeDate}
                                         required={'required'}
+                                        error={errors.dateEntry}
                                     />
                                 </div>
                                 <div className="row">
@@ -186,6 +192,7 @@ const MutationFormEdit = ({
                                         value={dateContractRetour}
                                         onChangeAction={handleInputChangeDate}
                                         required={'required'}
+                                        error={errors.dateContractRetour}
                                     />
                                     <InputDate
                                         label={'Betaal datum'}
@@ -193,6 +200,68 @@ const MutationFormEdit = ({
                                         value={datePayment}
                                         onChangeAction={handleInputChangeDate}
                                         required={'required'}
+                                        error={errors.datePayment}
+                                    />
+                                </div>
+                            </React.Fragment>
+                        )}
+
+                        {status.codeRef === 'final' && (
+                            <React.Fragment>
+                                <div className="row">
+                                    <ViewText
+                                        label={'Aantal optie'}
+                                        id={'quantityOption'}
+                                        className={'col-sm-6 form-group'}
+                                        value={quantityOption}
+                                    />
+                                    <ViewText
+                                        label={'Optiedatum'}
+                                        id={'dateOption'}
+                                        className={'col-sm-6 form-group'}
+                                        value={dateOption && moment(dateOption).format('L')}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <ViewText
+                                        label={'Aantal toegekend'}
+                                        id={'quantityGranted'}
+                                        className={'col-sm-6 form-group'}
+                                        value={quantityGranted}
+                                    />
+                                    <ViewText
+                                        label={'Toewijzingsdatum'}
+                                        id={'dateGranted'}
+                                        className={'col-sm-6 form-group'}
+                                        value={dateGranted && moment(dateGranted).format('L')}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <ViewText
+                                        label={'Aantal definitief'}
+                                        id={'quantityFinal'}
+                                        className={'col-sm-6 form-group'}
+                                        value={quantityFinal}
+                                    />
+                                    <ViewText
+                                        label={'Ingangsdatum'}
+                                        id={'dateEntry'}
+                                        className={'col-sm-6 form-group'}
+                                        value={dateEntry && moment(dateEntry).format('L')}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <ViewText
+                                        label={'Contract retour'}
+                                        id={'dateContractRetour'}
+                                        className={'col-sm-6 form-group'}
+                                        value={dateContractRetour && moment(dateContractRetour).format('L')}
+                                    />
+                                    <ViewText
+                                        label={'Betaal datum'}
+                                        id={'datePayment'}
+                                        className={'col-sm-6 form-group'}
+                                        value={datePayment && moment(datePayment).format('L')}
                                     />
                                 </div>
                             </React.Fragment>

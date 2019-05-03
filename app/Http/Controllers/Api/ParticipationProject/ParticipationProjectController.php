@@ -176,9 +176,12 @@ class ParticipationProjectController extends ApiController
             'mutations.type',
             'mutations.status',
             'mutations.statusLog',
+            'mutations.createdBy',
             'mutations.updatedBy',
             'obligationNumbers',
             'documents',
+            'createdBy',
+            'updatedBy',
         ]);
 
         return FullParticipantProject::make($participantProject);

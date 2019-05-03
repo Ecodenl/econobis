@@ -75,10 +75,10 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
             <h4>Postcoderoos</h4>
             <div className="row">
                 <InputText
-                    label={'Total opbrengsten kWh'}
+                    label={'Totale opbrengsten kWh'}
                     name={'participationsDefinitive'}
                     id={'participationsDefinitive'}
-                    value={'???'}
+                    value={'0'}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -95,7 +95,7 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
                     label={'Totale indicatie teruggave energie belasting'}
                     name={'participationWorth'}
                     id={'participationWorth'}
-                    value={'???'}
+                    value={'0'}
                     readOnly={true}
                 />
                 {/*<InputText*/}
@@ -110,7 +110,7 @@ function ParticipantFormDefaultPostalcodeLinkCapital({
             <div className="row">
                 <InputText
                     type={'number'}
-                    label={'Jouw jaarlijks verbruik'}
+                    label={'Jaarlijks verbruik'}
                     name={'powerKwhConsumption'}
                     id={'powerKwhConsumption'}
                     value={powerKwhConsumption}

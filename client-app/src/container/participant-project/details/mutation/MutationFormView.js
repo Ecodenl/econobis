@@ -53,10 +53,10 @@ const MutationFormView = ({
         >
             <StyledContainer onClick={openEdit}>
                 <StyledColumn columnWidth={'100px'}>{type.name}</StyledColumn>
-                <StyledColumn columnWidth={'100px'}>{status.name}</StyledColumn>
-                <StyledColumn columnWidth={'8.5%'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
-                <StyledColumn columnWidth={'9%'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
-                <StyledColumn columnWidth={'10%'}>{type.description}</StyledColumn>
+                <StyledColumn columnWidth={'80px'}>{status.name}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'120px'}>{type.description}</StyledColumn>
                 {(projectTypeCodeRef === 'loan' ||
                     projectTypeCodeRef === 'capital' ||
                     projectTypeCodeRef === 'postalcode_link_capital') && (

@@ -6,6 +6,7 @@ import ParticipantFormGeneral from './form/ParticipantFormGeneral';
 import TransactionForm from './transaction/TransactionForm';
 import ObligationNumberForm from './obligation-number/ObligationNumberForm';
 import MutationForm from './mutation/MutationForm';
+import ParticipantDetailsConclusion from './conclusion';
 
 class ParticipantDetailsForm extends Component {
     render() {
@@ -32,8 +33,9 @@ class ParticipantDetailsForm extends Component {
             <div>
                 <ParticipantFormGeneral />
                 <MutationForm />
-                {this.props.keyUserRole && this.props.keyUserRole.hasRole && <TransactionForm />}
+                {this.props.keyUserRole && this.props.keyUserRole.hasRole && 1 == 0 && <TransactionForm />}
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
+                <ParticipantDetailsConclusion />
             </div>
         );
     }

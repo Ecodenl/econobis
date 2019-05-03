@@ -8,6 +8,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\ParticipantTransaction\FullParticipantTransaction;
 use App\Http\Resources\Project\FullProject;
+use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
 class FullParticipantProject extends Resource
@@ -53,7 +54,9 @@ class FullParticipantProject extends Resource
                 'type' => GenericResource::make($this->whenLoaded('participantProjectPayoutType')),
                 'powerKwhConsumption' => $this->power_kwh_consumption,
                 'createdAt' => $this->created_at,
+                'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedAt' => $this->updated_at,
+                'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'participantTransactions' => FullParticipantTransaction::collection($this->whenLoaded('transactions')),
                 'participantMutations' => FullParticipantMutation::collection($this->whenLoaded('mutations')),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),

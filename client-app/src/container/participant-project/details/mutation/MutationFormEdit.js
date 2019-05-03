@@ -8,9 +8,11 @@ import InputDate from '../../../../components/form/InputDate';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import ViewText from '../../../../components/form/ViewText';
+import ParticipantDetailsMutationConclusion from './conclusion';
 
 const MutationFormEdit = ({
     participantMutation,
+    participantMutationOriginal,
     errors,
     handleSubmit,
     handleInputChange,
@@ -28,13 +30,9 @@ const MutationFormEdit = ({
         quantityGranted,
         dateGranted,
         quantityFinal,
-        dateFinal,
         dateContractRetour,
         datePayment,
         dateEntry,
-        amount,
-        quantity,
-        returns,
         updatedAt,
         updatedBy,
     } = participantMutation;
@@ -266,6 +264,8 @@ const MutationFormEdit = ({
                                 </div>
                             </React.Fragment>
                         )}
+
+                        <ParticipantDetailsMutationConclusion participantMutationOriginal={participantMutation} />
 
                         <div className="pull-right btn-group" role="group">
                             <ButtonText

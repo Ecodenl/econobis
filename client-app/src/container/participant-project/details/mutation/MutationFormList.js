@@ -24,10 +24,10 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
         <div>
             <StyledContainer className="row border header">
                 <StyledColumn columnWidth={'100px'}>Type</StyledColumn>
-                <StyledColumn columnWidth={'100px'}>Status</StyledColumn>
-                <StyledColumn columnWidth={'8.5%'}>Betaal datum</StyledColumn>
-                <StyledColumn columnWidth={'9%'}>Ingangs- datum</StyledColumn>
-                <StyledColumn columnWidth={'10%'}>Omschrijving</StyledColumn>
+                <StyledColumn columnWidth={'80px'}>Status</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>Betaal datum</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>Ingangs- datum</StyledColumn>
+                <StyledColumn columnWidth={'120px'}>Omschrijving</StyledColumn>
                 {projectTypeCodeRef === 'loan' && <StyledColumn>Lening rekening</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
                     <StyledColumn>Kapitaal rekening</StyledColumn>

@@ -9,9 +9,17 @@
 namespace App\Eco\ParticipantProject;
 
 use App\Eco\Contact\Contact;
+use Illuminate\Support\Facades\Auth;
 
 class ParticipantProjectObserver
 {
+
+    public function creating(ParticipantProject $participantProject)
+    {
+        $userId = Auth::id();
+        $participantProject->created_by_id = $userId;
+        $participantProject->updated_by_id = $userId;
+    }
 
     public function saved(ParticipantProject $participantProject)
     {
@@ -26,5 +34,11 @@ class ParticipantProjectObserver
         $contact->participations_current = $participations;
 
         $contact->save();
+    }
+
+    public function updating(ParticipantProject $participantProject)
+    {
+        $userId = Auth::id();
+        $participantProject->updated_by_id = $userId;
     }
 }

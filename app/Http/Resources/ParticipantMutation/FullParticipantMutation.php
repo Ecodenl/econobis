@@ -47,7 +47,9 @@ class FullParticipantMutation extends Resource
                 'payoutKwh' => $this->payout_kwh,
                 'indicationOfRestitutionEnergyTax' => $this->indication_of_restitution_energy_tax,
                 'paidOn' => $this->paid_on,
+                'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+                'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'statusLog' => GenericResource::make($this->whenLoaded('statusLog')),
             ];

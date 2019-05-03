@@ -91,7 +91,7 @@ const ParticipantFormView = props => {
                 <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Totale opbrengsten'} value={'????'} />
+                <ViewText label={'Totale opbrengsten'} value={moneyPresenter(0)} />
                 <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
             </div>
 

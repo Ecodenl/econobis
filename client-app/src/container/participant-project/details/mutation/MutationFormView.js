@@ -12,11 +12,11 @@ const StyledContainer = styled.div`
 `;
 
 const StyledColumn = styled.div`
-    width: ${props => (props.columnWidth ? props.columnWidth : '8%')};
+    width: ${props => (props.columnWidth ? props.columnWidth : '100px')};
     position: relative;
     min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 6px;
+    padding-left: 6px;
     float: left;
 `;
 
@@ -52,10 +52,10 @@ const MutationFormView = ({
             onMouseLeave={() => onLineLeave()}
         >
             <StyledContainer onClick={openEdit}>
-                <StyledColumn columnWidth={'12%'}>{type.name}</StyledColumn>
-                <StyledColumn columnWidth={'10%'}>{status.name}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{type.name}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{status.name}</StyledColumn>
                 <StyledColumn columnWidth={'8.5%'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
-                <StyledColumn columnWidth={'8.5%'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'9%'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'10%'}>{type.description}</StyledColumn>
                 {(projectTypeCodeRef === 'loan' ||
                     projectTypeCodeRef === 'capital' ||

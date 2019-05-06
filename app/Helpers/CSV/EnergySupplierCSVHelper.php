@@ -78,9 +78,6 @@ class EnergySupplierCSVHelper
 
             $this->csvExporter->beforeEach(function ($distribution) {
                 // Now notes field will have this value
-                if (strlen($distribution->postal_code)>3) {
-                    echo "more than 140";
-                }
                 $distribution->empty_column_account_number = '';
                 $distribution->empty_column_proximity_rate = '';
                 $distribution->empty_column_power_total = '';
@@ -90,7 +87,12 @@ class EnergySupplierCSVHelper
                 $distribution->empty_column_eb_year = '';
                 $distribution->empty_column_settle_date = '';
                 $distribution->postal_code_numbers = strlen($distribution->postal_code)>3 ? substr($distribution->postal_code, 0, 4) : '';
-                $distribution->postal_code_letters = strlen($distribution->postal_code)>5 ? substr($distribution->postal_code, 5) : '';
+                $distribution->postal_code_letters =
+                    strlen($distribution->postal_code)==6
+                        ? substr($distribution->postal_code, 4)
+                        : ( strlen($distribution->postal_code)==7
+                            ? substr($distribution->postal_code, 5)
+                            : '' );
                 $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
                 $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
             });

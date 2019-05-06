@@ -35,13 +35,13 @@ function ParticipantFormViewPostalcodeLinkCapital({
             <hr style={{ margin: '10px 0' }} />
             <h4>Postcoderoos</h4>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Total opbrengsten kWh'} value={'???'} />
+                <ViewText label={'Totale opbrengsten kWh'} value={'0'} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Totale indicatie teruggave energie belasting'} value={'???'} />
+                <ViewText label={'Totale indicatie teruggave energie belasting'} value={'0'} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Jouw jaarlijks verbruik'} value={powerKwhConsumption} />
+                <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} />
             </div>
         </React.Fragment>
     );

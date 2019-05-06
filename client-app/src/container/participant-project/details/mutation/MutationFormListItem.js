@@ -7,7 +7,8 @@ import MutationFormView from './MutationFormView';
 import MutationFormEdit from './MutationFormEdit';
 import MutationFormDelete from './MutationFormDelete';
 import { isEqual } from 'lodash';
-import validator from 'validator';
+import MutationValidateForm from './MutationValidateForm';
+import MutationSubmitHelper from './MutationSubmitHelper';
 
 class MutationFormListItem extends Component {
     constructor(props) {
@@ -20,13 +21,16 @@ class MutationFormListItem extends Component {
             showDelete: false,
             participantMutation: {
                 ...props.participantMutation,
-                dateCreation: props.participantMutation.dateCreation ? props.participantMutation.dateCreation.date : '',
+                dateInterest: props.participantMutation.dateInterest ? props.participantMutation.dateInterest.date : '',
+                dateOption: props.participantMutation.dateOption ? props.participantMutation.dateOption.date : '',
+                dateGranted: props.participantMutation.dateGranted ? props.participantMutation.dateGranted.date : '',
+                dateContractRetour: props.participantMutation.dateContractRetour
+                    ? props.participantMutation.dateContractRetour.date
+                    : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
+                dateEntry: props.participantMutation.dateEntry ? props.participantMutation.dateEntry.date : '',
             },
-            errors: {
-                dateMutation: false,
-                iban: false,
-            },
+            errors: {},
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -38,11 +42,23 @@ class MutationFormListItem extends Component {
                 ...this.state,
                 participantMutation: {
                     ...this.props.participantMutation,
-                    dateCreation: this.props.participantMutation.dateCreation
-                        ? this.props.participantMutation.dateCreation.date
+                    dateInterest: this.props.participantMutation.dateInterest
+                        ? this.props.participantMutation.dateInterest.date
+                        : '',
+                    dateOption: this.props.participantMutation.dateOption
+                        ? this.props.participantMutation.dateOption.date
+                        : '',
+                    dateGranted: this.props.participantMutation.dateGranted
+                        ? this.props.participantMutation.dateGranted.date
+                        : '',
+                    dateContractRetour: this.props.participantMutation.dateContractRetour
+                        ? this.props.participantMutation.dateContractRetour.date
                         : '',
                     datePayment: this.props.participantMutation.datePayment
                         ? this.props.participantMutation.datePayment.date
+                        : '',
+                    dateEntry: this.props.participantMutation.dateEntry
+                        ? this.props.participantMutation.dateEntry.date
                         : '',
                 },
             });
@@ -76,11 +92,23 @@ class MutationFormListItem extends Component {
             ...this.state,
             participantMutation: {
                 ...this.props.participantMutation,
-                dateCreation: this.props.participantMutation.dateCreation
-                    ? this.props.participantMutation.dateCreation.date
+                dateInterest: this.props.participantMutation.dateInterest
+                    ? this.props.participantMutation.dateInterest.date
+                    : '',
+                dateOption: this.props.participantMutation.dateOption
+                    ? this.props.participantMutation.dateOption.date
+                    : '',
+                dateGranted: this.props.participantMutation.dateGranted
+                    ? this.props.participantMutation.dateGranted.date
+                    : '',
+                dateContractRetour: this.props.participantMutation.dateContractRetour
+                    ? this.props.participantMutation.dateContractRetour.date
                     : '',
                 datePayment: this.props.participantMutation.datePayment
                     ? this.props.participantMutation.datePayment.date
+                    : '',
+                dateEntry: this.props.participantMutation.dateEntry
+                    ? this.props.participantMutation.dateEntry.date
                     : '',
             },
         });
@@ -98,7 +126,6 @@ class MutationFormListItem extends Component {
         const name = target.name;
 
         this.setState({
-            ...this.state,
             participantMutation: {
                 ...this.state.participantMutation,
                 [name]: value,
@@ -108,7 +135,6 @@ class MutationFormListItem extends Component {
 
     handleInputChangeDate(value, name) {
         this.setState({
-            ...this.state,
             participantMutation: {
                 ...this.state.participantMutation,
                 [name]: value,
@@ -124,19 +150,18 @@ class MutationFormListItem extends Component {
 
         const { participantMutation } = this.state;
 
-        if (validator.isEmpty(participantMutation.dateCreation + '')) {
-            errors.dateCreation = true;
-            hasErrors = true;
-        }
+        const validatedForm = MutationValidateForm(participantMutation, errors, hasErrors);
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: validatedForm.errors });
 
-        // If no errors send form
-        !hasErrors &&
-            ParticipantMutationAPI.updateParticipantMutation(participantMutation).then(payload => {
+        if (!validatedForm.hasErrors) {
+            const values = MutationSubmitHelper(participantMutation, this.props.participantMutationStatuses);
+
+            ParticipantMutationAPI.updateParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
                 this.closeEdit();
             });
+        }
     };
 
     render() {
@@ -173,6 +198,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         id: state.participantProjectDetails.id,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };
 

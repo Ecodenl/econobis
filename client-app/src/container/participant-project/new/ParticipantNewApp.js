@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
-import validator from 'validator';
-import { browserHistory, hashHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
-import ParticipantFormDefaultGeneral from '../form-default/ParticipantFormDefaultGeneral';
-import { setError } from '../../../actions/general/ErrorActions';
 
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import * as ibantools from 'ibantools';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import { connect } from 'react-redux';
 import MultipleMessagesModal from '../../../components/modal/MultipleMessagesModal';
-import moment from 'moment';
+import ParticipantNewForm from './ParticipantNewForm';
+import ParticipantSubmitHelper from './ParticipantSubmitHelper';
+import ParticipantValidateForm from './ParticipantValidateForm';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -25,41 +23,35 @@ class ParticipantNewApp extends Component {
             modalText: [],
             modalRedirectTask: '',
             modalRedirectParticipation: '',
-
             contacts: [],
             projects: [],
             participationWorth: 0,
             projectTypeCodeRef: '',
             participation: {
                 contactId: props.params.contactId || '',
-                statusId: 1,
+                statusId: '',
                 projectId: props.params.projectId || '',
-                projectAdministrationName: '',
-                dateRegister: '',
-                dateContractSend: '',
-                dateContractRetour: '',
-                datePayed: '',
-                didAcceptAgreement: false,
-                giftedByContactId: '',
-                ibanPayout: '',
-                ibanPayoutAttn: '',
-                updatedAt: { date: moment() },
-                dateEnd: '',
-                typeId: '',
-                powerKwhConsumption: '',
-                participationsRequested: '',
-                participationsDefinitive: '',
-                participationsWorth: '',
-                participationsDefinitiveWorth: '',
-                amountDefinitive: null,
+                amountOption: 0,
+                dateOption: null,
+                amountGranted: 0,
+                dateGranted: null,
+                amountFinal: 0,
+                dateContractRetour: null,
+                datePayment: null,
+                startingDate: null,
             },
             errors: {
                 contactId: false,
                 statusId: false,
                 projectId: false,
-                typeId: false,
-                ibanPayout: false,
-                powerKwhConsumption: false,
+                amountOption: false,
+                dateOption: false,
+                amountGranted: false,
+                dateGranted: false,
+                amountFinal: false,
+                dateContractRetour: false,
+                datePayment: false,
+                startingDate: false,
             },
         };
     }
@@ -77,33 +69,11 @@ class ParticipantNewApp extends Component {
             });
 
             if (this.props.params.projectId) {
-                const projectId = this.props.params.projectId;
-
-                let project = payload.find(project => project.id == projectId);
-
-                if (project.typeCodeRef == 'postalcode_link_capital') {
-                    this.setState({
-                        ...this.state,
-                        participation: {
-                            ...this.state.participation,
-                            typeId: 3, //energieleverancier,
-                        },
-                        projectTypeCodeRef: project.typeCodeRef,
-                    });
-                } else {
-                    this.setState({
-                        ...this.state,
-                        participation: {
-                            ...this.state.participation,
-                            typeId: 1, //op rekening
-                        },
-                        projectTypeCodeRef: project.typeCodeRef,
-                    });
-                }
+                let project = payload.find(project => project.id == this.props.params.projectId);
 
                 this.setState({
                     ...this.state,
-                    participationWorth: project.participationWorth,
+                    projectTypeCodeRef: project.typeCodeRef,
                 });
             }
         });
@@ -115,24 +85,6 @@ class ParticipantNewApp extends Component {
 
     redirectParticipation = () => {
         hashHistory.push(this.state.modalRedirectParticipation);
-    };
-
-    handleProjectChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        let selectedProject = this.state.projects.find(project => project.id == value);
-
-        this.setState({
-            ...this.state,
-            participationWorth: selectedProject.participationWorth,
-            projectTypeCodeRef: selectedProject.typeCodeRef,
-            participation: {
-                ...this.state.participation,
-                [name]: value,
-            },
-        });
     };
 
     handleInputChange = event => {
@@ -167,33 +119,19 @@ class ParticipantNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(participation.contactId + '')) {
-            errors.contactId = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(participation.statusId + '')) {
-            errors.statusId = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(participation.projectId + '')) {
-            errors.projectId = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(participation.typeId + '')) {
-            errors.typeId = true;
-            hasErrors = true;
-        }
-        if (!validator.isEmpty(participation.ibanPayout)) {
-            if (!ibantools.isValidIBAN(participation.ibanPayout)) {
-                errors.ibanPayout = true;
-                hasErrors = true;
-            }
-        }
+        const status = this.props.participantMutationStatuses.find(
+            participantMutationStatuses => participantMutationStatuses.id == participation.statusId
+        );
+        const statusCodeRef = status ? status.codeRef : null;
 
-        this.setState({ ...this.state, errors: errors });
+        const validatedForm = ParticipantValidateForm(participation, errors, hasErrors, statusCodeRef);
 
-        !hasErrors &&
-            ParticipantProjectDetailsAPI.storeParticipantProject(participation).then(payload => {
+        this.setState({ ...this.state, errors: validatedForm.errors });
+
+        if (!validatedForm.hasErrors) {
+            const values = ParticipantSubmitHelper(participation, statusCodeRef);
+
+            ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
                 if (payload.data.message !== undefined && payload.data.message.length > 0) {
                     this.setState({
                         showModal: true,
@@ -209,6 +147,7 @@ class ParticipantNewApp extends Component {
                     hashHistory.push(`/project/deelnemer/${payload.data.id}`);
                 }
             });
+        }
     };
 
     render() {
@@ -223,19 +162,18 @@ class ParticipantNewApp extends Component {
                         <Panel>
                             <PanelBody>
                                 <div className="col-md-12">
-                                    <ParticipantFormDefaultGeneral
+                                    <ParticipantNewForm
                                         editForm={false}
                                         participation={this.state.participation}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
-                                        handleCancel={browserHistory.goBack}
                                         handleSubmit={this.handleSubmit}
                                         contacts={this.state.contacts}
                                         projects={this.state.projects}
-                                        participationWorth={this.state.participationWorth}
                                         handleProjectChange={this.handleProjectChange}
                                         projectTypeCodeRef={this.state.projectTypeCodeRef}
+                                        participantMutationStatuses={this.props.participantMutationStatuses}
                                     />
                                 </div>
                             </PanelBody>
@@ -258,13 +196,10 @@ class ParticipantNewApp extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    setError: (http_code, message) => {
-        dispatch(setError(http_code, message));
-    },
-});
+const mapStateToProps = state => {
+    return {
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
+    };
+};
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ParticipantNewApp);
+export default connect(mapStateToProps)(ParticipantNewApp);

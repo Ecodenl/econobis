@@ -12,11 +12,11 @@ const StyledContainer = styled.div`
 `;
 
 const StyledColumn = styled.div`
-    width: ${props => (props.columnWidth ? props.columnWidth : '8%')};
+    width: ${props => (props.columnWidth ? props.columnWidth : '100px')};
     position: relative;
     min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 6px;
+    padding-left: 6px;
     float: left;
 `;
 
@@ -34,15 +34,14 @@ const MutationFormView = ({
     const {
         type,
         dateCreation,
-        entry,
         status,
         datePayment,
+        dateEntry,
         amount,
         quantity,
         returns,
         payoutKwh,
         indicationOfRestitutionEnergyTax,
-        paidOn,
         deletedAt,
     } = participantMutation;
 
@@ -53,12 +52,11 @@ const MutationFormView = ({
             onMouseLeave={() => onLineLeave()}
         >
             <StyledContainer onClick={openEdit}>
-                <StyledColumn columnWidth={'8.5%'}>{dateCreation ? moment(dateCreation).format('L') : ''}</StyledColumn>
-                <StyledColumn>{entry}</StyledColumn>
-                <StyledColumn columnWidth={'12%'}>{type.name}</StyledColumn>
-                <StyledColumn columnWidth={'10%'}>{status.name}</StyledColumn>
-                <StyledColumn columnWidth={'8.5%'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
-                <StyledColumn columnWidth={'10%'}>{type.description}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{type.name}</StyledColumn>
+                <StyledColumn columnWidth={'80px'}>{status.name}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'120px'}>{type.description}</StyledColumn>
                 {(projectTypeCodeRef === 'loan' ||
                     projectTypeCodeRef === 'capital' ||
                     projectTypeCodeRef === 'postalcode_link_capital') && (
@@ -72,12 +70,11 @@ const MutationFormView = ({
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
                     <StyledColumn>{indicationOfRestitutionEnergyTax}</StyledColumn>
                 )}
-                <StyledColumn>{paidOn}</StyledColumn>
                 {!deletedAt && (
                     <StyledColumn columnWidth={'6%'}>
                         {showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={openEdit}>
-                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                                <span className="glyphicon glyphicon-log-out mybtn-success" />{' '}
                             </a>
                         ) : (
                             ''

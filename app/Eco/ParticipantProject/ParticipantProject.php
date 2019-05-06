@@ -9,6 +9,7 @@ use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
+use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -76,7 +77,7 @@ class ParticipantProject extends Model
 
     public function mutations()
     {
-        return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('date_creation', 'desc');
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('id', 'desc');
     }
 
     public function obligationNumbers()
@@ -113,5 +114,13 @@ class ParticipantProject extends Model
     public function calculator()
     {
         return new ParticipantProjectCalculator($this);
+    }
+
+    public function createdBy(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function updatedBy(){
+        return $this->belongsTo(User::class);
     }
 }

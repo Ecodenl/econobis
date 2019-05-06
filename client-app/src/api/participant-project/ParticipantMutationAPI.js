@@ -6,39 +6,18 @@ export default {
     newParticipantMutation: participantMutation => {
         const requestUrl = `${URL_PARTICIPANT_MUTATION}`;
 
-        return axiosInstance
-            .post(requestUrl, participantMutation)
-            .then(function(response) {
-                return response.data.data;
-            })
-            .catch(function(error) {
-                return error.response;
-            });
+        return axiosInstance.post(requestUrl, participantMutation);
     },
 
     updateParticipantMutation: participantMutation => {
         const requestUrl = `${URL_PARTICIPANT_MUTATION}/${participantMutation.id}`;
 
-        return axiosInstance
-            .post(requestUrl, participantMutation)
-            .then(function(response) {
-                return response.data.data;
-            })
-            .catch(function(error) {
-                return error.response;
-            });
+        return axiosInstance.post(requestUrl, participantMutation);
     },
 
     deleteParticipantMutation: id => {
         const requestUrl = `${URL_PARTICIPANT_MUTATION}/${id}/delete`;
 
-        return axiosInstance
-            .post(requestUrl)
-            .then(function(response) {
-                return response.data.data;
-            })
-            .catch(function(error) {
-                return error.response;
-            });
+        return axiosInstance.post(requestUrl);
     },
 };

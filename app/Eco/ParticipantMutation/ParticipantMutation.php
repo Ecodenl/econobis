@@ -22,8 +22,12 @@ class ParticipantMutation extends Model
     ];
 
     protected $dates = [
-        'date_creation',
+        'date_interest',
+        'date_option',
+        'date_granted',
+        'date_contract_retour',
         'date_payment',
+        'date_entry',
         'created_at',
         'updated_at',
     ];
@@ -41,6 +45,11 @@ class ParticipantMutation extends Model
     public function status()
     {
         return $this->belongsTo(ParticipantMutationStatus::class);
+    }
+
+    public function statusLog()
+    {
+        return $this->hasMany(ParticipantMutationStatusLog::class)->orderBy('id', 'desc');
     }
 
     public function createdBy(){

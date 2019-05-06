@@ -16,7 +16,7 @@ class AlterParticipantProjectTypeIdNullable extends Migration
     {
         Schema::table('participation_project', function (Blueprint $table) {
             try{
-                $table->dropForeign('participation_production_project_type_id_foreign');
+                $table->dropForeign('participation_project_type_id_foreign');
             }catch (\Exception $e){
                 // Voor het geval de foreign key niet bestaat
             }

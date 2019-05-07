@@ -114,7 +114,7 @@ class EnergySupplierCSVHelper
                 'participations_amount' => 'Aantal kavels',
                 'contact.primaryContactEnergySupplier.es_number' => 'Eneco klantnr',
                 'empty_column_account_number' => 'Accountnr',
-                'delivered_total' => 'Opwek',
+                'delivered_total_string' => 'Opwek',
                 'empty_column_proximity_rate' => 'Nabijheids-tarief',
                 'empty_column_power_total' => 'Stroom Totaal',
                 'empty_column_EB_discount_total_excl_vat' => 'EB Korting Totaal Excl. BTW',
@@ -161,7 +161,7 @@ class EnergySupplierCSVHelper
                 'period_end' => 'EindDatum',
                 'participations_amount' => 'Aantal participaties',
                 'empty_column_expected_revenue' => 'Verwachte opbrengst',
-                'delivered_total' => 'ProductieHoeveelheid',
+                'delivered_total_string' => 'ProductieHoeveelheid',
                 'file_name' => 'BestandsNaam',
             ], $headers);
             $headers = false;
@@ -201,7 +201,7 @@ class EnergySupplierCSVHelper
                 'postal_code' => 'Postcode',
                 'contact.primaryContactEnergySupplier.ean_electricity' => 'ean participant',
                 'contact.primaryContactEnergySupplier.es_number' => 'klantnr',
-                'delivered_total' => 'geleverd kwh',
+                'delivered_total_string' => 'geleverd kwh',
             ], $headers);
             $headers = false;
         }
@@ -245,7 +245,7 @@ class EnergySupplierCSVHelper
                 'participations_amount' => 'Aantal certificaten',
                 'period_start' => 'Startdatum',
                 'period_end' => 'Einddatum',
-                'delivered_total' => 'Toegerekende productie',
+                'delivered_total_string' => 'Toegerekende productie',
                 'empty_column_unit_kwh' => 'Eenheid (kWh)',
 
             ], $headers);

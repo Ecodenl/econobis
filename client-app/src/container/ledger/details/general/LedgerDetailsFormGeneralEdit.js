@@ -56,6 +56,14 @@ class LedgerDetailsFormGeneralEdit extends Component {
             errors.description = true;
             hasErrors = true;
         }
+        if (ledger.twinfieldLedgerCode && ledger.twinfieldLedgerCode !== this.props.ledger.twinfieldLedgerCode) {
+            this.props.ledgers.map(ledgerFromMap => {
+                if(ledgerFromMap.twinfieldLedgerCode == ledger.twinfieldLedgerCode) {
+                    hasErrors = true;
+                    errors.twinfieldLedgerCode = true;
+                }
+            })
+        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -104,6 +112,8 @@ class LedgerDetailsFormGeneralEdit extends Component {
                                 name={'twinfieldLedgerCode'}
                                 value={twinfieldLedgerCode}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.twinfieldLedgerCode}
+                                errorMessage={'Deze grootboekcode wordt al gebruikt.'}
                             />
                         </div>
                     </PanelBody>

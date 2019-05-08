@@ -69,6 +69,14 @@ class LedgerNewForm extends Component {
             errors.description = true;
             hasErrors = true;
         }
+        if (ledger.twinfieldLedgerCode) {
+            this.props.ledgers.map(ledgerFromMap => {
+                if(ledgerFromMap.twinfieldLedgerCode == ledger.twinfieldLedgerCode) {
+                    hasErrors = true;
+                    errors.twinfieldLedgerCode = true;
+                }
+            })
+        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -117,6 +125,8 @@ class LedgerNewForm extends Component {
                                 name={'twinfieldLedgerCode'}
                                 value={twinfieldLedgerCode}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.twinfieldLedgerCode}
+                                errorMessage={'Deze grootboekcode wordt al gebruikt.'}
                             />
                         </div>
                     </PanelBody>
@@ -140,6 +150,7 @@ class LedgerNewForm extends Component {
 const mapStateToProps = state => {
     return {
         vatCodes: state.systemData.vatCodes,
+        ledgers: state.systemData.ledgers,
     };
 };
 

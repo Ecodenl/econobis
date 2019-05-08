@@ -54,6 +54,7 @@ class LedgerDetailsFormGeneral extends Component {
                     <LedgerDetailsFormGeneralEdit
                         ledger={this.props.ledger}
                         vatCodes={this.props.vatCodes}
+                        ledgers={this.props.ledgers}
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}
                     />
@@ -74,6 +75,7 @@ const mapStateToProps = state => {
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
         vatCodes: state.systemData.vatCodes,
+        ledgers: state.systemData.ledgers
     };
 };
 

@@ -143,6 +143,7 @@ class EnergySupplierCSVHelper
                 // Now notes field will have this value
                 ++$this->counter;
                 $distribution->seq_nr = $this->counter;
+                $distribution->postal_code = str_replace(' ', '', $distribution->postal_code );
                 $distribution->registration_date = $this->formatDate(new Carbon('now'));
                 $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
                 $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);

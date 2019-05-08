@@ -12,6 +12,7 @@ const ParticipantFormView = props => {
     const {
         contact,
         status,
+        uniqueMutationStatuses,
         project,
         dateRegister,
         participationsRequested,
@@ -43,7 +44,7 @@ const ParticipantFormView = props => {
                     value={contact ? contact.fullName : ''}
                     link={contact ? 'contact/' + contact.id : ''}
                 />
-                <ViewText label={'Status'} value={status ? status.name : ''} />
+                <ViewText label={'Status'} value={uniqueMutationStatuses.map(item => item.name).join(', ')} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

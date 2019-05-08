@@ -25,7 +25,7 @@ const ParticipantsListHead = props => {
             <DataTableHeadTitle title={'Project'} width={'8%'} />
             <DataTableHeadTitle title={'Huidig aantal deelnames'} width={'9%'} />
             <DataTableHeadTitleAndSort
-                sortColumn={'participationStatusId'}
+                sortColumn={'participantMutationStatusId'}
                 title={'Deelname status'}
                 width={'8%'}
                 setSorts={setSorts}

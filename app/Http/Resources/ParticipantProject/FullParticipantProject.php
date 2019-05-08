@@ -67,6 +67,7 @@ class FullParticipantProject extends Resource
                 'participationsOptioned' => $this->participations_optioned,
                 'amountDefinitive' => $this->amount_definitive,
                 'amountOptioned' => $this->amount_optioned,
+                'uniqueMutationStatuses' => $this->uniqueMutationStatuses,
             ];
     }
 }

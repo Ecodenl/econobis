@@ -13,9 +13,8 @@ import {
     setFilterParticipantProjectEnergySupplierId,
     setFilterParticipantProjectId,
     setFilterParticipantProjectName,
-    setFilterParticipantProjectParticipationStatusId,
+    setFilterParticipantMutationStatusId,
     setFilterParticipantProjectPostalCode,
-    setFilterParticipantProjectStatusId,
     setFilterProjectId,
 } from '../../../actions/participants-project/ParticipantsProjectFiltersActions';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
@@ -61,8 +60,8 @@ const ParticipantsListFilter = props => {
         props.setFilterParticipantProjectCurrentParticipations(e.target.value);
     };
 
-    const onParticipationStatusIdChange = e => {
-        props.setFilterParticipantProjectParticipationStatusId(e.target.value);
+    const onParticipationMutationStatusIdChange = e => {
+        props.setFilterParticipantMutationStatusId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -183,14 +182,14 @@ const ParticipantsListFilter = props => {
             <th>
                 <select
                     className="form-control input-sm"
-                    value={props.filters.participationStatusId.data}
-                    onChange={onParticipationStatusIdChange}
+                    value={props.filters.participantMutationStatusId.data}
+                    onChange={onParticipationMutationStatusIdChange}
                 >
                     <option />
-                    {props.participantProjectStatuses.map(participantProjectStatus => {
+                    {props.participantMutationStatuses.map(participantMutationStatus => {
                         return (
-                            <option key={participantProjectStatus.id} value={participantProjectStatus.id}>
-                                {participantProjectStatus.name}
+                            <option key={participantMutationStatus.id} value={participantMutationStatus.id}>
+                                {participantMutationStatus.name}
                             </option>
                         );
                     })}
@@ -228,7 +227,7 @@ const mapStateToProps = state => ({
     filters: state.participantsProject.filters,
     contactTypes: state.systemData.contactTypes,
     contactStatuses: state.systemData.contactStatuses,
-    participantProjectStatuses: state.systemData.participantProjectStatus,
+    participantMutationStatuses: state.systemData.participantMutationStatuses,
     energySuppliers: state.systemData.energySuppliers,
 });
 
@@ -244,9 +243,8 @@ const mapDispatchToProps = dispatch => {
             setFilterParticipantProjectEnergySupplierId,
             setFilterParticipantProjectId,
             setFilterParticipantProjectName,
-            setFilterParticipantProjectParticipationStatusId,
+            setFilterParticipantMutationStatusId,
             setFilterParticipantProjectPostalCode,
-            setFilterParticipantProjectStatusId,
             setFilterProjectId,
         },
         dispatch

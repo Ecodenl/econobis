@@ -31,8 +31,8 @@ const filtersReducerDefaultState = {
         field: 'currentParticipations',
         data: '',
     },
-    participationStatusId: {
-        field: 'participationStatusId',
+    participantMutationStatusId: {
+        field: 'participantMutationStatusId',
         data: '',
     },
     dateRegister: {
@@ -123,12 +123,12 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.currentParticipations,
                 },
             };
-        case 'SET_FILTER_PARTICIPANT_PROJECT_PARTICIPATION_STATUS_ID':
+        case 'SET_FILTER_PARTICIPANT_MUTATION_STATUS_ID':
             return {
                 ...state,
-                participationStatusId: {
-                    ...state.participationStatusId,
-                    data: action.participationStatusId,
+                participantMutationStatusId: {
+                    ...state.participantMutationStatusId,
+                    data: action.participantMutationStatusId,
                 },
             };
         case 'SET_FILTER_PARTICIPANT_PROJECT_DATE_REGISTER':

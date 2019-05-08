@@ -23,36 +23,23 @@ const ParticipantFormDefaultGeneral = ({
     valueCourses,
     errors,
     handleInputChange,
-    handleInputChangeDate,
-    handleProjectChange,
     handleSubmit,
     handleCancel,
     contacts,
-    projects,
-    participantProjectStatuses,
     participantProjectPayoutTypes,
     projectTypeCodeRef,
 }) => {
     const {
-        contactId,
         contactName,
-        statusId,
-        projectId,
+        uniqueMutationStatuses,
         projectName,
         projectAdministrationName,
-        dateRegister,
-        participationsRequested,
         participationsDefinitive,
-        participationsSold,
         participationsDefinitiveWorth,
-        dateContractSend,
-        dateContractRetour,
         didAcceptAgreement,
         giftedByContactId,
         ibanPayout,
         ibanPayoutAttn,
-        updatedAt,
-        dateEnd,
         typeId,
         powerKwhConsumption,
         amountDefinitive,
@@ -62,7 +49,7 @@ const ParticipantFormDefaultGeneral = ({
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
                 <ViewText label={'Contact'} id={'contactName'} className={'col-sm-6 form-group'} value={contactName} />
-                <ViewText label={'Status(sen)'} id={'statusId'} className={'col-sm-6 form-group'} value={statusId} />
+                <ViewText label={'Status'} value={uniqueMutationStatuses.map(item => item.name).join(', ')} />
             </div>
 
             <div className="row">
@@ -210,14 +197,12 @@ ParticipantFormDefaultGeneral.propTypes = {
     handleCancel: PropTypes.func,
     contacts: PropTypes.array,
     projects: PropTypes.array,
-    participantProjectStatuses: PropTypes.array.isRequired,
     participantProjectPayoutTypes: PropTypes.array.isRequired,
     projectTypeCodeRef: PropTypes.string,
 };
 
 const mapStateToProps = state => {
     return {
-        participantProjectStatuses: state.systemData.participantProjectStatus,
         participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
     };
 };

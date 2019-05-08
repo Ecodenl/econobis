@@ -28,7 +28,7 @@ const ParticipantsListHead = ({
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Plaats'} width={'12%'} setSorts={setSorts} />
             <DataTableHeadTitle title={'Huidig aantal deelnames'} width={'8%'} />
             <DataTableHeadTitleAndSort
-                sortColumn={'participationStatusId'}
+                sortColumn={'participantMutationStatusId'}
                 title={'Deelname status'}
                 width={'9%'}
                 setSorts={setSorts}

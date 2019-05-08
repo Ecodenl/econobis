@@ -5,6 +5,7 @@ namespace App\Eco\ParticipantProject;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
@@ -122,5 +123,17 @@ class ParticipantProject extends Model
 
     public function updatedBy(){
         return $this->belongsTo(User::class);
+    }
+
+    // Return collection with unique mutation statuses
+    public function getUniqueMutationStatusesAttribute()
+    {
+        $mutationStatuses = [];
+
+        foreach($this->mutations->unique('status_id')->sortBy('status_id') as $mutation) {
+            $mutationStatuses[] = $mutation->status;
+        }
+
+        return $mutationStatuses;
     }
 }

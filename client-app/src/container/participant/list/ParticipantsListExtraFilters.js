@@ -151,7 +151,7 @@ class ParticipantsListExtraFilters extends Component {
             participationStatusId: {
                 name: 'Deelnames status',
                 type: 'dropdown',
-                dropDownOptions: this.props.participantProjectStatus,
+                dropDownOptions: this.props.participantMutationStatuses,
             },
             contactBirthday: {
                 name: 'Contact geboortedatum',
@@ -272,7 +272,7 @@ class ParticipantsListExtraFilters extends Component {
 }
 
 const mapStateToProps = state => ({
-    participantProjectStatus: state.systemData.participantProjectStatus,
+    participantMutationStatuses: state.systemData.participantMutationStatuses,
     contactStatuses: state.systemData.contactStatuses,
 });
 

@@ -21,7 +21,7 @@ class Sort extends RequestSort
         'postalCode',
         'city',
         'statusId',
-        'participationStatusId',
+        'participantMutationStatusId',
         'dateRegister',
         'energySupplier'
     ];
@@ -33,7 +33,7 @@ class Sort extends RequestSort
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
         'statusId' => 'contacts.status_id',
-        'participationStatusId' => 'participation_project.status_id',
+        'participantMutationStatusId' => 'participant_mutations.status_id',
         'dateRegister' => 'participation_project.date_register',
         'energySupplier' => 'energy_suppliers.name',
         'address' => 'addresses.street',
@@ -47,5 +47,6 @@ class Sort extends RequestSort
         'city' => 'addresses',
         'statusId' => 'contacts',
         'energySupplier' => 'energy_suppliers',
+        'participantMutationStatusId' => 'participant_mutations',
     ];
 }

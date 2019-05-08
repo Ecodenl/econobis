@@ -34,4 +34,9 @@ class Joiner extends RequestJoiner
         $query->join('contact_energy_supplier', 'participation_project.contact_id', '=', 'contact_energy_supplier.contact_id')->where('is_current_supplier', true);
         $query->join('energy_suppliers', 'contact_energy_supplier.energy_supplier_id', '=', 'energy_suppliers.id');
     }
+
+    protected function applyParticipantMutationsJoin($query)
+    {
+        $query->join('participant_mutations', 'participation_project.id', '=', 'participant_mutations.participation_id');
+    }
 }

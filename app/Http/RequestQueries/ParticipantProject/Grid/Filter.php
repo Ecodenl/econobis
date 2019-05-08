@@ -22,7 +22,7 @@ class Filter extends RequestFilter
         'postalCode',
         'city',
         'currentParticipations',
-        'participationStatusId',
+        'participantMutationStatusId',
         'dateRegister',
         'energySupplierId',
         'projectId',
@@ -35,7 +35,7 @@ class Filter extends RequestFilter
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
         'currentParticipations' => 'participation_project.current_participations',
-        'participationStatusId' => 'participation_project.status_id',
+        'participantMutationStatusId' => 'participant_mutations.status_id',
         'dateRegister' => 'participation_project.date_register',
         'energySupplierId' => 'energy_suppliers.id',
         'projectId' => 'participation_project.project_id',
@@ -48,6 +48,7 @@ class Filter extends RequestFilter
         'postalCode' => 'addresses',
         'city' => 'addresses',
         'energySupplierId' => 'energy_suppliers',
+        'participantMutationStatusId' => 'participant_mutations',
     ];
 
     protected $defaultTypes = [
@@ -55,7 +56,7 @@ class Filter extends RequestFilter
         'id' => 'eq',
         'contactType' => 'eq',
         'statusId' => 'eq',
-        'participationStatusId' => 'eq',
+        'participantMutationStatusId' => 'eq',
         'energySupplierId' => 'eq',
     ];
 

@@ -9,6 +9,7 @@ import MutationFormDelete from './MutationFormDelete';
 import { isEqual } from 'lodash';
 import MutationValidateForm from './MutationValidateForm';
 import MutationSubmitHelper from './MutationSubmitHelper';
+import moment from 'moment';
 
 class MutationFormListItem extends Component {
     constructor(props) {
@@ -21,14 +22,34 @@ class MutationFormListItem extends Component {
             showDelete: false,
             participantMutation: {
                 ...props.participantMutation,
-                dateInterest: props.participantMutation.dateInterest ? props.participantMutation.dateInterest.date : '',
-                dateOption: props.participantMutation.dateOption ? props.participantMutation.dateOption.date : '',
-                dateGranted: props.participantMutation.dateGranted ? props.participantMutation.dateGranted.date : '',
+                dateInterest: props.participantMutation.dateInterest
+                    ? props.participantMutation.dateInterest.date
+                    : moment().format('YYYY-MM-DD'),
+                dateOption: props.participantMutation.dateOption
+                    ? props.participantMutation.dateOption.date
+                    : moment().format('YYYY-MM-DD'),
+                dateGranted: props.participantMutation.dateGranted
+                    ? props.participantMutation.dateGranted.date
+                    : moment().format('YYYY-MM-DD'),
                 dateContractRetour: props.participantMutation.dateContractRetour
                     ? props.participantMutation.dateContractRetour.date
                     : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
-                dateEntry: props.participantMutation.dateEntry ? props.participantMutation.dateEntry.date : '',
+                dateEntry: props.participantMutation.dateEntry
+                    ? props.participantMutation.dateEntry.date
+                    : moment().format('YYYY-MM-DD'),
+                quantityInterest: props.participantMutation.quantityInterest
+                    ? props.participantMutation.quantityInterest
+                    : props.participantMutation.quantity,
+                quantityOption: props.participantMutation.quantityOption
+                    ? props.participantMutation.quantityOption
+                    : props.participantMutation.quantity,
+                quantityGranted: props.participantMutation.quantityGranted
+                    ? props.participantMutation.quantityGranted
+                    : props.participantMutation.quantity,
+                quantityFinal: props.participantMutation.quantityFinal
+                    ? props.participantMutation.quantityFinal
+                    : props.participantMutation.quantity,
             },
             errors: {},
         };
@@ -44,13 +65,13 @@ class MutationFormListItem extends Component {
                     ...this.props.participantMutation,
                     dateInterest: this.props.participantMutation.dateInterest
                         ? this.props.participantMutation.dateInterest.date
-                        : '',
+                        : moment().format('YYYY-MM-DD'),
                     dateOption: this.props.participantMutation.dateOption
                         ? this.props.participantMutation.dateOption.date
-                        : '',
+                        : moment().format('YYYY-MM-DD'),
                     dateGranted: this.props.participantMutation.dateGranted
                         ? this.props.participantMutation.dateGranted.date
-                        : '',
+                        : moment().format('YYYY-MM-DD'),
                     dateContractRetour: this.props.participantMutation.dateContractRetour
                         ? this.props.participantMutation.dateContractRetour.date
                         : '',
@@ -59,7 +80,19 @@ class MutationFormListItem extends Component {
                         : '',
                     dateEntry: this.props.participantMutation.dateEntry
                         ? this.props.participantMutation.dateEntry.date
-                        : '',
+                        : moment().format('YYYY-MM-DD'),
+                    quantityInterest: this.props.participantMutation.quantityInterest
+                        ? this.props.participantMutation.quantityInterest
+                        : this.props.participantMutation.quantity,
+                    quantityOption: this.props.participantMutation.quantityOption
+                        ? this.props.participantMutation.quantityOption
+                        : this.props.participantMutation.quantity,
+                    quantityGranted: this.props.participantMutation.quantityGranted
+                        ? this.props.participantMutation.quantityGranted
+                        : this.props.participantMutation.quantity,
+                    quantityFinal: this.props.participantMutation.quantityFinal
+                        ? this.props.participantMutation.quantityFinal
+                        : this.props.participantMutation.quantity,
                 },
             });
         }

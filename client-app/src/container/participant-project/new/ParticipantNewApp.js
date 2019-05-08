@@ -37,15 +37,15 @@ class ParticipantNewApp extends Component {
                 dateInterest: moment().format('YYYY-MM-DD'),
                 quantityOption: 0,
                 amountOption: 0,
-                dateOption: null,
+                dateOption: moment().format('YYYY-MM-DD'),
                 quantityGranted: 0,
                 amountGranted: 0,
-                dateGranted: null,
+                dateGranted: moment().format('YYYY-MM-DD'),
                 quantityFinal: 0,
                 amountFinal: 0,
                 dateContractRetour: null,
                 datePayment: null,
-                startingDate: null,
+                dateEntry: moment().format('YYYY-MM-DD'),
             },
             errors: {
                 contactId: false,
@@ -56,9 +56,7 @@ class ParticipantNewApp extends Component {
                 amountGranted: false,
                 dateGranted: false,
                 amountFinal: false,
-                dateContractRetour: false,
-                datePayment: false,
-                startingDate: false,
+                dateEntry: false,
             },
         };
     }
@@ -99,13 +97,35 @@ class ParticipantNewApp extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            participation: {
-                ...this.state.participation,
-                [name]: value,
+        this.setState(
+            {
+                ...this.state,
+                participation: {
+                    ...this.state.participation,
+                    [name]: value,
+                },
             },
-        });
+            () => this.linkedValueAdjustment(name)
+        );
+    };
+
+    linkedValueAdjustment = name => {
+        // If field statusId is changed then change dateGranted when applicable
+        if (name === 'statusId') {
+            const currentStatusId = Number(this.state.participation.statusId);
+            const checkStatusId = this.props.participantMutationStatuses.find(
+                participantMutationStatuses => participantMutationStatuses.codeRef === 'final'
+            ).id;
+            const dateGranted = currentStatusId === checkStatusId ? null : moment().format('YYYY-MM-DD');
+
+            this.setState({
+                ...this.state,
+                participation: {
+                    ...this.state.participation,
+                    dateGranted,
+                },
+            });
+        }
     };
 
     handleInputChangeDate = (value, name) => {

@@ -33,10 +33,6 @@ export default function(participantMutation, errors, hasErrors) {
                 errors.quantityFinal = true;
                 hasErrors = true;
             }
-            if (!participantMutation.dateGranted) {
-                errors.dateGranted = true;
-                hasErrors = true;
-            }
             if (!participantMutation.dateEntry) {
                 errors.dateEntry = true;
                 hasErrors = true;

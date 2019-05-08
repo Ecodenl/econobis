@@ -622,9 +622,9 @@ class ParticipationProjectController extends ApiController
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
                     ->integer('quantityFinal')->validate('required')->alias('quantity_final')->next()
-                    ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
-                    ->date('dateContractRetour')->validate('required|date')->alias('date_contract_retour')->next()
-                    ->date('datePayment')->validate('required|date')->alias('date_payment')->next()
+                    ->date('dateGranted')->validate('nullable|date')->onEmpty(null)->alias('date_granted')->next()
+                    ->date('dateContractRetour')->validate('nullable|date')->onEmpty(null)->alias('date_contract_retour')->next()
+                    ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
                     ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
                     ->get();
                 $mutationData['quantity'] = $mutationData['quantity_final'];

@@ -33,8 +33,6 @@ const MutationFormEdit = ({
         dateContractRetour,
         datePayment,
         dateEntry,
-        updatedAt,
-        updatedBy,
     } = participantMutation;
 
     return (

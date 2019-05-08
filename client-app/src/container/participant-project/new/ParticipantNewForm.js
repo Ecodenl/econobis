@@ -159,8 +159,6 @@ const ParticipantNewForm = ({
                             id={'dateGranted'}
                             value={dateGranted}
                             onChangeAction={handleInputChangeDate}
-                            required={'required'}
-                            error={errors.dateGranted}
                         />
                     </div>
                     <div className="row">
@@ -170,8 +168,6 @@ const ParticipantNewForm = ({
                             id={'dateContractRetour'}
                             value={dateContractRetour}
                             onChangeAction={handleInputChangeDate}
-                            required={'required'}
-                            error={errors.dateContractRetour}
                         />
                         <InputDate
                             label={'Betaaldatum'}
@@ -179,8 +175,6 @@ const ParticipantNewForm = ({
                             id={'datePayment'}
                             value={datePayment}
                             onChangeAction={handleInputChangeDate}
-                            required={'required'}
-                            error={errors.datePayment}
                         />
                     </div>
                     <div className="row">

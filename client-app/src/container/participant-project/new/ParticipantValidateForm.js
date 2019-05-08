@@ -39,18 +39,6 @@ export default function(participation, errors, hasErrors, statusCodeRef) {
                 errors.quantityFinal = true;
                 hasErrors = true;
             }
-            if (!participation.dateGranted) {
-                errors.dateGranted = true;
-                hasErrors = true;
-            }
-            if (!participation.dateContractRetour) {
-                errors.dateContractRetour = true;
-                hasErrors = true;
-            }
-            if (!participation.datePayment) {
-                errors.datePayment = true;
-                hasErrors = true;
-            }
             if (!participation.dateEntry) {
                 errors.dateEntry = true;
                 hasErrors = true;

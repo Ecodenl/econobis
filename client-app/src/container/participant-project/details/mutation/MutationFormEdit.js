@@ -229,31 +229,37 @@ const MutationFormEdit = ({
                                     />
                                 </div>
                                 <div className="row">
-                                    <ViewText
+                                    <InputText
+                                        type={'number'}
                                         label={'Aantal definitief'}
                                         id={'quantityFinal'}
-                                        className={'col-sm-6 form-group'}
+                                        name={'quantityFinal'}
                                         value={quantityFinal}
+                                        onChangeAction={handleInputChange}
+                                        required={'required'}
+                                        error={errors.quantityFinal}
                                     />
-                                    <ViewText
+                                    <InputDate
                                         label={'Ingangsdatum'}
-                                        id={'dateEntry'}
-                                        className={'col-sm-6 form-group'}
-                                        value={dateEntry && moment(dateEntry).format('L')}
+                                        name={'dateEntry'}
+                                        value={dateEntry}
+                                        onChangeAction={handleInputChangeDate}
+                                        required={'required'}
+                                        error={errors.dateEntry}
                                     />
                                 </div>
                                 <div className="row">
-                                    <ViewText
+                                    <InputDate
                                         label={'Contract retour'}
-                                        id={'dateContractRetour'}
-                                        className={'col-sm-6 form-group'}
-                                        value={dateContractRetour && moment(dateContractRetour).format('L')}
+                                        name={'dateContractRetour'}
+                                        value={dateContractRetour}
+                                        onChangeAction={handleInputChangeDate}
                                     />
-                                    <ViewText
+                                    <InputDate
                                         label={'Betaal datum'}
-                                        id={'datePayment'}
-                                        className={'col-sm-6 form-group'}
-                                        value={datePayment && moment(datePayment).format('L')}
+                                        name={'datePayment'}
+                                        value={datePayment}
+                                        onChangeAction={handleInputChangeDate}
                                     />
                                 </div>
                             </React.Fragment>

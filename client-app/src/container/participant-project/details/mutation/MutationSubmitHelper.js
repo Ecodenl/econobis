@@ -32,7 +32,7 @@ export default function(participantMutation, participantMutationStatuses) {
         values.quantity = participantMutation.quantityGranted;
     }
 
-    if (statusCodeRef === 'granted') {
+    if (statusCodeRef === 'granted' || statusCodeRef === 'final') {
         values.quantityInterest = participantMutation.quantityInterest;
         values.dateInterest = participantMutation.dateInterest;
         values.quantityOption = participantMutation.quantityOption;

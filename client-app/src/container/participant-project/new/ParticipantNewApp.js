@@ -13,6 +13,7 @@ import MultipleMessagesModal from '../../../components/modal/MultipleMessagesMod
 import ParticipantNewForm from './ParticipantNewForm';
 import ParticipantSubmitHelper from './ParticipantSubmitHelper';
 import ParticipantValidateForm from './ParticipantValidateForm';
+import moment from 'moment';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -31,10 +32,16 @@ class ParticipantNewApp extends Component {
                 contactId: props.params.contactId || '',
                 statusId: '',
                 projectId: props.params.projectId || '',
+                quantityInterest: 0,
+                amountInterest: 0,
+                dateInterest: moment().format('YYYY-MM-DD'),
+                quantityOption: 0,
                 amountOption: 0,
                 dateOption: null,
+                quantityGranted: 0,
                 amountGranted: 0,
                 dateGranted: null,
+                quantityFinal: 0,
                 amountFinal: 0,
                 dateContractRetour: null,
                 datePayment: null,

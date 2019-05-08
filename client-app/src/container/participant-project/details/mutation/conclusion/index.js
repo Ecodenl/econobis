@@ -4,7 +4,7 @@ import ParticipantDetailsMutationConclusionView from './View';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 
 const ParticipantDetailsMutationConclusion = ({ participantMutation }) => {
-    const [showConclusion, toggleConclusion] = useState(false);
+    const [showConclusion, toggleConclusion] = useState(true);
 
     return (
         <React.Fragment>

@@ -6,6 +6,12 @@ import { fetchParticipantProjectDetails } from '../../../../actions/participants
 import validator from 'validator';
 import MutationFormDefault from './MutationFormDefault';
 import moment from 'moment';
+import Panel from '../../../../components/panel/Panel';
+import PanelBody from '../../../../components/panel/PanelBody';
+import InputDate from '../../../../components/form/InputDate';
+import InputText from '../../../../components/form/InputText';
+import InputSelect from '../../../../components/form/InputSelect';
+import ButtonText from '../../../../components/button/ButtonText';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -102,25 +108,96 @@ class MutationFormNew extends Component {
             participantMutationType => participantMutationType.projectTypeCodeRef === projectTypeCodeRef
         );
 
+        const type = participantMutationTypes.find(participantMutationType => participantMutationType.id == typeId);
+        const typeCodeRef = type ? type.codeRef : null;
+
+        const status = participantMutationStatuses.find(
+            participantMutationStatus => participantMutationStatus.id == statusId
+        );
+        const statusCodeRef = status ? status.codeRef : null;
+
         return (
-            <MutationFormDefault
-                editForm={false}
-                projectTypeCodeRef={projectTypeCodeRef}
-                typeId={typeId}
-                statusId={statusId}
-                dateCreation={dateCreation}
-                datePayment={datePayment}
-                amount={amount}
-                quantity={quantity}
-                returns={returns}
-                errors={this.state.errors}
-                participantMutationTypes={participantMutationTypes}
-                participantMutationStatuses={participantMutationStatuses}
-                handleSubmit={this.handleSubmit}
-                handleInputChange={this.handleInputChange}
-                handleInputChangeDate={this.handleInputChangeDate}
-                toggleShow={this.props.toggleShowNew}
-            />
+            <React.Fragment>
+                <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                    <Panel className={'panel-grey'}>
+                        <PanelBody>
+                            <div className="row">
+                                <InputSelect
+                                    label={'Type'}
+                                    id="typeId"
+                                    name={'typeId'}
+                                    options={participantMutationTypes}
+                                    value={typeId}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.typeId}
+                                />
+                                <InputSelect
+                                    label={'Status'}
+                                    id="statusId"
+                                    name={'statusId'}
+                                    options={participantMutationStatuses}
+                                    value={statusId}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+
+                            {typeCodeRef === 'first_deposit' ? (
+                                <React.Fragment>
+                                    {statusCodeRef === 'interest' ? <div>interest</div> : null}
+                                    {statusCodeRef === 'option' ? <div>option</div> : null}
+                                    {statusCodeRef === 'granted' ? <div>granted</div> : null}
+                                    {statusCodeRef === 'final' ? <div>final</div> : null}
+                                </React.Fragment>
+                            ) : null}
+
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={'Obligatie'}
+                                    id={'quantity'}
+                                    name={'quantity'}
+                                    value={quantity}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+
+                            <div className="pull-right btn-group" role="group">
+                                <ButtonText
+                                    buttonClassName={'btn-default'}
+                                    buttonText={'Annuleren'}
+                                    onClickAction={this.props.toggleShowNew}
+                                />
+                                <ButtonText
+                                    buttonText={'Opslaan'}
+                                    onClickAction={this.handleSubmit}
+                                    type={'submit'}
+                                    value={'Submit'}
+                                />
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                </form>
+
+                <MutationFormDefault
+                    editForm={false}
+                    projectTypeCodeRef={projectTypeCodeRef}
+                    typeId={typeId}
+                    statusId={statusId}
+                    dateCreation={dateCreation}
+                    datePayment={datePayment}
+                    amount={amount}
+                    quantity={quantity}
+                    returns={returns}
+                    errors={this.state.errors}
+                    participantMutationTypes={participantMutationTypes}
+                    participantMutationStatuses={participantMutationStatuses}
+                    handleSubmit={this.handleSubmit}
+                    handleInputChange={this.handleInputChange}
+                    handleInputChangeDate={this.handleInputChangeDate}
+                    toggleShow={this.props.toggleShowNew}
+                />
+            </React.Fragment>
         );
     }
 }

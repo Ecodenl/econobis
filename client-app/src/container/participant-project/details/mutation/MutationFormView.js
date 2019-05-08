@@ -74,7 +74,7 @@ const MutationFormView = ({
                     <StyledColumn columnWidth={'6%'}>
                         {showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={openEdit}>
-                                <span className="glyphicon glyphicon-log-out mybtn-success" />{' '}
+                                <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                             </a>
                         ) : (
                             ''

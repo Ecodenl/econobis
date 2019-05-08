@@ -189,16 +189,12 @@ const MutationFormEdit = ({
                                         name={'dateContractRetour'}
                                         value={dateContractRetour}
                                         onChangeAction={handleInputChangeDate}
-                                        required={'required'}
-                                        error={errors.dateContractRetour}
                                     />
                                     <InputDate
                                         label={'Betaal datum'}
                                         name={'datePayment'}
                                         value={datePayment}
                                         onChangeAction={handleInputChangeDate}
-                                        required={'required'}
-                                        error={errors.datePayment}
                                     />
                                 </div>
                             </React.Fragment>

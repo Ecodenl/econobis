@@ -37,14 +37,6 @@ export default function(participantMutation, errors, hasErrors) {
                 errors.dateGranted = true;
                 hasErrors = true;
             }
-            if (!participantMutation.dateContractRetour) {
-                errors.dateContractRetour = true;
-                hasErrors = true;
-            }
-            if (!participantMutation.datePayment) {
-                errors.datePayment = true;
-                hasErrors = true;
-            }
             if (!participantMutation.dateEntry) {
                 errors.dateEntry = true;
                 hasErrors = true;

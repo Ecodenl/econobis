@@ -14,7 +14,7 @@ class PriceHistoryObserver
     {
         $product = $priceHistory->product;
 
-        if($product->hasVariablePrice === 'static') {
+        if($product && $product->hasVariablePrice === 'static') {
             foreach ($product->invoiceProductsToSend as $invoiceProductToSend) {
 
                 $price = 0;

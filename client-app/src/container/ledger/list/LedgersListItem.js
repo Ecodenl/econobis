@@ -31,7 +31,7 @@ class LedgersListItem extends Component {
     }
 
     render() {
-        const { id, description, vatCode, permissions } = this.props;
+        const { id, description, vatCode, twinfieldLedgerCode, permissions } = this.props;
 
         return (
             <tr
@@ -42,6 +42,7 @@ class LedgersListItem extends Component {
             >
                 <td>{description}</td>
                 <td>{vatCode && vatCode.description}</td>
+                <td>{twinfieldLedgerCode}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

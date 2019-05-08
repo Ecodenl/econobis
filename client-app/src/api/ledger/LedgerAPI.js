@@ -7,7 +7,7 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'description', 'vatCodeId'],
+                    fld: ['id', 'description', 'vatCodeId', 'twinfieldLedgerCode'],
                     rlt: { vatCode: { fld: ['id', 'description'] } },
                 },
             },

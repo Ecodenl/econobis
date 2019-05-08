@@ -17,13 +17,6 @@ class AddedDefaultVatCodes extends Migration
         $defaultVatCodes = [
             [
                 'start_date' => '2000-01-01',
-                'description' => 'Geen BTW',
-                'percentage' => null,
-                'twinfield_code' => '',
-                'twinfield_ledger_code' => '',
-            ],
-            [
-                'start_date' => '2000-01-01',
                 'description' => 'BTW 0%',
                 'percentage' => '0.00',
                 'twinfield_code' => 'VN',

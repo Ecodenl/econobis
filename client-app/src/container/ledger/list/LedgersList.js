@@ -67,7 +67,8 @@ class LedgersList extends Component {
                     <DataTableHead>
                         <tr className="thead-title">
                             <DataTableHeadTitle title={'Omschrijving'} width={'35%'}/>
-                            <DataTableHeadTitle title={'BTW code'} width={'60%'}/>
+                            <DataTableHeadTitle title={'BTW code'} width={'30%'}/>
+                            <DataTableHeadTitle title={'Nummer'} width={'30%'}/>
                             <DataTableHeadTitle title={''} width={'5%'}/>
                         </tr>
                     </DataTableHead>

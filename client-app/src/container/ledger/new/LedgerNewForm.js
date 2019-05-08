@@ -108,7 +108,7 @@ class LedgerNewForm extends Component {
                                 options={this.props.vatCodes}
                                 optionName={'description'}
                                 onChangeAction={this.handleInputChange}
-                                placeholder={'Geen'}
+                                placeholder={'BTW geen'}
                             />
                         </div>
                         <div className="row">

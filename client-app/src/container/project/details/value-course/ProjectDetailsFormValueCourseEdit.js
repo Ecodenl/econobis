@@ -55,16 +55,6 @@ const ProjectDetailsFormValueCourseEdit = ({
                             error={errors.bookWorthError}
                         />
                         <InputText
-                            label={'Boekwaarde'}
-                            id={'bookWorth'}
-                            name={'bookWorth'}
-                            value={bookWorth}
-                            onChangeAction={handleInputChange}
-                            required={'required'}
-                            error={errors.bookWorthError}
-                        />
-                        ) : null}
-                        <InputText
                             label={'Overdrachtswaarde'}
                             id={'transferWorth'}
                             name={'transferWorth'}

@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 
 import ParticipantMutationAPI from '../../../../../api/participant-project/ParticipantMutationAPI';
 import { fetchParticipantProjectDetails } from '../../../../../actions/participants-project/ParticipantProjectDetailsActions';
-import validator from 'validator';
 import moment from 'moment/moment';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import InputText from '../../../../../components/form/InputText';
 import InputSelect from '../../../../../components/form/InputSelect';
 import ButtonText from '../../../../../components/button/ButtonText';
+import MutationNewDeposit from './MutationNewDeposit';
+import MutationNewValidateForm from './MutationNewValidateForm';
+import MutationNewSubmitHelper from './MutationNewSubmitHelper';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -18,20 +19,24 @@ class MutationFormNew extends Component {
         this.state = {
             participationMutation: {
                 participationId: this.props.id,
-                dateCreation: moment().format('Y-MM-DD'),
                 typeId: '',
                 statusId: '',
-                datePayment: '',
-                amount: '',
-                quantity: '',
-                returns: '',
+                quantityInterest: 0,
+                amountInterest: 0,
+                dateInterest: moment().format('YYYY-MM-DD'),
+                quantityOption: 0,
+                amountOption: 0,
+                dateOption: moment().format('YYYY-MM-DD'),
+                quantityGranted: 0,
+                amountGranted: 0,
+                dateGranted: moment().format('YYYY-MM-DD'),
+                quantityFinal: 0,
+                amountFinal: 0,
+                dateContractRetour: null,
+                datePayment: null,
+                dateEntry: moment().format('YYYY-MM-DD'),
             },
-            errors: {
-                typeId: false,
-                dateCreation: false,
-                amount: false,
-                iban: false,
-            },
+            errors: {},
         };
 
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -42,13 +47,35 @@ class MutationFormNew extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            participationMutation: {
-                ...this.state.participationMutation,
-                [name]: value,
+        this.setState(
+            {
+                ...this.state,
+                participationMutation: {
+                    ...this.state.participationMutation,
+                    [name]: value,
+                },
             },
-        });
+            () => this.linkedValueAdjustment(name)
+        );
+    };
+
+    linkedValueAdjustment = name => {
+        // If field statusId is changed then change dateGranted when applicable
+        if (name === 'statusId') {
+            const currentStatusId = Number(this.state.participationMutation.statusId);
+            const checkStatusId = this.props.participantMutationStatuses.find(
+                participantMutationStatuses => participantMutationStatuses.codeRef === 'final'
+            ).id;
+            const dateGranted = currentStatusId === checkStatusId ? null : moment().format('YYYY-MM-DD');
+
+            this.setState({
+                ...this.state,
+                participation: {
+                    ...this.state.participation,
+                    dateGranted,
+                },
+            });
+        }
     };
 
     handleInputChangeDate(value, name) {
@@ -69,36 +96,28 @@ class MutationFormNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(participationMutation.typeId)) {
-            errors.typeId = true;
-            hasErrors = true;
-        }
+        const status = this.props.participantMutationStatuses.find(
+            participantMutationStatuses => participantMutationStatuses.id == participationMutation.statusId
+        );
+        const statusCodeRef = status ? status.codeRef : null;
 
-        if (validator.isEmpty(participationMutation.dateCreation)) {
-            errors.dateCreation = true;
-            hasErrors = true;
-        }
+        const validatedForm = MutationNewValidateForm(participationMutation, errors, hasErrors, statusCodeRef);
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: validatedForm.errors });
 
         // If no errors send form
-        !hasErrors &&
-            ParticipantMutationAPI.newParticipantMutation(participationMutation).then(payload => {
+        if (!validatedForm.hasErrors) {
+            const values = MutationNewSubmitHelper(participationMutation, statusCodeRef);
+
+            ParticipantMutationAPI.newParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
                 this.props.toggleShowNew();
             });
+        }
     };
 
     render() {
-        const {
-            dateCreation,
-            typeId,
-            statusId,
-            datePayment,
-            amount,
-            quantity,
-            returns,
-        } = this.state.participationMutation;
+        const { typeId, statusId } = this.state.participationMutation;
 
         const { participantMutationStatuses, projectTypeCodeRef } = this.props;
 
@@ -141,24 +160,14 @@ class MutationFormNew extends Component {
                             </div>
 
                             {typeCodeRef === 'first_deposit' ? (
-                                <React.Fragment>
-                                    {statusCodeRef === 'interest' ? <div>interest</div> : null}
-                                    {statusCodeRef === 'option' ? <div>option</div> : null}
-                                    {statusCodeRef === 'granted' ? <div>granted</div> : null}
-                                    {statusCodeRef === 'final' ? <div>final</div> : null}
-                                </React.Fragment>
-                            ) : null}
-
-                            <div className="row">
-                                <InputText
-                                    type={'number'}
-                                    label={'Obligatie'}
-                                    id={'quantity'}
-                                    name={'quantity'}
-                                    value={quantity}
-                                    onChangeAction={this.handleInputChange}
+                                <MutationNewDeposit
+                                    statusCodeRef={statusCodeRef}
+                                    {...this.state.participationMutation}
+                                    errors={this.state.errors}
+                                    handleInputChange={this.handleInputChange}
+                                    handleInputChangeDate={this.handleInputChangeDate}
                                 />
-                            </div>
+                            ) : null}
 
                             <div className="pull-right btn-group" role="group">
                                 <ButtonText

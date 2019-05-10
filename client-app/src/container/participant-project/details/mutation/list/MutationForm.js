@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import MutationFormList from './MutationFormList';
-import MutationFormNew from '../new/MutationFormNew';
+import MutationNew from '../new/MutationNew';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
@@ -38,7 +38,7 @@ class MutationForm extends Component {
                         <MutationFormList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <MutationFormNew toggleShowNew={this.toggleShowNew} />}
+                        {this.state.showNew && <MutationNew toggleShowNew={this.toggleShowNew} />}
                     </div>
                 </PanelBody>
             </Panel>

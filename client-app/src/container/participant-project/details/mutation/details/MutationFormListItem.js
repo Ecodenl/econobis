@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 
 import ParticipantMutationAPI from '../../../../../api/participant-project/ParticipantMutationAPI';
 import { fetchParticipantProjectDetails } from '../../../../../actions/participants-project/ParticipantProjectDetailsActions';
-import MutationFormView from '../details/MutationFormView';
-import MutationFormEdit from '../details/MutationFormEdit';
-import MutationFormDelete from './MutationFormDelete';
+import MutationFormView from './MutationFormView';
+import MutationFormEdit from './MutationFormEdit';
+import MutationFormDelete from '../list/MutationFormDelete';
 import { isEqual } from 'lodash';
-import MutationValidateForm from '../details/MutationValidateForm';
-import MutationSubmitHelper from '../details/MutationSubmitHelper';
+import MutationValidateForm from './MutationValidateForm';
+import MutationSubmitHelper from './MutationSubmitHelper';
 import moment from 'moment/moment';
 
 class MutationFormListItem extends Component {

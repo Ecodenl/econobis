@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from '@emotion/styled';
 
-import MutationFormListItem from './MutationFormListItem';
+import MutationFormListItem from '../details/MutationFormListItem';
 
 const StyledContainer = styled.div`
     display: flex;

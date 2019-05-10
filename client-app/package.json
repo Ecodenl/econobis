@@ -1,6 +1,6 @@
 {
   "name": "eco",
-  "version": "2.2.12",
+  "version": "2.4.0",
   "description": "Econobis react",
   "main": "index.js",
   "scripts": {

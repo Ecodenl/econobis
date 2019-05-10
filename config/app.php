@@ -4,7 +4,7 @@ return [
 
     //Version number displayed in the header, change this with every update
     'version_major' => '2',
-    'version_minor' => '3',
+    'version_minor' => '4',
     'version_fix' => '0',
 
     //Alfresco envs

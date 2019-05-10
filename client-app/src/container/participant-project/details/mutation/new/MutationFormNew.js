@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import ParticipantMutationAPI from '../../../../api/participant-project/ParticipantMutationAPI';
-import { fetchParticipantProjectDetails } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
+import ParticipantMutationAPI from '../../../../../api/participant-project/ParticipantMutationAPI';
+import { fetchParticipantProjectDetails } from '../../../../../actions/participants-project/ParticipantProjectDetailsActions';
 import validator from 'validator';
-import MutationFormDefault from './MutationFormDefault';
-import moment from 'moment';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import InputDate from '../../../../components/form/InputDate';
-import InputText from '../../../../components/form/InputText';
-import InputSelect from '../../../../components/form/InputSelect';
-import ButtonText from '../../../../components/button/ButtonText';
+import moment from 'moment/moment';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import InputText from '../../../../../components/form/InputText';
+import InputSelect from '../../../../../components/form/InputSelect';
+import ButtonText from '../../../../../components/button/ButtonText';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -178,25 +176,6 @@ class MutationFormNew extends Component {
                         </PanelBody>
                     </Panel>
                 </form>
-
-                <MutationFormDefault
-                    editForm={false}
-                    projectTypeCodeRef={projectTypeCodeRef}
-                    typeId={typeId}
-                    statusId={statusId}
-                    dateCreation={dateCreation}
-                    datePayment={datePayment}
-                    amount={amount}
-                    quantity={quantity}
-                    returns={returns}
-                    errors={this.state.errors}
-                    participantMutationTypes={participantMutationTypes}
-                    participantMutationStatuses={participantMutationStatuses}
-                    handleSubmit={this.handleSubmit}
-                    handleInputChange={this.handleInputChange}
-                    handleInputChangeDate={this.handleInputChangeDate}
-                    toggleShow={this.props.toggleShowNew}
-                />
             </React.Fragment>
         );
     }

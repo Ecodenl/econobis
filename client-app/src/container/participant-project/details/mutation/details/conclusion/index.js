@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import ParticipantDetailsMutationConclusionView from './View';
-import PanelHeader from '../../../../../components/panel/PanelHeader';
+import PanelHeader from '../../../../../../components/panel/PanelHeader';
 
 const ParticipantDetailsMutationConclusion = ({ participantMutation }) => {
     const [showConclusion, toggleConclusion] = useState(true);

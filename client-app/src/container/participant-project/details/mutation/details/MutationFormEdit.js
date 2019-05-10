@@ -2,12 +2,12 @@ import React from 'react';
 import moment from 'moment/moment';
 moment.locale('nl');
 import { connect } from 'react-redux';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import InputDate from '../../../../components/form/InputDate';
-import InputText from '../../../../components/form/InputText';
-import ButtonText from '../../../../components/button/ButtonText';
-import ViewText from '../../../../components/form/ViewText';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import InputDate from '../../../../../components/form/InputDate';
+import InputText from '../../../../../components/form/InputText';
+import ButtonText from '../../../../../components/button/ButtonText';
+import ViewText from '../../../../../components/form/ViewText';
 import ParticipantDetailsMutationConclusion from './conclusion';
 import ParticipantDetailsMutationStatusLog from './status-log';
 

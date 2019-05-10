@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import ParticipantFormGeneral from './form/ParticipantFormGeneral';
 import TransactionForm from './transaction/TransactionForm';
 import ObligationNumberForm from './obligation-number/ObligationNumberForm';
-import MutationForm from './mutation/MutationForm';
+import MutationForm from './mutation/list/MutationForm';
 import ParticipantDetailsConclusion from './conclusion';
 
 class ParticipantDetailsForm extends Component {

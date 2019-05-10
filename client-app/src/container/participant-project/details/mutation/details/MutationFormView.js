@@ -3,7 +3,7 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import styled from '@emotion/styled';
 moment.locale('nl');
-import moneyPresenter from '../../../../helpers/MoneyPresenter';
+import moneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 const StyledContainer = styled.div`
     display: flex;

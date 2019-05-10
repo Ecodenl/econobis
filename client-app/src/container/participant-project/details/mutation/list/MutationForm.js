@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import MutationFormList from './MutationFormList';
-import MutationFormNew from './MutationFormNew';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import PanelHeader from '../../../../components/panel/PanelHeader';
+import MutationFormNew from '../new/MutationFormNew';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import PanelHeader from '../../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 
 class MutationForm extends Component {

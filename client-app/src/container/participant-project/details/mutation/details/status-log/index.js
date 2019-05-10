@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PanelHeader from '../../../../../components/panel/PanelHeader';
+import PanelHeader from '../../../../../../components/panel/PanelHeader';
 import ParticipantDetailsMutationStatusLogList from './List';
 
 const ParticipantDetailsMutationStatusLog = ({ statusLogs }) => {

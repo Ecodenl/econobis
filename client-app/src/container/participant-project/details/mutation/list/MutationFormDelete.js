@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Modal from '../../../../components/modal/Modal';
-import { deleteParticipationMutation } from '../../../../actions/participants-project/ParticipantProjectDetailsActions';
+import Modal from '../../../../../components/modal/Modal';
+import { deleteParticipationMutation } from '../../../../../actions/participants-project/ParticipantProjectDetailsActions';
 
 const MutationFormDelete = props => {
     const confirmAction = () => {

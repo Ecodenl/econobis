@@ -276,7 +276,7 @@ class ParticipantFormEdit extends Component {
                         <ButtonText
                             buttonClassName={'btn-default'}
                             buttonText={'Annuleren'}
-                            onClickAction={this.handleCancel}
+                            onClickAction={this.props.switchToView}
                         />
                         <ButtonText
                             buttonText={'Opslaan'}

@@ -17,6 +17,7 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\ParticipantCSVHelper;
@@ -197,6 +198,9 @@ class ParticipationProjectController extends ApiController
             ->get();
 
         $participantProject = new ParticipantProject();
+
+        // Default type id worth is account
+        $data['type_id'] = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
 
         $participantProject->fill($data);
 

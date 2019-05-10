@@ -4,6 +4,8 @@ import moment from 'moment';
 
 moment.locale('nl');
 import InputText from '../../../../../components/form/InputText';
+import ViewText from '../../../../../components/form/ViewText';
+import moneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 function ParticipantFormEditCapital({
     participationWorth,
@@ -18,55 +20,31 @@ function ParticipantFormEditCapital({
             <hr style={{ margin: '10px 0' }} />
             <h4>Kapitaal</h4>
             <div className="row">
-                <InputText
-                    label={'Huidig aantal participaties'}
-                    name={'participationsDefinitive'}
-                    id={'participationsDefinitive'}
+                <ViewText
+                    label={'Huidige aantal participaties'}
                     value={participationsDefinitive}
-                    readOnly={true}
+                    className={'col-sm-6 form-group'}
                 />
-                {/*<InputText*/}
-                {/*type={'number'}*/}
-                {/*label={'Participaties aangevraagd'}*/}
-                {/*name={'participationsRequested'}*/}
-                {/*id={'participationsRequested'}*/}
-                {/*value={participationsRequested}*/}
-                {/*onChangeAction={handleInputChange}*/}
-                {/*/>*/}
             </div>
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Nominale waarde per participatie'}
-                    name={'participationWorth'}
-                    id={'participationWorth'}
-                    value={participationWorth}
-                    readOnly={true}
+                    value={moneyPresenter(participationWorth)}
+                    className={'col-sm-6 form-group'}
                 />
-                {/*<InputText*/}
-                {/*type={'number'}*/}
-                {/*label={'Participaties toegekend'}*/}
-                {/*name={'participationsDefinitive'}*/}
-                {/*id={'participationsDefinitive'}*/}
-                {/*value={participationsDefinitive}*/}
-                {/*onChangeAction={handleInputChange}*/}
-                {/*/>*/}
             </div>
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Huidige boekwaarde per participatie'}
-                    name={'valueCourseBookWorth'}
-                    id={'valueCourseBookWorth'}
-                    value={activeValueCourse && activeValueCourse.bookWorth}
-                    readOnly={true}
+                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
+                    className={'col-sm-6 form-group'}
                 />
             </div>
             <div className="row">
-                <InputText
+                <ViewText
                     label={'Huidige totale waarde'}
-                    name={'participationsDefinitiveWorth'}
-                    id={'participationsDefinitiveWorth'}
-                    value={participationsDefinitiveWorth}
-                    readOnly={true}
+                    value={moneyPresenter(participationsDefinitiveWorth)}
+                    className={'col-sm-6 form-group'}
                 />
             </div>
         </React.Fragment>

@@ -156,7 +156,6 @@ class ParticipantFormEdit extends Component {
                         className={'col-sm-6 form-group'}
                     />
                 </div>
-
                 <div className="row">
                     <ViewText
                         label={'Project'}
@@ -170,7 +169,6 @@ class ParticipantFormEdit extends Component {
                         className={'col-sm-6 form-group'}
                     />
                 </div>
-
                 <div className="row">
                     <InputToggle
                         label={'Akkoord reglement'}
@@ -180,7 +178,6 @@ class ParticipantFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <InputSelect
                         label={'Schenker'}
@@ -200,7 +197,6 @@ class ParticipantFormEdit extends Component {
                         error={this.state.errors.ibanPayout}
                     />
                 </div>
-
                 <div className="row">
                     {projectTypeCodeRef === 'obligation' ? (
                         <div className={'form-group col-md-6'} />
@@ -222,7 +218,6 @@ class ParticipantFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <div className="row">
                     <ViewText
                         label={'Totale opbrengsten'}
@@ -241,7 +236,6 @@ class ParticipantFormEdit extends Component {
                         error={this.state.errors.typeId}
                     />
                 </div>
-
                 {projectTypeCodeRef === 'obligation' ? (
                     <ParticipantFormEditObligation
                         participationWorth={project.participationWorth}
@@ -250,7 +244,6 @@ class ParticipantFormEdit extends Component {
                         valueCourses={project.valueCourses}
                     />
                 ) : null}
-
                 {projectTypeCodeRef === 'capital' ? (
                     <ParticipantFormEditCapital
                         participationWorth={project.participationWorth}
@@ -259,7 +252,6 @@ class ParticipantFormEdit extends Component {
                         valueCourses={project.valueCourses}
                     />
                 ) : null}
-
                 {projectTypeCodeRef === 'postalcode_link_capital' ? (
                     <ParticipantFormEditPostalcodeLinkCapital
                         participationWorth={project.participationWorth}
@@ -270,7 +262,6 @@ class ParticipantFormEdit extends Component {
                         handleInputChange={this.handleInputChange}
                     />
                 ) : null}
-
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

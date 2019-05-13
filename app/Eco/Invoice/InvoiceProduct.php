@@ -134,7 +134,19 @@ class InvoiceProduct extends Model
             }
         }
         if ($this->amount_reduction) {
-            $priceExclVat -= $this->amount_reduction;
+            $amountReduction = $this->amount_reduction;
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
+            if($inputInclVat)
+            {
+                $vatPercentage = $this->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = floatval( number_format( $amountReduction / $vatFactor, 2, '.', '') );
+            }
+
+            $priceExclVat -= $amountReduction;
         }
         return $priceExclVat;
     }

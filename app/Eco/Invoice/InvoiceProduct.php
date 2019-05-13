@@ -44,7 +44,7 @@ class InvoiceProduct extends Model
             {
                 $vatPercentage = $this->vat_percentage;
                 $vatFactor = (100 + $vatPercentage) / 100;
-                number_format( $amountReduction = $amountReduction / $vatFactor, 2);
+                $amountReduction = floatval( number_format( $amountReduction / $vatFactor, 2, '.', '') );
             }
         }
         return $amountReduction;
@@ -70,14 +70,14 @@ class InvoiceProduct extends Model
                 $amountReduction = floatval( number_format( ($priceInclVat * ($this->percentage_reduction / 100) ), 2, '.', '') );
                 $vatPercentage = $this->vat_percentage;
                 $vatFactor = (100 + $vatPercentage) / 100;
-                $amountReduction = number_format( $amountReduction / $vatFactor, 2);
+                $amountReduction = floatval( number_format( $amountReduction / $vatFactor, 2) );
             }else {
                 $price = $this->price;
                 if ($price === null) {
                     $price = 0;
                 }
                 $price = ($this->amount * $price);
-                $amountReduction = number_format( ($price * ($this->percentage_reduction) / 100), 2) ;
+                $amountReduction = floatval( number_format( ($price * ($this->percentage_reduction) / 100), 2, '.', '') );
             }
         }
     return $amountReduction;

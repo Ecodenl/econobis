@@ -33,8 +33,9 @@ class InvoiceProduct extends Model
 
     public function getAmountReductionAmountAttribute()
     {
-        $amountReduction = $this->amount_reduction;
-        if ($this->percentage_reduction) {
+        $amountReduction = 0;
+        if ($this->amount_reduction) {
+            $amountReduction = $this->amount_reduction;
             $inputInclVat = false;
             if ($this->product->currentPrice) {
                 $inputInclVat = $this->product->currentPrice->input_incl_vat;
@@ -120,35 +121,22 @@ class InvoiceProduct extends Model
 
     public function getPriceExVatInclReductionAttribute()
     {
-        $inputInclVat = false;
-        if ($this->product->currentPrice) {
-            $inputInclVat = $this->product->currentPrice->input_incl_vat;
+        $priceExclVat = $this->price;
+        if ($priceExclVat === null) {
+            $priceExclVat = 0;
         }
-
-        if(!$inputInclVat) {
-            $priceExclVat = $this->price;
-            if ($priceExclVat === null) {
-                $priceExclVat = 0;
+        $priceExclVat = ($this->amount * $priceExclVat);
+        if ($this->percentage_reduction) {
+            if ($priceExclVat < 0) {
+                $priceExclVat = floatval( number_format( ($priceExclVat * ((100 + $this->percentage_reduction) / 100)), 2, '.', '') ) ;
+            } else {
+                $priceExclVat = floatval( number_format( ($priceExclVat * ((100 - $this->percentage_reduction) / 100)), 2, '.', '') ) ;
             }
-            $priceExclVat = ($this->amount * $priceExclVat);
-            if ($this->percentage_reduction) {
-                if ($priceExclVat < 0) {
-                    $priceExclVat = floatval( number_format( ($priceExclVat * ((100 + $this->percentage_reduction) / 100)), 2, '.', '') ) ;
-                } else {
-                    $priceExclVat = floatval( number_format( ($priceExclVat * ((100 - $this->percentage_reduction) / 100)), 2, '.', '') ) ;
-                }
-            }
-            if ($this->amount_reduction) {
-                $priceExclVat -= $this->amount_reduction;
-            }
-        } else {
-            $vatPercentage = $this->vat_percentage;
-            $vatFactor = (100 + $vatPercentage) / 100;
-            $priceInclVat = $this->getPriceInclVatAndReductionAttribute();
-            $priceExclVat = floatval( number_format( $priceInclVat / $vatFactor, 2, '.', '') ) ;
+        }
+        if ($this->amount_reduction) {
+            $priceExclVat -= $this->amount_reduction;
         }
         return $priceExclVat;
-
     }
 
     public function getAmountVatAttribute()

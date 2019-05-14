@@ -432,6 +432,14 @@ class TemplateVariableHelper
                     return $model->contact->full_name;
                 }
                 break;
+            case 'contact_voorletters':
+                if($model->contact->type_id == 'person'){
+                    return $model->contact->person->initials;
+                }
+                elseif($model->contact->type_id == 'organisation'){
+                    return '';
+                }
+                break;
             case 'contact_adres':
                 return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . optional($model->contact->primaryAddress)->addition;
                 break;

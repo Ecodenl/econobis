@@ -310,13 +310,13 @@ class InvoiceController extends ApiController
 
         if ($validatedInvoices->count() > 0) {
             foreach ($validatedInvoices as $invoice) {
-                array_push($response, $this->send($invoice, $request));
+                $invoiceResponse = $this->send($invoice, $request);
+                array_push($response, $invoiceResponse);
             }
             if ($paymentTypeId === 'collection') {
                 $sepaHelper = new SepaHelper($administration, $validatedInvoices);
 
                 $sepa = $sepaHelper->generateSepaFile();
-
                 return $sepaHelper->downloadSepa($sepa);
             }
         }
@@ -410,8 +410,8 @@ class InvoiceController extends ApiController
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {
-            $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
-            header('X-Filename:' . 'T' . Carbon::now()->year . '-' . $invoice->invoice_number . '.pdf');
+            $invoiceNumber = 'F' . Carbon::now()->year . '-preview';
+            header('X-Filename:' . 'T' . Carbon::now()->year . '-' .$invoiceNumber . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return InvoiceHelper::createInvoiceDocument($invoice, true);
         }

@@ -37,8 +37,7 @@ class InvoiceObserver
 
     public function created(Invoice $invoice)
     {
-        $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->count();
-        $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
+        $invoice->number = 'F' . Carbon::now()->year . '-new';
         $invoice->setDaysToExpire();
         $invoice->setDaysLastReminder();
         $invoice->save();
@@ -91,10 +90,6 @@ class InvoiceObserver
                 $order->date_next_invoice = $order->addDurationToDate(Carbon::parse($order->date_next_invoice));
             }
             $order->save();
-
-            // Ook krijgt een factuur dan pas een definitief factuurnummer
-            $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->whereIn('status_id', ['sent', 'exported', 'paid', 'irrecoverable'])->count() + 1;
-            $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
         }
 
         $invoice->setDaysToExpire();

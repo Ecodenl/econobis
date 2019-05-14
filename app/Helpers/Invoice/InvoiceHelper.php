@@ -372,8 +372,25 @@ class InvoiceHelper
             'logo' => $img,
         ]);
 
+        // indien preview, dan zijn we nu klaar
         if ($preview) {
             return $pdf->output();
+        }
+
+        // indien geen preview, dan gaan nu definitief factuurnummer bepalen
+        $currentYear = Carbon::now()->year;
+        // Haal laatst uitgedeelde factuurnummer op (binnen factuurjaar)
+        $invoiceLatestSent = Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '!=', 0)->whereYear('date_sent', '=', $currentYear)->orderby('invoice_number', 'desc')->first();
+        if($invoiceLatestSent)
+        {
+            $invoice->invoice_number = $invoiceLatestSent->invoice_number + 1;
+        }
+        if($invoice->invoice_number === 0)
+        {
+            abort(404, "Voor factuur met ID " . $invoice->id . " kon geen nieuw factuurnummer bepaald worden.");
+        }else{
+            $invoice->number = 'F' . $currentYear . '-' . $invoice->invoice_number;
+            $invoice->save();
         }
 
         $name = $invoice->number . '.pdf';

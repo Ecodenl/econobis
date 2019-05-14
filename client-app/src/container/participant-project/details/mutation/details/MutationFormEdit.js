@@ -35,6 +35,24 @@ const MutationFormEdit = ({
         dateEntry,
     } = participantMutation;
 
+    let buttonTextSubmit = 'Opslaan';
+
+    if (status) {
+        switch (status.codeRef) {
+            case 'interest':
+                buttonTextSubmit = 'Status doorzetten naar optie';
+                break;
+            case 'option':
+                buttonTextSubmit = 'Status doorzetten naar toegekend';
+                break;
+            case 'granted':
+                buttonTextSubmit = 'Status doorzetten naar definitief';
+                break;
+            default:
+                buttonTextSubmit = 'Opslaan';
+        }
+    }
+
     return (
         <div>
             <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -276,7 +294,7 @@ const MutationFormEdit = ({
                                 onClickAction={cancelEdit}
                             />
                             <ButtonText
-                                buttonText={'Opslaan'}
+                                buttonText={buttonTextSubmit}
                                 onClickAction={handleSubmit}
                                 type={'submit'}
                                 value={'Submit'}

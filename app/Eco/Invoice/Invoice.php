@@ -40,6 +40,11 @@ class Invoice extends Model
         return $this->hasOne(InvoiceDocument::class)->latest();
     }
 
+    public function invoicesToSend()
+    {
+        return $this->hasOne(InvoicesToSend::class);
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class);

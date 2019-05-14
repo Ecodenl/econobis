@@ -7,6 +7,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceDocument;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
+use App\Eco\Invoice\InvoicesToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Helpers\Email\EmailHelper;
@@ -114,13 +115,24 @@ class InvoiceHelper
 
     public static function saveInvoiceStatus(Invoice $invoice)
     {
-        if ($invoice->amount_open == 0) {
-            $invoice->status_id = 'paid';
-        } else {
-            $invoice->status_id = 'sent';
+        //Indien factuur definitief verwerkt wordt of verzonden, dan doen we hier geen statuswijziging.
+        if($invoice->status_id !== 'in-progress' && $invoice->status_id !== 'is-sending')
+        {
+            if($invoice->status_id === 'paid'){
+                if($invoice->twinfield_number){
+                    $invoice->status_id = 'exported';
+                }else{
+                    $invoice->status_id = 'sent';
+                }
+            }else{
+                if ($invoice->amount_open == 0) {
+                    $invoice->status_id = 'paid';
+                }
+            }
+
+            $invoice->save();
         }
 
-        $invoice->save();
     }
 
     public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid)
@@ -145,10 +157,8 @@ class InvoiceHelper
         self::setMailConfigByInvoice($invoice);
 
         if (!$preview) {
-            $invoice->status_id = 'sent';
-            $invoice->date_sent = Carbon::today();
-            $invoice->save();
             InvoiceHelper::createInvoiceDocument($invoice);
+            self::invoiceIsSending($invoice);
         }
 
         $orderController = new OrderController();
@@ -226,18 +236,17 @@ class InvoiceHelper
                 $invoice->document->name));
 
             $invoice->emailed_to = $contactInfo['email'];
-
             $invoice->save();
         }
 
-
-        if ($preview) {
-            return [
-                'to' => 'Factuur zal per post moeten worden verstuurd',
-                'subject' => 'Factuur zal per post moeten worden verstuurd',
-                'htmlBody' => 'Factuur zal per post moeten worden verstuurd',
-            ];
-        }
+        // Volgens mij komt ie hier nooit. Hierboven staat al een Return indien preview !?
+//        if ($preview) {
+//            return [
+//                'to' => 'Factuur zal per post moeten worden verstuurd',
+//                'subject' => 'Factuur zal per post moeten worden verstuurd',
+//                'htmlBody' => 'Factuur zal per post moeten worden verstuurd',
+//            ];
+//        }
 
         return $invoice;
     }
@@ -409,4 +418,47 @@ class InvoiceHelper
         }
     }
 
+    public static function invoiceInProgress(Invoice $invoice)
+    {
+        //Factuur moet nog status to-send hebben en mag niet al voorkomen in tabel invoicesToSend
+        if($invoice->status_id !== 'to-send')
+        {
+            abort(404, "Factuur met ID " . $invoice->id . " heeft geen status Te verzenden");
+        }
+        else
+        {
+            if($invoice->invoicesToSend)
+            {
+                abort(404, "Factuur met ID " . $invoice->id . " is al aangevraagd om te verzenden");
+            }
+
+            $invoice->status_id = 'in-progress';
+            $invoice->save();
+            //Zet factuur in tabel invoices-to-send
+            $invoicesToSend = new InvoicesToSend();
+            $invoice->invoicesToSend()->save($invoicesToSend);
+        }
+    }
+    public static function invoiceIsSending(Invoice $invoice)
+    {
+        //Factuur moet nog status in-progress hebben
+        if($invoice->status_id === 'in-progress')
+        {
+            $invoice->status_id = 'is-sending';
+            $invoice->save();
+        }
+    }
+    public static function invoiceSend(Invoice $invoice)
+    {
+        //Factuur moet nog status is-sending hebben
+        if($invoice->status_id === 'is-sending')
+        {
+            //Haal factuur uit tabel invoices-to-send
+            $invoice->invoicesToSend()->delete();
+
+            $invoice->status_id = 'sent';
+            $invoice->date_sent = Carbon::today();
+            $invoice->save();
+        }
+    }
 }

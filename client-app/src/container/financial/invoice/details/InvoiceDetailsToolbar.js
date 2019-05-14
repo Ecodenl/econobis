@@ -126,6 +126,8 @@ class InvoiceToolbar extends Component {
                                 <ButtonIcon iconName={'glyphicon-bullhorn'} onClickAction={this.showSendNotification} />
                             )}
                         {this.props.invoiceDetails.statusId !== 'to-send' &&
+                            this.props.invoiceDetails.statusId !== 'in-progress' &&
+                            this.props.invoiceDetails.statusId !== 'is-sending' &&
                             this.props.invoiceDetails.statusId !== 'paid' &&
                             this.props.invoiceDetails.statusId !== 'irrecoverable' && (
                                 <ButtonIcon iconName={'glyphicon-remove'} onClickAction={this.showSetIrrecoverable} />

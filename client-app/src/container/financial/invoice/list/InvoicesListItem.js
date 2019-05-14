@@ -135,13 +135,15 @@ class InvoicesListItem extends Component {
             iban,
             subStatus,
         } = this.props;
+
+        const inProgressRowClass = (this.props.statusId === 'in-progress' || this.props.statusId === 'is-sending') ? 'in-progress-row' : null;
         return (
-            <tr
-                className={`${this.state.highlightRow} ${hideRowClass}`}
-                onDoubleClick={() => this.openItem(id)}
-                onMouseEnter={() => this.onRowEnter()}
-                onMouseLeave={() => this.onRowLeave()}
-            >
+                <tr
+                    className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
+                    onDoubleClick={() => this.openItem(id)}
+                    onMouseEnter={() => this.onRowEnter()}
+                    onMouseLeave={() => this.onRowLeave()}
+                >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
                         <input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} />
@@ -210,6 +212,8 @@ class InvoicesListItem extends Component {
                     )}
                     {this.state.showActionButtons &&
                     (this.props.statusId !== 'to-send' &&
+                        this.props.statusId !== 'in-progress' &&
+                        this.props.statusId !== 'is-sending' &&
                         this.props.statusId !== 'paid' &&
                         this.props.statusId !== 'irrecoverable') ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">

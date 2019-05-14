@@ -258,18 +258,21 @@ class InvoiceController extends ApiController
         if ($emailTo === 'Geen e-mail bekend') {
             abort(404, 'Geen e-mail bekend');
         } else {
-            return InvoiceHelper::send($invoice);
+            InvoiceHelper::invoiceInProgress($invoice);
+            $invoice = InvoiceHelper::send($invoice);
+            InvoiceHelper::invoiceSend($invoice);
+            return $invoice;
         }
     }
 
     public function sendPost(Invoice $invoice, Request $request)
     {
+        InvoiceHelper::invoiceInProgress($invoice);
         $invoice->date_collection = $request->input('dateCollection');
         $invoice->save();
         InvoiceHelper::createInvoiceDocument($invoice);
-        $invoice->status_id = 'sent';
-        $invoice->date_sent = Carbon::today();
-        $invoice->save();
+        InvoiceHelper::invoiceIsSending($invoice);
+        InvoiceHelper::invoiceSend($invoice);
 
         $filePath = Storage::disk('administrations')->getDriver()
             ->getAdapter()->applyPathPrefix($invoice->document->filename);
@@ -297,6 +300,7 @@ class InvoiceController extends ApiController
             if (empty($administration->sepa_creditor_id)) {
                 abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
             }
+            // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
             $validatedInvoices = $invoices->reject(function ($invoice) {
                 return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
             });
@@ -335,6 +339,8 @@ class InvoiceController extends ApiController
 </style>';
 
         foreach ($invoices as $k => $invoice) {
+            InvoiceHelper::invoiceInProgress($invoice);
+
             $invoice->date_collection = $request->input('dateCollection');
             $invoice->save();
 
@@ -355,10 +361,9 @@ class InvoiceController extends ApiController
             }
 
             if ($emailTo === 'Geen e-mail bekend') {
-                $invoice->status_id = 'sent';
-                $invoice->date_sent = Carbon::today();
-                $invoice->save();
                 InvoiceHelper::createInvoiceDocument($invoice);
+                InvoiceHelper::invoiceIsSending($invoice);
+                InvoiceHelper::invoiceSend($invoice);
 
                 $img = '';
                 if ($invoice->administration->logo_filename) {

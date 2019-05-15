@@ -239,15 +239,6 @@ class InvoiceHelper
             $invoice->save();
         }
 
-        // Volgens mij komt ie hier nooit. Hierboven staat al een Return indien preview !?
-//        if ($preview) {
-//            return [
-//                'to' => 'Factuur zal per post moeten worden verstuurd',
-//                'subject' => 'Factuur zal per post moeten worden verstuurd',
-//                'htmlBody' => 'Factuur zal per post moeten worden verstuurd',
-//            ];
-//        }
-
         return $invoice;
     }
 
@@ -377,19 +368,26 @@ class InvoiceHelper
             return $pdf->output();
         }
 
+
+
+
         // indien geen preview, dan gaan nu definitief factuurnummer bepalen
         $currentYear = Carbon::now()->year;
         // Haal laatst uitgedeelde factuurnummer op (binnen factuurjaar)
-        $invoiceLatestSent = Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '!=', 0)->whereYear('date_sent', '=', $currentYear)->orderby('invoice_number', 'desc')->first();
-        if($invoiceLatestSent)
+        $lastInvoice = Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '!=', 0)->whereYear('date_sent', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
+
+        $newInvoiceNumber = 1;
+        if($lastInvoice)
         {
-            $invoice->invoice_number = $invoiceLatestSent->invoice_number + 1;
+            $newInvoiceNumber = $lastInvoice->invoice_number + 1;
         }
-        if($invoice->invoice_number === 0)
+
+        if(Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '=', $newInvoiceNumber)->whereYear('date_sent', '=', $currentYear)->exists())
         {
             abort(404, "Voor factuur met ID " . $invoice->id . " kon geen nieuw factuurnummer bepaald worden.");
         }else{
-            $invoice->number = 'F' . $currentYear . '-' . $invoice->invoice_number;
+            $invoice->invoice_number = $newInvoiceNumber;
+            $invoice->number = 'F' . $currentYear . '-' . $newInvoiceNumber;
             $invoice->save();
         }
 

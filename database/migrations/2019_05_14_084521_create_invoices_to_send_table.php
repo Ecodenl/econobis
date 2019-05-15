@@ -19,6 +19,7 @@ class CreateInvoicesToSendTable extends Migration
             $table->foreign('invoice_id')
                 ->references('id')->on('invoices')
                 ->onDelete('restrict');
+            $table->boolean('invoice_created')->default(false);;
             $table->timestamps();
         });
     }

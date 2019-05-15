@@ -247,41 +247,6 @@ class InvoiceController extends ApiController
         return $invoice;
     }
 
-    public function send(Invoice $invoice, Request $request)
-    {
-        $invoice->date_collection = $request->input('dateCollection');
-        $invoice->save();
-
-        $orderController = new OrderController;
-        $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-
-        if ($emailTo === 'Geen e-mail bekend') {
-            abort(404, 'Geen e-mail bekend');
-        } else {
-            InvoiceHelper::invoiceInProgress($invoice);
-            $invoice = InvoiceHelper::send($invoice);
-            InvoiceHelper::invoiceSend($invoice);
-            return $invoice;
-        }
-    }
-
-    public function sendPost(Invoice $invoice, Request $request)
-    {
-        InvoiceHelper::invoiceInProgress($invoice);
-        $invoice->date_collection = $request->input('dateCollection');
-        $invoice->save();
-        InvoiceHelper::createInvoiceDocument($invoice);
-        InvoiceHelper::invoiceIsSending($invoice);
-        InvoiceHelper::invoiceSend($invoice);
-
-        $filePath = Storage::disk('administrations')->getDriver()
-            ->getAdapter()->applyPathPrefix($invoice->document->filename);
-
-        header('X-Filename:' . $invoice->document->name);
-        header('Access-Control-Expose-Headers: X-Filename');
-        return response()->download($filePath, $invoice->document->name);
-    }
-
     public function sendAll(Request $request)
     {
         set_time_limit(0);
@@ -309,16 +274,46 @@ class InvoiceController extends ApiController
         }
 
         if ($validatedInvoices->count() > 0) {
-            foreach ($validatedInvoices as $invoice) {
-                $invoiceResponse = $this->send($invoice, $request);
-                array_push($response, $invoiceResponse);
-            }
-            if ($paymentTypeId === 'collection') {
-                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
 
+            // Eerst hele zet in progress zetten
+            foreach ($validatedInvoices as $invoice) {
+                $orderController = new OrderController;
+                $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+
+                if ($emailTo === 'Geen e-mail bekend') {
+                    abort(404, 'Geen e-mail bekend');
+                } else {
+                    InvoiceHelper::invoiceInProgress($invoice);
+                }
+            }
+            foreach ($validatedInvoices as $invoice) {
+                $invoice->date_collection = $request->input('dateCollection');
+                $invoice->save();
+                InvoiceHelper::createInvoiceDocument($invoice);
+            }
+
+            foreach ($validatedInvoices as $invoice) {
+                //alleen als factuur goed is aangemaakt, gaan we mailen
+                if ($invoice->invoicesToSend()->first()->invoice_created) {
+
+                    InvoiceHelper::invoiceIsSending($invoice);
+                    $invoiceResponse = InvoiceHelper::send($invoice);
+                    InvoiceHelper::invoiceSend($invoice);
+                    array_push($response, $invoiceResponse);
+                }
+            }
+
+            if ($paymentTypeId === 'collection') {
+                // haal niet goed aangemaakt facturen uit list voor SEPA file
+                $validatedInvoices = $invoices->reject(function ($invoice) {
+                    return (!$invoice->invoicesToSend()->first()->invoice_created);
+                });
+
+                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
                 $sepa = $sepaHelper->generateSepaFile();
                 return $sepaHelper->downloadSepa($sepa);
             }
+
         }
 
         return $response;
@@ -328,6 +323,11 @@ class InvoiceController extends ApiController
     {
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
+
+        // Eerst hele zet in progress zetten
+        foreach ($invoices as $k => $invoice) {
+            InvoiceHelper::invoiceInProgress($invoice);
+        }
 
         $orderController = new OrderController;
 
@@ -339,7 +339,6 @@ class InvoiceController extends ApiController
 </style>';
 
         foreach ($invoices as $k => $invoice) {
-            InvoiceHelper::invoiceInProgress($invoice);
 
             $invoice->date_collection = $request->input('dateCollection');
             $invoice->save();
@@ -361,9 +360,11 @@ class InvoiceController extends ApiController
             }
 
             if ($emailTo === 'Geen e-mail bekend') {
-                InvoiceHelper::createInvoiceDocument($invoice);
-                InvoiceHelper::invoiceIsSending($invoice);
-                InvoiceHelper::invoiceSend($invoice);
+                $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
+                if($createdOk)
+                {
+                    InvoiceHelper::invoiceSend($invoice, true);
+                }
 
                 $img = '';
                 if ($invoice->administration->logo_filename) {
@@ -399,6 +400,25 @@ class InvoiceController extends ApiController
         return $pdfOutput->output();
     }
 
+    public function sendPost(Invoice $invoice, Request $request)
+    {
+        InvoiceHelper::invoiceInProgress($invoice, true);
+        $invoice->date_collection = $request->input('dateCollection');
+        $invoice->save();
+        $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
+        if($createdOk)
+        {
+            InvoiceHelper::invoiceSend($invoice, true);
+        }
+
+        $filePath = Storage::disk('administrations')->getDriver()
+            ->getAdapter()->applyPathPrefix($invoice->document->filename);
+
+        header('X-Filename:' . $invoice->document->name);
+        header('Access-Control-Expose-Headers: X-Filename');
+        return response()->download($filePath, $invoice->document->name);
+    }
+
     public function download(Invoice $invoice)
     {
 
@@ -421,11 +441,9 @@ class InvoiceController extends ApiController
 
     public function getEmailPreview(Invoice $invoice)
     {
-
+        InvoiceHelper::createInvoiceDocument($invoice, true);
         return InvoiceHelper::send($invoice, true);
-
     }
-
 
     public function getAmountUnpaid()
     {

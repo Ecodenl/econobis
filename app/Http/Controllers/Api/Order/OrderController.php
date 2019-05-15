@@ -434,8 +434,8 @@ class OrderController extends ApiController
 
         $invoice = InvoiceHelper::saveInvoiceProducts($invoice, $order, true);
 
+        InvoiceHelper::createInvoiceDocument($invoice, true);
         return InvoiceHelper::send($invoice, true);
-
     }
 
 }

@@ -484,21 +484,35 @@ dd("hier moeten we met post helemaal niet komen!!!");
         $response = [];
 
         $administration = $invoices->first()->administration;
+        $paymentTypeId = $invoices->first()->payment_type_id;
 
-        if (!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN) {
-            abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
-        }
 
-        $validatedInvoices = $invoices->reject(function ($invoice) {
-            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
-        });
+        if ($paymentTypeId === 'collection') {
 
-        if ($validatedInvoices->count() > 0) {
-            $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+            if (!$administration->bic || !$administration->IBAN) {
+                abort(412, 'BIC en IBAN zijn verplichte velden.');
+            }
 
-            $sepa = $sepaHelper->generateSepaFile();
+            if ($paymentTypeId === 'collection') {
+                if (empty($administration->sepa_creditor_id)) {
+                    abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+                }
+                // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
+                $validatedInvoices = $invoices->reject(function ($invoice) {
+                    return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+                });
+            } else {
+                $validatedInvoices = $invoices;
+            }
 
-            return $sepaHelper->downloadSepa($sepa);
+            if ($validatedInvoices->count() > 0) {
+                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+
+                $sepa = $sepaHelper->generateSepaFile();
+
+                return $sepaHelper->downloadSepa($sepa);
+            }
+
         }
 
         return $response;

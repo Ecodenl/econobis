@@ -400,6 +400,7 @@ class InvoiceHelper
         $invoicesToSend->invoice_created = true;
         $invoice->invoicesToSend()->save($invoicesToSend);
 
+        return true;
     }
 
     public static function checkStorageDir($administration_id)

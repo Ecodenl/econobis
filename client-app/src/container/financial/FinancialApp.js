@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 
 import FinancialToolbar from './FinancialToolbar';
 import FinancialForm from './FinancialForm';
@@ -12,40 +11,17 @@ import { fetchAdministrationDetails } from '../../actions/administration/Adminis
 class FinancialApp extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            administrationId: null,
-            type: null,
-            filter: null,
-        };
     }
 
     componentDidMount() {
-        if (!isEmpty(this.props.params)) {
-            this.updateStateByChangeParams(this.props.params);
-        }
+        this.props.fetchAdministrationDetails(this.props.params.id);
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
         if (
-            this.props.params.id !== nextProps.params.id ||
-            this.props.params.type !== nextProps.params.type ||
-            this.props.params.filter !== nextProps.params.filter
+            this.props.params.id !== prevProps.params.id
         ) {
-            this.updateStateByChangeParams(nextProps.params);
-        }
-    }
-
-    updateStateByChangeParams(params) {
-        if (!isEmpty(params)) {
-            this.props.fetchAdministrationDetails(params.id);
-
-            this.setState({
-                ...this.state,
-                administrationId: params.id,
-                type: params.type,
-                filter: params.filter,
-            });
+            this.props.fetchAdministrationDetails(this.props.params.id);
         }
     }
 
@@ -72,9 +48,9 @@ class FinancialApp extends Component {
 
                     <div className="col-md-12 margin-10-top">
                         <FinancialForm
-                            type={this.state.type}
-                            filter={this.state.filter}
-                            administrationId={this.state.administrationId}
+                            type={this.props.params.type}
+                            filter={this.props.params.filter}
+                            administrationId={this.props.params.administrationId}
                         />
                     </div>
                 </div>
@@ -83,12 +59,6 @@ class FinancialApp extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        administrationDetails: state.administrationDetails,
-    };
-};
-
 const mapDispatchToProps = dispatch => ({
     fetchAdministrationDetails: id => {
         dispatch(fetchAdministrationDetails(id));
@@ -96,6 +66,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(
-    mapStateToProps,
+    null,
     mapDispatchToProps
 )(FinancialApp);

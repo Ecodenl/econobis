@@ -249,6 +249,7 @@ class InvoiceController extends ApiController
 
     public function sendAll(Request $request)
     {
+dd("hier moeten we met post helemaal niet komen!!!");
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
@@ -326,7 +327,7 @@ class InvoiceController extends ApiController
 
         // Eerst hele zet in progress zetten
         foreach ($invoices as $k => $invoice) {
-            InvoiceHelper::invoiceInProgress($invoice);
+            InvoiceHelper::invoiceInProgress($invoice, true);
         }
 
         $orderController = new OrderController;
@@ -363,28 +364,29 @@ class InvoiceController extends ApiController
                 $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
                 if($createdOk)
                 {
-                    InvoiceHelper::invoiceSend($invoice, true);
-                }
+                    InvoiceHelper::invoiceIsSending($invoice);
+                    InvoiceHelper::invoiceSend($invoice);
 
-                $img = '';
-                if ($invoice->administration->logo_filename) {
-                    $path = storage_path('app' . DIRECTORY_SEPARATOR
-                        . 'administrations' . DIRECTORY_SEPARATOR
-                        . $invoice->administration->logo_filename);
-                    $logo = file_get_contents($path);
+                    $img = '';
+                    if ($invoice->administration->logo_filename) {
+                        $path = storage_path('app' . DIRECTORY_SEPARATOR
+                            . 'administrations' . DIRECTORY_SEPARATOR
+                            . $invoice->administration->logo_filename);
+                        $logo = file_get_contents($path);
 
-                    $src = 'data:' . mime_content_type($path)
-                        . ';charset=binary;base64,' . base64_encode($logo);
-                    $src = str_replace(" ", "", $src);
-                    $img = '<img src="' . $src
-                        . '" width="auto" height="156px"/>';
-                }
+                        $src = 'data:' . mime_content_type($path)
+                            . ';charset=binary;base64,' . base64_encode($logo);
+                        $src = str_replace(" ", "", $src);
+                        $img = '<img src="' . $src
+                            . '" width="auto" height="156px"/>';
+                    }
 
-                if ($k !== 0) {
-                    $html .= '<div class="page-break"></div>';
+                    if ($k !== 0) {
+                        $html .= '<div class="page-break"></div>';
+                    }
+                    $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson, 'contactName' => $contactName])
+                        ->with('logo', $img)->render();
                 }
-                $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson, 'contactName' => $contactName])
-                    ->with('logo', $img)->render();
             }
         }
 
@@ -408,7 +410,8 @@ class InvoiceController extends ApiController
         $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
         if($createdOk)
         {
-            InvoiceHelper::invoiceSend($invoice, true);
+            InvoiceHelper::invoiceIsSending($invoice);
+            InvoiceHelper::invoiceSend($invoice);
         }
 
         $filePath = Storage::disk('administrations')->getDriver()
@@ -421,7 +424,6 @@ class InvoiceController extends ApiController
 
     public function download(Invoice $invoice)
     {
-
         $this->authorize('manage', Invoice::class);
 
         if ($invoice->document) {
@@ -477,27 +479,40 @@ class InvoiceController extends ApiController
 
     public function createSepaForInvoiceIds(Request $request)
     {
-
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
         $response = [];
 
         $administration = $invoices->first()->administration;
+        $paymentTypeId = $invoices->first()->payment_type_id;
 
-        if (!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN) {
-            abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
-        }
 
-        $validatedInvoices = $invoices->reject(function ($invoice) {
-            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
-        });
+        if ($paymentTypeId === 'collection') {
 
-        if ($validatedInvoices->count() > 0) {
-            $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+            if (!$administration->bic || !$administration->IBAN) {
+                abort(412, 'BIC en IBAN zijn verplichte velden.');
+            }
 
-            $sepa = $sepaHelper->generateSepaFile();
+            if ($paymentTypeId === 'collection') {
+                if (empty($administration->sepa_creditor_id)) {
+                    abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+                }
+                // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
+                $validatedInvoices = $invoices->reject(function ($invoice) {
+                    return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+                });
+            } else {
+                $validatedInvoices = $invoices;
+            }
 
-            return $sepaHelper->downloadSepa($sepa);
+            if ($validatedInvoices->count() > 0) {
+                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+
+                $sepa = $sepaHelper->generateSepaFile();
+
+                return $sepaHelper->downloadSepa($sepa);
+            }
+
         }
 
         return $response;

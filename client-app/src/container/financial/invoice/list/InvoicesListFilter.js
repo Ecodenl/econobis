@@ -141,9 +141,11 @@ const InvoicesListFilter = props => {
                         <option key={'sent'} value={'sent'}>
                             {'Verzonden'}
                         </option>
+                        {props.administrationDetails.totalInvoicesExported > 0 || props.administrationDetails.twinfieldIsValid &&
                         <option key={'exported'} value={'exported'}>
-                            {'Geëxporteerd'}
+                            {'Geboekt'}
                         </option>
+                        }
                         <option key={'paid'} value={'paid'}>
                             {'Betaald'}
                         </option>
@@ -183,6 +185,7 @@ const InvoicesListFilter = props => {
 const mapStateToProps = state => ({
     filters: state.invoices.filters,
     invoiceStatuses: state.systemData.invoiceStatuses,
+    administrationDetails: state.administrationDetails,
     orderPaymentTypes: state.systemData.orderPaymentTypes,
 });
 

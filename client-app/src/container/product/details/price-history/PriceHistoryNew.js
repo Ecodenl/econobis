@@ -17,7 +17,6 @@ class PriceHistoryNew extends Component {
         super(props);
 
         this.state = {
-            vatPercentages: [{ id: '0', name: '0' }, { id: '9', name: '9' }, { id: '21', name: '21' }],
             priceHistory: {
                 productId: props.productId,
                 dateStart: '',
@@ -198,12 +197,15 @@ class PriceHistoryNew extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
-                                label={'BTW percentage'}
-                                name={'vatPercentage'}
-                                options={this.state.vatPercentages}
+                                label={"BTW percentage"}
+                                name={"vatPercentage"}
+                                options={this.props.vatCodes}
+                                optionValue={'percentage'}
+                                optionName={'description'}
                                 value={vatPercentage}
-                                onChangeAction={this.handleInputChange}
-                                placeholder={'Geen'}
+                                onChangeAction={this.props.usesTwinfield ? null : this.handleInputChange}
+                                placeholder={"Geen"}
+                                readOnly={this.props.usesTwinfield}
                             />
                         </div>
 
@@ -309,7 +311,10 @@ const mapStateToProps = state => {
         productId: state.productDetails.id,
         productName: state.productDetails.name,
         hasVariablePrice: state.productDetails.hasVariablePrice,
+        ledger: state.productDetails.ledger,
         users: state.systemData.users,
+        vatCodes: state.systemData.vatCodes,
+        usesTwinfield: state.systemData.usesTwinfield,
     };
 };
 

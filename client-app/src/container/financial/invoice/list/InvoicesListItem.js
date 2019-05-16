@@ -131,9 +131,9 @@ class InvoicesListItem extends Component {
             totalPriceInclVatAndReduction,
             amountOpen,
             emailToAddress,
-            checked,
-            iban,
+            checked, iban,
             subStatus,
+            usesTwinfield,
         } = this.props;
         return (
             <tr
@@ -170,61 +170,14 @@ class InvoicesListItem extends Component {
                     {iban || paymentType.id === 'transfer' ? iban : 'Geen IBAN bekend'}
                 </td>
                 <td>
-                    {this.state.showActionButtons ? (
-                        <a role="button" onClick={() => this.openItem(id)} title="Open factuur">
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {this.state.showActionButtons ? (
-                        <a role="button" onClick={() => this.viewItem(id)} title="Preview factuur">
-                            <span className="glyphicon glyphicon-eye-open mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {this.state.showActionButtons && this.props.statusId === 'to-send' ? (
-                        <a role="button" onClick={() => this.showSend()} title="Verstuur factuur">
-                            <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {this.state.showActionButtons &&
-                    (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
-                        <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
-                            <span className="glyphicon glyphicon-euro mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {this.state.showActionButtons &&
-                    (this.props.statusId === 'sent' || this.props.statusId === 'exported') &&
-                    !this.props.dateExhortation ? (
-                        <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
-                            <span className="glyphicon glyphicon-bullhorn mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {this.state.showActionButtons &&
-                    (this.props.statusId !== 'to-send' &&
-                        this.props.statusId !== 'paid' &&
-                        this.props.statusId !== 'irrecoverable') ? (
-                        <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">
-                            <span className="glyphicon glyphicon-remove mybtn-success" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    {this.state.showActionButtons && this.props.statusId === 'to-send' ? (
-                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, number)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
-                        </a>
-                    ) : (
-                        ''
-                    )}
+                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.openItem(id)} title="Open factuur"><span className="glyphicon glyphicon-pencil mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons ? <a role="button" onClick={() => this.viewItem(id)} title="Preview factuur"><span className="glyphicon glyphicon-eye-open mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.statusId === 'to-send' ? <a role="button" onClick={() => this.showSend()} title="Verstuur factuur"><span className="glyphicon glyphicon-envelope mybtn-success" /> </a> : '')}
+                    {(!usesTwinfield && this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald"><span className="glyphicon glyphicon-euro mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId === 'sent' || this.props.statusId === 'exported') && !this.props.dateExhortation ? <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering"><span className="glyphicon glyphicon-bullhorn mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && (this.props.statusId !== 'to-send' && this.props.statusId !== 'paid' && this.props.statusId !== 'irrecoverable') ? <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar"><span className="glyphicon glyphicon-remove mybtn-success" /> </a> : '')}
+                    {(this.state.showActionButtons && this.props.statusId === 'to-send' ? <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, number)}><span className="glyphicon glyphicon-trash mybtn-danger"  /> </a> : '')}
+
 
                     {this.state.showSend && (
                         <InvoiceListSend

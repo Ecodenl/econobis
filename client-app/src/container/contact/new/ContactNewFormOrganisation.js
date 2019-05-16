@@ -56,6 +56,16 @@ class ContactNewFormOrganisation extends Component {
         });
     };
 
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            organisation: {
+                ...this.state.organisation,
+                [name]: value,
+            },
+        });
+    };
+
     handleChangeMemberSince = date => {
         const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 

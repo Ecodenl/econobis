@@ -92,7 +92,12 @@ class InvoiceHelper
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->product->invoice_text;
-            if ($orderProduct->date_last_invoice) {
+            if($orderProduct->product->ledger)
+            {
+                $invoiceProduct->twinfield_ledger_code = $orderProduct->product->ledger->twinfield_ledger_code;
+            }
+
+            if($orderProduct->date_last_invoice){
                 $dateLastInvoice = $orderProduct->date_last_invoice;
             } else if ($orderProduct->date_period_start_first_invoice) {
                 $dateLastInvoice = $orderProduct->date_period_start_first_invoice;
@@ -114,10 +119,16 @@ class InvoiceHelper
 
     public static function saveInvoiceStatus(Invoice $invoice)
     {
-        if ($invoice->amount_open == 0) {
-            $invoice->status_id = 'paid';
-        } else {
-            $invoice->status_id = 'sent';
+        if($invoice->status_id === 'paid'){
+            if($invoice->twinfield_number){
+                $invoice->status_id = 'exported';
+            }else{
+                $invoice->status_id = 'sent';
+            }
+        }else{
+            if ($invoice->amount_open == 0) {
+                $invoice->status_id = 'paid';
+            }
         }
 
         $invoice->save();

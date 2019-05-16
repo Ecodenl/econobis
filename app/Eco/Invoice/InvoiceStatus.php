@@ -15,7 +15,7 @@ class InvoiceStatus extends EnumWithIdAndName
 
     /**
      * Seed the class with Enum instances
-     *
+     *-
      * @return array
      */
     protected static function seed()
@@ -25,7 +25,7 @@ class InvoiceStatus extends EnumWithIdAndName
         return [
             new static('to-send', 'Te verzenden'),
             new static('sent', 'Verzonden'),
-            new static('exported', 'Geëxporteerd'),
+            new static('exported', 'Geboekt'),
             new static('paid', 'Betaald'),
             new static('irrecoverable', 'Oninbaar'),
         ];

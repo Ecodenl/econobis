@@ -11,12 +11,25 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import validator from 'validator';
 import InputToggle from '../../../../components/form/InputToggle';
+import InputSelect from '../../../../components/form/InputSelect';
+import ErrorModal from '../../../../components/modal/ErrorModal';
 
 class ContactDetailsFormOtherEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { person, iban, ibanAttn, liable, liabilityAmount } = props.contactDetails;
+        const {
+            person,
+            iban,
+            ibanAttn,
+            liable,
+            liabilityAmount,
+            isCollectMandate,
+            collectMandateCode,
+            collectMandateSignatureDate,
+            collectMandateFirstRunDate,
+            collectMandateCollectionSchema,
+        } = props.contactDetails;
 
         this.state = {
             other: {
@@ -30,10 +43,26 @@ class ContactDetailsFormOtherEdit extends Component {
                 ibanAttn: ibanAttn ? ibanAttn : '',
                 liable: liable,
                 liabilityAmount: liabilityAmount,
+                isCollectMandate,
+                collectMandateCode: collectMandateCode ? collectMandateCode : '',
+                collectMandateSignatureDate: collectMandateSignatureDate
+                    ? moment(collectMandateSignatureDate).format('Y-MM-DD')
+                    : '',
+                collectMandateFirstRunDate: collectMandateFirstRunDate
+                    ? moment(collectMandateFirstRunDate).format('Y-MM-DD')
+                    : '',
+                collectMandateCollectionSchema: collectMandateCollectionSchema
+                    ? collectMandateCollectionSchema
+                    : 'core',
             },
             errors: {
                 iban: false,
+                collectMandateCode: false,
+                collectMandateSignatureDate: false,
+                collectMandateFirstRunDate: false,
             },
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
@@ -42,6 +71,16 @@ class ContactDetailsFormOtherEdit extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        this.setState({
+            ...this.state,
+            other: {
+                ...this.state.other,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             other: {
@@ -78,14 +117,55 @@ class ContactDetailsFormOtherEdit extends Component {
             }
         }
 
+        if (other.isCollectMandate) {
+            if (validator.isEmpty(other.iban)) {
+                errors.iban = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(other.collectMandateCode)) {
+                errors.collectMandateCode = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(other.collectMandateSignatureDate)) {
+                errors.collectMandateSignatureDate = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(other.collectMandateFirstRunDate)) {
+                errors.collectMandateFirstRunDate = true;
+                hasErrors = true;
+            }
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            PersonAPI.updatePerson(other).then(payload => {
-                this.props.dispatch(ContactDetailsActions.updatePerson(payload));
-                this.props.switchToView();
-            });
+            PersonAPI.updatePerson(other)
+                .then(payload => {
+                    this.props.dispatch(ContactDetailsActions.updatePerson(payload.data.data));
+                    this.props.switchToView();
+                })
+                .catch(error => {
+                    let errorObject = JSON.parse(JSON.stringify(error));
+
+                    let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+
+                    if(errorObject.response.status !== 500) {
+                        errorMessage = errorObject.response.data.message;
+                    }
+
+                    this.setState({
+                        showErrorModal: true,
+                        modalErrorMessage: errorMessage,
+                    })
+                });
+    };
+
+    closeErrorModal = () => {
+        this.setState({showErrorModal: false, modalErrorMessage: '',})
     };
 
     render() {
@@ -97,80 +177,145 @@ class ContactDetailsFormOtherEdit extends Component {
             ibanAttn,
             liable,
             liabilityAmount,
+            isCollectMandate,
+            collectMandateCode,
+            collectMandateSignatureDate,
+            collectMandateFirstRunDate,
+            collectMandateCollectionSchema,
         } = this.state.other;
 
         return (
-            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
-                <div className="row">
-                    <InputText
-                        label={'IBAN'}
-                        name={'iban'}
-                        value={iban}
-                        onChangeAction={this.handleInputChange}
-                        readOnly={!this.props.permissions.updateContactIban}
-                        error={this.state.errors.iban}
-                    />
-                    <InputText
-                        label="Voornaam partner"
-                        name={'firstNamePartner'}
-                        value={firstNamePartner}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label={'IBAN t.n.v.'}
-                        name={'ibanAttn'}
-                        value={ibanAttn}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        label="Achternaam partner"
-                        name={'lastNamePartner'}
-                        value={lastNamePartner}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <div className="form-group col-sm-6" />
-                    <InputDate
-                        label="Geboortedatum partner"
-                        name={'dateOfBirthPartner'}
-                        value={dateOfBirthPartner}
-                        onChangeAction={this.handleChangeDateOfBirthPartner}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputToggle
-                        label={'Aansprakelijkheid'}
-                        name={'liable'}
-                        value={liable}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Aansprakelijkheidsbedrag'}
-                        name={'liabilityAmount'}
-                        value={liabilityAmount}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <PanelFooter>
-                    <div className="pull-right btn-group" role="group">
-                        <ButtonText
-                            buttonClassName={'btn-default'}
-                            buttonText={'Annuleren'}
-                            onClickAction={this.props.switchToView}
+            <React.Fragment>
+                <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
+                    <div className="row">
+                        <InputText
+                            label={'IBAN'}
+                            name={'iban'}
+                            value={iban}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={!this.props.permissions.updateContactIban}
+                            error={this.state.errors.iban}
+                            required={isCollectMandate ? 'required' : ''}
                         />
-                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
+                        <InputText
+                            label="Voornaam partner"
+                            name={'firstNamePartner'}
+                            value={firstNamePartner}
+                            onChangeAction={this.handleInputChange}
+                        />
                     </div>
-                </PanelFooter>
-            </form>
-        );
+
+                    <div className="row">
+                        <InputText
+                            label={'IBAN t.n.v.'}
+                            name={'ibanAttn'}
+                            value={ibanAttn}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        <InputText
+                            label="Achternaam partner"
+                            name={'lastNamePartner'}
+                            value={lastNamePartner}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <div className="form-group col-sm-6" />
+                        <InputDate
+                            label="Geboortedatum partner"
+                            name={'dateOfBirthPartner'}
+                            value={dateOfBirthPartner}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label={'Aansprakelijkheid'}
+                            name={'liable'}
+                            value={liable}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        <InputText
+                            type={'number'}
+                            label={'Aansprakelijkheidsbedrag'}
+                            name={'liabilityAmount'}
+                            value={liabilityAmount}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label={'Ingesteld op incasso'}
+                            name={'isCollectMandate'}
+                            value={isCollectMandate}
+                            onChangeAction={this.handleInputChange}
+                        />
+                        {isCollectMandate ? (
+                            <InputText
+                                label={'Machtigingskenmerk'}
+                                name={'collectMandateCode'}
+                                value={collectMandateCode}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.collectMandateCode}
+                            />
+                        ) : null}
+                    </div>
+
+                    {isCollectMandate ? (
+                        <React.Fragment>
+                            <div className="row">
+                                <InputDate
+                                    label={'Datum van ondertekening'}
+                                    name={'collectMandateSignatureDate'}
+                                    value={collectMandateSignatureDate}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    required={'required'}
+                                    error={this.state.errors.collectMandateSignatureDate}
+                                />
+                                <InputDate
+                                    label={'Datum eerste incassoronde'}
+                                    name={'collectMandateFirstRunDate'}
+                                    value={collectMandateFirstRunDate}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    required={'required'}
+                                    error={this.state.errors.collectMandateFirstRunDate}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputText
+                                    type={'hidden'}
+                                    name={'collectMandateCollectionSchema'}
+                                    value={collectMandateCollectionSchema}
+                                />
+                            </div>
+                        </React.Fragment>
+                    ) : null}
+
+                    <PanelFooter>
+                        <div className="pull-right btn-group" role="group">
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.switchToView}
+                            />
+                            <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
+                        </div>
+                    </PanelFooter>
+                </form>
+
+                { this.state.showErrorModal &&
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
+                    />
+                }
+                </React.Fragment>
+            );
     }
 }
 

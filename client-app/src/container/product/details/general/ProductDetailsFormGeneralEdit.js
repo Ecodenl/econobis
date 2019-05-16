@@ -7,6 +7,8 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputSelect from '../../../../components/form/InputSelect';
 import ProductDetailsFormGeneralEditConfirm from './ProductDetailsFormGeneralEditConfirm';
+import InputReactSelect from '../../../../components/form/InputReactSelect';
+import AdministrationsAPI from '../../../../api/administration/AdministrationsAPI';
 
 class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -21,6 +23,7 @@ class ProductDetailsFormGeneralEdit extends Component {
             invoiceFrequencyId,
             paymentTypeId,
             administrationId,
+            ledgerId,
         } = props.productDetails;
 
         this.state = {
@@ -39,6 +42,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                 invoiceFrequencyId: invoiceFrequencyId ? invoiceFrequencyId : 'once',
                 paymentTypeId: paymentTypeId ? paymentTypeId : '',
                 administrationId: administrationId ? administrationId : '',
+                ledgerId: ledgerId ? ledgerId : '',
             },
             errors: {
                 code: false,
@@ -46,6 +50,8 @@ class ProductDetailsFormGeneralEdit extends Component {
                 administrationId: false,
             },
         };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     componentDidMount() {
@@ -262,6 +268,16 @@ class ProductDetailsFormGeneralEdit extends Component {
         });
     };
 
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: selectedOption,
+            },
+        });
+    }
+
     render() {
         const {
             code,
@@ -271,7 +287,25 @@ class ProductDetailsFormGeneralEdit extends Component {
             invoiceFrequencyId,
             paymentTypeId,
             administrationId,
+            ledgerId,
         } = this.state.product;
+
+        let ledgerOptions = this.props.ledgers;
+
+        const { currentPrice } = this.props.productDetails;
+
+        // If product has pricehistory ledgerOptions limited to same vat percentage ledgers
+        if (this.props.usesTwinfield && currentPrice) {
+            ledgerOptions = this.props.ledgers.filter(
+                ledger => {
+                    if(!ledger.vatCode) {
+                        return ledger.vatCode === currentPrice.vatPercentage
+                    } else {
+                        return ledger.vatCode.percentage === currentPrice.vatPercentage
+                    }
+                }
+            );
+        }
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -357,6 +391,21 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.administrationId}
                             />
                         </div>
+
+                        {this.props.usesTwinfield ? (
+                            <div className={'row'}>
+                                <InputReactSelect
+                                    label={'Grootboek'}
+                                    name={'ledgerId'}
+                                    options={ledgerOptions}
+                                    optionName={'description'}
+                                    value={ledgerId}
+                                    onChangeAction={this.handleReactSelectChange}
+                                    multi={false}
+                                />
+                            </div>
+                        ) : null}
+
                         {this.state.errorMessage && (
                             <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                                 {this.state.errorMessage}
@@ -400,6 +449,8 @@ const mapStateToProps = state => {
         productDetails: state.productDetails,
         administrations: state.meDetails.administrations,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
+        usesTwinfield: state.systemData.usesTwinfield,
     };
 };
 

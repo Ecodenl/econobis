@@ -25,4 +25,19 @@ export default {
                 console.log(error);
             });
     },
+
+    peekLedgers: (id) => {
+        const requestUrl = `${URL_ADMINISTRATION}/${id}/ledger/peek`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl)
+            .then(function (response) {
+                return response.data.data;
+            })
+            .catch(function (error) {
+                    console.log(error);
+                }
+            );
+    },
 };

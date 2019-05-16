@@ -14,6 +14,8 @@ import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
+import InputToggle from '../../../../components/form/InputToggle';
+import ViewText from '../../../../components/form/ViewText';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -44,12 +46,21 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             logoName,
             ibanAttn,
             mailboxId,
+            usesTwinfield,
+            twinfieldUsername,
+            twinfieldPassword,
+            twinfieldPasswordChange,
+            twinfieldOrganizationCode,
+            twinfieldOfficeCode,
+            usesVat,
         } = props.administrationDetails;
 
         this.state = {
             newLogo: false,
             emailTemplates: [],
             mailboxAddresses: [],
+            isSaving: false,
+            loadingText: 'Aan het opslaan',
             administration: {
                 id,
                 name: name ? name : '',
@@ -75,7 +86,14 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
                 emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
                 attachment: '',
-                mailboxId: mailboxId,
+                mailboxId: mailboxId ? mailboxId : '',
+                usesTwinfield: usesTwinfield,
+                twinfieldUsername: twinfieldUsername ? twinfieldUsername : '',
+                twinfieldPassword: twinfieldPassword ? twinfieldPassword : '',
+                twinfieldPasswordChange: twinfieldPasswordChange ? twinfieldPasswordChange : false,
+                twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
+                twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
+                usesVat: usesVat,
             },
             errors: {
                 name: false,
@@ -85,6 +103,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 IBAN: false,
                 email: false,
                 website: false,
+                twinfieldUsername: false,
+                twinfieldPassword: false,
+                twinfieldOrganizationCode: false,
+                twinfieldOfficeCode: false,
+                mailboxId: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -205,10 +228,45 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             }
         }
 
+        if (administration.usesTwinfield) {
+            if (validator.isEmpty(administration.twinfieldUsername + '')) {
+                errors.twinfieldUsername = true;
+                hasErrors = true;
+            }
+
+            if (administration.twinfieldPasswordChange) {
+                if (validator.isEmpty(administration.twinfieldPassword + '')) {
+                    errors.twinfieldPassword = true;
+                    hasErrors = true;
+                }
+            }
+
+            if (validator.isEmpty(administration.twinfieldOfficeCode + '')) {
+                errors.twinfieldOfficeCode = true;
+                hasErrors = true;
+            }
+
+            if (validator.isEmpty(administration.twinfieldOrganizationCode + '')) {
+                errors.twinfieldOrganizationCode = true;
+                hasErrors = true;
+            }
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         if (!hasErrors) {
+            let loadingText = 'Aan het laden';
+
+            if (administration.usesTwinfield) {
+                loadingText = 'De koppeling Econobis Twinfield wordt gemaakt. Dit kan enige tijd duren';
+            }
+            this.setState({
+                ...this.state,
+                loadingText: loadingText,
+                isSaving: true,
+            });
+
             const data = new FormData();
 
             data.append('id', administration.id);
@@ -235,6 +293,15 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('attachment', administration.attachment);
             data.append('mailboxId', administration.mailboxId);
+            data.append('usesTwinfield', administration.usesTwinfield);
+            data.append('twinfieldUsername', administration.twinfieldUsername);
+            // twinfield password alleen toevoegen indien ingevuld op scherm.
+            if (administration.twinfieldPasswordChange) {
+                data.append('twinfieldPassword', administration.twinfieldPassword);
+            }
+            data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
+            data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
+            data.append('usesVat', administration.usesVat);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }
@@ -266,6 +333,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             logoName,
             ibanAttn,
             mailboxId,
+            usesTwinfield,
+            twinfieldUsername,
+            twinfieldPassword,
+            twinfieldPasswordChange,
+            twinfieldOrganizationCode,
+            twinfieldOfficeCode,
+            usesVat,
         } = this.state.administration;
 
         return (
@@ -450,7 +524,20 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
+                            <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} className={'col-sm-6 form-group'}/>
+                        </div>
 
+                        <div className="row">
+                            <InputSelect
+                                label={'Afzender van Rapportages en facturen is e-mail adres'}
+                                id="mailboxId"
+                                size={'col-sm-6'}
+                                name={'mailboxId'}
+                                options={this.state.mailboxAddresses}
+                                optionName={'email'}
+                                value={mailboxId}
+                                onChangeAction={this.handleInputChange}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">
@@ -465,18 +552,78 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             </div>
                         </div>
 
+                        {this.state.newLogo && (
+                            <AdministrationLogoNew
+                                toggleShowNew={this.toggleNewLogo}
+                                addAttachment={this.addAttachment}
+                            />
+                        )}
+
                         <div className="row">
-                            <InputSelect
-                                label={'Afzender van Rapportages en facturen is e-mail adres'}
-                                id="mailboxId"
-                                size={'col-sm-6'}
-                                name={'mailboxId'}
-                                options={this.state.mailboxAddresses}
-                                optionName={'email'}
-                                value={mailboxId}
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Twinfield</span>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label={'Gebruikt Twinfield'}
+                                name={'usesTwinfield'}
+                                value={usesTwinfield}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
+
+                        {usesTwinfield == true && (
+                            <React.Fragment>
+                                <div className="row">
+                                    <InputText
+                                        label="Gebruikersnaam"
+                                        name={'twinfieldUsername'}
+                                        value={twinfieldUsername}
+                                        onChangeAction={this.handleInputChange}
+                                        required={'required'}
+                                        error={this.state.errors.twinfieldUsername}
+                                    />
+                                    <InputText
+                                        label="Wachtwoord"
+                                        name={'twinfieldPassword'}
+                                        value={twinfieldPassword}
+                                        placeholder="**********"
+                                        onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.twinfieldPassword}
+                                        required={'required'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputToggle
+                                        label={'Wijzig wachtwoord'}
+                                        name={'twinfieldPasswordChange'}
+                                        value={twinfieldPasswordChange}
+                                        onChangeAction={this.handleInputChange}
+                                        className={'col-sm-push-6 col-sm-6'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputText
+                                        label="Omgeving"
+                                        name={'twinfieldOrganizationCode'}
+                                        value={twinfieldOrganizationCode}
+                                        onChangeAction={this.handleInputChange}
+                                        required={'required'}
+                                        error={this.state.errors.twinfieldOrganizationCode}
+                                    />
+                                    <InputText
+                                        label="Code"
+                                        name={'twinfieldOfficeCode'}
+                                        value={twinfieldOfficeCode}
+                                        onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.twinfieldOfficeCode}
+                                        required={'required'}
+                                    />
+                                </div>
+                            </React.Fragment>
+                        )}
 
                         {this.state.newLogo && (
                             <AdministrationLogoNew
@@ -494,6 +641,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 onClickAction={this.props.switchToView}
                             />
                             <ButtonText
+                                loading={this.state.isSaving}
+                                loadText={this.state.loadingText}
                                 buttonText={'Opslaan'}
                                 onClickAction={this.handleSubmit}
                                 type={'submit'}

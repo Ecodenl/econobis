@@ -194,6 +194,16 @@ class ContactNewFormPersonal extends Component {
         });
     };
 
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            person: {
+                ...this.state.person,
+                [name]: value,
+            },
+        });
+    };
+
     handleChangeMemberSince = date => {
         const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
@@ -367,7 +377,7 @@ class ContactNewFormPersonal extends Component {
                         label={'Lid sinds'}
                         name="memberSince"
                         value={memberSince}
-                        onChangeAction={this.handleChangeMemberSince}
+                        onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 
@@ -396,7 +406,7 @@ class ContactNewFormPersonal extends Component {
                         label={'Geboortedatum'}
                         name={'dateOfBirth'}
                         value={dateOfBirth}
-                        onChangeAction={this.handleChangeDateOfBirth}
+                        onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 

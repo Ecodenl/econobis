@@ -44,6 +44,7 @@ class ProductController extends ApiController
             'priceHistory',
             'createdBy',
             'administration',
+            'ledger.vatCode',
         ]);
 
         return FullProduct::make($product);
@@ -61,6 +62,7 @@ class ProductController extends ApiController
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
             ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
+            ->string('ledgerId')->validate('exists:ledgers,id')->whenMissing(null)->onEmpty(null)->alias('ledger_id')->next()
             ->get();
 
         $product = new Product($data);
@@ -83,6 +85,7 @@ class ProductController extends ApiController
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
             ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
+            ->string('ledgerId')->validate('exists:ledgers,id')->alias('ledger_id')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
         $product = $product->fill($data);

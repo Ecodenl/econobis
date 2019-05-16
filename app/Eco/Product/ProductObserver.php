@@ -26,6 +26,10 @@ class ProductObserver
                 $invoiceProductToSend->product_code = $product->code;
                 $invoiceProductToSend->product_name = $product->name;
                 $invoiceProductToSend->description = $product->invoice_text;
+                if($product->ledger)
+                {
+                    $invoiceProductToSend->twinfield_ledger_code = $product->ledger->twinfield_ledger_code;
+                }
 
                 $price = 0;
                 if ($product->currentPrice) {

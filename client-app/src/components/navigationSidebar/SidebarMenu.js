@@ -293,6 +293,24 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </NavText>
                     </Nav>
                 )}
+                {permissions.manageFinancial && (
+                    <Nav id="btw-codes">
+                        <NavText>
+                            <Link className="sidebar-link" to="btw-codes">
+                                BTW codes
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
+                {permissions.manageFinancial && (
+                    <Nav id="grootboekrekeningen">
+                        <NavText>
+                            <Link className="sidebar-link" to="grootboekrekeningen">
+                                Grootboekrekeningen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
                 {permissions.viewDocumentTemplate && (
                     <Nav id="documents">
                         <NavText>

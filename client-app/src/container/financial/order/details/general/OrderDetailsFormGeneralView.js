@@ -79,12 +79,10 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                     </div>
                     <div className="row">
-                        <ViewText label={'IBAN'} value={IBAN} />
-                        <ViewText label={'Opdracht nummer klant'} value={poNumber} />
-                    </div>
-
-                    <div className="row">
-                        <ViewText label={'IBAN t.n.v.'} value={ibanAttn} />
+                        <ViewText
+                            label={"Opdracht nummer klant"}
+                            value={poNumber}
+                        />
                     </div>
 
                     <div className="row">

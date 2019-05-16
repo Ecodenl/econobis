@@ -12,6 +12,7 @@ import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import InputToggle from '../../../../components/form/InputToggle';
+import ErrorModal from '../../../../components/modal/ErrorModal';
 
 class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
@@ -44,6 +45,8 @@ class ContactDetailsFormPersonalEdit extends Component {
             errors: {
                 name: false,
             },
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
@@ -118,10 +121,28 @@ class ContactDetailsFormPersonalEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            PersonAPI.updatePerson(person).then(payload => {
-                this.props.updatePerson(payload);
-                this.props.switchToView();
-            });
+            PersonAPI.updatePerson(person)
+                .then(payload => {
+                    this.props.updatePerson(payload.data.data);
+                    this.props.switchToView();
+                })
+                .catch(error => {
+                    let errorObject = JSON.parse(JSON.stringify(error));
+
+                    let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+
+                    if(errorObject.response.status !== 500) {
+                        errorMessage = errorObject.response.data.message;
+                    }
+                    this.setState({
+                        showErrorModal: true,
+                        modalErrorMessage: errorMessage,
+                    })
+                });
+    };
+
+    closeErrorModal = () => {
+        this.setState({showErrorModal: false, modalErrorMessage: '',})
     };
 
     render() {
@@ -140,132 +161,142 @@ class ContactDetailsFormPersonalEdit extends Component {
         } = this.state.person;
 
         return (
-            <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
-                <div className="row">
-                    <InputText
-                        label={'Contactnummer'}
-                        divSize={'col-xs-12'}
-                        name={'number'}
-                        readOnly={true}
-                        value={number}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label={'Gemaakt op'}
-                        divSize={'col-xs-12'}
-                        id={'created_at'}
-                        name={'createdAt'}
-                        value={moment(createdAt).format('DD-MM-Y')}
-                        readOnly={true}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={'Aanspreektitel'}
-                        size={'col-xs-12'}
-                        name={'titleId'}
-                        options={this.props.titles}
-                        value={titleId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="Voorletters"
-                        divSize={'col-xs-12'}
-                        name={'initials'}
-                        value={initials}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label="Voornaam"
-                        divSize={'col-xs-12'}
-                        name={'firstName'}
-                        value={firstName}
-                        onChangeAction={this.handleInputChange}
-                        required={lastName === '' && 'required'}
-                        error={this.state.errors.name}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputSelect
-                        label={'Tussenvoegsel'}
-                        size={'col-xs-12'}
-                        name={'lastNamePrefixId'}
-                        options={this.state.lastNamePrefixes}
-                        value={lastNamePrefixId}
-                        onChangeAction={this.handleInputChange}
-                        placeholder={lastNamePrefix ? lastNamePrefix : ''}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputText
-                        label={'Achternaam'}
-                        divSize={'col-xs-12'}
-                        name="lastName"
-                        value={lastName}
-                        onChangeAction={this.handleInputChange}
-                        required={firstName === '' && 'required'}
-                        error={this.state.errors.name}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputDate
-                        label={'Geboortedatum'}
-                        divSize={'col-xs-12'}
-                        name={'dateOfBirth'}
-                        value={dateOfBirth}
-                        onChangeAction={this.handleChangeDateOfBirth}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputToggle
-                        label={'Nieuwsbrief'}
-                        divSize={'col-xs-12'}
-                        className={'field-to-be-removed'}
-                        name={'newsletter'}
-                        value={newsletter}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputToggle
-                        label="Akkoord privacybeleid"
-                        divSize={'col-xs-12'}
-                        name="didAgreeAvg"
-                        value={didAgreeAvg}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
-                <PanelFooter>
-                    <div className="pull-right btn-group" role="group">
-                        <ButtonText
-                            buttonClassName={'btn-default'}
-                            buttonText={'Annuleren'}
-                            onClickAction={this.props.switchToView}
-                        />
-                        <ButtonText
-                            buttonText={'Opslaan'}
-                            onClickAction={this.handleSubmit}
-                            type={'submit'}
-                            value={'Submit'}
+            <React.Fragment>
+                <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
+                    <div className="row">
+                        <InputText
+                            label={'Contactnummer'}
+                            divSize={'col-xs-12'}
+                            name={'number'}
+                            readOnly={true}
+                            value={number}
                         />
                     </div>
-                </PanelFooter>
-            </form>
+
+                    <div className="row">
+                        <InputText
+                            label={'Gemaakt op'}
+                            divSize={'col-xs-12'}
+                            id={'created_at'}
+                            name={'createdAt'}
+                            value={moment(createdAt).format('DD-MM-Y')}
+                            readOnly={true}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label={'Aanspreektitel'}
+                            size={'col-xs-12'}
+                            name={'titleId'}
+                            options={this.props.titles}
+                            value={titleId}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="Voorletters"
+                            divSize={'col-xs-12'}
+                            name={'initials'}
+                            value={initials}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label="Voornaam"
+                            divSize={'col-xs-12'}
+                            name={'firstName'}
+                            value={firstName}
+                            onChangeAction={this.handleInputChange}
+                            required={lastName === '' && 'required'}
+                            error={this.state.errors.name}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label={'Tussenvoegsel'}
+                            size={'col-xs-12'}
+                            name={'lastNamePrefixId'}
+                            options={this.state.lastNamePrefixes}
+                            value={lastNamePrefixId}
+                            onChangeAction={this.handleInputChange}
+                            placeholder={lastNamePrefix ? lastNamePrefix : ''}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label={'Achternaam'}
+                            divSize={'col-xs-12'}
+                            name="lastName"
+                            value={lastName}
+                            onChangeAction={this.handleInputChange}
+                            required={firstName === '' && 'required'}
+                            error={this.state.errors.name}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputDate
+                            label={'Geboortedatum'}
+                            divSize={'col-xs-12'}
+                            name={'dateOfBirth'}
+                            value={dateOfBirth}
+                            onChangeAction={this.handleChangeDateOfBirth}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label={'Nieuwsbrief'}
+                            divSize={'col-xs-12'}
+                            className={'field-to-be-removed'}
+                            name={'newsletter'}
+                            value={newsletter}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label="Akkoord privacybeleid"
+                            divSize={'col-xs-12'}
+                            name="didAgreeAvg"
+                            value={didAgreeAvg}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+
+                    <PanelFooter>
+                        <div className="pull-right btn-group" role="group">
+                            <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Annuleren'}
+                                onClickAction={this.props.switchToView}
+                            />
+                            <ButtonText
+                                buttonText={'Opslaan'}
+                                onClickAction={this.handleSubmit}
+                                type={'submit'}
+                                value={'Submit'}
+                            />
+                        </div>
+                    </PanelFooter>
+                </form>
+
+                { this.state.showErrorModal &&
+                <ErrorModal
+                    closeModal={this.closeErrorModal}
+                    title={'Fout bij opslaan'}
+                    errorMessage={this.state.modalErrorMessage}
+                />
+                }
+            </React.Fragment>
         );
     }
 }

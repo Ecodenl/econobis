@@ -129,21 +129,6 @@ export default {
             });
     },
 
-    send: (invoiceId, dateCollection) => {
-        const requestUrl = `${URL_INVOICE}/${invoiceId}/send`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
-        return axios
-            .post(requestUrl, { dateCollection: dateCollection })
-            .then(function(response) {
-                return response.data;
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    },
-
     sendPost: (invoiceId, dateCollection) => {
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-post`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

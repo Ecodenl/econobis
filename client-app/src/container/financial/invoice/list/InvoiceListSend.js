@@ -51,12 +51,12 @@ class InvoiceListSend extends Component {
             this.setState({ ...this.state, errors: errors });
 
             if (!hasErrors) {
-                InvoiceDetailsAPI.send(this.props.invoiceId, dateCollection).then(payload => {
+                InvoiceDetailsAPI.sendAll([this.props.invoiceId], dateCollection).then(payload => {
                     hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
                 });
             }
         } else {
-            InvoiceDetailsAPI.send(this.props.invoiceId, null).then(payload => {
+            InvoiceDetailsAPI.sendAll([this.props.invoiceId], null).then(payload => {
                 hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
             });
         }

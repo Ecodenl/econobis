@@ -349,15 +349,14 @@ class InvoiceHelper
         } elseif ($invoice->order->contact->type_id == 'organisation') {
             $contactName = $invoice->order->contact->full_name;
         }
-        $pdf = PDF::loadView('invoices.generic', [
-            'invoice' => $invoice,
-            'contactPerson' => $contactPerson,
-            'contactName' => $contactName,
-            'logo' => $img,
-        ]);
-
-        // indien preview, dan zijn we nu klaar
+        // indien preview, dan zijn we nu klaar om PDF te tonen
         if ($preview) {
+            $pdf = PDF::loadView('invoices.generic', [
+                'invoice' => $invoice,
+                'contactPerson' => $contactPerson,
+                'contactName' => $contactName,
+                'logo' => $img,
+            ]);
             return $pdf->output();
         }
 
@@ -379,6 +378,14 @@ class InvoiceHelper
             $invoice->number = 'F' . $currentYear . '-' . $newInvoiceNumber;
             $invoice->save();
         }
+
+        // nu we nieuw factuurnummer hebben kunnen we PDF maken
+        $pdf = PDF::loadView('invoices.generic', [
+            'invoice' => $invoice,
+            'contactPerson' => $contactPerson,
+            'contactName' => $contactName,
+            'logo' => $img,
+        ]);
 
         $name = $invoice->number . '.pdf';
 

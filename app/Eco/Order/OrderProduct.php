@@ -34,10 +34,10 @@ class OrderProduct extends Model
     public function getTotalPriceInclVatAndReductionAttribute()
     {
         $priceInclVat = 0;
-        $inputInclVat = false;
-        if ($this->product->currentPrice) {
-            $inputInclVat = $this->product->currentPrice->input_incl_vat;
-        }
+
+        if(!$this->product->current_price) return 0;
+
+        $inputInclVat = $this->product->currentPrice->input_incl_vat;
         $vat_percentage = $this->product->currentPrice->vat_percentage;
 
         if($inputInclVat){

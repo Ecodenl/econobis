@@ -90,18 +90,6 @@ class ContactDetailsFormOtherEdit extends Component {
         });
     };
 
-    handleChangeDateOfBirthPartner = date => {
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
-
-        this.setState({
-            ...this.state,
-            other: {
-                ...this.state.other,
-                dateOfBirthPartner: formattedDate,
-            },
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
@@ -110,6 +98,7 @@ class ContactDetailsFormOtherEdit extends Component {
         // Validation
         let errors = {};
         let hasErrors = false;
+
         if (!validator.isEmpty(other.iban)) {
             if (!ibantools.isValidIBAN(other.iban)) {
                 errors.iban = true;

@@ -204,30 +204,6 @@ class ContactNewFormPersonal extends Component {
         });
     };
 
-    handleChangeMemberSince = date => {
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
-
-        this.setState({
-            ...this.state,
-            person: {
-                ...this.state.person,
-                memberSince: formattedDate,
-            },
-        });
-    };
-
-    handleChangeDateOfBirth = date => {
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
-
-        this.setState({
-            ...this.state,
-            person: {
-                ...this.state.person,
-                dateOfBirth: formattedDate,
-            },
-        });
-    };
-
     confirmDuplicate = () => {
         this.handleSubmit('dontCheckDuplicates');
     };

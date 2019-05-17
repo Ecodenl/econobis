@@ -78,6 +78,8 @@ class OrderProduct extends Model
             }
             if ($vat_percentage) {
                 $priceInclVat = ($price + ($price * ($vat_percentage / 100)));
+            } else {
+                $priceInclVat = $price;
             }
         }
 

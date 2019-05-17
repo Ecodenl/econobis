@@ -26,6 +26,7 @@ class InvoiceStatus extends EnumWithIdAndName
             new static('to-send', 'Te verzenden'),
             new static('in-progress', 'Wordt gemaakt'),
             new static('is-sending', 'Wordt verstuurd'),
+            new static('error-sending', 'Fout verzenden'),
             new static('sent', 'Verzonden'),
             new static('exported', 'Geëxporteerd'),
             new static('paid', 'Betaald'),

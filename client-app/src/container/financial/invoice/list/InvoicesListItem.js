@@ -136,7 +136,7 @@ class InvoicesListItem extends Component {
             subStatus,
         } = this.props;
 
-        const inProgressRowClass = (this.props.statusId === 'in-progress' || this.props.statusId === 'is-sending') ? 'in-progress-row' : null;
+        const inProgressRowClass = (this.props.statusId === 'in-progress' || this.props.statusId === 'is-sending' || this.props.statusId === 'error-sending') ? 'in-progress-row' : null;
         return (
                 <tr
                     className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
@@ -214,6 +214,7 @@ class InvoicesListItem extends Component {
                     (this.props.statusId !== 'to-send' &&
                         this.props.statusId !== 'in-progress' &&
                         this.props.statusId !== 'is-sending' &&
+                        this.props.statusId !== 'error-sending' &&
                         this.props.statusId !== 'paid' &&
                         this.props.statusId !== 'irrecoverable') ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">

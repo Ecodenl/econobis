@@ -17,6 +17,7 @@ use App\Http\Resources\Invoice\Templates\InvoiceMail;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -116,7 +117,9 @@ class InvoiceHelper
     public static function saveInvoiceStatus(Invoice $invoice)
     {
         //Indien factuur definitief verwerkt wordt of verzonden, dan doen we hier geen statuswijziging.
-        if($invoice->status_id !== 'in-progress' && $invoice->status_id !== 'is-sending')
+        if($invoice->status_id !== 'in-progress'
+            && $invoice->status_id !== 'is-sending'
+            && $invoice->status_id !== 'error-sending')
         {
             if($invoice->status_id === 'paid'){
                 if($invoice->twinfield_number){
@@ -370,9 +373,12 @@ class InvoiceHelper
         {
             $newInvoiceNumber = $lastInvoice->invoice_number + 1;
         }
+
         if(Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '=', $newInvoiceNumber)->whereYear('created_at', '=', $currentYear)->exists())
         {
-            abort(404, "Voor factuur met ID " . $invoice->id . " kon geen nieuw factuurnummer bepaald worden.");
+            Log::error("Voor factuur met ID " . $invoice->id . " kon geen nieuw factuurnummer bepaald worden.");
+            self::invoicePdfIsNotCreated($invoice);
+            return false;
         }else{
             $invoice->invoice_number = $newInvoiceNumber;
             $invoice->number = 'F' . $currentYear . '-' . $newInvoiceNumber;
@@ -402,10 +408,7 @@ class InvoiceHelper
         $invoiceDocument->name = $name;
         $invoiceDocument->save();
 
-        //Factuur is aangemaakt
-        $invoicesToSend = $invoice->invoicesToSend()->first();
-        $invoicesToSend->invoice_created = true;
-        $invoice->invoicesToSend()->save($invoicesToSend);
+        self::invoicePdfIsCreated($invoice);
 
         return true;
     }
@@ -477,8 +480,37 @@ class InvoiceHelper
         {
             //Haal factuur uit tabel invoices-to-send
             $invoice->invoicesToSend()->delete();
-
+            //Status sent
             $invoice->status_id = 'sent';
+            $invoice->save();
+        }
+    }
+    public static function invoicePdfIsCreated(Invoice $invoice)
+    {
+        $invoicesToSend = $invoice->invoicesToSend()->first();
+        $invoicesToSend->invoice_created = true;
+        $invoice->invoicesToSend()->save($invoicesToSend);
+    }
+    public static function invoicePdfIsNotCreated(Invoice $invoice)
+    {
+        //Factuur moet nog status in-progress hebben
+        if($invoice->status_id === 'in-progress')
+        {
+            //Haal factuur weer uit tabel invoices-to-send
+            $invoice->invoicesToSend()->delete();
+            //Status terug naar to-send
+            $invoice->status_id = 'to-send';
+            $invoice->date_sent = null;
+            $invoice->save();
+        }
+    }
+    public static function invoiceErrorSending(Invoice $invoice)
+    {
+        //Factuur moet nog status is-sending hebben
+        if($invoice->status_id === 'is-sending')
+        {
+            //Status naar error-send
+            $invoice->status_id = 'error-sending';
             $invoice->save();
         }
     }

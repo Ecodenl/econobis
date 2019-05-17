@@ -294,19 +294,24 @@ class InvoiceController extends ApiController
 
             foreach ($validatedInvoices as $invoice) {
                 //alleen als factuur goed is aangemaakt, gaan we mailen
-                if ($invoice->invoicesToSend()->first()->invoice_created) {
+                if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
 
                     InvoiceHelper::invoiceIsSending($invoice);
-                    $invoiceResponse = InvoiceHelper::send($invoice);
-                    InvoiceHelper::invoiceSend($invoice);
-                    array_push($response, $invoiceResponse);
+                    try {
+                        $invoiceResponse = InvoiceHelper::send($invoice);
+                        InvoiceHelper::invoiceSend($invoice);
+                        array_push($response, $invoiceResponse);
+                    } catch (WebformException $e) {
+                        Log::error($e->getMessage());
+                        InvoiceHelper::invoiceErrorSending($invoice);
+                    }
                 }
             }
 
             if ($paymentTypeId === 'collection') {
-                // haal niet goed aangemaakt facturen uit list voor SEPA file
+                // haal niet goed aangemaakte facturen uit list voor SEPA file
                 $validatedInvoices = $invoices->reject(function ($invoice) {
-                    return (!$invoice->invoicesToSend()->first()->invoice_created);
+                    return (!$invoice->invoicesToSend()->exists() || !$invoice->invoicesToSend()->first()->invoice_created);
                 });
 
                 $sepaHelper = new SepaHelper($administration, $validatedInvoices);

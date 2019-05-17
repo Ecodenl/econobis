@@ -249,7 +249,6 @@ class InvoiceController extends ApiController
 
     public function sendAll(Request $request)
     {
-dd("hier moeten we met post helemaal niet komen!!!");
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 

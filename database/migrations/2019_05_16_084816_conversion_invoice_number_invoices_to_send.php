@@ -12,7 +12,7 @@ class ConversionInvoiceNumberInvoicesToSend extends Migration
      */
     public function up()
     {
-        $invoices = Invoice::withTrashed()->where('status_id', 'like', 'to-send')->get();
+        $invoices = Invoice::withTrashed()->where('status_id', '=', 'to-send')->get();
         foreach ($invoices as $invoice){
             $invoice->invoice_number = 0;
             $invoice->number = substr($invoice->number, 0, 6) . "new";

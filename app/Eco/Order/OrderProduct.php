@@ -31,6 +31,10 @@ class OrderProduct extends Model
         return $this->belongsTo(Product::class)->withoutGlobalScope('is_not_one_time');
     }
 
+    public function costCenter(){
+        return $this->belongsTo(CostCenter::class);
+    }
+
     public function getTotalPriceInclVatAndReductionAttribute()
     {
         $priceInclVat = 0;

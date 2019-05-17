@@ -8,7 +8,6 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputSelect from '../../../../components/form/InputSelect';
 import ProductDetailsFormGeneralEditConfirm from './ProductDetailsFormGeneralEditConfirm';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
-import AdministrationsAPI from '../../../../api/administration/AdministrationsAPI';
 
 class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {

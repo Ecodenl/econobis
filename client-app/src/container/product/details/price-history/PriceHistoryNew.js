@@ -10,7 +10,6 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import InputToggle from '../../../../components/form/InputToggle';
-import moment from '../../../financial/order/details/order-products/OrderProductsFormEditProductOneTime';
 
 class PriceHistoryNew extends Component {
     constructor(props) {
@@ -23,7 +22,7 @@ class PriceHistoryNew extends Component {
                 inputInclVat: false,
                 price: '',
                 priceInclVat: '',
-                vatPercentage: null,
+                vatPercentage: props.ledger ? props.ledger.vatCode && props.ledger.vatCode.percentage : null,
                 hasVariablePrice: props.hasVariablePrice === 'variable',
             },
             errors: {

@@ -75,7 +75,7 @@ const ProjectFormEditObligation = ({
 
                 <InputText
                     type={'number'}
-                    label={'Opgesteld vermogen kW'}
+                    label={'Opgesteld vermogen kWh'}
                     name={'powerKwAvailable'}
                     value={powerKwAvailable}
                     onChangeAction={handleInputChange}

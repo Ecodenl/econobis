@@ -311,6 +311,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </NavText>
                     </Nav>
                 )}
+                {permissions.manageFinancial && (
+                    <Nav id="kostenplaatsen">
+                        <NavText>
+                            <Link className="sidebar-link" to="kostenplaatsen">
+                                Kostenplaatsen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
                 {permissions.viewDocumentTemplate && (
                     <Nav id="documents">
                         <NavText>

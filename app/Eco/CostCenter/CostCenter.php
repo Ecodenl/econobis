@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Eco\Ledger;
+namespace App\Eco\CostCenter;
 
 use App\Eco\Order\OrderProduct;
 use App\Eco\Product\Product;

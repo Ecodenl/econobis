@@ -30,30 +30,6 @@ export default function(state = [], action) {
                 ...state,
                 sepas: state.sepas.filter(sepa => sepa.id !== action.sepaId),
             };
-        case 'NEW_LEDGER':
-            return {
-                ...state,
-                ledgers: [
-                    ...state.ledgers,
-                    {
-                        ...action.ledger,
-                    }
-                ]
-            };
-        case 'UPDATE_LEDGER':
-            return {
-                ...state,
-                ledgers: state.ledgers.map((ledger) =>
-                    ledger.id === action.ledger.id ?
-                        {
-                            ...ledger,
-                            code: action.ledger.code,
-                            name: action.ledger.name,
-                        }
-                        :
-                        ledger,
-                )
-            };
         default:
             return state;
     }

@@ -4,7 +4,7 @@ namespace App\Eco\Product;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\InvoiceProduct;
-use App\Eco\Ledger\CostCenter;
+use App\Eco\CostCenter\CostCenter;
 use App\Eco\Ledger\Ledger;
 use App\Eco\Order\OrderProduct;
 use App\Eco\User\User;

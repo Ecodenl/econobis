@@ -8,6 +8,8 @@ use App\Eco\AuditTrail\AuditTrail;
 use App\Eco\AuditTrail\AuditTrailPolicy;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignPolicy;
+use App\Eco\CostCenter\CostCenter;
+use App\Eco\CostCenter\CostCenterPolicy;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentPolicy;
 use App\Eco\DocumentTemplate\DocumentTemplate;
@@ -119,6 +121,7 @@ class AuthServiceProvider extends ServiceProvider
         MailgunDomain::class => MailgunDomainPolicy::class,
         VatCode::class => VatCodePolicy::class,
         Ledger::class => LedgerPolicy::class,
+        CostCenter::class => CostCenterPolicy::class,
     ];
 
     /**

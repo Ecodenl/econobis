@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const LedgerNewToolbar = () => {
+const CostCenterNewToolbar = () => {
     return (
         <div className="row">
             <div className="col-md-4">
@@ -12,11 +12,11 @@ const LedgerNewToolbar = () => {
                 </div>
             </div>
             <div className="col-md-4">
-                <h4 className="text-center margin-small">Nieuw grootboekrekening</h4>
+                <h4 className="text-center margin-small">Nieuw kostenplaats</h4>
             </div>
             <div className="col-md-4" />
         </div>
     );
 };
 
-export default LedgerNewToolbar;
+export default CostCenterNewToolbar;

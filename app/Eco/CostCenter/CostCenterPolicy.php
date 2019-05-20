@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Eco\Ledger;
+namespace App\Eco\CostCenter;
 
 use App\Eco\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;

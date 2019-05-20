@@ -311,7 +311,7 @@ class InvoiceController extends ApiController
             if ($paymentTypeId === 'collection') {
                 // haal niet goed aangemaakte facturen uit list voor SEPA file
                 $validatedInvoices = $invoices->reject(function ($invoice) {
-                    return (!$invoice->invoicesToSend()->exists() || !$invoice->invoicesToSend()->first()->invoice_created);
+                    return ($invoice->invoicesToSend()->exists() && !$invoice->invoicesToSend()->first()->invoice_created);
                 });
 
                 $sepaHelper = new SepaHelper($administration, $validatedInvoices);

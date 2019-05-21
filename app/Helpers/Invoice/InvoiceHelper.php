@@ -119,6 +119,7 @@ class InvoiceHelper
         //Indien factuur definitief verwerkt wordt of verzonden, dan doen we hier geen statuswijziging.
         if($invoice->status_id !== 'in-progress'
             && $invoice->status_id !== 'is-sending'
+            && $invoice->status_id !== 'error-making'
             && $invoice->status_id !== 'error-sending')
         {
             if($invoice->status_id === 'paid'){

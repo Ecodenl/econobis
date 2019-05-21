@@ -128,6 +128,7 @@ class InvoiceToolbar extends Component {
                         {this.props.invoiceDetails.statusId !== 'to-send' &&
                             this.props.invoiceDetails.statusId !== 'in-progress' &&
                             this.props.invoiceDetails.statusId !== 'is-sending' &&
+                            this.props.invoiceDetails.statusId !== 'error-making' &&
                             this.props.invoiceDetails.statusId !== 'error-sending' &&
                             this.props.invoiceDetails.statusId !== 'paid' &&
                             this.props.invoiceDetails.statusId !== 'irrecoverable' && (

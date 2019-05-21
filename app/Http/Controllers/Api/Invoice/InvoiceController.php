@@ -247,38 +247,6 @@ class InvoiceController extends ApiController
         return $invoice;
     }
 
-    public function send(Invoice $invoice, Request $request)
-    {
-        $invoice->date_collection = $request->input('dateCollection');
-        $invoice->save();
-
-        $orderController = new OrderController;
-        $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-
-        if ($emailTo === 'Geen e-mail bekend') {
-            abort(404, 'Geen e-mail bekend');
-        } else {
-            return InvoiceHelper::send($invoice);
-        }
-    }
-
-    public function sendPost(Invoice $invoice, Request $request)
-    {
-        $invoice->date_collection = $request->input('dateCollection');
-        $invoice->save();
-        InvoiceHelper::createInvoiceDocument($invoice);
-        $invoice->status_id = 'sent';
-        $invoice->date_sent = Carbon::today();
-        $invoice->save();
-
-        $filePath = Storage::disk('administrations')->getDriver()
-            ->getAdapter()->applyPathPrefix($invoice->document->filename);
-
-        header('X-Filename:' . $invoice->document->name);
-        header('Access-Control-Expose-Headers: X-Filename');
-        return response()->download($filePath, $invoice->document->name);
-    }
-
     public function sendAll(Request $request)
     {
         set_time_limit(0);
@@ -297,6 +265,7 @@ class InvoiceController extends ApiController
             if (empty($administration->sepa_creditor_id)) {
                 abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
             }
+            // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
             $validatedInvoices = $invoices->reject(function ($invoice) {
                 return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
             });
@@ -305,16 +274,51 @@ class InvoiceController extends ApiController
         }
 
         if ($validatedInvoices->count() > 0) {
+
+            // Eerst hele zet in progress zetten
             foreach ($validatedInvoices as $invoice) {
-                array_push($response, $this->send($invoice, $request));
+                $orderController = new OrderController;
+                $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+
+                if ($emailTo === 'Geen e-mail bekend') {
+                    abort(404, 'Geen e-mail bekend');
+                } else {
+                    InvoiceHelper::invoiceInProgress($invoice);
+                }
             }
+            foreach ($validatedInvoices as $invoice) {
+                $invoice->date_collection = $request->input('dateCollection');
+                $invoice->save();
+                InvoiceHelper::createInvoiceDocument($invoice);
+            }
+
+            foreach ($validatedInvoices as $invoice) {
+                //alleen als factuur goed is aangemaakt, gaan we mailen
+                if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
+
+                    InvoiceHelper::invoiceIsSending($invoice);
+                    try {
+                        $invoiceResponse = InvoiceHelper::send($invoice);
+                        InvoiceHelper::invoiceSend($invoice);
+                        array_push($response, $invoiceResponse);
+                    } catch (WebformException $e) {
+                        Log::error($e->getMessage());
+                        InvoiceHelper::invoiceErrorSending($invoice);
+                    }
+                }
+            }
+
             if ($paymentTypeId === 'collection') {
+                // haal niet goed aangemaakte facturen uit list voor SEPA file
+                $validatedInvoices = $invoices->reject(function ($invoice) {
+                    return ($invoice->invoicesToSend()->exists() && !$invoice->invoicesToSend()->first()->invoice_created);
+                });
+
                 $sepaHelper = new SepaHelper($administration, $validatedInvoices);
-
                 $sepa = $sepaHelper->generateSepaFile();
-
                 return $sepaHelper->downloadSepa($sepa);
             }
+
         }
 
         return $response;
@@ -324,6 +328,11 @@ class InvoiceController extends ApiController
     {
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
+
+        // Eerst hele zet in progress zetten
+        foreach ($invoices as $k => $invoice) {
+            InvoiceHelper::invoiceInProgress($invoice, true);
+        }
 
         $orderController = new OrderController;
 
@@ -335,6 +344,7 @@ class InvoiceController extends ApiController
 </style>';
 
         foreach ($invoices as $k => $invoice) {
+
             $invoice->date_collection = $request->input('dateCollection');
             $invoice->save();
 
@@ -355,30 +365,32 @@ class InvoiceController extends ApiController
             }
 
             if ($emailTo === 'Geen e-mail bekend') {
-                $invoice->status_id = 'sent';
-                $invoice->date_sent = Carbon::today();
-                $invoice->save();
-                InvoiceHelper::createInvoiceDocument($invoice);
+                $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
+                if($createdOk)
+                {
+                    InvoiceHelper::invoiceIsSending($invoice);
+                    InvoiceHelper::invoiceSend($invoice);
 
-                $img = '';
-                if ($invoice->administration->logo_filename) {
-                    $path = storage_path('app' . DIRECTORY_SEPARATOR
-                        . 'administrations' . DIRECTORY_SEPARATOR
-                        . $invoice->administration->logo_filename);
-                    $logo = file_get_contents($path);
+                    $img = '';
+                    if ($invoice->administration->logo_filename) {
+                        $path = storage_path('app' . DIRECTORY_SEPARATOR
+                            . 'administrations' . DIRECTORY_SEPARATOR
+                            . $invoice->administration->logo_filename);
+                        $logo = file_get_contents($path);
 
-                    $src = 'data:' . mime_content_type($path)
-                        . ';charset=binary;base64,' . base64_encode($logo);
-                    $src = str_replace(" ", "", $src);
-                    $img = '<img src="' . $src
-                        . '" width="auto" height="156px"/>';
+                        $src = 'data:' . mime_content_type($path)
+                            . ';charset=binary;base64,' . base64_encode($logo);
+                        $src = str_replace(" ", "", $src);
+                        $img = '<img src="' . $src
+                            . '" width="auto" height="156px"/>';
+                    }
+
+                    if ($k !== 0) {
+                        $html .= '<div class="page-break"></div>';
+                    }
+                    $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson, 'contactName' => $contactName])
+                        ->with('logo', $img)->render();
                 }
-
-                if ($k !== 0) {
-                    $html .= '<div class="page-break"></div>';
-                }
-                $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson, 'contactName' => $contactName])
-                    ->with('logo', $img)->render();
             }
         }
 
@@ -394,9 +406,28 @@ class InvoiceController extends ApiController
         return $pdfOutput->output();
     }
 
+    public function sendPost(Invoice $invoice, Request $request)
+    {
+        InvoiceHelper::invoiceInProgress($invoice, true);
+        $invoice->date_collection = $request->input('dateCollection');
+        $invoice->save();
+        $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
+        if($createdOk)
+        {
+            InvoiceHelper::invoiceIsSending($invoice);
+            InvoiceHelper::invoiceSend($invoice);
+        }
+
+        $filePath = Storage::disk('administrations')->getDriver()
+            ->getAdapter()->applyPathPrefix($invoice->document->filename);
+
+        header('X-Filename:' . $invoice->document->name);
+        header('Access-Control-Expose-Headers: X-Filename');
+        return response()->download($filePath, $invoice->document->name);
+    }
+
     public function download(Invoice $invoice)
     {
-
         $this->authorize('manage', Invoice::class);
 
         if ($invoice->document) {
@@ -405,8 +436,8 @@ class InvoiceController extends ApiController
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {
-            $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
-            header('X-Filename:' . 'T' . Carbon::now()->year . '-' . $invoice->invoice_number . '.pdf');
+            $invoiceNumber = 'F' . Carbon::now()->year . '-preview-' . $invoice->id;
+            header('X-Filename:' . $invoiceNumber . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return InvoiceHelper::createInvoiceDocument($invoice, true);
         }
@@ -416,11 +447,9 @@ class InvoiceController extends ApiController
 
     public function getEmailPreview(Invoice $invoice)
     {
-
+        InvoiceHelper::createInvoiceDocument($invoice, true);
         return InvoiceHelper::send($invoice, true);
-
     }
-
 
     public function getAmountUnpaid()
     {
@@ -454,27 +483,40 @@ class InvoiceController extends ApiController
 
     public function createSepaForInvoiceIds(Request $request)
     {
-
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
         $response = [];
 
         $administration = $invoices->first()->administration;
+        $paymentTypeId = $invoices->first()->payment_type_id;
 
-        if (!$administration->sepa_creditor_id || !$administration->bic || !$administration->IBAN) {
-            abort(412, 'Sepa crediteur ID, BIC en IBAN zijn verplichte velden.');
-        }
 
-        $validatedInvoices = $invoices->reject(function ($invoice) {
-            return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
-        });
+        if ($paymentTypeId === 'collection') {
 
-        if ($validatedInvoices->count() > 0) {
-            $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+            if (!$administration->bic || !$administration->IBAN) {
+                abort(412, 'BIC en IBAN zijn verplichte velden.');
+            }
 
-            $sepa = $sepaHelper->generateSepaFile();
+            if ($paymentTypeId === 'collection') {
+                if (empty($administration->sepa_creditor_id)) {
+                    abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+                }
+                // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
+                $validatedInvoices = $invoices->reject(function ($invoice) {
+                    return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+                });
+            } else {
+                $validatedInvoices = $invoices;
+            }
 
-            return $sepaHelper->downloadSepa($sepa);
+            if ($validatedInvoices->count() > 0) {
+                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+
+                $sepa = $sepaHelper->generateSepaFile();
+
+                return $sepaHelper->downloadSepa($sepa);
+            }
+
         }
 
         return $response;

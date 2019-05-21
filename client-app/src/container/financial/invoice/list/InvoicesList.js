@@ -32,33 +32,64 @@ import moment from 'moment/moment';
 import { hashHistory } from 'react-router';
 import ButtonText from '../../../../components/button/ButtonText';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
-import { fetchAdministrationDetails } from '../../../../actions/administration/AdministrationDetailsActions';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
 import InvoiceListDeleteItem from './InvoiceListDeleteItem';
+
+const initialState = {
+    showSelectInvoicesToSend: false,
+    checkedAllCheckboxes: false,
+    emailInvoicesText: 'Selecteer preview e-mail facturen',
+    onlyEmailInvoices: false,
+    onlyPostInvoices: false,
+    postInvoicesText: 'Selecteer preview post facturen',
+    sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
+    sendRemindersTextPost: 'Selecteer post herinneringen',
+    setInvoicesPaidText: 'Selecteer betaalde facturen',
+    showSetInvoicesPaid: false,
+    deleteItem: {
+        id: '',
+        fullName: '',
+    },
+};
 
 class InvoicesList extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            showSelectInvoicesToSend: false,
-            checkedAllCheckboxes: false,
-            emailInvoicesText: 'Selecteer preview e-mail facturen',
-            onlyEmailInvoices: false,
-            onlyPostInvoices: false,
-            postInvoicesText: 'Selecteer preview post facturen',
-            sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
-            sendRemindersTextPost: 'Selecteer post herinneringen',
-            setInvoicesPaidText: 'Selecteer betaalde facturen',
-            showSetInvoicesPaid: false,
-            deleteItem: {
-                id: '',
-                fullName: '',
-            },
-        };
+        this.state = initialState;
 
-        if (!isEmpty(props.filter)) {
-            switch (props.filter) {
+        this.setFilter(props.filter);
+
+        this.handlePageClick = this.handlePageClick.bind(this);
+    }
+
+    componentDidMount() {
+        this.fetchInvoicesData();
+    }
+
+    componentWillUnmount() {
+        this.props.clearInvoices();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.filter !== prevProps.filter) {
+            this.setFilter(this.props.filter);
+
+            setTimeout(() => {
+                this.fetchInvoicesData();
+            }, 100);
+
+            this.props.setCheckedInvoiceAll(false);
+
+            this.setState({
+                ...initialState,
+            });
+        }
+    }
+
+    setFilter = (filter) => {
+        if (!isEmpty(filter)) {
+            switch (filter) {
                 case 'te-verzenden-incasso':
                     this.props.clearFilterInvoices();
                     this.props.setStatusIdFilterInvoices('to-send');
@@ -99,89 +130,7 @@ class InvoicesList extends Component {
         } else {
             this.props.clearFilterInvoices();
         }
-
-        this.handlePageClick = this.handlePageClick.bind(this);
-    }
-
-    componentDidMount() {
-        this.fetchInvoicesData();
-        this.props.fetchAdministrationDetails(this.props.administrationId);
-    }
-
-    componentWillUnmount() {
-        this.props.clearInvoices();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.filter !== nextProps.filter) {
-            if (!isEmpty(nextProps.filter)) {
-                switch (nextProps.filter) {
-                    case 'te-verzenden-incasso':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('to-send');
-                        this.props.setPaymentTypeIdFilterInvoices('collection');
-                        break;
-                    case 'te-verzenden-overboeken':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('to-send');
-                        this.props.setPaymentTypeIdFilterInvoices('transfer');
-                        break;
-                    case 'verzonden':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('sent');
-                        break;
-                    case 'geexporteerd':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('exported');
-                        break;
-                    case 'herinnering':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('reminder');
-                        break;
-                    case 'aanmaning':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('exhortation');
-                        break;
-                    case 'betaald':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('paid');
-                        break;
-                    case 'oninbaar':
-                        this.props.clearFilterInvoices();
-                        this.props.setStatusIdFilterInvoices('irrecoverable');
-                        break;
-                    default:
-                        break;
-                }
-                this.props.fetchAdministrationDetails(nextProps.administrationId);
-            } else {
-                this.props.clearFilterInvoices();
-            }
-
-            setTimeout(() => {
-                this.fetchInvoicesData();
-            }, 100);
-
-            this.props.setCheckedInvoiceAll(false);
-
-            this.setState({
-                showSelectInvoicesToSend: false,
-                checkedAllCheckboxes: false,
-                emailInvoicesText: 'Selecteer preview e-mail facturen',
-                onlyEmailInvoices: false,
-                onlyPostInvoices: false,
-                postInvoicesText: 'Selecteer preview post facturen',
-                sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
-                sendRemindersTextPost: 'Selecteer post herinneringen',
-                setInvoicesPaidText: 'Selecteer betaalde facturen',
-                showSetInvoicesPaid: false,
-                deleteItem: {
-                    id: '',
-                    fullName: '',
-                },
-            });
-        }
-    }
+    };
 
     fetchInvoicesData = () => {
         this.props.clearInvoices();
@@ -337,27 +286,13 @@ class InvoicesList extends Component {
 
     resetInvoiceFilters = () => {
         this.props.clearFilterInvoices();
+        this.setFilter(this.props.filter);
 
         this.fetchInvoicesData();
 
         this.props.setCheckedInvoiceAll(false);
 
-        this.setState({
-            showSelectInvoicesToSend: false,
-            checkedAllCheckboxes: false,
-            emailInvoicesText: 'Selecteer preview e-mail facturen',
-            onlyEmailInvoices: false,
-            onlyPostInvoices: false,
-            postInvoicesText: 'Selecteer preview post facturen',
-            sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
-            sendRemindersTextPost: 'Selecteer post herinneringen',
-            setInvoicesPaidText: 'Selecteer betaalde facturen',
-            showSetInvoicesPaid: false,
-            deleteItem: {
-                id: '',
-                fullName: '',
-            },
-        });
+        this.setState({ ...initialState });
     };
 
     onSubmitFilter = () => {
@@ -627,7 +562,6 @@ const mapDispatchToProps = dispatch => {
             setPaymentTypeIdFilterInvoices,
             blockUI,
             unblockUI,
-            fetchAdministrationDetails,
         },
         dispatch
     );

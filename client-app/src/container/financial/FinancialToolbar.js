@@ -85,10 +85,6 @@ const mapDispatchToProps = dispatch => ({
         dispatch(setError(http_code, message));
     },
 });
-export default connect(
-    mapStateToProps
-)(FinancialToolbar);
-
 
 export default connect(
     mapStateToProps,

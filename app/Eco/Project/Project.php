@@ -168,4 +168,12 @@ class Project extends Model
     {
         return new ProjectCalculator($this);
     }
+
+    public function currentBookWorth()
+    {
+        $activeProjectValueCourse = $this->projectValueCourses()->where('active', 1)->first();
+        if(!$activeProjectValueCourse) return null;
+
+        return $activeProjectValueCourse->book_worth;
+    }
 }

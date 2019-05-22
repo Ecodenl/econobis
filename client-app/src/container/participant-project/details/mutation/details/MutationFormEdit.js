@@ -96,13 +96,22 @@ const MutationFormEdit = ({
                     <PanelBody>
                         <div className="row">
                             <ViewText label={'Type'} id={'type'} className={'col-sm-6 form-group'} value={type.name} />
-                            <InputSelect
-                                label={'Status'}
-                                name={'statusId'}
-                                options={participantMutationStatusesOptions}
-                                value={statusId}
-                                onChangeAction={handleInputChange}
-                            />
+                            {originalStatus.codeRef === 'final' ? (
+                                <ViewText
+                                    label={'Status'}
+                                    id={'status'}
+                                    className={'col-sm-6 form-group'}
+                                    value={originalStatus.name}
+                                />
+                            ) : (
+                                <InputSelect
+                                    label={'Status'}
+                                    name={'statusId'}
+                                    options={participantMutationStatusesOptions}
+                                    value={statusId}
+                                    onChangeAction={handleInputChange}
+                                />
+                            )}
                         </div>
 
                         {projectTypeCodeRef === 'loan' ? null : (

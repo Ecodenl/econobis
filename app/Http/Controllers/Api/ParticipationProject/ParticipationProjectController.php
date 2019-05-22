@@ -595,7 +595,7 @@ class ParticipationProjectController extends ApiController
      * @param ParticipantProject $participantProject
      * @param $project
      */
-    public function storeFirstMutation(RequestInput $requestInput, ParticipantMutationStatus $participantMutationStatus, ParticipantProject $participantProject, $project): void
+    public function storeFirstMutation(RequestInput $requestInput, ParticipantMutationStatus $participantMutationStatus, ParticipantProject $participantProject, Project $project): void
     {
         switch ($participantMutationStatus->code_ref) {
             case 'interest':
@@ -657,5 +657,13 @@ class ParticipationProjectController extends ApiController
         $participantMutation->fill($mutationData);
 
         $participantMutation->save();
+
+        // Calculate participation worth based on current book worth of project
+        if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
+            $currentBookWorthOfProject = $project->currentBookWorth() * $participantMutation->quantity;
+
+            $participantMutation->participation_worth = $currentBookWorthOfProject;
+            $participantMutation->save();
+        }
     }
 }

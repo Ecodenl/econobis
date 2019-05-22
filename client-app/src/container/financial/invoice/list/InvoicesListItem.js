@@ -134,6 +134,7 @@ class InvoicesListItem extends Component {
             checked,
             iban,
             subStatus,
+            usesTwinfield,
         } = this.props;
 
         const inProgressRowClass = (this.props.statusId === 'in-progress' || this.props.statusId === 'is-sending' || this.props.statusId === 'error-making' || this.props.statusId === 'error-sending') ? 'in-progress-row' : null;
@@ -193,8 +194,9 @@ class InvoicesListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons &&
-                    (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
+                    {(!usesTwinfield &&
+                    this.state.showActionButtons &&
+                    (this.props.statusId === 'sent' || this.props.statusId === 'exported') ) ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
                             <span className="glyphicon glyphicon-euro mybtn-success" />{' '}
                         </a>

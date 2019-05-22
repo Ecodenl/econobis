@@ -187,8 +187,8 @@ class SepaHelper
             // Direct Debit Transaction
             $xml .= "\n\t\t\t\t<DrctDbtTx>";
             $xml .= "\n\t\t\t\t\t<MndtRltdInf>";
-            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->order->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
-            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->order->date_requested . "</DtOfSgntr>"; // Mandaat ondertekening
+            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->order->contact->collect_mandate_code  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
+            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->order->contact->collect_mandate_signature_date . "</DtOfSgntr>"; // Mandaat ondertekening
             $xml .= "\n\t\t\t\t\t</MndtRltdInf>";
             $xml .= "\n\t\t\t\t</DrctDbtTx>";
 

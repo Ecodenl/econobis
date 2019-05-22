@@ -345,6 +345,11 @@ class InvoiceController extends ApiController
 
         foreach ($invoices as $k => $invoice) {
 
+            if(!$this->isInvoiceOkForSending($invoice))
+            {
+                return false;
+            }
+
             $invoice->date_collection = $request->input('dateCollection');
             $invoice->save();
 
@@ -465,6 +470,16 @@ class InvoiceController extends ApiController
         }
 
         return $total;
+    }
+
+
+    public function isInvoiceOkForSending(Invoice $invoice)
+    {
+        if( $invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists() )
+        {
+            return false;
+        }
+        return true;
     }
 
     public function getInvoicesForSending(Request $request)
@@ -604,6 +619,8 @@ class InvoiceController extends ApiController
         $product->duration_id = $productData['durationId'];
         $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
         $product->administration_id = $productData['administrationId'];
+        $product->ledger_id = $productData['ledgerId'];
+        $product->ledger_id ?: $product->ledger_id = null;
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();

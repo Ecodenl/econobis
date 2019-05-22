@@ -14,6 +14,7 @@ const InputSelect = props => {
         onBlurAction,
         required,
         error,
+        optionValue,
         optionName,
         readOnly,
         placeholder,
@@ -39,7 +40,7 @@ const InputSelect = props => {
                     {emptyOption && <option value="">{placeholder}</option>}
                     {options.map(option => {
                         return (
-                            <option key={option.id} value={option.id}>
+                            <option key={option[optionValue]} value={option[optionValue]}>
                                 {option[optionName]}
                             </option>
                         );
@@ -58,6 +59,7 @@ InputSelect.defaultProps = {
     required: '',
     error: false,
     value: '',
+    optionValue: 'id',
     optionName: 'name',
     placeholder: '',
     emptyOption: true,
@@ -77,6 +79,7 @@ InputSelect.propTypes = {
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
     emptyOption: PropTypes.bool,
+    optionValue: PropTypes.string,
     optionName: PropTypes.string,
     placeholder: PropTypes.string,
 };

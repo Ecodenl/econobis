@@ -5,13 +5,14 @@ import validator from 'validator';
 import { updateOrder } from '../../../../../actions/order/OrderDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
-import Panel from '../../../../../components/panel/Panel';
-import PanelBody from '../../../../../components/panel/PanelBody';
-import * as ibantools from 'ibantools';
-import InputSelect from '../../../../../components/form/InputSelect';
-import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
-import InputDate from '../../../../../components/form/InputDate';
-import InputReactSelect from '../../../../../components/form/InputReactSelect';
+import Panel from "../../../../../components/panel/Panel";
+import PanelBody from "../../../../../components/panel/PanelBody";
+import * as ibantools from "ibantools";
+import InputSelect from "../../../../../components/form/InputSelect";
+import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
+import InputDate from "../../../../../components/form/InputDate";
+import InputReactSelect from "../../../../../components/form/InputReactSelect";
+import moment from 'moment';
 
 class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -39,6 +40,7 @@ class OrderDetailsFormGeneralEdit extends Component {
         this.state = {
             emailTemplates: [],
             showExtraContactInfo: false,
+            collectMandateActive: false,
             order: {
                 id,
                 statusId: statusId ? statusId : '',
@@ -70,21 +72,21 @@ class OrderDetailsFormGeneralEdit extends Component {
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
-    componentWillMount() {
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
+    componentDidMount() {
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
             this.setState({
-                emailTemplates: payload,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    emailTemplates: false,
+                    emailTemplates: payload,
+                    peekLoading: {
+                        ...this.state.peekLoading,
+                        emailTemplates: false,
+                    },
                 },
-            });
+                this.checkContactCollectMandate);
         });
     }
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: selectedOption,
@@ -98,7 +100,6 @@ class OrderDetailsFormGeneralEdit extends Component {
         const name = target.name;
 
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: value,
@@ -108,10 +109,47 @@ class OrderDetailsFormGeneralEdit extends Component {
 
     handleInputChangeDate = (value, name) => {
         this.setState({
-            ...this.state,
             order: {
                 ...this.state.order,
                 [name]: value,
+            },
+        });
+    };
+    handleInputChangeInvoiceDate = (value, name) => {
+        this.setState({
+                order: {
+                    ...this.state.order,
+                    [name]: value
+                },
+            }, this.checkContactCollectMandate
+        );
+    };
+
+
+    checkContactCollectMandate = () => {
+
+        let paymentTypeId = this.state.order.paymentTypeId;
+        let date = this.state.order.dateNextInvoice;
+        if (!date)
+        {
+            date = moment().format("YYYY-MM-DD");
+        }
+        let contactCollectMandateFirstRun = this.props.contactCollectMandateFirstRun;
+        let contactCollectMandate = this.props.contactCollectMandate;
+        let collectMandateActive = (contactCollectMandate == true);
+        if (contactCollectMandate && contactCollectMandateFirstRun > date)
+        {
+            collectMandateActive =  false;
+        }
+        if (!collectMandateActive)
+        {
+            paymentTypeId =  'transfer';
+        }
+        this.setState({
+            collectMandateActive,
+            order: {
+                ...this.state.order,
+                paymentTypeId,
             },
         });
     };
@@ -124,6 +162,11 @@ class OrderDetailsFormGeneralEdit extends Component {
         // Validation
         let errors = {};
         let hasErrors = false;
+
+        if (validator.isEmpty(order.paymentTypeId + '')) {
+            errors.paymentTypeId = true;
+            hasErrors = true;
+        }
 
         if (validator.isEmpty(order.statusId + '')) {
             errors.statusId = true;
@@ -152,21 +195,8 @@ class OrderDetailsFormGeneralEdit extends Component {
 
     render() {
         const {
-            statusId,
-            subject,
-            emailTemplateIdCollection,
-            emailTemplateIdTransfer,
-            emailTemplateReminderId,
-            emailTemplateExhortationId,
-            paymentTypeId,
-            collectionFrequencyId,
-            IBAN,
-            ibanAttn,
-            poNumber,
-            invoiceText,
-            dateRequested,
-            administrationId,
-            dateNextInvoice,
+            statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId,
+            poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
         } = this.state.order;
         const { invoiceCount } = this.props.orderDetails;
 
@@ -252,9 +282,12 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 label={'Betaalwijze'}
                                 id="paymentTypeId"
                                 name={'paymentTypeId'}
-                                options={this.props.orderPaymentTypes}
+                                options={this.state.collectMandateActive ? this.props.orderPaymentTypes : this.props.orderPaymentTypes.filter(orderPaymentType => orderPaymentType.id === 'transfer')}
+                                emptyOption={false}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.paymentTypeId}
                             />
                         </div>
                         <div className="row">
@@ -302,25 +335,9 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputText
-                                label="IBAN"
-                                name={'IBAN'}
-                                value={IBAN}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.IBAN}
-                            />
-                            <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}
                                 value={poNumber}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label="IBAN t.n.v."
-                                name={'ibanAttn'}
-                                value={ibanAttn}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
@@ -356,7 +373,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 label="Volgende factuur datum"
                                 value={dateNextInvoice}
                                 name={'dateNextInvoice'}
-                                onChangeAction={this.handleInputChangeDate}
+                                onChangeAction={this.handleInputChangeInvoiceDate}
                             />
                         </div>
                         <div className="row">

@@ -206,6 +206,9 @@ class OrderController extends ApiController
         $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
         $product->administration_id = $productData['administrationId'];
         $product->invoice_text = $productData['description'];
+        $product->ledger_id = $productData['ledgerId'];
+
+        $product->ledger_id ?: $product->ledger_id = null;
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
@@ -251,6 +254,8 @@ class OrderController extends ApiController
         $product = Product::withoutGlobalScopes()->find($productData['id']);
         $product->invoice_text = $productData['description'];
         $product->duration_id = $productData['durationId'];
+        $product->ledger_id = $productData['ledgerId'];
+        $product->ledger_id ?: $product->ledger_id = null;
 
         $priceHistory = new PriceHistory();
         $priceHistory->product_id = $product->id;
@@ -328,6 +333,8 @@ class OrderController extends ApiController
             'contactPerson' => $contact->full_name,
             'iban' => $contact->iban,
             'ibanAttn' => $contact->iban_attn,
+            'collectMandate' => $contact->is_collect_mandate,
+            'collectMandateFirstRun' => $contact->collect_mandate_first_run_date,
         ];
 
         if($contact->isOrganisation()){

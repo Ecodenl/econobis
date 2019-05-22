@@ -6,7 +6,17 @@ import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormOtherView = props => {
     const { firstNamePartner, lastNamePartner, dateOfBirthPartner } = props.contactDetails.person;
-    const { iban, ibanAttn, liable, liabilityAmount } = props.contactDetails;
+    const {
+        iban,
+        ibanAttn,
+        liable,
+        liabilityAmount,
+        isCollectMandate,
+        collectMandateCode,
+        collectMandateSignatureDate,
+        collectMandateFirstRunDate,
+        collectMandateCollectionSchema,
+    } = props.contactDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -35,6 +45,26 @@ const ContactDetailsFormOtherView = props => {
                     value={'€ ' + liabilityAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 />
             </div>
+
+            <div className="row">
+                <ViewText label={'Ingesteld op incasso'} value={isCollectMandate ? 'Ja' : 'Nee'} />
+                {isCollectMandate ? <ViewText label={'Machtigingskenmerk'} value={collectMandateCode} /> : null}
+            </div>
+
+            {isCollectMandate ? (
+                <React.Fragment>
+                    <div className="row">
+                        <ViewText
+                            label={'Datum van ondertekening'}
+                            value={collectMandateSignatureDate && moment(collectMandateSignatureDate).format('L')}
+                        />
+                        <ViewText
+                            label={'Datum eerste incassoronde'}
+                            value={collectMandateFirstRunDate && moment(collectMandateFirstRunDate).format('L')}
+                        />
+                    </div>
+                </React.Fragment>
+            ) : null}
         </div>
     );
 };

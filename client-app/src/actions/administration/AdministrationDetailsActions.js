@@ -35,3 +35,17 @@ export const deleteAdministrationSepa = sepaId => {
         sepaId,
     };
 };
+
+export const newLedger = (ledger) => {
+    return {
+        type: 'NEW_LEDGER',
+        ledger,
+    };
+};
+
+export const updateLedger = (ledger) => {
+    return {
+        type: 'UPDATE_LEDGER',
+        ledger,
+    };
+};

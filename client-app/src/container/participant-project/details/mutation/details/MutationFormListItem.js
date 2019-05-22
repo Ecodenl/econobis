@@ -50,6 +50,18 @@ class MutationFormListItem extends Component {
                 quantityFinal: props.participantMutation.quantityFinal
                     ? props.participantMutation.quantityFinal
                     : props.participantMutation.quantity,
+                amountInterest: props.participantMutation.amountInterest
+                    ? props.participantMutation.amountInterest
+                    : props.participantMutation.amount,
+                amountOption: props.participantMutation.amountOption
+                    ? props.participantMutation.amountOption
+                    : props.participantMutation.amount,
+                amountGranted: props.participantMutation.amountGranted
+                    ? props.participantMutation.amountGranted
+                    : props.participantMutation.amount,
+                amountFinal: props.participantMutation.amountFinal
+                    ? props.participantMutation.amountFinal
+                    : props.participantMutation.amount,
             },
             errors: {},
         };
@@ -93,6 +105,18 @@ class MutationFormListItem extends Component {
                     quantityFinal: this.props.participantMutation.quantityFinal
                         ? this.props.participantMutation.quantityFinal
                         : this.props.participantMutation.quantity,
+                    amountInterest: this.props.participantMutation.amountInterest
+                        ? this.props.participantMutation.amountInterest
+                        : this.props.participantMutation.amount,
+                    amountOption: this.props.participantMutation.amountOption
+                        ? this.props.participantMutation.amountOption
+                        : this.props.participantMutation.amount,
+                    amountGranted: this.props.participantMutation.amountGranted
+                        ? this.props.participantMutation.amountGranted
+                        : this.props.participantMutation.amount,
+                    amountFinal: this.props.participantMutation.amountFinal
+                        ? this.props.participantMutation.amountFinal
+                        : this.props.participantMutation.amount,
                 },
             });
         }
@@ -183,12 +207,17 @@ class MutationFormListItem extends Component {
 
         const { participantMutation } = this.state;
 
-        const validatedForm = MutationValidateForm(participantMutation, errors, hasErrors);
+        const validatedForm = MutationValidateForm(
+            participantMutation,
+            errors,
+            hasErrors,
+            this.props.projectTypeCodeRef
+        );
 
         this.setState({ ...this.state, errors: validatedForm.errors });
 
         if (!validatedForm.hasErrors) {
-            const values = MutationSubmitHelper(participantMutation, this.props.participantMutationStatuses);
+            const values = MutationSubmitHelper(participantMutation, this.props.projectTypeCodeRef);
 
             ParticipantMutationAPI.updateParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
@@ -232,6 +261,7 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         id: state.participantProjectDetails.id,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
+        projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
     };
 };
 

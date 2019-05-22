@@ -101,13 +101,19 @@ class MutationFormNew extends Component {
         );
         const statusCodeRef = status ? status.codeRef : null;
 
-        const validatedForm = MutationNewValidateForm(participationMutation, errors, hasErrors, statusCodeRef);
+        const validatedForm = MutationNewValidateForm(
+            participationMutation,
+            errors,
+            hasErrors,
+            statusCodeRef,
+            this.props.projectTypeCodeRef
+        );
 
         this.setState({ ...this.state, errors: validatedForm.errors });
 
         // If no errors send form
         if (!validatedForm.hasErrors) {
-            const values = MutationNewSubmitHelper(participationMutation, statusCodeRef);
+            const values = MutationNewSubmitHelper(participationMutation, statusCodeRef, this.props.projectTypeCodeRef);
 
             ParticipantMutationAPI.newParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
@@ -159,13 +165,14 @@ class MutationFormNew extends Component {
                                 />
                             </div>
 
-                            {typeCodeRef === 'first_deposit' ? (
+                            {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (
                                 <MutationNewDeposit
                                     statusCodeRef={statusCodeRef}
                                     {...this.state.participationMutation}
                                     errors={this.state.errors}
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
+                                    projectTypeCodeRef={this.props.projectTypeCodeRef}
                                 />
                             ) : null}
 

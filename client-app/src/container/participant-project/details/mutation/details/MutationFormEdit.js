@@ -32,12 +32,16 @@ const MutationFormEdit = ({
         status: originalStatus,
         statusId,
         quantityInterest,
+        amountInterest,
         dateInterest,
         quantityOption,
+        amountOption,
         dateOption,
         quantityGranted,
+        amountGranted,
         dateGranted,
         quantityFinal,
+        amountFinal,
         dateContractRetour,
         datePayment,
         dateEntry,
@@ -101,26 +105,31 @@ const MutationFormEdit = ({
                             />
                         </div>
 
-                        <div className="row">
-                            <ViewText
-                                label={'Bedrag'}
-                                id={'participationWorth'}
-                                className={'col-sm-6 form-group'}
-                                value={MoneyPresenter(participationWorth)}
-                            />
-                        </div>
+                        {projectTypeCodeRef === 'loan' ? null : (
+                            <div className="row">
+                                <ViewText
+                                    label={'Bedrag'}
+                                    id={'participationWorth'}
+                                    className={'col-sm-6 form-group'}
+                                    value={MoneyPresenter(participationWorth)}
+                                />
+                            </div>
+                        )}
 
                         {originalStatus.codeRef === 'interest' && (
                             <MutationFormEditStatusInterest
                                 originalStatus={originalStatus}
                                 statusId={statusId}
                                 quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
                                 dateInterest={dateInterest}
                                 quantityOption={quantityOption}
+                                amountOption={amountOption}
                                 dateOption={dateOption}
                                 handleInputChange={handleInputChange}
                                 handleInputChangeDate={handleInputChangeDate}
                                 errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
                             />
                         )}
 
@@ -129,14 +138,18 @@ const MutationFormEdit = ({
                                 originalStatus={originalStatus}
                                 statusId={statusId}
                                 quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
                                 dateInterest={dateInterest}
                                 quantityOption={quantityOption}
+                                amountOption={amountOption}
                                 dateOption={dateOption}
                                 quantityGranted={quantityGranted}
+                                amountGranted={amountGranted}
                                 dateGranted={dateGranted}
                                 handleInputChange={handleInputChange}
                                 handleInputChangeDate={handleInputChangeDate}
                                 errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
                             />
                         )}
 
@@ -145,18 +158,23 @@ const MutationFormEdit = ({
                                 originalStatus={originalStatus}
                                 statusId={statusId}
                                 quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
                                 dateInterest={dateInterest}
                                 quantityOption={quantityOption}
+                                amountOption={amountOption}
                                 dateOption={dateOption}
                                 quantityGranted={quantityGranted}
+                                amountGranted={amountGranted}
                                 dateGranted={dateGranted}
                                 quantityFinal={quantityFinal}
+                                amountFinal={amountFinal}
                                 dateEntry={dateEntry}
                                 dateContractRetour={dateContractRetour}
                                 datePayment={datePayment}
                                 handleInputChange={handleInputChange}
                                 handleInputChangeDate={handleInputChangeDate}
                                 errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
                             />
                         )}
 
@@ -165,18 +183,23 @@ const MutationFormEdit = ({
                                 originalStatus={originalStatus}
                                 statusId={statusId}
                                 quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
                                 dateInterest={dateInterest}
                                 quantityOption={quantityOption}
+                                amountOption={amountOption}
                                 dateOption={dateOption}
                                 quantityGranted={quantityGranted}
+                                amountGranted={amountGranted}
                                 dateGranted={dateGranted}
                                 quantityFinal={quantityFinal}
+                                amountFinal={amountFinal}
                                 dateEntry={dateEntry}
                                 dateContractRetour={dateContractRetour}
                                 datePayment={datePayment}
                                 handleInputChange={handleInputChange}
                                 handleInputChangeDate={handleInputChangeDate}
                                 errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
                             />
                         )}
 

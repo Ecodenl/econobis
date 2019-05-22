@@ -8,27 +8,41 @@ const MutationFormEditStatusFinal = ({
     originalStatus,
     statusId,
     quantityInterest,
+    amountInterest,
     dateInterest,
     quantityOption,
+    amountOption,
     dateOption,
     quantityGranted,
+    amountGranted,
     dateGranted,
     quantityFinal,
+    amountFinal,
     dateEntry,
     dateContractRetour,
     datePayment,
     handleInputChange,
     handleInputChangeDate,
     errors,
+    projectTypeCodeRef,
 }) => (
     <React.Fragment>
         <div className="row">
-            <ViewText
-                label={'Aantal interesse'}
-                id={'quantityInterest'}
-                className={'col-sm-6 form-group'}
-                value={quantityInterest}
-            />
+            {projectTypeCodeRef === 'loan' ? (
+                <ViewText
+                    label={'Bedrag interesse'}
+                    id={'amountInterest'}
+                    className={'col-sm-6 form-group'}
+                    value={amountInterest}
+                />
+            ) : (
+                <ViewText
+                    label={'Aantal interesse'}
+                    id={'quantityInterest'}
+                    className={'col-sm-6 form-group'}
+                    value={quantityInterest}
+                />
+            )}
             <ViewText
                 label={'Datum interesse'}
                 id={'dateInterest'}
@@ -37,12 +51,21 @@ const MutationFormEditStatusFinal = ({
             />
         </div>
         <div className="row">
-            <ViewText
-                label={'Aantal optie'}
-                id={'quantityOption'}
-                className={'col-sm-6 form-group'}
-                value={quantityOption}
-            />
+            {projectTypeCodeRef === 'loan' ? (
+                <ViewText
+                    label={'Bedrag optie'}
+                    id={'amountOption'}
+                    className={'col-sm-6 form-group'}
+                    value={amountOption}
+                />
+            ) : (
+                <ViewText
+                    label={'Aantal optie'}
+                    id={'quantityOption'}
+                    className={'col-sm-6 form-group'}
+                    value={quantityOption}
+                />
+            )}
             <ViewText
                 label={'Optiedatum'}
                 id={'dateOption'}
@@ -51,12 +74,21 @@ const MutationFormEditStatusFinal = ({
             />
         </div>
         <div className="row">
-            <ViewText
-                label={'Aantal toegekend'}
-                id={'quantityGranted'}
-                className={'col-sm-6 form-group'}
-                value={quantityGranted}
-            />
+            {projectTypeCodeRef === 'loan' ? (
+                <ViewText
+                    label={'Bedrag toegekend'}
+                    id={'amountGranted'}
+                    className={'col-sm-6 form-group'}
+                    value={amountGranted}
+                />
+            ) : (
+                <ViewText
+                    label={'Aantal toegekend'}
+                    id={'quantityGranted'}
+                    className={'col-sm-6 form-group'}
+                    value={quantityGranted}
+                />
+            )}
             <ViewText
                 label={'Toewijzingsdatum'}
                 id={'dateGranted'}
@@ -65,16 +97,29 @@ const MutationFormEditStatusFinal = ({
             />
         </div>
         <div className="row">
-            <InputText
-                type={'number'}
-                label={'Aantal definitief'}
-                id={'quantityFinal'}
-                name={'quantityFinal'}
-                value={quantityFinal}
-                onChangeAction={handleInputChange}
-                required={'required'}
-                error={errors.quantityFinal}
-            />
+            {projectTypeCodeRef === 'loan' ? (
+                <InputText
+                    type={'number'}
+                    label={'Bedrag definitief'}
+                    id={'amountFinal'}
+                    name={'amountFinal'}
+                    value={amountFinal}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.amountFinal}
+                />
+            ) : (
+                <InputText
+                    type={'number'}
+                    label={'Aantal definitief'}
+                    id={'quantityFinal'}
+                    name={'quantityFinal'}
+                    value={quantityFinal}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.quantityFinal}
+                />
+            )}
             <InputDate
                 label={'Ingangsdatum'}
                 name={'dateEntry'}

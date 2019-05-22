@@ -8,23 +8,36 @@ const MutationFormEditStatusInterest = ({
     originalStatus,
     statusId,
     quantityInterest,
+    amountInterest,
     dateInterest,
     quantityOption,
+    amountOption,
     dateOption,
     handleInputChange,
     handleInputChangeDate,
     errors,
+    projectTypeCodeRef,
 }) => (
     <React.Fragment>
         {originalStatus.id !== Number(statusId) ? (
             <React.Fragment>
                 <div className="row">
-                    <ViewText
-                        label={'Aantal interesse'}
-                        id={'quantityInterest'}
-                        className={'col-sm-6 form-group'}
-                        value={quantityInterest}
-                    />
+                    {projectTypeCodeRef === 'loan' ? (
+                        <ViewText
+                            label={'Bedrag interesse'}
+                            id={'amountInterest'}
+                            className={'col-sm-6 form-group'}
+                            value={amountInterest}
+                        />
+                    ) : (
+                        <ViewText
+                            label={'Aantal interesse'}
+                            id={'quantityInterest'}
+                            className={'col-sm-6 form-group'}
+                            value={quantityInterest}
+                        />
+                    )}
+
                     <ViewText
                         label={'Datum interesse'}
                         id={'dateInterest'}
@@ -33,16 +46,30 @@ const MutationFormEditStatusInterest = ({
                     />
                 </div>
                 <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Aantal optie'}
-                        id={'quantityOption'}
-                        name={'quantityOption'}
-                        value={quantityOption}
-                        onChangeAction={handleInputChange}
-                        required={'required'}
-                        error={errors.quantityOption}
-                    />
+                    {projectTypeCodeRef === 'loan' ? (
+                        <InputText
+                            type={'number'}
+                            label={'Bedrag optie'}
+                            id={'amountOption'}
+                            name={'amountOption'}
+                            value={amountOption}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.amountOption}
+                        />
+                    ) : (
+                        <InputText
+                            type={'number'}
+                            label={'Aantal optie'}
+                            id={'quantityOption'}
+                            name={'quantityOption'}
+                            value={quantityOption}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.quantityOption}
+                        />
+                    )}
+
                     <InputDate
                         label={'Optiedatum'}
                         name={'dateOption'}
@@ -55,14 +82,25 @@ const MutationFormEditStatusInterest = ({
             </React.Fragment>
         ) : (
             <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Aantal interesse'}
-                    id={'quantityInterest'}
-                    name={'quantityInterest'}
-                    value={quantityInterest}
-                    onChangeAction={handleInputChange}
-                />
+                {projectTypeCodeRef === 'loan' ? (
+                    <InputText
+                        type={'number'}
+                        label={'Bedrag interesse'}
+                        id={'amountInterest'}
+                        name={'amountInterest'}
+                        value={amountInterest}
+                        onChangeAction={handleInputChange}
+                    />
+                ) : (
+                    <InputText
+                        type={'number'}
+                        label={'Aantal interesse'}
+                        id={'quantityInterest'}
+                        name={'quantityInterest'}
+                        value={quantityInterest}
+                        onChangeAction={handleInputChange}
+                    />
+                )}
                 <InputDate
                     label={'Datum interesse'}
                     name={'dateInterest'}

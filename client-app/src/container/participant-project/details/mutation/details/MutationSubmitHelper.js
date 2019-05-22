@@ -1,4 +1,4 @@
-export default function(participantMutation, participantMutationStatuses) {
+export default function(participantMutation, projectTypeCodeRef) {
     const orginalStatusCodeRef = participantMutation.status.codeRef;
     const orginalStatusId = participantMutation.status.id;
 
@@ -10,45 +10,79 @@ export default function(participantMutation, participantMutationStatuses) {
 
     // If form is validated set next status
     if (orginalStatusCodeRef === 'interest') {
-        values.quantityInterest = participantMutation.quantityInterest;
+        if (projectTypeCodeRef === 'loan') {
+            values.amountInterest = participantMutation.amountInterest;
+            values.amount = participantMutation.amountInterest;
+        } else {
+            values.quantityInterest = participantMutation.quantityInterest;
+            values.quantity = participantMutation.quantityInterest;
+        }
         values.dateInterest = participantMutation.dateInterest;
         values.statusId = participantMutation.statusId;
-        values.quantity = participantMutation.quantityInterest;
 
         if (orginalStatusId !== Number(participantMutation.statusId)) {
-            values.quantityOption = participantMutation.quantityOption;
+            if (projectTypeCodeRef === 'loan') {
+                values.amountOption = participantMutation.amountOption;
+                values.amount = participantMutation.amountOption;
+            } else {
+                values.quantityOption = participantMutation.quantityOption;
+                values.quantity = participantMutation.quantityOption;
+            }
             values.dateOption = participantMutation.dateOption;
-            values.quantity = participantMutation.quantityOption;
         }
     }
 
     if (orginalStatusCodeRef === 'option') {
-        values.quantityInterest = participantMutation.quantityInterest;
+        if (projectTypeCodeRef === 'loan') {
+            values.amountInterest = participantMutation.amountInterest;
+            values.amountOption = participantMutation.amountOption;
+            values.amount = participantMutation.amountOption;
+        } else {
+            values.quantityInterest = participantMutation.quantityInterest;
+            values.quantityOption = participantMutation.quantityOption;
+            values.quantity = participantMutation.quantityOption;
+        }
         values.dateInterest = participantMutation.dateInterest;
-        values.quantityOption = participantMutation.quantityOption;
         values.dateOption = participantMutation.dateOption;
         values.statusId = participantMutation.statusId;
-        values.quantity = participantMutation.quantityOption;
 
         if (orginalStatusId !== Number(participantMutation.statusId)) {
-            values.quantityGranted = participantMutation.quantityGranted;
+            if (projectTypeCodeRef === 'loan') {
+                values.amountGranted = participantMutation.amountGranted;
+                values.amount = participantMutation.amountGranted;
+            } else {
+                values.quantityGranted = participantMutation.quantityGranted;
+                values.quantity = participantMutation.quantityGranted;
+            }
             values.dateGranted = participantMutation.dateGranted;
-            values.quantity = participantMutation.quantityGranted;
         }
     }
 
     if (orginalStatusCodeRef === 'granted') {
-        values.quantityInterest = participantMutation.quantityInterest;
+        if (projectTypeCodeRef === 'loan') {
+            values.amountInterest = participantMutation.amountInterest;
+            values.amountOption = participantMutation.amountOption;
+            values.amountGranted = participantMutation.amountGranted;
+            values.amount = participantMutation.amountGranted;
+        } else {
+            values.quantityInterest = participantMutation.quantityInterest;
+            values.quantityOption = participantMutation.quantityOption;
+            values.quantityGranted = participantMutation.quantityGranted;
+            values.quantity = participantMutation.quantityGranted;
+        }
         values.dateInterest = participantMutation.dateInterest;
-        values.quantityOption = participantMutation.quantityOption;
         values.dateOption = participantMutation.dateOption;
-        values.quantityGranted = participantMutation.quantityGranted;
         values.dateGranted = participantMutation.dateGranted;
         values.statusId = participantMutation.statusId;
-        values.quantity = participantMutation.quantityGranted;
 
         if (orginalStatusId !== Number(participantMutation.statusId)) {
-            values.quantityFinal = participantMutation.quantityFinal;
+            if (projectTypeCodeRef === 'loan') {
+                values.amountFinal = participantMutation.amountFinal;
+                values.amount = participantMutation.amountFinal;
+            } else {
+                values.quantityFinal = participantMutation.quantityFinal;
+                values.quantity = participantMutation.quantityFinal;
+            }
             values.dateContractRetour = participantMutation.dateContractRetour;
             values.datePayment = participantMutation.datePayment;
             values.dateEntry = participantMutation.dateEntry;
@@ -56,18 +90,26 @@ export default function(participantMutation, participantMutationStatuses) {
     }
 
     if (orginalStatusCodeRef === 'final') {
-        values.quantityInterest = participantMutation.quantityInterest;
+        if (projectTypeCodeRef === 'loan') {
+            values.amountInterest = participantMutation.amountInterest;
+            values.amountOption = participantMutation.amountOption;
+            values.amountGranted = participantMutation.amountGranted;
+            values.amountFinal = participantMutation.amountFinal;
+            values.amount = participantMutation.amountFinal;
+        } else {
+            values.quantityInterest = participantMutation.quantityInterest;
+            values.quantityOption = participantMutation.quantityOption;
+            values.quantityGranted = participantMutation.quantityGranted;
+            values.quantityFinal = participantMutation.quantityFinal;
+            values.quantity = participantMutation.quantityFinal;
+        }
         values.dateInterest = participantMutation.dateInterest;
-        values.quantityOption = participantMutation.quantityOption;
         values.dateOption = participantMutation.dateOption;
-        values.quantityGranted = participantMutation.quantityGranted;
-        values.quantityFinal = participantMutation.quantityFinal;
         values.dateGranted = participantMutation.dateGranted;
         values.dateContractRetour = participantMutation.dateContractRetour;
         values.datePayment = participantMutation.datePayment;
         values.dateEntry = participantMutation.dateEntry;
         values.statusId = participantMutation.statusId;
-        values.quantity = participantMutation.quantityFinal;
     }
 
     return values;

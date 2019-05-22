@@ -5,30 +5,45 @@ import InputDate from '../../../../../components/form/InputDate';
 const MutationNewDeposit = ({
     statusCodeRef,
     quantityInterest,
+    amountInterest,
     dateInterest,
     quantityOption,
+    amountOption,
     dateOption,
     quantityGranted,
+    amountGranted,
     dateGranted,
     quantityFinal,
+    amountFinal,
     dateContractRetour,
     datePayment,
     dateEntry,
     errors,
     handleInputChange,
     handleInputChangeDate,
+    projectTypeCodeRef,
 }) => {
     return (
         <React.Fragment>
             {statusCodeRef === 'interest' ? (
                 <div className="row">
-                    <InputText
-                        label={'Aantal interesse'}
-                        name={'quantityInterest'}
-                        id={'quantityInterest'}
-                        value={quantityInterest}
-                        onChangeAction={handleInputChange}
-                    />
+                    {projectTypeCodeRef === 'loan' ? (
+                        <InputText
+                            label={'Bedrag interesse'}
+                            name={'amountInterest'}
+                            id={'amountInterest'}
+                            value={amountInterest}
+                            onChangeAction={handleInputChange}
+                        />
+                    ) : (
+                        <InputText
+                            label={'Aantal interesse'}
+                            name={'quantityInterest'}
+                            id={'quantityInterest'}
+                            value={quantityInterest}
+                            onChangeAction={handleInputChange}
+                        />
+                    )}
 
                     <InputDate
                         label={'Interesse datum'}
@@ -42,15 +57,27 @@ const MutationNewDeposit = ({
 
             {statusCodeRef === 'option' ? (
                 <div className="row">
-                    <InputText
-                        label={'Aantal optie'}
-                        name={'quantityOption'}
-                        id={'quantityOption'}
-                        value={quantityOption}
-                        onChangeAction={handleInputChange}
-                        required={'required'}
-                        error={errors.quantityOption}
-                    />
+                    {projectTypeCodeRef === 'loan' ? (
+                        <InputText
+                            label={'Bedrag optie'}
+                            name={'amountOption'}
+                            id={'amountOption'}
+                            value={amountOption}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.amountOption}
+                        />
+                    ) : (
+                        <InputText
+                            label={'Aantal optie'}
+                            name={'quantityOption'}
+                            id={'quantityOption'}
+                            value={quantityOption}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.quantityOption}
+                        />
+                    )}
 
                     <InputDate
                         label={'Optiedatum'}
@@ -66,15 +93,28 @@ const MutationNewDeposit = ({
 
             {statusCodeRef === 'granted' ? (
                 <div className="row">
-                    <InputText
-                        label={'Aantal toegekend'}
-                        name={'quantityGranted'}
-                        id={'quantityGranted'}
-                        value={quantityGranted}
-                        onChangeAction={handleInputChange}
-                        required={'required'}
-                        error={errors.quantityGranted}
-                    />
+                    {projectTypeCodeRef === 'loan' ? (
+                        <InputText
+                            label={'Bedrag toegekend'}
+                            name={'amountGranted'}
+                            id={'amountGranted'}
+                            value={amountGranted}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.amountGranted}
+                        />
+                    ) : (
+                        <InputText
+                            label={'Aantal toegekend'}
+                            name={'quantityGranted'}
+                            id={'quantityGranted'}
+                            value={quantityGranted}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.quantityGranted}
+                        />
+                    )}
+
                     <InputDate
                         label={'Toewijzingsdatum'}
                         name={'dateGranted'}
@@ -90,15 +130,27 @@ const MutationNewDeposit = ({
             {statusCodeRef === 'final' ? (
                 <React.Fragment>
                     <div className="row">
-                        <InputText
-                            label={'Aantal definitief'}
-                            name={'quantityFinal'}
-                            id={'quantityFinal'}
-                            value={quantityFinal}
-                            onChangeAction={handleInputChange}
-                            required={'required'}
-                            error={errors.quantityFinal}
-                        />
+                        {projectTypeCodeRef === 'loan' ? (
+                            <InputText
+                                label={'Bedrag definitief'}
+                                name={'amountFinal'}
+                                id={'amountFinal'}
+                                value={amountFinal}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.amountFinal}
+                            />
+                        ) : (
+                            <InputText
+                                label={'Aantal definitief'}
+                                name={'quantityFinal'}
+                                id={'quantityFinal'}
+                                value={quantityFinal}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.quantityFinal}
+                            />
+                        )}
                         <InputDate
                             label={'Toewijzingsdatum'}
                             name={'dateGranted'}

@@ -26,7 +26,7 @@ class ChangeParticipantProjectPayoutType extends Migration
 
         DB::table('participant_project_payout_type')
             ->where('name', 'Bijschrijven')
-            ->update(['name' => 'Optie', 'code_ref' => 'credit']);
+            ->update(['name' => 'Bijschrijven', 'code_ref' => 'credit']);
 
         // Add softdelete to table
         Schema::table('participant_project_payout_type', function (Blueprint $table) {

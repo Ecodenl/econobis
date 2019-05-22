@@ -10,6 +10,12 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import ViewText from '../../../../../components/form/ViewText';
 import ParticipantDetailsMutationConclusion from './conclusion';
 import ParticipantDetailsMutationStatusLog from './status-log';
+import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
+import InputSelect from '../../../../../components/form/InputSelect';
+import MutationFormEditStatusInterest from './MutationFormEditStatus/Interest';
+import MutationFormEditStatusOption from './MutationFormEditStatus/Option';
+import MutationFormEditStatusGranted from './MutationFormEditStatus/Granted';
+import MutationFormEditStatusFinal from './MutationFormEditStatus/Final';
 
 const MutationFormEdit = ({
     participantMutation,
@@ -19,21 +25,69 @@ const MutationFormEdit = ({
     handleInputChangeDate,
     projectTypeCodeRef,
     cancelEdit,
+    participantMutationStatuses,
 }) => {
     const {
         type,
-        status,
+        status: originalStatus,
+        statusId,
         quantityInterest,
+        amountInterest,
         dateInterest,
         quantityOption,
+        amountOption,
         dateOption,
         quantityGranted,
+        amountGranted,
         dateGranted,
         quantityFinal,
+        amountFinal,
         dateContractRetour,
         datePayment,
         dateEntry,
+        participationWorth,
     } = participantMutation;
+
+    let buttonTextSubmit = 'Opslaan';
+
+    if (originalStatus.id !== Number(statusId)) {
+        switch (originalStatus.codeRef) {
+            case 'interest':
+                buttonTextSubmit = 'Status doorzetten naar optie';
+                break;
+            case 'option':
+                buttonTextSubmit = 'Status doorzetten naar toegekend';
+                break;
+            case 'granted':
+                buttonTextSubmit = 'Status doorzetten naar definitief';
+                break;
+            default:
+                buttonTextSubmit = 'Opslaan';
+        }
+    }
+
+    let participantMutationStatusesOptions = [];
+
+    switch (originalStatus.codeRef) {
+        case 'interest':
+            participantMutationStatusesOptions = participantMutationStatuses.filter(
+                participantMutationStatus =>
+                    participantMutationStatus.codeRef === 'interest' || participantMutationStatus.codeRef === 'option'
+            );
+            break;
+        case 'option':
+            participantMutationStatusesOptions = participantMutationStatuses.filter(
+                participantMutationStatus =>
+                    participantMutationStatus.codeRef === 'option' || participantMutationStatus.codeRef === 'granted'
+            );
+            break;
+        case 'granted':
+            participantMutationStatusesOptions = participantMutationStatuses.filter(
+                participantMutationStatus =>
+                    participantMutationStatus.codeRef === 'granted' || participantMutationStatus.codeRef === 'final'
+            );
+            break;
+    }
 
     return (
         <div>
@@ -42,227 +96,120 @@ const MutationFormEdit = ({
                     <PanelBody>
                         <div className="row">
                             <ViewText label={'Type'} id={'type'} className={'col-sm-6 form-group'} value={type.name} />
-                            <ViewText
-                                label={'Huidige status'}
-                                id={'status'}
-                                className={'col-sm-6 form-group'}
-                                value={status.name}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <ViewText label={'Bedrag'} id={'amount'} className={'col-sm-6 form-group'} value={0} />
-                        </div>
-
-                        <div className="row">
-                            <ViewText
-                                label={'Aantal interesse'}
-                                id={'quantityInterest'}
-                                className={'col-sm-6 form-group'}
-                                value={quantityInterest}
-                            />
-                            <ViewText
-                                label={'Datum interesse'}
-                                id={'dateInterest'}
-                                className={'col-sm-6 form-group'}
-                                value={dateInterest && moment(dateInterest).format('L')}
-                            />
-                        </div>
-
-                        {status.codeRef === 'interest' && (
-                            <div className="row">
-                                <InputText
-                                    type={'number'}
-                                    label={'Aantal optie'}
-                                    id={'quantityOption'}
-                                    name={'quantityOption'}
-                                    value={quantityOption}
-                                    onChangeAction={handleInputChange}
-                                    required={'required'}
-                                    error={errors.quantityOption}
+                            {originalStatus.codeRef === 'final' ? (
+                                <ViewText
+                                    label={'Status'}
+                                    id={'status'}
+                                    className={'col-sm-6 form-group'}
+                                    value={originalStatus.name}
                                 />
-                                <InputDate
-                                    label={'Optiedatum'}
-                                    name={'dateOption'}
-                                    value={dateOption}
-                                    onChangeAction={handleInputChangeDate}
-                                    required={'required'}
-                                    error={errors.dateOption}
+                            ) : (
+                                <InputSelect
+                                    label={'Status'}
+                                    name={'statusId'}
+                                    options={participantMutationStatusesOptions}
+                                    value={statusId}
+                                    onChangeAction={handleInputChange}
+                                />
+                            )}
+                        </div>
+
+                        {projectTypeCodeRef === 'loan' ? null : (
+                            <div className="row">
+                                <ViewText
+                                    label={'Bedrag'}
+                                    id={'participationWorth'}
+                                    className={'col-sm-6 form-group'}
+                                    value={MoneyPresenter(participationWorth)}
                                 />
                             </div>
                         )}
 
-                        {status.codeRef === 'option' && (
-                            <React.Fragment>
-                                <div className="row">
-                                    <ViewText
-                                        label={'Aantal optie'}
-                                        id={'quantityOption'}
-                                        className={'col-sm-6 form-group'}
-                                        value={quantityOption}
-                                    />
-                                    <ViewText
-                                        label={'Optiedatum'}
-                                        id={'dateOption'}
-                                        className={'col-sm-6 form-group'}
-                                        value={dateOption && moment(dateOption).format('L')}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
-                                        type={'number'}
-                                        label={'Aantal toegekend'}
-                                        id={'quantityGranted'}
-                                        name={'quantityGranted'}
-                                        value={quantityGranted}
-                                        onChangeAction={handleInputChange}
-                                        required={'required'}
-                                        error={errors.quantityGranted}
-                                    />
-                                    <InputDate
-                                        label={'Toewijzingsdatum'}
-                                        name={'dateGranted'}
-                                        value={dateGranted}
-                                        onChangeAction={handleInputChangeDate}
-                                        required={'required'}
-                                        error={errors.dateGranted}
-                                    />
-                                </div>
-                            </React.Fragment>
+                        {originalStatus.codeRef === 'interest' && (
+                            <MutationFormEditStatusInterest
+                                originalStatus={originalStatus}
+                                statusId={statusId}
+                                quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
+                                dateInterest={dateInterest}
+                                quantityOption={quantityOption}
+                                amountOption={amountOption}
+                                dateOption={dateOption}
+                                handleInputChange={handleInputChange}
+                                handleInputChangeDate={handleInputChangeDate}
+                                errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
+                            />
                         )}
 
-                        {status.codeRef === 'granted' && (
-                            <React.Fragment>
-                                <div className="row">
-                                    <ViewText
-                                        label={'Aantal optie'}
-                                        id={'quantityOption'}
-                                        className={'col-sm-6 form-group'}
-                                        value={quantityOption}
-                                    />
-                                    <ViewText
-                                        label={'Optiedatum'}
-                                        id={'dateOption'}
-                                        className={'col-sm-6 form-group'}
-                                        value={dateOption && moment(dateOption).format('L')}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <ViewText
-                                        label={'Aantal toegekend'}
-                                        id={'quantityGranted'}
-                                        className={'col-sm-6 form-group'}
-                                        value={quantityGranted}
-                                    />
-                                    <ViewText
-                                        label={'Toewijzingsdatum'}
-                                        id={'dateGranted'}
-                                        className={'col-sm-6 form-group'}
-                                        value={dateGranted && moment(dateGranted).format('L')}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
-                                        type={'number'}
-                                        label={'Aantal definitief'}
-                                        id={'quantityFinal'}
-                                        name={'quantityFinal'}
-                                        value={quantityFinal}
-                                        onChangeAction={handleInputChange}
-                                        required={'required'}
-                                        error={errors.quantityFinal}
-                                    />
-                                    <InputDate
-                                        label={'Ingangsdatum'}
-                                        name={'dateEntry'}
-                                        value={dateEntry}
-                                        onChangeAction={handleInputChangeDate}
-                                        required={'required'}
-                                        error={errors.dateEntry}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputDate
-                                        label={'Contract retour'}
-                                        name={'dateContractRetour'}
-                                        value={dateContractRetour}
-                                        onChangeAction={handleInputChangeDate}
-                                    />
-                                    <InputDate
-                                        label={'Betaal datum'}
-                                        name={'datePayment'}
-                                        value={datePayment}
-                                        onChangeAction={handleInputChangeDate}
-                                    />
-                                </div>
-                            </React.Fragment>
+                        {originalStatus.codeRef === 'option' && (
+                            <MutationFormEditStatusOption
+                                originalStatus={originalStatus}
+                                statusId={statusId}
+                                quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
+                                dateInterest={dateInterest}
+                                quantityOption={quantityOption}
+                                amountOption={amountOption}
+                                dateOption={dateOption}
+                                quantityGranted={quantityGranted}
+                                amountGranted={amountGranted}
+                                dateGranted={dateGranted}
+                                handleInputChange={handleInputChange}
+                                handleInputChangeDate={handleInputChangeDate}
+                                errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
+                            />
                         )}
 
-                        {status.codeRef === 'final' && (
-                            <React.Fragment>
-                                <div className="row">
-                                    <ViewText
-                                        label={'Aantal optie'}
-                                        id={'quantityOption'}
-                                        className={'col-sm-6 form-group'}
-                                        value={quantityOption}
-                                    />
-                                    <ViewText
-                                        label={'Optiedatum'}
-                                        id={'dateOption'}
-                                        className={'col-sm-6 form-group'}
-                                        value={dateOption && moment(dateOption).format('L')}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <ViewText
-                                        label={'Aantal toegekend'}
-                                        id={'quantityGranted'}
-                                        className={'col-sm-6 form-group'}
-                                        value={quantityGranted}
-                                    />
-                                    <ViewText
-                                        label={'Toewijzingsdatum'}
-                                        id={'dateGranted'}
-                                        className={'col-sm-6 form-group'}
-                                        value={dateGranted && moment(dateGranted).format('L')}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
-                                        type={'number'}
-                                        label={'Aantal definitief'}
-                                        id={'quantityFinal'}
-                                        name={'quantityFinal'}
-                                        value={quantityFinal}
-                                        onChangeAction={handleInputChange}
-                                        required={'required'}
-                                        error={errors.quantityFinal}
-                                    />
-                                    <InputDate
-                                        label={'Ingangsdatum'}
-                                        name={'dateEntry'}
-                                        value={dateEntry}
-                                        onChangeAction={handleInputChangeDate}
-                                        required={'required'}
-                                        error={errors.dateEntry}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputDate
-                                        label={'Contract retour'}
-                                        name={'dateContractRetour'}
-                                        value={dateContractRetour}
-                                        onChangeAction={handleInputChangeDate}
-                                    />
-                                    <InputDate
-                                        label={'Betaal datum'}
-                                        name={'datePayment'}
-                                        value={datePayment}
-                                        onChangeAction={handleInputChangeDate}
-                                    />
-                                </div>
-                            </React.Fragment>
+                        {originalStatus.codeRef === 'granted' && (
+                            <MutationFormEditStatusGranted
+                                originalStatus={originalStatus}
+                                statusId={statusId}
+                                quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
+                                dateInterest={dateInterest}
+                                quantityOption={quantityOption}
+                                amountOption={amountOption}
+                                dateOption={dateOption}
+                                quantityGranted={quantityGranted}
+                                amountGranted={amountGranted}
+                                dateGranted={dateGranted}
+                                quantityFinal={quantityFinal}
+                                amountFinal={amountFinal}
+                                dateEntry={dateEntry}
+                                dateContractRetour={dateContractRetour}
+                                datePayment={datePayment}
+                                handleInputChange={handleInputChange}
+                                handleInputChangeDate={handleInputChangeDate}
+                                errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
+                            />
+                        )}
+
+                        {originalStatus.codeRef === 'final' && (
+                            <MutationFormEditStatusFinal
+                                originalStatus={originalStatus}
+                                statusId={statusId}
+                                quantityInterest={quantityInterest}
+                                amountInterest={amountInterest}
+                                dateInterest={dateInterest}
+                                quantityOption={quantityOption}
+                                amountOption={amountOption}
+                                dateOption={dateOption}
+                                quantityGranted={quantityGranted}
+                                amountGranted={amountGranted}
+                                dateGranted={dateGranted}
+                                quantityFinal={quantityFinal}
+                                amountFinal={amountFinal}
+                                dateEntry={dateEntry}
+                                dateContractRetour={dateContractRetour}
+                                datePayment={datePayment}
+                                handleInputChange={handleInputChange}
+                                handleInputChangeDate={handleInputChangeDate}
+                                errors={errors}
+                                projectTypeCodeRef={projectTypeCodeRef}
+                            />
                         )}
 
                         <ParticipantDetailsMutationStatusLog statusLogs={participantMutation.statusLogs} />
@@ -276,7 +223,7 @@ const MutationFormEdit = ({
                                 onClickAction={cancelEdit}
                             />
                             <ButtonText
-                                buttonText={'Opslaan'}
+                                buttonText={buttonTextSubmit}
                                 onClickAction={handleSubmit}
                                 type={'submit'}
                                 value={'Submit'}
@@ -292,6 +239,7 @@ const MutationFormEdit = ({
 const mapStateToProps = state => {
     return {
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+        participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };
 

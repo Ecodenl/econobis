@@ -27,11 +27,17 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     value={participationsDefinitive}
                     className={'col-sm-6 form-group'}
                 />
+                <ViewText label={'Totale opbrengsten kWh'} value={'0'} className={'col-sm-6 form-group'} />
             </div>
             <div className="row">
                 <ViewText
                     label={'Nominale waarde per participatie'}
                     value={moneyPresenter(participationWorth)}
+                    className={'col-sm-6 form-group'}
+                />
+                <ViewText
+                    label={'Totale indicatie teruggave energie belasting'}
+                    value={'0'}
                     className={'col-sm-6 form-group'}
                 />
             </div>
@@ -41,6 +47,7 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
                     className={'col-sm-6 form-group'}
                 />
+                <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} className={'col-sm-6 form-group'} />
             </div>
             <div className="row">
                 <ViewText
@@ -48,23 +55,6 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     value={moneyPresenter(participationsDefinitiveWorth)}
                     className={'col-sm-6 form-group'}
                 />
-            </div>
-            <hr style={{ margin: '10px 0' }} />
-            <h4>Postcoderoos</h4>
-            <div className="row">
-                <ViewText label={'Totale opbrengsten kWh'} value={'0'} className={'col-sm-6 form-group'} />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Totale indicatie teruggave energie belasting'}
-                    value={'0'}
-                    className={'col-sm-6 form-group'}
-                />
-            </div>
-            <div className="row">
-                <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} className={'col-sm-6 form-group'} />
-            </div>
-            <div className="row">
                 <InputText
                     type={'number'}
                     label={'Jaarlijks verbruik'}

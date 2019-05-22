@@ -595,43 +595,51 @@ class ParticipationProjectController extends ApiController
      * @param ParticipantProject $participantProject
      * @param $project
      */
-    public function storeFirstMutation(RequestInput $requestInput, ParticipantMutationStatus $participantMutationStatus, ParticipantProject $participantProject, $project): void
+    public function storeFirstMutation(RequestInput $requestInput, ParticipantMutationStatus $participantMutationStatus, ParticipantProject $participantProject, Project $project): void
     {
         switch ($participantMutationStatus->code_ref) {
             case 'interest':
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
                     ->integer('quantityInterest')->onEmpty(null)->alias('quantity_interest')->next()
+                    ->double('amountInterest')->onEmpty(null)->alias('amount_interest')->next()
                     ->date('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
                     ->get();
                 $mutationData['quantity'] = isset($mutationData['quantity_interest']) ? $mutationData['quantity_interest'] : null;
+                $mutationData['amount'] = isset($mutationData['amount_interest']) ? $mutationData['amount_interest'] : null;
                 break;
             case 'option':
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-                    ->integer('quantityOption')->validate('required')->alias('quantity_option')->next()
+                    ->integer('quantityOption')->validate('required_without:amountOption')->alias('quantity_option')->next()
+                    ->double('amountOption')->validate('required_without:quantityOption')->alias('amount_option')->next()
                     ->date('dateOption')->validate('required|date')->alias('date_option')->next()
                     ->get();
-                $mutationData['quantity'] = $mutationData['quantity_option'];
+                $mutationData['quantity'] = isset($mutationData['quantity_option']) ? $mutationData['quantity_option'] : null;
+                $mutationData['amount'] = isset($mutationData['amount_option']) ? $mutationData['amount_option'] : null;
                 break;
             case 'granted':
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-                    ->integer('quantityGranted')->validate('required')->alias('quantity_granted')->next()
+                    ->integer('quantityGranted')->validate('required_without:amountGranted')->alias('quantity_granted')->next()
+                    ->double('amountGranted')->validate('required_without:quantityGranted')->alias('amount_granted')->next()
                     ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
                     ->get();
-                $mutationData['quantity'] = $mutationData['quantity_granted'];
+                $mutationData['quantity'] = isset($mutationData['quantity_granted']) ? $mutationData['quantity_granted'] : null;
+                $mutationData['amount'] = isset($mutationData['amount_granted']) ? $mutationData['amount_granted'] : null;
                 break;
             case 'final':
                 $mutationData = $requestInput
                     ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-                    ->integer('quantityFinal')->validate('required')->alias('quantity_final')->next()
+                    ->integer('quantityFinal')->validate('required_without:amountFinal')->alias('quantity_final')->next()
+                    ->double('amountFinal')->validate('required_without:quantityFinal')->alias('amount_final')->next()
                     ->date('dateGranted')->validate('nullable|date')->onEmpty(null)->alias('date_granted')->next()
                     ->date('dateContractRetour')->validate('nullable|date')->onEmpty(null)->alias('date_contract_retour')->next()
                     ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
                     ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
                     ->get();
-                $mutationData['quantity'] = $mutationData['quantity_final'];
+                $mutationData['quantity'] = isset($mutationData['quantity_final']) ? $mutationData['quantity_final'] : null;
+                $mutationData['amount'] = isset($mutationData['amount_final']) ? $mutationData['amount_final'] : null;
                 break;
         }
 
@@ -649,5 +657,13 @@ class ParticipationProjectController extends ApiController
         $participantMutation->fill($mutationData);
 
         $participantMutation->save();
+
+        // Calculate participation worth based on current book worth of project
+        if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
+            $currentBookWorthOfProject = $project->currentBookWorth() * $participantMutation->quantity;
+
+            $participantMutation->participation_worth = $currentBookWorthOfProject;
+            $participantMutation->save();
+        }
     }
 }

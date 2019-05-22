@@ -126,6 +126,14 @@ class ParticipantNewApp extends Component {
                 },
             });
         }
+
+        if (name === 'projectId') {
+            let projectTypeCodeRef = this.state.projects.find(
+                project => project.id == this.state.participation.projectId
+            ).typeCodeRef;
+
+            this.setState({ projectTypeCodeRef });
+        }
     };
 
     handleInputChangeDate = (value, name) => {
@@ -151,12 +159,18 @@ class ParticipantNewApp extends Component {
         );
         const statusCodeRef = status ? status.codeRef : null;
 
-        const validatedForm = ParticipantValidateForm(participation, errors, hasErrors, statusCodeRef);
+        const validatedForm = ParticipantValidateForm(
+            participation,
+            errors,
+            hasErrors,
+            statusCodeRef,
+            this.state.projectTypeCodeRef
+        );
 
         this.setState({ ...this.state, errors: validatedForm.errors });
 
         if (!validatedForm.hasErrors) {
-            const values = ParticipantSubmitHelper(participation, statusCodeRef);
+            const values = ParticipantSubmitHelper(participation, statusCodeRef, this.state.projectTypeCodeRef);
 
             ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
                 if (payload.data.message !== undefined && payload.data.message.length > 0) {

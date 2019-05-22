@@ -26,6 +26,10 @@ class ParticipantMutationController extends ApiController
             ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
             ->date('dateEntry')->validate('nullable|date')->onEmpty(null)->alias('date_entry')->next()
             ->double('amount')->onEmpty(null)->next()
+            ->double('amountInterest')->onEmpty(null)->alias('amount_interest')->next()
+            ->double('amountOption')->onEmpty(null)->alias('amount_option')->next()
+            ->double('amountGranted')->onEmpty(null)->alias('amount_granted')->next()
+            ->double('amountFinal')->onEmpty(null)->alias('amount_final')->next()
             ->integer('quantity')->onEmpty(null)->next()
             ->integer('quantityInterest')->onEmpty(null)->alias('quantity_interest')->next()
             ->integer('quantityOption')->onEmpty(null)->alias('quantity_option')->next()
@@ -50,6 +54,14 @@ class ParticipantMutationController extends ApiController
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
         });
+
+        // Calculate participation worth based on current book worth of project
+        if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
+            $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+
+            $participantMutation->participation_worth = $currentBookWorthOfProject;
+            $participantMutation->save();
+        }
     }
 
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
@@ -94,6 +106,14 @@ class ParticipantMutationController extends ApiController
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
         });
+
+        // Calculate participation worth based on current book worth of project
+        if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
+            $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+
+            $participantMutation->participation_worth = $currentBookWorthOfProject;
+            $participantMutation->save();
+        }
     }
 
     public function destroy(ParticipantMutation $participantMutation)

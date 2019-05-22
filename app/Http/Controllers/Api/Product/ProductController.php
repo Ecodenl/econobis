@@ -45,6 +45,7 @@ class ProductController extends ApiController
             'createdBy',
             'administration',
             'ledger.vatCode',
+            'costCenter',
         ]);
 
         return FullProduct::make($product);

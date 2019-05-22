@@ -586,6 +586,7 @@ const mapStateToProps = state => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        costCenters: state.systemData.costCenters,
         ledgers: state.systemData.ledgers,
         vatCodes: state.systemData.vatCodes,
         usesTwinfield: state.systemData.usesTwinfield,

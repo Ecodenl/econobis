@@ -42,6 +42,7 @@ class OrderProductsFormNewProduct extends Component {
                 vatPercentage: '',
                 price: '',
                 ledgerId: '',
+                costCenterId: '',
                 isOneTime: false,
             },
             errors: {
@@ -53,6 +54,7 @@ class OrderProductsFormNewProduct extends Component {
                 price: false,
                 datePeriodStartFirstInvoice: false,
                 ledgerId: false,
+                costCenterId: false,
             },
         };
 
@@ -425,7 +427,7 @@ class OrderProductsFormNewProduct extends Component {
             dateEnd,
             datePeriodStartFirstInvoice,
         } = this.state.orderProduct;
-        const { description, code, name, durationId, vatPercentage, price, ledgerId } = this.state.product;
+        const { description, code, name, durationId, vatPercentage, price, ledgerId, costCenterId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -644,6 +646,7 @@ const mapStateToProps = state => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        costCenters: state.systemData.costCenters,
         ledgers: state.systemData.ledgers,
         vatCodes: state.systemData.vatCodes,
         usesTwinfield: state.systemData.usesTwinfield,

@@ -11,6 +11,7 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
+import InputReactSelect from "./OrderProductsFormNewProduct";
 
 class OrderProductsFormNew extends Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class OrderProductsFormNew extends Component {
                 orderId: this.props.orderDetails.id,
                 productId: '',
                 description: '',
+                costCenterId: null,
                 amount: 1,
                 amountReduction: 0,
                 percentageReduction: 0,
@@ -201,6 +203,7 @@ class OrderProductsFormNew extends Component {
         let price = 0;
         let priceInclVat = 0;
         let vatPercentage = 0;
+        let costCenterId = null;
         let description = '';
         let durationId = false;
         let dateEnd = '';
@@ -213,6 +216,7 @@ class OrderProductsFormNew extends Component {
             priceInclVat = product.currentPrice.priceInclVat;
             vatPercentage = product.currentPrice.vatPercentage;
             productInputInclVat = product.currentPrice.inputInclVat;
+            costCenterId = product.costCenterId;
             description = product.invoiceText;
             durationId = product.durationId;
             productHasVariablePrice = product.hasVariablePrice;
@@ -262,6 +266,7 @@ class OrderProductsFormNew extends Component {
                 productInputInclVat: productInputInclVat,
                 orderProduct: {
                     ...this.state.orderProduct,
+                    costCenterId: costCenterId,
                     description: description,
                     dateEnd: dateEnd,
                     [name]: value,
@@ -336,6 +341,7 @@ class OrderProductsFormNew extends Component {
         const {
             productId,
             description,
+            costCenterId,
             amount,
             amountReduction,
             percentageReduction,
@@ -366,6 +372,18 @@ class OrderProductsFormNew extends Component {
                                 error={this.state.errors.productId}
                             />
                         </div>
+                        <div className="row">
+                            <InputSelect
+                                label={'Kostenplaats'}
+                                id="costCenterId"
+                                name={'costCenterId'}
+                                options={this.props.costCenters}
+                                optionName={'description'}
+                                value={costCenterId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
                         <div className="row">
                             <InputText
                                 label={'Omschrijving'}
@@ -505,6 +523,7 @@ const mapStateToProps = state => {
     return {
         orderDetails: state.orderDetails,
         products: state.systemData.products,
+        costCenters: state.systemData.costCenters,
     };
 };
 

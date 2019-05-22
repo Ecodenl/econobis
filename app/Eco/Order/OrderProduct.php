@@ -2,6 +2,7 @@
 
 namespace App\Eco\Order;
 
+use App\Eco\CostCenter\CostCenter;
 use App\Eco\Product\Product;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;

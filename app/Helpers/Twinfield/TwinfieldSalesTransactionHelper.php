@@ -162,6 +162,18 @@ class TwinfieldSalesTransactionHelper
             }
             $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  "";
 
+            $order = $invoice->order;
+            $orderProduct = $order->orderProducts->where('product_id', '=', $invoiceProduct->product_id)->first();
+            $costCenterCode = '';
+            if($orderProduct && $orderProduct->costCenter)
+            {
+                $costCenterCode = $orderProduct->costCenter->twinfield_cost_center_code;
+            }
+            if(!$costCenterCode)
+            {
+                $costCenterCode = '';
+            }
+
             if($vatCode && $vatCode->id>0)
             {
                 $vatAmount = $invoiceProduct->getAmountVatAttribute();
@@ -177,6 +189,7 @@ class TwinfieldSalesTransactionHelper
                 ->setId($idTeller)
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
+                ->setDim2($costCenterCode)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit(DebitCredit::CREDIT() );
             if($vatCode && $vatCode->id>0)

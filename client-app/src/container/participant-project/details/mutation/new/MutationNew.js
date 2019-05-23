@@ -139,6 +139,8 @@ class MutationFormNew extends Component {
         );
         const statusCodeRef = status ? status.codeRef : null;
 
+        const participantMutationTypesOptions = participantMutationTypes.filter(participantMutationType => participantMutationType.codeRef !== 'result');
+
         return (
             <React.Fragment>
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -149,7 +151,7 @@ class MutationFormNew extends Component {
                                     label={'Type'}
                                     id="typeId"
                                     name={'typeId'}
-                                    options={participantMutationTypes}
+                                    options={participantMutationTypesOptions}
                                     value={typeId}
                                     onChangeAction={this.handleInputChange}
                                     required={'required'}

@@ -92,47 +92,47 @@ class Project extends Model
     }
 
     //Appended fields
-    public function getIssuedParticipations()
-    {
-        $amountOfParticipations = 0;
+//    public function getIssuedParticipations()
+//    {
+//        $amountOfParticipations = 0;
+//
+//        $participationsIssued =  $this->participantsProject()->where('status_id', 2)->get();
+//
+//        foreach ($participationsIssued as $participationIssued){
+//            $amountOfParticipations += ($participationIssued->participations_granted - $participationIssued->participations_sold);
+//        }
+//        return $amountOfParticipations;
+//    }
 
-        $participationsIssued =  $this->participantsProject()->where('status_id', 2)->get();
+//    public function getParticipationsInOption()
+//    {
+//        $amountOfParticipations = 0;
+//
+//        $participationsInOption =  $this->participantsProject()->where('status_id', 1)->get();
+//
+//        foreach ($participationsInOption as $participationInOption){
+//            $amountOfParticipations += ($participationInOption->participations_granted - $participationInOption->participations_sold);
+//        }
+//        return $amountOfParticipations;
+//    }
 
-        foreach ($participationsIssued as $participationIssued){
-            $amountOfParticipations += ($participationIssued->participations_granted - $participationIssued->participations_sold);
-        }
-        return $amountOfParticipations;
-    }
+//    public function getIssuableParticipations()
+//    {
+//        return $this->total_participations - $this->getIssuedParticipations();
+//    }
 
-    public function getParticipationsInOption()
-    {
-        $amountOfParticipations = 0;
+//    public function getParticipationsWorthTotal()
+//    {
+//        return $this->getIssuedParticipations() * $this->participation_worth;
+//    }
 
-        $participationsInOption =  $this->participantsProject()->where('status_id', 1)->get();
-
-        foreach ($participationsInOption as $participationInOption){
-            $amountOfParticipations += ($participationInOption->participations_granted - $participationInOption->participations_sold);
-        }
-        return $amountOfParticipations;
-    }
-
-    public function getIssuableParticipations()
-    {
-        return $this->total_participations - $this->getIssuedParticipations();
-    }
-
-    public function getParticipationsWorthTotal()
-    {
-        return $this->getIssuedParticipations() * $this->participation_worth;
-    }
-
-    public function getIssuedParticipationsPercentage()
-    {
-        if(!$this->total_participations || $this->total_participations == 0){
-            return 0;
-        }
-        return ($this->getIssuedParticipations() / $this->total_participations) * 100;
-    }
+//    public function getIssuedParticipationsPercentage()
+//    {
+//        if(!$this->total_participations || $this->total_participations == 0){
+//            return 0;
+//        }
+//        return ($this->getIssuedParticipations() / $this->total_participations) * 100;
+//    }
 
     public function getCurrentParticipations(){
         $participants = $this->participantsProject()->get();

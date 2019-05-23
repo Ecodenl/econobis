@@ -389,9 +389,9 @@ class TemplateVariableHelper
             case 'min_participaties':
                 return $model->min_participations;
                 break;
-            case 'uitgegeven_participaties':
-                return $model->getIssuedParticipations();
-                break;
+//            case 'uitgegeven_participaties':
+//                return $model->getIssuedParticipations();
+//                break;
             case 'participaties_in_optie':
                 return $model->getParticipationsInOption();
                 break;

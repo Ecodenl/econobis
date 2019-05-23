@@ -172,6 +172,24 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         });
     };
 
+    handleUsesTwinfieldChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        if ( value == true ) {
+            this.state.administration.twinfieldPasswordChange = true;
+        }
+
+        this.setState({
+            ...this.state,
+            administration: {
+                ...this.state.administration,
+                [name]: value,
+            },
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -250,6 +268,20 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 errors.twinfieldOrganizationCode = true;
                 hasErrors = true;
             }
+
+            let twinFieldOfficeAndOrganizationCodeNotUnique = false;
+
+            this.props.administrations.map (
+                existingTwinfieldAdministration => (existingTwinfieldAdministration.twinfieldOfficeCode === administration.twinfieldOfficeCode
+                && existingTwinfieldAdministration.twinfieldOrganizationCode === administration.twinfieldOrganizationCode && existingTwinfieldAdministration.id !== administration.id
+                && ( twinFieldOfficeAndOrganizationCodeNotUnique = true )
+            ));
+
+            if (twinFieldOfficeAndOrganizationCodeNotUnique) {
+                errors.twinfieldOfficeCode = true;
+                hasErrors = true;
+            }
+
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -570,7 +602,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 label={'Gebruikt Twinfield'}
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleUsesTwinfieldChange}
                             />
                         </div>
 
@@ -659,6 +691,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
+        administrations: state.systemData.administrations,
         administrationDetails: state.administrationDetails,
     };
 };

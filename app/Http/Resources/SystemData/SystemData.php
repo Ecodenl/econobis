@@ -61,6 +61,7 @@ use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
+use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Ledger\FullLedger;
@@ -130,6 +131,7 @@ class SystemData extends Resource
 
         return [
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
+            'administrations' => FullAdministration::collection(Administration::all()),
             'appName' => config('app.name'),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),

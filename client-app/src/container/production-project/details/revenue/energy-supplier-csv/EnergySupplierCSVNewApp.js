@@ -7,9 +7,9 @@ import EnergySupplierCSVNewToolbar from './EnergySupplierCSVNewToolbar';
 import EnergySupplierCSVNew from './EnergySupplierCSVNew';
 
 import ProductionProjectRevenueAPI from '../../../../../api/production-project/ProductionProjectRevenueAPI';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from "../../../../../components/panel/PanelBody";
-import DocumentTemplateAPI from "../../../../../api/document-template/DocumentTemplateAPI";
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 
 class EnergySupplierCSVNewApp extends Component {
     constructor(props) {
@@ -29,15 +29,15 @@ class EnergySupplierCSVNewApp extends Component {
                 documentName: false,
             },
         };
-    };
+    }
 
     componentDidMount() {
         let templates = [];
 
-        templates.push({id: 1, name: 'Eneco'});
-        templates.push({id: 2, name: 'Greenchoice'});
-        templates.push({id: 3, name: 'Oxxio'});
-        templates.push({id: 4, name: 'Nuon'});
+        templates.push({ id: 1, name: 'Eneco' });
+        templates.push({ id: 2, name: 'Greenchoice' });
+        templates.push({ id: 3, name: 'Oxxio' });
+        templates.push({ id: 4, name: 'Nuon' });
 
         this.setState({
             templates: templates,
@@ -53,7 +53,7 @@ class EnergySupplierCSVNewApp extends Component {
             ...this.state,
             csv: {
                 ...this.state.csv,
-                [name]: value
+                [name]: value,
             },
         });
     };
@@ -61,32 +61,37 @@ class EnergySupplierCSVNewApp extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {csv} = this.state;
+        const { csv } = this.state;
 
         let errors = {};
         let hasErrors = false;
 
-        if(validator.isEmpty(csv.templateId + '')){
+        if (validator.isEmpty(csv.templateId + '')) {
             errors.templateId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(csv.energySupplierId + '')){
+        if (validator.isEmpty(csv.energySupplierId + '')) {
             errors.energySupplierId = true;
             hasErrors = true;
-        };
+        }
 
-        if(validator.isEmpty(csv.documentName + '')){
+        if (validator.isEmpty(csv.documentName + '')) {
             errors.documentName = true;
             hasErrors = true;
-        };
+        }
 
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-        ProductionProjectRevenueAPI.createEnergySupplierCsv(csv.revenueId, csv.templateId, csv.energySupplierId, csv.documentName).then(payload => {
-            hashHistory.push(`/documenten`);
-        });
+            ProductionProjectRevenueAPI.createEnergySupplierCsv(
+                csv.revenueId,
+                csv.templateId,
+                csv.energySupplierId,
+                csv.documentName
+            ).then(payload => {
+                hashHistory.push(`/documenten`);
+            });
     };
 
     render() {
@@ -113,10 +118,10 @@ class EnergySupplierCSVNewApp extends Component {
                         </Panel>
                     </div>
                 </div>
-                <div className="col-md-3"/>
+                <div className="col-md-3" />
             </div>
-        )
+        );
     }
-};
+}
 
 export default EnergySupplierCSVNewApp;

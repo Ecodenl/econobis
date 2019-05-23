@@ -136,14 +136,20 @@ class InvoicesListItem extends Component {
             subStatus,
         } = this.props;
 
-        const inProgressRowClass = (this.props.statusId === 'in-progress' || this.props.statusId === 'is-sending' || this.props.statusId === 'error-making' || this.props.statusId === 'error-sending') ? 'in-progress-row' : null;
+        const inProgressRowClass =
+            this.props.statusId === 'in-progress' ||
+            this.props.statusId === 'is-sending' ||
+            this.props.statusId === 'error-making' ||
+            this.props.statusId === 'error-sending'
+                ? 'in-progress-row'
+                : null;
         return (
-                <tr
-                    className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
-                    onDoubleClick={() => this.openItem(id)}
-                    onMouseEnter={() => this.onRowEnter()}
-                    onMouseLeave={() => this.onRowLeave()}
-                >
+            <tr
+                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
+                onDoubleClick={() => this.openItem(id)}
+                onMouseEnter={() => this.onRowEnter()}
+                onMouseLeave={() => this.onRowLeave()}
+            >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
                         <input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} />

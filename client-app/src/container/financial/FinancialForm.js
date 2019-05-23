@@ -13,30 +13,21 @@ const FinancialForm = ({ administrationDetails, filter, type }) => (
                 {type === 'orders' && (
                     <Panel>
                         <PanelBody>
-                            <OrdersList
-                                administrationId={administrationDetails.id}
-                                filter={filter}
-                            />
+                            <OrdersList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}
                 {type === 'facturen' && (
                     <Panel>
                         <PanelBody>
-                            <InvoicesList
-                                administrationId={administrationDetails.id}
-                                filter={filter}
-                            />
+                            <InvoicesList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}
                 {type === 'uitkering-facturen' && (
                     <Panel>
                         <PanelBody>
-                            <PaymentInvoicesList
-                                administrationId={administrationDetails.id}
-                                filter={filter}
-                            />
+                            <PaymentInvoicesList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}

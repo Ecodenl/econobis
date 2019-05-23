@@ -2,10 +2,13 @@ import React from 'react';
 
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
+import InputSelect from '../../../../../components/form/InputSelect';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
+//import InputReactSelect from "./OrderProductsFormNew";
+import {connect} from "react-redux";
 
 moment.locale('nl');
 
@@ -13,6 +16,7 @@ const OrderProductsFormEdit = props => {
     const {
         product,
         description,
+        costCenterId,
         amount,
         amountReduction,
         percentageReduction,
@@ -40,6 +44,18 @@ const OrderProductsFormEdit = props => {
                                 name={'product'}
                                 value={product ? product.name : ''}
                                 readOnly={true}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputSelect
+                                label={'Kostenplaats'}
+                                id="costCenterId"
+                                name={'costCenterId'}
+                                options={props.costCenters}
+                                optionName={'description'}
+                                value={costCenterId}
+                                onChangeAction={props.handleInputChange}
                             />
                         </div>
 
@@ -183,4 +199,12 @@ const OrderProductsFormEdit = props => {
     );
 };
 
-export default OrderProductsFormEdit;
+const mapStateToProps = state => {
+    return {
+        costCenters: state.systemData.costCenters,
+    };
+};
+
+export default connect(
+    mapStateToProps
+)(OrderProductsFormEdit);

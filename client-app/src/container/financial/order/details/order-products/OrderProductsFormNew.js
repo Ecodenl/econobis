@@ -11,7 +11,6 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
-import InputReactSelect from "./OrderProductsFormNewProduct";
 
 class OrderProductsFormNew extends Component {
     constructor(props) {
@@ -29,7 +28,7 @@ class OrderProductsFormNew extends Component {
                 orderId: this.props.orderDetails.id,
                 productId: '',
                 description: '',
-                costCenterId: null,
+                costCenterId: '',
                 amount: 1,
                 amountReduction: 0,
                 percentageReduction: 0,
@@ -203,7 +202,7 @@ class OrderProductsFormNew extends Component {
         let price = 0;
         let priceInclVat = 0;
         let vatPercentage = 0;
-        let costCenterId = null;
+        let costCenterId = '';
         let description = '';
         let durationId = false;
         let dateEnd = '';
@@ -217,6 +216,9 @@ class OrderProductsFormNew extends Component {
             vatPercentage = product.currentPrice.vatPercentage;
             productInputInclVat = product.currentPrice.inputInclVat;
             costCenterId = product.costCenterId;
+            if ( !costCenterId ) {
+                costCenterId = '';
+            }
             description = product.invoiceText;
             durationId = product.durationId;
             productHasVariablePrice = product.hasVariablePrice;

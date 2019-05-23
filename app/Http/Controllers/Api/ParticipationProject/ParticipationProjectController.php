@@ -206,9 +206,8 @@ class ParticipationProjectController extends ApiController
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
 
-        $participantMutationStatus = ParticipantMutationStatus::find($data['status_id']);
         // Create first mutation
-        $this->storeFirstMutation($requestInput, $participantMutationStatus, $participantProject, $project);
+        $this->storeFirstMutation($requestInput, $participantProject, $project);
 
         $message = [];
 
@@ -586,12 +585,18 @@ class ParticipationProjectController extends ApiController
      * @param ParticipantProject $participantProject
      * @param $project
      */
-    public function storeFirstMutation(RequestInput $requestInput, ParticipantMutationStatus $participantMutationStatus, ParticipantProject $participantProject, Project $project): void
+    public function storeFirstMutation(RequestInput $requestInput, ParticipantProject $participantProject, Project $project): void
     {
+        $status = $requestInput
+            ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
+            ->get();
+
+        $participantMutationStatus = ParticipantMutationStatus::find($status['status_id']);
+
         switch ($participantMutationStatus->code_ref) {
             case 'interest':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityInterest')->onEmpty(null)->alias('quantity_interest')->next()
                     ->double('amountInterest')->onEmpty(null)->alias('amount_interest')->next()
                     ->date('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
@@ -601,7 +606,7 @@ class ParticipationProjectController extends ApiController
                 break;
             case 'option':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityOption')->validate('required_without:amountOption')->alias('quantity_option')->next()
                     ->double('amountOption')->validate('required_without:quantityOption')->alias('amount_option')->next()
                     ->date('dateOption')->validate('required|date')->alias('date_option')->next()
@@ -611,7 +616,7 @@ class ParticipationProjectController extends ApiController
                 break;
             case 'granted':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityGranted')->validate('required_without:amountGranted')->alias('quantity_granted')->next()
                     ->double('amountGranted')->validate('required_without:quantityGranted')->alias('amount_granted')->next()
                     ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
@@ -621,7 +626,7 @@ class ParticipationProjectController extends ApiController
                 break;
             case 'final':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityFinal')->validate('required_without:amountFinal')->alias('quantity_final')->next()
                     ->double('amountFinal')->validate('required_without:quantityFinal')->alias('amount_final')->next()
                     ->date('dateGranted')->validate('nullable|date')->onEmpty(null)->alias('date_granted')->next()

@@ -3,7 +3,7 @@
 namespace App\Http\Resources\ParticipantTransaction;
 
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
+use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -22,7 +22,7 @@ class FullParticipantTransaction extends Resource
             [
                 'id' => $this->id,
                 'participationId' => $this->participation_id,
-                'participation' => FullParticipantProductionProject::make($this->whenLoaded('participation')),
+                'participation' => FullParticipantProject::make($this->whenLoaded('participation')),
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
                 'dateTransaction' => $this->date_transaction,

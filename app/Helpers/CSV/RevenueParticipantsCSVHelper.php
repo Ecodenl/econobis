@@ -9,7 +9,7 @@
 namespace App\Helpers\CSV;
 
 use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\ProductionProject\ProductionProjectRevenue;
+use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -17,14 +17,14 @@ class RevenueParticipantsCSVHelper
 {
     private $csvExporter;
     private $participants;
-    private $productionProjectRevenue;
+    private $projectRevenue;
 
-    public function __construct($participants, ProductionProjectRevenue $productionProjectRevenue)
+    public function __construct($participants, ProjectRevenue $projectRevenue)
     {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->participants = $participants;
-        $this->productionProjectRevenue = $productionProjectRevenue;
+        $this->projectRevenue = $projectRevenue;
     }
 
     public function downloadCSV(){
@@ -34,19 +34,19 @@ class RevenueParticipantsCSVHelper
 
         foreach ($this->participants->chunk(500) as $chunk) {
             $chunk->load([
-                'productionProject',
+                'project',
                 'contact.person.title',
                 'contact.primaryAddress',
                 'contact.primaryContactEnergySupplier.energySupplier',
-                'participantProductionProjectPayoutType',
+                'participantProjectPayoutType',
         ]);
 
         $this->csvExporter->beforeEach(function ($participant) {
             $participant->created_at_date = $participant->created_at->format('d-m-Y');
             $participant->updated_at_date = $participant->updated_at->format('d-m-Y');
 
-            $participant->period_start = $this->formatDate($this->productionProjectRevenue->date_begin);
-            $participant->period_end = $this->formatDate($this->productionProjectRevenue->date_end);
+            $participant->period_start = $this->formatDate($this->projectRevenue->date_begin);
+            $participant->period_end = $this->formatDate($this->projectRevenue->date_end);
 
             $participant->type = $participant->contact->getType()->name;
 
@@ -68,23 +68,23 @@ class RevenueParticipantsCSVHelper
                 $participant->last_name = $participant->contact->person->last_name;
             }
 
-            $participant->date_payed = $this->formatDate($this->productionProjectRevenue->date_payed);
+            $participant->date_payed = $this->formatDate($this->projectRevenue->date_payed);
 
             //berekende velden
-            if($this->productionProjectRevenue->productionProject->getCurrentParticipations() > 0) {
-                $participant->payout = round((($this->productionProjectRevenue->revenue
-                            * ($this->productionProjectRevenue->pay_percentage / 100))
-                        / $this->productionProjectRevenue->productionProject->getCurrentParticipations())
+            if($this->projectRevenue->project->getCurrentParticipations() > 0) {
+                $participant->payout = round((($this->projectRevenue->revenue
+                            * ($this->projectRevenue->pay_percentage / 100))
+                        / $this->projectRevenue->project->getCurrentParticipations())
                     * $participant->participationsCurrent, 2);
 
-                $participant->delivered_total = round((($this->productionProjectRevenue->kwh_end - $this->productionProjectRevenue->kwh_start) / $this->productionProjectRevenue->productionProject->getCurrentParticipations()) * $participant->participations_current,2);
+                $participant->delivered_total = round((($this->projectRevenue->kwh_end - $this->projectRevenue->kwh_start) / $this->projectRevenue->project->getCurrentParticipations()) * $participant->participations_current,2);
             }
             else{
                 $participant->payout = 0;
                 $participant->delivered_total = 0;
             }
 
-            $participant->kwh_return = $participant->delivered_total * $this->productionProjectRevenue->payout_kwh;
+            $participant->kwh_return = $participant->delivered_total * $this->projectRevenue->payout_kwh;
 
             $participant->payout_formatted = $this->formatFinancial($participant->payout);
             $participant->kwh_return_formatted = $this->formatFinancial($participant->kwh_return);
@@ -97,7 +97,7 @@ class RevenueParticipantsCSVHelper
             'contact.full_name' => 'Naam',
             'participations_current' => 'Participaties',
             'payout_formatted' => 'Uit te keren bedrag',
-            'participantProductionProjectPayoutType.name' => 'Uitkeren op',
+            'participantProjectPayoutType.name' => 'Uitkeren op',
             'date_payed' => 'Datum uitkering',
             'contact.primaryContactEnergySupplier.energySupplier.name' => 'Energieleverancier',
             'delivered_total' => 'Geleverd totaal',

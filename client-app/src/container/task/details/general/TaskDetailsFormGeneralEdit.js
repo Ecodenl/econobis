@@ -21,9 +21,9 @@ import InputTextArea from '../../../../components/form/InputTextarea';
 import InputToggle from '../../../../components/form/InputToggle';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import InputSelectGroup from '../../../../components/form/InputSelectGroup';
-import ProductionProjectsAPI from '../../../../api/production-project/ProductionProjectsAPI';
+import ProjectsAPI from '../../../../api/project/ProjectsAPI';
 import HousingFilesAPI from '../../../../api/housing-file/HousingFilesAPI';
-import ParticipantsProductionProjectAPI from '../../../../api/participant-production-project/ParticipantsProductionProjectAPI';
+import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
 import OrdersAPI from '../../../../api/order/OrdersAPI';
 import InvoicesAPI from '../../../../api/invoice/InvoicesAPI';
 
@@ -42,7 +42,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             campaignId,
             contactGroupId,
             housingFileId,
-            productionProjectId,
+            projectId,
             participantId,
             datePlannedStart,
             datePlannedFinish,
@@ -64,7 +64,7 @@ class TaskDetailsFormGeneralEdit extends Component {
             opportunities: [],
             campaigns: [],
             housingFiles: [],
-            productionProjects: [],
+            projects: [],
             participants: [],
             orders: [],
             invoices: [],
@@ -78,7 +78,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 opportunityId: opportunityId ? opportunityId : '',
                 contactGroupId: contactGroupId ? contactGroupId : '',
                 housingFileId: housingFileId ? housingFileId : '',
-                productionProjectId: productionProjectId ? productionProjectId : '',
+                projectId: projectId ? projectId : '',
                 participantId: participantId ? participantId : '',
                 orderId: orderId ? orderId : '',
                 invoiceId: invoiceId ? invoiceId : '',
@@ -104,7 +104,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                 opportunities: true,
                 campaigns: true,
                 housingFiles: true,
-                productionProjects: true,
+                projects: true,
                 participants: true,
                 orders: true,
                 invoices: true,
@@ -179,17 +179,17 @@ class TaskDetailsFormGeneralEdit extends Component {
             });
         });
 
-        ProductionProjectsAPI.peekProductionProjects().then(payload => {
+        ProjectsAPI.peekProjects().then(payload => {
             this.setState({
-                productionProjects: payload,
+                projects: payload,
                 peekLoading: {
                     ...this.state.peekLoading,
-                    productionProjects: false,
+                    projects: false,
                 },
             });
         });
 
-        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then(payload => {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
             this.setState({
                 participants: payload,
                 peekLoading: {
@@ -445,7 +445,7 @@ class TaskDetailsFormGeneralEdit extends Component {
                             opportunities={this.state.opportunities}
                             campaigns={this.state.campaigns}
                             housingFiles={this.state.housingFiles}
-                            productionProjects={this.state.productionProjects}
+                            projects={this.state.projects}
                             participants={this.state.participants}
                             orders={this.state.orders}
                             invoices={this.state.invoices}

@@ -12,8 +12,8 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
 use App\Eco\Order\Order;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
-use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Project\Project;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -81,9 +81,9 @@ class Task extends Model
     /**
      * optional
      */
-    public function productionProject()
+    public function project()
     {
-        return $this->belongsTo(ProductionProject::class);
+        return $this->belongsTo(Project::class);
     }
 
     /**
@@ -91,7 +91,7 @@ class Task extends Model
      */
     public function participant()
     {
-        return $this->belongsTo(ParticipantProductionProject::class, 'participation_production_project_id', 'id');
+        return $this->belongsTo(ParticipantProject::class, 'participation_project_id', 'id');
     }
 
     /**

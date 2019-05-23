@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Pie } from 'react-chartjs-2';
 
-import ProductionProjectsAPI from '../../../api/production-project/ProductionProjectsAPI';
+import ProjectsAPI from '../../../api/project/ProjectsAPI';
 
 class DashboardChartParticipantsPerProject extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class DashboardChartParticipantsPerProject extends Component {
     }
 
     componentDidMount() {
-        ProductionProjectsAPI.getChartData(this.props.id).then(payload => {
+        ProjectsAPI.getChartData(this.props.id).then(payload => {
             let amountOfDataPoints = 0;
 
             for (let i = 0; i < payload.data.length; i++) {
@@ -102,10 +102,10 @@ class DashboardChartParticipantsPerProject extends Component {
 
         return (
             <div>
-                <h4>Participanten status in project {this.state.code}</h4>
+                <h4>Deelnemers status in project {this.state.code}</h4>
                 <div>
                     {amountOfDataPoints === 0 ? (
-                        <span>Geen participanten gevonden.</span>
+                        <span>Geen deelnemers gevonden.</span>
                     ) : (
                         <Pie data={data} options={options} width={250} height={250} />
                     )}

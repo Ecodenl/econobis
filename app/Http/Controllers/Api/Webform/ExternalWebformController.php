@@ -29,13 +29,13 @@ use App\Eco\Order\OrderPaymentType;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Order\OrderStatus;
 use App\Eco\Organisation\Organisation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
+use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
+use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Product\Product;
-use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\Project\Project;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskPropertyValue;
@@ -210,8 +210,8 @@ class ExternalWebformController extends Controller
                 'energieleverancier_huidig' => 'is_current_supplier',
             ],
             'participation' => [
-                // ParticipantProductionProject
-                'participatie_productieproject_id' => 'production_project_id',
+                // ParticipantProject
+                'participatie_productieproject_id' => 'project_id',
                 'participatie_aantal_participaties_aangevraagd' => 'participations_requested',
                 'participatie_iban_uitkering' => 'iban_payout',
                 'participatie_iban_uitkering_tnv' => 'iban_payout_attn',
@@ -672,36 +672,36 @@ class ExternalWebformController extends Controller
 
     protected function addParticipationToContact(Contact $contact, array $data)
     {
-        if ($data['production_project_id']) {
+        if ($data['project_id']) {
             $this->log('Er is een productieproject meegegeven, participatie aanmaken.');
-            $productionProject = ProductionProject::find($data['production_project_id']);
-            if (!$productionProject) $this->error('Er is een ongeldige waarde voor productieproject meegegeven.');
+            $project = Project::find($data['project_id']);
+            if (!$project) $this->error('Er is een ongeldige waarde voor productieproject meegegeven.');
 
-            $status = ParticipantProductionProjectStatus::find($data['status_id']);
+            $status = ParticipantProjectStatus::find($data['status_id']);
             if (!$status) {
                 $this->log('Geen bekende waarde voor participatiestatus meegegeven, default naar optie.');
-                $status = ParticipantProductionProjectStatus::find(1);
+                $status = ParticipantProjectStatus::find(1);
             }
 
-            $type = ParticipantProductionProjectPayoutType::find($data['type_id']);
+            $type = ParticipantProjectPayoutType::find($data['type_id']);
             if (!$type) {
-                if ($productionProject->production_project_type_id == 1) {
-                    $type = ParticipantProductionProjectPayoutType::find(1);
-                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $productionProject->productionProjectType->name . ' default naar ' . $type->name . '.');
-                } elseif ($productionProject->production_project_type_id == 2) {
-                    $type = ParticipantProductionProjectPayoutType::find(3);
-                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $productionProject->productionProjectType->name . ' default naar ' . $type->name . '.');
+                if ($project->project_type_id == 1) {
+                    $type = ParticipantProjectPayoutType::find(1);
+                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $project->projectType->name . ' default naar ' . $type->name . '.');
+                } elseif ($project->project_type_id == 2) {
+                    $type = ParticipantProjectPayoutType::find(3);
+                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $project->projectType->name . ' default naar ' . $type->name . '.');
                 } else {
-                    $type = ParticipantProductionProjectPayoutType::find(3);
+                    $type = ParticipantProjectPayoutType::find(3);
                     $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, default naar ' . $type->name . '.');
                 }
             }
 
             $ibanPayout = $this->checkIban($data['iban_payout'], 'participatie.');
-            $participation = ParticipantProductionProject::create([
+            $participation = ParticipantProject::create([
                 'contact_id' => $contact->id,
                 'status_id' => $status->id,
-                'production_project_id' => $productionProject->id,
+                'project_id' => $project->id,
                 'date_register' => Carbon::make($data['date_register']),
                 'participations_requested' => $data['participations_requested'] == '' ? 0 : $data['participations_requested'],
                 'participations_sold' => 0,
@@ -748,7 +748,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProductionProject $participation = null, Order $order = null)
+    protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProject $participation = null, Order $order = null)
     {
         // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
         $note = "Webformulier " . $webform->name . ".\n\n";
@@ -765,8 +765,8 @@ class ExternalWebformController extends Controller
             'responsible_user_id' => $webform->responsible_user_id,
             'responsible_team_id' => $webform->responsible_team_id,
             'intake_id' => $intake ? $intake->id : null,
-            'production_project_id' => $participation ? $participation->production_project_id : null,
-            'participation_production_project_id' => $participation ? $participation->id : null,
+            'project_id' => $participation ? $participation->project_id : null,
+            'participation_project_id' => $participation ? $participation->id : null,
             'order_id' => $order ? $order->id : null,
         ]);
 

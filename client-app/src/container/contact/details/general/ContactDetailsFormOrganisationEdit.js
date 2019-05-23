@@ -16,7 +16,16 @@ class ContactDetailsFormOrganisationEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, organisation, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
+        const {
+            number,
+            organisation,
+            status,
+            iban,
+            ibanAttn,
+            createdAt,
+            newsletter,
+            didAgreeAvg,
+        } = props.contactDetails;
 
         this.state = {
             organisation: {

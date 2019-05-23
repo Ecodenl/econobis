@@ -74,6 +74,7 @@ InputText.defaultProps = {
     step: '',
     errorMessage: '',
     autoComplete: 'off',
+    onChangeAction: () => {},
 };
 
 InputText.propTypes = {

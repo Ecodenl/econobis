@@ -15,14 +15,14 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Organisation\Organisation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Product\PriceHistory;
 use App\Eco\Product\Product;
-use App\Eco\ProductionProject\ProductionProject;
-use App\Eco\ProductionProject\ProductionProjectRevenue;
-use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
+use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\User\User;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -89,7 +89,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html .= '{pp_aanwijzing_belastingdienst}{pp_max_participaties_jeugd}{pp_min_participaties}{pp_uitgegeven_participaties}';
         $html .= '{pp_participaties_in_optie}{pp_uit_te_geven_participaties}{pp_aantal_participanten}{pp_postcoderoos}';
 
-        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'pp', ProductionProject::find(1));
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'pp', Project::find(1));
 
         $expectedHtml = 'Project 1Omschrijving03/03/201804/03/201805/03/2018';
         $expectedHtml .= '06/03/20181693KWDorpstraat 10Andijk12341235';
@@ -108,7 +108,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html .= '{ppp_wettelijke_vertegenwoordiger}{ppp_wettelijke_vertegenwoordiger_voornaam}{ppp_wettelijke_vertegenwoordiger_achternaam}{ppp_iban_uitkeren}{ppp_iban_uitkeren_tnv}{ppp_einddatum}{ppp_uitkeren_op}';
 
 
-        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ppp', ParticipantProductionProject::find(1));
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'ppp', ParticipantProject::find(1));
 
         $expectedHtml = 'Vaak, Klaas deDefinitiefProject 107/03/2018109';
         $expectedHtml .= '810706/03/201805/03/2018';
@@ -122,7 +122,7 @@ class TemplateMergeFieldsTest extends TestCase
 
         $html = '{r_kwh_start}{r_kwh_eind}{r_datum_uitgekeerd}{r_kwh_totaal}{r_beginperiode}{r_eindperiode}{r_invoerdatum}{r_euro}{r_teruggave}';
 
-        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'r', ProductionProjectRevenue::find(1));
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'r', ProjectRevenue::find(1));
 
         $expectedHtml = '1000200016/03/2018100013/03/201814/03/201815/03/201830003000000';
 
@@ -135,7 +135,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html = '{d_adres}{d_postcode}{d_woonplaats}{d_status}{d_participaties}{d_bedrag}{d_uitkeren_op}';
         $html .= '{d_datum_uitkeren}{d_energieleverancier}{d_kwh}{d_teruggave_energiebelasting}{d_energieleverancier_ean_elektra}{d_energieleverancier_nummer}{d_opbrengst_kwh_euro}';
 
-        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'd', ProductionProjectRevenueDistribution::find(1));
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'd', ProjectRevenueDistribution::find(1));
 
         $expectedHtml = 'talud 91239 LMOnderdijkdbstatus151523Rekening';
         $expectedHtml .= '17/03/2018Eneco12324655555hoi1232';
@@ -262,7 +262,7 @@ class TemplateMergeFieldsTest extends TestCase
 
 
     public function insertProductionProject(){
-        $productionProject = new ProductionProject();
+        $productionProject = new Project();
         $productionProject->name = 'Project 1';
         $productionProject->code = 'PJT 1';
         $productionProject->description = 'Omschrijving';
@@ -290,7 +290,7 @@ class TemplateMergeFieldsTest extends TestCase
     }
 
     public function insertParticipantProductionProject(){
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 1;
         $participant->status_id = 2;
         $participant->production_project_id = 1;
@@ -312,7 +312,7 @@ class TemplateMergeFieldsTest extends TestCase
     }
 
     public function insertProductionProjectRevenue(){
-        $revenue = new ProductionProjectRevenue();
+        $revenue = new ProjectRevenue();
         $revenue->category_id = 1;
         $revenue->production_project_id = 1;
         $revenue->confirmed = true;
@@ -330,7 +330,7 @@ class TemplateMergeFieldsTest extends TestCase
 
     public function insertProductionProjectRevenueDistribution()
     {
-        $distribution = new ProductionProjectRevenueDistribution();
+        $distribution = new ProjectRevenueDistribution();
         $distribution->revenue_id = 1;
         $distribution->contact_id = 1;
         $distribution->address = 'talud 9';

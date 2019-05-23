@@ -20,8 +20,8 @@ import { connect } from 'react-redux';
 import CampaignAPI from '../../../api/campaign/CampaignsAPI';
 import HousingFileAPI from '../../../api/housing-file/HousingFilesAPI';
 import QuotationRequestsAPI from '../../../api/quotation-request/QuotationRequestsAPI';
-import ProductionProjectsAPI from '../../../api/production-project/ProductionProjectsAPI';
-import ParticipantsProductionProjectAPI from '../../../api/participant-production-project/ParticipantsProductionProjectAPI';
+import ProjectsAPI from '../../../api/project/ProjectsAPI';
+import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
 import OrdersAPI from '../../../api/order/OrdersAPI';
 import EmailDetailsAPI from '../../../api/email/EmailAPI';
 
@@ -40,7 +40,7 @@ class DocumentNewApp extends Component {
             quotationRequests: [],
             measures: [],
             tasks: [],
-            productionProjects: [],
+            projects: [],
             participants: [],
             orders: [],
             document: {
@@ -53,7 +53,7 @@ class DocumentNewApp extends Component {
                 quotationRequestId: this.props.params.quotationRequestId || '',
                 measureId: this.props.params.measureId || '',
                 taskId: this.props.params.taskId || '',
-                productionProjectId: this.props.params.productionProjectId || '',
+                projectId: this.props.params.projectId || '',
                 participantId: this.props.params.participantId || '',
                 orderId: this.props.params.orderId || '',
                 documentType: this.props.params.type,
@@ -123,11 +123,11 @@ class DocumentNewApp extends Component {
             this.setState({ measures: payload });
         });
 
-        ProductionProjectsAPI.peekProductionProjects().then(payload => {
-            this.setState({ productionProjects: payload });
+        ProjectsAPI.peekProjects().then(payload => {
+            this.setState({ projects: payload });
         });
 
-        ParticipantsProductionProjectAPI.peekParticipantsProductionProjects().then(payload => {
+        ParticipantsProjectAPI.peekParticipantsProjects().then(payload => {
             this.setState({ participants: payload });
         });
 
@@ -236,7 +236,7 @@ class DocumentNewApp extends Component {
             quotationRequestId,
             measureId,
             taskId,
-            productionProjectId,
+            projectId,
             participantId,
             orderId,
             attachment,
@@ -253,7 +253,7 @@ class DocumentNewApp extends Component {
             validator.isEmpty(opportunityId) &&
             validator.isEmpty(housingFileId) &&
             validator.isEmpty(quotationRequestId) &&
-            validator.isEmpty(productionProjectId) &&
+            validator.isEmpty(projectId) &&
             validator.isEmpty(participantId) &&
             validator.isEmpty(taskId) &&
             validator.isEmpty(orderId)
@@ -300,7 +300,7 @@ class DocumentNewApp extends Component {
             data.append('quotationRequestId', quotationRequestId);
             data.append('measureId', measureId);
             data.append('taskId', taskId);
-            data.append('productionProjectId', productionProjectId);
+            data.append('projectId', projectId);
             data.append('participantId', participantId);
             data.append('orderId', orderId);
             data.append('attachment', attachment);
@@ -343,7 +343,7 @@ class DocumentNewApp extends Component {
                             quotationRequests={this.state.quotationRequests}
                             housingFiles={this.state.housingFiles}
                             campaigns={this.state.campaigns}
-                            productionProjects={this.state.productionProjects}
+                            projects={this.state.projects}
                             participants={this.state.participants}
                             orders={this.state.orders}
                             errors={this.state.errors}

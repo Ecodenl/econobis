@@ -160,7 +160,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             currentParticipations: {
-                name: 'Huidig aantal participaties',
+                name: 'Huidig aantal deelnames',
                 type: 'number',
             },
             occupation: {
@@ -286,7 +286,7 @@ class ContactsListExtraFilters extends Component {
 
 const mapStateToProps = state => {
     return {
-        participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
+        participantProjectStatus: state.systemData.participantProjectStatus,
         contactStatuses: state.systemData.contactStatuses,
         occupations: state.systemData.occupations,
         measureCategories: state.systemData.measureCategories,

@@ -14,7 +14,7 @@ const DocumentNewFormGeneral = ({
     tasks = [],
     quotationRequests = [],
     housingFiles = [],
-    productionProjects = [],
+    projects = [],
     participants = [],
     orders = [],
     handleInputChange,
@@ -30,7 +30,7 @@ const DocumentNewFormGeneral = ({
         taskId,
         quotationRequestId,
         housingFileId,
-        productionProjectId,
+        projectId,
         participantId,
         orderId,
     } = document;
@@ -45,7 +45,7 @@ const DocumentNewFormGeneral = ({
         taskId === '' &&
         quotationRequestId === '' &&
         housingFileId === '' &&
-        productionProjectId === '' &&
+        projectId === '' &&
         participantId === '' &&
         orderId === '';
 
@@ -127,16 +127,16 @@ const DocumentNewFormGeneral = ({
 
             <div className="row">
                 <InputSelect
-                    label="Productieproject"
-                    name={'productionProjectId'}
-                    value={productionProjectId}
-                    options={productionProjects}
+                    label="Project"
+                    name={'projectId'}
+                    value={projectId}
+                    options={projects}
                     onChangeAction={handleInputChange}
                     required={oneOfFieldRequired && 'required'}
                     error={errors.docLinkedAtAny}
                 />
                 <InputSelect
-                    label="Participant productieproject"
+                    label="Deelnemer project"
                     name={'participantId'}
                     value={participantId}
                     options={participants}

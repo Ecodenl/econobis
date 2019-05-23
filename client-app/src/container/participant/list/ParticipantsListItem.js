@@ -28,11 +28,11 @@ class ParticipantsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/productie-project/participant/${id}`);
+        hashHistory.push(`/project/deelnemer/${id}`);
     }
 
     render() {
-        const { id, contact, participationsCurrent, status, dateRegister, productionProject } = this.props;
+        const { id, contact, participationsDefinitive, uniqueMutationStatuses, dateRegister, project } = this.props;
         const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';
@@ -66,9 +66,9 @@ class ParticipantsListItem extends Component {
                 <td>{primaryAddress ? street + ' ' + number + addition : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.postalCode : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.city : ''}</td>
-                <td>{productionProject ? productionProject.name : ''}</td>
-                <td>{participationsCurrent ? participationsCurrent : ''}</td>
-                <td>{status ? status.name : ''}</td>
+                <td>{project ? project.name : ''}</td>
+                <td>{participationsDefinitive ? participationsDefinitive : ''}</td>
+                <td>{uniqueMutationStatuses.map(item => item.name).join(', ')}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 <td>
                     {contact.primaryContactEnergySupplier

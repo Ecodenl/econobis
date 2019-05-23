@@ -12,7 +12,7 @@ use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Occupation\FullOccupationContact;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Organisation\FullOrganisation;
-use App\Http\Resources\ParticipantProductionProject\FullParticipantProductionProject;
+use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
 use App\Http\Resources\Task\GridTask;
@@ -87,7 +87,7 @@ class FullContactWithGroups extends Resource
             'opportunityCount' => $this->opportunities()->count(),
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->count(),
-            'relatedParticipations' => FullParticipantProductionProject::collection($this->whenLoaded('participations')),
+            'relatedParticipations' => FullParticipantProject::collection($this->whenLoaded('participations')),
             'visibleGroups' => $this->getVisibleGroups(),
         ];
     }

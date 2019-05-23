@@ -36,10 +36,12 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\ContactNote\ContactNotePolicy;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressPolicy;
-use App\Eco\ParticipantProductionProject\ObligationNumber;
-use App\Eco\ParticipantProductionProject\ObligationNumberPolicy;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPolicy;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationPolicy;
+use App\Eco\ParticipantProject\ObligationNumber;
+use App\Eco\ParticipantProject\ObligationNumberPolicy;
+use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\ParticipantProject\ParticipantProjectPolicy;
 use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\ParticipantTransaction\ParticipantTransactionPolicy;
 use App\Eco\Person\Person;
@@ -50,12 +52,12 @@ use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductPolicy;
-use App\Eco\ProductionProject\ProductionProject;
-use App\Eco\ProductionProject\ProductionProjectPolicy;
-use App\Eco\ProductionProject\ProductionProjectRevenue;
-use App\Eco\ProductionProject\ProductionProjectRevenuePolicy;
-use App\Eco\ProductionProject\ProductionProjectValueCourse;
-use App\Eco\ProductionProject\ProductionProjectValueCoursePolicy;
+use App\Eco\Project\Project;
+use App\Eco\Project\ProjectPolicy;
+use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectRevenuePolicy;
+use App\Eco\Project\ProjectValueCourse;
+use App\Eco\Project\ProjectValueCoursePolicy;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestPolicy;
 use App\Eco\Task\Task;
@@ -101,12 +103,13 @@ class AuthServiceProvider extends ServiceProvider
         Mailbox::class => MailboxPolicy::class,
         QuotationRequest::class => QuotationRequestPolicy::class,
         Team::class => TeamPolicy::class,
-        ProductionProject::class => ProductionProjectPolicy::class,
-        ProductionProjectRevenue::class => ProductionProjectRevenuePolicy::class,
-        ProductionProjectValueCourse::class => ProductionProjectValueCoursePolicy::class,
-        ParticipantProductionProject::class => ParticipantProductionProjectPolicy::class,
+        Project::class => ProjectPolicy::class,
+        ProjectRevenue::class => ProjectRevenuePolicy::class,
+        ProjectValueCourse::class => ProjectValueCoursePolicy::class,
+        ParticipantProject::class => ParticipantProjectPolicy::class,
         ObligationNumber::class => ObligationNumberPolicy::class,
         ParticipantTransaction::class => ParticipantTransactionPolicy::class,
+        ParticipantMutation::class => ParticipantMutationPolicy::class,
         Administration::class => AdministrationPolicy::class,
         Product::class => ProductPolicy::class,
         Order::class => OrderPolicy::class,

@@ -13,13 +13,13 @@ class ChangeDistributionFields extends Migration
      */
     public function up()
     {
-        $rc = \App\Eco\ProductionProject\ProductionProjectRevenueCategory::find(1);
-        $rc->name = 'Opbrengst kWh';
-        $rc->save();
+        DB::table('production_project_revenue_category')
+            ->where('id', 1)
+            ->update(['name' => 'Opbrengst kWh']);
 
-        $rc = \App\Eco\ProductionProject\ProductionProjectRevenueCategory::find(2);
-        $rc->name = 'Opbrengst euro';
-        $rc->save();
+        DB::table('production_project_revenue_category')
+            ->where('id', 2)
+            ->update(['name' => 'Opbrengst euro']);
 
         Schema::table('production_project_revenue_distribution', function (Blueprint $table) {
             $table->string('energy_supplier_ean_electricity')->nullable();
@@ -31,13 +31,10 @@ class ChangeDistributionFields extends Migration
             $table->double('payout_kwh')->nullable();
         });
 
-        $rt = new \App\Eco\ProductionProject\ProductionProjectRevenueType();
-        $rt->name = 'Aflossing';
-        $rt->save();
-
-        $rt = new \App\Eco\ProductionProject\ProductionProjectRevenueType();
-        $rt->name = 'Rente en aflossing';
-        $rt->save();
+        DB::table('production_project_revenue_type')->insert([
+            ['name' => 'Aflossing'],
+            ['name' => 'Rente en aflossing']
+        ]);
     }
 
     /**
@@ -47,14 +44,13 @@ class ChangeDistributionFields extends Migration
      */
     public function down()
     {
-        $rc = \App\Eco\ProductionProject\ProductionProjectRevenueCategory::find(1);
-        $rc->name = 'Uitkering';
-        $rc->save();
+        DB::table('production_project_revenue_category')
+            ->where('id', 1)
+            ->update(['name' => 'Uitkering']);
 
-        $rc = \App\Eco\ProductionProject\ProductionProjectRevenueCategory::find(2);
-        $rc->name = 'Opbrengst';
-        $rc->save();
-
+        DB::table('production_project_revenue_category')
+            ->where('id', 2)
+            ->update(['name' => 'Opbrengst']);
 
         Schema::table('production_project_revenue_distribution', function (Blueprint $table) {
             $table->dropColumn('energy_supplier_ean_electricity');

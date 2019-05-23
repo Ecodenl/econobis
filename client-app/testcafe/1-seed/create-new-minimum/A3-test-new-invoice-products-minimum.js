@@ -1,27 +1,24 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
-import ModelGeneral from "../../pages/model-general";
+import * as vars from '../../config/random-models';
+import ModelGeneral from '../../pages/model-general';
 
-import ModelDetailsInvoice from "../../pages/invoice/model-details-invoice";
+import ModelDetailsInvoice from '../../pages/invoice/model-details-invoice';
 import ModelSideMenu from '../../pages/side-menu/model-side-menu';
 import ModelFinancial from '../../pages/financial/model-financial';
 const faker = require('faker');
-faker.locale = "nl";
+faker.locale = 'nl';
 
-fixture `Create new invoice products minimum`;
+fixture`Create new invoice products minimum`;
 
 const general = new ModelGeneral();
 const sideMenu = new ModelSideMenu();
 const financial = new ModelFinancial();
 const detailsInvoice = new ModelDetailsInvoice();
 
-test('Fill out form invoice products minimum', async (t) => {
-
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/contacten');
+test('Fill out form invoice products minimum', async t => {
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/contacten');
 
     await t.expect(general.titleH3.innerText).eql('Contacten', 'Check element text', { timeout: 500 });
 
@@ -31,18 +28,14 @@ test('Fill out form invoice products minimum', async (t) => {
         .click(sideMenu.financial)
         .click(sideMenu.unlockMenu);
 
-    await t
-        .click(financial.allInvoices)
-        .wait(constants.wait);
+    await t.click(financial.allInvoices).wait(constants.wait);
 
     await t
         .typeText(financial.fourthSearchField, vars.orderSubject)
         .pressKey('enter')
         .wait(constants.wait);
 
-    await t
-        .doubleClick(general.firstRow)
-        .wait(constants.wait);
+    await t.doubleClick(general.firstRow).wait(constants.wait);
 
     //Nieuw product
     await t
@@ -87,7 +80,6 @@ test('Fill out form invoice products minimum', async (t) => {
 
     //header+row
     await t.expect(detailsInvoice.invoiceProductRows.count).eql(7);
-
 
     //Nieuw eenmalig product
     await t

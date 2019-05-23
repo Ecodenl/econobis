@@ -9,7 +9,7 @@
 namespace App\Helpers\CSV;
 
 use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\ProductionProject\ProductionProjectRevenue;
+use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -17,22 +17,22 @@ class EnergySupplierCSVHelper
 {
     private $csvExporter;
     private $energySupplier;
-    private $productionProjectRevenue;
+    private $projectRevenue;
     private $distributions;
     private $counter;
 
     public function __construct(
         EnergySupplier $energySupplier,
-        ProductionProjectRevenue $productionProjectRevenue,
+        ProjectRevenue $projectRevenue,
         $templateId, $fileName
     ) {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->energySupplier = $energySupplier;
-        $this->productionProjectRevenue = $productionProjectRevenue;
+        $this->projectRevenue = $projectRevenue;
         $this->templateId = $templateId;
         $this->fileName = $fileName;
-        $this->distributions = $productionProjectRevenue->distribution()->where('es_id', $energySupplier->id)->get();
+        $this->distributions = $projectRevenue->distribution()->where('es_id', $energySupplier->id)->get();
     }
 
     public function getCSV()
@@ -185,11 +185,12 @@ class EnergySupplierCSVHelper
 
             $this->csvExporter->beforeEach(function ($distribution) {
                 // Now notes field will have this value
-                $distribution->ean = $this->productionProjectRevenue->productionProject->ean;
-                $distribution->ean_manager = $this->productionProjectRevenue->productionProject->ean_manager;
-                $distribution->tax_referral = $this->productionProjectRevenue->productionProject->tax_referral;
+                $distribution->ean = $this->projectRevenue->project->ean;
+                $distribution->ean_manager = $this->projectRevenue->project->ean_manager;
+                $distribution->tax_referral = $this->projectRevenue->project->tax_referral;
                 $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
                 $distribution->period_end   = $this->formatDate($distribution->revenue->date_end);
+
             });
 
             $csv = $this->csvExporter->build($chunk, [

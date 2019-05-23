@@ -27,7 +27,7 @@ export default (type, field) => {
                 case 'postalCodeNumber':
                     return 'Postcode nummer';
                 case 'currentParticipations':
-                    return 'Aantal participaties';
+                    return 'Aantal deelnames';
                 case 'occupation':
                     return 'Verbinding';
                 case 'opportunity':
@@ -45,7 +45,7 @@ export default (type, field) => {
                 case 'address':
                     return 'Adres';
                 case 'participationStatusId':
-                    return 'Participatie status';
+                    return 'Deelname status';
                 case 'dateRegister':
                     return 'Datum inschrijving';
                 case 'energySupplierId':
@@ -54,8 +54,8 @@ export default (type, field) => {
                     return 'Datum betaald';
                 case 'contactBirthday':
                     return 'Contact geboortedatum';
-                case 'productionProjectId':
-                    return 'Productieproject';
+                case 'projectId':
+                    return 'Project';
                 case 'dateOfBirth':
                     return 'Geboortedatum';
                 case 'energySupplier':
@@ -69,11 +69,11 @@ export default (type, field) => {
                 case 'giftedByContactId':
                     return 'Geschonken door';
                 case 'participationsSold':
-                    return 'Participaties overgedragen';
+                    return 'Deelnames overgedragen';
                 case 'didAcceptAgreement':
                     return 'Akkoord reglement';
                 case 'participationsRequested':
-                    return 'Participaties aangevraagd';
+                    return 'Deelnames aangevraagd';
             }
             break;
         case 'comperator':

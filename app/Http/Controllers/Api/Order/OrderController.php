@@ -225,7 +225,7 @@ class OrderController extends ApiController
 
         $orderProduct = new OrderProduct();
         $orderProduct->order_id = $orderProductData['orderId'];
-        $orderProduct->cost_center_id = $orderProductData['costCenterId'] ? $orderProductData['costCenterId'] : null;
+        $orderProduct->cost_center_id = $productData['costCenterId'] ? $productData['costCenterId'] : null;
         $orderProduct->amount = $orderProductData['amount'];
         $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
@@ -275,7 +275,7 @@ class OrderController extends ApiController
         $orderProductData = $request->input('orderProduct');
 
         $orderProduct = OrderProduct::find($orderProductData['id']);
-        $orderProduct->cost_center_id = $orderProductData['costCenterId'] ? $orderProductData['costCenterId'] : null;
+        $orderProduct->cost_center_id = $productData['costCenterId'] ? $productData['costCenterId'] : null;
         $orderProduct->amount = $orderProductData['amount'];
         $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;

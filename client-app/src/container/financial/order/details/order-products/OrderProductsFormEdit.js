@@ -50,7 +50,7 @@ const OrderProductsFormEdit = props => {
                         <div className="row">
                             <InputSelect
                                 label={'Kostenplaats'}
-                                id="costCenterId"
+                                id={'costCenterId'}
                                 name={'costCenterId'}
                                 options={props.costCenters}
                                 optionName={'description'}

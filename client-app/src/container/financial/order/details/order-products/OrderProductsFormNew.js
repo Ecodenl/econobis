@@ -377,7 +377,7 @@ class OrderProductsFormNew extends Component {
                         <div className="row">
                             <InputSelect
                                 label={'Kostenplaats'}
-                                id="costCenterId"
+                                id={'costCenterId'}
                                 name={'costCenterId'}
                                 options={this.props.costCenters}
                                 optionName={'description'}

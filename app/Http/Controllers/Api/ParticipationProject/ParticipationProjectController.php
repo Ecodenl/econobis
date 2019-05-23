@@ -334,6 +334,38 @@ class ParticipationProjectController extends ApiController
 //        return $this->show($participation);
 //    }
 
+    public function destroy(ParticipantProject $participantProject)
+    {
+        $this->authorize('manage', ParticipantProject::class);
+
+        try {
+            DB::beginTransaction();
+
+            $deleteParticipation = new DeleteParticipation($participantProject);
+            $result = $deleteParticipation->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+    }
+
+    public function peek()
+    {
+
+        $participants = ParticipantProject::all();
+        $participants->load(['contact', 'project']);
+
+        return ParticipantProjectPeek::collection($participants);
+    }
+
     public function validatePostalCode(&$message, Project $project, Contact $contact)
     {
         $checkText = 'Postcode check: ';

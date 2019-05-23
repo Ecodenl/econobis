@@ -8,15 +8,15 @@ const RevenueDistributionFormDynamicView = props => {
         contactName,
         contactType,
         contactPrimaryContactEnergySupplier,
-        participationsCurrent,
+        participationsDefinitive: participationsDefinitiveOfParticipant,
         type,
     } = props.participation;
     const { datePayed, revenue, payPercentage, kwhStart, kwhEnd, payoutKwh } = props.projectRevenue;
-    const { currentParticipations } = props.project;
+    const { participationsDefinitive: participationsDefinitiveOfProject } = props.project;
 
     let payout =
-        Math.round(((revenue * (payPercentage / 100)) / currentParticipations) * participationsCurrent * 100) / 100;
-    let deliveredTotal = Math.round(((kwhEnd - kwhStart) / currentParticipations) * participationsCurrent * 100) / 100;
+        Math.round(((revenue * (payPercentage / 100)) / participationsDefinitiveOfProject) * participationsDefinitiveOfParticipant * 100) / 100;
+    let deliveredTotal = Math.round(((kwhEnd - kwhStart) / participationsDefinitiveOfProject) * participationsDefinitiveOfParticipant * 100) / 100;
     let kwhReturn = deliveredTotal * payoutKwh;
 
     return (
@@ -24,7 +24,7 @@ const RevenueDistributionFormDynamicView = props => {
             <div className="col-sm-1">{id}</div>
             <div className="col-sm-1">{contactType ? contactType.name : ''}</div>
             <div className="col-sm-2">{contactName ? contactName : ''}</div>
-            <div className="col-sm-1">{participationsCurrent ? participationsCurrent : 0}</div>
+            <div className="col-sm-1">{participationsDefinitiveOfParticipant ? participationsDefinitiveOfParticipant : 0}</div>
             <div className="col-sm-1">{payout ? payout : ''}</div>
             <div className="col-sm-1">{type ? type.name : ''}</div>
             <div className="col-sm-1">{datePayed ? moment(datePayed).format('L') : ''}</div>

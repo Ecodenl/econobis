@@ -227,6 +227,10 @@ class RevenueFormEdit extends Component {
             payoutKwh,
         } = this.state.revenue;
 
+        const currentProjectRevenueCategorie = this.props.projectRevenueCategories.find(
+            projectRevenueCategorie => projectRevenueCategorie.id == categoryId
+        );
+
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -304,88 +308,102 @@ class RevenueFormEdit extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <div className={'panel-part panel-heading'}>
-                        <span className={'h5 text-bold'}>Uitkering kWh velden</span>
-                    </div>
-                </div>
+                {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueKwh' ? (
+                    <React.Fragment>
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Uitkering kWh velden</span>
+                            </div>
+                        </div>
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Beginstand kWh hoog'}
-                        name={'kwhStartHigh'}
-                        value={kwhStartHigh}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Eindstand kWh hoog'}
-                        name={'kwhEndHigh'}
-                        value={kwhEndHigh}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh hoog'}
+                                name={'kwhStartHigh'}
+                                value={kwhStartHigh}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh hoog'}
+                                name={'kwhEndHigh'}
+                                value={kwhEndHigh}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Beginstand kWh laag'}
-                        name={'kwhStartLow'}
-                        value={kwhStartLow}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Eindstand kWh laag'}
-                        name={'kwhEndLow'}
-                        value={kwhEndLow}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh laag'}
+                                name={'kwhStartLow'}
+                                value={kwhStartLow}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh laag'}
+                                name={'kwhEndLow'}
+                                value={kwhEndLow}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Beginstand kWh'}
-                        name={'kwhStart'}
-                        value={kwhStart}
-                        readOnly={true}
-                    />
-                    <InputText type={'number'} label={'Eindstand kWh'} name={'kwhEnd'} value={kwhEnd} readOnly={true} />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh'}
+                                name={'kwhStart'}
+                                value={kwhStart}
+                                readOnly={true}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh'}
+                                name={'kwhEnd'}
+                                value={kwhEnd}
+                                readOnly={true}
+                            />
+                        </div>
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Opbrengst kWh €'}
-                        name={'payoutKwh'}
-                        value={payoutKwh}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Opbrengst kWh €'}
+                                name={'payoutKwh'}
+                                value={payoutKwh}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                    </React.Fragment>
+                ) : null}
 
-                <div className="row">
-                    <div className={'panel-part panel-heading'}>
-                        <span className={'h5 text-bold'}>Uitkering euro velden</span>
-                    </div>
-                </div>
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Euro opbrengst'}
-                        name={'revenue'}
-                        value={revenue}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Uitkering %'}
-                        name={'payPercentage'}
-                        value={payPercentage}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
+                    <React.Fragment>
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Uitkering euro velden</span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Euro opbrengst'}
+                                name={'revenue'}
+                                value={revenue}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Uitkering %'}
+                                name={'payPercentage'}
+                                value={payPercentage}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                    </React.Fragment>
+                ) : null}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">

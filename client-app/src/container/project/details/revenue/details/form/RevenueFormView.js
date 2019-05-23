@@ -52,42 +52,54 @@ const RevenueFormView = props => {
                 <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed).format('L') : ''} />
             </div>
 
-            <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
-                <span className={'h5 text-bold'}>Opbrengst kWh</span>
-            </div>
+            {category.codeRef === 'revenueKwh' ? (
+                <React.Fragment>
+                    <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
+                        <span className={'h5 text-bold'}>Opbrengst kWh</span>
+                    </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && kwhStartHigh} />
-                <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
-            </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && kwhStartHigh} />
+                        <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
+                    </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && kwhStartLow} />
-                <ViewText label={'Eindstand kWh laag'} value={kwhEndLow && kwhEndLow} />
-            </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && kwhStartLow} />
+                        <ViewText label={'Eindstand kWh laag'} value={kwhEndLow && kwhEndLow} />
+                    </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Beginstand kWh'} value={kwhStart && kwhStart} />
-                <ViewText label={'Eindstand kWh'} value={kwhEnd && kwhEnd} />
-            </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Beginstand kWh'} value={kwhStart && kwhStart} />
+                        <ViewText label={'Eindstand kWh'} value={kwhEnd && kwhEnd} />
+                    </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={'Opbrengst kWh €'}
-                    value={
-                        payoutKwh &&
-                        '€ ' + payoutKwh.toLocaleString('nl', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
-                    }
-                />
-            </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText
+                            label={'Opbrengst kWh €'}
+                            value={
+                                payoutKwh &&
+                                '€ ' +
+                                    payoutKwh.toLocaleString('nl', {
+                                        minimumFractionDigits: 3,
+                                        maximumFractionDigits: 3,
+                                    })
+                            }
+                        />
+                    </div>
+                </React.Fragment>
+            ) : null}
 
-            <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
-                <span className={'h5 text-bold'}>Opbrengst euro</span>
-            </div>
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Euro opbrengst'} value={revenue && '€ ' + revenue} />
-                <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
-            </div>
+            {category.codeRef === 'revenueEuro' ? (
+                <React.Fragment>
+                    <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
+                        <span className={'h5 text-bold'}>Opbrengst euro</span>
+                    </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Euro opbrengst'} value={revenue && '€ ' + revenue} />
+                        <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
+                    </div>
+                </React.Fragment>
+            ) : null}
         </div>
     );
 };

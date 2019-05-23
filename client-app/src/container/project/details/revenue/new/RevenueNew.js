@@ -31,6 +31,10 @@ const RevenueNew = props => {
         payoutKwh,
     } = props.revenue;
 
+    const currentProjectRevenueCategorie = props.projectRevenueCategories.find(
+        projectRevenueCategorie => projectRevenueCategorie.id == categoryId
+    );
+
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
             <div className="row">
@@ -103,91 +107,105 @@ const RevenueNew = props => {
                 />
             </div>
 
-            <div className="row">
-                <div className={'panel-part panel-heading'}>
-                    <span className={'h5 text-bold'}>Opbrengst kWh</span>
-                </div>
-            </div>
+            {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueKwh' ? (
+                <React.Fragment>
+                    <div className="row">
+                        <div className={'panel-part panel-heading'}>
+                            <span className={'h5 text-bold'}>Opbrengst kWh</span>
+                        </div>
+                    </div>
 
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Beginstand kWh hoog'}
-                    name={'kwhStartHigh'}
-                    value={kwhStartHigh}
-                    onChangeAction={props.handleInputChange}
-                />
-                <InputText
-                    type={'number'}
-                    label={'Eindstand kWh hoog'}
-                    name={'kwhEndHigh'}
-                    value={kwhEndHigh}
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={'Beginstand kWh hoog'}
+                            name={'kwhStartHigh'}
+                            value={kwhStartHigh}
+                            onChangeAction={props.handleInputChange}
+                        />
+                        <InputText
+                            type={'number'}
+                            label={'Eindstand kWh hoog'}
+                            name={'kwhEndHigh'}
+                            value={kwhEndHigh}
+                            onChangeAction={props.handleInputChange}
+                        />
+                    </div>
 
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Beginstand kWh laag'}
-                    name={'kwhStartLow'}
-                    value={kwhStartLow}
-                    onChangeAction={props.handleInputChange}
-                />
-                <InputText
-                    type={'number'}
-                    label={'Eindstand kWh laag'}
-                    name={'kwhEndLow'}
-                    value={kwhEndLow}
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={'Beginstand kWh laag'}
+                            name={'kwhStartLow'}
+                            value={kwhStartLow}
+                            onChangeAction={props.handleInputChange}
+                        />
+                        <InputText
+                            type={'number'}
+                            label={'Eindstand kWh laag'}
+                            name={'kwhEndLow'}
+                            value={kwhEndLow}
+                            onChangeAction={props.handleInputChange}
+                        />
+                    </div>
 
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Beginstand kWh'}
-                    name={'kwhStart'}
-                    value={kwhStart}
-                    readOnly={true}
-                />
-                <InputText type={'number'} label={'Eindstand kWh'} name={'kwhEnd'} value={kwhEnd} readOnly={true} />
-            </div>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={'Beginstand kWh'}
+                            name={'kwhStart'}
+                            value={kwhStart}
+                            readOnly={true}
+                        />
+                        <InputText
+                            type={'number'}
+                            label={'Eindstand kWh'}
+                            name={'kwhEnd'}
+                            value={kwhEnd}
+                            readOnly={true}
+                        />
+                    </div>
 
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Opbrengst kWh €'}
-                    name={'payoutKwh'}
-                    value={
-                        payoutKwh &&
-                        payoutKwh.toLocaleString('nl', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
-                    }
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={'Opbrengst kWh €'}
+                            name={'payoutKwh'}
+                            value={
+                                payoutKwh &&
+                                payoutKwh.toLocaleString('nl', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
+                            }
+                            onChangeAction={props.handleInputChange}
+                        />
+                    </div>
+                </React.Fragment>
+            ) : null}
 
-            <div className="row">
-                <div className={'panel-part panel-heading'}>
-                    <span className={'h5 text-bold'}>Opbrengst euro</span>
-                </div>
-            </div>
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Uitkering %'}
-                    name={'payPercentage'}
-                    value={payPercentage}
-                    onChangeAction={props.handleInputChange}
-                />
-                <InputText
-                    type={'number'}
-                    label={'Euro opbrengst'}
-                    name={'revenue'}
-                    value={revenue}
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
+            {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
+                <React.Fragment>
+                    <div className="row">
+                        <div className={'panel-part panel-heading'}>
+                            <span className={'h5 text-bold'}>Opbrengst euro</span>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={'Euro opbrengst'}
+                            name={'revenue'}
+                            value={revenue}
+                            onChangeAction={props.handleInputChange}
+                        />
+                        <InputText
+                            type={'number'}
+                            label={'Uitkering %'}
+                            name={'payPercentage'}
+                            value={payPercentage}
+                            onChangeAction={props.handleInputChange}
+                        />
+                    </div>
+                </React.Fragment>
+            ) : null}
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">

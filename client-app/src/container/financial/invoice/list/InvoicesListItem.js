@@ -165,6 +165,17 @@ class InvoicesListItem extends Component {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
+                    {this.props.statusId === 'sent' || this.props.statusId === 'exported'? (
+                        <br />
+                    ) : ('') }
+                    {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? (
+                        <span class="error-span">
+                        {'€' +
+                       amountOpen.toLocaleString('nl', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                           })}
+                        </span> ) : ('') }
                 </td>
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>

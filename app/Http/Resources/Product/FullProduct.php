@@ -47,6 +47,8 @@ class FullProduct extends Resource
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'ledger' => GenericResource::make($this->whenLoaded('ledger')),
                 'ledgerId' => $this->ledger_id,
+                'costCenter' => GenericResource::make($this->whenLoaded('costCenter')),
+                'costCenterId' => $this->cost_center_id,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ];

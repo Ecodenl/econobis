@@ -15,6 +15,7 @@ const ProductDetailsFormGeneralView = props => {
         paymentType,
         administration,
         ledger,
+        costCenter,
     } = props.productDetails;
 
     return (
@@ -49,7 +50,8 @@ const ProductDetailsFormGeneralView = props => {
 
                     {props.usesTwinfield ? (
                         <div className="row">
-                            <ViewText label={'Grootboeknummer'} value={ledger ? ledger.description : ''} />
+                            <ViewText label={'Grootboek'} value={ledger ? ledger.description : ''} />
+                            <ViewText label={'Kostenplaats'} value={costCenter ? costCenter.description : ''} />
                         </div>
                     ) : null}
                 </PanelBody>

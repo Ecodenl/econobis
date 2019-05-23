@@ -428,6 +428,11 @@ Route::namespace('Api')
         Route::post('ledger/{ledger}', 'Ledger\LedgerController@update');
         Route::post('ledger/{ledger}/delete', 'Ledger\LedgerController@destroy');
 
+        Route::get('cost-center/jory', 'CostCenter\CostCenterController@jory');
+        Route::post('cost-center', 'CostCenter\CostCenterController@store');
+        Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
+        Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
+
         // Jory routes voor ophalen data
         Route::get( 'jory', '\\'.JoryController::class.'@multiple');
         Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');

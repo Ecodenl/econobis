@@ -29,12 +29,14 @@ class ProductNewForm extends Component {
                 paymentTypeId: '',
                 administrationId: '',
                 ledgerId: '',
+                costCenterId: '',
             },
             errors: {
                 code: false,
                 name: false,
                 administrationId: false,
                 ledgerId: false,
+                costCenterId: false,
             },
         };
 
@@ -215,6 +217,7 @@ class ProductNewForm extends Component {
             paymentTypeId,
             administrationId,
             ledgerId,
+            costCenterId,
         } = this.state.product;
 
         return (
@@ -314,6 +317,15 @@ class ProductNewForm extends Component {
                                 required={this.props.usesTwinfield ? 'required' : ''}
                                 error={this.state.errors.ledgerId}
                             />
+                            <InputReactSelect
+                                label={'Kostenplaats'}
+                                name={'costCenterId'}
+                                options={this.props.costCenters}
+                                optionName={'description'}
+                                value={costCenterId}
+                                onChangeAction={this.handleReactSelectChange}
+                                multi={false}
+                            />
                         </div>
 
                         {this.state.errorMessage && (
@@ -346,6 +358,7 @@ const mapStateToProps = state => {
         administrations: state.meDetails.administrations,
         products: state.systemData.products,
         ledgers: state.systemData.ledgers,
+        costCenters: state.systemData.costCenters,
         usesTwinfield: state.systemData.usesTwinfield,
     };
 };

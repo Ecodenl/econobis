@@ -38,6 +38,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 vatPercentage: props.product.currentPrice.vatPercentage,
                 price: props.product.currentPrice.price,
                 ledgerId: props.product.ledgerId ? props.product.ledgerId : '',
+                costCenterId: props.product.costCenterId ? props.product.costCenterId : '',
             },
             errors: {
                 amount: false,
@@ -106,6 +107,23 @@ class OrderProductsFormNewProductOneTime extends Component {
                     ...this.state.product,
                     ledgerId: selectedOption,
                     vatPercentage,
+                },
+            },
+            this.updatePrice
+        );
+    };
+
+    handleCostCenterChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState(
+            {
+                ...this.state,
+                product: {
+                    ...this.state.product,
+                    [name]: value,
                 },
             },
             this.updatePrice
@@ -395,7 +413,7 @@ class OrderProductsFormNewProductOneTime extends Component {
             dateLastInvoice,
             datePeriodStartFirstInvoice,
         } = this.state.orderProduct;
-        const { description, durationId, vatPercentage, price, ledgerId } = this.state.product;
+        const { description, durationId, vatPercentage, price, ledgerId, costCenterId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -438,6 +456,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 <InputReactSelect
                                     label={'Grootboek'}
                                     name={'ledgerId'}
+                                    id={'ledgerId'}
                                     options={this.props.ledgers}
                                     optionName={'description'}
                                     value={ledgerId}
@@ -445,6 +464,15 @@ class OrderProductsFormNewProductOneTime extends Component {
                                     multi={false}
                                     required={'required'}
                                     error={this.state.errors.ledgerId}
+                                />
+                                <InputSelect
+                                    label={'Kostenplaats'}
+                                    id={'costCenterId'}
+                                    name={'costCenterId'}
+                                    options={this.props.costCenters}
+                                    optionName={'description'}
+                                    value={costCenterId}
+                                    onChangeAction={this.handleCostCenterChange}
                                 />
                             </div>
                         ) : null}
@@ -586,6 +614,7 @@ const mapStateToProps = state => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        costCenters: state.systemData.costCenters,
         ledgers: state.systemData.ledgers,
         vatCodes: state.systemData.vatCodes,
         usesTwinfield: state.systemData.usesTwinfield,

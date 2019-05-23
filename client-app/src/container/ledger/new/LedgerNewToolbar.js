@@ -3,7 +3,7 @@ import { browserHistory } from 'react-router';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-const VatCodeNewToolbar = () => {
+const LedgerNewToolbar = () => {
     return (
         <div className="row">
             <div className="col-md-4">
@@ -19,4 +19,4 @@ const VatCodeNewToolbar = () => {
     );
 };
 
-export default VatCodeNewToolbar;
+export default LedgerNewToolbar;

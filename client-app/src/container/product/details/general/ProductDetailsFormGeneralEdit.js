@@ -23,6 +23,7 @@ class ProductDetailsFormGeneralEdit extends Component {
             paymentTypeId,
             administrationId,
             ledgerId,
+            costCenterId,
         } = props.productDetails;
 
         this.state = {
@@ -42,6 +43,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                 paymentTypeId: paymentTypeId ? paymentTypeId : '',
                 administrationId: administrationId ? administrationId : '',
                 ledgerId: ledgerId ? ledgerId : '',
+                costCenterId: costCenterId ? costCenterId : '',
             },
             errors: {
                 code: false,
@@ -287,6 +289,7 @@ class ProductDetailsFormGeneralEdit extends Component {
             paymentTypeId,
             administrationId,
             ledgerId,
+            costCenterId,
         } = this.state.product;
 
         let ledgerOptions = this.props.ledgers;
@@ -402,6 +405,15 @@ class ProductDetailsFormGeneralEdit extends Component {
                                     onChangeAction={this.handleReactSelectChange}
                                     multi={false}
                                 />
+                                <InputReactSelect
+                                    label={'Kostenplaats'}
+                                    name={'costCenterId'}
+                                    options={this.props.costCenters}
+                                    optionName={'description'}
+                                    value={costCenterId}
+                                    onChangeAction={this.handleReactSelectChange}
+                                    multi={false}
+                                />
                             </div>
                         ) : null}
 
@@ -449,6 +461,7 @@ const mapStateToProps = state => {
         administrations: state.meDetails.administrations,
         products: state.systemData.products,
         ledgers: state.systemData.ledgers,
+        costCenters: state.systemData.costCenters,
         usesTwinfield: state.systemData.usesTwinfield,
     };
 };

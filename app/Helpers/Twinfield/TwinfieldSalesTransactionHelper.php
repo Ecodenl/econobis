@@ -55,7 +55,6 @@ class TwinfieldSalesTransactionHelper
     public function createAllSalesTransactions(){
         set_time_limit(0);
 
-        // todo ingangsdatum voor welke facturen naar twinfield moeten, hier wellicht per een administratieveld nog van maken?
         foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>', '20190101')->get() as $invoice){
             $response = $this->createSalesTransation($invoice);
 
@@ -162,6 +161,18 @@ class TwinfieldSalesTransactionHelper
             }
             $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  "";
 
+            $order = $invoice->order;
+            $orderProduct = $order->orderProducts->where('product_id', '=', $invoiceProduct->product_id)->first();
+            $costCenterCode = '';
+            if($orderProduct && $orderProduct->costCenter)
+            {
+                $costCenterCode = $orderProduct->costCenter->twinfield_cost_center_code;
+            }
+            if(!$costCenterCode)
+            {
+                $costCenterCode = '';
+            }
+
             if($vatCode && $vatCode->id>0)
             {
                 $vatAmount = $invoiceProduct->getAmountVatAttribute();
@@ -177,6 +188,7 @@ class TwinfieldSalesTransactionHelper
                 ->setId($idTeller)
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
+                ->setDim2($costCenterCode)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit(DebitCredit::CREDIT() );
             if($vatCode && $vatCode->id>0)

@@ -16,6 +16,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
+use App\Eco\CostCenter\CostCenter;
 use App\Eco\Ledger\Ledger;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnoreType;
@@ -60,6 +61,8 @@ use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
+use App\Http\Resources\Administration\FullAdministration;
+use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\Measure\MeasurePeek;
@@ -128,6 +131,7 @@ class SystemData extends Resource
 
         return [
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
+            'administrations' => FullAdministration::collection(Administration::all()),
             'appName' => config('app.name'),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),
@@ -138,6 +142,7 @@ class SystemData extends Resource
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
+            'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
             'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),

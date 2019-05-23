@@ -164,6 +164,8 @@ class MutationFormNew extends Component {
                                     options={participantMutationStatuses}
                                     value={statusId}
                                     onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.statusId}
                                 />
                             </div>
 

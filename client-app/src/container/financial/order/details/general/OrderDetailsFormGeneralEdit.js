@@ -196,7 +196,7 @@ class OrderDetailsFormGeneralEdit extends Component {
     render() {
         const {
             statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId,
-            poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
+            IBAN, ibanAttn, poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
         } = this.state.order;
         const { invoiceCount } = this.props.orderDetails;
 
@@ -335,10 +335,25 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputText
+                                label="IBAN"
+                                name={'IBAN'}
+                                value={IBAN}
+                                readOnly={true}
+                            />
+                            <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}
                                 value={poNumber}
                                 onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label="IBAN t.n.v."
+                                name={'ibanAttn'}
+                                value={ibanAttn}
+                                readOnly={true}
                             />
                         </div>
 

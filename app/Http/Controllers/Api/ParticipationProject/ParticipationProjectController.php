@@ -658,6 +658,16 @@ class ParticipationProjectController extends ApiController
 
         $participantMutation->save();
 
+        DB::transaction(function () use ($participantMutation) {
+            $participantMutation->save();
+
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantMutation->participation->calculator()->run()->save();
+
+            // Herbereken de afhankelijke gegevens op het project
+            $participantMutation->participation->project->calculator()->run()->save();
+        });
+
         // Calculate participation worth based on current book worth of project
         if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
             $currentBookWorthOfProject = $project->currentBookWorth() * $participantMutation->quantity;

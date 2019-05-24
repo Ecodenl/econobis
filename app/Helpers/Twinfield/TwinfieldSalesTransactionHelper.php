@@ -122,7 +122,7 @@ class TwinfieldSalesTransactionHelper
         //Salestransaction - Header XML maken
         $twinfieldSalesTransaction = new \PhpTwinfield\SalesTransaction();
         $twinfieldSalesTransaction
-            ->setDestiny(Destiny::FINAL())
+            ->setDestiny(Destiny::TEMPORARY())
             ->setRaiseWarning(false )
             ->setCode($this->dagboekCode)
             ->setCurrency($this->currency)

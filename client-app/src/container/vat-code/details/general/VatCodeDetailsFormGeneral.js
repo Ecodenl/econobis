@@ -16,7 +16,8 @@ class VatCodeDetailsFormGeneral extends Component {
 
     switchToEdit = () => {
         this.setState({
-            showEdit: true,
+            // todo ze willen voorlopig niet BTW codes wijzigbaar hebben
+            // showEdit: true,
         });
     };
 

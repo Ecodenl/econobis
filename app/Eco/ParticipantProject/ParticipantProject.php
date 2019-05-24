@@ -97,20 +97,20 @@ class ParticipantProject extends Model
     }
 
     //appends
-    public function getParticipationsWorthTotalAttribute()
-    {
-        return $this->participations_current * $this->project->participation_worth;
-    }
-
-    public function getParticipationsCurrentAttribute()
-    {
-        //also change observer
-        if ($this->status_id === 2) {
-            return $this->participations_granted - $this->participations_sold;
-        } else {
-            return 0;
-        }
-    }
+//    public function getParticipationsWorthTotalAttribute()
+//    {
+//        return $this->participations_current * $this->project->participation_worth;
+//    }
+//
+//    public function getParticipationsCurrentAttribute()
+//    {
+//        //also change observer
+//        if ($this->status_id === 2) {
+//            return $this->participations_granted - $this->participations_sold;
+//        } else {
+//            return 0;
+//        }
+//    }
 
     public function calculator()
     {

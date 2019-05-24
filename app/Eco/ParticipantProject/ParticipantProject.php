@@ -136,4 +136,15 @@ class ParticipantProject extends Model
 
         return $mutationStatuses;
     }
+
+    public function getParticipationsReturnsTotalAttribute()
+    {
+        $total = 0;
+
+        foreach($this->mutations as $mutation) {
+            $total += $mutation->returns;
+        }
+
+        return $total;
+    }
 }

@@ -33,6 +33,7 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
+            participationsReturnsTotal,
         } = props.participation;
 
         this.state = {
@@ -137,6 +138,7 @@ class ParticipantFormEdit extends Component {
             participationsDefinitiveWorth,
             amountDefinitive,
             powerKwhConsumption,
+            participationsReturnsTotal,
         } = this.props.participation;
 
         const projectTypeCodeRef = project.projectType.codeRef;
@@ -223,7 +225,7 @@ class ParticipantFormEdit extends Component {
                         label={'Totale opbrengsten'}
                         id={'totalWorthParticipations'}
                         className={'col-sm-6 form-group'}
-                        value={moneyPresenter(0)}
+                        value={moneyPresenter(participationsReturnsTotal)}
                     />
                     <InputSelect
                         label={'Uitkeren op'}

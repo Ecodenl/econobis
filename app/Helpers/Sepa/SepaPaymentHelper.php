@@ -10,10 +10,10 @@ namespace App\Helpers\Sepa;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\Sepa;
-use App\Eco\Invoice\Invoice;
-use App\Eco\ParticipantTransaction\ParticipantTransaction;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -52,7 +52,7 @@ class SepaPaymentHelper
         //Generate Sepa XML file
        $xml = $this->createXml();
 
-       $this->createParticipantTransactions();
+       $this->createParticipantMutations();
        //Save file on server, also fill in fk sepa_id for invoices
        return $this->saveSepaFile($xml);
     }
@@ -176,17 +176,18 @@ class SepaPaymentHelper
         return $xml;
     }
 
-    private function createParticipantTransactions(){
+    private function createParticipantMutations(){
         foreach ($this->invoices as $invoice){
-            $participantTransaction = new ParticipantTransaction();
-            $participantTransaction->participation_id = $invoice->revenueDistribution->participation_id;
-            $participantTransaction->type_id = 2;
-            $participantTransaction->date_transaction = Carbon::today();
-            $participantTransaction->amount = $invoice->revenueDistribution->payout;
-            $participantTransaction->iban = $invoice->revenueDistribution->participation->iban_payout ? $invoice->revenueDistribution->participation->iban_payout : $invoice->revenueDistribution->contact->iban;
-            $participantTransaction->referral = $invoice->number;
-            $participantTransaction->date_booking = Carbon::today()->nextWeekday();
-            $participantTransaction->save();
+            $participantMutation = new ParticipantMutation();
+            $participantMutation->participation_id = $invoice->revenueDistribution->participation_id;
+            $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $invoice->revenueDistribution->participation->project->project_type_id)->value('id');
+            $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+            $participantMutation->returns = $invoice->revenueDistribution->payout;
+            $participantMutation->payout_kwh = $invoice->revenueDistribution->payout_kwh;
+            $participantMutation->paid_on = $invoice->revenueDistribution->participation->iban_payout ? $invoice->revenueDistribution->participation->iban_payout : $invoice->revenueDistribution->contact->iban;
+            $participantMutation->entry = $invoice->number;
+            $participantMutation->date_payment = Carbon::today()->nextWeekday();
+            $participantMutation->save();
         }
     }
 

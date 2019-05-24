@@ -272,8 +272,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             let twinFieldOfficeAndOrganizationCodeNotUnique = false;
 
             this.props.administrations.map (
-                existingTwinfieldAdministration => (existingTwinfieldAdministration.twinfieldOfficeCode === administration.twinfieldOfficeCode
-                && existingTwinfieldAdministration.twinfieldOrganizationCode === administration.twinfieldOrganizationCode && existingTwinfieldAdministration.id !== administration.id
+                existingTwinfieldAdministration => ( (existingTwinfieldAdministration.twinfieldOfficeCode && administration.twinfieldOfficeCode && existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() === administration.twinfieldOfficeCode.toUpperCase() )
+                && ( existingTwinfieldAdministration.twinfieldOrganizationCode && administration.twinfieldOrganizationCode && existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() === administration.twinfieldOrganizationCode.toUpperCase() ) && existingTwinfieldAdministration.id !== administration.id
                 && ( twinFieldOfficeAndOrganizationCodeNotUnique = true )
             ));
 

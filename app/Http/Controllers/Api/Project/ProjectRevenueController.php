@@ -42,6 +42,7 @@ class ProjectRevenueController extends ApiController
             'type',
             'category',
             'project.administration',
+            'project.projectType',
             'createdBy',
         ]);
 

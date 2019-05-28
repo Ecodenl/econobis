@@ -95,7 +95,7 @@ const RevenueFormView = props => {
                         <span className={'h5 text-bold'}>Opbrengst euro</span>
                     </div>
                     <div className="row" onClick={props.switchToEdit}>
-                        <ViewText label={'Euro opbrengst'} value={revenue && '€ ' + revenue} />
+                        {/*<ViewText label={'Euro opbrengst'} value={revenue && '€ ' + revenue} />*/}
                         <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
                     </div>
                 </React.Fragment>

@@ -387,13 +387,13 @@ class RevenueFormEdit extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Euro opbrengst'}
-                                name={'revenue'}
-                                value={revenue}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            {/*<InputText*/}
+                            {/*    type={'number'}*/}
+                            {/*    label={'Euro opbrengst'}*/}
+                            {/*    name={'revenue'}*/}
+                            {/*    value={revenue}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*/>*/}
                             <InputText
                                 type={'number'}
                                 label={'Uitkering %'}

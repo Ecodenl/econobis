@@ -11,13 +11,27 @@ const RevenueDistributionFormDynamicView = props => {
         participationsDefinitive: participationsDefinitiveOfParticipant,
         type,
     } = props.participation;
-    const { datePayed, revenue, payPercentage, kwhStart, kwhEnd, payoutKwh } = props.projectRevenue;
-    const { participationsDefinitive: participationsDefinitiveOfProject } = props.project;
+    const { datePayed, revenue, payPercentage, kwhStart, kwhEnd, payoutKwh, dateBegin, dateEnd } = props.projectRevenue;
+    const { participationsDefinitive: participationsDefinitiveOfProject, projectType, currentBookWorth } = props.project;
 
-    let payout =
-        Math.round(((revenue * (payPercentage / 100)) / participationsDefinitiveOfProject) * participationsDefinitiveOfParticipant * 100) / 100;
-    let deliveredTotal = Math.round(((kwhEnd - kwhStart) / participationsDefinitiveOfProject) * participationsDefinitiveOfParticipant * 100) / 100;
-    let kwhReturn = deliveredTotal * payoutKwh;
+    let payout = 0;
+    let deliveredTotal = 0;
+    let kwhReturn = 0;
+
+    switch(projectType.codeRef) {
+        case 'obligation':
+            // Type 1
+            payout = Math.round(((currentBookWorth * participationsDefinitiveOfParticipant) * payPercentage) / 100);
+
+            // Type 2
+            payout = Math.round(((currentBookWorth * participationsDefinitiveOfParticipant) * payPercentage) / 100);
+            break;
+        default:
+            payout = Math.round(((revenue * (payPercentage / 100)) / participationsDefinitiveOfProject) * participationsDefinitiveOfParticipant * 100) / 100;
+            deliveredTotal = Math.round(((kwhEnd - kwhStart) / participationsDefinitiveOfProject) * participationsDefinitiveOfParticipant * 100) / 100;
+            kwhReturn = deliveredTotal * payoutKwh;
+            break;
+    }
 
     return (
         <div className={`row border`}>

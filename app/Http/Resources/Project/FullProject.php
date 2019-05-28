@@ -64,6 +64,7 @@ class FullProject extends Resource
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'updatedAt' => $this->updated_at,
                 'valueCourses' => FullProjectValueCourse::collection($this->whenLoaded('projectValueCourses')),
+                'currentBookWorth' => $this->currentBookWorth(),
                 'revenues' => FullProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'participants' => FullParticipantProject::collection($this->whenLoaded('participantsProject')),
 //                'participationsWorthTotal' => $this->getParticipationsWorthTotal(),

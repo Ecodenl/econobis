@@ -189,13 +189,13 @@ const RevenueNew = props => {
                         </div>
                     </div>
                     <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Euro opbrengst'}
-                            name={'revenue'}
-                            value={revenue}
-                            onChangeAction={props.handleInputChange}
-                        />
+                        {/*<InputText*/}
+                        {/*    type={'number'}*/}
+                        {/*    label={'Euro opbrengst'}*/}
+                        {/*    name={'revenue'}*/}
+                        {/*    value={revenue}*/}
+                        {/*    onChangeAction={props.handleInputChange}*/}
+                        {/*/>*/}
                         <InputText
                             type={'number'}
                             label={'Uitkering %'}

@@ -175,7 +175,7 @@ class TwinfieldCustomerHelper
             ->setField2($address->present()->streetAndNumber())
             ->setCity($address->city)
             ->setCountry($address->country_id)
-            ->setContact($address->contact->full_name);
+            ->setContact(substr($address->contact->full_name, 0, 40));
 
         $customer->addAddress($customer_address);
     }

@@ -159,7 +159,7 @@ class TwinfieldCustomerHelper
     public function fillCustomerDimension(Contact $contact, Customer $customer){
         $customer
             ->setCode("D".$contact->number)
-            ->setName($contact->full_name)
+            ->setName(substr($contact->full_name, 0, 40))
             ->setOffice($this->office);
     }
 
@@ -207,7 +207,7 @@ class TwinfieldCustomerHelper
         $customer_bank
             ->setDefault(true)
             ->setIban($contact->iban)
-            ->setAscription($contact->iban_attn ? $contact->iban_attn : $contact->full_name);
+            ->setAscription($contact->iban_attn ? $contact->iban_attn : substr($contact->full_name, 0, 40));
 
         $customer->addBank($customer_bank);
     }

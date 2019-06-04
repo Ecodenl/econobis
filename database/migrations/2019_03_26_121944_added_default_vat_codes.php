@@ -20,7 +20,7 @@ class AddedDefaultVatCodes extends Migration
                 'description' => 'BTW 0%',
                 'percentage' => '0.00',
                 'twinfield_code' => 'VN',
-                'twinfield_ledger_code' => '',
+                'twinfield_ledger_code' => '1515',
             ],
             [
                 'start_date' => '2019-01-01',

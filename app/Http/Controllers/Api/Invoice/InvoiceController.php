@@ -301,7 +301,7 @@ class InvoiceController extends ApiController
                         $invoiceResponse = InvoiceHelper::send($invoice);
                         InvoiceHelper::invoiceSend($invoice);
                         array_push($response, $invoiceResponse);
-                    } catch (WebformException $e) {
+                    } catch (\Exception $e) {
                         Log::error($e->getMessage());
                         InvoiceHelper::invoiceErrorSending($invoice);
                     }

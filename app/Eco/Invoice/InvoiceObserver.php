@@ -46,10 +46,10 @@ class InvoiceObserver
     public function saving(Invoice $invoice){
         $oldInvoiceStatusId = $invoice->getOriginal('status_id');
 
-        // Als de status van to-send naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
+        // Als de status van is-sending naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
         // Deze wordt later gebruikt om eenmalige producten te checken of ze betaald zijn en om de periode weer te geven op de factuur.
         // Ook passen we de volgende factuur geplande factuur datum aan van de order
-        if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'to-send'){
+        if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'is-sending'){
             $order = $invoice->order;
 
             $invoice->subject =  $order->subject;

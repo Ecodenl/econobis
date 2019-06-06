@@ -26,7 +26,7 @@ class FullProjectRevenue extends Resource
                 'confirmed' => $this->confirmed,
                 'dateBegin' => $this->date_begin,
                 'dateEnd' => $this->date_end,
-                'dateEntry' => $this->date_entry,
+                'dateReference' => $this->date_reference,
                 'dateConfirmed' => $this->date_confirmed,
                 'kwhStart' => $this->kwh_start,
                 'kwhEnd' => $this->kwh_end,

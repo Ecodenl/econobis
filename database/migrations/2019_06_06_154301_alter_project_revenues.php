@@ -17,6 +17,7 @@ class AlterProjectRevenues extends Migration
         Schema::table('project_revenues', function (Blueprint $table) {
             $table->double('key_amount_first_percentage', 10, 2)->nullable()->after('pay_percentage');
             $table->double('pay_percentage_valid_from_key_amount', 5, 2)->nullable()->after('key_amount_first_percentage');
+            $table->renameColumn('date_entry', 'date_reference');
         });
     }
 

@@ -17,7 +17,7 @@ const RevenueFormView = props => {
         confirmed,
         dateBegin,
         dateEnd,
-        dateEntry,
+        dateReference,
         dateConfirmed,
         kwhStart,
         kwhEnd,
@@ -50,7 +50,7 @@ const RevenueFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Datum invoer'} value={dateEntry ? moment(dateEntry).format('L') : ''} />
+                <ViewText label={'Peildatum'} value={dateReference ? moment(dateReference).format('L') : ''} />
                 <ViewText label={'Datum definitief'} value={dateConfirmed ? moment(dateConfirmed).format('L') : ''} />
             </div>
 

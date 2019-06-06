@@ -35,7 +35,7 @@ class RevenueFormEdit extends Component {
             confirmed,
             dateBegin,
             dateEnd,
-            dateEntry,
+            dateReference,
             dateConfirmed,
             kwhStart,
             kwhEnd,
@@ -60,7 +60,7 @@ class RevenueFormEdit extends Component {
                 confirmed: !!confirmed,
                 dateBegin: dateBegin,
                 dateEnd: dateEnd,
-                dateEntry: dateEntry,
+                dateReference: dateReference,
                 dateConfirmed: dateConfirmed ? dateConfirmed : '',
                 kwhStart: kwhStart ? kwhStart : 0,
                 kwhEnd: kwhEnd ? kwhEnd : 0,
@@ -80,7 +80,7 @@ class RevenueFormEdit extends Component {
                 categoryId: false,
                 dateBegin: false,
                 dateEnd: false,
-                dateEntry: false,
+                dateReference: false,
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -209,8 +209,8 @@ class RevenueFormEdit extends Component {
             errors.dateEnd = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(revenue.dateEntry + '')) {
-            errors.dateEntry = true;
+        if (validator.isEmpty(revenue.dateReference + '')) {
+            errors.dateReference = true;
             hasErrors = true;
         }
         this.setState({ ...this.state, errors: errors });
@@ -237,7 +237,7 @@ class RevenueFormEdit extends Component {
             confirmed,
             dateBegin,
             dateEnd,
-            dateEntry,
+            dateReference,
             dateConfirmed,
             kwhStart,
             kwhEnd,
@@ -304,12 +304,12 @@ class RevenueFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={'Datum invoer'}
-                        name={'dateEntry'}
-                        value={dateEntry}
+                        label={'Peildatum'}
+                        name={'dateReference'}
+                        value={dateReference}
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
-                        error={this.state.errors.dateEntry}
+                        error={this.state.errors.dateReference}
                     />
                     <InputDate
                         label={'Datum definitief'}

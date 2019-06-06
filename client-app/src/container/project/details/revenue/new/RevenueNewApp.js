@@ -21,7 +21,7 @@ class RevenueNewApp extends Component {
                 confirmed: false,
                 dateBegin: '',
                 dateEnd: '',
-                dateEntry: moment(),
+                dateReference: moment(),
                 dateConfirmed: '',
                 kwhStart: 0,
                 kwhEnd: 0,
@@ -41,7 +41,7 @@ class RevenueNewApp extends Component {
                 categoryId: false,
                 dateBegin: false,
                 dateEnd: false,
-                dateEntry: false,
+                dateReference: false,
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -151,8 +151,8 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(revenue.dateEntry + '')) {
-            errors.dateEntry = true;
+        if (validator.isEmpty(revenue.dateReference + '')) {
+            errors.dateReference = true;
             hasErrors = true;
         }
 

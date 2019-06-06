@@ -21,7 +21,7 @@ const RevenueNew = props => {
         confirmed,
         dateBegin,
         dateEnd,
-        dateEntry,
+        dateReference,
         dateConfirmed,
         kwhStart,
         kwhEnd,
@@ -83,12 +83,12 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputDate
-                    label={'Datum invoer'}
-                    name={'dateEntry'}
-                    value={dateEntry}
+                    label={'Peildatum'}
+                    name={'dateReference'}
+                    value={dateReference}
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
-                    error={props.errors.dateEntry}
+                    error={props.errors.dateReference}
                 />
                 <InputDate
                     label={'Datum definitief'}

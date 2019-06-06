@@ -13,7 +13,7 @@ class ConversionInvoicesSetOrdersCorrect extends Migration
      */
     public function up()
     {
-        $invoices = Invoice::whereIn('status_id', ['sent', 'paid'])->whereDate('created_at', '>=', '2019-05-22')->get();
+        $invoices = Invoice::whereIn('status_id', ['sent', 'paid'])->whereDate('created_at', '>=', '2019-05-22')->whereDate('created_at', '<', '2019-06-07')->get();
 
         foreach ($invoices as $invoice){
             $order = $invoice->order;

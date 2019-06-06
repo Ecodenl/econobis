@@ -5,6 +5,11 @@ import moment from 'moment';
 moment.locale('nl');
 
 import ViewText from '../../../../../../components/form/ViewText';
+import styled from '@emotion/styled';
+
+const StyledEm = styled.em`
+    font-weight: normal;
+`;
 
 const RevenueFormView = props => {
     const {
@@ -23,6 +28,8 @@ const RevenueFormView = props => {
         revenue,
         datePayed,
         payPercentage,
+        keyAmountFirstPercentage,
+        payPercentageValidFromKeyAmount,
         category,
         payoutKwh,
     } = props.revenue;
@@ -95,9 +102,25 @@ const RevenueFormView = props => {
                         <span className={'h5 text-bold'}>Opbrengst euro</span>
                     </div>
                     <div className="row" onClick={props.switchToEdit}>
-                        {/*<ViewText label={'Euro opbrengst'} value={revenue && '€ ' + revenue} />*/}
                         <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
+                        <ViewText
+                            label={
+                                <React.Fragment>
+                                    Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                </React.Fragment>
+                            }
+                            value={keyAmountFirstPercentage && '€ ' + keyAmountFirstPercentage}
+                        />
                     </div>
+                    {keyAmountFirstPercentage ? (
+                        <div className="row">
+                            <ViewText
+                                type={'number'}
+                                label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                value={payPercentageValidFromKeyAmount && payPercentageValidFromKeyAmount + '%'}
+                            />
+                        </div>
+                    ) : null}
                 </React.Fragment>
             ) : null}
         </div>

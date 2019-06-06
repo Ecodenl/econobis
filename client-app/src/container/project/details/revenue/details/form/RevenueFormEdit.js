@@ -19,6 +19,11 @@ import {
     getParticipants,
 } from '../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../components/modal/Modal';
+import styled from '@emotion/styled';
+
+const StyledEm = styled.em`
+    font-weight: normal;
+`;
 
 class RevenueFormEdit extends Component {
     constructor(props) {
@@ -41,6 +46,8 @@ class RevenueFormEdit extends Component {
             revenue,
             datePayed,
             payPercentage,
+            keyAmountFirstPercentage,
+            payPercentageValidFromKeyAmount,
             typeId,
             payoutKwh,
         } = props.revenue;
@@ -64,6 +71,8 @@ class RevenueFormEdit extends Component {
                 revenue: revenue ? revenue : '',
                 datePayed: datePayed ? datePayed : '',
                 payPercentage: payPercentage ? payPercentage : '',
+                keyAmountFirstPercentage: keyAmountFirstPercentage ? keyAmountFirstPercentage : 0,
+                payPercentageValidFromKeyAmount: payPercentageValidFromKeyAmount ? payPercentageValidFromKeyAmount : '',
                 typeId: typeId ? typeId : '',
                 payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(3) : '',
             },
@@ -104,13 +113,16 @@ class RevenueFormEdit extends Component {
         let value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            revenue: {
-                ...this.state.revenue,
-                [name]: value,
+        this.setState(
+            {
+                ...this.state,
+                revenue: {
+                    ...this.state.revenue,
+                    [name]: value,
+                },
             },
-        });
+            () => this.linkedValueAdjustment(name)
+        );
 
         setTimeout(() => {
             const kwhStart =
@@ -129,6 +141,19 @@ class RevenueFormEdit extends Component {
                 },
             });
         }, 200);
+    };
+
+    linkedValueAdjustment = name => {
+        if (name === 'keyAmountFirstPercentage') {
+            if (!this.state.revenue.keyAmountFirstPercentage || this.state.revenue.keyAmountFirstPercentage == 0)
+                this.setState({
+                    ...this.state,
+                    revenue: {
+                        ...this.state.revenue,
+                        payPercentageValidFromKeyAmount: '',
+                    },
+                });
+        }
     };
 
     handleInputChangeDate(value, name) {
@@ -223,6 +248,8 @@ class RevenueFormEdit extends Component {
             revenue,
             datePayed,
             payPercentage,
+            keyAmountFirstPercentage,
+            payPercentageValidFromKeyAmount,
             typeId,
             payoutKwh,
         } = this.state.revenue;
@@ -387,13 +414,6 @@ class RevenueFormEdit extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            {/*<InputText*/}
-                            {/*    type={'number'}*/}
-                            {/*    label={'Euro opbrengst'}*/}
-                            {/*    name={'revenue'}*/}
-                            {/*    value={revenue}*/}
-                            {/*    onChangeAction={this.handleInputChange}*/}
-                            {/*/>*/}
                             <InputText
                                 type={'number'}
                                 label={'Uitkering %'}
@@ -401,7 +421,28 @@ class RevenueFormEdit extends Component {
                                 value={payPercentage}
                                 onChangeAction={this.handleInputChange}
                             />
+                            <InputText
+                                label={
+                                    <React.Fragment>
+                                        Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                    </React.Fragment>
+                                }
+                                name={'keyAmountFirstPercentage'}
+                                value={keyAmountFirstPercentage}
+                                onChangeAction={this.handleInputChange}
+                            />
                         </div>
+                        {this.state.revenue.keyAmountFirstPercentage ? (
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                    name={'payPercentageValidFromKeyAmount'}
+                                    value={payPercentageValidFromKeyAmount}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+                        ) : null}
                     </React.Fragment>
                 ) : null}
 

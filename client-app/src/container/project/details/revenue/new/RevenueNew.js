@@ -8,7 +8,12 @@ import InputDate from '../../../../../components/form/InputDate';
 import ButtonText from '../../../../../components/button/ButtonText';
 import PanelFooter from '../../../../../components/panel/PanelFooter';
 import InputText from '../../../../../components/form/InputText';
-import InputToggle from '../../../../../components/form/InputToggle';
+
+import styled from '@emotion/styled';
+
+const StyledEm = styled.em`
+    font-weight: normal;
+`;
 
 const RevenueNew = props => {
     const {
@@ -27,6 +32,8 @@ const RevenueNew = props => {
         revenue,
         datePayed,
         payPercentage,
+        keyAmountFirstPercentage,
+        payPercentageValidFromKeyAmount,
         categoryId,
         payoutKwh,
     } = props.revenue;
@@ -189,13 +196,6 @@ const RevenueNew = props => {
                         </div>
                     </div>
                     <div className="row">
-                        {/*<InputText*/}
-                        {/*    type={'number'}*/}
-                        {/*    label={'Euro opbrengst'}*/}
-                        {/*    name={'revenue'}*/}
-                        {/*    value={revenue}*/}
-                        {/*    onChangeAction={props.handleInputChange}*/}
-                        {/*/>*/}
                         <InputText
                             type={'number'}
                             label={'Uitkering %'}
@@ -203,7 +203,28 @@ const RevenueNew = props => {
                             value={payPercentage}
                             onChangeAction={props.handleInputChange}
                         />
+                        <InputText
+                            label={
+                                <React.Fragment>
+                                    Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                </React.Fragment>
+                            }
+                            name={'keyAmountFirstPercentage'}
+                            value={keyAmountFirstPercentage}
+                            onChangeAction={props.handleInputChange}
+                        />
                     </div>
+                    {keyAmountFirstPercentage ? (
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                name={'payPercentageValidFromKeyAmount'}
+                                value={payPercentageValidFromKeyAmount}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        </div>
+                    ) : null}
                 </React.Fragment>
             ) : null}
 

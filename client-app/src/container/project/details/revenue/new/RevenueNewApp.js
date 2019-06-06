@@ -32,6 +32,8 @@ class RevenueNewApp extends Component {
                 revenue: '',
                 datePayed: '',
                 payPercentage: '',
+                keyAmountFirstPercentage: '',
+                payPercentageValidFromKeyAmount: '',
                 typeId: '',
                 payoutKwh: '',
             },
@@ -51,13 +53,16 @@ class RevenueNewApp extends Component {
         let value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            revenue: {
-                ...this.state.revenue,
-                [name]: value,
+        this.setState(
+            {
+                ...this.state,
+                revenue: {
+                    ...this.state.revenue,
+                    [name]: value,
+                },
             },
-        });
+            () => this.linkedValueAdjustment(name)
+        );
 
         setTimeout(() => {
             const kwhStart =
@@ -76,6 +81,19 @@ class RevenueNewApp extends Component {
                 },
             });
         }, 200);
+    };
+
+    linkedValueAdjustment = name => {
+        if (name === 'keyAmountFirstPercentage') {
+            if (!this.state.revenue.keyAmountFirstPercentage || this.state.revenue.keyAmountFirstPercentage == 0)
+                this.setState({
+                    ...this.state,
+                    revenue: {
+                        ...this.state.revenue,
+                        payPercentageValidFromKeyAmount: '',
+                    },
+                });
+        }
     };
 
     handleInputChangeDate(value, name) {

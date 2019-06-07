@@ -35,31 +35,16 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Geleverd totaal</div>
                 <div className="col-sm-1">Teruggave energiebelasting</div>
             </div>
-            {props.projectRevenue.confirmed ? (
-                props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
-                    props.projectRevenue.distribution.data.map(participation => {
-                        return (
-                            <RevenueDistributionFormStaticView
-                                key={participation.id}
-                                participation={participation}
-                                showCheckboxList={props.showCheckboxList}
-                                checkedAll={props.checkedAll}
-                                toggleParticipantCheck={props.toggleParticipantCheck}
-                                toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
-                            />
-                        );
-                    })
-                ) : (
-                    <div>Geen deelnemers bekend.</div>
-                )
-            ) : props.participations && props.participations.data.length > 0 ? (
-                props.participations.data.map(participation => {
+            {props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
+                props.projectRevenue.distribution.data.map(participation => {
                     return (
-                        <RevenueDistributionFormDynamicView
+                        <RevenueDistributionFormStaticView
                             key={participation.id}
                             participation={participation}
-                            projectRevenue={props.projectRevenue}
-                            project={props.project}
+                            showCheckboxList={props.showCheckboxList}
+                            checkedAll={props.checkedAll}
+                            toggleParticipantCheck={props.toggleParticipantCheck}
+                            toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
                         />
                     );
                 })

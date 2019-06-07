@@ -13,11 +13,7 @@ import PanelFooter from '../../../../../../components/panel/PanelFooter';
 
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 
-import {
-    fetchRevenue,
-    getDistribution,
-    getParticipants,
-} from '../../../../../../actions/project/ProjectDetailsActions';
+import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../components/modal/Modal';
 import styled from '@emotion/styled';
 
@@ -220,11 +216,7 @@ class RevenueFormEdit extends Component {
                 this.props.fetchRevenue(revenue.id);
 
                 setTimeout(() => {
-                    if (revenue.confirmed == 1) {
-                        this.props.getDistribution(revenue.id, 0);
-                    } else {
-                        this.props.getParticipants(revenue.id, 0);
-                    }
+                    this.props.getDistribution(revenue.id, 0);
                 }, 250);
 
                 this.props.switchToView();

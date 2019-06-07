@@ -14,9 +14,7 @@ class RevenueDetailsForm extends Component {
     }
 
     render() {
-        return isEmpty(this.props.projectRevenue) ? (
-            <div>Geen gegevens gevonden.</div>
-        ) : (
+        return this.props.projectRevenue.id ? (
             <div>
                 {this.props.projectRevenue.confirmed == 1 && (
                     <Panel>
@@ -32,6 +30,8 @@ class RevenueDetailsForm extends Component {
                 <RevenueDistributionForm />
                 <RevenueConclusion />
             </div>
+        ) : (
+            <div>Geen gegevens gevonden.</div>
         );
     }
 }

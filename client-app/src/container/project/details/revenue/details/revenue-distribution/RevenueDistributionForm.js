@@ -15,11 +15,7 @@ import { hashHistory } from 'react-router';
 import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
-import {
-    getDistribution,
-    getParticipants,
-    previewReport,
-} from '../../../../../../actions/project/ProjectDetailsActions';
+import { getDistribution, previewReport } from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
 
 class RevenueDistributionForm extends Component {
@@ -71,21 +67,13 @@ class RevenueDistributionForm extends Component {
             });
         });
 
-        if (this.props.projectRevenue.confirmed == 1) {
-            this.props.getDistribution(this.props.projectRevenue.id, 0);
-        } else {
-            this.props.getParticipants(this.props.projectRevenue.id, 0);
-        }
+        this.props.getDistribution(this.props.projectRevenue.id, 0);
     }
 
     changePage = event => {
         const page = event.selected;
 
-        if (this.props.projectRevenue.confirmed == 1) {
-            this.props.getDistribution(this.props.projectRevenue.id, page);
-        } else {
-            this.props.getParticipants(this.props.projectRevenue.id, page);
-        }
+        this.props.getDistribution(this.props.projectRevenue.id, page);
     };
 
     handleInputChange(event) {

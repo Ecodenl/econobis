@@ -206,6 +206,8 @@ class ProjectRevenueController extends ApiController
         $participants = $project->participantsProject->where('participations_definitive', '>', 0);
 
         $totalParticipations = $project->participations_definitive;
+        $currentBookWorth = $project->currentBookWorth();
+        $participationWorth = $totalParticipations * $currentBookWorth;
 
         foreach ($participants as $participant) {
             $contact = Contact::find($participant->contact_id);
@@ -215,7 +217,7 @@ class ProjectRevenueController extends ApiController
 
             // If participant already is added to project revenue distribution then update
             if(ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->exists()) {
-                $distribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->firstOrNew();
+                $distribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->first();
             } else {
                 $distribution = new ProjectRevenueDistribution();
             }
@@ -241,7 +243,7 @@ class ProjectRevenueController extends ApiController
                 = $participant->participations_definitive;
 
             if($projectRevenue->category->code_ref == 'revenueEuro') {
-                $distribution->payout = round((($projectRevenue->revenue
+                $distribution->payout = round((($participationWorth
                             * ($projectRevenue->pay_percentage / 100))
                         / $totalParticipations)
                     * $participant->participations_definitive, 2);

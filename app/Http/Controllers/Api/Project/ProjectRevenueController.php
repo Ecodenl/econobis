@@ -139,8 +139,9 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->save();
 
+        $this->saveDistribution($projectRevenue);
+
         if ($projectRevenue->confirmed) {
-            $this->saveDistribution($projectRevenue);
             $projectRevenue->load('distribution');
         }
 
@@ -189,8 +190,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->save();
 
-        $projectRevenue->confirmed
-        && $this->saveDistribution($projectRevenue);
+        $this->saveDistribution($projectRevenue);
 
         return FullProjectRevenue::collection(ProjectRevenue::where('project_id',
             $projectRevenue->project_id)
@@ -202,11 +202,8 @@ class ProjectRevenueController extends ApiController
         ProjectRevenue $projectRevenue
     )
     {
-
-        $projectRevenue->save();
-
         $project = $projectRevenue->project;
-        $participants = $project->participantsProject;
+        $participants = $project->participantsProject->where('participations_definitive', '>', 0);
 
         $totalParticipations = $project->participations_definitive;
 
@@ -216,11 +213,22 @@ class ProjectRevenueController extends ApiController
             $primaryContactEnergySupplier
                 = $contact->primaryContactEnergySupplier;
 
-            $distribution = new ProjectRevenueDistribution();
+            // If participant already is added to project revenue distribution then update
+            if(ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->exists()) {
+                $distribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->firstOrNew();
+            } else {
+                $distribution = new ProjectRevenueDistribution();
+            }
 
             $distribution->revenue_id
                 = $projectRevenue->id;
             $distribution->contact_id = $contact->id;
+
+            if($projectRevenue->confirmed) {
+                $distribution->status = 'confirmed';
+            } else {
+                $distribution->status = 'active';
+            }
 
             if ($primaryAddress) {
                 $distribution->address = $primaryAddress->present()

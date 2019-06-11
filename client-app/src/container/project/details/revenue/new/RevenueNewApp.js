@@ -18,6 +18,7 @@ class RevenueNewApp extends Component {
             revenue: {
                 projectId: props.params.projectId,
                 categoryId: '',
+                distributionTypeId: '',
                 confirmed: false,
                 dateBegin: '',
                 dateEnd: '',

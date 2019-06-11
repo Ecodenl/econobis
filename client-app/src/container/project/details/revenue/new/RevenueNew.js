@@ -18,6 +18,7 @@ const StyledEm = styled.em`
 const RevenueNew = props => {
     const {
         typeId,
+        distributionTypeId,
         confirmed,
         dateBegin,
         dateEnd,
@@ -111,6 +112,16 @@ const RevenueNew = props => {
                     name={'datePayed'}
                     value={datePayed}
                     onChangeAction={props.handleInputChangeDate}
+                />
+            </div>
+
+            <div className="row">
+                <InputSelect
+                    label={'Type opbrengst verdeling'}
+                    name={'distributionTypeId'}
+                    options={props.projectRevenueDistributionTypes}
+                    value={distributionTypeId}
+                    onChangeAction={props.handleInputChange}
                 />
             </div>
 
@@ -246,6 +257,7 @@ const mapStateToProps = state => {
     return {
         projectRevenueTypes: state.systemData.projectRevenueTypes,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
+        projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
     };
 };
 

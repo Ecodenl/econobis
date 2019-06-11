@@ -28,6 +28,7 @@ class RevenueFormEdit extends Component {
         const {
             id,
             categoryId,
+            distributionTypeId,
             confirmed,
             dateBegin,
             dateEnd,
@@ -53,6 +54,7 @@ class RevenueFormEdit extends Component {
             revenue: {
                 id,
                 categoryId: categoryId,
+                distributionTypeId: distributionTypeId,
                 confirmed: !!confirmed,
                 dateBegin: dateBegin ? dateBegin.date : '',
                 dateEnd: dateEnd ? dateEnd.date : '',
@@ -226,6 +228,7 @@ class RevenueFormEdit extends Component {
     render() {
         const {
             categoryId,
+            distributionTypeId,
             confirmed,
             dateBegin,
             dateEnd,
@@ -324,6 +327,16 @@ class RevenueFormEdit extends Component {
                         name={'datePayed'}
                         value={datePayed}
                         onChangeAction={this.handleInputChangeDate}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputSelect
+                        label={'Type opbrengst verdeling'}
+                        name={'distributionTypeId'}
+                        options={this.props.projectRevenueDistributionTypes}
+                        value={distributionTypeId}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 
@@ -489,6 +502,7 @@ const mapStateToProps = state => {
         revenue: state.projectRevenue,
         projectRevenueTypes: state.systemData.projectRevenueTypes,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
+        projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
     };
 };
 

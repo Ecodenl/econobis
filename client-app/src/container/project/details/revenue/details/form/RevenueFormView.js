@@ -32,6 +32,7 @@ const RevenueFormView = props => {
         payPercentageValidFromKeyAmount,
         category,
         payoutKwh,
+        distributionType,
     } = props.revenue;
 
     return (
@@ -60,6 +61,10 @@ const RevenueFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Type opbrengst'} value={type ? type.name : ''} />
                 <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed.date).format('L') : ''} />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Type opbrengst verdeling'} value={distributionType ? distributionType.name : ''} />
             </div>
 
             {category.codeRef === 'revenueKwh' ? (

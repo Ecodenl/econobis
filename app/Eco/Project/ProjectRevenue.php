@@ -58,4 +58,11 @@ class ProjectRevenue extends Model
     {
         return ($this->kwh_end - $this->kwh_start);
     }
+
+    public function getDistributionType()
+    {
+        if(!$this->distribution_type_id) return null;
+
+        return ProjectRevenueDistributionType::get($this->distribution_type_id);
+    }
 }

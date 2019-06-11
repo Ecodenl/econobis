@@ -18,7 +18,7 @@ class AlterProjectRevenues extends Migration
             $table->double('key_amount_first_percentage', 10, 2)->nullable()->after('pay_percentage');
             $table->double('pay_percentage_valid_from_key_amount', 5, 2)->nullable()->after('key_amount_first_percentage');
             $table->renameColumn('date_entry', 'date_reference');
-            $table->integer('distribution_type_id')->nullable()->after('project_id');
+            $table->string('distribution_type_id')->nullable()->after('project_id');
         });
     }
 

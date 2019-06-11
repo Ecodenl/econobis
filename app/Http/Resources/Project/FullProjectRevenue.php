@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Project;
 
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -22,6 +23,8 @@ class FullProjectRevenue extends Resource
                 'id' => $this->id,
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
+                'distributionTypeId' => $this->distribution_type_id,
+                'distributionType' => FullEnumWithIdAndName::make($this->getDistributionType()),
                 'projectId' => $this->project_id,
                 'confirmed' => $this->confirmed,
                 'dateBegin' => $this->date_begin,

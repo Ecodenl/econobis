@@ -51,6 +51,7 @@ use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
 use App\Eco\Project\ProjectRevenueCategory;
+use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\Project\ProjectRevenueType;
 use App\Eco\Project\ProjectStatus;
 use App\Eco\Project\ProjectType;
@@ -175,6 +176,7 @@ class SystemData extends Resource
             'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
             'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
+            'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
             'appName' => config('app.name'),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),

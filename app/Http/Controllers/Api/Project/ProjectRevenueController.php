@@ -9,6 +9,7 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
@@ -140,7 +141,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->save();
 
-        $this->saveDistribution($projectRevenue);
+        $this->saveParticipantsOfDistribution($projectRevenue);
 
         if ($projectRevenue->confirmed) {
             $projectRevenue->load('distribution');
@@ -192,7 +193,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->save();
 
-        $this->saveDistribution($projectRevenue);
+        $this->saveParticipantsOfDistribution($projectRevenue);
 
         return FullProjectRevenue::collection(ProjectRevenue::where('project_id',
             $projectRevenue->project_id)
@@ -200,89 +201,82 @@ class ProjectRevenueController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
-    public function saveDistribution(
+    public function saveParticipantsOfDistribution(
         ProjectRevenue $projectRevenue
     )
     {
         $project = $projectRevenue->project;
         $participants = $project->participantsProject->where('participations_definitive', '>', 0);
 
-//        $totalParticipations = $project->participations_definitive;
-//        $currentBookWorth = $project->currentBookWorth();
-//        $participationWorth = $totalParticipations * $currentBookWorth;
-
         foreach ($participants as $participant) {
-            $contact = Contact::find($participant->contact_id);
-            $primaryAddress = $contact->primaryAddress;
-            $primaryContactEnergySupplier
-                = $contact->primaryContactEnergySupplier;
-
-            // If participant already is added to project revenue distribution then update
-            if(ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->exists()) {
-                $distribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->first();
-            } else {
-                $distribution = new ProjectRevenueDistribution();
-            }
-
-            $distribution->revenue_id
-                = $projectRevenue->id;
-            $distribution->contact_id = $contact->id;
-
-            if($projectRevenue->confirmed) {
-                $distribution->status = 'confirmed';
-            } else {
-                $distribution->status = 'active';
-            }
-
-            if ($primaryAddress) {
-                $distribution->address = $primaryAddress->present()
-                    ->streetAndNumber();
-                $distribution->postal_code = $primaryAddress->postal_code;
-                $distribution->city = $primaryAddress->city;
-            }
-
-//            $distribution->participations_amount
-//                = $participant->participations_definitive;
-
-//            if($projectRevenue->category->code_ref == 'revenueEuro') {
-//                $distribution->payout = round((($participationWorth
-//                            * ($projectRevenue->pay_percentage / 100))
-//                        / $totalParticipations)
-//                    * $participant->participations_definitive, 2);
-//            }
-
-            $distribution->calculator()->run();
-
-            if($projectRevenue->category->code_ref == 'revenueKwh') {
-                $distribution->delivered_total
-                    = round((($projectRevenue->kwh_end
-                            - $projectRevenue->kwh_start)
-                        / $totalParticipations)
-                    * $participant->participations_definitive, 2);
-
-                $distribution->payout_kwh = $projectRevenue->payout_kwh;
-            }
-
-            $distribution->payout_type
-                = $participant->participantProjectPayoutType->name;
-
-            if ($primaryContactEnergySupplier) {
-                $distribution->energy_supplier_name
-                    = $primaryContactEnergySupplier->energySupplier->name;
-
-                $distribution->es_id
-                    = $primaryContactEnergySupplier->energySupplier->id;
-
-                $distribution->energy_supplier_ean_electricity
-                    = $primaryContactEnergySupplier->ean_electricity;
-
-                $distribution->energy_supplier_number
-                    = $primaryContactEnergySupplier->es_number;
-            }
-
-            $distribution->participation_id = $participant->id;
-            $distribution->save();
+            $this->saveDistribution($projectRevenue, $participant);
         }
+    }
+
+    public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)
+    {
+        $contact = Contact::find($participant->contact_id);
+        $primaryAddress = $contact->primaryAddress;
+        $primaryContactEnergySupplier
+            = $contact->primaryContactEnergySupplier;
+
+        // If participant already is added to project revenue distribution then update
+        if(ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->exists()) {
+            $distribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->first();
+        } else {
+            $distribution = new ProjectRevenueDistribution();
+        }
+
+        $distribution->revenue_id
+            = $projectRevenue->id;
+        $distribution->contact_id = $contact->id;
+
+        if($projectRevenue->confirmed) {
+            $distribution->status = 'confirmed';
+        } else {
+            $distribution->status = 'active';
+        }
+
+        if ($primaryAddress) {
+            $distribution->address = $primaryAddress->present()
+                ->streetAndNumber();
+            $distribution->postal_code = $primaryAddress->postal_code;
+            $distribution->city = $primaryAddress->city;
+        }
+
+        if($projectRevenue->category->code_ref == 'revenueKwh') {
+            $distribution->delivered_total
+                = round((($projectRevenue->kwh_end
+                        - $projectRevenue->kwh_start)
+                    / $totalParticipations)
+                * $participant->participations_definitive, 2);
+
+            $distribution->payout_kwh = $projectRevenue->payout_kwh;
+        }
+
+        $distribution->payout_type
+            = $participant->participantProjectPayoutType->name;
+
+        if ($primaryContactEnergySupplier) {
+            $distribution->energy_supplier_name
+                = $primaryContactEnergySupplier->energySupplier->name;
+
+            $distribution->es_id
+                = $primaryContactEnergySupplier->energySupplier->id;
+
+            $distribution->energy_supplier_ean_electricity
+                = $primaryContactEnergySupplier->ean_electricity;
+
+            $distribution->energy_supplier_number
+                = $primaryContactEnergySupplier->es_number;
+        }
+
+        $distribution->participation_id = $participant->id;
+        $distribution->save();
+
+        // Recalculate values of distribution after saving
+        $distribution->calculator()->run();
+        $distribution->save();
     }
 
     public function createEnergySupplierReport(

@@ -44,7 +44,7 @@ class ParticipantProjectObserver
 
                 $projectRevenueController = new ProjectRevenueController();
 
-                $projectRevenueController->saveDistribution($projectRevenue);
+                $projectRevenueController->saveDistribution($projectRevenue, $participantProject);
             }
         }
     }

@@ -45,18 +45,21 @@ const RevenueFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Begin periode'} value={dateBegin ? moment(dateBegin).format('L') : ''} />
-                <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
+                <ViewText label={'Begin periode'} value={dateBegin ? moment(dateBegin.date).format('L') : ''} />
+                <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd.date).format('L') : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Peildatum'} value={dateReference ? moment(dateReference).format('L') : ''} />
-                <ViewText label={'Datum definitief'} value={dateConfirmed ? moment(dateConfirmed).format('L') : ''} />
+                <ViewText label={'Peildatum'} value={dateReference ? moment(dateReference.date).format('L') : ''} />
+                <ViewText
+                    label={'Datum definitief'}
+                    value={dateConfirmed ? moment(dateConfirmed.date).format('L') : ''}
+                />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Type opbrengst'} value={type ? type.name : ''} />
-                <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed).format('L') : ''} />
+                <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed.date).format('L') : ''} />
             </div>
 
             {category.codeRef === 'revenueKwh' ? (

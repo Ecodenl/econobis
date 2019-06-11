@@ -54,4 +54,9 @@ class ProjectRevenueDistribution extends Model
         return number_format( $this->delivered_total, '2',',', '.' );
     }
 
+    public function calculator()
+    {
+        return new ProjectRevenueDistributionCalculator($this);
+    }
+
 }

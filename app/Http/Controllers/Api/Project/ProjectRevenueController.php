@@ -205,9 +205,9 @@ class ProjectRevenueController extends ApiController
         $project = $projectRevenue->project;
         $participants = $project->participantsProject->where('participations_definitive', '>', 0);
 
-        $totalParticipations = $project->participations_definitive;
-        $currentBookWorth = $project->currentBookWorth();
-        $participationWorth = $totalParticipations * $currentBookWorth;
+//        $totalParticipations = $project->participations_definitive;
+//        $currentBookWorth = $project->currentBookWorth();
+//        $participationWorth = $totalParticipations * $currentBookWorth;
 
         foreach ($participants as $participant) {
             $contact = Contact::find($participant->contact_id);
@@ -239,15 +239,17 @@ class ProjectRevenueController extends ApiController
                 $distribution->city = $primaryAddress->city;
             }
 
-            $distribution->participations_amount
-                = $participant->participations_definitive;
+//            $distribution->participations_amount
+//                = $participant->participations_definitive;
 
-            if($projectRevenue->category->code_ref == 'revenueEuro') {
-                $distribution->payout = round((($participationWorth
-                            * ($projectRevenue->pay_percentage / 100))
-                        / $totalParticipations)
-                    * $participant->participations_definitive, 2);
-            }
+//            if($projectRevenue->category->code_ref == 'revenueEuro') {
+//                $distribution->payout = round((($participationWorth
+//                            * ($projectRevenue->pay_percentage / 100))
+//                        / $totalParticipations)
+//                    * $participant->participations_definitive, 2);
+//            }
+
+            $distribution->calculator()->run();
 
             if($projectRevenue->category->code_ref == 'revenueKwh') {
                 $distribution->delivered_total

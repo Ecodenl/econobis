@@ -330,15 +330,56 @@ class RevenueFormEdit extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <InputSelect
-                        label={'Type opbrengst verdeling'}
-                        name={'distributionTypeId'}
-                        options={this.props.projectRevenueDistributionTypes}
-                        value={distributionTypeId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
+                    <React.Fragment>
+                        {this.props.revenue.project.projectType.codeRef !== 'loan' ? (
+                            <div className="row">
+                                <InputSelect
+                                    label={'Type opbrengst verdeling'}
+                                    name={'distributionTypeId'}
+                                    options={this.props.projectRevenueDistributionTypes}
+                                    value={distributionTypeId}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+                        ) : null}
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Uitkering euro velden</span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Uitkering %'}
+                                name={'payPercentage'}
+                                value={payPercentage}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                label={
+                                    <React.Fragment>
+                                        Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                    </React.Fragment>
+                                }
+                                name={'keyAmountFirstPercentage'}
+                                value={keyAmountFirstPercentage}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        {this.state.revenue.keyAmountFirstPercentage ? (
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                    name={'payPercentageValidFromKeyAmount'}
+                                    value={payPercentageValidFromKeyAmount}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+                        ) : null}
+                    </React.Fragment>
+                ) : null}
 
                 {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueKwh' ? (
                     <React.Fragment>
@@ -408,46 +449,6 @@ class RevenueFormEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
-                    </React.Fragment>
-                ) : null}
-
-                {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
-                    <React.Fragment>
-                        <div className="row">
-                            <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Uitkering euro velden</span>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Uitkering %'}
-                                name={'payPercentage'}
-                                value={payPercentage}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputText
-                                label={
-                                    <React.Fragment>
-                                        Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                    </React.Fragment>
-                                }
-                                name={'keyAmountFirstPercentage'}
-                                value={keyAmountFirstPercentage}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                        {this.state.revenue.keyAmountFirstPercentage ? (
-                            <div className="row">
-                                <InputText
-                                    type={'number'}
-                                    label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
-                                    name={'payPercentageValidFromKeyAmount'}
-                                    value={payPercentageValidFromKeyAmount}
-                                    onChangeAction={this.handleInputChange}
-                                />
-                            </div>
-                        ) : null}
                     </React.Fragment>
                 ) : null}
 

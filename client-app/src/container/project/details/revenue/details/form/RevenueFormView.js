@@ -6,6 +6,7 @@ moment.locale('nl');
 
 import ViewText from '../../../../../../components/form/ViewText';
 import styled from '@emotion/styled';
+import InputSelect from '../../../../../../components/form/InputSelect';
 
 const StyledEm = styled.em`
     font-weight: normal;
@@ -63,10 +64,6 @@ const RevenueFormView = props => {
                 <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed.date).format('L') : ''} />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Type opbrengst verdeling'} value={distributionType ? distributionType.name : ''} />
-            </div>
-
             {category.codeRef === 'revenueKwh' ? (
                 <React.Fragment>
                     <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
@@ -106,6 +103,14 @@ const RevenueFormView = props => {
 
             {category.codeRef === 'revenueEuro' ? (
                 <React.Fragment>
+                    {props.revenue.project.projectType.codeRef !== 'loan' ? (
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText
+                                label={'Type opbrengst verdeling'}
+                                value={distributionType ? distributionType.name : ''}
+                            />
+                        </div>
+                    ) : null}
                     <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
                         <span className={'h5 text-bold'}>Opbrengst euro</span>
                     </div>

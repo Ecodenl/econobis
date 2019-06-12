@@ -115,16 +115,55 @@ const RevenueNew = props => {
                 />
             </div>
 
-            {1 == 1 ? (
-                <div className="row">
-                    <InputSelect
-                        label={'Type opbrengst verdeling'}
-                        name={'distributionTypeId'}
-                        options={props.projectRevenueDistributionTypes}
-                        value={distributionTypeId}
-                        onChangeAction={props.handleInputChange}
-                    />
-                </div>
+            {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
+                <React.Fragment>
+                    {props.project.projectType.codeRef !== 'loan' ? (
+                        <div className="row">
+                            <InputSelect
+                                label={'Type opbrengst verdeling'}
+                                name={'distributionTypeId'}
+                                options={props.projectRevenueDistributionTypes}
+                                value={distributionTypeId}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        </div>
+                    ) : null}
+                    <div className="row">
+                        <div className={'panel-part panel-heading'}>
+                            <span className={'h5 text-bold'}>Opbrengst euro</span>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={'Uitkering %'}
+                            name={'payPercentage'}
+                            value={payPercentage}
+                            onChangeAction={props.handleInputChange}
+                        />
+                        <InputText
+                            label={
+                                <React.Fragment>
+                                    Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                </React.Fragment>
+                            }
+                            name={'keyAmountFirstPercentage'}
+                            value={keyAmountFirstPercentage}
+                            onChangeAction={props.handleInputChange}
+                        />
+                    </div>
+                    {keyAmountFirstPercentage ? (
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                name={'payPercentageValidFromKeyAmount'}
+                                value={payPercentageValidFromKeyAmount}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        </div>
+                    ) : null}
+                </React.Fragment>
             ) : null}
 
             {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueKwh' ? (
@@ -201,46 +240,6 @@ const RevenueNew = props => {
                 </React.Fragment>
             ) : null}
 
-            {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
-                <React.Fragment>
-                    <div className="row">
-                        <div className={'panel-part panel-heading'}>
-                            <span className={'h5 text-bold'}>Opbrengst euro</span>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Uitkering %'}
-                            name={'payPercentage'}
-                            value={payPercentage}
-                            onChangeAction={props.handleInputChange}
-                        />
-                        <InputText
-                            label={
-                                <React.Fragment>
-                                    Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                </React.Fragment>
-                            }
-                            name={'keyAmountFirstPercentage'}
-                            value={keyAmountFirstPercentage}
-                            onChangeAction={props.handleInputChange}
-                        />
-                    </div>
-                    {keyAmountFirstPercentage ? (
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
-                                name={'payPercentageValidFromKeyAmount'}
-                                value={payPercentageValidFromKeyAmount}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
-                    ) : null}
-                </React.Fragment>
-            ) : null}
-
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
                     <ButtonText
@@ -260,6 +259,7 @@ const mapStateToProps = state => {
         projectRevenueTypes: state.systemData.projectRevenueTypes,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
         projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
+        project: state.projectDetails,
     };
 };
 

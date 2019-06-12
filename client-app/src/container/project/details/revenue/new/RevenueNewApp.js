@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import validator from 'validator';
 import { hashHistory } from 'react-router';
+import { connect } from 'react-redux';
 
 import RevenueNewToolbar from './RevenueNewToolbar';
 import RevenueNew from './RevenueNew';
@@ -9,6 +10,8 @@ import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment';
+
+import { fetchProject } from '../../../../../actions/project/ProjectDetailsActions';
 
 class RevenueNewApp extends Component {
     constructor(props) {
@@ -47,6 +50,16 @@ class RevenueNewApp extends Component {
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeDateConfirmed = this.handleInputChangeDateConfirmed.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.fetchProject(this.props.params.projectId);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.params.projectId !== prevProps.params.projectId) {
+            this.props.fetchProject(this.props.params.projectId);
+        }
     }
 
     handleInputChange = event => {
@@ -196,4 +209,19 @@ class RevenueNewApp extends Component {
     }
 }
 
-export default RevenueNewApp;
+const mapStateToProps = state => {
+    return {
+        project: state.projectDetails,
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    fetchProject: id => {
+        dispatch(fetchProject(id));
+    },
+});
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(RevenueNewApp);

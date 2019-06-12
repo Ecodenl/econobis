@@ -54,7 +54,11 @@ const RevenueDistributionFormList = props => {
                 initialPage={0}
                 onPageChangeAction={props.changePage}
                 recordsPerPage={100}
-                totalRecords={props.projectRevenue.distribution.meta && props.projectRevenue.distribution.meta.total}
+                totalRecords={
+                    props.projectRevenue.distribution &&
+                    props.projectRevenue.distribution.meta &&
+                    props.projectRevenue.distribution.meta.total
+                }
             />
         </div>
     );

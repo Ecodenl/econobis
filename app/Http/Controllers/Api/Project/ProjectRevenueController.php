@@ -244,16 +244,6 @@ class ProjectRevenueController extends ApiController
             $distribution->city = $primaryAddress->city;
         }
 
-        if($projectRevenue->category->code_ref == 'revenueKwh') {
-            $distribution->delivered_total
-                = round((($projectRevenue->kwh_end
-                        - $projectRevenue->kwh_start)
-                    / $totalParticipations)
-                * $participant->participations_definitive, 2);
-
-            $distribution->payout_kwh = $projectRevenue->payout_kwh;
-        }
-
         $distribution->payout_type
             = $participant->participantProjectPayoutType->name;
 

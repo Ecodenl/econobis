@@ -41,8 +41,6 @@ use App\Eco\Occupation\Occupation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
-use App\Eco\ParticipantProject\ParticipantProjectStatus;
-use App\Eco\ParticipantTransaction\ParticipantTransactionType;
 use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
@@ -169,9 +167,7 @@ class SystemData extends Resource
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
-            'participantProjectStatus' => GenericResource::collection(ParticipantProjectStatus::all()),
             'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
-            'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
             'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
             'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),

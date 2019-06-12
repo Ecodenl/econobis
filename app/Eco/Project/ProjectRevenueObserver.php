@@ -21,7 +21,7 @@ class ProjectRevenueObserver
 
     public function saving(ProjectRevenue $projectRevenue)
     {
-        if($projectRevenue->isDirty('confirmed')) {
+        if($projectRevenue->confirmed == 1) {
             $project = $projectRevenue->project;
 
             $project->date_interest_bearing = $projectRevenue->date_end;

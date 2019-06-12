@@ -26,7 +26,6 @@ use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\PostalCodeLink\PostalCodeLink;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteParticipation;
@@ -169,8 +168,6 @@ class ParticipationProjectController extends ApiController
             'participantProjectPayoutType',
             'giftedByContact',
             'legalRepContact',
-            'transactions.type',
-            'transactions.createdBy',
             'mutations.type',
             'mutations.status',
             'mutations.statusLog',
@@ -252,10 +249,6 @@ class ParticipationProjectController extends ApiController
         $this->authorize('manage', ParticipantProject::class);
 
         $data = $requestInput
-            ->integer('participationsRequested')->alias('participations_requested')->next()
-            ->integer('participationsGranted')->alias('participations_granted')->next()
-            ->integer('participationsSold')->alias('participations_sold')->next()
-            ->integer('participationsRestSale')->alias('participations_rest_sale')->next()
             ->boolean('didAcceptAgreement')->alias('did_accept_agreement')->next()
             ->integer('giftedByContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('gifted_by_contact_id')->next()
             ->string('ibanPayout')->alias('iban_payout')->next()

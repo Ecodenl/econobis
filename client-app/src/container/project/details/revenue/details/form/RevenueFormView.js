@@ -6,7 +6,6 @@ moment.locale('nl');
 
 import ViewText from '../../../../../../components/form/ViewText';
 import styled from '@emotion/styled';
-import InputSelect from '../../../../../../components/form/InputSelect';
 
 const StyledEm = styled.em`
     font-weight: normal;

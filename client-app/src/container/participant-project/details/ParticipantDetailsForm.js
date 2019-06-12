@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import ParticipantFormGeneral from './form/ParticipantFormGeneral';
-import TransactionForm from './transaction/TransactionForm';
 import ObligationNumberForm from './obligation-number/ObligationNumberForm';
 import MutationForm from './mutation/list/MutationForm';
 import ParticipantDetailsConclusion from './conclusion';
@@ -33,7 +32,6 @@ class ParticipantDetailsForm extends Component {
             <div>
                 <ParticipantFormGeneral />
                 <MutationForm />
-                {this.props.keyUserRole && this.props.keyUserRole.hasRole && 1 == 0 && <TransactionForm />}
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
                 <ParticipantDetailsConclusion />
             </div>

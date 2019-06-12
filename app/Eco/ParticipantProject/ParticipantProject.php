@@ -6,7 +6,6 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
-use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
@@ -46,11 +45,6 @@ class ParticipantProject extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function participantProjectStatus()
-    {
-        return $this->belongsTo(ParticipantProjectStatus::class, 'status_id');
-    }
-
     public function participantProjectPayoutType()
     {
         return $this->belongsTo(ParticipantProjectPayoutType::class, 'type_id');
@@ -69,11 +63,6 @@ class ParticipantProject extends Model
     public function projectRevenueDistributions()
     {
         return $this->hasMany(ProjectRevenueDistribution::class, 'participation_id');
-    }
-
-    public function transactions()
-    {
-        return $this->hasMany(ParticipantTransaction::class, 'participation_id')->orderBy('date_transaction', 'desc');
     }
 
     public function mutations()
@@ -102,22 +91,6 @@ class ParticipantProject extends Model
     {
         return $this->hasMany(Task::class, 'participation_project_id');
     }
-
-    //appends
-//    public function getParticipationsWorthTotalAttribute()
-//    {
-//        return $this->participations_current * $this->project->participation_worth;
-//    }
-//
-//    public function getParticipationsCurrentAttribute()
-//    {
-//        //also change observer
-//        if ($this->status_id === 2) {
-//            return $this->participations_granted - $this->participations_sold;
-//        } else {
-//            return 0;
-//        }
-//    }
 
     public function calculator()
     {

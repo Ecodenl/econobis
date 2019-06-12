@@ -389,9 +389,6 @@ class TemplateVariableHelper
             case 'min_participaties':
                 return $model->min_participations;
                 break;
-//            case 'uitgegeven_participaties':
-//                return $model->getIssuedParticipations();
-//                break;
             case 'participaties_in_optie':
                 return $model->getParticipationsInOption();
                 break;
@@ -458,7 +455,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'status':
-                return $model->participantProjectStatus->name;
+                return $model->UniqueMutationStatuses->implode('name', ', ');
                 break;
             case 'productie_project':
                 return $model->project->name;

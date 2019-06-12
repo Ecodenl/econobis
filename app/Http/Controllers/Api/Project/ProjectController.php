@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api\Project;
 
 use App\Eco\Contact\ContactStatus;
 use App\Eco\Email\Email;
-use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteProject;
@@ -275,54 +274,58 @@ class ProjectController extends ApiController
     }
 
     public function getChartData(Project $project){
-        $participantProjectStatuses = ParticipantProjectStatus::all();
+        //TODO fixing chart data
+//        $participantProjectStatuses = ParticipantProjectStatus::all();
+//
+//        $chartData = [];
+//
+//        foreach($participantProjectStatuses as $participantProjectStatus) {
+//            $chartData[] = [
+//                "name" => $participantProjectStatus->name,
+//                "count" => count($project->participantsProject) ? $project->participantsProject()->where('status_id', $participantProjectStatus->id)->count() : 0,
+//            ];
+//        };
 
-        $chartData = [];
-
-        foreach($participantProjectStatuses as $participantProjectStatus) {
-            $chartData[] = [
-                "name" => $participantProjectStatus->name,
-                "count" => count($project->participantsProject) ? $project->participantsProject()->where('status_id', $participantProjectStatus->id)->count() : 0,
-            ];
-        };
-
-        return ['code' => $project->code, 'data' => $chartData];
+        return ['code' => $project->code, 'data' => null];
     }
 
     public function getChartDataParticipations(Project $project){
-        $participantProjectStatuses = ParticipantProjectStatus::all();
+        //TODO fixing chart data
+//        $participantProjectStatuses = ParticipantProjectStatus::all();
+//
+//        $chartData = [];
+//
+//        foreach($participantProjectStatuses as $participantProjectStatus) {
+//            $total = 0;
+//
+//            foreach ($project->participantsProject as $participant){
+//                if($participant->status_id == $participantProjectStatus->id){
+//                    $total += ($participant->participations_granted - $participant->participations_sold);
+//                }
+//            }
+//            $chartData[] = [
+//                "name" => $participantProjectStatus->name,
+//                "count" => $total,
+//            ];
+//        };
 
-        $chartData = [];
-
-        foreach($participantProjectStatuses as $participantProjectStatus) {
-            $total = 0;
-
-            foreach ($project->participantsProject as $participant){
-                if($participant->status_id == $participantProjectStatus->id){
-                    $total += ($participant->participations_granted - $participant->participations_sold);
-                }
-            }
-            $chartData[] = [
-                "name" => $participantProjectStatus->name,
-                "count" => $total,
-            ];
-        };
-
-        return ['code' => $project->code, 'data' => $chartData];
+        return ['code' => $project->code, 'data' => null];
     }
 
     public function getChartDataStatus(Project $project){
-        $contactStatuses = ContactStatus::collection();
+        //TODO fixing chart data
 
-        $chartData = [];
+//        $contactStatuses = ContactStatus::collection();
+//
+//        $chartData = [];
+//
+//        foreach($contactStatuses as $contactStatus) {
+//            $chartData[] = [
+//                "name" => $contactStatus->name,
+//                "count" => count($project->participantsProject) ? $project->participantsProject()->leftJoin('contacts', 'participation_project.contact_id', '=', 'contacts.id')->where('contacts.status_id', $contactStatus->id)->count() : 0,
+//            ];
+//        };
 
-        foreach($contactStatuses as $contactStatus) {
-            $chartData[] = [
-                "name" => $contactStatus->name,
-                "count" => count($project->participantsProject) ? $project->participantsProject()->leftJoin('contacts', 'participation_project.contact_id', '=', 'contacts.id')->where('contacts.status_id', $contactStatus->id)->count() : 0,
-            ];
-        };
-
-        return ['code' => $project->code, 'data' => $chartData];
+        return ['code' => $project->code, 'data' => null];
     }
 }

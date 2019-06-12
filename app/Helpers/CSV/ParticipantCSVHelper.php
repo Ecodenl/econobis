@@ -49,7 +49,6 @@ class ParticipantCSVHelper
                 'giftedByContact',
                 'legalRepContact',
                 'project',
-                'participantProjectStatus',
                 'participantProjectPayoutType'
             ]);
 
@@ -233,7 +232,6 @@ class ParticipantCSVHelper
                     'iban_attn' => 'Iban uitkeren t.n.v.',
                     'iban_contact' => 'Iban contact',
                     'iban_attn_contact' => 'Iban contact uitkeren t.n.v.',
-                    'participantProjectStatus.name' => 'Status',
                     'date_register' => 'Inschrijfdatum',
                     'date_end' => 'Einddatum',
                     'participantProjectPayoutType.name' => 'Uitkeren op',

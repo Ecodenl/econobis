@@ -44,8 +44,6 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationObserver;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectObserver;
-use App\Eco\ParticipantTransaction\ParticipantTransaction;
-use App\Eco\ParticipantTransaction\ParticipantTransactionObserver;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\PaymentInvoice\PaymentInvoiceObserver;
 use App\Eco\Person\Person;
@@ -101,7 +99,6 @@ class ObserverServiceProvider extends ServiceProvider
         Project::observe(ProjectObserver::class);
         ProjectValueCourse::observe(ProjectValueCourseObserver::class);
         ProjectRevenue::observe(ProjectRevenueObserver::class);
-        ParticipantTransaction::observe(ParticipantTransactionObserver::class);
         ParticipantMutation::observe(ParticipantMutationObserver::class);
         Administration::observe(AdministrationObserver::class);
         Product::observe(ProductObserver::class);

@@ -293,7 +293,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         participation: state.participantProjectDetails,
-        participantProjectStatuses: state.systemData.participantProjectStatus,
         participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
     };
 };

@@ -31,7 +31,6 @@ use App\Eco\Order\OrderStatus;
 use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
-use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Product\Product;
@@ -677,10 +676,10 @@ class ExternalWebformController extends Controller
             $project = Project::find($data['project_id']);
             if (!$project) $this->error('Er is een ongeldige waarde voor productieproject meegegeven.');
 
-            $status = ParticipantProjectStatus::find($data['status_id']);
+            $status = null; //TODO participantproject status is deleted
             if (!$status) {
                 $this->log('Geen bekende waarde voor participatiestatus meegegeven, default naar optie.');
-                $status = ParticipantProjectStatus::find(1);
+                $status = null;
             }
 
             $type = ParticipantProjectPayoutType::find($data['type_id']);
@@ -700,17 +699,12 @@ class ExternalWebformController extends Controller
             $ibanPayout = $this->checkIban($data['iban_payout'], 'participatie.');
             $participation = ParticipantProject::create([
                 'contact_id' => $contact->id,
-                'status_id' => $status->id,
                 'project_id' => $project->id,
                 'date_register' => Carbon::make($data['date_register']),
-                'participations_requested' => $data['participations_requested'] == '' ? 0 : $data['participations_requested'],
-                'participations_sold' => 0,
-                'participations_rest_sale' => 0,
                 'iban_payout' => $ibanPayout,
                 'iban_payout_attn' => $data['iban_payout_attn'],
                 'type_id' => $type->id,
                 'power_kwh_consumption' => $data['power_kwh_consumption'] == '' ? 0 : $data['power_kwh_consumption'],
-                'participations_granted' => $data['participations_granted'] == '' ? 0 : $data['participations_granted'],
                 'did_accept_agreement' => (bool)$data['did_accept_agreement'],
                 'date_payed' => Carbon::make($data['date_payed']),
             ]);

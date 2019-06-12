@@ -69,7 +69,11 @@ class RevenueNewApp extends Component {
                 revenue: {
                     ...this.state.revenue,
                     dateBegin: payload.dateInterestBearing,
-                    dateEnd: payload.dateInterestBearing ? moment(payload.dateInterestBearing).add(1, 'years') : '',
+                    dateEnd: payload.dateInterestBearing
+                        ? moment(payload.dateInterestBearing)
+                              .add(1, 'years')
+                              .format('Y-MM-DD')
+                        : '',
                 },
             });
         });

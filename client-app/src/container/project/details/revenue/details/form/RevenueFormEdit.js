@@ -56,10 +56,10 @@ class RevenueFormEdit extends Component {
                 categoryId: categoryId,
                 distributionTypeId: distributionTypeId,
                 confirmed: !!confirmed,
-                dateBegin: dateBegin ? dateBegin.date : '',
-                dateEnd: dateEnd ? dateEnd.date : '',
-                dateReference: dateReference ? dateReference.date : '',
-                dateConfirmed: dateConfirmed ? dateConfirmed.date : '',
+                dateBegin: dateBegin ? moment(dateBegin.date).format('Y-MM-DD') : '',
+                dateEnd: dateEnd ? moment(dateEnd.date).format('Y-MM-DD') : '',
+                dateReference: dateReference ? moment(dateReference.date).format('Y-MM-DD') : '',
+                dateConfirmed: dateConfirmed ? moment(dateConfirmed.date).format('Y-MM-DD') : '',
                 kwhStart: kwhStart ? kwhStart : 0,
                 kwhEnd: kwhEnd ? kwhEnd : 0,
                 kwhStartHigh: kwhStartHigh ? kwhStartHigh : '',
@@ -67,7 +67,7 @@ class RevenueFormEdit extends Component {
                 kwhStartLow: kwhStartLow ? kwhStartLow : '',
                 kwhEndLow: kwhEndLow ? kwhEndLow : '',
                 revenue: revenue ? revenue : '',
-                datePayed: datePayed ? datePayed.date : '',
+                datePayed: datePayed ? moment(datePayed.date).format('Y-MM-DD') : '',
                 payPercentage: payPercentage ? payPercentage : '',
                 keyAmountFirstPercentage: keyAmountFirstPercentage ? keyAmountFirstPercentage : 0,
                 payPercentageValidFromKeyAmount: payPercentageValidFromKeyAmount ? payPercentageValidFromKeyAmount : '',
@@ -253,6 +253,8 @@ class RevenueFormEdit extends Component {
             projectRevenueCategorie => projectRevenueCategorie.id == categoryId
         );
 
+        const project = this.props.revenue.project;
+
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -286,6 +288,7 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateBegin}
+                        disabledBefore={project.dateInterestBearing}
                     />
                     <InputDate
                         label={'Eind periode'}
@@ -294,6 +297,7 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateEnd}
+                        disabledBefore={dateBegin}
                     />
                 </div>
 
@@ -332,7 +336,7 @@ class RevenueFormEdit extends Component {
 
                 {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
                     <React.Fragment>
-                        {this.props.revenue.project.projectType.codeRef !== 'loan' ? (
+                        {project.projectType.codeRef !== 'loan' ? (
                             <div className="row">
                                 <InputSelect
                                     label={'Type opbrengst verdeling'}

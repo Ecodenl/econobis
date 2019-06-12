@@ -36,6 +36,7 @@ class FullProject extends Resource
                 'dateProduction' => $this->date_production,
                 'dateStartRegistrations' => $this->date_start_registrations,
                 'dateEndRegistrations' => $this->date_end_registrations,
+                'dateInterestBearing' => $this->date_interest_bearing,
                 'projectTypeId' => $this->project_type_id,
                 'projectType' => GenericResource::make($this->whenLoaded('projectType')),
                 'postalCode' => $this->postal_code,

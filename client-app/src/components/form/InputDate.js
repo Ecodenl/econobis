@@ -37,9 +37,25 @@ class InputDate extends Component {
     };
 
     render() {
-        const { label, className, size, divSize, id, value, required, readOnly, name, error } = this.props;
+        const {
+            label,
+            className,
+            size,
+            divSize,
+            id,
+            value,
+            required,
+            readOnly,
+            name,
+            error,
+            disabledBefore,
+            disabledAfter,
+        } = this.props;
 
         const formattedDate = value ? moment(value).format('L') : '';
+        let disabledDays = {};
+        if (disabledBefore) disabledDays.before = new Date(disabledBefore);
+        if (disabledAfter) disabledDays.after = new Date(disabledAfter);
 
         return (
             <div className={`form-group ${divSize}`}>
@@ -60,6 +76,7 @@ class InputDate extends Component {
                             locale: 'nl',
                             firstDayOfWeek: 1,
                             localeUtils: MomentLocaleUtils,
+                            disabledDays: disabledDays,
                         }}
                         inputProps={{
                             className:
@@ -89,6 +106,8 @@ InputDate.defaultProps = {
     readOnly: false,
     value: null,
     error: false,
+    disabledBefore: null,
+    disabledAfter: null,
 };
 
 InputDate.propTypes = {
@@ -104,6 +123,8 @@ InputDate.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    disabledBefore: PropTypes.string,
+    disabledAfter: PropTypes.string,
 };
 
 export default InputDate;

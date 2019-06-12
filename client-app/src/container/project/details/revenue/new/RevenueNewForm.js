@@ -71,6 +71,7 @@ const RevenueNew = props => {
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
                     error={props.errors.dateBegin}
+                    disabledBefore={props.project.dateInterestBearing}
                 />
                 <InputDate
                     label={'Eind periode'}
@@ -79,6 +80,7 @@ const RevenueNew = props => {
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
                     error={props.errors.dateEnd}
+                    disabledBefore={dateBegin}
                 />
             </div>
 
@@ -259,7 +261,6 @@ const mapStateToProps = state => {
         projectRevenueTypes: state.systemData.projectRevenueTypes,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
         projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
-        project: state.projectDetails,
     };
 };
 

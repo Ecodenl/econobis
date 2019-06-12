@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import validator from 'validator';
 import { hashHistory } from 'react-router';
-import { connect } from 'react-redux';
 
 import RevenueNewToolbar from './RevenueNewToolbar';
-import RevenueNew from './RevenueNew';
+import RevenueNewForm from './RevenueNewForm';
 
 import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
+import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment';
-
-import { fetchProject } from '../../../../../actions/project/ProjectDetailsActions';
 
 class RevenueNewApp extends Component {
     constructor(props) {
@@ -47,20 +45,35 @@ class RevenueNewApp extends Component {
                 dateEnd: false,
                 dateReference: false,
             },
+            project: {},
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeDateConfirmed = this.handleInputChangeDateConfirmed.bind(this);
     }
 
     componentDidMount() {
-        this.props.fetchProject(this.props.params.projectId);
+        this.fetchProject(this.props.params.projectId);
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.params.projectId !== prevProps.params.projectId) {
-            this.props.fetchProject(this.props.params.projectId);
+            this.fetchProject(this.props.params.projectId);
         }
     }
+
+    fetchProject = id => {
+        ProjectDetailsAPI.fetchProject(id).then(payload => {
+            this.setState({
+                ...this.state,
+                project: payload,
+                revenue: {
+                    ...this.state.revenue,
+                    dateBegin: payload.dateInterestBearing,
+                    dateEnd: payload.dateInterestBearing ? moment(payload.dateInterestBearing).add(1, 'years') : '',
+                },
+            });
+        });
+    };
 
     handleInputChange = event => {
         const target = event.target;
@@ -190,13 +203,14 @@ class RevenueNewApp extends Component {
                         <Panel>
                             <PanelBody>
                                 <div className="col-md-12">
-                                    <RevenueNew
+                                    <RevenueNewForm
                                         revenue={this.state.revenue}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleInputChangeDateConfirmed={this.handleInputChangeDateConfirmed}
                                         handleSubmit={this.handleSubmit}
+                                        project={this.state.project}
                                     />
                                 </div>
                             </PanelBody>
@@ -209,19 +223,4 @@ class RevenueNewApp extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        project: state.projectDetails,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    fetchProject: id => {
-        dispatch(fetchProject(id));
-    },
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueNewApp);
+export default RevenueNewApp;

@@ -139,7 +139,9 @@ class MutationFormNew extends Component {
         );
         const statusCodeRef = status ? status.codeRef : null;
 
-        const participantMutationTypesOptions = participantMutationTypes.filter(participantMutationType => participantMutationType.codeRef !== 'result');
+        const participantMutationTypesOptions = participantMutationTypes.filter(
+            participantMutationType => participantMutationType.codeRef !== 'result'
+        );
 
         return (
             <React.Fragment>

@@ -18,4 +18,14 @@ class ProjectRevenueObserver
         $userId = Auth::id();
         $projectRevenue->created_by_id = $userId;
     }
+
+    public function saving(ProjectRevenue $projectRevenue)
+    {
+        if($projectRevenue->isDirty('confirmed')) {
+            $project = $projectRevenue->project;
+
+            $project->date_interest_bearing = $projectRevenue->date_end;
+            $project->save();
+        }
+    }
 }

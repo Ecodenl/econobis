@@ -206,7 +206,7 @@ class ProjectRevenueController extends ApiController
     )
     {
         $project = $projectRevenue->project;
-        $participants = $project->participantsProject->where('participations_definitive', '>', 0);
+        $participants = $project->participantsProjectDefinitive;
 
         foreach ($participants as $participant) {
             $this->saveDistribution($projectRevenue, $participant);

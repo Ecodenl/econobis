@@ -37,7 +37,7 @@ class ParticipantProjectObserver
         $contact->save();
 
         // When participations are definitive then add participant to project revenue distribution if available
-        if($participantProject->isDirty('participations_definitive')) {
+        if($participantProject->isDirty('participations_definitive') || $participantProject->isDirty('amount_definitive')) {
             foreach($participantProject->project->projectRevenues as $projectRevenue) {
                 // If project revenue is already confirmed then continue
                 if($projectRevenue->confirmed) continue;

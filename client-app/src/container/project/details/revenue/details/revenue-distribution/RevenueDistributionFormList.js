@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import RevenueDistributionFormDynamicView from './RevenueDistributionFormDynamicView';
 import RevenueDistributionFormStaticView from './RevenueDistributionFormStaticView';
 import DataTablePagination from '../../../../../../components/dataTable/DataTablePagination';
 
@@ -55,11 +54,7 @@ const RevenueDistributionFormList = props => {
                 initialPage={0}
                 onPageChangeAction={props.changePage}
                 recordsPerPage={100}
-                totalRecords={
-                    props.projectRevenue.confirmed
-                        ? props.projectRevenue.distribution && props.projectRevenue.distribution.meta.total
-                        : props.projectRevenue.participants && props.projectRevenue.participants.meta.total
-                }
+                totalRecords={props.projectRevenue.distribution.meta && props.projectRevenue.distribution.meta.total}
             />
         </div>
     );
@@ -67,7 +62,6 @@ const RevenueDistributionFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        participations: state.projectRevenue.participants,
         project: state.projectRevenue.project,
         projectRevenue: state.projectRevenue,
     };

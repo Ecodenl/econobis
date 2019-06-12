@@ -9,18 +9,38 @@ class ProjectRevenueDistributionCalculator
 {
     protected $projectRevenueDistribution;
     protected $mutationStatusFinal;
+    protected $projectTypeCodeRef;
 
     public function __construct(ProjectRevenueDistribution $projectRevenueDistribution)
     {
         $this->projectRevenueDistribution = $projectRevenueDistribution;
-        $this->mutationStatusFinal = ParticipantMutationStatus::where('code_ref', 'final')->first();
+        $this->projectTypeCodeRef = (ProjectType::where('id', $this->projectRevenueDistribution->revenue->project->project_type_id)->first())->code_ref;
+    }
+
+    public function run()
+    {
+        // Revenue category REVENUE EURO
+        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
+            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
+            $this->projectRevenueDistribution->payout = $this->calculatePayout();
+        }
+
+        // Revenue category REVENUE KWH
+        if($this->projectRevenueDistribution->revenue->catergory_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
+            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
+            $this->projectRevenueDistribution->payout = $this->calculatePayout();
+        }
+
+        return $this->projectRevenueDistribution;
     }
 
     protected function calculatePayout()
     {
+        // Project type OBLIGATION, CAPITAL and PCR
         if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') return $this->calculatePayoutInPossessionOf();
 
-        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'howLongInPossession') {
+        // Project type OBLIGATION, CAPITAL, PCR and LOAN
+        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'howLongInPossession' || $this->projectTypeCodeRef === 'loan') {
             if($this->projectRevenueDistribution->revenue->key_amount_first_percentage) {
                 return $this->calculatePayoutHowLongInPossessionWithFilledKeyAmount();
             }
@@ -34,8 +54,6 @@ class ProjectRevenueDistributionCalculator
         $amount = $this->projectRevenueDistribution->participations_amount;
         $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
         $participationValue = $currentBookWorth * $amount;
-
-        if (!$currentBookWorth) return 0;
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
         $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
@@ -61,14 +79,12 @@ class ProjectRevenueDistributionCalculator
     {
         $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
 
-        if (!$currentBookWorth) return 0;
-
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
         $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
 
         if (!$dateBegin || !$dateEnd) return 0;
 
-        $mutations = $this->projectRevenueDistribution->participation->mutations()->where('status_id', $this->mutationStatusFinal->id)->get();
+        $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive;
 
         $payout = 0;
 
@@ -80,9 +96,18 @@ class ProjectRevenueDistributionCalculator
 
             $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
 
-            $mutationValue = $currentBookWorth * $mutation->quantity;
+            if($this->projectTypeCodeRef === 'obligation' || $this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') {
+                $mutationValue = $currentBookWorth * $mutation->quantity;
+            }
+
+            if($this->projectTypeCodeRef === 'loan') {
+                $mutationValue = $mutation->amount;
+            }
+
+            if($dateEntry > $dateEnd) $mutationValue = 0;
 
             $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / 365 * $daysOfPeriod;
+
         }
 
         return number_format($payout, 2);
@@ -91,16 +116,16 @@ class ProjectRevenueDistributionCalculator
     protected function calculatePayoutHowLongInPossessionWithFilledKeyAmount()
     {
         $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
+
         $keyAmountFirstPercentage = $this->projectRevenueDistribution->revenue->key_amount_first_percentage;
 
-        if (!$currentBookWorth) return 0;
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
         $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
 
         if (!$dateBegin || !$dateEnd) return 0;
 
-        $mutations = $this->projectRevenueDistribution->participation->mutations()->where('status_id', $this->mutationStatusFinal->id)->get();
+        $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive;
 
         $payout = 0;
 
@@ -115,7 +140,22 @@ class ProjectRevenueDistributionCalculator
             $beforeKeyAmountOriginal = $currentMutationValues->before_key_amount;
             $aboveKeyAmountOriginal = $currentMutationValues->above_key_amount;
 
-            $mutationValue = $currentBookWorth * $mutation->quantity;
+            $dateEntry = $mutation->date_entry;
+
+            // If date entry is before date begin then date entry is equal to date begin
+            if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+
+            $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+
+            if($this->projectTypeCodeRef === 'obligation' || $this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') {
+                $mutationValue = $currentBookWorth * $mutation->quantity;
+            }
+
+            if($this->projectTypeCodeRef === 'loan') {
+                $mutationValue = $mutation->amount;
+            }
+
+            if($dateEntry > $dateEnd) $mutationValue = 0;
 
             $currentMutationValues->total = $currentMutationValues->total + $mutationValue;
             $currentMutationValues->before_key_amount = $currentMutationValues->total  <= $keyAmountFirstPercentage ? $currentMutationValues->total : $keyAmountFirstPercentage;
@@ -123,12 +163,6 @@ class ProjectRevenueDistributionCalculator
             $currentMutationValues->modification_before_key_amount = $currentMutationValues->before_key_amount - $beforeKeyAmountOriginal;
             $currentMutationValues->modification_above_key_amount = $currentMutationValues->above_key_amount - $aboveKeyAmountOriginal;
 
-            $dateEntry = $mutation->date_entry;
-
-            // If date entry is before date begin then date entry is equal to date begin
-            if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
-
-            $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
 
             $payoutTillKeyAmount = ($currentMutationValues->modification_before_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / 365 * $daysOfPeriod;
             $payoutAboveKeyAmount = ($currentMutationValues->modification_above_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / 365 * $daysOfPeriod;
@@ -139,9 +173,9 @@ class ProjectRevenueDistributionCalculator
         return number_format($payout, 2);
     }
 
-    protected function calculateParticipationsQuantity()
+    protected function calculateParticipationsCount()
     {
-        $mutations = $this->projectRevenueDistribution->participation->mutations()->where('status_id', $this->mutationStatusFinal->id);
+        $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive();
 
         if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
             $dateReference = $this->projectRevenueDistribution->revenue->date_reference;
@@ -151,18 +185,20 @@ class ProjectRevenueDistributionCalculator
 
         $participationsCount = 0;
 
+        if($this->projectTypeCodeRef === 'obligation' || $this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') {
+            $measureType = 'quantity';
+        }
+
+        if($this->projectTypeCodeRef === 'loan') {
+            $measureType = 'amount';
+        }
+
         foreach ($mutations->get() as $mutation) {
-            $participationsCount += $mutation->quantity;
+           $participationsCount += $mutation[$measureType] ;
         }
 
         return $participationsCount;
     }
 
-    public function run()
-    {
-        $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsQuantity();
-        $this->projectRevenueDistribution->payout = $this->calculatePayout();
 
-        return $this->projectRevenueDistribution;
-    }
 }

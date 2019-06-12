@@ -115,15 +115,17 @@ const RevenueNew = props => {
                 />
             </div>
 
-            <div className="row">
-                <InputSelect
-                    label={'Type opbrengst verdeling'}
-                    name={'distributionTypeId'}
-                    options={props.projectRevenueDistributionTypes}
-                    value={distributionTypeId}
-                    onChangeAction={props.handleInputChange}
-                />
-            </div>
+            {1 == 1 ? (
+                <div className="row">
+                    <InputSelect
+                        label={'Type opbrengst verdeling'}
+                        name={'distributionTypeId'}
+                        options={props.projectRevenueDistributionTypes}
+                        value={distributionTypeId}
+                        onChangeAction={props.handleInputChange}
+                    />
+                </div>
+            ) : null}
 
             {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueKwh' ? (
                 <React.Fragment>

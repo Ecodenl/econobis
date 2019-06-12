@@ -87,6 +87,13 @@ class Project extends Model
         return $this->hasMany(ParticipantProject::class, 'project_id');
     }
 
+    public function participantsProjectDefinitive(){
+        return $this->hasMany(ParticipantProject::class, 'project_id')->where(function ($query) {
+            $query->where('participations_definitive', '>', 0)
+                ->orWhere('amount_definitive', '>', 0);
+        });
+    }
+
     public function requiresContactGroups(){
         return $this->belongsToMany(ContactGroup::class, 'contact_group_participation', 'project_id', 'group_id');
     }

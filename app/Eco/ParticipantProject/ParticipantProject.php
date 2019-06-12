@@ -81,6 +81,13 @@ class ParticipantProject extends Model
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('id', 'desc');
     }
 
+    public function mutationsDefinitive()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'asc');
+    }
+
     public function obligationNumbers()
     {
         return $this->hasMany(ObligationNumber::class, 'participation_id');

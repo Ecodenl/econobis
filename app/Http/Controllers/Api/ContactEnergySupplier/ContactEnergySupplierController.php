@@ -50,8 +50,6 @@ class ContactEnergySupplierController extends ApiController
         $data = $requestInput
             ->string('contactEnergySupplyTypeId')->validate('required|exists:contact_energy_supply_type,id')->alias('contact_energy_supply_type_id')->next()
             ->date('memberSince')->whenMissing(null)->onEmpty(null)->alias('member_since')->next()
-            ->string('eanElectricity')->whenMissing(null)->onEmpty(null)->alias('ean_electricity')->next()
-            ->string('eanGas')->whenMissing(null)->onEmpty(null)->alias('ean_gas')->next()
             ->string('contactEnergySupplyStatusId')->validate('nullable|exists:contact_energy_supply_status,id')->whenMissing(null)->onEmpty(null)->alias('contact_energy_supply_status_id')->next()
             ->date('switchDate')->whenMissing(null)->onEmpty(null)->alias('switch_date')->next()
             ->string('esNumber')->alias('es_number')->next()

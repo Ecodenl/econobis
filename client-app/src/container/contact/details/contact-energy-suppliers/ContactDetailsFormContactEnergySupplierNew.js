@@ -95,8 +95,6 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
             energySupplierId,
             contactEnergySupplyTypeId,
             memberSince,
-            eanElectricity,
-            eanGas,
             contactEnergySupplyStatusId,
             switchDate,
             esNumber,
@@ -137,23 +135,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 value={memberSince}
                                 onChangeAction={this.handleInputChangeDate}
                             />
-                            <InputText
-                                label={'EAN electriciteit'}
-                                id={'eanElectricity'}
-                                name={'eanElectricity'}
-                                value={eanElectricity}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
 
-                        <div className="row">
-                            <InputText
-                                label={'EAN gas'}
-                                id={'eanGas'}
-                                name={'eanGas'}
-                                value={eanGas}
-                                onChangeAction={this.handleInputChange}
-                            />
                             <InputSelect
                                 label={'Overstap status'}
                                 id="contactEnergySupplyStatusId"

@@ -16,8 +16,6 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
         energySupplierId,
         contactEnergySupplyTypeId,
         memberSince,
-        eanElectricity,
-        eanGas,
         contactEnergySupplyStatusId,
         switchDate,
         esNumber,
@@ -56,23 +54,6 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 name="memberSince"
                                 value={memberSince ? memberSince : ''}
                                 onChangeAction={props.handleInputChangeDate}
-                            />
-                            <InputText
-                                label={'EAN electriciteit'}
-                                id={'eanElectricity'}
-                                name={'eanElectricity'}
-                                value={eanElectricity}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label={'EAN gas'}
-                                id={'eanGas'}
-                                name={'eanGas'}
-                                value={eanGas}
-                                onChangeAction={props.handleInputChange}
                             />
                             <InputSelect
                                 label={'Overstap status'}

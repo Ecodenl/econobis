@@ -26,6 +26,8 @@ class ContactDetailsFormAddressNew extends Component {
                 typeId: 'visit',
                 primary: false,
                 countryId: '',
+                eanElectricity: '',
+                eanGas: '',
             },
             errors: {
                 typeId: false,
@@ -124,7 +126,18 @@ class ContactDetailsFormAddressNew extends Component {
     };
 
     render() {
-        const { street, number, addition, postalCode, city, typeId, primary, countryId } = this.state.address;
+        const {
+            street,
+            number,
+            addition,
+            postalCode,
+            city,
+            typeId,
+            primary,
+            countryId,
+            eanElectricity,
+            eanGas,
+        } = this.state.address;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -216,6 +229,23 @@ class ContactDetailsFormAddressNew extends Component {
                                 name={'countryId'}
                                 options={this.props.countries}
                                 value={countryId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                label={'EAN electriciteit'}
+                                id={'eanElectricity'}
+                                name={'eanElectricity'}
+                                value={eanElectricity}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'EAN gas'}
+                                id={'eanGas'}
+                                name={'eanGas'}
+                                value={eanGas}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

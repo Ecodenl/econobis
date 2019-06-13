@@ -9,7 +9,18 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 
 const ContactDetailsFormAddressEdit = props => {
-    const { street, number, addition, postalCode, city, typeId, primary, countryId } = props.address;
+    const {
+        street,
+        number,
+        addition,
+        postalCode,
+        city,
+        typeId,
+        primary,
+        countryId,
+        eanElectricity,
+        eanGas,
+    } = props.address;
 
     return (
         <div>
@@ -100,6 +111,23 @@ const ContactDetailsFormAddressEdit = props => {
                                 name={'countryId'}
                                 options={props.countries}
                                 value={countryId}
+                                onChangeAction={props.handleInputChange}
+                            />
+                            <InputText
+                                label={'EAN electriciteit'}
+                                id={'eanElectricity'}
+                                name={'eanElectricity'}
+                                value={eanElectricity}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'EAN gas'}
+                                id={'eanGas'}
+                                name={'eanGas'}
+                                value={eanGas}
                                 onChangeAction={props.handleInputChange}
                             />
                         </div>

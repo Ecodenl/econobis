@@ -51,16 +51,17 @@ class ParticipantsListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>
-                    {this.props.showCheckboxList && this.props.checkedAll && <input type="checkbox" checked />}
-                    {this.props.showCheckboxList && !this.props.checkedAll && contact.primaryEmailAddress && (
-                        <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheck} />
-                    )}
-                    {this.props.showCheckboxList && !this.props.checkedAll && !contact.primaryEmailAddress && (
-                        <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheckNoEmail} />
-                    )}
-                    {!this.props.showCheckboxList && <span>{id}</span>}
-                </td>
+                {this.props.showCheckboxList ? (
+                    <td>
+                        {this.props.checkedAll && <input type="checkbox" checked />}
+                        {!this.props.checkedAll && contact.primaryEmailAddress && (
+                            <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheck} />
+                        )}
+                        {!this.props.checkedAll && !contact.primaryEmailAddress && (
+                            <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheckNoEmail} />
+                        )}
+                    </td>
+                ) : null}
                 <td>{contact.type ? contact.type.name : ''}</td>
                 <td>{contact.fullName}</td>
                 <td>{primaryAddress ? street + ' ' + number + addition : ''}</td>

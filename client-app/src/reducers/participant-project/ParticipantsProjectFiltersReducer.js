@@ -1,8 +1,4 @@
 const filtersReducerDefaultState = {
-    id: {
-        field: 'id',
-        data: '',
-    },
     contactType: {
         field: 'contactType',
         data: '',
@@ -51,14 +47,6 @@ const filtersReducerDefaultState = {
 
 export default (state = filtersReducerDefaultState, action) => {
     switch (action.type) {
-        case 'SET_FILTER_PROJECT_PARTICIPANT_ID':
-            return {
-                ...state,
-                id: {
-                    ...state.id,
-                    data: action.id,
-                },
-            };
         case 'SET_FILTER_PARTICIPANT_PROJECT_ID':
             return {
                 ...state,

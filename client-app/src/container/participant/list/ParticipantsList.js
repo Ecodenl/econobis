@@ -43,6 +43,7 @@ class ParticipantsList extends Component {
                     <DataTableHead>
                         <ParticipantsListHead
                             refreshParticipantsProjectData={() => this.props.refreshParticipantsProjectData()}
+                            showCheckboxList={this.props.showCheckboxList}
                         />
                         <ParticipantsListFilter
                             onSubmitFilter={this.props.onSubmitFilter}
@@ -55,7 +56,7 @@ class ParticipantsList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={12}>{loadingText}</td>
+                                <td colSpan={11}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(participantProject => {

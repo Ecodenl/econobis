@@ -11,7 +11,6 @@ import {
     setFilterParticipantProjectCurrentParticipations,
     setFilterParticipantProjectDateRegister,
     setFilterParticipantProjectEnergySupplierId,
-    setFilterParticipantProjectId,
     setFilterParticipantProjectName,
     setFilterParticipantMutationStatusId,
     setFilterParticipantProjectPostalCode,
@@ -20,10 +19,6 @@ import {
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const ParticipantsListFilter = props => {
-    const onIdChange = e => {
-        props.setFilterParticipantProjectId(e.target.value);
-    };
-
     const onContactTypeChange = e => {
         props.setFilterParticipantProjectContactType(e.target.value);
 
@@ -86,22 +81,12 @@ const ParticipantsListFilter = props => {
 
     return (
         <tr className="thead-filter">
-            <th>
-                {props.showCheckboxList && props.checkedAll && (
-                    <input type="checkbox" onChange={props.toggleCheckedAll} checked />
-                )}
-                {props.showCheckboxList && !props.checkedAll && (
-                    <input type="checkbox" onChange={props.toggleCheckedAll} />
-                )}
-                {!props.showCheckboxList && (
-                    <input
-                        type="text"
-                        className="form-control input-sm"
-                        value={props.filters.id.data}
-                        onChange={onIdChange}
-                    />
-                )}
-            </th>
+            {props.showCheckboxList ? (
+                <th>
+                    {props.checkedAll && <input type="checkbox" onChange={props.toggleCheckedAll} checked />}
+                    {!props.checkedAll && <input type="checkbox" onChange={props.toggleCheckedAll} />}
+                </th>
+            ) : null}
 
             <th>
                 <select
@@ -241,7 +226,6 @@ const mapDispatchToProps = dispatch => {
             setFilterParticipantProjectCurrentParticipations,
             setFilterParticipantProjectDateRegister,
             setFilterParticipantProjectEnergySupplierId,
-            setFilterParticipantProjectId,
             setFilterParticipantProjectName,
             setFilterParticipantMutationStatusId,
             setFilterParticipantProjectPostalCode,

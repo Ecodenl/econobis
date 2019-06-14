@@ -150,7 +150,7 @@ const ProjectFormEditGeneral = ({
                         label={'Administratie'}
                         name={'administration'}
                         value={administration ? administration.name : ''}
-                        readOnly={'true'}
+                        readOnly={true}
                     />
                 ) : (
                     <InputSelect

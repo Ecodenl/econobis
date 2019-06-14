@@ -261,7 +261,7 @@ const Routes = () => {
                 <Route path="product/:id" component={ProductDetailsApp} />
                 /* Project */
                 <Route path="project/nieuw" component={ProjectNewApp} />
-                <Route path="project/opbrengst/nieuw/:projectId" component={ProjectRevenueNewApp} />
+                <Route path="project/opbrengst/nieuw/:projectId/:categoryId" component={ProjectRevenueNewApp} />
                 <Route
                     path="project/opbrengst/:revenueId/energieleverancier-rapport"
                     component={EnergySupplierReportNewApp}

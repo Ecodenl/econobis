@@ -16,6 +16,7 @@ import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../components/modal/Modal';
 import styled from '@emotion/styled';
+import ViewText from '../../../../../../components/form/ViewText';
 
 const StyledEm = styled.em`
     font-weight: normal;
@@ -27,7 +28,6 @@ class RevenueFormEdit extends Component {
 
         const {
             id,
-            categoryId,
             distributionTypeId,
             confirmed,
             dateBegin,
@@ -53,7 +53,6 @@ class RevenueFormEdit extends Component {
             showModal: false,
             revenue: {
                 id,
-                categoryId: categoryId,
                 distributionTypeId: distributionTypeId,
                 confirmed: !!confirmed,
                 dateBegin: dateBegin ? moment(dateBegin.date).format('Y-MM-DD') : '',
@@ -227,7 +226,6 @@ class RevenueFormEdit extends Component {
 
     render() {
         const {
-            categoryId,
             distributionTypeId,
             confirmed,
             dateBegin,
@@ -240,7 +238,6 @@ class RevenueFormEdit extends Component {
             kwhEndHigh,
             kwhStartLow,
             kwhEndLow,
-            revenue,
             datePayed,
             payPercentage,
             keyAmountFirstPercentage,
@@ -249,11 +246,8 @@ class RevenueFormEdit extends Component {
             payoutKwh,
         } = this.state.revenue;
 
-        const currentProjectRevenueCategorie = this.props.projectRevenueCategories.find(
-            projectRevenueCategorie => projectRevenueCategorie.id == categoryId
-        );
-
         const project = this.props.revenue.project;
+        const { category } = this.props.revenue;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -263,15 +257,7 @@ class RevenueFormEdit extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <InputSelect
-                        label={'Soort'}
-                        name={'categoryId'}
-                        options={this.props.projectRevenueCategories}
-                        value={categoryId}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.categoryId}
-                    />
+                    <ViewText label={'Soort'} value={category ? category.name : ''} className={'form-group col-sm-6'} />
                     <InputText
                         label={'Definitief'}
                         name={'confirmed'}
@@ -334,7 +320,7 @@ class RevenueFormEdit extends Component {
                     />
                 </div>
 
-                {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
+                {category.codeRef === 'revenueEuro' ? (
                     <React.Fragment>
                         {project.projectType.codeRef !== 'loan' ? (
                             <div className="row">
@@ -385,7 +371,7 @@ class RevenueFormEdit extends Component {
                     </React.Fragment>
                 ) : null}
 
-                {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueKwh' ? (
+                {category.codeRef === 'revenueKwh' ? (
                     <React.Fragment>
                         <div className="row">
                             <div className={'panel-part panel-heading'}>

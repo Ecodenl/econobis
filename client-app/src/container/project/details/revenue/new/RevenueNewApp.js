@@ -18,7 +18,7 @@ class RevenueNewApp extends Component {
         this.state = {
             revenue: {
                 projectId: props.params.projectId,
-                categoryId: '',
+                categoryId: props.params.categoryId,
                 distributionTypeId: '',
                 confirmed: false,
                 dateBegin: '',

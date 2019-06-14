@@ -10,6 +10,7 @@ import PanelFooter from '../../../../../components/panel/PanelFooter';
 import InputText from '../../../../../components/form/InputText';
 
 import styled from '@emotion/styled';
+import ViewText from '../../../../../components/form/ViewText';
 
 const StyledEm = styled.em`
     font-weight: normal;
@@ -30,7 +31,6 @@ const RevenueNew = props => {
         kwhEndHigh,
         kwhStartLow,
         kwhEndLow,
-        revenue,
         datePayed,
         payPercentage,
         keyAmountFirstPercentage,
@@ -39,7 +39,7 @@ const RevenueNew = props => {
         payoutKwh,
     } = props.revenue;
 
-    const currentProjectRevenueCategorie = props.projectRevenueCategories.find(
+    const category = props.projectRevenueCategories.find(
         projectRevenueCategorie => projectRevenueCategorie.id == categoryId
     );
 
@@ -51,15 +51,7 @@ const RevenueNew = props => {
                 </div>
             </div>
             <div className="row">
-                <InputSelect
-                    label={'Soort'}
-                    name={'categoryId'}
-                    options={props.projectRevenueCategories}
-                    value={categoryId}
-                    onChangeAction={props.handleInputChange}
-                    required={'required'}
-                    error={props.errors.categoryId}
-                />
+                <ViewText label={'Soort'} value={category ? category.name : ''} className={'form-group col-sm-6'} />
                 <InputText label={'Definitief'} name={'confirmed'} value={confirmed ? 'Ja' : 'Nee'} readOnly={true} />
             </div>
 
@@ -117,9 +109,9 @@ const RevenueNew = props => {
                 />
             </div>
 
-            {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueEuro' ? (
+            {category.codeRef === 'revenueEuro' ? (
                 <React.Fragment>
-                    {props.project.projectType.codeRef !== 'loan' ? (
+                    {props.project && props.project.projectType && props.project.projectType.codeRef !== 'loan' ? (
                         <div className="row">
                             <InputSelect
                                 label={'Type opbrengst verdeling'}
@@ -168,7 +160,7 @@ const RevenueNew = props => {
                 </React.Fragment>
             ) : null}
 
-            {currentProjectRevenueCategorie && currentProjectRevenueCategorie.codeRef === 'revenueKwh' ? (
+            {category.codeRef === 'revenueKwh' ? (
                 <React.Fragment>
                     <div className="row">
                         <div className={'panel-part panel-heading'}>

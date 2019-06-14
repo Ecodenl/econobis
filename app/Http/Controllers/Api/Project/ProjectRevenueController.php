@@ -161,9 +161,6 @@ class ProjectRevenueController extends ApiController
         $this->authorize('manage', ProjectRevenue::class);
 
         $data = $requestInput
-            ->integer('categoryId')
-            ->validate('required|exists:project_revenue_category,id')
-            ->alias('category_id')->next()
             ->string('distributionTypeId')->onEmpty(null)->alias('distribution_type_id')->next()
             ->boolean('confirmed')->next()
             ->date('dateBegin')->validate('required|date')->alias('date_begin')->next()

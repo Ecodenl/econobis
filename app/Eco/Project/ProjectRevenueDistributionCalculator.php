@@ -26,12 +26,25 @@ class ProjectRevenueDistributionCalculator
         }
 
         // Revenue category REVENUE KWH
-        if($this->projectRevenueDistribution->revenue->catergory_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
-            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
-            $this->projectRevenueDistribution->payout = $this->calculatePayout();
+        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
+            $this->projectRevenueDistribution->delivered_total = $this->calculateDeliveredTotal();
+            $this->projectRevenueDistribution->payout_kwh = $this->projectRevenueDistribution->revenue->payout_kwh;
         }
 
         return $this->projectRevenueDistribution;
+    }
+
+    protected function calculateDeliveredTotal()
+    {
+        $projectRevenue = $this->projectRevenueDistribution->revenue;
+        $totalParticipations = $projectRevenue->project->participations_definitive;
+        $participant = $this->projectRevenueDistribution->participation;
+
+        return round((($projectRevenue->kwh_end
+                    - $projectRevenue->kwh_start)
+                / $totalParticipations)
+            * $participant->participations_definitive, 2);
+
     }
 
     protected function calculatePayout()

@@ -41,14 +41,14 @@ class AddedDefaultVatCodes extends Migration
                 'description' => 'Leveringen binnen EU',
                 'percentage' => '0.00',
                 'twinfield_code' => 'ICP',
-                'twinfield_ledger_code' => '',
+                'twinfield_ledger_code' => '1517',
             ],
             [
                 'start_date' => '2000-01-01',
                 'description' => 'Leveringen buiten EU',
                 'percentage' => '0.00',
                 'twinfield_code' => 'EXP-BUI-EU',
-                'twinfield_ledger_code' => '',
+                'twinfield_ledger_code' => '1518',
             ],
         ];
         foreach (

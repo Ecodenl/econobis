@@ -17,19 +17,19 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteRevenueDistribution implements DeleteInterface
+class DeleteRevenue implements DeleteInterface
 {
 
     private $errorMessage = [];
-    private $revenueDistribution;
+    private $projectRevenue;
 
     /** Sets the model to delete
      *
-     * @param Model $revenueDistribution the model to delete
+     * @param Model $projectRevenue the model to delete
      */
-    public function __construct(Model $revenueDistribution)
+    public function __construct(Model $projectRevenue)
     {
-        $this->revenueDistribution = $revenueDistribution;
+        $this->projectRevenue = $projectRevenue;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -44,7 +44,7 @@ class DeleteRevenueDistribution implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->revenueDistribution->forceDelete();
+        $this->projectRevenue->forceDelete();
 
         return $this->errorMessage;
     }
@@ -53,8 +53,8 @@ class DeleteRevenueDistribution implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->revenueDistribution->paymentInvoices()->count() > 0){
-            array_push($this->errorMessage, "Er is al een uitkerings factuur aangemaakt.");
+        if($this->projectRevenue->confirmed){
+            array_push($this->errorMessage, "Opbrengstverdeling is al definitief.");
         }
     }
 
@@ -62,6 +62,10 @@ class DeleteRevenueDistribution implements DeleteInterface
      */
     public function deleteModels()
     {
+        foreach($this->projectRevenue->distribution as $distribution) {
+                $deleteRevenueDistribution = new DeleteRevenueDistribution($distribution);
+                $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
+        }
     }
 
 

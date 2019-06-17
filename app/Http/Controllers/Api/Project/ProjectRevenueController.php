@@ -17,6 +17,8 @@ use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\EnergySupplierCSVHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
 use App\Helpers\CSV\RevenueParticipantsCSVHelper;
+use App\Helpers\Delete\Models\DeleteContact;
+use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
@@ -32,6 +34,8 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -390,7 +394,25 @@ class ProjectRevenueController extends ApiController
     {
         $this->authorize('manage', ProjectRevenue::class);
 
-        $projectRevenue->forceDelete();
+//        $projectRevenue->forceDelete();
+
+        try {
+            DB::beginTransaction();
+
+            $deleteRevenue = new DeleteRevenue($projectRevenue);
+            $result = $deleteRevenue->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
     public function createInvoices(

@@ -47,14 +47,6 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
                     className={'col-sm-6 form-group'}
                 />
-                <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} className={'col-sm-6 form-group'} />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Huidige totale waarde'}
-                    value={moneyPresenter(participationsDefinitiveWorth)}
-                    className={'col-sm-6 form-group'}
-                />
                 <InputText
                     type={'number'}
                     label={'Jaarlijks verbruik'}
@@ -62,6 +54,13 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     id={'powerKwhConsumption'}
                     value={powerKwhConsumption}
                     onChangeAction={handleInputChange}
+                />
+            </div>
+            <div className="row">
+                <ViewText
+                    label={'Huidige totale waarde'}
+                    value={moneyPresenter(participationsDefinitiveWorth)}
+                    className={'col-sm-6 form-group'}
                 />
             </div>
         </React.Fragment>

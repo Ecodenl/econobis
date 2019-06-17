@@ -420,11 +420,12 @@ class ProjectRevenueController extends ApiController
 
         $createdInvoices = [];
 
+        if (!($distributions->first())->revenue->project->administration_id) {
+            abort(400,
+                'Geen administratie gekoppeld aan dit productie project');
+        }
+
         foreach ($distributions as $distribution) {
-            if (!$distribution->revenue->project->administration_id) {
-                abort(400,
-                    'Geen administratie gekoppeld aan dit productie project');
-            }
             if ($distribution->payout_type === 'Rekening'
                 && $distribution->payout > 0
                 && !(empty($distribution->address)

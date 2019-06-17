@@ -23,6 +23,8 @@ const ParticipantFormView = props => {
         type,
         powerKwhConsumption,
         participationsReturnsTotal,
+        participationsReturnsKwhTotal,
+        participationsIndicationOfRestitutionEnergyTaxTotal,
     } = props.participantProject;
 
     const projectTypeCodeRef = props.participantProject.project.projectType.codeRef;
@@ -97,6 +99,10 @@ const ParticipantFormView = props => {
                     participationsDefinitive={participationsDefinitive}
                     participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={project.valueCourses}
+                    participationsReturnsKwhTotal={participationsReturnsKwhTotal}
+                    participationsIndicationOfRestitutionEnergyTaxTotal={
+                        participationsIndicationOfRestitutionEnergyTaxTotal
+                    }
                     powerKwhConsumption={powerKwhConsumption}
                 />
             ) : null}

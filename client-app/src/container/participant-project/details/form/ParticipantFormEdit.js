@@ -19,6 +19,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import ParticipantFormEditPostalcodeLinkCapital from './edit/ParticipantFormEditPostalcodeLinkCapital';
 import ParticipantFormEditCapital from './edit/ParticipantFormEditCapital';
 import ParticipantFormEditObligation from './edit/ParticipantFormEditObligation';
+import ParticipantFormViewPostalcodeLinkCapital from './view/ParticipantFormViewPostalcodeLinkCapital';
 
 class ParticipantFormEdit extends Component {
     constructor(props) {
@@ -34,6 +35,8 @@ class ParticipantFormEdit extends Component {
             typeId,
             powerKwhConsumption,
             participationsReturnsTotal,
+            participationsReturnsKwhTotal,
+            participationsIndicationOfRestitutionEnergyTaxTotal,
         } = props.participation;
 
         this.state = {
@@ -203,13 +206,10 @@ class ParticipantFormEdit extends Component {
                     {projectTypeCodeRef === 'obligation' ? (
                         <div className={'form-group col-md-6'} />
                     ) : (
-                        <InputText
+                        <ViewText
                             label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
-                            name={'amountDefinitive'}
                             id={'amountDefinitive'}
                             value={amountDefinitive}
-                            onChangeAction={() => {}}
-                            readOnly={true}
                         />
                     )}
                     <InputText
@@ -261,6 +261,10 @@ class ParticipantFormEdit extends Component {
                         participationsDefinitiveWorth={participationsDefinitiveWorth}
                         valueCourses={project.valueCourses}
                         powerKwhConsumption={powerKwhConsumption}
+                        participationsReturnsKwhTotal={participationsReturnsKwhTotal}
+                        participationsIndicationOfRestitutionEnergyTaxTotal={
+                            participationsIndicationOfRestitutionEnergyTaxTotal
+                        }
                         handleInputChange={this.handleInputChange}
                     />
                 ) : null}

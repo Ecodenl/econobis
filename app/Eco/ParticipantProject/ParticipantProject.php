@@ -127,4 +127,26 @@ class ParticipantProject extends Model
 
         return $total;
     }
+
+    public function getParticipationsReturnsKwhTotalAttribute()
+    {
+        $total = 0;
+
+        foreach($this->mutations as $mutation) {
+            $total += $mutation->payout_kwh;
+        }
+
+        return $total;
+    }
+
+    public function getParticipationsIndicationOfRestitutionEnergyTaxTotalAttribute()
+    {
+        $total = 0;
+
+        foreach($this->mutations as $mutation) {
+            $total += $mutation->indication_of_restitution_energy_tax;
+        }
+
+        return $total;
+    }
 }

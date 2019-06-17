@@ -14,6 +14,8 @@ function ParticipantFormEditPostalcodeLinkCapital({
     valueCourses,
     powerKwhConsumption,
     handleInputChange,
+    participationsReturnsKwhTotal,
+    participationsIndicationOfRestitutionEnergyTaxTotal,
 }) {
     const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
 
@@ -27,7 +29,11 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     value={participationsDefinitive}
                     className={'col-sm-6 form-group'}
                 />
-                <ViewText label={'Totale opbrengsten kWh'} value={'0'} className={'col-sm-6 form-group'} />
+                <ViewText
+                    label={'Totale opbrengsten kWh'}
+                    value={participationsReturnsKwhTotal}
+                    className={'col-sm-6 form-group'}
+                />
             </div>
             <div className="row">
                 <ViewText
@@ -37,7 +43,7 @@ function ParticipantFormEditPostalcodeLinkCapital({
                 />
                 <ViewText
                     label={'Totale indicatie teruggave energie belasting'}
-                    value={'0'}
+                    value={moneyPresenter(participationsIndicationOfRestitutionEnergyTaxTotal)}
                     className={'col-sm-6 form-group'}
                 />
             </div>

@@ -39,7 +39,7 @@ ViewText.defaultProps = {
 };
 
 ViewText.propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     className: PropTypes.string,
     id: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

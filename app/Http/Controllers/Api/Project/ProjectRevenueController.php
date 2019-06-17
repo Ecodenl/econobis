@@ -394,8 +394,6 @@ class ProjectRevenueController extends ApiController
     {
         $this->authorize('manage', ProjectRevenue::class);
 
-//        $projectRevenue->forceDelete();
-
         try {
             DB::beginTransaction();
 

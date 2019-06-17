@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import RevenueDetailsToolbar from './RevenueDetailsToolbar';
-import RevenueDetailsForm from './RevenueDetailsForm';
 
 import { fetchRevenue, clearRevenue } from '../../../../../actions/project/ProjectDetailsActions';
+import RevenueDistributionForm from './revenue-distribution/RevenueDistributionForm';
+import RevenueConclusion from './conclusion/RevenueConclusion';
+import Panel from '../../../../../components/panel/Panel';
+import PanelHeader from '../../../../../components/panel/PanelHeader';
+import RevenueFormGeneral from './form/RevenueFormGeneral';
 
 class RevenueDetailsApp extends Component {
     constructor(props) {
@@ -27,14 +31,36 @@ class RevenueDetailsApp extends Component {
                         <RevenueDetailsToolbar />
                     </div>
 
-                    <div className="col-md-12">
-                        <RevenueDetailsForm />
-                    </div>
+                    {this.props.projectRevenue.id ? (
+                        <div className="col-md-12">
+                            {this.props.projectRevenue.confirmed == 1 && (
+                                <Panel>
+                                    <PanelHeader>
+                                        <span className="h5" style={{ color: '#e64a4a' }}>
+                                            Deze opbrengst is definitief. Hierdoor kan deze niet meer gewijzigd worden
+                                            en staat de opbrengstverdeling vast.
+                                        </span>
+                                    </PanelHeader>
+                                </Panel>
+                            )}
+                            <RevenueFormGeneral />
+                            <RevenueDistributionForm />
+                            <RevenueConclusion />
+                        </div>
+                    ) : (
+                        <div>Geen gegevens gevonden.</div>
+                    )}
                 </div>
             </div>
         );
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        projectRevenue: state.projectRevenue,
+    };
+};
 
 const mapDispatchToProps = dispatch => ({
     fetchRevenue: id => {
@@ -46,6 +72,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(RevenueDetailsApp);

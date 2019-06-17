@@ -64,7 +64,7 @@ function ParticipantFormEditPostalcodeLinkCapital({
             </div>
             <div className="row">
                 <ViewText
-                    label={'Huidige totale waarde'}
+                    label={'Huidige totale waarde participaties'}
                     value={moneyPresenter(participationsDefinitiveWorth)}
                     className={'col-sm-6 form-group'}
                 />

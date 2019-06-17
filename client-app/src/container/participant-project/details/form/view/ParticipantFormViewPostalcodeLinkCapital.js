@@ -38,7 +38,10 @@ function ParticipantFormViewPostalcodeLinkCapital({
                 <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />
+                <ViewText
+                    label={'Huidige totale waarde participaties'}
+                    value={moneyPresenter(participationsDefinitiveWorth)}
+                />
             </div>
         </React.Fragment>
     );

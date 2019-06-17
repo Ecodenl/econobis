@@ -258,12 +258,7 @@ class RevenueFormEdit extends Component {
                 </div>
                 <div className="row">
                     <ViewText label={'Soort'} value={category ? category.name : ''} className={'form-group col-sm-6'} />
-                    <InputText
-                        label={'Definitief'}
-                        name={'confirmed'}
-                        value={confirmed ? 'Ja' : 'Nee'}
-                        readOnly={true}
-                    />
+                    <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} className={'form-group col-sm-6'} />
                 </div>
 
                 <div className="row">

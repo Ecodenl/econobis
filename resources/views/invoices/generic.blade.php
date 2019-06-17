@@ -352,10 +352,8 @@
         <br/><br/>
         <div class="conclusion-text">Het bedrag wordt omstreeks @if($invoice->date_collection){{ Carbon\Carbon::parse($invoice->date_collection)->format('d-m-Y') }} @else
                 (datum nog niet bekend) @endif van uw rekening afgeschreven.<br/>
-            @if($invoice->order->IBAN) Uw bankgegevens IBAN: {{ $invoice->order->IBAN }}
-            @elseif($invoice->order->contact->iban) Uw bankgegevens IBAN: {{ $invoice->order->contact->iban }} @endif
-            @if($invoice->order->iban_attn) t.n.v. {{ $invoice->order->iban_attn }}<br/>
-            @elseif($invoice->order->contact->iban_attn) t.n.v. {{ $invoice->order->contact->iban_attn }}<br/>
+            @if($invoice->order->contact->iban) Uw bankgegevens IBAN: {{ $invoice->order->contact->iban }} @endif
+            @if($invoice->order->contact->iban_attn) t.n.v. {{ $invoice->order->contact->iban_attn }}<br/>
             @elseif($invoice->order->contact->full_name) t.n.v. {{ $invoice->order->contact->full_name }}<br/>
             @else <br/> @endif
                 Incasso Mandaat ID (SEPA): {{ $invoice->order->number }}<br/>

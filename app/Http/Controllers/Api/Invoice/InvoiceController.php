@@ -267,7 +267,7 @@ class InvoiceController extends ApiController
             }
             // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
             $validatedInvoices = $invoices->reject(function ($invoice) {
-                return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+                return (empty($invoice->order->contact->iban));
             });
         } else {
             $validatedInvoices = $invoices;
@@ -518,7 +518,7 @@ class InvoiceController extends ApiController
                 }
                 // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
                 $validatedInvoices = $invoices->reject(function ($invoice) {
-                    return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
+                    return (empty($invoice->order->contact->iban));
                 });
             } else {
                 $validatedInvoices = $invoices;

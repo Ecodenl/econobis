@@ -53,6 +53,7 @@ class FullParticipantProject extends Resource
                 'uniqueMutationStatuses' => $this->uniqueMutationStatuses,
                 'participationsReturnsTotal' => $this->participationsReturnsTotal,
                 'participationsReturnsKwhTotal' => $this->participationsReturnsKwhTotal,
+                'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
             ];
     }
 }

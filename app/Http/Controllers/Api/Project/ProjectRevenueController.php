@@ -9,6 +9,9 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
@@ -680,6 +683,11 @@ class ProjectRevenueController extends ApiController
             if (!$previewPDF && !$previewEmail) {
                 //delete file on server, still saved on alfresco.
                 Storage::disk('documents')->delete($document->filename);
+
+                // Create participant mutation when revenue category is revenueKwh
+                if($revenue->category->code_ref == 'revenueKwh') {
+                    $this->createParticipantMutationForRevenueKwh($distribution);
+                }
             }
         }
     }
@@ -697,6 +705,16 @@ class ProjectRevenueController extends ApiController
         CreatePaymentInvoices::dispatch($createReport, $createInvoice, $distributionIds, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
 
         return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
+    }
+
+    protected function createParticipantMutationForRevenueKwh(ProjectRevenueDistribution $distribution){
+        $participantMutation = new ParticipantMutation();
+        $participantMutation->participation_id = $distribution->participation_id;
+        $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
+        $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+        $participantMutation->payout_kwh = $distribution->delivered_total;
+        $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
+        $participantMutation->save();
     }
 
     protected function setMailConfigByDistribution(ProjectRevenueDistribution $distribution)

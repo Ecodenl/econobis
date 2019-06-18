@@ -33,7 +33,7 @@ function MutationFormEditDeposit({
     participationWorth,
     participantMutationStatusesOptions,
     projectTypeCodeRef,
-    onChangeAction,
+    handleInputChange,
     handleInputChangeDate,
     cancelEdit,
     handleSubmit,
@@ -62,7 +62,7 @@ function MutationFormEditDeposit({
                         name={'statusId'}
                         options={participantMutationStatusesOptions}
                         value={statusId}
-                        onChangeAction={onChangeAction}
+                        onChangeAction={handleInputChange}
                     />
                 )}
             </div>
@@ -88,7 +88,7 @@ function MutationFormEditDeposit({
                     quantityOption={quantityOption}
                     amountOption={amountOption}
                     dateOption={dateOption}
-                    handleInputChange={onChangeAction}
+                    handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
@@ -108,7 +108,7 @@ function MutationFormEditDeposit({
                     quantityGranted={quantityGranted}
                     amountGranted={amountGranted}
                     dateGranted={dateGranted}
-                    handleInputChange={onChangeAction}
+                    handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
@@ -133,7 +133,7 @@ function MutationFormEditDeposit({
                     dateEntry={dateEntry}
                     dateContractRetour={dateContractRetour}
                     datePayment={datePayment}
-                    handleInputChange={onChangeAction}
+                    handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
@@ -158,7 +158,7 @@ function MutationFormEditDeposit({
                     dateEntry={dateEntry}
                     dateContractRetour={dateContractRetour}
                     datePayment={datePayment}
-                    handleInputChange={onChangeAction}
+                    handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
@@ -187,7 +187,7 @@ MutationFormEditDeposit.propTypes = {
     originalStatus: PropTypes.any,
     participantMutationStatusesOptions: PropTypes.arrayOf(PropTypes.any),
     statusId: PropTypes.string,
-    onChangeAction: PropTypes.any,
+    handleInputChange: PropTypes.any,
     projectTypeCodeRef: PropTypes.any,
     amount: PropTypes.any,
     quantityInterest: PropTypes.any,

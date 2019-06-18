@@ -27,16 +27,12 @@ class AddressController extends ApiController
             'city' => '',
             'postalCode' => '',
             'primary' => 'boolean',
-            'eanElectricity' => '',
-            'eanGas' => '',
         ]);
 
         $data = $this->sanitizeData($data, [
             'typeId' => 'nullable',
             'countryId' => 'nullable',
             'primary' => 'boolean',
-            'eanElectricity' => 'nullable',
-            'eanGas' => 'nullable',
         ]);
 
         if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $data['postalCode'])){
@@ -66,16 +62,12 @@ class AddressController extends ApiController
             'city' => '',
             'postalCode' => '',
             'primary' => 'boolean',
-            'eanElectricity' => '',
-            'eanGas' => '',
         ]);
 
         $data = $this->sanitizeData($data, [
             'typeId' => 'nullable',
             'countryId' => 'nullable',
             'primary' => 'boolean',
-            'eanElectricity' => 'nullable',
-            'eanGas' => 'nullable',
         ]);
 
         if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $data['postalCode'])){

@@ -30,6 +30,8 @@ class FullContactEnergySupplier extends Resource
             'energySupplier' => GenericResource::make($this->whenLoaded('energySupplier')),
             'type' => $this->type,
             'memberSince' => $this->member_since,
+            'eanElectricity' => $this->ean_electricity,
+            'eanGas' => $this->ean_gas,
             'contactEnergySupplyStatusId' => $this->contact_energy_supply_status_id,
             'contactEnergySupplyStatus' => GenericResource::make($this->whenLoaded('contactEnergySupplyStatus')),
             'contactEnergySupplyTypeId' => $this->contact_energy_supply_type_id,

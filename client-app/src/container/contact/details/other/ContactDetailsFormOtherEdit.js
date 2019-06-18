@@ -80,6 +80,36 @@ class ContactDetailsFormOtherEdit extends Component {
         });
     };
 
+    handleInputChangeCollectMandate = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        let collectMandateCode = '';
+        let collectMandateSignatureDate = '';
+        let collectMandateFirstRunDate = '';
+        let collectMandateCollectionSchema = '';
+
+        if (value === true)
+        {
+            collectMandateCode = this.props.contactDetails.number;
+            collectMandateSignatureDate = moment().format('Y-MM-DD');
+            collectMandateFirstRunDate = moment().add(1, "M").format('Y-MM-01');
+            collectMandateCollectionSchema = 'core';
+        }
+        this.setState({
+            ...this.state,
+            other: {
+                ...this.state.other,
+                [name]: value,
+                collectMandateCode,
+                collectMandateSignatureDate,
+                collectMandateFirstRunDate,
+                collectMandateCollectionSchema,
+            },
+        });
+    };
+
     handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
@@ -240,7 +270,7 @@ class ContactDetailsFormOtherEdit extends Component {
                             label={'Ingesteld op incasso'}
                             name={'isCollectMandate'}
                             value={isCollectMandate}
-                            onChangeAction={this.handleInputChange}
+                            onChangeAction={this.handleInputChangeCollectMandate}
                         />
                         {isCollectMandate ? (
                             <InputText

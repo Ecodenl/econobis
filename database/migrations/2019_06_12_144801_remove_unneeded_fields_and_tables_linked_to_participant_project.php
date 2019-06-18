@@ -20,8 +20,8 @@ class RemoveUnneededFieldsAndTablesLinkedToParticipantProject extends Migration
             $table->dropColumn('participations_rest_sale');
         });
 
-        Schema::dropIfExists('participant_transactions');
-        Schema::dropIfExists('participant_transaction_type');
+//        Schema::dropIfExists('participant_transactions');
+//        Schema::dropIfExists('participant_transaction_type');
         Schema::dropIfExists('participant_project_status');
     }
 

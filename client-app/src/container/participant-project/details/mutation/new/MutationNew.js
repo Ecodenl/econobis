@@ -140,7 +140,11 @@ class MutationFormNew extends Component {
         const statusCodeRef = status ? status.codeRef : null;
 
         const participantMutationTypesOptions = participantMutationTypes.filter(
-            participantMutationType => participantMutationType.codeRef !== 'result'
+            participantMutationType =>
+                participantMutationType.codeRef === 'first_deposit' ||
+                participantMutationType.codeRef === 'deposit' ||
+                participantMutationType.codeRef === 'withDrawal' ||
+                participantMutationType.codeRef === 'sell'
         );
 
         return (

@@ -15,7 +15,6 @@ import MutationNewSubmitHelper from './MutationNewSubmitHelper';
 class MutationFormNew extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             participationMutation: {
                 participationId: this.props.id,
@@ -34,7 +33,9 @@ class MutationFormNew extends Component {
                 amountFinal: 0,
                 dateContractRetour: null,
                 datePayment: null,
-                dateEntry: moment().format('YYYY-MM-DD'),
+                dateEntry: this.props.projectDateEntry
+                    ? moment(this.props.projectDateEntry).format('YYYY-MM-DD')
+                    : moment().format('YYYY-MM-DD'),
             },
             errors: {},
         };
@@ -213,6 +214,7 @@ const mapStateToProps = state => {
         participantMutationStatuses: state.systemData.participantMutationStatuses,
         id: state.participantProjectDetails.id,
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+        projectDateEntry: state.participantProjectDetails.project.dateEntry,
     };
 };
 

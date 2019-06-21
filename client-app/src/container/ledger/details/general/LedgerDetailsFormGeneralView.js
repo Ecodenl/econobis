@@ -13,7 +13,9 @@ const VatCodeDetailsFormGeneralView = ({ description, vatCodeId, twinfieldLedger
                         <ViewText label={'Omschrijving'} value={description} />
                         <ViewText
                             label={'BTW code'}
-                            value={vatCodeId ? vatCodes.find(vatCode => vatCode.id == vatCodeId).description : 'BTW geen'}
+                            value={
+                                vatCodeId ? vatCodes.find(vatCode => vatCode.id == vatCodeId).description : 'BTW geen'
+                            }
                         />
                     </div>
 

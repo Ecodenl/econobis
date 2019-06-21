@@ -131,18 +131,18 @@ class ContactDetailsFormPersonalEdit extends Component {
 
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
 
-                    if(errorObject.response.status !== 500) {
+                    if (errorObject.response.status !== 500) {
                         errorMessage = errorObject.response.data.message;
                     }
                     this.setState({
                         showErrorModal: true,
                         modalErrorMessage: errorMessage,
-                    })
+                    });
                 });
     };
 
     closeErrorModal = () => {
-        this.setState({showErrorModal: false, modalErrorMessage: '',})
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
     render() {
@@ -289,13 +289,13 @@ class ContactDetailsFormPersonalEdit extends Component {
                     </PanelFooter>
                 </form>
 
-                { this.state.showErrorModal &&
-                <ErrorModal
-                    closeModal={this.closeErrorModal}
-                    title={'Fout bij opslaan'}
-                    errorMessage={this.state.modalErrorMessage}
-                />
-                }
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
+                    />
+                )}
             </React.Fragment>
         );
     }

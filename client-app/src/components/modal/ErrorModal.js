@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Draggable from 'react-draggable';
 
@@ -27,8 +27,12 @@ class ErrorModal extends Component {
     }
 
     updateWindowDimensions() {
-        const offsetTop = Number(`-${this.divModalDialog.current.offsetParent.offsetTop + this.divModalDialog.current.offsetTop}`);
-        const offsetBottom = this.divModalDialog.current.offsetParent.clientHeight - (this.divModalDialog.current.offsetHeight - offsetTop);
+        const offsetTop = Number(
+            `-${this.divModalDialog.current.offsetParent.offsetTop + this.divModalDialog.current.offsetTop}`
+        );
+        const offsetBottom =
+            this.divModalDialog.current.offsetParent.clientHeight -
+            (this.divModalDialog.current.offsetHeight - offsetTop);
 
         this.setState({
             offsetTop,
@@ -39,11 +43,11 @@ class ErrorModal extends Component {
     }
 
     onStart() {
-        this.setState({activeDrags: ++this.state.activeDrags});
+        this.setState({ activeDrags: ++this.state.activeDrags });
     }
 
     onStop() {
-        this.setState({activeDrags: --this.state.activeDrags});
+        this.setState({ activeDrags: --this.state.activeDrags });
     }
 
     render() {
@@ -54,16 +58,15 @@ class ErrorModal extends Component {
             bottom: this.state.offsetBottom,
         };
 
-        const {title, closeModal, buttonText, error} = this.props;
-        let {errorMessage} = this.props;
+        const { title, closeModal, buttonText, error } = this.props;
+        let { errorMessage } = this.props;
 
         if (error.message) {
             if (error.message.includes(';')) {
                 error.message = error.message.split(';');
             }
             errorMessage = error.message;
-        }
-        else if (error.httpCode) {
+        } else if (error.httpCode) {
             switch (error.httpCode) {
                 case 400:
                     errorMessage = 'Foute aanvraag';
@@ -169,27 +172,32 @@ class ErrorModal extends Component {
             }
         }
         return (
-            <Draggable handle=".modal-header" onStart={this.onStart} onStop={this.onStop}
-                       bounds={bounds}>
+            <Draggable handle=".modal-header" onStart={this.onStart} onStop={this.onStop} bounds={bounds}>
                 <div className="modal">
                     <div className="modal-dialog" ref={this.divModalDialog}>
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h4 className="modal-title">{title}<span className="close-modal" onClick={this.props.closeModal}>X</span></h4>
+                                <h4 className="modal-title">
+                                    {title}
+                                    <span className="close-modal" onClick={this.props.closeModal}>
+                                        X
+                                    </span>
+                                </h4>
                             </div>
                             <div className="modal-body search-modal-body">
-                                {typeof errorMessage === 'string' &&
-                                errorMessage
-                                }
-                                {typeof errorMessage === 'object' &&
-                                <ul>
-                                    {errorMessage.map((message) => <li>{message}</li>)}
-                                </ul>
-                                }
+                                {typeof errorMessage === 'string' && errorMessage}
+                                {typeof errorMessage === 'object' && (
+                                    <ul>
+                                        {errorMessage.map(message => (
+                                            <li>{message}</li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-default"
-                                        onClick={closeModal}>{buttonText}</button>
+                                <button type="button" className="btn btn-default" onClick={closeModal}>
+                                    {buttonText}
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -197,13 +205,13 @@ class ErrorModal extends Component {
             </Draggable>
         );
     }
-};
+}
 
 ErrorModal.defaultProps = {
     buttonText: 'Ok',
     title: 'Waarschuwing',
     errorMessage: 'Er is een onbekende fout opgetreden',
-    error: {}
+    error: {},
 };
 
 ErrorModal.propTypes = {

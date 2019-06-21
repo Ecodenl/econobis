@@ -75,7 +75,7 @@ const mapStateToProps = state => {
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
         vatCodes: state.systemData.vatCodes,
-        ledgers: state.systemData.ledgers
+        ledgers: state.systemData.ledgers,
     };
 };
 

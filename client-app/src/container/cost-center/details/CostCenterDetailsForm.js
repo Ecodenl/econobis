@@ -1,15 +1,15 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
 
 import CostCenterDetailsFormGeneral from './general/CostCenterDetailsFormGeneral';
-import * as PropTypes from "prop-types";
+import * as PropTypes from 'prop-types';
 
 class CostCenterDetailsForm extends Component {
     constructor(props) {
         super(props);
     }
     render() {
-        let {costCenter, hasError, isLoading, updateState} = this.props;
+        let { costCenter, hasError, isLoading, updateState } = this.props;
         let loadingText = '';
         let loading = true;
 
@@ -27,7 +27,7 @@ class CostCenterDetailsForm extends Component {
             <div>{loadingText}</div>
         ) : (
             <div>
-                <CostCenterDetailsFormGeneral costCenter={costCenter} updateState={updateState}/>
+                <CostCenterDetailsFormGeneral costCenter={costCenter} updateState={updateState} />
             </div>
         );
     }
@@ -37,7 +37,7 @@ CostCenterDetailsForm.propTypes = {
     costCenter: PropTypes.any,
     hasError: PropTypes.any,
     isLoading: PropTypes.any,
-    updateState: PropTypes.any
-}
+    updateState: PropTypes.any,
+};
 
 export default CostCenterDetailsForm;

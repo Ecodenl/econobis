@@ -69,18 +69,18 @@ class CostCenterNewForm extends Component {
         }
         if (costCenter.twinfieldCostCenterCode) {
             this.props.costCenters.map(costCenterFromMap => {
-                if(costCenterFromMap.twinfieldCostCenterCode == costCenter.twinfieldCostCenterCode) {
+                if (costCenterFromMap.twinfieldCostCenterCode == costCenter.twinfieldCostCenterCode) {
                     hasErrors = true;
                     errors.twinfieldCostCenterCode = true;
                 }
-            })
+            });
         }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        CostCenterDetailsAPI.newCostCenter(costCenter)
+            CostCenterDetailsAPI.newCostCenter(costCenter)
                 .then(payload => {
                     this.props.fetchSystemData();
 

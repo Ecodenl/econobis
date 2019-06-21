@@ -1,5 +1,5 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import axios from "axios";
+import axios from 'axios';
 
 const URL_LEDGER = `ledger`;
 
@@ -33,10 +33,9 @@ export default {
         return axiosInstance.post(requestUrl, ledger);
     },
 
-    deleteLedger: (id) => {
+    deleteLedger: id => {
         const requestUrl = `${URL_LEDGER}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
     },
-
 };

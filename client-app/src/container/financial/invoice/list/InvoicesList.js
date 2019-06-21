@@ -87,7 +87,7 @@ class InvoicesList extends Component {
         }
     }
 
-    setFilter = (filter) => {
+    setFilter = filter => {
         if (!isEmpty(filter)) {
             switch (filter) {
                 case 'te-verzenden-incasso':

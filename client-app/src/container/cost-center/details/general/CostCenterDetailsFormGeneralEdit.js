@@ -53,20 +53,23 @@ class CostCenterDetailsFormGeneralEdit extends Component {
             errors.description = true;
             hasErrors = true;
         }
-        if (costCenter.twinfieldCostCenterCode && costCenter.twinfieldCostCenterCode !== this.props.costCenter.twinfieldCostCenterCode) {
+        if (
+            costCenter.twinfieldCostCenterCode &&
+            costCenter.twinfieldCostCenterCode !== this.props.costCenter.twinfieldCostCenterCode
+        ) {
             this.props.costCenters.map(costCenterFromMap => {
-                if(costCenterFromMap.twinfieldCostCenterCode == costCenter.twinfieldCostCenterCode) {
+                if (costCenterFromMap.twinfieldCostCenterCode == costCenter.twinfieldCostCenterCode) {
                     hasErrors = true;
                     errors.twinfieldCostCenterCode = true;
                 }
-            })
+            });
         }
 
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-        CostCenterDetailsAPI.updateCostCenter(costCenter)
+            CostCenterDetailsAPI.updateCostCenter(costCenter)
                 .then(payload => {
                     this.props.updateState(costCenter);
                     this.props.fetchSystemData();

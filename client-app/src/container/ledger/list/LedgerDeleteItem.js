@@ -2,7 +2,7 @@ import React from 'react';
 
 import Modal from '../../../components/modal/Modal';
 
-const LedgerDeleteItem = ({deleteLedger, closeDeleteItemModal, description, id}) => {
+const LedgerDeleteItem = ({ deleteLedger, closeDeleteItemModal, description, id }) => {
     const confirmAction = () => {
         deleteLedger(id);
         closeDeleteItemModal();

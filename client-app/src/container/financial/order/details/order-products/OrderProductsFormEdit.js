@@ -8,7 +8,7 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
 //import InputReactSelect from "./OrderProductsFormNew";
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 moment.locale('nl');
 
@@ -205,6 +205,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps
-)(OrderProductsFormEdit);
+export default connect(mapStateToProps)(OrderProductsFormEdit);

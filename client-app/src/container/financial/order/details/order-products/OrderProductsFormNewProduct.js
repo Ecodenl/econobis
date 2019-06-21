@@ -443,7 +443,16 @@ class OrderProductsFormNewProduct extends Component {
             dateEnd,
             datePeriodStartFirstInvoice,
         } = this.state.orderProduct;
-        const { description, code, name, durationId, vatPercentage, price, ledgerId, costCenterId } = this.state.product;
+        const {
+            description,
+            code,
+            name,
+            durationId,
+            vatPercentage,
+            price,
+            ledgerId,
+            costCenterId,
+        } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -525,17 +534,17 @@ class OrderProductsFormNewProduct extends Component {
                             ) : null}
                         </div>
                         <div className="row">
-                        {this.props.usesTwinfield ? (
-                            <InputSelect
-                                label={'Kostenplaats'}
-                                id={'costCenterId'}
-                                name={'costCenterId'}
-                                options={this.props.costCenters}
-                                optionName={'description'}
-                                value={costCenterId}
-                                onChangeAction={this.handleCostCenterChange}
-                            />
-                        ) : null}
+                            {this.props.usesTwinfield ? (
+                                <InputSelect
+                                    label={'Kostenplaats'}
+                                    id={'costCenterId'}
+                                    name={'costCenterId'}
+                                    options={this.props.costCenters}
+                                    optionName={'description'}
+                                    value={costCenterId}
+                                    onChangeAction={this.handleCostCenterChange}
+                                />
+                            ) : null}
                         </div>
 
                         <div className="row">

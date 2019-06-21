@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import CostCentersListItem from './CostCentersListItem';
-import CostCenterDeleteItem from "./CostCenterDeleteItem";
+import CostCenterDeleteItem from './CostCenterDeleteItem';
 
-import * as PropTypes from "prop-types";
+import * as PropTypes from 'prop-types';
 
 class CostCentersList extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class CostCentersList extends Component {
             deleteItem: {
                 id: '',
                 description: '',
-            }
+            },
         };
     }
 
@@ -26,7 +26,7 @@ class CostCentersList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id,
                 description,
@@ -38,16 +38,16 @@ class CostCentersList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
                 description: '',
-            }
+            },
         });
     };
 
     render() {
-        let {costCenters, hasError, isLoading} = this.props;
+        let { costCenters, hasError, isLoading } = this.props;
         let loadingText = '';
         let loading = true;
 
@@ -66,9 +66,9 @@ class CostCentersList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Omschrijving'} width={'60%'}/>
-                            <DataTableHeadTitle title={'Nummer'} width={'30%'}/>
-                            <DataTableHeadTitle title={''} width={'10%'}/>
+                            <DataTableHeadTitle title={'Omschrijving'} width={'60%'} />
+                            <DataTableHeadTitle title={'Nummer'} width={'30%'} />
+                            <DataTableHeadTitle title={''} width={'10%'} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
@@ -78,23 +78,24 @@ class CostCentersList extends Component {
                             </tr>
                         ) : (
                             costCenters.map(costCenter => {
-                                return <CostCentersListItem
-                                    key={costCenter.id}
-                                    showDeleteItemModal={this.showDeleteItemModal}
-                                    {...costCenter}
-                                />;
+                                return (
+                                    <CostCentersListItem
+                                        key={costCenter.id}
+                                        showDeleteItemModal={this.showDeleteItemModal}
+                                        {...costCenter}
+                                    />
+                                );
                             })
                         )}
                     </DataTableBody>
                 </DataTable>
-                {
-                    this.state.showDeleteItem &&
+                {this.state.showDeleteItem && (
                     <CostCenterDeleteItem
                         closeDeleteItemModal={this.closeDeleteItemModal}
                         {...this.state.deleteItem}
                         deleteCostCenter={this.props.deleteCostCenter}
                     />
-                }
+                )}
             </div>
         );
     }
@@ -103,7 +104,7 @@ class CostCentersList extends Component {
 CostCentersList.propTypes = {
     costCenters: PropTypes.any,
     hasError: PropTypes.any,
-    isLoading: PropTypes.any
-}
+    isLoading: PropTypes.any,
+};
 
 export default CostCentersList;

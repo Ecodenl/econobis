@@ -166,13 +166,19 @@ class FinancialTree extends Component {
                                     </Link>
                                 </NavText>
                             </Nav>
-                            {(this.props.administrationDetails.totalInvoicesExported > 0 || this.props.administrationDetails.twinfieldIsValid) &&
+                            {(this.props.administrationDetails.totalInvoicesExported > 0 ||
+                                this.props.administrationDetails.twinfieldIsValid) && (
                                 <Nav id="exported">
-                                    <NavText><Link className="financial-tree-link"
-                                                   to={`financieel/${this.props.id}/facturen/geexporteerd`}>Verzonden
-                                        geboekt({this.props.administrationDetails.totalInvoicesExported})</Link></NavText>
+                                    <NavText>
+                                        <Link
+                                            className="financial-tree-link"
+                                            to={`financieel/${this.props.id}/facturen/geexporteerd`}
+                                        >
+                                            Verzonden geboekt({this.props.administrationDetails.totalInvoicesExported})
+                                        </Link>
+                                    </NavText>
                                 </Nav>
-                            }
+                            )}
                             <Nav id="reminder">
                                 <NavText>
                                     <Link

@@ -141,11 +141,12 @@ const InvoicesListFilter = props => {
                         <option key={'sent'} value={'sent'}>
                             {'Verzonden'}
                         </option>
-                        {props.administrationDetails.totalInvoicesExported > 0 || props.administrationDetails.twinfieldIsValid &&
-                        <option key={'exported'} value={'exported'}>
-                            {'Geboekt'}
-                        </option>
-                        }
+                        {props.administrationDetails.totalInvoicesExported > 0 ||
+                            (props.administrationDetails.twinfieldIsValid && (
+                                <option key={'exported'} value={'exported'}>
+                                    {'Geboekt'}
+                                </option>
+                            ))}
                         <option key={'paid'} value={'paid'}>
                             {'Betaald'}
                         </option>

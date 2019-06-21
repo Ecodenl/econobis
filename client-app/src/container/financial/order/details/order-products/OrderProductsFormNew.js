@@ -216,7 +216,7 @@ class OrderProductsFormNew extends Component {
             vatPercentage = product.currentPrice.vatPercentage;
             productInputInclVat = product.currentPrice.inputInclVat;
             costCenterId = product.costCenterId;
-            if ( !costCenterId ) {
+            if (!costCenterId) {
                 costCenterId = '';
             }
             description = product.invoiceText;

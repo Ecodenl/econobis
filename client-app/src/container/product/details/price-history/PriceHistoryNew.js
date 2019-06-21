@@ -196,14 +196,14 @@ class PriceHistoryNew extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
-                                label={"BTW percentage"}
-                                name={"vatPercentage"}
+                                label={'BTW percentage'}
+                                name={'vatPercentage'}
                                 options={this.props.vatCodes}
                                 optionValue={'percentage'}
                                 optionName={'description'}
                                 value={vatPercentage}
                                 onChangeAction={this.props.usesTwinfield ? null : this.handleInputChange}
-                                placeholder={"Geen"}
+                                placeholder={'Geen'}
                                 readOnly={this.props.usesTwinfield}
                             />
                         </div>

@@ -7,11 +7,11 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from '../../../../../components/form/InputSelect';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import validator from "validator";
-import InputDate from "../../../../../components/form/InputDate";
-import moment from "moment/moment";
-import {fetchInvoiceDetails} from "../../../../../actions/invoice/InvoiceDetailsActions";
-import InputReactSelect from "../../../../../components/form/InputReactSelect";
+import validator from 'validator';
+import InputDate from '../../../../../components/form/InputDate';
+import moment from 'moment/moment';
+import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
+import InputReactSelect from '../../../../../components/form/InputReactSelect';
 
 class InvoiceProductsFormNewProductOneTime extends Component {
     constructor(props) {
@@ -58,10 +58,10 @@ class InvoiceProductsFormNewProductOneTime extends Component {
             ...this.state,
             product: {
                 ...this.state.product,
-                [name]: selectedOption
+                [name]: selectedOption,
             },
         });
-    };
+    }
 
     handleInputChange = event => {
         const target = event.target;
@@ -234,8 +234,13 @@ class InvoiceProductsFormNewProductOneTime extends Component {
     };
 
     render() {
-
-        const {description, amount, amountReduction, percentageReduction, dateLastInvoice} = this.state.invoiceProduct;
+        const {
+            description,
+            amount,
+            amountReduction,
+            percentageReduction,
+            dateLastInvoice,
+        } = this.state.invoiceProduct;
         const { vatPercentage, price, ledgerId } = this.state.product;
 
         return (
@@ -271,19 +276,20 @@ class InvoiceProductsFormNewProductOneTime extends Component {
                             />
                         </div>
 
-                        {this.props.invoiceDetails.order.administration.usesTwinfield == true && this.props.invoiceDetails.order.administration.twinfieldIsValid == true &&
-                        <div className="row">
-                            <InputReactSelect
-                                label={"Grootboek"}
-                                name={"ledgerId"}
-                                options={this.props.ledgers}
-                                optionName={'description'}
-                                value={ledgerId}
-                                onChangeAction={this.handleReactSelectChange}
-                                multi={false}
-                            />
-                        </div>
-                        }
+                        {this.props.invoiceDetails.order.administration.usesTwinfield == true &&
+                            this.props.invoiceDetails.order.administration.twinfieldIsValid == true && (
+                                <div className="row">
+                                    <InputReactSelect
+                                        label={'Grootboek'}
+                                        name={'ledgerId'}
+                                        options={this.props.ledgers}
+                                        optionName={'description'}
+                                        value={ledgerId}
+                                        onChangeAction={this.handleReactSelectChange}
+                                        multi={false}
+                                    />
+                                </div>
+                            )}
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>

@@ -15,7 +15,7 @@ const VatCodesListToolbar = ({ vatCodesCount, refreshVatCodesData, permissions }
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshVatCodesData} />
                     {/*{permissions.manageFinancial && (*/}
-                        {/*<ButtonIcon iconName={'glyphicon-plus'} onClickAction={newVatCode} />*/}
+                    {/*<ButtonIcon iconName={'glyphicon-plus'} onClickAction={newVatCode} />*/}
                     {/*)}*/}
                 </div>
             </div>

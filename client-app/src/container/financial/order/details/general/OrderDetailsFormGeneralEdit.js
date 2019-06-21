@@ -5,13 +5,13 @@ import validator from 'validator';
 import { updateOrder } from '../../../../../actions/order/OrderDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
-import Panel from "../../../../../components/panel/Panel";
-import PanelBody from "../../../../../components/panel/PanelBody";
-import * as ibantools from "ibantools";
-import InputSelect from "../../../../../components/form/InputSelect";
-import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
-import InputDate from "../../../../../components/form/InputDate";
-import InputReactSelect from "../../../../../components/form/InputReactSelect";
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import * as ibantools from 'ibantools';
+import InputSelect from '../../../../../components/form/InputSelect';
+import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
+import InputDate from '../../../../../components/form/InputDate';
+import InputReactSelect from '../../../../../components/form/InputReactSelect';
 import moment from 'moment';
 
 class OrderDetailsFormGeneralEdit extends Component {
@@ -73,15 +73,17 @@ class OrderDetailsFormGeneralEdit extends Component {
     }
 
     componentDidMount() {
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then((payload) => {
-            this.setState({
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
+            this.setState(
+                {
                     emailTemplates: payload,
                     peekLoading: {
                         ...this.state.peekLoading,
                         emailTemplates: false,
                     },
                 },
-                this.checkContactCollectMandate);
+                this.checkContactCollectMandate
+            );
         });
     }
 
@@ -116,34 +118,31 @@ class OrderDetailsFormGeneralEdit extends Component {
         });
     };
     handleInputChangeInvoiceDate = (value, name) => {
-        this.setState({
+        this.setState(
+            {
                 order: {
                     ...this.state.order,
-                    [name]: value
+                    [name]: value,
                 },
-            }, this.checkContactCollectMandate
+            },
+            this.checkContactCollectMandate
         );
     };
 
-
     checkContactCollectMandate = () => {
-
         let paymentTypeId = this.state.order.paymentTypeId;
         let date = this.state.order.dateNextInvoice;
-        if (!date)
-        {
-            date = moment().format("YYYY-MM-DD");
+        if (!date) {
+            date = moment().format('YYYY-MM-DD');
         }
         let contactCollectMandateFirstRun = this.props.contactCollectMandateFirstRun;
         let contactCollectMandate = this.props.contactCollectMandate;
-        let collectMandateActive = (contactCollectMandate == true);
-        if (contactCollectMandate && contactCollectMandateFirstRun > date)
-        {
-            collectMandateActive =  false;
+        let collectMandateActive = contactCollectMandate == true;
+        if (contactCollectMandate && contactCollectMandateFirstRun > date) {
+            collectMandateActive = false;
         }
-        if (!collectMandateActive)
-        {
-            paymentTypeId =  'transfer';
+        if (!collectMandateActive) {
+            paymentTypeId = 'transfer';
         }
         this.setState({
             collectMandateActive,
@@ -195,8 +194,21 @@ class OrderDetailsFormGeneralEdit extends Component {
 
     render() {
         const {
-            statusId, subject, emailTemplateIdCollection, emailTemplateIdTransfer, emailTemplateReminderId, emailTemplateExhortationId, paymentTypeId, collectionFrequencyId,
-            IBAN, ibanAttn, poNumber, invoiceText, dateRequested, administrationId, dateNextInvoice
+            statusId,
+            subject,
+            emailTemplateIdCollection,
+            emailTemplateIdTransfer,
+            emailTemplateReminderId,
+            emailTemplateExhortationId,
+            paymentTypeId,
+            collectionFrequencyId,
+            IBAN,
+            ibanAttn,
+            poNumber,
+            invoiceText,
+            dateRequested,
+            administrationId,
+            dateNextInvoice,
         } = this.state.order;
         const { invoiceCount } = this.props.orderDetails;
 
@@ -282,7 +294,13 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 label={'Betaalwijze'}
                                 id="paymentTypeId"
                                 name={'paymentTypeId'}
-                                options={this.state.collectMandateActive ? this.props.orderPaymentTypes : this.props.orderPaymentTypes.filter(orderPaymentType => orderPaymentType.id === 'transfer')}
+                                options={
+                                    this.state.collectMandateActive
+                                        ? this.props.orderPaymentTypes
+                                        : this.props.orderPaymentTypes.filter(
+                                              orderPaymentType => orderPaymentType.id === 'transfer'
+                                          )
+                                }
                                 emptyOption={false}
                                 value={paymentTypeId}
                                 onChangeAction={this.handleInputChange}
@@ -334,12 +352,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputText
-                                label="IBAN"
-                                name={'IBAN'}
-                                value={IBAN}
-                                readOnly={true}
-                            />
+                            <InputText label="IBAN" name={'IBAN'} value={IBAN} readOnly={true} />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}
@@ -349,12 +362,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputText
-                                label="IBAN t.n.v."
-                                name={'ibanAttn'}
-                                value={ibanAttn}
-                                readOnly={true}
-                            />
+                            <InputText label="IBAN t.n.v." name={'ibanAttn'} value={ibanAttn} readOnly={true} />
                         </div>
 
                         <div className="row">

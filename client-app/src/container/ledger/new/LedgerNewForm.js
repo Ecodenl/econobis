@@ -71,11 +71,11 @@ class LedgerNewForm extends Component {
         }
         if (ledger.twinfieldLedgerCode) {
             this.props.ledgers.map(ledgerFromMap => {
-                if(ledgerFromMap.twinfieldLedgerCode == ledger.twinfieldLedgerCode) {
+                if (ledgerFromMap.twinfieldLedgerCode == ledger.twinfieldLedgerCode) {
                     hasErrors = true;
                     errors.twinfieldLedgerCode = true;
                 }
-            })
+            });
         }
 
         this.setState({ ...this.state, errors: errors });

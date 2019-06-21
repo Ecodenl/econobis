@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import * as PropTypes from "prop-types";
+import * as PropTypes from 'prop-types';
 
 class CostCentersListToolbar extends Component {
     render() {
-        let {costCentersCount, refreshCostCentersData, permissions} = this.props;
+        let { costCentersCount, refreshCostCentersData, permissions } = this.props;
         const newCostCenter = () => {
             hashHistory.push(`/kostenplaats/nieuw`);
         };
@@ -16,10 +16,9 @@ class CostCentersListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'glyphicon-refresh'}
-                                    onClickAction={refreshCostCentersData}/>
+                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshCostCentersData} />
                         {permissions.manageFinancial && (
-                            <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newCostCenter}/>
+                            <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newCostCenter} />
                         )}
                     </div>
                 </div>
@@ -37,8 +36,8 @@ class CostCentersListToolbar extends Component {
 CostCentersListToolbar.propTypes = {
     costCentersCount: PropTypes.any,
     refreshCostCentersData: PropTypes.any,
-    permissions: PropTypes.any
-}
+    permissions: PropTypes.any,
+};
 
 const mapStateToProps = state => {
     return {

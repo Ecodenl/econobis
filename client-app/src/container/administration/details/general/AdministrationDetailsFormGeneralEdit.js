@@ -177,7 +177,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        if ( value == true ) {
+        if (value == true) {
             this.state.administration.twinfieldPasswordChange = true;
         }
 
@@ -271,17 +271,24 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
             let twinFieldOfficeAndOrganizationCodeNotUnique = false;
 
-            this.props.administrations.map (
-                existingTwinfieldAdministration => ( (existingTwinfieldAdministration.twinfieldOfficeCode && administration.twinfieldOfficeCode && existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() === administration.twinfieldOfficeCode.toUpperCase() )
-                && ( existingTwinfieldAdministration.twinfieldOrganizationCode && administration.twinfieldOrganizationCode && existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() === administration.twinfieldOrganizationCode.toUpperCase() ) && existingTwinfieldAdministration.id !== administration.id
-                && ( twinFieldOfficeAndOrganizationCodeNotUnique = true )
-            ));
+            this.props.administrations.map(
+                existingTwinfieldAdministration =>
+                    existingTwinfieldAdministration.twinfieldOfficeCode &&
+                    administration.twinfieldOfficeCode &&
+                    existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() ===
+                        administration.twinfieldOfficeCode.toUpperCase() &&
+                    (existingTwinfieldAdministration.twinfieldOrganizationCode &&
+                        administration.twinfieldOrganizationCode &&
+                        existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
+                            administration.twinfieldOrganizationCode.toUpperCase()) &&
+                    existingTwinfieldAdministration.id !== administration.id &&
+                    (twinFieldOfficeAndOrganizationCodeNotUnique = true)
+            );
 
             if (twinFieldOfficeAndOrganizationCodeNotUnique) {
                 errors.twinfieldOfficeCode = true;
                 hasErrors = true;
             }
-
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -556,7 +563,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} className={'col-sm-6 form-group'}/>
+                            <ViewText
+                                label={'Gebruikt BTW'}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
+                            />
                         </div>
 
                         <div className="row">

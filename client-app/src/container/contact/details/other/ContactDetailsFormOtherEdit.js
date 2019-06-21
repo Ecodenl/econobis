@@ -90,11 +90,12 @@ class ContactDetailsFormOtherEdit extends Component {
         let collectMandateFirstRunDate = '';
         let collectMandateCollectionSchema = '';
 
-        if (value === true)
-        {
+        if (value === true) {
             collectMandateCode = this.props.contactDetails.number;
             collectMandateSignatureDate = moment().format('Y-MM-DD');
-            collectMandateFirstRunDate = moment().add(1, "M").format('Y-MM-01');
+            collectMandateFirstRunDate = moment()
+                .add(1, 'M')
+                .format('Y-MM-01');
             collectMandateCollectionSchema = 'core';
         }
         this.setState({
@@ -172,19 +173,19 @@ class ContactDetailsFormOtherEdit extends Component {
 
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
 
-                    if(errorObject.response.status !== 500) {
+                    if (errorObject.response.status !== 500) {
                         errorMessage = errorObject.response.data.message;
                     }
 
                     this.setState({
                         showErrorModal: true,
                         modalErrorMessage: errorMessage,
-                    })
+                    });
                 });
     };
 
     closeErrorModal = () => {
-        this.setState({showErrorModal: false, modalErrorMessage: '',})
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
     render() {
@@ -326,15 +327,15 @@ class ContactDetailsFormOtherEdit extends Component {
                     </PanelFooter>
                 </form>
 
-                { this.state.showErrorModal &&
+                {this.state.showErrorModal && (
                     <ErrorModal
                         closeModal={this.closeErrorModal}
                         title={'Fout bij opslaan'}
                         errorMessage={this.state.modalErrorMessage}
                     />
-                }
-                </React.Fragment>
-            );
+                )}
+            </React.Fragment>
+        );
     }
 }
 

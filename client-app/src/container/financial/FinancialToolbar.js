@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { browserHistory, hashHistory } from 'react-router';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
-import AdministrationDetailsAPI from "../../api/administration/AdministrationDetailsAPI";
-import ButtonText from "../../components/button/ButtonText";
-import {setError} from "../../actions/general/ErrorActions";
+import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
+import ButtonText from '../../components/button/ButtonText';
+import { setError } from '../../actions/general/ErrorActions';
 
 class FinancialToolbar extends Component {
     constructor(props) {
@@ -14,34 +14,36 @@ class FinancialToolbar extends Component {
         this.state = {
             syncingToInvoices: false,
             syncingFromInvoices: false,
-        }
-    };
+        };
+    }
 
     syncInvoicesToTwinfield = () => {
-        this.setState({syncingToInvoices: true});
-        AdministrationDetailsAPI.syncSentInvoicesToTwinfield(this.props.administrationDetails.id).then((payload) => {
-            this.setState({syncingToInvoices: false});
-            this.props.setError(200, payload.data);
-            hashHistory.push(`/financieel/${this.props.administrationDetails.id}/facturen/geexporteerd`);
-        }).catch(error => {
-            this.setState({syncingToInvoices: false});
-            console.log(error);
-            alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
-            }
-        );
+        this.setState({ syncingToInvoices: true });
+        AdministrationDetailsAPI.syncSentInvoicesToTwinfield(this.props.administrationDetails.id)
+            .then(payload => {
+                this.setState({ syncingToInvoices: false });
+                this.props.setError(200, payload.data);
+                hashHistory.push(`/financieel/${this.props.administrationDetails.id}/facturen/geexporteerd`);
+            })
+            .catch(error => {
+                this.setState({ syncingToInvoices: false });
+                console.log(error);
+                alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
+            });
     };
 
     syncInvoicesFromTwinfield = () => {
-        this.setState({syncingFromInvoices: true});
-        AdministrationDetailsAPI.syncSentInvoicesFromTwinfield(this.props.administrationDetails.id).then((payload) => {
-            this.setState({syncingFromInvoices: false});
-            this.props.setError(200, payload.data);
-        }).catch(error => {
-                this.setState({syncingFromInvoices: false});
+        this.setState({ syncingFromInvoices: true });
+        AdministrationDetailsAPI.syncSentInvoicesFromTwinfield(this.props.administrationDetails.id)
+            .then(payload => {
+                this.setState({ syncingFromInvoices: false });
+                this.props.setError(200, payload.data);
+            })
+            .catch(error => {
+                this.setState({ syncingFromInvoices: false });
                 console.log(error);
                 alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
-            }
-        );
+            });
     };
 
     render() {
@@ -49,19 +51,41 @@ class FinancialToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={"glyphicon-arrow-left"} onClickAction={browserHistory.goBack}/>
-                        {this.props.administrationDetails.usesTwinfield == true && this.props.administrationDetails.twinfieldIsValid == true &&
-                        <ButtonText loading={this.state.syncingToInvoices}
+                        <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                        {this.props.administrationDetails.usesTwinfield == true &&
+                            this.props.administrationDetails.twinfieldIsValid == true && (
+                                <ButtonText
+                                    loading={this.state.syncingToInvoices}
                                     loadText={'Aan het synchroniseren'}
-                                    buttonText={<span><span className="glyphicon glyphicon-refresh" title="Facturen naar Twinfield synchroniseren"/>&nbsp;Facturen</span>}
-                                    onClickAction={this.syncInvoicesToTwinfield}/>
-                        }
-                        {this.props.administrationDetails.usesTwinfield == true && this.props.administrationDetails.twinfieldIsValid == true &&
-                        <ButtonText loading={this.state.syncingFromInvoices}
+                                    buttonText={
+                                        <span>
+                                            <span
+                                                className="glyphicon glyphicon-refresh"
+                                                title="Facturen naar Twinfield synchroniseren"
+                                            />
+                                            &nbsp;Facturen
+                                        </span>
+                                    }
+                                    onClickAction={this.syncInvoicesToTwinfield}
+                                />
+                            )}
+                        {this.props.administrationDetails.usesTwinfield == true &&
+                            this.props.administrationDetails.twinfieldIsValid == true && (
+                                <ButtonText
+                                    loading={this.state.syncingFromInvoices}
                                     loadText={'Betalingen aan het ophalen'}
-                                    buttonText={<span><span className="glyphicon glyphicon-refresh" title="Betalingen van Twinfield ophalen"/>&nbsp;Betalingen</span>}
-                                    onClickAction={this.syncInvoicesFromTwinfield}/>
-                        }
+                                    buttonText={
+                                        <span>
+                                            <span
+                                                className="glyphicon glyphicon-refresh"
+                                                title="Betalingen van Twinfield ophalen"
+                                            />
+                                            &nbsp;Betalingen
+                                        </span>
+                                    }
+                                    onClickAction={this.syncInvoicesFromTwinfield}
+                                />
+                            )}
                     </div>
                 </div>
                 <div className="col-md-4">

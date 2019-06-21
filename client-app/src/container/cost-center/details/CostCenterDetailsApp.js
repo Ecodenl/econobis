@@ -5,9 +5,9 @@ import CostCenterDetailsForm from './CostCenterDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import CostCenterDetailsAPI from '../../../api/cost-center/CostCenterDetailsAPI';
-import {setError} from "../../../actions/general/ErrorActions";
-import {connect} from "react-redux";
-import {hashHistory} from "react-router";
+import { setError } from '../../../actions/general/ErrorActions';
+import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 
 class CostCenterDetailsApp extends Component {
     constructor(props) {
@@ -38,7 +38,7 @@ class CostCenterDetailsApp extends Component {
             });
     };
 
-    deleteCostCenter = (id) => {
+    deleteCostCenter = id => {
         // Api aanroepen met delete
         CostCenterDetailsAPI.deleteCostCenter(id)
             .then(payload => {
@@ -48,7 +48,7 @@ class CostCenterDetailsApp extends Component {
                 // this.setState({ isLoading: false, hasError: true });
                 this.props.setError(error.response.status, error.response.data.message);
             });
-    }
+    };
 
     updateState = costCenter => {
         this.setState({ costCenter });
@@ -61,7 +61,11 @@ class CostCenterDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-small'}>
-                                <CostCenterDetailsToolbar description={this.state.costCenter.description || ''} id={this.state.costCenter.id} deleteCostCenter={this.deleteCostCenter} />
+                                <CostCenterDetailsToolbar
+                                    description={this.state.costCenter.description || ''}
+                                    id={this.state.costCenter.id}
+                                    deleteCostCenter={this.deleteCostCenter}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -87,4 +91,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(CostCenterDetailsApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(CostCenterDetailsApp);

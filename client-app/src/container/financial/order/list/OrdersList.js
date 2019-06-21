@@ -59,7 +59,7 @@ class OrdersList extends Component {
         if (this.props.filter !== prevProps.filter) {
             this.setFilter(this.props.filter);
 
-            this.setState({ ...initialState, });
+            this.setState({ ...initialState });
 
             setTimeout(() => {
                 this.fetchOrdersData();
@@ -67,7 +67,7 @@ class OrdersList extends Component {
         }
     }
 
-    setFilter = (filter) =>  {
+    setFilter = filter => {
         if (!isEmpty(filter)) {
             switch (filter) {
                 case 'concepten':

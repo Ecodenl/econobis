@@ -48,7 +48,6 @@ class LedgersListItem extends Component {
                         <a role="button" onClick={() => this.openItem(id)}>
                             <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                         </a>
-
                     ) : (
                         ''
                     )}
@@ -56,7 +55,6 @@ class LedgersListItem extends Component {
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>
-
                     ) : (
                         ''
                     )}

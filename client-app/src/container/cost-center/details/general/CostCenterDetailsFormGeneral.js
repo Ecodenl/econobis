@@ -58,10 +58,7 @@ class CostCenterDetailsFormGeneral extends Component {
                         updateState={this.props.updateState}
                     />
                 ) : (
-                    <CostCenterDetailsFormGeneralView
-                        {...this.props.costCenter}
-                        switchToEdit={this.switchToEdit}
-                    />
+                    <CostCenterDetailsFormGeneralView {...this.props.costCenter} switchToEdit={this.switchToEdit} />
                 )}
             </div>
         );
@@ -72,7 +69,7 @@ const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
-        costCenters: state.systemData.costCenters
+        costCenters: state.systemData.costCenters,
     };
 };
 

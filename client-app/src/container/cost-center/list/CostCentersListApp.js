@@ -5,9 +5,9 @@ import CostCentersListToolbar from './CostCentersListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import CostCenterAPI from '../../../api/cost-center/CostCenterAPI';
-import CostCenterDetailsAPI from "../../../api/cost-center/CostCenterDetailsAPI";
-import {setError} from "../../../actions/general/ErrorActions";
-import {connect} from "react-redux";
+import CostCenterDetailsAPI from '../../../api/cost-center/CostCenterDetailsAPI';
+import { setError } from '../../../actions/general/ErrorActions';
+import { connect } from 'react-redux';
 
 class CostCentersListApp extends Component {
     constructor(props) {
@@ -35,17 +35,17 @@ class CostCentersListApp extends Component {
             });
     };
 
-    deleteCostCenter = (id) => {
+    deleteCostCenter = id => {
         // Api aanroepen met delete
         CostCenterDetailsAPI.deleteCostCenter(id)
             .then(payload => {
-                this.setState({costCenters: this.state.costCenters.filter(costCenter => costCenter.id !== id)})
+                this.setState({ costCenters: this.state.costCenters.filter(costCenter => costCenter.id !== id) });
             })
             .catch(error => {
                 // this.setState({ isLoading: false, hasError: true });
                 this.props.setError(error.response.status, error.response.data.message);
             });
-    }
+    };
 
     render() {
         return (
@@ -78,4 +78,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(CostCentersListApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(CostCentersListApp);

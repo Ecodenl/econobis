@@ -137,14 +137,20 @@ class InvoicesListItem extends Component {
             usesTwinfield,
         } = this.props;
 
-        const inProgressRowClass = (this.props.statusId === 'in-progress' || this.props.statusId === 'is-sending' || this.props.statusId === 'error-making' || this.props.statusId === 'error-sending') ? 'in-progress-row' : null;
+        const inProgressRowClass =
+            this.props.statusId === 'in-progress' ||
+            this.props.statusId === 'is-sending' ||
+            this.props.statusId === 'error-making' ||
+            this.props.statusId === 'error-sending'
+                ? 'in-progress-row'
+                : null;
         return (
-                <tr
-                    className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
-                    onDoubleClick={() => this.openItem(id)}
-                    onMouseEnter={() => this.onRowEnter()}
-                    onMouseLeave={() => this.onRowLeave()}
-                >
+            <tr
+                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
+                onDoubleClick={() => this.openItem(id)}
+                onMouseEnter={() => this.onRowEnter()}
+                onMouseLeave={() => this.onRowLeave()}
+            >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
                         <input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} />
@@ -165,17 +171,18 @@ class InvoicesListItem extends Component {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
-                    {this.props.statusId === 'sent' || this.props.statusId === 'exported'? (
-                        <br />
-                    ) : ('') }
+                    {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? <br /> : ''}
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? (
                         <span class="error-span">
-                        {'€' +
-                       amountOpen.toLocaleString('nl', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                           })}
-                        </span> ) : ('') }
+                            {'€' +
+                                amountOpen.toLocaleString('nl', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
+                        </span>
+                    ) : (
+                        ''
+                    )}
                 </td>
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
@@ -205,9 +212,9 @@ class InvoicesListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {(!usesTwinfield &&
+                    {!usesTwinfield &&
                     this.state.showActionButtons &&
-                    (this.props.statusId === 'sent' || this.props.statusId === 'exported') ) ? (
+                    (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
                             <span className="glyphicon glyphicon-euro mybtn-success" />{' '}
                         </a>

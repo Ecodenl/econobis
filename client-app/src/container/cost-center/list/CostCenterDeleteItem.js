@@ -2,7 +2,7 @@ import React from 'react';
 
 import Modal from '../../../components/modal/Modal';
 
-const CostCenterDeleteItem = ({deleteCostCenter, closeDeleteItemModal, description, id}) => {
+const CostCenterDeleteItem = ({ deleteCostCenter, closeDeleteItemModal, description, id }) => {
     const confirmAction = () => {
         deleteCostCenter(id);
         closeDeleteItemModal();

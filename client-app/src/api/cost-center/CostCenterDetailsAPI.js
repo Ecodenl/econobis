@@ -1,5 +1,5 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import axios from "axios";
+import axios from 'axios';
 
 const URL_COST_CENTER = `cost-center`;
 
@@ -32,10 +32,9 @@ export default {
         return axiosInstance.post(requestUrl, costCenter);
     },
 
-    deleteCostCenter: (id) => {
+    deleteCostCenter: id => {
         const requestUrl = `${URL_COST_CENTER}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
     },
-
 };

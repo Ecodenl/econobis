@@ -55,7 +55,9 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 collectMandateFirstRunDate: collectMandateFirstRunDate
                     ? moment(collectMandateFirstRunDate).format('Y-MM-DD')
                     : '',
-                collectMandateCollectionSchema: collectMandateCollectionSchema ? collectMandateCollectionSchema : 'core',
+                collectMandateCollectionSchema: collectMandateCollectionSchema
+                    ? collectMandateCollectionSchema
+                    : 'core',
             },
             errors: {
                 name: false,
@@ -148,19 +150,19 @@ class ContactDetailsFormOrganisationEdit extends Component {
 
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
 
-                    if(errorObject.response.status !== 500) {
+                    if (errorObject.response.status !== 500) {
                         errorMessage = errorObject.response.data.message;
                     }
 
                     this.setState({
                         showErrorModal: true,
                         modalErrorMessage: errorMessage,
-                    })
+                    });
                 });
     };
 
     closeErrorModal = () => {
-        this.setState({showErrorModal: false, modalErrorMessage: '',})
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
     render() {
@@ -357,13 +359,13 @@ class ContactDetailsFormOrganisationEdit extends Component {
                     </PanelFooter>
                 </form>
 
-                { this.state.showErrorModal &&
-                <ErrorModal
-                    closeModal={this.closeErrorModal}
-                    title={'Fout bij opslaan'}
-                    errorMessage={this.state.modalErrorMessage}
-                />
-                }
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
+                    />
+                )}
             </React.Fragment>
         );
     }

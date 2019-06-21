@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import LedgersListItem from './LedgersListItem';
-import LedgerDeleteItem from "./LedgerDeleteItem";
+import LedgerDeleteItem from './LedgerDeleteItem';
 
-import * as PropTypes from "prop-types";
+import * as PropTypes from 'prop-types';
 
 class LedgersList extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ class LedgersList extends Component {
             deleteItem: {
                 id: '',
                 description: '',
-            }
+            },
         };
     }
 
@@ -26,7 +26,7 @@ class LedgersList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: true,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id,
                 description,
@@ -38,16 +38,16 @@ class LedgersList extends Component {
         this.setState({
             ...this.state,
             showDeleteItem: false,
-            deleteItem:{
+            deleteItem: {
                 ...this.state.deleteItem,
                 id: '',
                 description: '',
-            }
+            },
         });
     };
 
     render() {
-        let {ledgers, hasError, isLoading} = this.props;
+        let { ledgers, hasError, isLoading } = this.props;
         let loadingText = '';
         let loading = true;
 
@@ -66,10 +66,10 @@ class LedgersList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Omschrijving'} width={'35%'}/>
-                            <DataTableHeadTitle title={'BTW code'} width={'30%'}/>
-                            <DataTableHeadTitle title={'Nummer'} width={'30%'}/>
-                            <DataTableHeadTitle title={''} width={'5%'}/>
+                            <DataTableHeadTitle title={'Omschrijving'} width={'35%'} />
+                            <DataTableHeadTitle title={'BTW code'} width={'30%'} />
+                            <DataTableHeadTitle title={'Nummer'} width={'30%'} />
+                            <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
@@ -79,23 +79,24 @@ class LedgersList extends Component {
                             </tr>
                         ) : (
                             ledgers.map(ledger => {
-                                return <LedgersListItem
-                                    key={ledger.id}
-                                    showDeleteItemModal={this.showDeleteItemModal}
-                                    {...ledger}
-                                />;
+                                return (
+                                    <LedgersListItem
+                                        key={ledger.id}
+                                        showDeleteItemModal={this.showDeleteItemModal}
+                                        {...ledger}
+                                    />
+                                );
                             })
                         )}
                     </DataTableBody>
                 </DataTable>
-                {
-                    this.state.showDeleteItem &&
+                {this.state.showDeleteItem && (
                     <LedgerDeleteItem
                         closeDeleteItemModal={this.closeDeleteItemModal}
                         {...this.state.deleteItem}
                         deleteLedger={this.props.deleteLedger}
                     />
-                }
+                )}
             </div>
         );
     }
@@ -104,7 +105,7 @@ class LedgersList extends Component {
 LedgersList.propTypes = {
     ledgers: PropTypes.any,
     hasError: PropTypes.any,
-    isLoading: PropTypes.any
-}
+    isLoading: PropTypes.any,
+};
 
 export default LedgersList;

@@ -13,6 +13,7 @@ import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI
 import InputDate from '../../../../../components/form/InputDate';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
 import moment from 'moment';
+import ViewText from './OrderDetailsFormGeneralView';
 
 class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -352,7 +353,13 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputText label="IBAN" name={'IBAN'} value={IBAN} readOnly={true} />
+                            <InputText
+                                className={'alert-danger'}
+                                label="IBAN"
+                                name={'IBAN'}
+                                value={IBAN}
+                                readOnly={true}
+                            />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}
@@ -362,7 +369,13 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputText label="IBAN t.n.v." name={'ibanAttn'} value={ibanAttn} readOnly={true} />
+                            <InputText
+                                className={'alert-danger'}
+                                label="IBAN t.n.v."
+                                name={'ibanAttn'}
+                                value={ibanAttn}
+                                readOnly={true}
+                            />
                         </div>
 
                         <div className="row">

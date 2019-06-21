@@ -5,6 +5,7 @@ import ViewText from '../../../../../components/form/ViewText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment/moment';
+import InputText from './OrderDetailsFormGeneralEdit';
 
 const OrderDetailsFormGeneralView = props => {
     const {
@@ -79,12 +80,12 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                     </div>
                     <div className="row">
-                        <ViewText label={'IBAN'} value={IBAN} />
+                        <ViewText className={'col-sm-6 alert-danger'} label={'IBAN'} value={IBAN} />
                         <ViewText label={'Opdracht nummer klant'} value={poNumber} />
                     </div>
 
                     <div className="row">
-                        <ViewText label={'IBAN t.n.v.'} value={ibanAttn} />
+                        <ViewText className={'col-sm-6 alert-danger'} label={'IBAN t.n.v.'} value={ibanAttn} />
                     </div>
 
                     <div className="row">

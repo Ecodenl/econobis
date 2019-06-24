@@ -25,6 +25,7 @@ use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Administration\GridAdministration;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\UserPeek;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -210,6 +211,8 @@ class AdministrationController extends ApiController
         else{
             $administration->twinfield_is_valid = 0;
         }
+        // We bewaren even of uses_twinfield was gewijzigd.
+        $isUsesTwinfieldDirty = $administration->isDirty('uses_twinfield');
 
         $administration->save();
 
@@ -224,7 +227,7 @@ class AdministrationController extends ApiController
         }
 
         //Als er twinfield gebruikt gaat worden, dan contacten aanmaken van facturen vanaf 1-1-2019 (alleen doen in jaar 2019)
-        if($administration->isDirty('uses_twinfield') && $administration->uses_twinfield && $administration->twinfield_is_valid)
+        if($isUsesTwinfieldDirty && $administration->uses_twinfield && $administration->twinfield_is_valid)
         {
             if(Carbon::now()->year == 2019)
             {

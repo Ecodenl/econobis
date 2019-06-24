@@ -354,8 +354,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputText
-                                className={'alert-danger'}
-                                label="IBAN"
+                                label={<span style={{ color: 'red' }}>IBAN niet meer van toepassing</span>}
                                 name={'IBAN'}
                                 value={IBAN}
                                 readOnly={true}
@@ -370,8 +369,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputText
-                                className={'alert-danger'}
-                                label="IBAN t.n.v."
+                                label={<span style={{ color: 'red' }}>IBAN t.n.v. niet meer van toepassing</span>}
                                 name={'ibanAttn'}
                                 value={ibanAttn}
                                 readOnly={true}

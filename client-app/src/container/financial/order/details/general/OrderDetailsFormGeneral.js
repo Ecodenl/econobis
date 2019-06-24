@@ -20,7 +20,7 @@ class OrderDetailsFormGeneral extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.orderDetails.contactId &&
             OrderDetailsAPI.fetchContactInfoForOrder(this.props.orderDetails.contactId).then(payload => {
                 this.setState({
@@ -33,9 +33,9 @@ class OrderDetailsFormGeneral extends Component {
             });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.orderDetails.id !== nextProps.orderDetails.id) {
-            nextProps.orderDetails.contactId &&
+    componentDidUpdate(prevProps) {
+        if (this.props.orderDetails.id !== prevProps.orderDetails.id) {
+            this.props.orderDetails.contactId &&
                 OrderDetailsAPI.fetchContactInfoForOrder(nextProps.orderDetails.contactId).then(payload => {
                     this.setState({
                         ...this.state,

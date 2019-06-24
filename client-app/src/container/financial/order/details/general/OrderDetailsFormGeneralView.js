@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../../components/form/ViewText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import moment from 'moment/moment';
-import InputText from './OrderDetailsFormGeneralEdit';
+import moment from 'moment';
 
 const OrderDetailsFormGeneralView = props => {
     const {
@@ -80,12 +79,18 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                     </div>
                     <div className="row">
-                        <ViewText className={'col-sm-6 alert-danger'} label={'IBAN'} value={IBAN} />
+                        <ViewText
+                            label={<span style={{ color: 'red' }}>IBAN niet meer van toepassing</span>}
+                            value={IBAN}
+                        />
                         <ViewText label={'Opdracht nummer klant'} value={poNumber} />
                     </div>
 
                     <div className="row">
-                        <ViewText className={'col-sm-6 alert-danger'} label={'IBAN t.n.v.'} value={ibanAttn} />
+                        <ViewText
+                            label={<span style={{ color: 'red' }}>IBAN t.n.v. niet meer van toepassing</span>}
+                            value={ibanAttn}
+                        />
                     </div>
 
                     <div className="row">

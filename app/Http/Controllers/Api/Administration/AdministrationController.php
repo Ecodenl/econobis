@@ -14,6 +14,7 @@ use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteAdministration;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Helpers\Twinfield\TwinfieldHelper;
 use App\Helpers\Twinfield\TwinfieldInvoiceHelper;
 use App\Helpers\Twinfield\TwinfieldSalesTransactionHelper;
@@ -220,6 +221,23 @@ class AdministrationController extends ApiController
 
         if($logo){
             $this->storeLogo($logo, $administration);
+        }
+
+        //Als er twinfield gebruikt gaat worden, dan contacten aanmaken van facturen vanaf 1-1-2019 (alleen doen in jaar 2019)
+        if($administration->isDirty('uses_twinfield') && $administration->uses_twinfield && $administration->twinfield_is_valid)
+        {
+            if(Carbon::now()->year == 2019)
+            {
+                foreach ($administration->invoices()
+                    ->whereNull('twinfield_number')
+                    ->whereIn('status_id', ['sent', 'paid'])
+                    ->where('date_sent', '>=', '20190101')
+                    ->get() as $invoice)
+                {
+                    $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+                    $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
+                }
+            }
         }
 
         return $this->show($administration);

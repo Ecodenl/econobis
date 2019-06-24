@@ -55,7 +55,7 @@ class TwinfieldSalesTransactionHelper
     public function createAllSalesTransactions(){
         set_time_limit(0);
 
-        foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>', '20190101')->get() as $invoice){
+        foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>=', '20190101')->get() as $invoice){
             $response = $this->createSalesTransation($invoice);
 
             if($response === true){

@@ -23,6 +23,7 @@ const ProjectFormEditGeneral = ({
     administration,
     dateStart,
     dateEnd,
+    dateEntry,
     contactGroupIds,
     dateProduction,
     isMembershipRequired,
@@ -205,6 +206,12 @@ const ProjectFormEditGeneral = ({
                     label={'Start productie'}
                     name={'dateProduction'}
                     value={dateProduction}
+                    onChangeAction={handleInputChangeDate}
+                />
+                <InputDate
+                    label={'Ingangsdatum (standaard)'}
+                    name={'dateEntry'}
+                    value={dateEntry}
                     onChangeAction={handleInputChangeDate}
                 />
             </div>

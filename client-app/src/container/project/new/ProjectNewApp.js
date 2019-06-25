@@ -33,6 +33,7 @@ class ProjectNewApp extends Component {
                 projectStatusId: '',
                 dateStart: '',
                 dateEnd: '',
+                dateEntry: '',
                 dateProduction: '',
                 dateStartRegistrations: '',
                 dateEndRegistrations: '',
@@ -200,6 +201,7 @@ class ProjectNewApp extends Component {
             projectStatusId,
             dateStart,
             dateEnd,
+            dateEntry,
             dateProduction,
             dateStartRegistrations,
             dateEndRegistrations,
@@ -258,6 +260,7 @@ class ProjectNewApp extends Component {
                                         administrationId={administrationId}
                                         dateStart={dateStart}
                                         dateEnd={dateEnd}
+                                        dateEntry={dateEntry}
                                         dateProduction={dateProduction}
                                         contactGroupIds={contactGroupIds}
                                         isMembershipRequired={isMembershipRequired}

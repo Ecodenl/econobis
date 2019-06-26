@@ -20,7 +20,7 @@ class ParticipantProjectCalculator
 
     public function participationsDefinitiveWorth()
     {
-        return $this->participationsDefinitive() * $this->participantProject->project->participation_worth;
+        return $this->participantProject->mutations()->where('status_id', 4)->sum('participation_worth');
     }
 
     public function participationsOptioned()

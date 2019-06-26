@@ -195,9 +195,23 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->fill($data);
 
+        $recalculateDistribution = false;
+
+        if($projectRevenue->isDirty('date_begin') ||
+            $projectRevenue->isDirty('date_end') ||
+            $projectRevenue->isDirty('date_reference') ||
+            $projectRevenue->isDirty('kwh_start') ||
+            $projectRevenue->isDirty('kwh_end') ||
+            $projectRevenue->isDirty('pay_percentage') ||
+            $projectRevenue->isDirty('key_amount_first_percentage') ||
+            $projectRevenue->isDirty('pay_percentage_valid_from_key_amount') ||
+            $projectRevenue->isDirty('distribution_type_id')) {
+            $recalculateDistribution = true;
+        }
+
         $projectRevenue->save();
 
-        $this->saveParticipantsOfDistribution($projectRevenue);
+        if($recalculateDistribution) $this->saveParticipantsOfDistribution($projectRevenue);
 
         return FullProjectRevenue::collection(ProjectRevenue::where('project_id',
             $projectRevenue->project_id)

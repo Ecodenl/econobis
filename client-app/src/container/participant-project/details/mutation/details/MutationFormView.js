@@ -65,10 +65,12 @@ const MutationFormView = ({
                 {(projectTypeCodeRef === 'obligation' ||
                     projectTypeCodeRef === 'capital' ||
                     projectTypeCodeRef === 'postalcode_link_capital') && <StyledColumn>{quantity}</StyledColumn>}
-                <StyledColumn>{returns}</StyledColumn>
+                <StyledColumn>{returns && moneyPresenter(returns)}</StyledColumn>
                 {projectTypeCodeRef === 'postalcode_link_capital' && <StyledColumn>{payoutKwh}</StyledColumn>}
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
-                    <StyledColumn>{indicationOfRestitutionEnergyTax}</StyledColumn>
+                    <StyledColumn>
+                        {indicationOfRestitutionEnergyTax && moneyPresenter(indicationOfRestitutionEnergyTax)}
+                    </StyledColumn>
                 )}
                 {!deletedAt && (
                     <StyledColumn columnWidth={'6%'}>

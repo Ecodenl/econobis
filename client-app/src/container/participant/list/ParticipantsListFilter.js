@@ -8,7 +8,7 @@ import {
     setFilterParticipantProjectAddress,
     setFilterParticipantProjectCity,
     setFilterParticipantProjectContactType,
-    setFilterParticipantProjectCurrentParticipations,
+    setFilterParticipantProjectParticipationsDefinitive,
     setFilterParticipantProjectDateRegister,
     setFilterParticipantProjectEnergySupplierId,
     setFilterParticipantProjectName,
@@ -51,8 +51,8 @@ const ParticipantsListFilter = props => {
         }, 100);
     };
 
-    const onCurrentParticipationsChange = e => {
-        props.setFilterParticipantProjectCurrentParticipations(e.target.value);
+    const onParticipationsDefinitiveChange = e => {
+        props.setFilterParticipantProjectParticipationsDefinitive(e.target.value);
     };
 
     const onParticipationMutationStatusIdChange = e => {
@@ -159,8 +159,8 @@ const ParticipantsListFilter = props => {
                 <input
                     type="text"
                     className="form-control input-sm"
-                    value={props.filters.currentParticipations.data}
-                    onChange={onCurrentParticipationsChange}
+                    value={props.filters.participationsDefinitive.data}
+                    onChange={onParticipationsDefinitiveChange}
                 />
             </th>
 
@@ -223,7 +223,7 @@ const mapDispatchToProps = dispatch => {
             setFilterParticipantProjectAddress,
             setFilterParticipantProjectCity,
             setFilterParticipantProjectContactType,
-            setFilterParticipantProjectCurrentParticipations,
+            setFilterParticipantProjectParticipationsDefinitive,
             setFilterParticipantProjectDateRegister,
             setFilterParticipantProjectEnergySupplierId,
             setFilterParticipantProjectName,

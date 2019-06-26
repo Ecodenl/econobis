@@ -23,8 +23,12 @@ const filtersReducerDefaultState = {
         field: 'statusId',
         data: '',
     },
-    currentParticipations: {
-        field: 'currentParticipations',
+    amountDefinitive: {
+        field: 'amountDefinitive',
+        data: '',
+    },
+    participationsDefinitive: {
+        field: 'participationsDefinitive',
         data: '',
     },
     participantMutationStatusId: {
@@ -103,12 +107,20 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.statusId,
                 },
             };
-        case 'SET_FILTER_PARTICIPANT_PROJECT_CURRENT_PARTICIPATIONS':
+        case 'SET_FILTER_PARTICIPANT_PROJECT_AMOUNT_DEFINITIVE':
             return {
                 ...state,
-                currentParticipations: {
-                    ...state.currentParticipations,
-                    data: action.currentParticipations,
+                amountDefinitive: {
+                    ...state.amountDefinitive,
+                    data: action.amountDefinitive,
+                },
+            };
+        case 'SET_FILTER_PARTICIPANT_PROJECT_PARTICIPATIONS_DEFINITIVE':
+            return {
+                ...state,
+                participationsDefinitive: {
+                    ...state.participationsDefinitive,
+                    data: action.participationsDefinitive,
                 },
             };
         case 'SET_FILTER_PARTICIPANT_MUTATION_STATUS_ID':

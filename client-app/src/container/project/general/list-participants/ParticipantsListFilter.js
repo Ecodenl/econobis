@@ -8,7 +8,8 @@ import {
     setFilterParticipantProjectAddress,
     setFilterParticipantProjectCity,
     setFilterParticipantProjectContactType,
-    setFilterParticipantProjectCurrentParticipations,
+    setFilterParticipantProjectAmountDefinitive,
+    setFilterParticipantProjectParticipationsDefinitive,
     setFilterParticipantProjectDateRegister,
     setFilterParticipantProjectEnergySupplierId,
     setFilterParticipantProjectId,
@@ -47,8 +48,12 @@ const ParticipantsListFilter = props => {
         props.setFilterParticipantProjectCity(e.target.value);
     };
 
-    const onCurrentParticipationsChange = e => {
-        props.setFilterParticipantProjectCurrentParticipations(e.target.value);
+    const onAmountDefinitiveChange = e => {
+        props.setFilterParticipantProjectAmountDefinitive(e.target.value);
+    };
+
+    const onParticipationsDefinitiveChange = e => {
+        props.setFilterParticipantProjectParticipationsDefinitive(e.target.value);
     };
 
     const onParticipationMutationStatusIdChange = e => {
@@ -135,16 +140,25 @@ const ParticipantsListFilter = props => {
                     onChange={onCityChange}
                 />
             </th>
-
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.currentParticipations.data}
-                    onChange={onCurrentParticipationsChange}
-                />
-            </th>
-
+            {props.projectTypeRef === 'loan' ? (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.amountDefinitive.data}
+                        onChange={onAmountDefinitiveChange}
+                    />
+                </th>
+            ) : (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.participationsDefinitive.data}
+                        onChange={onParticipationsDefinitiveChange}
+                    />
+                </th>
+            )}
             <th>
                 <select
                     className="form-control input-sm"
@@ -204,7 +218,8 @@ const mapDispatchToProps = dispatch => {
             setFilterParticipantProjectAddress,
             setFilterParticipantProjectCity,
             setFilterParticipantProjectContactType,
-            setFilterParticipantProjectCurrentParticipations,
+            setFilterParticipantProjectAmountDefinitive,
+            setFilterParticipantProjectParticipationsDefinitive,
             setFilterParticipantProjectDateRegister,
             setFilterParticipantProjectEnergySupplierId,
             setFilterParticipantProjectId,

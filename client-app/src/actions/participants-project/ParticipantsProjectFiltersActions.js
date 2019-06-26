@@ -33,9 +33,14 @@ export const setFilterParticipantProjectStatusId = statusId => ({
     statusId,
 });
 
-export const setFilterParticipantProjectCurrentParticipations = currentParticipations => ({
-    type: 'SET_FILTER_PARTICIPANT_PROJECT_CURRENT_PARTICIPATIONS',
-    currentParticipations,
+export const setFilterParticipantProjectAmountDefinitive = amountDefinitive => ({
+    type: 'SET_FILTER_PARTICIPANT_PROJECT_AMOUNT_DEFINITIVE',
+    amountDefinitive,
+});
+
+export const setFilterParticipantProjectParticipationsDefinitive = participationsDefinitive => ({
+    type: 'SET_FILTER_PARTICIPANT_PROJECT_PARTICIPATIONS_DEFINITIVE',
+    participationsDefinitive,
 });
 
 export const setFilterParticipantMutationStatusId = participantMutationStatusId => ({

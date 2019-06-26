@@ -26,7 +26,11 @@ const ParticipantsListHead = ({
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'6%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Plaats'} width={'12%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={'Huidig aantal deelnames'} width={'8%'} />
+            {projectTypeRef === 'loan' ? (
+                <DataTableHeadTitle title={'Huidig aantal lening'} width={'8%'} />
+            ) : (
+                <DataTableHeadTitle title={'Huidig aantal deelnames'} width={'8%'} />
+            )}
             <DataTableHeadTitleAndSort
                 sortColumn={'participantMutationStatusId'}
                 title={'Deelname status'}

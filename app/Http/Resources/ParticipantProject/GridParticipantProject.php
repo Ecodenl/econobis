@@ -24,6 +24,7 @@ class GridParticipantProject extends Resource
                 'contactId' => $this->contact_id,
                 'contact' => FullParticipantContact::make($this->whenLoaded('contact')),
                 'participationsDefinitive' => $this->participations_definitive,
+                'amountDefinitive' => $this->amount_definitive,
                 'uniqueMutationStatuses' => $this->uniqueMutationStatuses,
                 'dateRegister' => $this->date_register,
                 'projectId' => $this->project_id,

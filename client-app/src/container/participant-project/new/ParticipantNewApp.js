@@ -79,6 +79,12 @@ class ParticipantNewApp extends Component {
                 this.setState({
                     ...this.state,
                     projectTypeCodeRef: project.typeCodeRef,
+                    participation: {
+                        ...this.state.participation,
+                        dateEntry: project.dateEntry
+                            ? moment(project.dateEntry).format('YYYY-MM-DD')
+                            : moment().format('YYYY-MM-DD'),
+                    },
                 });
             }
         });
@@ -128,11 +134,18 @@ class ParticipantNewApp extends Component {
         }
 
         if (name === 'projectId') {
-            let projectTypeCodeRef = this.state.projects.find(
-                project => project.id == this.state.participation.projectId
-            ).typeCodeRef;
+            let project = this.state.projects.find(project => project.id == this.state.participation.projectId);
 
-            this.setState({ projectTypeCodeRef });
+            this.setState({
+                ...this.state,
+                projectTypeCodeRef: project.typeCodeRef,
+                participation: {
+                    ...this.state.participation,
+                    dateEntry: project.dateEntry
+                        ? moment(project.dateEntry).format('YYYY-MM-DD')
+                        : moment().format('YYYY-MM-DD'),
+                },
+            });
         }
     };
 
@@ -214,6 +227,7 @@ class ParticipantNewApp extends Component {
                                         projects={this.state.projects}
                                         handleProjectChange={this.handleProjectChange}
                                         projectTypeCodeRef={this.state.projectTypeCodeRef}
+                                        projectDateEntry={this.state.projectDateEntry}
                                         participantMutationStatuses={this.props.participantMutationStatuses}
                                     />
                                 </div>

@@ -53,13 +53,6 @@ export const previewReport = data => {
     };
 };
 
-export const getParticipants = data => {
-    return {
-        type: 'PROJECT_REVENUE_GET_PARTICIPANTS',
-        data,
-    };
-};
-
 export const getDistribution = data => {
     return {
         type: 'PROJECT_REVENUE_GET_DISTRIBUTION',

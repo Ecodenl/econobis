@@ -1,57 +1,47 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 import OrdersList from './order/list/OrdersList';
 import InvoicesList from './invoice/list/InvoicesList';
 import Panel from '../../components/panel/Panel';
 import PanelBody from '../../components/panel/PanelBody';
 import PaymentInvoicesList from './payment-invoice/list/PaymentInvoicesList';
 
-class ProductDetailsForm extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return isEmpty(this.props.administrationDetails) ? (
-            <div />
-        ) : (
+const FinancialForm = ({ administrationDetails, filter, type }) => (
+    <React.Fragment>
+        {administrationDetails.id ? (
             <div>
-                {this.props.type === 'orders' && (
+                {type === 'orders' && (
                     <Panel>
                         <PanelBody>
-                            <OrdersList
-                                administrationId={this.props.administrationDetails.id}
-                                filter={this.props.filter}
-                            />
+                            <OrdersList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}
-                {this.props.type === 'facturen' && (
+                {type === 'facturen' && (
                     <Panel>
                         <PanelBody>
-                            <InvoicesList
-                                administrationId={this.props.administrationDetails.id}
-                                filter={this.props.filter}
-                            />
+                            <InvoicesList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}
-                {this.props.type === 'uitkering-facturen' && (
+                {type === 'uitkering-facturen' && (
                     <Panel>
                         <PanelBody>
-                            <PaymentInvoicesList
-                                administrationId={this.props.administrationDetails.id}
-                                filter={this.props.filter}
-                            />
+                            <PaymentInvoicesList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}
-                {this.props.type === undefined && <div>Selecteer orders of facturen.</div>}
+                {type === undefined && <div>Selecteer orders of facturen.</div>}
             </div>
-        );
-    }
-}
+        ) : (
+            <Panel>
+                <PanelBody>
+                    <div>Geen administratie gevonden</div>
+                </PanelBody>
+            </Panel>
+        )}
+    </React.Fragment>
+);
 
 const mapStateToProps = state => {
     return {
@@ -59,4 +49,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProductDetailsForm);
+export default connect(mapStateToProps)(FinancialForm);

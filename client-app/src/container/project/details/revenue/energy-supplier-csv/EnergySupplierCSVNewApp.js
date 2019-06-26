@@ -8,6 +8,7 @@ import EnergySupplierCSVNew from './EnergySupplierCSVNew';
 import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
+import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 
 class EnergySupplierCSVNewApp extends Component {
     constructor(props) {
@@ -33,8 +34,9 @@ class EnergySupplierCSVNewApp extends Component {
         let templates = [];
 
         templates.push({ id: 1, name: 'Eneco' });
-        templates.push({ id: 2, name: 'GC' });
+        templates.push({ id: 2, name: 'Greenchoice' });
         templates.push({ id: 3, name: 'Oxxio' });
+        templates.push({ id: 4, name: 'Nuon' });
 
         this.setState({
             templates: templates,

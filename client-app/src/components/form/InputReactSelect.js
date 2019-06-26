@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import VirtualizedSelect from 'react-virtualized-select';
-
+import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-import 'react-virtualized/styles.css';
-import 'react-virtualized-select/styles.css';
 
 const InputReactSelect = props => {
     const {
         label,
-        className,
         size,
         id,
         name,
@@ -34,7 +30,7 @@ const InputReactSelect = props => {
                 {label}
             </label>
             <div className={`${size}`}>
-                <VirtualizedSelect
+                <Select
                     id={id}
                     name={name}
                     value={value}

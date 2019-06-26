@@ -304,9 +304,6 @@ Route::namespace('Api')
         Route::post('project/participant/create-participant-report/{documentTemplate}/{emailTemplate}', 'ParticipationProject\ParticipationProjectController@createParticipantReport');
         Route::post('project/participant/preview-email/{documentTemplate}/{emailTemplate}', 'ParticipationProject\ParticipationProjectController@previewEmail');
         Route::post('project/participant/preview-pdf/{documentTemplate}/{emailTemplate}', 'ParticipationProject\ParticipationProjectController@previewPDF');
-        Route::post('project/participant/transaction', 'ParticipantTransaction\ParticipantTransactionController@store');
-        Route::post('project/participant/transaction/{participantTransaction}', 'ParticipantTransaction\ParticipantTransactionController@update');
-        Route::post('project/participant/transaction/{participantTransaction}/delete', 'ParticipantTransaction\ParticipantTransactionController@destroy');
         Route::post('project/participant/mutation', 'ParticipantMutation\ParticipantMutationController@store');
         Route::post('project/participant/mutation/{participantMutation}', 'ParticipantMutation\ParticipantMutationController@update');
         Route::post('project/participant/mutation/{participantMutation}/delete', 'ParticipantMutation\ParticipantMutationController@destroy');

@@ -20,7 +20,7 @@ class ContactsInGroupListItem extends Component {
             showActionButtons: true,
             highlightRow: 'highlight-row',
         });
-    }
+    };
 
     onRowLeave() {
         this.setState({
@@ -44,7 +44,6 @@ class ContactsInGroupListItem extends Component {
             city,
             emailAddress,
             phoneNumber,
-            statusName,
             createdAt,
             permissions,
         } = this.props;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment/moment';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 moment.locale('nl');
 
 class ParticipantsListItem extends Component {
@@ -32,7 +33,14 @@ class ParticipantsListItem extends Component {
     }
 
     render() {
-        const { id, contact, participationsDefinitive, uniqueMutationStatuses, dateRegister } = this.props;
+        const {
+            id,
+            contact,
+            participationsDefinitive,
+            amountDefinitive,
+            uniqueMutationStatuses,
+            dateRegister,
+        } = this.props;
         const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';
@@ -65,7 +73,11 @@ class ParticipantsListItem extends Component {
                 <td>{primaryAddress ? street + ' ' + number + addition : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.postalCode : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.city : ''}</td>
-                <td>{participationsDefinitive ? participationsDefinitive : ''}</td>
+                {this.props.projectTypeRef === 'loan' ? (
+                    <td>{amountDefinitive ? MoneyPresenter(amountDefinitive) : ''}</td>
+                ) : (
+                    <td>{participationsDefinitive ? participationsDefinitive : ''}</td>
+                )}
                 <td>{uniqueMutationStatuses.map(item => item.name).join(', ')}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 {this.props.projectTypeRef === 'postalcode_link_capital' ? (

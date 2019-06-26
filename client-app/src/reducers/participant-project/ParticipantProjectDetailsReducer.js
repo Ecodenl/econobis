@@ -12,23 +12,6 @@ export default function(state = {}, action) {
                 ...state,
                 ...action.participantProjectDetails,
             };
-        case 'NEW_PARTICIPATION_TRANSACTION':
-            return {
-                ...state,
-                participantTransactions: action.participationTransactions,
-            };
-        case 'UPDATE_PARTICIPATION_TRANSACTION':
-            return {
-                ...state,
-                participantTransactions: action.participationTransactions,
-            };
-        case 'DELETE_PARTICIPATION_TRANSACTION':
-            return {
-                ...state,
-                participantTransactions: state.participantTransactions.filter(
-                    participantTransaction => participantTransaction.id !== action.id
-                ),
-            };
         case 'NEW_OBLIGATION_NUMBER':
             return {
                 ...state,

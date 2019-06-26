@@ -28,7 +28,7 @@ class UserDetailsToolbar extends Component {
         if (composedOf === 'contacts') {
             composedOfType = '(Contacten)';
         } else if (composedOf === 'participants') {
-            composedOfType = '(Deelnemers)';
+            composedOfType = '(Participanten)';
         } else if (composedOf === 'both') {
             composedOfType = '(Samengesteld)';
         }

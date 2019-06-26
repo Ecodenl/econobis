@@ -23,8 +23,10 @@ class ParticipantReportMail extends Mailable
      *
      * @param Email $email
      */
-    public function __construct($email, $html_body, $document)
+    public function __construct($email, $from_email, $from_name, $html_body, $document)
     {
+        $this->from_email = $from_email;
+        $this->from_name = $from_name;
         $this->email = $email;
         $this->html_body = $html_body;
         $this->document = $document;
@@ -45,6 +47,7 @@ class ParticipantReportMail extends Mailable
             'as' => $this->document->name
         ]);
 
+        $mail = $this->from($this->from_email, $this->from_name);
         return $mail;
     }
 }

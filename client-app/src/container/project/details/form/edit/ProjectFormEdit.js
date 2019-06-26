@@ -156,6 +156,7 @@ class ProjectFormEdit extends Component {
             administrationId,
             dateStart,
             dateEnd,
+            dateEntry,
             dateProduction,
             contactGroupIds,
             isMembershipRequired,
@@ -204,6 +205,7 @@ class ProjectFormEdit extends Component {
                     hasPaymentInvoices={hasPaymentInvoices}
                     dateStart={dateStart}
                     dateEnd={dateEnd}
+                    dateEntry={dateEntry}
                     dateProduction={dateProduction}
                     contactGroupIds={contactGroupIds}
                     isMembershipRequired={isMembershipRequired}

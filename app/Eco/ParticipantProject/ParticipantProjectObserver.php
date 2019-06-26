@@ -9,6 +9,7 @@
 namespace App\Eco\ParticipantProject;
 
 use App\Eco\Contact\Contact;
+use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use Illuminate\Support\Facades\Auth;
 
 class ParticipantProjectObserver
@@ -34,6 +35,18 @@ class ParticipantProjectObserver
         $contact->participations_current = $participations;
 
         $contact->save();
+
+        // When participations are definitive then add participant to project revenue distribution if available
+        if($participantProject->isDirty('participations_definitive') || $participantProject->isDirty('amount_definitive')) {
+            foreach($participantProject->project->projectRevenues as $projectRevenue) {
+                // If project revenue is already confirmed then continue
+                if($projectRevenue->confirmed) continue;
+
+                $projectRevenueController = new ProjectRevenueController();
+
+                $projectRevenueController->saveDistribution($projectRevenue, $participantProject);
+            }
+        }
     }
 
     public function updating(ParticipantProject $participantProject)

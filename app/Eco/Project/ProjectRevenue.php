@@ -21,6 +21,16 @@ class ProjectRevenue extends Model
         'id'
     ];
 
+    protected $dates = [
+        'date_begin',
+        'date_end',
+        'date_reference',
+        'date_confirmed',
+        'date_payed',
+        'created_at',
+        'updated_at',
+    ];
+
     //relations
     public function project(){
         return $this->belongsTo(Project::class);
@@ -47,5 +57,12 @@ class ProjectRevenue extends Model
     public function getKwhResultAttribute()
     {
         return ($this->kwh_end - $this->kwh_start);
+    }
+
+    public function getDistributionType()
+    {
+        if(!$this->distribution_type_id) return null;
+
+        return ProjectRevenueDistributionType::get($this->distribution_type_id);
     }
 }

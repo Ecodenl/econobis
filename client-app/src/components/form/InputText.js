@@ -12,12 +12,14 @@ const InputText = props => {
         name,
         value,
         onChangeAction,
+        onBlurAction,
         required,
         readOnly,
         maxLength,
         error,
         min,
         max,
+        step,
         errorMessage,
         divSize,
         divClassName,
@@ -38,11 +40,13 @@ const InputText = props => {
                     name={name}
                     value={value}
                     onChange={onChangeAction}
+                    onBlur={onBlurAction}
                     readOnly={readOnly}
                     maxLength={maxLength}
                     min={min}
                     max={max}
                     autoComplete={autoComplete}
+                    step={step}
                 />
             </div>
             {error && (
@@ -67,13 +71,14 @@ InputText.defaultProps = {
     error: false,
     min: '',
     max: '',
+    step: '',
     errorMessage: '',
     autoComplete: 'off',
     onChangeAction: () => {},
 };
 
 InputText.propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     type: PropTypes.string,
     className: PropTypes.string,
     size: PropTypes.string,
@@ -83,12 +88,14 @@ InputText.propTypes = {
     name: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChangeAction: PropTypes.func,
+    onBlurAction: PropTypes.func,
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     maxLength: PropTypes.string,
     error: PropTypes.bool,
     min: PropTypes.string,
     max: PropTypes.string,
+    step: PropTypes.string,
     errorMessage: PropTypes.string,
     autoComplete: PropTypes.string,
 };

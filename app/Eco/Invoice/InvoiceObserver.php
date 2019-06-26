@@ -37,8 +37,7 @@ class InvoiceObserver
 
     public function created(Invoice $invoice)
     {
-        $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->count();
-        $invoice->number = 'T' . Carbon::now()->year . '-' . $invoice->invoice_number;
+        $invoice->number = 'F' . Carbon::now()->year . '-new';
         $invoice->setDaysToExpire();
         $invoice->setDaysLastReminder();
         $invoice->save();
@@ -47,10 +46,10 @@ class InvoiceObserver
     public function saving(Invoice $invoice){
         $oldInvoiceStatusId = $invoice->getOriginal('status_id');
 
-        // Als de status van to-send naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
+        // Als de status van is-sending naar verzonden wordt gezet, updaten we van alle orderregels de laatste factuur datum.
         // Deze wordt later gebruikt om eenmalige producten te checken of ze betaald zijn en om de periode weer te geven op de factuur.
         // Ook passen we de volgende factuur geplande factuur datum aan van de order
-        if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'to-send'){
+        if($invoice->status_id === 'sent' && $oldInvoiceStatusId === 'is-sending'){
             $order = $invoice->order;
 
             $invoice->subject =  $order->subject;
@@ -91,10 +90,6 @@ class InvoiceObserver
                 $order->date_next_invoice = $order->addDurationToDate(Carbon::parse($order->date_next_invoice));
             }
             $order->save();
-
-            // Ook krijgt een factuur dan pas een definitief factuurnummer
-            $invoice->invoice_number = Invoice::where('administration_id', $invoice->administration_id)->whereIn('status_id', ['sent', 'exported', 'paid', 'irrecoverable'])->count() + 1;
-            $invoice->number = 'F' . Carbon::now()->year . '-' . $invoice->invoice_number;
         }
 
         $invoice->setDaysToExpire();

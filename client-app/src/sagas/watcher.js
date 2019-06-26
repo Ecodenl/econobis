@@ -65,16 +65,11 @@ import {
     deleteRevenueSaga,
     deleteProjectSaga,
 } from './project/ProjectDetailsSaga';
-import {
-    fetchProjectRevenueSaga,
-    fetchProjectRevenueDistributionSaga,
-    fetchProjectRevenueParticipantsSaga,
-} from './project/ProjectRevenueDetailsSaga';
+import { fetchProjectRevenueSaga, fetchProjectRevenueDistributionSaga } from './project/ProjectRevenueDetailsSaga';
 import { fetchParticipantsProjectSaga } from './participant-project/ParticipantsProjectSaga';
 import {
     fetchParticipantProjectDetailsSaga,
     deleteParticipantProjectSaga,
-    deleteParticipationTransactionSaga,
     deleteObligationNumberSaga,
     deleteParticipationMutationSaga,
 } from './participant-project/ParticipantProjectDetailsSaga';
@@ -202,7 +197,6 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_PARTICIPANTS_PROJECT', fetchParticipantsProjectSaga);
     yield takeLatest('FETCH_PARTICIPANT_PROJECT_DETAILS', fetchParticipantProjectDetailsSaga);
     yield takeLatest('DELETE_PARTICIPANT_PROJECT', deleteParticipantProjectSaga);
-    yield takeLatest('DELETE_PARTICIPATION_TRANSACTION', deleteParticipationTransactionSaga);
     yield takeLatest('DELETE_OBLIGATION_NUMBER', deleteObligationNumberSaga);
     yield takeLatest('DELETE_PARTICIPATION_MUTATION', deleteParticipationMutationSaga);
     // Project
@@ -210,7 +204,6 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_PROJECT', fetchProjectSaga);
     yield takeLatest('DELETE_PROJECT', deleteProjectSaga);
     yield takeLatest('FETCH_PROJECT_REVENUE', fetchProjectRevenueSaga);
-    yield takeLatest('PROJECT_REVENUE_GET_PARTICIPANTS', fetchProjectRevenueParticipantsSaga);
     yield takeLatest('PROJECT_REVENUE_GET_DISTRIBUTION', fetchProjectRevenueDistributionSaga);
     yield takeLatest('DELETE_VALUE_COURSE', deleteValueCourseSaga);
     yield takeLatest('DELETE_REVENUE', deleteRevenueSaga);

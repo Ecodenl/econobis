@@ -85,7 +85,7 @@ const InvoiceProductsFormEdit = props => {
                                     name={'price'}
                                     value={
                                         '€' +
-                                        props.invoiceProduct.product.priceInclVat.toLocaleString('nl', {
+                                        props.invoiceProduct.product.currentPrice.priceInclVat.toLocaleString('nl', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2,
                                         })

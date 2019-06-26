@@ -6,7 +6,6 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
-use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
@@ -46,11 +45,6 @@ class ParticipantProject extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function participantProjectStatus()
-    {
-        return $this->belongsTo(ParticipantProjectStatus::class, 'status_id');
-    }
-
     public function participantProjectPayoutType()
     {
         return $this->belongsTo(ParticipantProjectPayoutType::class, 'type_id');
@@ -71,14 +65,16 @@ class ParticipantProject extends Model
         return $this->hasMany(ProjectRevenueDistribution::class, 'participation_id');
     }
 
-    public function transactions()
-    {
-        return $this->hasMany(ParticipantTransaction::class, 'participation_id')->orderBy('date_transaction', 'desc');
-    }
-
     public function mutations()
     {
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('id', 'desc');
+    }
+
+    public function mutationsDefinitive()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'asc');
     }
 
     public function obligationNumbers()
@@ -94,22 +90,6 @@ class ParticipantProject extends Model
     public function tasks()
     {
         return $this->hasMany(Task::class, 'participation_project_id');
-    }
-
-    //appends
-    public function getParticipationsWorthTotalAttribute()
-    {
-        return $this->participations_current * $this->project->participation_worth;
-    }
-
-    public function getParticipationsCurrentAttribute()
-    {
-        //also change observer
-        if ($this->status_id === 2) {
-            return $this->participations_granted - $this->participations_sold;
-        } else {
-            return 0;
-        }
     }
 
     public function calculator()
@@ -135,5 +115,38 @@ class ParticipantProject extends Model
         }
 
         return $mutationStatuses;
+    }
+
+    public function getParticipationsReturnsTotalAttribute()
+    {
+        $total = 0;
+
+        foreach($this->mutations as $mutation) {
+            $total += $mutation->returns;
+        }
+
+        return $total;
+    }
+
+    public function getParticipationsReturnsKwhTotalAttribute()
+    {
+        $total = 0;
+
+        foreach($this->mutations as $mutation) {
+            $total += $mutation->payout_kwh;
+        }
+
+        return $total;
+    }
+
+    public function getParticipationsIndicationOfRestitutionEnergyTaxTotalAttribute()
+    {
+        $total = 0;
+
+        foreach($this->mutations as $mutation) {
+            $total += $mutation->indication_of_restitution_energy_tax;
+        }
+
+        return $total;
     }
 }

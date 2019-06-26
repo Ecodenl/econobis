@@ -25,7 +25,6 @@ class FullProduct extends Resource
                 'code' => $this->code,
                 'name' => $this->name,
                 'invoiceText' => $this->invoice_text,
-                'priceInclVat' => $this->price_incl_vat,
                 'priceHistory' => GenericResource::collection($this->whenLoaded('priceHistory')),
                 'currentPrice' => GenericResource::make($this->current_price),
                 'isOneTime' => $this->is_one_time,

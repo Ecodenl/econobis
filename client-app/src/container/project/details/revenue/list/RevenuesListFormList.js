@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import RevenuesListFormItem from './RevenuesListFormItem';
 
-const RevenuesListFormList = props => {
+const RevenuesListFormList = ({ revenues, projectTypeCodeRef }) => {
     return (
         <div>
             <div className="row header">
@@ -13,11 +13,15 @@ const RevenuesListFormList = props => {
                 <div className="col-sm-2">Uitgekeerd op</div>
                 <div className="col-sm-2">Type opbrengst</div>
                 <div className="col-sm-1">Bedrag</div>
-                <div className="col-sm-1">kWh</div>
+                {projectTypeCodeRef === 'postalcode_link_capital' ? (
+                    <div className="col-sm-1">kWh</div>
+                ) : (
+                    <div className="col-sm-1" />
+                )}
                 <div className="col-sm-1" />
             </div>
-            {props.revenues.length > 0 ? (
-                props.revenues.map(revenue => {
+            {revenues.length > 0 ? (
+                revenues.map(revenue => {
                     return <RevenuesListFormItem key={revenue.id} revenue={revenue} />;
                 })
             ) : (
@@ -30,6 +34,7 @@ const RevenuesListFormList = props => {
 const mapStateToProps = state => {
     return {
         revenues: state.projectDetails.revenues,
+        projectTypeCodeRef: state.projectDetails.projectType.codeRef,
     };
 };
 

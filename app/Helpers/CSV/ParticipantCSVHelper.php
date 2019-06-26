@@ -49,7 +49,6 @@ class ParticipantCSVHelper
                 'giftedByContact',
                 'legalRepContact',
                 'project',
-                'participantProjectStatus',
                 'participantProjectPayoutType'
             ]);
 
@@ -108,8 +107,8 @@ class ParticipantCSVHelper
                     }
 
                     if($participant->contact->type_id === 'person' && $participant->contact->legalRepContact){
-                        $participant->lrcStartDate = $participant->contact->legalRepContact->startDate ? Carbon::parse($participant->contact->legalRepContact->startDate)->format('d-m-Y') : '';
-                        $participant->lrcEndDate = $participant->contact->legalRepContact->endDate ? Carbon::parse($participant->contact->legalRepContact->endDate)->format('d-m-Y') : '';
+                        $participant->lrcStartDate = $participant->contact->legalRepContact->start_date ? Carbon::parse($participant->contact->legalRepContact->start_date)->format('d-m-Y') : '';
+                        $participant->lrcEndDate = $participant->contact->legalRepContact->end_date ? Carbon::parse($participant->contact->legalRepContact->end_date)->format('d-m-Y') : '';
                         $participant->lrcOccupation = $participant->contact->legalRepContact->occupation->primary_occupation;
                         $participant->lrcFullName = $participant->contact->legalRepContact->contact->full_name;
                         $participant->lrcPrimaryEmailAddress = $participant->contact->legalRepContact->contact->primaryEmailAddress ? $participant->contact->legalRepContact->contact->primaryEmailAddress->email : '';
@@ -233,7 +232,6 @@ class ParticipantCSVHelper
                     'iban_attn' => 'Iban uitkeren t.n.v.',
                     'iban_contact' => 'Iban contact',
                     'iban_attn_contact' => 'Iban contact uitkeren t.n.v.',
-                    'participantProjectStatus.name' => 'Status',
                     'date_register' => 'Inschrijfdatum',
                     'date_end' => 'Einddatum',
                     'participantProjectPayoutType.name' => 'Uitkeren op',

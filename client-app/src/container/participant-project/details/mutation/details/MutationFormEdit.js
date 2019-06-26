@@ -3,19 +3,9 @@ import moment from 'moment/moment';
 moment.locale('nl');
 import { connect } from 'react-redux';
 import Panel from '../../../../../components/panel/Panel';
-import PanelBody from '../../../../../components/panel/PanelBody';
-import InputDate from '../../../../../components/form/InputDate';
-import InputText from '../../../../../components/form/InputText';
-import ButtonText from '../../../../../components/button/ButtonText';
-import ViewText from '../../../../../components/form/ViewText';
+import MutationFormEditResult from './MutationFormEditResult';
+import MutationFormEditDeposit from './MutationFormEditDeposit';
 import ParticipantDetailsMutationConclusion from './conclusion';
-import ParticipantDetailsMutationStatusLog from './status-log';
-import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
-import InputSelect from '../../../../../components/form/InputSelect';
-import MutationFormEditStatusInterest from './MutationFormEditStatus/Interest';
-import MutationFormEditStatusOption from './MutationFormEditStatus/Option';
-import MutationFormEditStatusGranted from './MutationFormEditStatus/Granted';
-import MutationFormEditStatusFinal from './MutationFormEditStatus/Final';
 
 const MutationFormEdit = ({
     participantMutation,
@@ -46,6 +36,13 @@ const MutationFormEdit = ({
         datePayment,
         dateEntry,
         participationWorth,
+        returns,
+        paidOn,
+        entry,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
     } = participantMutation;
 
     let buttonTextSubmit = 'Opslaan';
@@ -93,143 +90,57 @@ const MutationFormEdit = ({
         <div>
             <form className="form-horizontal" onSubmit={handleSubmit}>
                 <Panel className={'panel-grey'}>
-                    <PanelBody>
-                        <div className="row">
-                            <ViewText label={'Type'} id={'type'} className={'col-sm-6 form-group'} value={type.name} />
-                            {originalStatus.codeRef === 'final' ? (
-                                <ViewText
-                                    label={'Status'}
-                                    id={'status'}
-                                    className={'col-sm-6 form-group'}
-                                    value={originalStatus.name}
-                                />
-                            ) : (
-                                <InputSelect
-                                    label={'Status'}
-                                    name={'statusId'}
-                                    options={participantMutationStatusesOptions}
-                                    value={statusId}
-                                    onChangeAction={handleInputChange}
-                                />
-                            )}
-                        </div>
+                    {type.codeRef === 'first_deposit' || type.codeRef === 'deposit' ? (
+                        <MutationFormEditDeposit
+                            type={type}
+                            originalStatus={originalStatus}
+                            participantMutationStatusesOptions={participantMutationStatusesOptions}
+                            statusId={statusId}
+                            participationWorth={participationWorth}
+                            quantityInterest={quantityInterest}
+                            amountInterest={amountInterest}
+                            dateInterest={dateInterest}
+                            quantityOption={quantityOption}
+                            amountOption={amountOption}
+                            dateOption={dateOption}
+                            errors={errors}
+                            quantityGranted={quantityGranted}
+                            amountGranted={amountGranted}
+                            dateGranted={dateGranted}
+                            quantityFinal={quantityFinal}
+                            amountFinal={amountFinal}
+                            dateEntry={dateEntry}
+                            dateContractRetour={dateContractRetour}
+                            projectTypeCodeRef={projectTypeCodeRef}
+                            handleInputChange={handleInputChange}
+                            handleInputChangeDate={handleInputChangeDate}
+                            datePayment={datePayment}
+                            createdAt={createdAt}
+                            createdBy={createdBy}
+                            updatedAt={updatedAt}
+                            updatedBy={updatedBy}
+                            statusLogs={participantMutation.statusLogs}
+                            cancelEdit={cancelEdit}
+                            buttonText={buttonTextSubmit}
+                            handleSubmit={handleSubmit}
+                        />
+                    ) : null}
 
-                        {projectTypeCodeRef === 'loan' ? null : (
-                            <div className="row">
-                                <ViewText
-                                    label={'Bedrag'}
-                                    id={'participationWorth'}
-                                    className={'col-sm-6 form-group'}
-                                    value={MoneyPresenter(participationWorth)}
-                                />
-                            </div>
-                        )}
-
-                        {originalStatus.codeRef === 'interest' && (
-                            <MutationFormEditStatusInterest
-                                originalStatus={originalStatus}
-                                statusId={statusId}
-                                quantityInterest={quantityInterest}
-                                amountInterest={amountInterest}
-                                dateInterest={dateInterest}
-                                quantityOption={quantityOption}
-                                amountOption={amountOption}
-                                dateOption={dateOption}
-                                handleInputChange={handleInputChange}
-                                handleInputChangeDate={handleInputChangeDate}
-                                errors={errors}
-                                projectTypeCodeRef={projectTypeCodeRef}
-                            />
-                        )}
-
-                        {originalStatus.codeRef === 'option' && (
-                            <MutationFormEditStatusOption
-                                originalStatus={originalStatus}
-                                statusId={statusId}
-                                quantityInterest={quantityInterest}
-                                amountInterest={amountInterest}
-                                dateInterest={dateInterest}
-                                quantityOption={quantityOption}
-                                amountOption={amountOption}
-                                dateOption={dateOption}
-                                quantityGranted={quantityGranted}
-                                amountGranted={amountGranted}
-                                dateGranted={dateGranted}
-                                handleInputChange={handleInputChange}
-                                handleInputChangeDate={handleInputChangeDate}
-                                errors={errors}
-                                projectTypeCodeRef={projectTypeCodeRef}
-                            />
-                        )}
-
-                        {originalStatus.codeRef === 'granted' && (
-                            <MutationFormEditStatusGranted
-                                originalStatus={originalStatus}
-                                statusId={statusId}
-                                quantityInterest={quantityInterest}
-                                amountInterest={amountInterest}
-                                dateInterest={dateInterest}
-                                quantityOption={quantityOption}
-                                amountOption={amountOption}
-                                dateOption={dateOption}
-                                quantityGranted={quantityGranted}
-                                amountGranted={amountGranted}
-                                dateGranted={dateGranted}
-                                quantityFinal={quantityFinal}
-                                amountFinal={amountFinal}
-                                dateEntry={dateEntry}
-                                dateContractRetour={dateContractRetour}
-                                datePayment={datePayment}
-                                handleInputChange={handleInputChange}
-                                handleInputChangeDate={handleInputChangeDate}
-                                errors={errors}
-                                projectTypeCodeRef={projectTypeCodeRef}
-                            />
-                        )}
-
-                        {originalStatus.codeRef === 'final' && (
-                            <MutationFormEditStatusFinal
-                                originalStatus={originalStatus}
-                                statusId={statusId}
-                                quantityInterest={quantityInterest}
-                                amountInterest={amountInterest}
-                                dateInterest={dateInterest}
-                                quantityOption={quantityOption}
-                                amountOption={amountOption}
-                                dateOption={dateOption}
-                                quantityGranted={quantityGranted}
-                                amountGranted={amountGranted}
-                                dateGranted={dateGranted}
-                                quantityFinal={quantityFinal}
-                                amountFinal={amountFinal}
-                                dateEntry={dateEntry}
-                                dateContractRetour={dateContractRetour}
-                                datePayment={datePayment}
-                                handleInputChange={handleInputChange}
-                                handleInputChangeDate={handleInputChangeDate}
-                                errors={errors}
-                                projectTypeCodeRef={projectTypeCodeRef}
-                            />
-                        )}
-
-                        <ParticipantDetailsMutationStatusLog statusLogs={participantMutation.statusLogs} />
-
-                        <ParticipantDetailsMutationConclusion participantMutation={participantMutation} />
-
-                        <div className="pull-right btn-group" role="group">
-                            <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Annuleren'}
-                                onClickAction={cancelEdit}
-                            />
-                            <ButtonText
-                                buttonText={buttonTextSubmit}
-                                onClickAction={handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
-                            />
-                        </div>
-                    </PanelBody>
+                    {type.codeRef === 'result' ? (
+                        <MutationFormEditResult
+                            type={type}
+                            originalStatus={originalStatus}
+                            returns={returns}
+                            datePayment={datePayment}
+                            entry={entry}
+                            paidOn={paidOn}
+                            createdAt={createdAt}
+                            createdBy={createdBy}
+                            updatedAt={updatedAt}
+                            updatedBy={updatedBy}
+                            cancelEdit={cancelEdit}
+                        />
+                    ) : null}
                 </Panel>
             </form>
         </div>

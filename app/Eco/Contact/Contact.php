@@ -227,7 +227,7 @@ class Contact extends Model
 
     public function legalRepContact()
     {
-        return $this->hasOne(OccupationContact::class)->where('occupation_id', 7)->orderBy('occupation_contact.id', 'desc')->limit(1);
+        return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('occupation_id', 7)->orderBy('id', 'desc')->limit(1);
     }
 
     public function orders()

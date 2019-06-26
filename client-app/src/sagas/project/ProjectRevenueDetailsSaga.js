@@ -11,25 +11,6 @@ export function* fetchProjectRevenueSaga({ id }) {
     }
 }
 
-export function* fetchProjectRevenueParticipantsSaga(data) {
-    try {
-        document.body.style.cursor = 'wait';
-        const projectRevenueParticipants = yield call(
-            ProjectRevenueAPI.fetchProjectRevenueParticipants,
-            data.data.id,
-            data.data.page
-        );
-        document.body.style.cursor = 'default';
-        yield put({
-            type: 'PROJECT_REVENUE_GET_PARTICIPANTS_SUCCESS',
-            projectRevenueParticipants,
-        });
-    } catch (error) {
-        document.body.style.cursor = 'default';
-        yield put({ type: 'PROJECT_REVENUE_GET_PARTICIPANTS_ERROR', error });
-    }
-}
-
 export function* fetchProjectRevenueDistributionSaga(data) {
     try {
         document.body.style.cursor = 'wait';

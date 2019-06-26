@@ -1,4 +1,9 @@
 export default function(participantMutation, errors, hasErrors, statusCodeRef, projectTypeCodeRef) {
+    if (!participantMutation.typeId) {
+        errors.typeId = true;
+        hasErrors = true;
+    }
+
     if (!participantMutation.statusId) {
         errors.statusId = true;
         hasErrors = true;

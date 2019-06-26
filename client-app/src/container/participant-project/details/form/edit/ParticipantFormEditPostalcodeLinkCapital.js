@@ -14,6 +14,8 @@ function ParticipantFormEditPostalcodeLinkCapital({
     valueCourses,
     powerKwhConsumption,
     handleInputChange,
+    participationsReturnsKwhTotal,
+    participationsIndicationOfRestitutionEnergyTaxTotal,
 }) {
     const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
 
@@ -27,7 +29,11 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     value={participationsDefinitive}
                     className={'col-sm-6 form-group'}
                 />
-                <ViewText label={'Totale opbrengsten kWh'} value={'0'} className={'col-sm-6 form-group'} />
+                <ViewText
+                    label={'Totale opbrengsten kWh'}
+                    value={participationsReturnsKwhTotal}
+                    className={'col-sm-6 form-group'}
+                />
             </div>
             <div className="row">
                 <ViewText
@@ -37,7 +43,7 @@ function ParticipantFormEditPostalcodeLinkCapital({
                 />
                 <ViewText
                     label={'Totale indicatie teruggave energie belasting'}
-                    value={'0'}
+                    value={moneyPresenter(participationsIndicationOfRestitutionEnergyTaxTotal)}
                     className={'col-sm-6 form-group'}
                 />
             </div>
@@ -47,14 +53,6 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
                     className={'col-sm-6 form-group'}
                 />
-                <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} className={'col-sm-6 form-group'} />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Huidige totale waarde'}
-                    value={moneyPresenter(participationsDefinitiveWorth)}
-                    className={'col-sm-6 form-group'}
-                />
                 <InputText
                     type={'number'}
                     label={'Jaarlijks verbruik'}
@@ -62,6 +60,13 @@ function ParticipantFormEditPostalcodeLinkCapital({
                     id={'powerKwhConsumption'}
                     value={powerKwhConsumption}
                     onChangeAction={handleInputChange}
+                />
+            </div>
+            <div className="row">
+                <ViewText
+                    label={'Huidige totale waarde participaties'}
+                    value={moneyPresenter(participationsDefinitiveWorth)}
+                    className={'col-sm-6 form-group'}
                 />
             </div>
         </React.Fragment>

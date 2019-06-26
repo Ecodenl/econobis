@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Project;
 
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -22,11 +23,13 @@ class FullProjectRevenue extends Resource
                 'id' => $this->id,
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
+                'distributionTypeId' => $this->distribution_type_id,
+                'distributionType' => FullEnumWithIdAndName::make($this->getDistributionType()),
                 'projectId' => $this->project_id,
                 'confirmed' => $this->confirmed,
                 'dateBegin' => $this->date_begin,
                 'dateEnd' => $this->date_end,
-                'dateEntry' => $this->date_entry,
+                'dateReference' => $this->date_reference,
                 'dateConfirmed' => $this->date_confirmed,
                 'kwhStart' => $this->kwh_start,
                 'kwhEnd' => $this->kwh_end,
@@ -38,6 +41,8 @@ class FullProjectRevenue extends Resource
                 'revenue' => $this->revenue,
                 'datePayed' => $this->date_payed,
                 'payPercentage' => $this->pay_percentage,
+                'keyAmountFirstPercentage' => $this->key_amount_first_percentage,
+                'payPercentageValidFromKeyAmount' => $this->pay_percentage_valid_from_key_amount,
                 'categoryId' => $this->category_id,
                 'category' => GenericResource::make($this->whenLoaded('category')),
                 'createdAt' => $this->created_at,

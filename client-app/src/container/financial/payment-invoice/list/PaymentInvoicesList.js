@@ -23,8 +23,32 @@ class PaymentInvoicesList extends Component {
     constructor(props) {
         super(props);
 
-        if (!isEmpty(props.filter)) {
-            switch (props.filter) {
+        this.setFilter(props.filter);
+
+        this.handlePageClick = this.handlePageClick.bind(this);
+    }
+
+    componentDidMount() {
+        this.fetchPaymentInvoicesData();
+    }
+
+    componentWillUnmount() {
+        this.props.clearPaymentInvoices();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.filter !== prevProps.filter) {
+            this.setFilter(this.props.filter);
+
+            setTimeout(() => {
+                this.fetchPaymentInvoicesData();
+            }, 100);
+        }
+    }
+
+    setFilter = filter => {
+        if (!isEmpty(filter)) {
+            switch (filter) {
                 case 'verzonden':
                     this.props.clearFilterPaymentInvoices();
                     this.props.setStatusIdFilterPaymentInvoices('sent');
@@ -39,42 +63,7 @@ class PaymentInvoicesList extends Component {
         } else {
             this.props.clearFilterPaymentInvoices();
         }
-
-        this.handlePageClick = this.handlePageClick.bind(this);
-    }
-
-    componentDidMount() {
-        this.fetchPaymentInvoicesData();
-    }
-
-    componentWillUnmount() {
-        this.props.clearPaymentInvoices();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.filter !== nextProps.filter) {
-            if (!isEmpty(nextProps.filter)) {
-                switch (nextProps.filter) {
-                    case 'verzonden':
-                        this.props.clearFilterPaymentInvoices();
-                        this.props.setStatusIdFilterPaymentInvoices('sent');
-                        break;
-                    case 'niet-betaald':
-                        this.props.clearFilterPaymentInvoices();
-                        this.props.setStatusIdFilterPaymentInvoices('not-paid');
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                this.props.clearFilterPaymentInvoices();
-            }
-
-            setTimeout(() => {
-                this.fetchPaymentInvoicesData();
-            }, 100);
-        }
-    }
+    };
 
     fetchPaymentInvoicesData = () => {
         this.props.clearPaymentInvoices();
@@ -91,6 +80,7 @@ class PaymentInvoicesList extends Component {
 
     resetPaymentInvoiceFilters = () => {
         this.props.clearFilterPaymentInvoices();
+        this.setFilter(this.props.filter);
 
         this.fetchPaymentInvoicesData();
     };

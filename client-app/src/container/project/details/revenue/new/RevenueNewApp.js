@@ -3,12 +3,14 @@ import validator from 'validator';
 import { hashHistory } from 'react-router';
 
 import RevenueNewToolbar from './RevenueNewToolbar';
-import RevenueNew from './RevenueNew';
+import RevenueNewForm from './RevenueNewForm';
 
 import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
+import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment';
+import { connect } from 'react-redux';
 
 class RevenueNewApp extends Component {
     constructor(props) {
@@ -17,11 +19,12 @@ class RevenueNewApp extends Component {
         this.state = {
             revenue: {
                 projectId: props.params.projectId,
-                categoryId: '',
+                categoryId: props.params.categoryId,
+                distributionTypeId: '',
                 confirmed: false,
                 dateBegin: '',
                 dateEnd: '',
-                dateEntry: moment(),
+                dateReference: moment(),
                 dateConfirmed: '',
                 kwhStart: 0,
                 kwhEnd: 0,
@@ -32,6 +35,8 @@ class RevenueNewApp extends Component {
                 revenue: '',
                 datePayed: '',
                 payPercentage: '',
+                keyAmountFirstPercentage: '',
+                payPercentageValidFromKeyAmount: '',
                 typeId: '',
                 payoutKwh: '',
             },
@@ -39,25 +44,64 @@ class RevenueNewApp extends Component {
                 categoryId: false,
                 dateBegin: false,
                 dateEnd: false,
-                dateEntry: false,
+                dateReference: false,
             },
+            project: {},
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeDateConfirmed = this.handleInputChangeDateConfirmed.bind(this);
     }
+
+    componentDidMount() {
+        this.fetchProject(this.props.params.projectId);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.params.projectId !== prevProps.params.projectId) {
+            this.fetchProject(this.props.params.projectId);
+        }
+    }
+
+    fetchProject = id => {
+        ProjectDetailsAPI.fetchProject(id).then(payload => {
+            const category = props.projectRevenueCategories.find(
+                projectRevenueCategorie => projectRevenueCategorie.id == this.state.categoryId
+            );
+
+            let revenue = this.state.revenue;
+
+            if (category.codeRef === 'revenueEuro') {
+                revenue.dateBegin = payload.dateInterestBearing;
+                revenue.dateEnd = payload.dateInterestBearing
+                    ? moment(payload.dateInterestBearing)
+                          .add(1, 'years')
+                          .format('Y-MM-DD')
+                    : '';
+            }
+
+            this.setState({
+                ...this.state,
+                project: payload,
+                revenue,
+            });
+        });
+    };
 
     handleInputChange = event => {
         const target = event.target;
         let value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            revenue: {
-                ...this.state.revenue,
-                [name]: value,
+        this.setState(
+            {
+                ...this.state,
+                revenue: {
+                    ...this.state.revenue,
+                    [name]: value,
+                },
             },
-        });
+            () => this.linkedValueAdjustment(name)
+        );
 
         setTimeout(() => {
             const kwhStart =
@@ -76,6 +120,19 @@ class RevenueNewApp extends Component {
                 },
             });
         }, 200);
+    };
+
+    linkedValueAdjustment = name => {
+        if (name === 'keyAmountFirstPercentage') {
+            if (!this.state.revenue.keyAmountFirstPercentage || this.state.revenue.keyAmountFirstPercentage == 0)
+                this.setState({
+                    ...this.state,
+                    revenue: {
+                        ...this.state.revenue,
+                        payPercentageValidFromKeyAmount: '',
+                    },
+                });
+        }
     };
 
     handleInputChangeDate(value, name) {
@@ -133,8 +190,8 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(revenue.dateEntry + '')) {
-            errors.dateEntry = true;
+        if (validator.isEmpty(revenue.dateReference + '')) {
+            errors.dateReference = true;
             hasErrors = true;
         }
 
@@ -158,13 +215,14 @@ class RevenueNewApp extends Component {
                         <Panel>
                             <PanelBody>
                                 <div className="col-md-12">
-                                    <RevenueNew
+                                    <RevenueNewForm
                                         revenue={this.state.revenue}
                                         errors={this.state.errors}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleInputChangeDateConfirmed={this.handleInputChangeDateConfirmed}
                                         handleSubmit={this.handleSubmit}
+                                        project={this.state.project}
                                     />
                                 </div>
                             </PanelBody>
@@ -177,4 +235,10 @@ class RevenueNewApp extends Component {
     }
 }
 
-export default RevenueNewApp;
+const mapStateToProps = state => {
+    return {
+        projectRevenueCategories: state.systemData.projectRevenueCategories,
+    };
+};
+
+export default connect(mapStateToProps)(RevenueNewApp);

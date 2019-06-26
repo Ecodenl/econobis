@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import RevenueDistributionFormDynamicView from './RevenueDistributionFormDynamicView';
 import RevenueDistributionFormStaticView from './RevenueDistributionFormStaticView';
 import DataTablePagination from '../../../../../../components/dataTable/DataTablePagination';
 
@@ -31,35 +30,25 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Uit te keren bedrag</div>
                 <div className="col-sm-1">Uitkeren op</div>
                 <div className="col-sm-1">Datum uitkering</div>
-                <div className="col-sm-2">Energieleverancier</div>
-                <div className="col-sm-1">Geleverd totaal</div>
-                <div className="col-sm-1">Teruggave energiebelasting</div>
+                {props.projectRevenue.category.codeRef === 'revenueKwh' ? (
+                    <React.Fragment>
+                        <div className="col-sm-2">Energieleverancier</div>
+                        <div className="col-sm-1">Geleverd totaal</div>
+                        <div className="col-sm-1">Teruggave energiebelasting</div>
+                    </React.Fragment>
+                ) : null}
             </div>
-            {props.projectRevenue.confirmed ? (
-                props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
-                    props.projectRevenue.distribution.data.map(participation => {
-                        return (
-                            <RevenueDistributionFormStaticView
-                                key={participation.id}
-                                participation={participation}
-                                showCheckboxList={props.showCheckboxList}
-                                checkedAll={props.checkedAll}
-                                toggleParticipantCheck={props.toggleParticipantCheck}
-                                toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
-                            />
-                        );
-                    })
-                ) : (
-                    <div>Geen deelnemers bekend.</div>
-                )
-            ) : props.participations && props.participations.data.length > 0 ? (
-                props.participations.data.map(participation => {
+            {props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
+                props.projectRevenue.distribution.data.map(participation => {
                     return (
-                        <RevenueDistributionFormDynamicView
+                        <RevenueDistributionFormStaticView
                             key={participation.id}
                             participation={participation}
-                            projectRevenue={props.projectRevenue}
-                            project={props.project}
+                            showCheckboxList={props.showCheckboxList}
+                            checkedAll={props.checkedAll}
+                            toggleParticipantCheck={props.toggleParticipantCheck}
+                            toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
+                            projectRevenueCategoryCodeRef={props.projectRevenue.category.codeRef}
                         />
                     );
                 })
@@ -71,9 +60,9 @@ const RevenueDistributionFormList = props => {
                 onPageChangeAction={props.changePage}
                 recordsPerPage={100}
                 totalRecords={
-                    props.projectRevenue.confirmed
-                        ? props.projectRevenue.distribution && props.projectRevenue.distribution.meta.total
-                        : props.projectRevenue.participants && props.projectRevenue.participants.meta.total
+                    props.projectRevenue.distribution &&
+                    props.projectRevenue.distribution.meta &&
+                    props.projectRevenue.distribution.meta.total
                 }
             />
         </div>
@@ -82,7 +71,6 @@ const RevenueDistributionFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        participations: state.projectRevenue.participants,
         project: state.projectRevenue.project,
         projectRevenue: state.projectRevenue,
     };

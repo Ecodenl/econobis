@@ -117,9 +117,20 @@ class OrderProductsFormItem extends Component {
     };
 
     updatePrice = () => {
-        let price = validator.isFloat(this.props.orderProduct.product.priceInclVat + '')
-            ? this.props.orderProduct.product.priceInclVat
+        let price = 0;
+        let variable_price = validator.isFloat(this.props.orderProduct.variablePrice + '')
+            ? this.props.orderProduct.variablePrice
             : 0;
+
+        // variable prijs is excl. BTW
+        if (variable_price) {
+            price = variable_price;
+        } else {
+            price = validator.isFloat(this.props.orderProduct.product.currentPrice.priceInclVat + '')
+                ? this.props.orderProduct.product.currentPrice.priceInclVat
+                : 0;
+        }
+
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
         let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
             ? this.state.orderProduct.percentageReduction
@@ -129,13 +140,22 @@ class OrderProductsFormItem extends Component {
             : 0;
 
         let totalPrice = 0;
-
         if (price < 0) {
             const reduction = parseFloat(100) + parseFloat(percentageReduction);
             totalPrice = price * amount * (reduction / 100) - amountReduction;
         } else {
             totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
         }
+
+        // variable prijs is nog excl. BTW
+        if (variable_price) {
+            let vatPercentage = validator.isFloat(this.state.priceHistory.vatPercentage + '')
+                ? this.state.priceHistory.vatPercentage
+                : 0;
+            const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+            totalPrice = totalPrice * vatFactor;
+        }
+
         this.setState({
             ...this.state,
             totalPrice: totalPrice,

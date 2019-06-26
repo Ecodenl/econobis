@@ -25,12 +25,51 @@ import moment from 'moment/moment';
 import { hashHistory } from 'react-router';
 import ButtonText from '../../../../components/button/ButtonText';
 
+const initialState = {
+    showDeleteItem: false,
+    showSelectOrdersToCreate: false,
+    checkedAllCheckboxes: false,
+    previewOrderText: 'Selecteer preview facturen',
+    deleteItem: {
+        id: '',
+        subject: '',
+    },
+};
+
 class OrdersList extends Component {
     constructor(props) {
         super(props);
 
-        if (!isEmpty(props.filter)) {
-            switch (props.filter) {
+        this.setFilter(props.filter);
+
+        this.state = initialState;
+
+        this.handlePageClick = this.handlePageClick.bind(this);
+    }
+
+    componentDidMount() {
+        this.fetchOrdersData();
+    }
+
+    componentWillUnmount() {
+        this.props.clearOrders();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.filter !== prevProps.filter) {
+            this.setFilter(this.props.filter);
+
+            this.setState({ ...initialState });
+
+            setTimeout(() => {
+                this.fetchOrdersData();
+            }, 100);
+        }
+    }
+
+    setFilter = filter => {
+        if (!isEmpty(filter)) {
+            switch (filter) {
                 case 'concepten':
                     this.props.clearFilterOrders();
                     this.props.setStatusIdFilterOrders('concept');
@@ -57,76 +96,7 @@ class OrdersList extends Component {
         } else {
             this.props.clearFilterOrders();
         }
-
-        this.state = {
-            showDeleteItem: false,
-            showSelectOrdersToCreate: false,
-            checkedAllCheckboxes: false,
-            previewOrderText: 'Selecteer preview facturen',
-            deleteItem: {
-                id: '',
-                subject: '',
-            },
-        };
-
-        this.handlePageClick = this.handlePageClick.bind(this);
-    }
-
-    componentDidMount() {
-        this.fetchOrdersData();
-    }
-
-    componentWillUnmount() {
-        this.props.clearOrders();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.filter !== nextProps.filter) {
-            if (!isEmpty(nextProps.filter)) {
-                switch (nextProps.filter) {
-                    case 'concepten':
-                        this.props.clearFilterOrders();
-                        this.props.setStatusIdFilterOrders('concept');
-                        break;
-                    case 'aankomend':
-                        this.props.clearFilterOrders();
-                        this.props.setStatusIdFilterOrders('upcoming');
-                        break;
-                    case 'te-factureren':
-                        this.props.clearFilterOrders();
-                        this.props.setStatusIdFilterOrders('create');
-                        break;
-                    case 'te-verzenden':
-                        this.props.clearFilterOrders();
-                        this.props.setStatusIdFilterOrders('send');
-                        break;
-                    case 'beeindigd':
-                        this.props.clearFilterOrders();
-                        this.props.setStatusIdFilterOrders('closed');
-                        break;
-                    default:
-                        break;
-                }
-
-                this.setState({
-                    showDeleteItem: false,
-                    showSelectOrdersToCreate: false,
-                    checkedAllCheckboxes: false,
-                    previewOrderText: 'Selecteer preview facturen',
-                    deleteItem: {
-                        id: '',
-                        subject: '',
-                    },
-                });
-            } else {
-                this.props.clearFilterOrders();
-            }
-
-            setTimeout(() => {
-                this.fetchOrdersData();
-            }, 100);
-        }
-    }
+    };
 
     fetchOrdersData = () => {
         this.props.clearOrders();
@@ -161,19 +131,11 @@ class OrdersList extends Component {
 
     resetOrderFilters = () => {
         this.props.clearFilterOrders();
+        this.setFilter(this.props.filter);
 
         this.fetchOrdersData();
 
-        this.setState({
-            showDeleteItem: false,
-            showSelectOrdersToCreate: false,
-            checkedAllCheckboxes: false,
-            previewOrderText: 'Selecteer preview facturen',
-            deleteItem: {
-                id: '',
-                subject: '',
-            },
-        });
+        this.setState({ ...initialState });
     };
 
     onSubmitFilter = () => {

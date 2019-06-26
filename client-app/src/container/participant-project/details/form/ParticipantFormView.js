@@ -22,6 +22,9 @@ const ParticipantFormView = props => {
         ibanPayoutAttn,
         type,
         powerKwhConsumption,
+        participationsReturnsTotal,
+        participationsReturnsKwhTotal,
+        participationsIndicationOfRestitutionEnergyTaxTotal,
     } = props.participantProject;
 
     const projectTypeCodeRef = props.participantProject.project.projectType.codeRef;
@@ -65,7 +68,7 @@ const ParticipantFormView = props => {
                 <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Totale opbrengsten'} value={moneyPresenter(0)} />
+                <ViewText label={'Totale opbrengsten'} value={moneyPresenter(participationsReturnsTotal)} />
                 <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
             </div>
 
@@ -96,6 +99,10 @@ const ParticipantFormView = props => {
                     participationsDefinitive={participationsDefinitive}
                     participationsDefinitiveWorth={participationsDefinitiveWorth}
                     valueCourses={project.valueCourses}
+                    participationsReturnsKwhTotal={participationsReturnsKwhTotal}
+                    participationsIndicationOfRestitutionEnergyTaxTotal={
+                        participationsIndicationOfRestitutionEnergyTaxTotal
+                    }
                     powerKwhConsumption={powerKwhConsumption}
                 />
             ) : null}

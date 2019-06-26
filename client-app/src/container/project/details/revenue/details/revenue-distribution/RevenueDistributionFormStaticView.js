@@ -37,13 +37,18 @@ const RevenueDistributionFormStaticView = props => {
             <div className="col-sm-1">{payout ? MoneyPresenter(payout) : 0}</div>
             <div className="col-sm-1">{payoutType && payoutType}</div>
             <div className="col-sm-1">{datePayout ? moment(datePayout).format('L') : ''}</div>
-            <div className="col-sm-2">{energySupplierName && energySupplierName}</div>
-            <div className="col-sm-1">{deliveredTotal && deliveredTotal}</div>
-            <div className="col-sm-1">
-                {kwhReturn
-                    ? '€' + kwhReturn.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                    : ''}
-            </div>
+            {props.projectRevenueCategoryCodeRef === 'revenueKwh' ? (
+                <React.Fragment>
+                    <div className="col-sm-2">{energySupplierName && energySupplierName}</div>
+                    <div className="col-sm-1">{deliveredTotal && deliveredTotal}</div>
+                    <div className="col-sm-1">
+                        {kwhReturn
+                            ? '€' +
+                              kwhReturn.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : ''}
+                    </div>
+                </React.Fragment>
+            ) : null}
         </div>
     );
 };

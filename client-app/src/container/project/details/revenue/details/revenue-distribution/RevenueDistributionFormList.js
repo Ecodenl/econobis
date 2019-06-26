@@ -30,9 +30,13 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Uit te keren bedrag</div>
                 <div className="col-sm-1">Uitkeren op</div>
                 <div className="col-sm-1">Datum uitkering</div>
-                <div className="col-sm-2">Energieleverancier</div>
-                <div className="col-sm-1">Geleverd totaal</div>
-                <div className="col-sm-1">Teruggave energiebelasting</div>
+                {props.projectRevenue.category.codeRef === 'revenueKwh' ? (
+                    <React.Fragment>
+                        <div className="col-sm-2">Energieleverancier</div>
+                        <div className="col-sm-1">Geleverd totaal</div>
+                        <div className="col-sm-1">Teruggave energiebelasting</div>
+                    </React.Fragment>
+                ) : null}
             </div>
             {props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
                 props.projectRevenue.distribution.data.map(participation => {
@@ -44,6 +48,7 @@ const RevenueDistributionFormList = props => {
                             checkedAll={props.checkedAll}
                             toggleParticipantCheck={props.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
+                            projectRevenueCategoryCodeRef={props.projectRevenue.category.codeRef}
                         />
                     );
                 })

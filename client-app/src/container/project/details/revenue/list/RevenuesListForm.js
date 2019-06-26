@@ -19,11 +19,13 @@ const RevenuesListForm = ({
     let disabled = false;
     let disabledEuro = false;
     let disabledKwh = false;
-    let title = 'Nieuwe opbrengst verdeling maken';
+    let titleEuro = 'Nieuwe opbrengst Euro verdeling maken';
+    let titleKwh = 'Nieuwe opbrengst Kwh verdeling maken';
 
     if (projectStatus.codeRef !== 'active') {
         disabled = true;
-        title = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
+        titleEuro = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
+        titleKwh = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
     }
 
     const revenueEuroCategoryId = projectRevenueCategories.find(
@@ -34,14 +36,14 @@ const RevenuesListForm = ({
     ).id;
 
     projectRevenues.map(projectRevenue => {
-        if (projectRevenue.confirmed == 0 && projectRevenue.categoryId == revenueEuroCategoryId) {
+        if (projectRevenue.categoryId == revenueEuroCategoryId && projectRevenue.confirmed == 0) {
             disabledEuro = true;
-            title = 'Lopende opbrengst verdeling al actief';
+            titleEuro = 'Lopende euro opbrengst verdeling al actief';
         }
 
-        if (projectRevenue.confirmed == 0 && projectRevenue.categoryId == revenueKwhCategoryId) {
+        if (projectRevenue.categoryId == revenueKwhCategoryId && projectRevenue.confirmed == 0) {
             disabledKwh = true;
-            title = 'Lopende opbrengst verdeling al actief';
+            titleKwh = 'Lopende kwh opbrengst is verdeling al actief';
         }
     });
 
@@ -59,13 +61,13 @@ const RevenuesListForm = ({
                                 <ul className="dropdown-menu">
                                     <li className={disabled || disabledEuro ? 'disabled' : null}>
                                         {disabled || disabledEuro ? (
-                                            <a role={'button'} title={title} onClick={() => {}}>
+                                            <a role={'button'} title={titleEuro} onClick={() => {}}>
                                                 Opbrengst Euro
                                             </a>
                                         ) : (
                                             <a
                                                 role={'button'}
-                                                title={title}
+                                                title={titleEuro}
                                                 onClick={() =>
                                                     hashHistory.push(
                                                         `/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`
@@ -77,14 +79,14 @@ const RevenuesListForm = ({
                                         )}
                                     </li>
                                     <li className={disabled || disabledKwh ? 'disabled' : null}>
-                                        {disabled || disabledEuro ? (
-                                            <a role={'button'} title={title} onClick={() => {}}>
+                                        {disabled || disabledKwh ? (
+                                            <a role={'button'} title={titleKwh} onClick={() => {}}>
                                                 Opbrengst Kwh
                                             </a>
                                         ) : (
                                             <a
                                                 role={'button'}
-                                                title={title}
+                                                title={titleKwh}
                                                 onClick={() =>
                                                     hashHistory.push(
                                                         `/project/opbrengst/nieuw/${projectId}/${revenueKwhCategoryId}`
@@ -104,7 +106,7 @@ const RevenuesListForm = ({
                                     hashHistory.push(`/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`)
                                 }
                                 disabled={disabled || disabledEuro}
-                                title={title}
+                                title={titleEuro}
                                 iconName={'glyphicon-plus'}
                             />
                         )}

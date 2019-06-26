@@ -1,7 +1,7 @@
 import { Selector } from 'testcafe';
 
 export default class ModelNewParticipantProductionProject {
-    constructor () {
+    constructor() {
         this.contactId = Selector('select[name="contactId"]');
     }
 }

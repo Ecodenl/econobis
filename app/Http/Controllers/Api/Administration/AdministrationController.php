@@ -14,12 +14,18 @@ use App\Eco\Administration\Sepa;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteAdministration;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
+use App\Helpers\Twinfield\TwinfieldHelper;
+use App\Helpers\Twinfield\TwinfieldInvoiceHelper;
+use App\Helpers\Twinfield\TwinfieldSalesTransactionHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Administration\Grid\RequestQuery;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Administration\GridAdministration;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\UserPeek;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -84,9 +90,45 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
+            ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
+            ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
+            ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
+            ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
             ->get();
 
+        //bool als string? waarschijnlijk door formdata
+        $usesTwinfield = $request->input('usesTwinfield');
+
+        if($usesTwinfield == 'false' || $usesTwinfield == '0'){
+            $usesTwinfield = false;
+        }
+        if($usesTwinfield == 'true' || $usesTwinfield == '1'){
+            $usesTwinfield = true;
+        }
+
+        $data['uses_twinfield'] = $usesTwinfield;
+
+        //bool als string? waarschijnlijk door formdata
+        $usesVat = $request->input('usesVat');
+
+        if($usesVat == 'false' || $usesVat == '0'){
+            $usesVat = false;
+        }
+        if($usesVat == 'true' || $usesVat == '1'){
+            $usesVat = true;
+        }
+
+        $data['uses_vat'] = $usesVat;
+
         $administration = new Administration($data);
+
+        if($administration->uses_twinfield) {
+            $twinfieldHelper = new TwinfieldHelper($administration);
+            $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
+        }
+        else{
+            $administration->twinfield_is_valid = 0;
+        }
 
         $administration->save();
 
@@ -130,9 +172,47 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
+            ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
+            ->string('twinfieldPassword')->whenMissing($administration->twinfield_password)->onEmpty($administration->twinfield_password)->alias('twinfield_password')->next()
+            ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
+            ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
             ->get();
 
+        //bool als string? waarschijnlijk door formdata
+        $usesTwinfield = $request->input('usesTwinfield');
+
+        if($usesTwinfield == 'false' || $usesTwinfield == '0'){
+            $usesTwinfield = false;
+        }
+        if($usesTwinfield == 'true' || $usesTwinfield == '1'){
+            $usesTwinfield = true;
+        }
+
+        $data['uses_twinfield'] = $usesTwinfield;
+
+        //bool als string? waarschijnlijk door formdata
+        $usesVat = $request->input('usesVat');
+
+        if($usesVat == 'false' || $usesVat == '0'){
+            $usesVat = false;
+        }
+        if($usesVat == 'true' || $usesVat == '1'){
+            $usesVat = true;
+        }
+
+        $data['uses_vat'] = $usesVat;
+
         $administration->fill($data);
+
+        if($administration->uses_twinfield) {
+            $twinfieldHelper = new TwinfieldHelper($administration);
+            $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
+        }
+        else{
+            $administration->twinfield_is_valid = 0;
+        }
+        // We bewaren even of uses_twinfield was gewijzigd.
+        $isUsesTwinfieldDirty = $administration->isDirty('uses_twinfield');
 
         $administration->save();
 
@@ -144,6 +224,23 @@ class AdministrationController extends ApiController
 
         if($logo){
             $this->storeLogo($logo, $administration);
+        }
+
+        //Als er twinfield gebruikt gaat worden, dan contacten aanmaken van facturen vanaf 1-1-2019 (alleen doen in jaar 2019)
+        if($isUsesTwinfieldDirty && $administration->uses_twinfield && $administration->twinfield_is_valid)
+        {
+            if(Carbon::now()->year == 2019)
+            {
+                foreach ($administration->invoices()
+                    ->whereNull('twinfield_number')
+                    ->whereIn('status_id', ['sent', 'paid'])
+                    ->where('date_sent', '>=', '20190101')
+                    ->get() as $invoice)
+                {
+                    $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+                    $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
+                }
+            }
         }
 
         return $this->show($administration);
@@ -231,4 +328,19 @@ class AdministrationController extends ApiController
         //soft delete
         $sepa->delete();
     }
+
+//    public function syncSentInvoicesToTwinfield(Administration $administration){
+//        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
+//        return $twinfieldInvoiceHelper->createAllInvoices();
+//    }
+    public function syncSentInvoicesToTwinfield(Administration $administration){
+        $twinfieldInvoiceHelper = new TwinfieldSalesTransactionHelper($administration);
+        return $twinfieldInvoiceHelper->createAllSalesTransactions();
+    }
+
+    public function syncSentInvoicesFromTwinfield(Administration $administration){
+        $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
+        return $twinfieldInvoiceHelper->processPaidInvoices();
+    }
+
 }

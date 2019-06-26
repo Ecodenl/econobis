@@ -1,23 +1,20 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
-import ModelGeneral from "../../pages/model-general";
-import ModelNewContactGroup from "../../pages/contact-group/model-new-contact-group";
+import * as vars from '../../config/random-models';
+import ModelGeneral from '../../pages/model-general';
+import ModelNewContactGroup from '../../pages/contact-group/model-new-contact-group';
 
 const faker = require('faker');
-faker.locale = "nl";
+faker.locale = 'nl';
 
-fixture `Create new contact group`;
+fixture`Create new contact group`;
 
 const general = new ModelGeneral();
 const newContactGroup = new ModelNewContactGroup();
 
-test('Fill out form new contact group', async (t) => {
-
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/contact-groep/nieuw');
+test('Fill out form new contact group', async t => {
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/contact-groep/nieuw');
 
     await t.expect(general.titleH4.innerText).eql('Nieuwe groep', 'Check element text', { timeout: 500 });
 
@@ -26,5 +23,7 @@ test('Fill out form new contact group', async (t) => {
         .click(general.save)
         .wait(constants.wait);
 
-    await t.expect(general.titleH4.withExactText(vars.contactGroupName + '(Contacten)').innerText).eql(vars.contactGroupName+ '(Contacten)', 'Check element text', { timeout: 500 });
+    await t
+        .expect(general.titleH4.withExactText(vars.contactGroupName + '(Contacten)').innerText)
+        .eql(vars.contactGroupName + '(Contacten)', 'Check element text', { timeout: 500 });
 });

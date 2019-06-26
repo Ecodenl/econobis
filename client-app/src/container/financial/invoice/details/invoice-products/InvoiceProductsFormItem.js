@@ -21,8 +21,8 @@ class InvoiceProductsFormItem extends Component {
             totalPrice: props.invoiceProduct.priceInclVatAndReduction,
             invoiceProduct: {
                 ...props.invoiceProduct,
-                variablePrice: props.invoiceProduct.priceIncVat
-                    ? Math.round(props.invoiceProduct.priceIncVat * 100) / 100
+                variablePrice: props.invoiceProduct.priceInclVat
+                    ? Math.round(props.invoiceProduct.priceInclVat * 100) / 100
                     : 0,
             },
             errors: {
@@ -41,8 +41,8 @@ class InvoiceProductsFormItem extends Component {
                 totalPrice: nextProps.invoiceProduct.priceInclVatAndReduction,
                 invoiceProduct: {
                     ...nextProps.invoiceProduct,
-                    variablePrice: nextProps.invoiceProduct.priceIncVat
-                        ? Math.round(nextProps.invoiceProduct.priceIncVat * 100) / 100
+                    variablePrice: nextProps.invoiceProduct.priceInclVat
+                        ? Math.round(nextProps.invoiceProduct.priceInclVat * 100) / 100
                         : 0,
                 },
             });

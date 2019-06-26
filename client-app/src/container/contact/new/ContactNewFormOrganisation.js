@@ -56,14 +56,12 @@ class ContactNewFormOrganisation extends Component {
         });
     };
 
-    handleChangeMemberSince = date => {
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
-
+    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             organisation: {
                 ...this.state.organisation,
-                memberSince: formattedDate,
+                [name]: value,
             },
         });
     };
@@ -143,7 +141,7 @@ class ContactNewFormOrganisation extends Component {
                         label={'Lid sinds'}
                         name="memberSince"
                         value={memberSince}
-                        onChangeAction={this.handleChangeMemberSince}
+                        onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 

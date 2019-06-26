@@ -52,6 +52,7 @@ class GridInvoice extends Resource
             'statusId' => $this->status_id,
             'status' =>  FullEnumWithIdAndName::make($this->getStatus()),
             'subStatus' => $this->sub_status,
+            'usesTwinfield' => $this->administration->uses_twinfield,
 
             'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend'
         ];

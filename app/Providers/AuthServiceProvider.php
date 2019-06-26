@@ -8,6 +8,8 @@ use App\Eco\AuditTrail\AuditTrail;
 use App\Eco\AuditTrail\AuditTrailPolicy;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignPolicy;
+use App\Eco\CostCenter\CostCenter;
+use App\Eco\CostCenter\CostCenterPolicy;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentPolicy;
 use App\Eco\DocumentTemplate\DocumentTemplate;
@@ -16,6 +18,8 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePolicy;
+use App\Eco\Ledger\Ledger;
+use App\Eco\Ledger\LedgerPolicy;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxPolicy;
 use App\Eco\Mailbox\MailgunDomain;
@@ -66,6 +70,8 @@ use App\Eco\User\User;
 use App\Eco\User\UserPolicy;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\ContactGroupPolicy;
+use App\Eco\VatCode\VatCode;
+use App\Eco\VatCode\VatCodePolicy;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -113,6 +119,9 @@ class AuthServiceProvider extends ServiceProvider
         Invoice::class => InvoicePolicy::class,
         Webform::class => WebformPolicy::class,
         MailgunDomain::class => MailgunDomainPolicy::class,
+        VatCode::class => VatCodePolicy::class,
+        Ledger::class => LedgerPolicy::class,
+        CostCenter::class => CostCenterPolicy::class,
     ];
 
     /**

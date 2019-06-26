@@ -10,6 +10,7 @@ use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Product\Product;
 use App\Eco\ProductionProject\ProductionProject;
+use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
@@ -24,8 +25,15 @@ class Administration extends Model
     protected $guarded = ['id'];
 
     protected $encryptable = [
-        'IBAN'
+        'IBAN',
+        'twinfield_password'
     ];
+
+    //Per administratie heeft de contact een ander twinfield nummer
+    public function twinfieldNumbers()
+    {
+        return $this->hasMany(TwinfieldcustomerNumber::class);
+    }
 
     public function users()
     {
@@ -177,8 +185,16 @@ class Administration extends Model
 
     public function getTotalInvoicesExportedAttribute()
     {
-        return $this->invoices()->where('status_id', 'exported')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('days_to_expire', '>', '0')->count();
-    }
+        return $this->invoices()
+            ->where(function ($q) {
+                $q->where(function ($q) {
+                    $q->where('payment_type_id', 'transfer')
+                        ->where('days_to_expire', '>', '0');
+                })->orWhere(function ($q) {
+                    $q->where('payment_type_id', '!=', 'transfer');
+                });})->where('status_id', 'exported')->whereNull('date_reminder_1')
+            ->whereNull('date_reminder_2')->whereNull('date_reminder_3')
+            ->whereNull('date_exhortation')->count();  }
 
     public function getTotalInvoicesReminderAttribute()
     {
@@ -253,7 +269,7 @@ class Administration extends Model
 //        }
 
         if (!$canCreateInvoices['can']) {
-            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht.';
+            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht.';
         }
 
         return $canCreateInvoices;
@@ -277,7 +293,7 @@ class Administration extends Model
         }
 
         if (!$canCreatePaymentInvoices['can']) {
-            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De velden ' . implode($canCreatePaymentInvoices['requiredFields'], ', ') . ' zijn verplicht.';
+            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode($canCreatePaymentInvoices['requiredFields'], ', ') . ' zijn verplicht.';
         }
 
         return $canCreatePaymentInvoices;

@@ -6,7 +6,17 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
 const ProductDetailsFormGeneralView = props => {
-    const { code, name, invoiceText, duration, invoiceFrequency, paymentType, administration } = props.productDetails;
+    const {
+        code,
+        name,
+        invoiceText,
+        duration,
+        invoiceFrequency,
+        paymentType,
+        administration,
+        ledger,
+        costCenter,
+    } = props.productDetails;
 
     return (
         <div onClick={props.switchToEdit}>
@@ -37,6 +47,13 @@ const ProductDetailsFormGeneralView = props => {
                         <ViewText label={'Betaalwijze'} value={paymentType ? paymentType.name : ''} />
                         <ViewText label={'Administratie'} value={administration ? administration.name : ''} />
                     </div>
+
+                    {props.usesTwinfield ? (
+                        <div className="row">
+                            <ViewText label={'Grootboek'} value={ledger ? ledger.description : ''} />
+                            <ViewText label={'Kostenplaats'} value={costCenter ? costCenter.description : ''} />
+                        </div>
+                    ) : null}
                 </PanelBody>
             </Panel>
         </div>
@@ -46,6 +63,7 @@ const ProductDetailsFormGeneralView = props => {
 const mapStateToProps = state => {
     return {
         productDetails: state.productDetails,
+        usesTwinfield: state.systemData.usesTwinfield,
     };
 };
 

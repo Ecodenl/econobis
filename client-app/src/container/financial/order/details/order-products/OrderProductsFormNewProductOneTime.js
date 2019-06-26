@@ -11,13 +11,13 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
+import InputReactSelect from '../../../../../components/form/InputReactSelect';
 
 class OrderProductsFormNewProductOneTime extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            vatPercentages: [{ id: '0', name: '0' }, { id: '9', name: '9' }, { id: '21', name: '21' }],
             errorMessage: false,
             price: '0',
             totalPrice: '0',
@@ -41,6 +41,8 @@ class OrderProductsFormNewProductOneTime extends Component {
                     : 'once',
                 vatPercentage: '',
                 price: '',
+                ledgerId: '',
+                costCenterId: '',
                 isOneTime: true,
             },
             errors: {
@@ -49,6 +51,8 @@ class OrderProductsFormNewProductOneTime extends Component {
                 dateEnd: false,
                 price: false,
                 datePeriodStartFirstInvoice: false,
+                ledgerId: false,
+                description: false,
             },
         };
 
@@ -66,6 +70,51 @@ class OrderProductsFormNewProductOneTime extends Component {
                 ...this.state,
                 orderProduct: {
                     ...this.state.orderProduct,
+                    [name]: value,
+                },
+            },
+            this.updatePrice
+        );
+    };
+
+    handleLedgerChange = selectedOption => {
+        let selectedLedger = this.props.ledgers.find(ledger => ledger.id === selectedOption);
+        let vatPercentage = selectedLedger.vatCode && selectedLedger.vatCode.percentage;
+
+        let price;
+
+        if (vatPercentage == '9') {
+            price = this.state.product.price * 1.09;
+        } else if (vatPercentage == '21') {
+            price = this.state.product.price * 1.21;
+        } else {
+            price = this.state.product.price;
+        }
+
+        this.setState(
+            {
+                ...this.state,
+                price: price,
+                product: {
+                    ...this.state.product,
+                    ledgerId: selectedOption,
+                    vatPercentage,
+                },
+            },
+            this.updatePrice
+        );
+    };
+
+    handleCostCenterChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState(
+            {
+                ...this.state,
+                product: {
+                    ...this.state.product,
                     [name]: value,
                 },
             },
@@ -146,11 +195,9 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         let price;
 
-        if (this.state.vatPercentage && this.state.vatPercentage.id == '6') {
-            price = value * 1.06;
-        } else if (this.state.vatPercentage && this.state.vatPercentage.id == '9') {
+        if (this.state.product.vatPercentage == '9') {
             price = value * 1.09;
-        } else if (this.state.vatPercentage && this.state.vatPercentage.id == '21') {
+        } else if (this.state.product.vatPercentage == '21') {
             price = value * 1.21;
         } else {
             price = value;
@@ -176,9 +223,7 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         let price;
 
-        if (value == '6') {
-            price = this.state.product.price * 1.06;
-        } else if (value == '9') {
+        if (value == '9') {
             price = this.state.product.price * 1.09;
         } else if (value == '21') {
             price = this.state.product.price * 1.21;
@@ -335,6 +380,18 @@ class OrderProductsFormNewProductOneTime extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty(product.description)) {
+            errors.description = true;
+            hasErrors = true;
+        }
+
+        if (this.props.usesTwinfield) {
+            if (validator.isEmpty(String(product.ledgerId))) {
+                errors.ledgerId = true;
+                hasErrors = true;
+            }
+        }
+
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         // If no errors send form
@@ -354,7 +411,7 @@ class OrderProductsFormNewProductOneTime extends Component {
             dateEnd,
             datePeriodStartFirstInvoice,
         } = this.state.orderProduct;
-        const { description, durationId, vatPercentage, price } = this.state.product;
+        const { description, durationId, vatPercentage, price, ledgerId, costCenterId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -382,12 +439,40 @@ class OrderProductsFormNewProductOneTime extends Component {
                             <InputSelect
                                 label={'BTW percentage'}
                                 name={'vatPercentage'}
-                                options={this.state.vatPercentages}
+                                options={this.props.vatCodes}
+                                optionValue={'percentage'}
+                                optionName={'description'}
                                 value={vatPercentage}
-                                onChangeAction={this.handleInputChangeProductVat}
+                                onChangeAction={this.props.usesTwinfield ? null : this.handleInputChangeProductVat}
                                 placeholder={'Geen'}
+                                readOnly={this.props.usesTwinfield}
                             />
                         </div>
+
+                        {this.props.usesTwinfield ? (
+                            <div className="row">
+                                <InputReactSelect
+                                    label={'Grootboek'}
+                                    name={'ledgerId'}
+                                    options={this.props.ledgers}
+                                    optionName={'description'}
+                                    value={ledgerId}
+                                    onChangeAction={this.handleLedgerChange}
+                                    multi={false}
+                                    required={'required'}
+                                    error={this.state.errors.ledgerId}
+                                />
+                                <InputSelect
+                                    label={'Kostenplaats'}
+                                    id={'costCenterId'}
+                                    name={'costCenterId'}
+                                    options={this.props.costCenters}
+                                    optionName={'description'}
+                                    value={costCenterId}
+                                    onChangeAction={this.handleCostCenterChange}
+                                />
+                            </div>
+                        ) : null}
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
@@ -528,6 +613,10 @@ const mapStateToProps = state => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        costCenters: state.systemData.costCenters,
+        ledgers: state.systemData.ledgers,
+        vatCodes: state.systemData.vatCodes,
+        usesTwinfield: state.systemData.usesTwinfield,
     };
 };
 

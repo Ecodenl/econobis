@@ -69,12 +69,12 @@ class ProductsListItem extends Component {
                 ) : (
                     <td>
                         {currentPrice
-                        ? '€' +
-                        currentPrice.priceInclVat.toLocaleString('nl', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                        })
-                        : ''}
+                            ? '€' +
+                              currentPrice.priceInclVat.toLocaleString('nl', {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                              })
+                            : ''}
                     </td>
                 )}
                 <td>{administration ? administration.name : ''}</td>

@@ -54,8 +54,8 @@ class InvoiceObserver
 
             $invoice->subject =  $order->subject;
             $invoice->invoice_text =  $order->invoice_text;
-            $invoice->iban =  $order->IBAN ? $order->IBAN : $order->contact->iban;
-            $invoice->iban_attn =  $order->iban_attn ? $order->iban_attn : $order->contact->iban_attn;
+            $invoice->iban =  $order->contact->iban;
+            $invoice->iban_attn =  $order->contact->iban_attn;
             $invoice->sent_to_contact_number = $order->contact->number ? $order->contact->number : '';
             $invoice->sent_to_name = $order->contact->full_name;
 

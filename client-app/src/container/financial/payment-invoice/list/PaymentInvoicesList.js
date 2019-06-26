@@ -46,7 +46,7 @@ class PaymentInvoicesList extends Component {
         }
     }
 
-    setFilter = (filter) => {
+    setFilter = filter => {
         if (!isEmpty(filter)) {
             switch (filter) {
                 case 'verzonden':

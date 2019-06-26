@@ -7,20 +7,17 @@ import ModelDetailsPerson from '../../pages/contact/model-details-person';
 import ModelDetailsOrganisation from '../../pages/contact/model-details-organisation';
 import ModelGeneral from '../../pages/model-general';
 const faker = require('faker');
-faker.locale = "nl";
+faker.locale = 'nl';
 
-fixture `Create new address`;
+fixture`Create new address`;
 
 const contactGrid = new ModelGridContact();
 const personDetails = new ModelDetailsPerson();
 const organisationDetails = new ModelDetailsOrganisation();
 const general = new ModelGeneral();
 
-test('Fill out form person->address', async (t) => {
-
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/contacten');
+test('Fill out form person->address', async t => {
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/contacten');
 
     await t.expect(general.titleH3.innerText).eql('Contacten', 'Check element text', { timeout: 500 });
 
@@ -29,11 +26,11 @@ test('Fill out form person->address', async (t) => {
         .typeText(contactGrid.nameSearch, vars.personLastName + ', ' + vars.personFirstName)
         .pressKey('enter')
         .wait(constants.wait);
-    await t
-        .doubleClick(general.firstRow)
-        .wait(constants.wait);
+    await t.doubleClick(general.firstRow).wait(constants.wait);
 
-    await t.expect(general.titleH4.innerText).eql( vars.personLastName + ', ' + vars.personFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
+    await t
+        .expect(general.titleH4.innerText)
+        .eql(vars.personLastName + ', ' + vars.personFirstName + ' (Persoon)', 'Check element text', { timeout: 500 });
 
     await t
         .click(personDetails.newAddress)
@@ -48,11 +45,8 @@ test('Fill out form person->address', async (t) => {
     await t.expect(personDetails.addressRows.count).eql(2);
 });
 
-test('Fill out form organisation->address', async (t) => {
-
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/contacten');
+test('Fill out form organisation->address', async t => {
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/contacten');
 
     await t.expect(general.titleH3.innerText).eql('Contacten', 'Check element text', { timeout: 500 });
 
@@ -61,11 +55,11 @@ test('Fill out form organisation->address', async (t) => {
         .typeText(contactGrid.nameSearch, vars.organisationName)
         .pressKey('enter')
         .wait(constants.wait);
-    await t
-        .doubleClick(general.firstRow)
-        .wait(constants.wait);
+    await t.doubleClick(general.firstRow).wait(constants.wait);
 
-    await t.expect(general.titleH4.innerText).eql( vars.organisationName + ' (Organisatie)', 'Check element text', { timeout: 500 });
+    await t
+        .expect(general.titleH4.innerText)
+        .eql(vars.organisationName + ' (Organisatie)', 'Check element text', { timeout: 500 });
 
     await t
         .click(organisationDetails.newAddress)

@@ -1,41 +1,33 @@
 import { Selector, Role } from 'testcafe';
 import superUser from '../../auth/UserRoles';
 import * as constants from '../../config/constants';
-import * as vars from "../../config/random-models";
+import * as vars from '../../config/random-models';
 const faker = require('faker');
-faker.locale = "nl";
+faker.locale = 'nl';
 import ModelNewTask from '../../pages/task/model-new-task';
 import ModelDetailsTask from '../../pages/task/model-details-task';
-import ModelGeneral from "../../pages/model-general";
+import ModelGeneral from '../../pages/model-general';
 
-fixture `Create new task`;
+fixture`Create new task`;
 
 const general = new ModelGeneral();
 const newTask = new ModelNewTask();
 const detailsTask = new ModelDetailsTask();
 
-test('Create empty task', async (t) => {
-
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/taak/nieuw');
+test('Create empty task', async t => {
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/taak/nieuw');
 
     await t.expect(general.titleH3.innerText).eql('Nieuwe taak', 'Check element text', { timeout: 500 });
 
-    await t
-        .click(general.save);
+    await t.click(general.save);
 
     await t.expect(general.titleH3.innerText).eql('Nieuwe taak', 'Check element text', { timeout: 500 });
-
 });
 
-test('Fill out form task only required', async (t) => {
-
+test('Fill out form task only required', async t => {
     const randomSentence = faker.lorem.sentence();
 
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/taak/nieuw');
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/taak/nieuw');
 
     await t.expect(Selector('h3').innerText).eql('Nieuwe taak', 'Check element text', { timeout: 500 });
 
@@ -50,13 +42,10 @@ test('Fill out form task only required', async (t) => {
     await t.expect(detailsTask.description.innerText).eql(randomSentence, 'Check element text', { timeout: 500 });
 });
 
-test('Fill out form task all, task will be a note', async (t) => {
-
+test('Fill out form task all, task will be a note', async t => {
     const randomSentence = faker.lorem.sentence();
 
-    await t
-        .useRole(superUser)
-        .navigateTo(constants.app_url + '#/taak/nieuw');
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/taak/nieuw');
 
     await t.expect(general.titleH3.innerText).eql('Nieuwe taak', 'Check element text', { timeout: 500 });
 
@@ -68,7 +57,8 @@ test('Fill out form task all, task will be a note', async (t) => {
 
         .typeText(newTask.datePlannedStart, '10-03-2018')
 
-        .expect(newTask.datePlannedStart.value).eql('10-03-2018', 'inputdate is equal to "10-03-2018"')
+        .expect(newTask.datePlannedStart.value)
+        .eql('10-03-2018', 'inputdate is equal to "10-03-2018"')
 
         .click(newTask.startTimePlanned)
         .click(newTask.startTimePlanned.child().nth(2))
@@ -111,7 +101,10 @@ test('Fill out form task all, task will be a note', async (t) => {
         .typeText(newTask.reactSelect.nth(6), vars.productionProjectName)
         .pressKey('enter')
 
-        .typeText(newTask.reactSelect.nth(7), vars.personLastName + ', ' + vars.personFirstName + ' ' + vars.productionProjectName)
+        .typeText(
+            newTask.reactSelect.nth(7),
+            vars.personLastName + ', ' + vars.personFirstName + ' ' + vars.productionProjectName
+        )
         .pressKey('enter')
 
         .click(general.save);

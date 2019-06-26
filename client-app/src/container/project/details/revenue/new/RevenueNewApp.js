@@ -64,7 +64,7 @@ class RevenueNewApp extends Component {
 
     fetchProject = id => {
         ProjectDetailsAPI.fetchProject(id).then(payload => {
-            const category = props.projectRevenueCategories.find(
+            const category = this.props.projectRevenueCategories.find(
                 projectRevenueCategorie => projectRevenueCategorie.id == this.state.categoryId
             );
 

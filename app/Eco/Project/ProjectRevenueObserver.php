@@ -21,7 +21,7 @@ class ProjectRevenueObserver
 
     public function saving(ProjectRevenue $projectRevenue)
     {
-        if($projectRevenue->confirmed == 1) {
+        if($projectRevenue->confirmed == 1 && $projectRevenue->category->code_ref == 'revenueEuro') {
             $project = $projectRevenue->project;
 
             $project->date_interest_bearing = $projectRevenue->date_end;

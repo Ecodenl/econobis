@@ -202,6 +202,7 @@ class ProjectRevenueController extends ApiController
             $projectRevenue->isDirty('date_reference') ||
             $projectRevenue->isDirty('kwh_start') ||
             $projectRevenue->isDirty('kwh_end') ||
+            $projectRevenue->isDirty('payout_kwh') ||
             $projectRevenue->isDirty('pay_percentage') ||
             $projectRevenue->isDirty('key_amount_first_percentage') ||
             $projectRevenue->isDirty('pay_percentage_valid_from_key_amount') ||

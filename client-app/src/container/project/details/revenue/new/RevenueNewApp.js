@@ -10,6 +10,7 @@ import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment';
+import { connect } from 'react-redux';
 
 class RevenueNewApp extends Component {
     constructor(props) {
@@ -63,18 +64,25 @@ class RevenueNewApp extends Component {
 
     fetchProject = id => {
         ProjectDetailsAPI.fetchProject(id).then(payload => {
+            const category = props.projectRevenueCategories.find(
+                projectRevenueCategorie => projectRevenueCategorie.id == this.state.categoryId
+            );
+
+            let revenue = this.state.revenue;
+
+            if (category.codeRef === 'revenueEuro') {
+                revenue.dateBegin = payload.dateInterestBearing;
+                revenue.dateEnd = payload.dateInterestBearing
+                    ? moment(payload.dateInterestBearing)
+                          .add(1, 'years')
+                          .format('Y-MM-DD')
+                    : '';
+            }
+
             this.setState({
                 ...this.state,
                 project: payload,
-                revenue: {
-                    ...this.state.revenue,
-                    dateBegin: payload.dateInterestBearing,
-                    dateEnd: payload.dateInterestBearing
-                        ? moment(payload.dateInterestBearing)
-                              .add(1, 'years')
-                              .format('Y-MM-DD')
-                        : '',
-                },
+                revenue,
             });
         });
     };
@@ -227,4 +235,10 @@ class RevenueNewApp extends Component {
     }
 }
 
-export default RevenueNewApp;
+const mapStateToProps = state => {
+    return {
+        projectRevenueCategories: state.systemData.projectRevenueCategories,
+    };
+};
+
+export default connect(mapStateToProps)(RevenueNewApp);

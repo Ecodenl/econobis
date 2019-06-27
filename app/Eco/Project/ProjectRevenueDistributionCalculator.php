@@ -2,9 +2,6 @@
 
 namespace App\Eco\Project;
 
-
-use App\Eco\ParticipantMutation\ParticipantMutationStatus;
-
 class ProjectRevenueDistributionCalculator
 {
     protected $projectRevenueDistribution;
@@ -39,6 +36,8 @@ class ProjectRevenueDistributionCalculator
         $projectRevenue = $this->projectRevenueDistribution->revenue;
         $totalParticipations = $projectRevenue->project->participations_definitive;
         $participant = $this->projectRevenueDistribution->participation;
+
+        if(!$totalParticipations) return 0;
 
         return round((($projectRevenue->kwh_end
                     - $projectRevenue->kwh_start)

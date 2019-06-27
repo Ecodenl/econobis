@@ -23,6 +23,7 @@ use App\Helpers\CSV\RevenueParticipantsCSVHelper;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Excel\EnergySupplierExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -41,6 +42,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProjectRevenueController extends ApiController
 {
@@ -373,9 +375,6 @@ class ProjectRevenueController extends ApiController
         $fileName = $documentName . '.csv';
         $templateId = $request->input('templateId');
 
-        //get current logged in user
-        $user = Auth::user();
-
         if ($templateId) {
             set_time_limit(0);
             $csvHelper = new EnergySupplierCSVHelper($energySupplier,
@@ -395,6 +394,8 @@ class ProjectRevenueController extends ApiController
             . $document->filename));
         file_put_contents($filePath, $csv);
 
+// die("stop hier maar even voor testdoeleinden CSV");
+
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
         $alfrescoResponse = $alfrescoHelper->createFile($filePath,
@@ -407,6 +408,50 @@ class ProjectRevenueController extends ApiController
         Storage::disk('documents')->delete($document->filename);
     }
 
+    public function createEnergySupplierExcel(
+        Request $request,
+        ProjectRevenue $projectRevenue,
+        EnergySupplier $energySupplier
+    )
+    {
+        $documentName = $request->input('documentName');
+        $fileName = $documentName . '.xlsx';
+        $templateId = $request->input('templateId');
+
+        if ($templateId) {
+            set_time_limit(0);
+            $excelHelper = new EnergySupplierExcelHelper($energySupplier,
+                $projectRevenue, $templateId, $fileName);
+            $excel = $excelHelper->getExcel();
+        }
+
+        $document = new Document();
+        $document->document_type = 'internal';
+        $document->document_group = 'revenue';
+
+        $document->filename = $fileName;
+
+        $document->save();
+
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
+            . $document->filename));
+
+        $writer = new Xlsx($excel);
+        $writer->save($filePath);
+
+//        die("stop hier maar even voor testdoeleinden Excel");
+
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+
+        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+            $document->filename, $document->getDocumentGroup()->name);
+
+        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+        $document->save();
+
+        //delete file on server, still saved on alfresco.
+        Storage::disk('documents')->delete($document->filename);
+    }
 
     public function destroy(ProjectRevenue $projectRevenue)
     {

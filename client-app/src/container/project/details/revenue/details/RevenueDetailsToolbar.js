@@ -44,6 +44,7 @@ class RevenueDetailsToolbar extends Component {
         const { revenue } = this.props;
         const pdfLink = `project/opbrengst/${this.props.revenue.id}/energieleverancier-rapport`;
         const csvLink = `project/opbrengst/${this.props.revenue.id}/energieleverancier-csv`;
+        const excelLink = `project/opbrengst/${this.props.revenue.id}/energieleverancier-excel`;
 
         return (
             <div className="row">
@@ -70,6 +71,9 @@ class RevenueDetailsToolbar extends Component {
                                                 </li>
                                                 <li>
                                                     <Link to={csvLink}>CSV EM</Link>
+                                                </li>
+                                                <li>
+                                                    <Link to={excelLink}>Excel EM</Link>
                                                 </li>
                                             </ul>
                                         </div>

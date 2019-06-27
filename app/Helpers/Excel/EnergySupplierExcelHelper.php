@@ -1,0 +1,409 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: StagiarSoftware
+ * Date: 19-1-2018
+ * Time: 11:55
+ */
+
+namespace App\Helpers\Excel;
+
+use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Project\ProjectRevenue;
+use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+class EnergySupplierExcelHelper
+{
+    private $energySupplier;
+    private $projectRevenue;
+    private $distributions;
+    private $counter;
+
+    public function __construct(
+        EnergySupplier $energySupplier,
+        ProjectRevenue $projectRevenue,
+        $templateId, $fileName
+    ) {
+        $this->energySupplier = $energySupplier;
+        $this->projectRevenue = $projectRevenue;
+        $this->templateId = $templateId;
+        $this->fileName = $fileName;
+        $this->distributions = $projectRevenue->distribution()->where('es_id', $energySupplier->id)->get();
+    }
+
+    public function getExcel()
+    {
+
+        if($this->distributions->count() === 0){
+            abort(403, 'Geen verdeling voor deze energiemaatschappij');
+        }
+//        $excel = $this->getTestExcel();
+        switch ($this->templateId) {
+            case '1':
+                $excel = $this->getEnecoExcel();
+                break;
+            case '2':
+                $excel = $this->getGreenchoiceExcel();
+                break;
+            case '3':
+                $excel = $this->getOxxioExcel();
+                break;
+            case '4':
+                $excel = $this->getNuonExcel();
+                break;
+            default:
+                break;
+        }
+
+        return $excel;
+    }
+
+    private function getTestExcel()
+    {
+        $completeData = [];
+
+        $headerData = [];
+
+        $headerData[] = 'Kolom1';
+        $headerData[] = 'Kolom2';
+
+        $completeData[] = $headerData;
+
+        $rowData = [];
+        $rowData[] = "dataregel 1 - cell-1";
+        $rowData[] = "dataregel 1 - cell-2";
+        $completeData[] = $rowData;
+
+        $rowData = [];
+        $rowData[] = "dataregel 2 - cell-1";
+        $rowData[] = "dataregel 2 - cell-2";
+        $completeData[] = $rowData;
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+//        $sheet->getStyle('1:1')
+//            ->applyFromArray([
+//                'font' => [
+//                    'bold' => true,
+//                    'size' => 14,
+//                ],
+//
+//            ]);
+//        $sheet->mergeCells("A1:F1");
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        return $spreadsheet;
+    }
+
+    private function getEnecoExcel()
+    {
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'Naam';
+        $headerData[] = 'Voorletters';
+        $headerData[] = 'Tussenvoegsel';
+        $headerData[] = 'Adres';
+        $headerData[] = 'Postcode cijfers';
+        $headerData[] = 'Postcode letters';
+        $headerData[] = 'Woonplaats';
+        $headerData[] = 'Ean-code leveringsadres';
+        $headerData[] = 'Emailadres';
+        $headerData[] = 'Telefoonnummer';
+        $headerData[] = 'Startdatum';
+        $headerData[] = 'Stand op 31-12';
+        $headerData[] = 'Einddatum';
+        $headerData[] = 'Aantal kavels';
+        $headerData[] = 'Eneco klantnr';
+        $headerData[] = 'Accountnr';
+        $headerData[] = 'Opwek';
+        $headerData[] = 'Nabijheids-tarief';
+        $headerData[] = 'Stroom Totaal';
+        $headerData[] = 'EB Korting Totaal Excl. BTW';
+        $headerData[] = 'Klant Ontvangt Excl. BTW';
+        $headerData[] = 'Klant Ontvangt Incl. BTW';
+        $headerData[] = 'EB <jaartal>';
+        $headerData[] = 'Afrekendatum';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            foreach ($chunk as $distribution) {
+
+                $rowData = [];
+                $rowData[] = $distribution->contact->full_name;
+                $rowData[] = $distribution->contact->person->initials;
+                $rowData[] = $distribution->contact->person->last_name_prefix;
+                $rowData[] = $distribution->address;
+                $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                    ? substr($distribution->postal_code, 0, 4) : '';
+                $rowData[] = $distribution->postal_code_letters
+                    = strlen($distribution->postal_code) == 6
+                    ? substr($distribution->postal_code, 4)
+                    : (strlen($distribution->postal_code) == 7
+                        ? substr($distribution->postal_code, 5)
+                        : '');
+                $rowData[] = $distribution->city;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
+                $rowData[] = $distribution->contact->primaryEmailAddress->email;
+                $rowData[] = $distribution->contact->primaryphoneNumber->number;
+                $rowData[] = $this->formatDate($distribution->revenue->date_begin);
+                $rowData[] = '';
+                $rowData[] = $this->formatDate($distribution->revenue->date_end);
+                $rowData[] = $distribution->participations_amount;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
+                $rowData[] = '';
+                $rowData[] = $distribution->delivered_total_string;
+                $rowData[] = '';
+                $rowData[] = '';
+                $rowData[] = '';
+                $rowData[] = '';
+                $rowData[] = '';
+                $rowData[] = '';
+                $rowData[] = '';
+
+                $completeData[] = $rowData;
+            }
+
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        return $spreadsheet;
+    }
+
+    private function getGreenchoiceExcel()
+    {
+        $this->counter = 0;
+
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'Volgnr';
+        $headerData[] = 'KlantNaam';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'KlantNummer';
+        $headerData[] = 'EanCode';
+        $headerData[] = 'OntvangstDatum';
+        $headerData[] = 'BeginDatum';
+        $headerData[] = 'EindDatum';
+        $headerData[] = 'Aantal participaties';
+        $headerData[] = 'Verwachte opbrengst';
+        $headerData[] = 'ProductieHoeveelheid';
+        $headerData[] = 'BestandsNaam';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            foreach ($chunk as $distribution) {
+
+                $rowData = [];
+                ++$this->counter;
+                $rowData[] = $this->counter;
+                $rowData[] = $distribution->contact->full_name;
+                $rowData[] = str_replace(' ', '', $distribution->postal_code );
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
+                $rowData[] = $this->formatDate(new Carbon('now'));
+                $rowData[] = $this->formatDate($distribution->revenue->date_begin);
+                $rowData[] = $this->formatDate($distribution->revenue->date_end);
+                $rowData[] = $distribution->participations_amount;
+                $rowData[] = '';
+                $rowData[] = $distribution->delivered_total_string;
+                $rowData[] = $this->fileName;
+
+                $completeData[] = $rowData;
+            }
+
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        return $spreadsheet;
+    }
+
+    private function getOxxioExcel()
+    {
+        $this->counter = 0;
+
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'project ean';
+        $headerData[] = 'project ean net';
+        $headerData[] = 'startdatum';
+        $headerData[] = 'einddatum';
+        $headerData[] = 'participant';
+        $headerData[] = 'referentie';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'ean participant';
+        $headerData[] = 'klantnr';
+        $headerData[] = 'geleverd kwh';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            foreach ($chunk as $distribution) {
+
+                $rowData = [];
+                $rowData[] = $this->projectRevenue->project->ean;
+                $rowData[] = $this->projectRevenue->project->ean_manager;
+                $rowData[] = $this->formatDate($distribution->revenue->date_begin);
+                $rowData[] = $this->formatDate($distribution->revenue->date_end);
+                $rowData[] = $distribution->contact->full_name;
+                $rowData[] = $distribution->tax_referral;
+                $rowData[] = $distribution->postal_code;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
+                $rowData[] = $distribution->delivered_total_string;
+
+                $completeData[] = $rowData;
+            }
+
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        return $spreadsheet;
+    }
+
+    private function getNuonExcel()
+    {
+        $this->counter = 0;
+
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'Interne Ref.nr.';
+        $headerData[] = 'Aanspreektitel';
+        $headerData[] = 'Voornaam';
+        $headerData[] = 'Tussenvoegsel';
+        $headerData[] = 'Achternaam';
+        $headerData[] = 'Adres Aansluiting';
+        $headerData[] = 'Postcode Aansluiting';
+        $headerData[] = 'Woonplaats Aansluiting';
+        $headerData[] = 'Leverancier';
+        $headerData[] = 'Klantnummer';
+        $headerData[] = 'Contractrekening';
+        $headerData[] = 'EanCode';
+        $headerData[] = 'Aantal certificaten';
+        $headerData[] = 'Startdatum';
+        $headerData[] = 'Einddatum';
+        $headerData[] = 'Toegerekende productie';
+        $headerData[] = 'Eenheid (kWh)';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            foreach ($chunk as $distribution) {
+
+                $rowData = [];
+                $rowData[] = $distribution->contact->number;
+                $rowData[] = $distribution->contact->person->title->name;
+                $rowData[] = $distribution->contact->person->first_name;
+                $rowData[] = $distribution->contact->person->last_name_prefix;
+                $rowData[] = $distribution->contact->person->last_name;
+                $rowData[] = $distribution->address;
+                $rowData[] = $distribution->postal_code;
+                $rowData[] = $distribution->city;
+                $rowData[] = $distribution->energy_supplier_name;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
+                $rowData[] = $distribution->contact->iban;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
+                $rowData[] = $distribution->participations_amount;
+                $rowData[] = $this->formatDate($distribution->revenue->date_begin);
+                $rowData[] = $this->formatDate($distribution->revenue->date_end);
+                $rowData[] = $distribution->delivered_total_string;
+                $rowData[] = '';
+
+                $completeData[] = $rowData;
+            }
+
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        return $spreadsheet;
+    }
+
+    private function formatDate($date) {
+        $formatDate = $date ? new Carbon($date) : false;
+        return $formatDate ? $formatDate->format('d-m-Y') : '';
+    }
+}

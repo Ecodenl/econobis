@@ -39,6 +39,7 @@ import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNe
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
 import EnergySupplierReportNewApp from './container/project/details/revenue/energy-supplier-report/EnergySupplierReportNewApp';
 import EnergySupplierCSVNewApp from './container/project/details/revenue/energy-supplier-csv/EnergySupplierCSVNewApp';
+import EnergySupplierExcelNewApp from './container/project/details/revenue/energy-supplier-excel/EnergySupplierExcelNewApp';
 import Forgot from './container/auth/Forgot';
 import HousingFileDetailsApp from './container/housing-file/details/HousingFileDetailsApp';
 import HousingFileNewApp from './container/housing-file/new/HousingFileNewApp';
@@ -267,6 +268,10 @@ const Routes = () => {
                     component={EnergySupplierReportNewApp}
                 />
                 <Route path="project/opbrengst/:revenueId/energieleverancier-csv" component={EnergySupplierCSVNewApp} />
+                <Route
+                    path="project/opbrengst/:revenueId/energieleverancier-excel"
+                    component={EnergySupplierExcelNewApp}
+                />
                 <Route path="project/details/:id" component={ProjectDetailsApp} />
                 <Route path="project/opbrengst/:id" component={RevenueDetailsApp} />
                 <Route path="project/opbrengst/:id/facturen" component={PaymentInvoiceCreateApp} />

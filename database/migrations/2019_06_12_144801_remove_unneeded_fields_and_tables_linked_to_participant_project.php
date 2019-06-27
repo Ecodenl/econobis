@@ -13,16 +13,16 @@ class RemoveUnneededFieldsAndTablesLinkedToParticipantProject extends Migration
      */
     public function up()
     {
-        Schema::table('participation_project', function (Blueprint $table) {
-            $table->dropColumn('participations_requested');
-            $table->dropColumn('participations_granted');
-            $table->dropColumn('participations_sold');
-            $table->dropColumn('participations_rest_sale');
-        });
-
-//        Schema::dropIfExists('participant_transactions');
-//        Schema::dropIfExists('participant_transaction_type');
-        Schema::dropIfExists('participant_project_status');
+//        Schema::table('participation_project', function (Blueprint $table) {
+//            $table->dropColumn('participations_requested');
+//            $table->dropColumn('participations_granted');
+//            $table->dropColumn('participations_sold');
+//            $table->dropColumn('participations_rest_sale');
+//        });
+//
+////        Schema::dropIfExists('participant_transactions');
+////        Schema::dropIfExists('participant_transaction_type');
+//        Schema::dropIfExists('participant_project_status');
     }
 
     /**

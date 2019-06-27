@@ -46,6 +46,13 @@ class ParticipantMutationController extends ApiController
         $participantMutation->fill($data);
 
         DB::transaction(function () use ($participantMutation) {
+            // Calculate participation worth based on current book worth of project
+            if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
+                $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+
+                $participantMutation->participation_worth = $currentBookWorthOfProject;
+            }
+
             $participantMutation->save();
 
             // Herbereken de afhankelijke gegevens op het participantProject
@@ -55,13 +62,7 @@ class ParticipantMutationController extends ApiController
             $participantMutation->participation->project->calculator()->run()->save();
         });
 
-        // Calculate participation worth based on current book worth of project
-        if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-            $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
 
-            $participantMutation->participation_worth = $currentBookWorthOfProject;
-            $participantMutation->save();
-        }
     }
 
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
@@ -98,6 +99,13 @@ class ParticipantMutationController extends ApiController
         $participantMutation->fill($data);
 
         DB::transaction(function () use ($participantMutation) {
+            // Calculate participation worth based on current book worth of project
+            if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
+                $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+
+                $participantMutation->participation_worth = $currentBookWorthOfProject;
+            }
+
             $participantMutation->save();
 
             // Herbereken de afhankelijke gegevens op het participantProject

@@ -159,6 +159,16 @@ class ParticipantNewApp extends Component {
         });
     };
 
+    handleInputChangeContactId = selectedOption => {
+        this.setState({
+            ...this.state,
+            participation: {
+                ...this.state.participation,
+                contactId: selectedOption,
+            },
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -229,6 +239,7 @@ class ParticipantNewApp extends Component {
                                         projectTypeCodeRef={this.state.projectTypeCodeRef}
                                         projectDateEntry={this.state.projectDateEntry}
                                         participantMutationStatuses={this.props.participantMutationStatuses}
+                                        handleInputChangeContactId={this.handleInputChangeContactId}
                                     />
                                 </div>
                             </PanelBody>

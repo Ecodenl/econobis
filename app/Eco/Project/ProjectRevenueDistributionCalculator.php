@@ -29,6 +29,7 @@ class ProjectRevenueDistributionCalculator
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
             $this->projectRevenueDistribution->delivered_total = $this->calculateDeliveredTotal();
             $this->projectRevenueDistribution->payout_kwh = $this->projectRevenueDistribution->revenue->payout_kwh;
+            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
         }
 
         return $this->projectRevenueDistribution;

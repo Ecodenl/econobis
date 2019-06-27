@@ -11,6 +11,7 @@ namespace App\Helpers\Excel;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class EnergySupplierExcelHelper
@@ -39,6 +40,8 @@ class EnergySupplierExcelHelper
             abort(403, 'Geen verdeling voor deze energiemaatschappij');
         }
 //        $excel = $this->getTestExcel();
+//        return $excel;
+
         switch ($this->templateId) {
             case '1':
                 $excel = $this->getEnecoExcel();
@@ -67,40 +70,51 @@ class EnergySupplierExcelHelper
 
         $headerData[] = 'Kolom1';
         $headerData[] = 'Kolom2';
+        $headerData[] = 'Kolom3';
 
         $completeData[] = $headerData;
 
         $rowData = [];
         $rowData[] = "dataregel 1 - cell-1";
         $rowData[] = "dataregel 1 - cell-2";
+        $rowData[] = "1.00";
         $completeData[] = $rowData;
 
         $rowData = [];
         $rowData[] = "dataregel 2 - cell-1";
         $rowData[] = "dataregel 2 - cell-2";
+        $rowData[] = "2.00";
         $completeData[] = $rowData;
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-//        $sheet->getStyle('1:1')
-//            ->applyFromArray([
-//                'font' => [
-//                    'bold' => true,
-//                    'size' => 14,
-//                ],
-//
-//            ]);
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                    'size' => 14,
+                ],
+
+            ]);
 //        $sheet->mergeCells("A1:F1");
 
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Z'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
+        // Datatype toekennen!!???
+//        $beginRow = 2;
+//        $endRow = 99;
+//        for ($col = 'A'; $col !== 'Z'; $col++) {
+//            $spreadsheet->getActiveSheet()
+//                ->getColumnDimension($col)
+//                ->setAutoSize(true);
+//            if($col == 'C'){
+//                $cellValue = $spreadsheet->getActiveSheet()->getCell()
+//                $spreadsheet->getActiveSheet()->setCellValueExplicit($col.$beginRow.":".$col.$endRow, DataType::TYPE_NUMERIC);
+//            }
+//
+//        }
 
         return $spreadsheet;
     }
@@ -150,8 +164,8 @@ class EnergySupplierExcelHelper
 
                 $rowData = [];
                 $rowData[] = $distribution->contact->full_name;
-                $rowData[] = $distribution->contact->person->initials;
-                $rowData[] = $distribution->contact->person->last_name_prefix;
+                $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
+                $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
                 $rowData[] = $distribution->address;
                 $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
                     ? substr($distribution->postal_code, 0, 4) : '';
@@ -162,14 +176,14 @@ class EnergySupplierExcelHelper
                         ? substr($distribution->postal_code, 5)
                         : '');
                 $rowData[] = $distribution->city;
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
-                $rowData[] = $distribution->contact->primaryEmailAddress->email;
-                $rowData[] = $distribution->contact->primaryphoneNumber->number;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                $rowData[] = $distribution->contact->primaryEmailAddress ? $distribution->contact->primaryEmailAddress->email : '';
+                $rowData[] = $distribution->contact->primaryphoneNumber ? $distribution->contact->primaryphoneNumber->number : '';
                 $rowData[] = $this->formatDate($distribution->revenue->date_begin);
                 $rowData[] = '';
                 $rowData[] = $this->formatDate($distribution->revenue->date_end);
                 $rowData[] = $distribution->participations_amount;
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                 $rowData[] = '';
                 $rowData[] = $distribution->delivered_total_string;
                 $rowData[] = '';
@@ -196,6 +210,14 @@ class EnergySupplierExcelHelper
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }
@@ -235,8 +257,8 @@ class EnergySupplierExcelHelper
                 $rowData[] = $this->counter;
                 $rowData[] = $distribution->contact->full_name;
                 $rowData[] = str_replace(' ', '', $distribution->postal_code );
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
                 $rowData[] = $this->formatDate(new Carbon('now'));
                 $rowData[] = $this->formatDate($distribution->revenue->date_begin);
                 $rowData[] = $this->formatDate($distribution->revenue->date_end);
@@ -261,6 +283,14 @@ class EnergySupplierExcelHelper
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }
@@ -301,8 +331,8 @@ class EnergySupplierExcelHelper
                 $rowData[] = $distribution->contact->full_name;
                 $rowData[] = $distribution->tax_referral;
                 $rowData[] = $distribution->postal_code;
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '' ;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                 $rowData[] = $distribution->delivered_total_string;
 
                 $completeData[] = $rowData;
@@ -321,6 +351,14 @@ class EnergySupplierExcelHelper
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }
@@ -365,17 +403,17 @@ class EnergySupplierExcelHelper
 
                 $rowData = [];
                 $rowData[] = $distribution->contact->number;
-                $rowData[] = $distribution->contact->person->title->name;
-                $rowData[] = $distribution->contact->person->first_name;
-                $rowData[] = $distribution->contact->person->last_name_prefix;
-                $rowData[] = $distribution->contact->person->last_name;
+                $rowData[] = $distribution->contact->person->title ? $distribution->contact->person->title->name : '';
+                $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
                 $rowData[] = $distribution->address;
                 $rowData[] = $distribution->postal_code;
                 $rowData[] = $distribution->city;
                 $rowData[] = $distribution->energy_supplier_name;
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->es_number;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                 $rowData[] = $distribution->contact->iban;
-                $rowData[] = $distribution->contact->primaryContactEnergySupplier->ean_electricity;
+                $rowData[] = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
                 $rowData[] = $distribution->participations_amount;
                 $rowData[] = $this->formatDate($distribution->revenue->date_begin);
                 $rowData[] = $this->formatDate($distribution->revenue->date_end);
@@ -398,6 +436,14 @@ class EnergySupplierExcelHelper
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }

@@ -114,14 +114,6 @@ class ParticipantMutationController extends ApiController
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
         });
-
-        // Calculate participation worth based on current book worth of project
-        if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-            $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
-
-            $participantMutation->participation_worth = $currentBookWorthOfProject;
-            $participantMutation->save();
-        }
     }
 
     public function destroy(ParticipantMutation $participantMutation)

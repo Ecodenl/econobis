@@ -3,6 +3,8 @@
 namespace App\Console;
 
 use App\Console\Commands\checkMailboxes;
+use App\Console\Commands\conversionParticipationsToMutations;
+use App\Console\Commands\conversionProjects;
 use App\Console\Commands\getAllEmail;
 use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
@@ -21,6 +23,8 @@ class Kernel extends ConsoleKernel
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
         checkMailboxes::class,
+        conversionProjects::class,
+        conversionParticipationsToMutations::class,
     ];
 
     /**

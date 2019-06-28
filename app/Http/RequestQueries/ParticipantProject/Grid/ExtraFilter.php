@@ -19,7 +19,8 @@ class ExtraFilter extends RequestExtraFilter
         'name',
         'postalCode',
         'postalCodeNumber',
-        'currentParticipations',
+        'amountDefinitive',
+        'participationsDefinitive',
         'dateRegister',
         'datePayed',
         'participationStatusId',
@@ -46,6 +47,8 @@ class ExtraFilter extends RequestExtraFilter
         'participationsSold' => 'participation_project.participations_sold',
         'didAcceptAgreement' => 'participation_project.did_accept_agreement',
         'participationsRequested' => 'participation_project.participations_requested',
+        'amountDefinitive' => 'participation_project.amount_definitive',
+        'participationsDefinitive' => 'participation_project.participations_definitive',
     ];
 
     protected $joins = [];

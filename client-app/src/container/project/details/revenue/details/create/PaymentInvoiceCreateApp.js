@@ -11,7 +11,6 @@ import PaymentInvoiceCreateToolbar from './PaymentInvoiceCreateToolbar';
 import { connect } from 'react-redux';
 import { clearPreviewReport } from '../../../../../../actions/project/ProjectDetailsActions';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
-import fileDownload from 'js-file-download';
 import Modal from '../../../../../../components/modal/Modal';
 
 class PaymentInvoiceCreateApp extends Component {
@@ -19,18 +18,22 @@ class PaymentInvoiceCreateApp extends Component {
         super(props);
         this.state = {
             distributions: [],
-            distributionId: '',
+            distribution: {},
             successMessage: '',
             redirect: '',
         };
     }
 
     componentDidMount() {
+        ProjectRevenueAPI.fetchProjectRevenue(this.props.params.id).then(payload => {
+            this.setState({
+                distribution: payload,
+            });
+        });
+
         ProjectsAPI.peekDistributionsById(this.props.reportPreview.distributionIds).then(payload => {
-            let distributionTypeId = payload.data[0].revenue.typeId;
             this.setState({
                 distributions: payload.data,
-                distributionTypeId: distributionTypeId,
             });
         });
     }
@@ -96,8 +99,14 @@ class PaymentInvoiceCreateApp extends Component {
                                         amountOfDistributions={
                                             this.state.distributions ? this.state.distributions.length : 0
                                         }
-                                        administrationId={this.props.params.id}
-                                        distributionTypeId={this.state.distributionTypeId}
+                                        distributionTypeId={
+                                            this.state.distribution && this.state.distribution.distributionTypeId
+                                        }
+                                        distributionCategoryCodeRef={
+                                            this.state.distribution &&
+                                            this.state.distribution.category &&
+                                            this.state.distribution.category.codeRef
+                                        }
                                     />
                                 </PanelBody>
                             </Panel>

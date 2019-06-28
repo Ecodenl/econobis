@@ -41,26 +41,7 @@ class CalculatedModelFieldsTest extends TestCase
 
     public function assertProductionProjectFields()
     {
-        $productionProject = Project::find(1);
-        $this->assertEquals(0, $productionProject->getIssuedParticipations());
-        $this->assertEquals(0, $productionProject->getIssuedParticipationsPercentage());
-        $this->assertEquals(0, $productionProject->getParticipationsInOption());
-        $this->assertEquals(0, $productionProject->getIssuableParticipations());
-        $this->assertEquals(0, $productionProject->getParticipationsWorthTotal());
 
-        $productionProject = Project::find(2);
-        $this->assertEquals(10, $productionProject->getIssuedParticipations());
-        $this->assertEquals(0, $productionProject->getIssuedParticipationsPercentage());
-        $this->assertEquals(4, $productionProject->getParticipationsInOption());
-        $this->assertEquals(-10, $productionProject->getIssuableParticipations());
-        $this->assertEquals(100, $productionProject->getParticipationsWorthTotal());
-
-        $productionProject = Project::find(3);
-        $this->assertEquals(10, $productionProject->getIssuedParticipations());
-        $this->assertEquals(10, $productionProject->getIssuedParticipationsPercentage());
-        $this->assertEquals(15, $productionProject->getParticipationsInOption());
-        $this->assertEquals(90, $productionProject->getIssuableParticipations());
-        $this->assertEquals(5000, $productionProject->getParticipationsWorthTotal());
     }
 
     public function assertParticipantProductionProjectFields()
@@ -124,11 +105,11 @@ class CalculatedModelFieldsTest extends TestCase
 
         $product = Product::find(1);
         $this->assertEquals(100, $product->current_price->price);
-        $this->assertEquals(121, $product->price_incl_vat);
+        $this->assertEquals(121, $product->current_price->price_incl_vat);
 
         $product = Product::find(2);
         $this->assertEquals(1000, $product->current_price->price);
-        $this->assertEquals(1060, $product->price_incl_vat);
+        $this->assertEquals(1060, $product->current_price->price_incl_vat);
 
         $order = Order::find(2);
         $this->assertEquals(176.26, $order->total_price_incl_vat);

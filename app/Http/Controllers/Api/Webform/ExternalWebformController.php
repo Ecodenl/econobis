@@ -16,6 +16,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Intake\Intake;
@@ -30,7 +31,6 @@ use App\Eco\Order\OrderStatus;
 use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
-use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Product\Product;
@@ -179,6 +179,7 @@ class ExternalWebformController extends Controller
                 // Organisation
                 'organisatienaam' => 'organisation_name',
                 'kvk' => 'chamber_of_commerce_number',
+                'btw_nr' => 'vat_number',
                 'website' => 'website',
                 // Address
                 'adres_straat' => 'address_street',
@@ -203,6 +204,9 @@ class ExternalWebformController extends Controller
                 'energieleverancier_klantnummer' => 'es_number',
                 'energieleverancier_type_id' => 'contact_energy_supply_type_id',
                 'energieleverancier_klant_sinds' => 'member_since',
+                'energieleverancier_ean_code_elektra' => 'ean_electricity',
+                'energieleverancier_status' => 'contact_energy_supply_status_id',
+                'energieleverancier_huidig' => 'is_current_supplier',
             ],
             'participation' => [
                 // ParticipantProject
@@ -214,6 +218,9 @@ class ExternalWebformController extends Controller
                 'participatie_jaarlijks_verbruik' => 'power_kwh_consumption',
                 'participatie_status_id' => 'status_id',
                 'participatie_uitkeren_op_id' => 'type_id',
+                'participatie_toegekend' => 'participations_granted',
+                'participatie_akkoord_regelement' => 'did_accept_agreement',
+                'participatie_betaald_op' => 'date_payed',
             ],
             'order' => [
                 // Order / OrderProduct
@@ -509,6 +516,7 @@ class ExternalWebformController extends Controller
                 'name' => $data['organisation_name'],
                 'website' => $data['website'],
                 'chamber_of_commerce_number' => $data['chamber_of_commerce_number'],
+                'vat_number' => $data['vat_number'],
             ]);
             $this->log('Organisatie met id ' . $organisation->id . ' aangemaakt.');
 
@@ -598,6 +606,9 @@ class ExternalWebformController extends Controller
             $contactEnergySupplierType = ContactEnergySupplierType::find($data['contact_energy_supply_type_id']);
             if (!$contactEnergySupplierType) $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
 
+            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
+            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
+
             if (ContactEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()) {
                 $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' bestaat al; niet opnieuw aangemaakt.');
                 return;
@@ -609,6 +620,9 @@ class ExternalWebformController extends Controller
                 'es_number' => $data['es_number'],
                 'contact_energy_supply_type_id' => $contactEnergySupplierType->id,
                 'member_since' => $data['member_since'] ?: null,
+                'ean_electricity' => $data['ean_electricity'],
+                'contact_energy_supply_status_id' => $contactEnergySupplierStatus->id,
+                'is_current_supplier' => (bool)$data['is_current_supplier'],
             ]);
 
             $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' gemaakt.');
@@ -662,10 +676,10 @@ class ExternalWebformController extends Controller
             $project = Project::find($data['project_id']);
             if (!$project) $this->error('Er is een ongeldige waarde voor productieproject meegegeven.');
 
-            $status = ParticipantProjectStatus::find($data['status_id']);
+            $status = null; //TODO participantproject status is deleted
             if (!$status) {
                 $this->log('Geen bekende waarde voor participatiestatus meegegeven, default naar optie.');
-                $status = ParticipantProjectStatus::find(1);
+                $status = null;
             }
 
             $type = ParticipantProjectPayoutType::find($data['type_id']);
@@ -685,18 +699,14 @@ class ExternalWebformController extends Controller
             $ibanPayout = $this->checkIban($data['iban_payout'], 'participatie.');
             $participation = ParticipantProject::create([
                 'contact_id' => $contact->id,
-                'status_id' => $status->id,
                 'project_id' => $project->id,
                 'date_register' => Carbon::make($data['date_register']),
-                'participations_requested' => $data['participations_requested'] == '' ? 0 : $data['participations_requested'],
-                'participations_granted' => 0,
-                'participations_sold' => 0,
-                'participations_rest_sale' => 0,
                 'iban_payout' => $ibanPayout,
                 'iban_payout_attn' => $data['iban_payout_attn'],
-                'did_accept_agreement' => 0,
                 'type_id' => $type->id,
                 'power_kwh_consumption' => $data['power_kwh_consumption'] == '' ? 0 : $data['power_kwh_consumption'],
+                'did_accept_agreement' => (bool)$data['did_accept_agreement'],
+                'date_payed' => Carbon::make($data['date_payed']),
             ]);
 
             $this->log('Participatie aangemaakt met id ' . $participation->id . '.');

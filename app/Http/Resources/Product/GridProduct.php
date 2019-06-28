@@ -21,7 +21,6 @@ class GridProduct extends Resource
                 'id' => $this->id,
                 'code' => $this->code,
                 'name' => $this->name,
-                'priceInclVat' => $this->price_incl_vat,
                 'currentPrice' => GenericResource::make($this->current_price),
                 'administration' => AdministrationPeek::make($this->whenLoaded('administration')),
             ];

@@ -15,7 +15,6 @@ import MutationNewSubmitHelper from './MutationNewSubmitHelper';
 class MutationFormNew extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             participationMutation: {
                 participationId: this.props.id,
@@ -34,7 +33,9 @@ class MutationFormNew extends Component {
                 amountFinal: 0,
                 dateContractRetour: null,
                 datePayment: null,
-                dateEntry: moment().format('YYYY-MM-DD'),
+                dateEntry: this.props.projectDateEntry
+                    ? moment(this.props.projectDateEntry).format('YYYY-MM-DD')
+                    : moment().format('YYYY-MM-DD'),
             },
             errors: {},
         };
@@ -139,6 +140,14 @@ class MutationFormNew extends Component {
         );
         const statusCodeRef = status ? status.codeRef : null;
 
+        const participantMutationTypesOptions = participantMutationTypes.filter(
+            participantMutationType =>
+                participantMutationType.codeRef === 'first_deposit' ||
+                participantMutationType.codeRef === 'deposit' ||
+                participantMutationType.codeRef === 'withDrawal' ||
+                participantMutationType.codeRef === 'sell'
+        );
+
         return (
             <React.Fragment>
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -149,7 +158,7 @@ class MutationFormNew extends Component {
                                     label={'Type'}
                                     id="typeId"
                                     name={'typeId'}
-                                    options={participantMutationTypes}
+                                    options={participantMutationTypesOptions}
                                     value={typeId}
                                     onChangeAction={this.handleInputChange}
                                     required={'required'}
@@ -162,6 +171,8 @@ class MutationFormNew extends Component {
                                     options={participantMutationStatuses}
                                     value={statusId}
                                     onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.statusId}
                                 />
                             </div>
 
@@ -203,6 +214,7 @@ const mapStateToProps = state => {
         participantMutationStatuses: state.systemData.participantMutationStatuses,
         id: state.participantProjectDetails.id,
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+        projectDateEntry: state.participantProjectDetails.project.dateEntry,
     };
 };
 

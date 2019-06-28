@@ -389,9 +389,6 @@ class TemplateVariableHelper
             case 'min_participaties':
                 return $model->min_participations;
                 break;
-            case 'uitgegeven_participaties':
-                return $model->getIssuedParticipations();
-                break;
             case 'participaties_in_optie':
                 return $model->getParticipationsInOption();
                 break;
@@ -415,8 +412,50 @@ class TemplateVariableHelper
             case 'contact_naam':
                 return $model->contact->full_name;
                 break;
+            case 'contact_voornaam':
+                if($model->contact->type_id == 'person'){
+                    return $model->contact->person->first_name;
+                }
+                elseif($model->contact->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'contact_achternaam':
+                if($model->contact->type_id == 'person'){
+                    $prefix = $model->contact->person->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . $model->contact->person->last_name : $model->contact->person->last_name;
+                }
+                elseif($model->contact->type_id == 'organisation'){
+                    return $model->contact->full_name;
+                }
+                break;
+            case 'contact_voorletters':
+                if($model->contact->type_id == 'person'){
+                    return $model->contact->person->initials;
+                }
+                elseif($model->contact->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'contact_adres':
+                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . optional($model->contact->primaryAddress)->addition;
+                break;
+            case 'contact_postcode':
+                return optional($model->contact->primaryAddress)->postal_code;
+                break;
+            case 'contact_plaats':
+                return optional($model->contact->primaryAddress)->city;
+                break;
+            case 'contact_geboortedatum':
+                if($model->contact->type_id == 'person'){
+                    return $model->contact->person->date_of_birth ? Carbon::parse($model->contact->person->date_of_birth)->format('d/m/Y') : null;;
+                }
+                elseif($model->contact->type_id == 'organisation'){
+                    return '';
+                }
+                break;
             case 'status':
-                return $model->participantProjectStatus->name;
+                return $model->UniqueMutationStatuses->implode('name', ', ');
                 break;
             case 'productie_project':
                 return $model->project->name;

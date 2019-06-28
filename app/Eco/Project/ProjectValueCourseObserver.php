@@ -18,4 +18,13 @@ class ProjectValueCourseObserver
         $userId = Auth::id();
         $projectValueCourse->created_by_id = $userId;
     }
+
+    public function saved(ProjectValueCourse $projectValueCourse) {
+        $currentBookWorth = $projectValueCourse->project->currentBookWorth();
+
+        foreach($projectValueCourse->project->participantsProject as $participant) {
+            $participant->participations_definitive_worth = $participant->participations_definitive * $currentBookWorth;
+            $participant->save();
+        }
+    }
 }

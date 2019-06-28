@@ -13,12 +13,14 @@ import PanelFooter from '../../../../../../components/panel/PanelFooter';
 
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 
-import {
-    fetchRevenue,
-    getDistribution,
-    getParticipants,
-} from '../../../../../../actions/project/ProjectDetailsActions';
+import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
 import Modal from '../../../../../../components/modal/Modal';
+import styled from '@emotion/styled';
+import ViewText from '../../../../../../components/form/ViewText';
+
+const StyledEm = styled.em`
+    font-weight: normal;
+`;
 
 class RevenueFormEdit extends Component {
     constructor(props) {
@@ -26,11 +28,11 @@ class RevenueFormEdit extends Component {
 
         const {
             id,
-            categoryId,
+            distributionTypeId,
             confirmed,
             dateBegin,
             dateEnd,
-            dateEntry,
+            dateReference,
             dateConfirmed,
             kwhStart,
             kwhEnd,
@@ -41,6 +43,8 @@ class RevenueFormEdit extends Component {
             revenue,
             datePayed,
             payPercentage,
+            keyAmountFirstPercentage,
+            payPercentageValidFromKeyAmount,
             typeId,
             payoutKwh,
         } = props.revenue;
@@ -49,12 +53,12 @@ class RevenueFormEdit extends Component {
             showModal: false,
             revenue: {
                 id,
-                categoryId: categoryId,
+                distributionTypeId: distributionTypeId,
                 confirmed: !!confirmed,
-                dateBegin: dateBegin,
-                dateEnd: dateEnd,
-                dateEntry: dateEntry,
-                dateConfirmed: dateConfirmed ? dateConfirmed : '',
+                dateBegin: dateBegin ? moment(dateBegin.date).format('Y-MM-DD') : '',
+                dateEnd: dateEnd ? moment(dateEnd.date).format('Y-MM-DD') : '',
+                dateReference: dateReference ? moment(dateReference.date).format('Y-MM-DD') : '',
+                dateConfirmed: dateConfirmed ? moment(dateConfirmed.date).format('Y-MM-DD') : '',
                 kwhStart: kwhStart ? kwhStart : 0,
                 kwhEnd: kwhEnd ? kwhEnd : 0,
                 kwhStartHigh: kwhStartHigh ? kwhStartHigh : '',
@@ -62,8 +66,10 @@ class RevenueFormEdit extends Component {
                 kwhStartLow: kwhStartLow ? kwhStartLow : '',
                 kwhEndLow: kwhEndLow ? kwhEndLow : '',
                 revenue: revenue ? revenue : '',
-                datePayed: datePayed ? datePayed : '',
+                datePayed: datePayed ? moment(datePayed.date).format('Y-MM-DD') : '',
                 payPercentage: payPercentage ? payPercentage : '',
+                keyAmountFirstPercentage: keyAmountFirstPercentage ? keyAmountFirstPercentage : 0,
+                payPercentageValidFromKeyAmount: payPercentageValidFromKeyAmount ? payPercentageValidFromKeyAmount : '',
                 typeId: typeId ? typeId : '',
                 payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(3) : '',
             },
@@ -71,7 +77,7 @@ class RevenueFormEdit extends Component {
                 categoryId: false,
                 dateBegin: false,
                 dateEnd: false,
-                dateEntry: false,
+                dateReference: false,
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -104,13 +110,16 @@ class RevenueFormEdit extends Component {
         let value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            revenue: {
-                ...this.state.revenue,
-                [name]: value,
+        this.setState(
+            {
+                ...this.state,
+                revenue: {
+                    ...this.state.revenue,
+                    [name]: value,
+                },
             },
-        });
+            () => this.linkedValueAdjustment(name)
+        );
 
         setTimeout(() => {
             const kwhStart =
@@ -129,6 +138,19 @@ class RevenueFormEdit extends Component {
                 },
             });
         }, 200);
+    };
+
+    linkedValueAdjustment = name => {
+        if (name === 'keyAmountFirstPercentage') {
+            if (!this.state.revenue.keyAmountFirstPercentage || this.state.revenue.keyAmountFirstPercentage == 0)
+                this.setState({
+                    ...this.state,
+                    revenue: {
+                        ...this.state.revenue,
+                        payPercentageValidFromKeyAmount: '',
+                    },
+                });
+        }
     };
 
     handleInputChangeDate(value, name) {
@@ -184,8 +206,8 @@ class RevenueFormEdit extends Component {
             errors.dateEnd = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(revenue.dateEntry + '')) {
-            errors.dateEntry = true;
+        if (validator.isEmpty(revenue.dateReference + '')) {
+            errors.dateReference = true;
             hasErrors = true;
         }
         this.setState({ ...this.state, errors: errors });
@@ -195,11 +217,7 @@ class RevenueFormEdit extends Component {
                 this.props.fetchRevenue(revenue.id);
 
                 setTimeout(() => {
-                    if (revenue.confirmed == 1) {
-                        this.props.getDistribution(revenue.id, 0);
-                    } else {
-                        this.props.getParticipants(revenue.id, 0);
-                    }
+                    this.props.getDistribution(revenue.id, 0);
                 }, 250);
 
                 this.props.switchToView();
@@ -208,11 +226,11 @@ class RevenueFormEdit extends Component {
 
     render() {
         const {
-            categoryId,
+            distributionTypeId,
             confirmed,
             dateBegin,
             dateEnd,
-            dateEntry,
+            dateReference,
             dateConfirmed,
             kwhStart,
             kwhEnd,
@@ -220,12 +238,16 @@ class RevenueFormEdit extends Component {
             kwhEndHigh,
             kwhStartLow,
             kwhEndLow,
-            revenue,
             datePayed,
             payPercentage,
+            keyAmountFirstPercentage,
+            payPercentageValidFromKeyAmount,
             typeId,
             payoutKwh,
         } = this.state.revenue;
+
+        const project = this.props.revenue.project;
+        const { category } = this.props.revenue;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -235,21 +257,8 @@ class RevenueFormEdit extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <InputSelect
-                        label={'Soort'}
-                        name={'categoryId'}
-                        options={this.props.projectRevenueCategories}
-                        value={categoryId}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.categoryId}
-                    />
-                    <InputText
-                        label={'Definitief'}
-                        name={'confirmed'}
-                        value={confirmed ? 'Ja' : 'Nee'}
-                        readOnly={true}
-                    />
+                    <ViewText label={'Soort'} value={category ? category.name : ''} className={'form-group col-sm-6'} />
+                    <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} className={'form-group col-sm-6'} />
                 </div>
 
                 <div className="row">
@@ -260,6 +269,7 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateBegin}
+                        disabledBefore={project.dateInterestBearing}
                     />
                     <InputDate
                         label={'Eind periode'}
@@ -268,17 +278,18 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateEnd}
+                        disabledBefore={dateBegin}
                     />
                 </div>
 
                 <div className="row">
                     <InputDate
-                        label={'Datum invoer'}
-                        name={'dateEntry'}
-                        value={dateEntry}
+                        label={'Peildatum'}
+                        name={'dateReference'}
+                        value={dateReference}
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
-                        error={this.state.errors.dateEntry}
+                        error={this.state.errors.dateReference}
                     />
                     <InputDate
                         label={'Datum definitief'}
@@ -304,88 +315,127 @@ class RevenueFormEdit extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <div className={'panel-part panel-heading'}>
-                        <span className={'h5 text-bold'}>Uitkering kWh velden</span>
-                    </div>
-                </div>
+                {category.codeRef === 'revenueEuro' ? (
+                    <React.Fragment>
+                        {project.projectType.codeRef !== 'loan' ? (
+                            <div className="row">
+                                <InputSelect
+                                    label={'Type opbrengst verdeling'}
+                                    name={'distributionTypeId'}
+                                    options={this.props.projectRevenueDistributionTypes}
+                                    value={distributionTypeId}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+                        ) : null}
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Uitkering euro velden</span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Uitkering %'}
+                                name={'payPercentage'}
+                                value={payPercentage}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                label={
+                                    <React.Fragment>
+                                        Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                    </React.Fragment>
+                                }
+                                name={'keyAmountFirstPercentage'}
+                                value={keyAmountFirstPercentage}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        {this.state.revenue.keyAmountFirstPercentage ? (
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                    name={'payPercentageValidFromKeyAmount'}
+                                    value={payPercentageValidFromKeyAmount}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+                        ) : null}
+                    </React.Fragment>
+                ) : null}
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Beginstand kWh hoog'}
-                        name={'kwhStartHigh'}
-                        value={kwhStartHigh}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Eindstand kWh hoog'}
-                        name={'kwhEndHigh'}
-                        value={kwhEndHigh}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                {category.codeRef === 'revenueKwh' ? (
+                    <React.Fragment>
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Uitkering kWh velden</span>
+                            </div>
+                        </div>
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Beginstand kWh laag'}
-                        name={'kwhStartLow'}
-                        value={kwhStartLow}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Eindstand kWh laag'}
-                        name={'kwhEndLow'}
-                        value={kwhEndLow}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh hoog'}
+                                name={'kwhStartHigh'}
+                                value={kwhStartHigh}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh hoog'}
+                                name={'kwhEndHigh'}
+                                value={kwhEndHigh}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Beginstand kWh'}
-                        name={'kwhStart'}
-                        value={kwhStart}
-                        readOnly={true}
-                    />
-                    <InputText type={'number'} label={'Eindstand kWh'} name={'kwhEnd'} value={kwhEnd} readOnly={true} />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh laag'}
+                                name={'kwhStartLow'}
+                                value={kwhStartLow}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh laag'}
+                                name={'kwhEndLow'}
+                                value={kwhEndLow}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
 
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Opbrengst kWh €'}
-                        name={'payoutKwh'}
-                        value={payoutKwh}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh'}
+                                name={'kwhStart'}
+                                value={kwhStart}
+                                readOnly={true}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh'}
+                                name={'kwhEnd'}
+                                value={kwhEnd}
+                                readOnly={true}
+                            />
+                        </div>
 
-                <div className="row">
-                    <div className={'panel-part panel-heading'}>
-                        <span className={'h5 text-bold'}>Uitkering euro velden</span>
-                    </div>
-                </div>
-                <div className="row">
-                    <InputText
-                        type={'number'}
-                        label={'Euro opbrengst'}
-                        name={'revenue'}
-                        value={revenue}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputText
-                        type={'number'}
-                        label={'Uitkering %'}
-                        name={'payPercentage'}
-                        value={payPercentage}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Opbrengst kWh €'}
+                                name={'payoutKwh'}
+                                value={payoutKwh}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                    </React.Fragment>
+                ) : null}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
@@ -438,6 +488,7 @@ const mapStateToProps = state => {
         revenue: state.projectRevenue,
         projectRevenueTypes: state.systemData.projectRevenueTypes,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
+        projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
     };
 };
 

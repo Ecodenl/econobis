@@ -19,7 +19,7 @@ class OrderProductsFormNewProductOneTime extends Component {
         this.state = {
             vatPercentages: [{ id: '0', name: '0' }, { id: '9', name: '9' }, { id: '21', name: '21' }],
             errorMessage: false,
-            price: props.product.priceInclVat,
+            price: props.product.currentPrice.priceInclVat,
             totalPrice: '0',
             orderProduct: {
                 id: props.orderProduct.id,

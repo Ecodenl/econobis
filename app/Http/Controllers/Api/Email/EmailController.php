@@ -194,9 +194,33 @@ class EmailController
 
             foreach ($contactIds as $contactId) {
                 if(!EmailAddress::where('contact_id', $contactId)->where('email', $email->from)->exists()) {
-                    $contactEmailAddress = $emailAddress->replicate();
-                    $contactEmailAddress->contact_id = $contactId;
-                    $contactEmailAddress->save();
+                    // If mailadress is in mailbox ignores list then don't add mailaddress to contact
+                    $addEmailToContact = true;
+
+                    $mailboxIgnores = $email->mailbox->mailboxIgnores;
+
+                    foreach ($mailboxIgnores as $ignore){
+                        switch ($ignore->type_id) {
+                            case 'e-mail':
+                                if($ignore->value === $email->from){
+                                    $addEmailToContact = false;
+                                }
+                                break;
+                            case 'domain':
+                                $domain = preg_replace( '!^.+?([^@]+)$!', '$1', $email->from);
+                                if ($ignore->value === $domain) {
+                                    $addEmailToContact = false;
+                                }
+                                break;
+                        }
+                    }
+
+                    if($addEmailToContact) {
+                        $contactEmailAddress = $emailAddress->replicate();
+                        $contactEmailAddress->contact_id = $contactId;
+
+                        $contactEmailAddress->save();
+                    }
                 }
             }
         }

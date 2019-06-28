@@ -48,4 +48,15 @@ class ProjectRevenueDistribution extends Model
         $payoutKwh = $this->payout_kwh ? $this->payout_kwh : 0;
         return $deliveredTotal * $payoutKwh;
     }
+
+    public function getDeliveredTotalStringAttribute()
+    {
+        return number_format( $this->delivered_total, '2',',', '.' );
+    }
+
+    public function calculator()
+    {
+        return new ProjectRevenueDistributionCalculator($this);
+    }
+
 }

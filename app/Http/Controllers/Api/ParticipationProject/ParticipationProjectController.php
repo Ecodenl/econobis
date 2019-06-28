@@ -26,7 +26,6 @@ use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\ParticipantTransaction\ParticipantTransaction;
 use App\Eco\PostalCodeLink\PostalCodeLink;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteParticipation;
@@ -57,7 +56,6 @@ class ParticipationProjectController extends ApiController
             'contact.primaryContactEnergySupplier.energySupplier',
             'contact.primaryAddress',
             'contact.primaryEmailAddress',
-            'participantProjectStatus',
             'project',
     ]);
 
@@ -167,12 +165,9 @@ class ParticipationProjectController extends ApiController
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
-            'participantProjectStatus',
             'participantProjectPayoutType',
             'giftedByContact',
             'legalRepContact',
-            'transactions.type',
-            'transactions.createdBy',
             'mutations.type',
             'mutations.status',
             'mutations.statusLog',
@@ -193,7 +188,6 @@ class ParticipationProjectController extends ApiController
         // TODO clean up store inputs
         $data = $requestInput
             ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
-            ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
             ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
             ->get();
 
@@ -209,9 +203,8 @@ class ParticipationProjectController extends ApiController
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
 
-        $participantMutationStatus = ParticipantMutationStatus::find($data['status_id']);
         // Create first mutation
-        $this->storeFirstMutation($requestInput, $participantMutationStatus, $participantProject, $project);
+        $this->storeFirstMutation($requestInput, $participantProject, $project);
 
         $message = [];
 
@@ -256,21 +249,11 @@ class ParticipationProjectController extends ApiController
         $this->authorize('manage', ParticipantProject::class);
 
         $data = $requestInput
-            ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
-            ->date('dateRegister')->validate('nullable|date')->onEmpty(null)->alias('date_register')->next()
-            ->integer('participationsRequested')->alias('participations_requested')->next()
-            ->integer('participationsGranted')->alias('participations_granted')->next()
-            ->integer('participationsSold')->alias('participations_sold')->next()
-            ->integer('participationsRestSale')->alias('participations_rest_sale')->next()
-            ->date('dateContractSend')->validate('nullable|date')->onEmpty(null)->alias('date_contract_send')->next()
-            ->date('dateContractRetour')->validate('nullable|date')->onEmpty(null)->alias('date_contract_retour')->next()
-            ->date('datePayed')->validate('nullable|date')->onEmpty(null)->alias('date_payed')->next()
             ->boolean('didAcceptAgreement')->alias('did_accept_agreement')->next()
             ->integer('giftedByContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('gifted_by_contact_id')->next()
             ->string('ibanPayout')->alias('iban_payout')->next()
             ->integer('legalRepContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('legal_rep_contact_id')->next()
             ->string('ibanPayoutAttn')->alias('iban_payout_attn')->next()
-            ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->alias('date_end')->next()
             ->integer('typeId')->validate('required|exists:participant_project_payout_type,id')->alias('type_id')->next()
             ->integer('powerKwhConsumption')->alias('power_kwh_consumption')->next()
             ->get();
@@ -282,66 +265,98 @@ class ParticipationProjectController extends ApiController
         return $this->show($participantProject);
     }
 
-    public function transfer(RequestInput $requestInput)
+//    public function transfer(RequestInput $requestInput)
+//    {
+//        $this->authorize('manage', ParticipantProject::class);
+//
+//        $data = $requestInput
+//            ->integer('participationId')->validate('required|exists:participation_project,id')->alias('participation_id')->next()
+//            ->integer('transferToContactId')->validate('required')->alias('transfer_to_contact_id')->next()
+//            ->integer('participationsAmount')->alias('participations_amount')->next()
+//            ->integer('participationWorth')->alias('participation_worth')->next()
+//            ->integer('didSign')->next()
+//            ->date('dateBook')->validate('nullable|date')->onEmpty(null)->alias('date_book')->next()
+//            ->get();
+//
+//        $participation = ParticipantProject::find($data['participation_id']);
+//
+//        $projectId = $participation->project->id;
+//
+//        $participation->participations_sold = $participation->participations_sold + $data['participations_amount'];
+//        $participation->save();
+//
+//        //if 0 then participations are lost
+//        if($data['transfer_to_contact_id'] != 0){
+//            //add participations to other contact
+//            if(ParticipantProject::where('project_id', $projectId)->where('contact_id', $data['transfer_to_contact_id'])->exists()){
+//                $participationReceiving = ParticipantProject::where('project_id', $projectId)->where('contact_id', $data['transfer_to_contact_id'])->first();
+//                $participationReceiving->participations_granted = $participationReceiving->participations_granted + $data['participations_amount'];
+//                $participationReceiving->save();
+//            }
+//            //else create new one
+//            else{
+//                $participationReceiving = new ParticipantProject();
+//                $participationReceiving->contact_id = $data['transfer_to_contact_id'];
+//                $participationReceiving->status_id = 2;//Definitief
+//                $participationReceiving->project_id = $projectId;
+//                $participationReceiving->type_id = 1;//Rekening
+//                $participationReceiving->participations_granted = $data['participations_amount'];
+//                $participationReceiving->save();
+//            }
+//
+//            //create new transaction for receiving
+//            $transactionReceiving = new ParticipantTransaction();
+//            $transactionReceiving->participation_id = $participationReceiving->id;
+//            $transactionReceiving->type_id = 1;//Inleg
+//            $transactionReceiving->date_transaction = new Carbon;
+//            $transactionReceiving->amount = $data['participations_amount'] * $data['participation_worth'];
+//            $transactionReceiving->date_booking = $data['date_book'] ;
+//            $transactionReceiving->save();
+//
+//        }
+//
+//        //create transaction for sending
+//        $transactionSending = new ParticipantTransaction();
+//        $transactionSending->participation_id = $participation->id;
+//        $transactionSending->type_id = 3;//Inleg
+//        $transactionSending->date_transaction = new Carbon;
+//        $transactionSending->amount = $data['participations_amount'] * $data['participation_worth'];
+//        $transactionSending->date_booking = $data['date_book'] ;
+//        $transactionSending->save();
+//
+//        return $this->show($participation);
+//    }
+
+    public function destroy(ParticipantProject $participantProject)
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $data = $requestInput
-            ->integer('participationId')->validate('required|exists:participation_project,id')->alias('participation_id')->next()
-            ->integer('transferToContactId')->validate('required')->alias('transfer_to_contact_id')->next()
-            ->integer('participationsAmount')->alias('participations_amount')->next()
-            ->integer('participationWorth')->alias('participation_worth')->next()
-            ->integer('didSign')->next()
-            ->date('dateBook')->validate('nullable|date')->onEmpty(null)->alias('date_book')->next()
-            ->get();
+        try {
+            DB::beginTransaction();
 
-        $participation = ParticipantProject::find($data['participation_id']);
+            $deleteParticipation = new DeleteParticipation($participantProject);
+            $result = $deleteParticipation->delete();
 
-        $projectId = $participation->project->id;
-
-        $participation->participations_sold = $participation->participations_sold + $data['participations_amount'];
-        $participation->save();
-
-        //if 0 then participations are lost
-        if($data['transfer_to_contact_id'] != 0){
-            //add participations to other contact
-            if(ParticipantProject::where('project_id', $projectId)->where('contact_id', $data['transfer_to_contact_id'])->exists()){
-                $participationReceiving = ParticipantProject::where('project_id', $projectId)->where('contact_id', $data['transfer_to_contact_id'])->first();
-                $participationReceiving->participations_granted = $participationReceiving->participations_granted + $data['participations_amount'];
-                $participationReceiving->save();
-            }
-            //else create new one
-            else{
-                $participationReceiving = new ParticipantProject();
-                $participationReceiving->contact_id = $data['transfer_to_contact_id'];
-                $participationReceiving->status_id = 2;//Definitief
-                $participationReceiving->project_id = $projectId;
-                $participationReceiving->type_id = 1;//Rekening
-                $participationReceiving->participations_granted = $data['participations_amount'];
-                $participationReceiving->save();
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
             }
 
-            //create new transaction for receiving
-            $transactionReceiving = new ParticipantTransaction();
-            $transactionReceiving->participation_id = $participationReceiving->id;
-            $transactionReceiving->type_id = 1;//Inleg
-            $transactionReceiving->date_transaction = new Carbon;
-            $transactionReceiving->amount = $data['participations_amount'] * $data['participation_worth'];
-            $transactionReceiving->date_booking = $data['date_book'] ;
-            $transactionReceiving->save();
-
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
         }
+    }
 
-        //create transaction for sending
-        $transactionSending = new ParticipantTransaction();
-        $transactionSending->participation_id = $participation->id;
-        $transactionSending->type_id = 3;//Inleg
-        $transactionSending->date_transaction = new Carbon;
-        $transactionSending->amount = $data['participations_amount'] * $data['participation_worth'];
-        $transactionSending->date_booking = $data['date_book'] ;
-        $transactionSending->save();
+    public function peek()
+    {
 
-        return $this->show($participation);
+        $participants = ParticipantProject::all();
+        $participants->load(['contact', 'project']);
+
+        return ParticipantProjectPeek::collection($participants);
     }
 
     public function validatePostalCode(&$message, Project $project, Contact $contact)
@@ -595,12 +610,18 @@ class ParticipationProjectController extends ApiController
      * @param ParticipantProject $participantProject
      * @param $project
      */
-    public function storeFirstMutation(RequestInput $requestInput, ParticipantMutationStatus $participantMutationStatus, ParticipantProject $participantProject, Project $project): void
+    public function storeFirstMutation(RequestInput $requestInput, ParticipantProject $participantProject, Project $project): void
     {
+        $status = $requestInput
+            ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
+            ->get();
+
+        $participantMutationStatus = ParticipantMutationStatus::find($status['status_id']);
+
         switch ($participantMutationStatus->code_ref) {
             case 'interest':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityInterest')->onEmpty(null)->alias('quantity_interest')->next()
                     ->double('amountInterest')->onEmpty(null)->alias('amount_interest')->next()
                     ->date('dateInterest')->onEmpty(null)->validate('date')->alias('date_interest')->next()
@@ -610,7 +631,7 @@ class ParticipationProjectController extends ApiController
                 break;
             case 'option':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityOption')->validate('required_without:amountOption')->alias('quantity_option')->next()
                     ->double('amountOption')->validate('required_without:quantityOption')->alias('amount_option')->next()
                     ->date('dateOption')->validate('required|date')->alias('date_option')->next()
@@ -620,7 +641,7 @@ class ParticipationProjectController extends ApiController
                 break;
             case 'granted':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityGranted')->validate('required_without:amountGranted')->alias('quantity_granted')->next()
                     ->double('amountGranted')->validate('required_without:quantityGranted')->alias('amount_granted')->next()
                     ->date('dateGranted')->validate('required|date')->alias('date_granted')->next()
@@ -630,7 +651,7 @@ class ParticipationProjectController extends ApiController
                 break;
             case 'final':
                 $mutationData = $requestInput
-                    ->integer('statusId')->validate('required|exists:participant_project_status,id')->alias('status_id')->next()
+                    ->integer('statusId')->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
                     ->integer('quantityFinal')->validate('required_without:amountFinal')->alias('quantity_final')->next()
                     ->double('amountFinal')->validate('required_without:quantityFinal')->alias('amount_final')->next()
                     ->date('dateGranted')->validate('nullable|date')->onEmpty(null)->alias('date_granted')->next()
@@ -657,6 +678,16 @@ class ParticipationProjectController extends ApiController
         $participantMutation->fill($mutationData);
 
         $participantMutation->save();
+
+        DB::transaction(function () use ($participantMutation) {
+            $participantMutation->save();
+
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantMutation->participation->calculator()->run()->save();
+
+            // Herbereken de afhankelijke gegevens op het project
+            $participantMutation->participation->project->calculator()->run()->save();
+        });
 
         // Calculate participation worth based on current book worth of project
         if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {

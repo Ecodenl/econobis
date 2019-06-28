@@ -18,9 +18,12 @@ class OrderProductsFormNew extends Component {
 
         this.state = {
             price: '0',
+            priceInclVat: '0',
+            vatPercentage: '0',
             totalPrice: '0',
             durationId: 'none',
             productHasVariablePrice: false,
+            productInputInclVat: false,
             orderProduct: {
                 orderId: this.props.orderDetails.id,
                 productId: '',
@@ -83,7 +86,20 @@ class OrderProductsFormNew extends Component {
     };
 
     updatePrice = () => {
-        let price = validator.isFloat(this.state.price + '') ? this.state.price : 0;
+        let price = 0;
+        let variable_price = validator.isFloat(this.state.orderProduct.variablePrice + '')
+            ? this.state.orderProduct.variablePrice
+            : 0;
+
+        // variable prijs is excl. BTW
+        if (variable_price) {
+            price = variable_price;
+        } else if (this.state.productInputInclVat) {
+            price = validator.isFloat(this.state.priceInclVat + '') ? this.state.priceInclVat : 0;
+        } else {
+            price = validator.isFloat(this.state.price + '') ? this.state.price : 0;
+        }
+
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
         let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
             ? this.state.orderProduct.percentageReduction
@@ -99,6 +115,13 @@ class OrderProductsFormNew extends Component {
             totalPrice = price * amount * (reduction / 100) - amountReduction;
         } else {
             totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
+        }
+
+        // variable prijs is nog excl. BTW
+        if (variable_price || !this.state.productInputInclVat) {
+            let vatPercentage = validator.isFloat(this.state.vatPercentage + '') ? this.state.vatPercentage : 0;
+            const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+            totalPrice = totalPrice * vatFactor;
         }
 
         this.setState({
@@ -176,17 +199,23 @@ class OrderProductsFormNew extends Component {
         const name = target.name;
 
         let price = 0;
+        let priceInclVat = 0;
+        let vatPercentage = 0;
         let description = '';
         let durationId = false;
         let dateEnd = '';
         let productHasVariablePrice = '';
+        let productInputInclVat = false;
 
         if (value) {
-            let product = this.props.products.filter(product => product.id == value);
-            price = product[0].priceInclVat;
-            description = product[0].invoiceText;
-            durationId = product[0].durationId;
-            productHasVariablePrice = product[0].hasVariablePrice;
+            let product = this.props.products.find(product => product.id == value);
+            price = product.currentPrice.price;
+            priceInclVat = product.currentPrice.priceInclVat;
+            vatPercentage = product.currentPrice.vatPercentage;
+            productInputInclVat = product.currentPrice.inputInclVat;
+            description = product.invoiceText;
+            durationId = product.durationId;
+            productHasVariablePrice = product.hasVariablePrice;
         }
 
         if (durationId && this.state.orderProduct.dateStart) {
@@ -226,8 +255,11 @@ class OrderProductsFormNew extends Component {
             {
                 ...this.state,
                 price: price,
+                priceInclVat: priceInclVat,
+                vatPercentage: vatPercentage,
                 durationId: durationId,
                 productHasVariablePrice: productHasVariablePrice === 'variable',
+                productInputInclVat: productInputInclVat,
                 orderProduct: {
                     ...this.state.orderProduct,
                     description: description,
@@ -365,7 +397,7 @@ class OrderProductsFormNew extends Component {
                             />
                             {this.state.productHasVariablePrice ? (
                                 <InputText
-                                    label={'Prijs ex. BTW'}
+                                    label={'Prijs excl. BTW'}
                                     name={'variablePrice'}
                                     type={'number'}
                                     value={this.state.price}
@@ -375,14 +407,20 @@ class OrderProductsFormNew extends Component {
                                 />
                             ) : (
                                 <InputText
-                                    label={'Prijs incl. BTW'}
+                                    label={this.state.productInputInclVat ? 'Prijs incl. BTW' : 'Prijs excl. BTW'}
                                     name={'price'}
                                     value={
-                                        '€' +
-                                        this.state.price.toLocaleString('nl', {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2,
-                                        })
+                                        this.state.productInputInclVat
+                                            ? '€' +
+                                              this.state.priceInclVat.toLocaleString('nl', {
+                                                  minimumFractionDigits: 2,
+                                                  maximumFractionDigits: 2,
+                                              })
+                                            : '€' +
+                                              this.state.price.toLocaleString('nl', {
+                                                  minimumFractionDigits: 2,
+                                                  maximumFractionDigits: 2,
+                                              })
                                     }
                                     readOnly={true}
                                 />

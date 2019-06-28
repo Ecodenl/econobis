@@ -20,7 +20,7 @@ class ParticipantProjectCalculator
 
     public function participationsDefinitiveWorth()
     {
-        return $this->participationsDefinitive() * $this->participantProject->project->participation_worth;
+        return $this->participationsDefinitive() * $this->participantProject->project->currentBookWorth();
     }
 
     public function participationsOptioned()

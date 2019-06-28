@@ -9,6 +9,8 @@ function ParticipantFormViewPostalcodeLinkCapital({
     participationsDefinitiveWorth,
     powerKwhConsumption,
     valueCourses,
+    participationsReturnsKwhTotal,
+    participationsIndicationOfRestitutionEnergyTaxTotal,
     onClick,
 }) {
     const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
@@ -19,11 +21,14 @@ function ParticipantFormViewPostalcodeLinkCapital({
             <h4>Postcoderoos kapitaal</h4>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Huidige aantal participaties'} value={participationsDefinitive} />
-                <ViewText label={'Totale opbrengsten kWh'} value={'0'} />
+                <ViewText label={'Totale opbrengsten kWh'} value={participationsReturnsKwhTotal} />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Nominale waarde per participatie'} value={moneyPresenter(participationWorth)} />
-                <ViewText label={'Totale indicatie teruggave energie belasting'} value={'0'} />
+                <ViewText
+                    label={'Totale indicatie teruggave energie belasting'}
+                    value={moneyPresenter(participationsIndicationOfRestitutionEnergyTaxTotal)}
+                />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText
@@ -33,7 +38,10 @@ function ParticipantFormViewPostalcodeLinkCapital({
                 <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />
+                <ViewText
+                    label={'Huidige totale waarde participaties'}
+                    value={moneyPresenter(participationsDefinitiveWorth)}
+                />
             </div>
         </React.Fragment>
     );

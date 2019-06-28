@@ -32,7 +32,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(FinancialToolbar);
+export default connect(mapStateToProps)(FinancialToolbar);

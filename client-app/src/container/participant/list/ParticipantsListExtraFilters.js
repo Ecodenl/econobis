@@ -136,7 +136,11 @@ class ParticipantsListExtraFilters extends Component {
                 name: 'Postcode nummer',
                 type: 'number',
             },
-            currentParticipations: {
+            amountDefinitive: {
+                name: 'Huidig aantal lening',
+                type: 'number',
+            },
+            participationsDefinitive: {
                 name: 'Huidig aantal deelnames',
                 type: 'number',
             },

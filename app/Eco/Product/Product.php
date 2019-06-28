@@ -92,27 +92,6 @@ class Product extends Model
        return $this->priceHistoryUnsorted()->where('date_start', '<', Carbon::now())->orderBy('date_start', 'desc')->orderBy('created_at', 'desc')->first();
     }
 
-    public function getPriceInclVatAttribute()
-    {
-        if(!$this->currentPrice){
-            return 0;
-        }
-
-        $price_ex_vat = $this->currentPrice->price;
-
-        if($price_ex_vat === null){
-            $price_ex_vat = 0;
-        }
-
-        $vat_percentage = $this->currentPrice->vat_percentage;
-
-        if($vat_percentage === null || $vat_percentage === 0){
-            return $price_ex_vat;
-        }
-
-        return ($price_ex_vat + ($price_ex_vat*($vat_percentage / 100)));
-    }
-
     /**
      * @return string 'none' for no price history, 'variable' for variable price, 'static' for static price.
      */

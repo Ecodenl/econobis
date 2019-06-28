@@ -127,7 +127,6 @@ const ParticipantNew = props => {
 
 const mapStateToProps = state => {
     return {
-        participantProjectStatuses: state.systemData.participantProjectStatus,
         participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
     };
 };

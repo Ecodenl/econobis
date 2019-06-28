@@ -29,6 +29,9 @@ use App\Eco\Order\OrderPaymentType;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Order\OrderStatus;
 use App\Eco\Organisation\Organisation;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\Person\Person;
@@ -46,6 +49,7 @@ use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
 use CMPayments\IBAN;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
@@ -159,7 +163,7 @@ class ExternalWebformController extends Controller
             $intake = null;
             $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake kan niet worden aangemaakt.");
         }
-        $participation = $this->addParticipationToContact($contact, $data['participation']);
+        $participation = $this->addParticipationToContact($contact, $data['participation'], $webform);
         $order = $this->addOrderToContact($contact, $data['order']);
         $this->addTaskToContact($contact, $data['task'], $webform, $intake, $participation, $order);
     }
@@ -211,16 +215,16 @@ class ExternalWebformController extends Controller
             'participation' => [
                 // ParticipantProject
                 'participatie_productieproject_id' => 'project_id',
-                'participatie_aantal_participaties_aangevraagd' => 'participations_requested',
                 'participatie_iban_uitkering' => 'iban_payout',
                 'participatie_iban_uitkering_tnv' => 'iban_payout_attn',
-                'participatie_inschrijfdatum' => 'date_register',
                 'participatie_jaarlijks_verbruik' => 'power_kwh_consumption',
-                'participatie_status_id' => 'status_id',
-                'participatie_uitkeren_op_id' => 'type_id',
-                'participatie_toegekend' => 'participations_granted',
+                'participatie_aantal_participaties_aangevraagd' => 'participation_mutation_quantity',
+                'participatie_inschrijfdatum' => 'participation_mutation_date_interest',
+                'participatie_status_id' => 'participation_mutation_status_id',
                 'participatie_akkoord_regelement' => 'did_accept_agreement',
-                'participatie_betaald_op' => 'date_payed',
+                'participatie_uitkeren_op_id' => 'type_id',
+                'participatie_toegekend' => 'participations_granted',  // doen we niets (meer) mee
+                'participatie_betaald_op' => 'date_payed',             // doen we niets (meer) mee
             ],
             'order' => [
                 // Order / OrderProduct
@@ -669,47 +673,72 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addParticipationToContact(Contact $contact, array $data)
+    protected function addParticipationToContact(Contact $contact, array $data, Webform $webform )
     {
         if ($data['project_id']) {
             $this->log('Er is een productieproject meegegeven, participatie aanmaken.');
             $project = Project::find($data['project_id']);
             if (!$project) $this->error('Er is een ongeldige waarde voor productieproject meegegeven.');
 
-            $status = null; //TODO participantproject status is deleted
-            if (!$status) {
-                $this->log('Geen bekende waarde voor participatiestatus meegegeven, default naar optie.');
-                $status = null;
-            }
+            // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            Auth::setUser(User::find($webform->responsible_user_id));
 
-            $type = ParticipantProjectPayoutType::find($data['type_id']);
-            if (!$type) {
-                if ($project->project_type_id == 1) {
-                    $type = ParticipantProjectPayoutType::find(1);
-                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $project->projectType->name . ' default naar ' . $type->name . '.');
-                } elseif ($project->project_type_id == 2) {
-                    $type = ParticipantProjectPayoutType::find(3);
-                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $project->projectType->name . ' default naar ' . $type->name . '.');
-                } else {
-                    $type = ParticipantProjectPayoutType::find(3);
-                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, default naar ' . $type->name . '.');
-                }
-            }
+//            $status = null; //TODO participantproject status is deleted
+//            if (!$status) {
+//                $this->log('Geen bekende waarde voor participatiestatus meegegeven, default naar optie.');
+//                $status = null;
+//            }
+
+// ParticipantProjectPayoutTypes: 1=Rekening (account), 2=Bijschrijven (credit), 3=Energieleverancier (maar is deleted!)
+// Default altijd op Rekening zetten
+//            $type = ParticipantProjectPayoutType::find($data['type_id']);
+//            if (!$type) {
+//                if ($project->project_type_id == 1) {
+//                    $type = ParticipantProjectPayoutType::find(1);
+//                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $project->projectType->name . ' default naar ' . $type->name . '.');
+//                } elseif ($project->project_type_id == 2) {
+//                    $type = ParticipantProjectPayoutType::find(3);
+//                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, op basis van type project ' . $project->projectType->name . ' default naar ' . $type->name . '.');
+//                } else {
+//                    $type = ParticipantProjectPayoutType::find(3);
+//                    $this->log('Geen bekende waarde voor participatie uitkeringtype meegegeven, default naar ' . $type->name . '.');
+//                }
+//            }
 
             $ibanPayout = $this->checkIban($data['iban_payout'], 'participatie.');
             $participation = ParticipantProject::create([
                 'contact_id' => $contact->id,
                 'project_id' => $project->id,
-                'date_register' => Carbon::make($data['date_register']),
                 'iban_payout' => $ibanPayout,
                 'iban_payout_attn' => $data['iban_payout_attn'],
-                'type_id' => $type->id,
+                'type_id' => ParticipantProjectPayoutType::where('code_ref', 'account')->value('id'),
                 'power_kwh_consumption' => $data['power_kwh_consumption'] == '' ? 0 : $data['power_kwh_consumption'],
                 'did_accept_agreement' => (bool)$data['did_accept_agreement'],
-                'date_payed' => Carbon::make($data['date_payed']),
             ]);
 
             $this->log('Participatie aangemaakt met id ' . $participation->id . '.');
+
+            $status = ParticipantMutationStatus::find($data['participation_mutation_status_id']);
+            if (!$status) {
+                $status = ParticipantMutationStatus::where('code_ref', 'interest')->first();
+                $this->log('Geen bekende waarde voor participatie status id meegegeven, default naar ' . $status->name . '.');
+            }
+
+
+            $this->log('responsible_user_id : ' . $webform->responsible_user_id);
+            $dateInterest = Carbon::make($data['participation_mutation_date_interest']);
+
+            $participationMutation = ParticipantMutation::create([
+                'participation_id' => $participation->id,
+                'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->value('id'),
+                'status_id' => $status->id,
+                'date_interest' => $dateInterest,
+                'quantity' => $data['participation_mutation_quantity'],
+                'quantity_interest' => $data['participation_mutation_quantity'],
+            ]);
+
+            $this->log('Participatie mutation aangemaakt met id ' . $participationMutation->id . '.');
 
             return $participation;
         } else {

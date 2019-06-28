@@ -22,6 +22,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
                 bookWorth: false,
                 date: false,
             },
+            isSaving: false,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
@@ -126,11 +127,14 @@ class ProjectDetailsFormValueCourseItem extends Component {
         this.setState({ errors });
 
         // If no errors send form
-        !hasErrors &&
+        if (!hasErrors) {
+            this.setState({ isSaving: true });
             ProjectValueCourseAPI.updateProjectValueCourse(valueCourse.id, valueCourse).then(payload => {
                 this.props.updateValueCourse(payload);
+                this.setState({ isSaving: false });
                 this.closeEdit();
             });
+        }
     };
 
     render() {
@@ -153,6 +157,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
                         handleSubmit={this.handleSubmit}
                         errors={this.state.errors}
                         cancelEdit={this.cancelEdit}
+                        isSaving={this.state.isSaving}
                     />
                 )}
                 {this.state.showDelete && this.props.permissions.manageFinancial && (

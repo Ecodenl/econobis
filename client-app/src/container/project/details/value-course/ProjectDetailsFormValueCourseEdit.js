@@ -17,6 +17,7 @@ const ProjectDetailsFormValueCourseEdit = ({
     cancelEdit,
     errors,
     projectType,
+    isSaving,
 }) => {
     const { project, date, bookWorth, transferWorth, active, createdAt, createdBy } = valueCourse;
 
@@ -98,6 +99,7 @@ const ProjectDetailsFormValueCourseEdit = ({
                             onClickAction={handleSubmit}
                             type={'submit'}
                             value={'Submit'}
+                            loading={isSaving}
                         />
                     </div>
                 </PanelBody>

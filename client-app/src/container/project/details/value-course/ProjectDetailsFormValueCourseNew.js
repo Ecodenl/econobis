@@ -27,6 +27,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
                 bookWorth: false,
                 date: false,
             },
+            isSaving: false,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
@@ -86,11 +87,14 @@ class ProjectDetailsFormValueCourseNew extends Component {
         this.setState({ errors });
 
         // If no errors send form
-        !hasErrors &&
+        if (!hasErrors) {
+            this.setState({ isSaving: true });
             ProjectValueCourseAPI.storeProjectValueCourse(valueCourse).then(payload => {
                 this.props.newValueCourse(payload);
+                this.setState({ isSaving: false });
                 this.props.toggleShowNew();
             });
+        }
     };
 
     render() {
@@ -154,6 +158,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
                                 onClickAction={this.handleSubmit}
                                 type={'submit'}
                                 value={'Submit'}
+                                loading={this.state.isSaving}
                             />
                         </div>
                     </PanelBody>

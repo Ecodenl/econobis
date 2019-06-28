@@ -11778,7 +11778,7 @@ object-assign
       e.exports = n;
     },
     function(e, a, t) {
-      "use strict"
+      "use strict";
       /**
        * Checks if an event is supported in the current execution environment.
        *
@@ -11792,7 +11792,7 @@ object-assign
        * @return {boolean} True if the event is supported.
        * @internal
        * @license Modernizr 3.0.0pre (Custom Build) | MIT
-       */;
+       */
       function n(e, a) {
         if (!r.canUseDOM || (a && !("addEventListener" in document))) return !1;
         var t = "on" + e,
@@ -27246,8 +27246,7 @@ object-assign
               me["[object " + a + "]"] = a.toLowerCase();
             }
           );
-        var xe
-        /*!
+        var xe = /*!
          * Sizzle CSS Selector Engine v2.3.3
          * https://sizzlejs.com/
          *
@@ -27256,7 +27255,7 @@ object-assign
          * http://jquery.org/license
          *
          * Date: 2016-08-08
-         */ = (function(e) {
+         */ (function(e) {
           function a(e, a, t, n) {
             var i,
               r,

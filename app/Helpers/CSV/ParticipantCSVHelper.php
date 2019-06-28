@@ -231,7 +231,7 @@ class ParticipantCSVHelper
                     'iban_payout' => 'Iban uitkeren',
                     'iban_attn' => 'Iban uitkeren t.n.v.',
                     'iban_contact' => 'Iban contact',
-                    'iban_attn_contact' => 'Iban contact uitkeren t.n.v.',
+                    'iban_attn_contact' => 'Iban contact t.n.v.',
                     'date_register' => 'Inschrijfdatum',
                     'date_end' => 'Einddatum',
                     'participantProjectPayoutType.name' => 'Uitkeren op',

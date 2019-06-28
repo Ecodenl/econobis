@@ -194,6 +194,10 @@ class ProjectRevenueDistributionCalculator
             $dateReference = $this->projectRevenueDistribution->revenue->date_reference;
 
             $mutations->whereDate('date_entry', '<=', $dateReference);
+        } else {
+            $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+
+            $mutations->whereDate('date_entry', '<=', $dateEnd);
         }
 
         $participationsCount = 0;

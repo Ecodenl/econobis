@@ -13,9 +13,11 @@ class AlterParticipationProjectStatusNullable extends Migration
      */
     public function up()
     {
-        Schema::table('participation_project', function (Blueprint $table) {
-            $table->unsignedInteger('status_id')->nullable()->default(null)->change();
-        });
+        if (Schema::hasColumn('participation_project', 'status_id')) {
+            Schema::table('participation_project', function (Blueprint $table) {
+                $table->unsignedInteger('status_id')->nullable()->default(null)->change();
+            });
+        };
     }
 
     /**

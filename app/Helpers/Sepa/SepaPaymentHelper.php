@@ -181,7 +181,6 @@ class SepaPaymentHelper
             $participantMutation = new ParticipantMutation();
             $participantMutation->participation_id = $invoice->revenueDistribution->participation_id;
             $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $invoice->revenueDistribution->participation->project->project_type_id)->value('id');
-            $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
             $participantMutation->returns = $invoice->revenueDistribution->payout;
             $participantMutation->payout_kwh = $invoice->revenueDistribution->payout_kwh;
             $participantMutation->paid_on = $invoice->revenueDistribution->participation->iban_payout ? $invoice->revenueDistribution->participation->iban_payout : $invoice->revenueDistribution->contact->iban;

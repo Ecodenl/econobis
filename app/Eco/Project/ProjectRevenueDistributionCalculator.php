@@ -24,7 +24,7 @@ class ProjectRevenueDistributionCalculator
 
         // Revenue category REVENUE KWH
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
-            $this->projectRevenueDistribution->delivered_total = $this->calculateDeliveredTotal();
+            $this->projectRevenueDistribution->delivered_total = $this->calculateDeliveredKwh();
             $this->projectRevenueDistribution->payout_kwh = $this->projectRevenueDistribution->revenue->payout_kwh;
             $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
         }
@@ -32,19 +32,35 @@ class ProjectRevenueDistributionCalculator
         return $this->projectRevenueDistribution;
     }
 
-    protected function calculateDeliveredTotal()
+    protected function calculateDeliveredKwh()
     {
         $projectRevenue = $this->projectRevenueDistribution->revenue;
-        $totalParticipations = $projectRevenue->project->participations_definitive;
-        $participant = $this->projectRevenueDistribution->participation;
 
-        if(!$totalParticipations) return 0;
+        // Calculate total kwh
+        $totalKwh = $projectRevenue->kwh_end - $projectRevenue->kwh_start;
 
-        return round((($projectRevenue->kwh_end
-                    - $projectRevenue->kwh_start)
-                / $totalParticipations)
-            * $participant->participations_definitive, 2);
+        // Total sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
+        // With this value we can calculate the amount of kwh per day and per participation ($totalKwh / $totalSumOfParticipationsTimesDays)
+        $totalSumOfParticipationsAndDays = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
+            return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+        });
 
+        $totalDeliveredKwh = 0;
+
+        foreach($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+            // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
+            // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
+            $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+
+            // Save returns per Kwh period
+            $deliveredKwhPeriod->delivered_kwh = ($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays;
+            $deliveredKwhPeriod->save();
+
+            $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
+        }
+
+        // Return total delivered kwh for per distribution
+        return round($totalDeliveredKwh, 2);
     }
 
     protected function calculatePayout()
@@ -77,12 +93,12 @@ class ProjectRevenueDistributionCalculator
 
         // If key amount first percentage is filled and is greater participationValue, then split calculation with the two percentages
         if ($this->projectRevenueDistribution->revenue->key_amount_first_percentage && $participationValue > $this->projectRevenueDistribution->revenue->key_amount_first_percentage) {
-            $payoutTillKeyAmount = ($this->projectRevenueDistribution->revenue->key_amount_first_percentage * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / 365 * $daysOfPeriod;
-            $payoutAboveKeyAmount = (($participationValue - $this->projectRevenueDistribution->revenue->key_amount_first_percentage) * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / 365 * $daysOfPeriod;
+            $payoutTillKeyAmount = ($this->projectRevenueDistribution->revenue->key_amount_first_percentage * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            $payoutAboveKeyAmount = (($participationValue - $this->projectRevenueDistribution->revenue->key_amount_first_percentage) * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
 
             $payout = $payoutTillKeyAmount + $payoutAboveKeyAmount;
         } else {
-            $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / 365 * $daysOfPeriod;
+            $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
         }
 
         return number_format($payout, 2);
@@ -118,9 +134,7 @@ class ProjectRevenueDistributionCalculator
             }
 
             if($dateEntry > $dateEnd) $mutationValue = 0;
-
-            $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / 365 * $daysOfPeriod;
-
+            $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
         }
 
         return number_format($payout, 2);
@@ -177,8 +191,8 @@ class ProjectRevenueDistributionCalculator
             $currentMutationValues->modification_above_key_amount = $currentMutationValues->above_key_amount - $aboveKeyAmountOriginal;
 
 
-            $payoutTillKeyAmount = ($currentMutationValues->modification_before_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / 365 * $daysOfPeriod;
-            $payoutAboveKeyAmount = ($currentMutationValues->modification_above_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / 365 * $daysOfPeriod;
+            $payoutTillKeyAmount = ($currentMutationValues->modification_before_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            $payoutAboveKeyAmount = ($currentMutationValues->modification_above_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
 
             $payout += $payoutTillKeyAmount + $payoutAboveKeyAmount;
         }

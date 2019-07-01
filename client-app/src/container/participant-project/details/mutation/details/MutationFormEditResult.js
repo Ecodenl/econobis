@@ -8,7 +8,6 @@ import React from 'react';
 import ParticipantDetailsMutationConclusion from './conclusion';
 
 function MutationFormEditResult({
-    originalStatus,
     type,
     returns,
     entry,
@@ -24,12 +23,6 @@ function MutationFormEditResult({
         <PanelBody>
             <div className="row">
                 <ViewText label={'Type'} id={'type'} className={'col-sm-6 form-group'} value={type.name} />
-                <ViewText
-                    label={'Status'}
-                    id={'status'}
-                    className={'col-sm-6 form-group'}
-                    value={originalStatus.name}
-                />
             </div>
             <div className="row">
                 <ViewText

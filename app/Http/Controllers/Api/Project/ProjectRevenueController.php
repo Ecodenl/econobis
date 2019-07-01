@@ -771,7 +771,6 @@ class ProjectRevenueController extends ApiController
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $distribution->participation_id;
         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
-        $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
         $participantMutation->payout_kwh = $distribution->delivered_total;
         $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
         $participantMutation->save();

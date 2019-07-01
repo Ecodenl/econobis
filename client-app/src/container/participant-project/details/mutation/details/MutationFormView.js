@@ -81,7 +81,7 @@ const MutationFormView = ({
                         ) : (
                             ''
                         )}
-                        {showActionButtons && permissions.manageFinancial ? (
+                        {status && status.codeRef !== 'final' && showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={toggleDelete}>
                                 <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                             </a>

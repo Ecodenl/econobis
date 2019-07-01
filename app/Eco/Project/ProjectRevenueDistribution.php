@@ -38,6 +38,10 @@ class ProjectRevenueDistribution extends Model
         return $this->hasMany(PaymentInvoice::class, 'revenue_distribution_id');
     }
 
+    public function deliveredKwhPeriod(){
+        return $this->hasMany(ProjectRevenueDeliveredKwhPeriod::class, 'distribution_id');
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

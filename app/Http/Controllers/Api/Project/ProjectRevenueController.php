@@ -16,6 +16,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
+use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\EnergySupplierCSVHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
@@ -197,7 +198,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->fill($data);
 
-        $recalculateDistribution = false;
+        $recalculateDistribution = true;
 
         if($projectRevenue->isDirty('date_begin') ||
             $projectRevenue->isDirty('date_end') ||
@@ -210,6 +211,12 @@ class ProjectRevenueController extends ApiController
             $projectRevenue->isDirty('pay_percentage_valid_from_key_amount') ||
             $projectRevenue->isDirty('distribution_type_id')) {
             $recalculateDistribution = true;
+        }
+
+        // If period is changed then remove all values from revenue distribution period
+        if($projectRevenue->isDirty('date_begin') ||
+            $projectRevenue->isDirty('date_end')) {
+                $projectRevenue->deliveredKwhPeriod()->delete();
         }
 
         $projectRevenue->save();
@@ -285,9 +292,63 @@ class ProjectRevenueController extends ApiController
         $distribution->participation_id = $participant->id;
         $distribution->save();
 
+        if($projectRevenue->category->code_ref == 'revenueKwh') {
+            $this->saveDeliveredKwhPeriod($distribution);
+        }
+
         // Recalculate values of distribution after saving
         $distribution->calculator()->run();
         $distribution->save();
+    }
+
+    public function saveDeliveredKwhPeriod(ProjectRevenueDistribution $distribution)
+    {
+        $distributionId = $distribution->id;
+        $revenue = $distribution->revenue;
+
+        $dateBeginFromRevenue = $revenue->date_begin;
+        $dateEndFromRevenue = $revenue->date_end;
+
+        if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
+
+        $quantityOfParticipations = 0;
+
+        $mutations = $distribution->participation->mutationsDefinitive;
+
+        foreach ($mutations as $index => $mutation) {
+            $dateBegin = $dateBeginFromRevenue;
+            $dateEnd = $dateEndFromRevenue;
+
+            $nextMutation = $mutations->get(++$index);
+
+            if($nextMutation) {
+                $dateEnd = $nextMutation->date_entry;
+            }
+
+            $dateEntry = $mutation->date_entry;
+
+            // If date entry is after date begin then date begin is equal to date entry
+            if($dateEntry > $dateBegin) $dateBegin = $dateEntry;
+
+            $daysOfPeriod = $dateEnd->diffInDays($dateBegin);
+
+            $quantityOfParticipations += $mutation->quantity;
+
+            $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
+                [
+                    'distribution_id' => $distributionId,
+                    'revenue_id' => $revenue->id,
+                    'date_begin' => $dateBegin
+                ],
+                [
+                    'date_end' => $dateEnd,
+                    'days_of_period' => $daysOfPeriod,
+                    'participations_quantity' => $quantityOfParticipations
+                ]
+            );
+
+            $deliveredKwhPeriod->save();
+        }
     }
 
     public function createEnergySupplierReport(

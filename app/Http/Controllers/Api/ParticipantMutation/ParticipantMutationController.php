@@ -123,6 +123,11 @@ class ParticipantMutationController extends ApiController
         DB::transaction(function () use ($participantMutation) {
             $participantProject = $participantMutation->participation;
 
+            $statusLogs = $participantMutation->statusLog;
+            foreach ($statusLogs as $statusLog)
+            {
+                $statusLog->delete();
+            }
             $participantMutation->delete();
 
             // Herbereken de afhankelijke gegevens op het participantProject

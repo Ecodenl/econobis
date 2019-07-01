@@ -32,6 +32,20 @@ export default {
         });
     },
 
+    getExcel: (filters, extraFilters, sorts, fetchFromProject) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/excel`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+                fetchFromProject: fetchFromProject,
+            },
+            responseType: 'blob',
+        });
+    },
+
     peekParticipantsProjects: () => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/peek`;
 

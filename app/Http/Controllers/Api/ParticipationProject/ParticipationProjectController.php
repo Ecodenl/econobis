@@ -21,6 +21,8 @@ use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\ParticipantCSVHelper;
+use App\Helpers\Excel\ParticipantExcelHelper;
+use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
@@ -151,6 +153,16 @@ class ParticipationProjectController extends ApiController
         $participantCSVHelper = new ParticipantCSVHelper($participants);
 
         return $participantCSVHelper->downloadCSV();
+    }
+
+    public function excel(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $participants = $requestQuery->getQueryNoPagination()->get();
+
+        $participantExcelHelper = new ParticipantExcelHelper($participants);
+
+        return $participantExcelHelper->downloadExcel();
     }
 
     public function show(ParticipantProject $participantProject)

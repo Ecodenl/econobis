@@ -58,7 +58,12 @@ class DeleteProduct implements DeleteInterface
      */
     public function canDelete()
     {
-
+        if($this->product->orderProducts->count() == 1){
+            array_push($this->errorMessage, "Er is al een orderregel aangemaakt met dit product.");
+        }
+        elseif($this->product->orderProducts->count() > 0){
+            array_push($this->errorMessage, "Er zijn al " . $this->product->orderProducts->count() . " orderregels aangemaakt met dit product.");
+        }
     }
 
     /** Deletes models recursive

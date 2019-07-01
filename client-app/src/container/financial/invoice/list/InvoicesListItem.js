@@ -134,6 +134,7 @@ class InvoicesListItem extends Component {
             checked,
             iban,
             subStatus,
+            usesTwinfield,
         } = this.props;
 
         const inProgressRowClass =
@@ -170,6 +171,18 @@ class InvoicesListItem extends Component {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}
+                    {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? <br /> : ''}
+                    {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? (
+                        <span class="error-span">
+                            {'€' +
+                                amountOpen.toLocaleString('nl', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
+                        </span>
+                    ) : (
+                        ''
+                    )}
                 </td>
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
@@ -199,7 +212,8 @@ class InvoicesListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons &&
+                    {!usesTwinfield &&
+                    this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
                             <span className="glyphicon glyphicon-euro mybtn-success" />{' '}

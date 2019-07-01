@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: StagiarSoftware
- * Date: 19-1-2018
- * Time: 11:55
- */
 
 namespace App\Helpers\Excel;
 

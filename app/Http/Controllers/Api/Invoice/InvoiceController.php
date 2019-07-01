@@ -252,73 +252,79 @@ class InvoiceController extends ApiController
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
+        // verwijder alle facturen waar twinfield gebruikt wordt en geen ledgercode bekend is
+        $validatedInvoices = $invoices->reject(function ($invoice) {
+            return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
+        });
+
         $response = [];
 
-        $administration = $invoices->first()->administration;
-        $paymentTypeId = $invoices->first()->payment_type_id;
-
-        if (!$administration->bic || !$administration->IBAN) {
-            abort(412, 'BIC en IBAN zijn verplichte velden.');
-        }
-
-        if ($paymentTypeId === 'collection') {
-            if (empty($administration->sepa_creditor_id)) {
-                abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
-            }
-            // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
-            $validatedInvoices = $invoices->reject(function ($invoice) {
-                return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
-            });
-        } else {
-            $validatedInvoices = $invoices;
-        }
-
         if ($validatedInvoices->count() > 0) {
+            $administration = $validatedInvoices->first()->administration;
+            $paymentTypeId = $validatedInvoices->first()->payment_type_id;
 
-            // Eerst hele zet in progress zetten
-            foreach ($validatedInvoices as $invoice) {
-                $orderController = new OrderController;
-                $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-
-                if ($emailTo === 'Geen e-mail bekend') {
-                    abort(404, 'Geen e-mail bekend');
-                } else {
-                    InvoiceHelper::invoiceInProgress($invoice);
-                }
-            }
-            foreach ($validatedInvoices as $invoice) {
-                $invoice->date_collection = $request->input('dateCollection');
-                $invoice->save();
-                InvoiceHelper::createInvoiceDocument($invoice);
-            }
-
-            foreach ($validatedInvoices as $invoice) {
-                //alleen als factuur goed is aangemaakt, gaan we mailen
-                if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
-
-                    InvoiceHelper::invoiceIsSending($invoice);
-                    try {
-                        $invoiceResponse = InvoiceHelper::send($invoice);
-                        InvoiceHelper::invoiceSend($invoice);
-                        array_push($response, $invoiceResponse);
-                    } catch (WebformException $e) {
-                        Log::error($e->getMessage());
-                        InvoiceHelper::invoiceErrorSending($invoice);
-                    }
-                }
+            if (!$administration->bic || !$administration->IBAN) {
+                abort(412, 'BIC en IBAN zijn verplichte velden.');
             }
 
             if ($paymentTypeId === 'collection') {
-                // haal niet goed aangemaakte facturen uit list voor SEPA file
-                $validatedInvoices = $invoices->reject(function ($invoice) {
-                    return ($invoice->invoicesToSend()->exists() && !$invoice->invoicesToSend()->first()->invoice_created);
+                if (empty($administration->sepa_creditor_id)) {
+                    abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+                }
+                // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
+                $validatedInvoices = $validatedInvoices->reject(function ($invoice) {
+                    return (empty($invoice->order->contact->iban));
                 });
-
-                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
-                $sepa = $sepaHelper->generateSepaFile();
-                return $sepaHelper->downloadSepa($sepa);
             }
 
+            if ($validatedInvoices->count() > 0) {
+
+                // Eerst hele zet in progress zetten
+                foreach ($validatedInvoices as $invoice) {
+                    $orderController = new OrderController;
+                    $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+
+                    if ($emailTo === 'Geen e-mail bekend') {
+                        abort(404, 'Geen e-mail bekend');
+                    } else {
+                        InvoiceHelper::invoiceInProgress($invoice);
+                    }
+                }
+                foreach ($validatedInvoices as $invoice) {
+                    $invoice->date_collection = $request->input('dateCollection');
+                    $invoice->save();
+                    InvoiceHelper::createInvoiceDocument($invoice);
+                }
+
+                foreach ($validatedInvoices as $invoice) {
+                    //alleen als factuur goed is aangemaakt, gaan we mailen
+                    if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
+
+                        InvoiceHelper::invoiceIsSending($invoice);
+                        try {
+                            $invoiceResponse = InvoiceHelper::send($invoice);
+                            InvoiceHelper::invoiceSend($invoice);
+                            array_push($response, $invoiceResponse);
+                        } catch (\Exception $e) {
+                            Log::error($e->getMessage());
+                            InvoiceHelper::invoiceErrorSending($invoice);
+                        }
+                    }
+                }
+
+                if ($paymentTypeId === 'collection') {
+                    // haal niet goed aangemaakte facturen uit list voor SEPA file
+                    $validatedInvoices = $validatedInvoices->reject(function ($invoice) {
+                        return ($invoice->invoicesToSend()->exists()
+                            && !$invoice->invoicesToSend()->first()->invoice_created);
+                    });
+
+                    $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+                    $sepa = $sepaHelper->generateSepaFile();
+                    return $sepaHelper->downloadSepa($sepa);
+                }
+
+            }
         }
 
         return $response;
@@ -329,12 +335,10 @@ class InvoiceController extends ApiController
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
-        // Eerst hele zet in progress zetten
-        foreach ($invoices as $k => $invoice) {
-            InvoiceHelper::invoiceInProgress($invoice, true);
-        }
-
-        $orderController = new OrderController;
+        // verwijder alle facturen waar twinfield gebruikt wordt en geen ledgercode bekend is
+        $validatedInvoices = $invoices->reject(function ($invoice) {
+            return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
+        });
 
         $html
             = '<style>
@@ -343,53 +347,68 @@ class InvoiceController extends ApiController
 }
 </style>';
 
-        foreach ($invoices as $k => $invoice) {
-
-            $invoice->date_collection = $request->input('dateCollection');
-            $invoice->save();
-
-            $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-            $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
-
-            if ($invoice->order->contact->full_name === $contactPerson) {
-                $contactPerson = null;
+        if ($validatedInvoices->count() > 0) {
+            // Eerst hele zet in progress zetten
+            foreach ($validatedInvoices as $k => $invoice) {
+                InvoiceHelper::invoiceInProgress($invoice, true);
             }
 
-            $contactName = null;
+            $orderController = new OrderController;
 
-            if ($invoice->order->contact->type_id == 'person') {
-                $prefix = $invoice->order->contact->person->last_name_prefix;
-                $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
-            } elseif ($invoice->order->contact->type_id == 'organisation') {
-                $contactName = $invoice->order->contact->full_name;
-            }
+            foreach ($validatedInvoices as $k => $invoice) {
 
-            if ($emailTo === 'Geen e-mail bekend') {
-                $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
-                if($createdOk)
-                {
-                    InvoiceHelper::invoiceIsSending($invoice);
-                    InvoiceHelper::invoiceSend($invoice);
+                $invoice->date_collection = $request->input('dateCollection');
+                $invoice->save();
 
-                    $img = '';
-                    if ($invoice->administration->logo_filename) {
-                        $path = storage_path('app' . DIRECTORY_SEPARATOR
-                            . 'administrations' . DIRECTORY_SEPARATOR
-                            . $invoice->administration->logo_filename);
-                        $logo = file_get_contents($path);
+                $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+                $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
 
-                        $src = 'data:' . mime_content_type($path)
-                            . ';charset=binary;base64,' . base64_encode($logo);
-                        $src = str_replace(" ", "", $src);
-                        $img = '<img src="' . $src
-                            . '" width="auto" height="156px"/>';
+                if ($invoice->order->contact->full_name === $contactPerson) {
+                    $contactPerson = null;
+                }
+
+                $contactName = null;
+
+                if ($invoice->order->contact->type_id == 'person') {
+                    $prefix = $invoice->order->contact->person->last_name_prefix;
+                    $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' '
+                        . $invoice->order->contact->person->last_name
+                        : $invoice->order->contact->person->first_name . ' '
+                        . $invoice->order->contact->person->last_name;
+                } elseif ($invoice->order->contact->type_id == 'organisation') {
+                    $contactName = $invoice->order->contact->full_name;
+                }
+
+                if ($emailTo === 'Geen e-mail bekend') {
+                    $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
+                    if ($createdOk) {
+                        InvoiceHelper::invoiceIsSending($invoice);
+                        InvoiceHelper::invoiceSend($invoice);
+
+                        $img = '';
+                        if ($invoice->administration->logo_filename) {
+                            $path = storage_path('app' . DIRECTORY_SEPARATOR
+                                . 'administrations' . DIRECTORY_SEPARATOR
+                                . $invoice->administration->logo_filename);
+                            $logo = file_get_contents($path);
+
+                            $src = 'data:' . mime_content_type($path)
+                                . ';charset=binary;base64,' . base64_encode($logo);
+                            $src = str_replace(" ", "", $src);
+                            $img = '<img src="' . $src
+                                . '" width="auto" height="156px"/>';
+                        }
+
+                        if ($k !== 0) {
+                            $html .= '<div class="page-break"></div>';
+                        }
+                        $html .= view('invoices.generic')->with([
+                            'invoice' => $invoice,
+                            'contactPerson' => $contactPerson,
+                            'contactName' => $contactName
+                        ])
+                            ->with('logo', $img)->render();
                     }
-
-                    if ($k !== 0) {
-                        $html .= '<div class="page-break"></div>';
-                    }
-                    $html .= view('invoices.generic')->with(['invoice' => $invoice, 'contactPerson' => $contactPerson, 'contactName' => $contactName])
-                        ->with('logo', $img)->render();
                 }
             }
         }
@@ -404,26 +423,6 @@ class InvoiceController extends ApiController
         header('Access-Control-Expose-Headers: X-Filename');
 
         return $pdfOutput->output();
-    }
-
-    public function sendPost(Invoice $invoice, Request $request)
-    {
-        InvoiceHelper::invoiceInProgress($invoice, true);
-        $invoice->date_collection = $request->input('dateCollection');
-        $invoice->save();
-        $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
-        if($createdOk)
-        {
-            InvoiceHelper::invoiceIsSending($invoice);
-            InvoiceHelper::invoiceSend($invoice);
-        }
-
-        $filePath = Storage::disk('administrations')->getDriver()
-            ->getAdapter()->applyPathPrefix($invoice->document->filename);
-
-        header('X-Filename:' . $invoice->document->name);
-        header('Access-Control-Expose-Headers: X-Filename');
-        return response()->download($filePath, $invoice->document->name);
     }
 
     public function download(Invoice $invoice)
@@ -485,38 +484,45 @@ class InvoiceController extends ApiController
     {
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
+        // verwijder alle facturen waar twinfield gebruikt wordt en geen ledgercode bekend is
+        $validatedInvoices = $invoices->reject(function ($invoice) {
+            return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
+        });
+
         $response = [];
 
-        $administration = $invoices->first()->administration;
-        $paymentTypeId = $invoices->first()->payment_type_id;
+        if ($validatedInvoices->count() > 0) {
+            $administration = $validatedInvoices->first()->administration;
+            $paymentTypeId = $validatedInvoices->first()->payment_type_id;
 
-
-        if ($paymentTypeId === 'collection') {
-
-            if (!$administration->bic || !$administration->IBAN) {
-                abort(412, 'BIC en IBAN zijn verplichte velden.');
-            }
 
             if ($paymentTypeId === 'collection') {
-                if (empty($administration->sepa_creditor_id)) {
-                    abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+
+                if (!$administration->bic || !$administration->IBAN) {
+                    abort(412, 'BIC en IBAN zijn verplichte velden.');
                 }
-                // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
-                $validatedInvoices = $invoices->reject(function ($invoice) {
-                    return (empty($invoice->order->IBAN) && empty($invoice->order->contact->iban));
-                });
-            } else {
-                $validatedInvoices = $invoices;
+
+                if ($paymentTypeId === 'collection') {
+                    if (empty($administration->sepa_creditor_id)) {
+                        abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+                    }
+                    // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
+                    $validatedInvoices = $validatedInvoices->reject(function ($invoice) {
+                        return (empty($invoice->order->contact->iban));
+                    });
+                    //            } else {
+                    //                $validatedInvoices = $validatedInvoices;
+                }
+
+                if ($validatedInvoices->count() > 0) {
+                    $sepaHelper = new SepaHelper($administration, $validatedInvoices);
+
+                    $sepa = $sepaHelper->generateSepaFile();
+
+                    return $sepaHelper->downloadSepa($sepa);
+                }
+
             }
-
-            if ($validatedInvoices->count() > 0) {
-                $sepaHelper = new SepaHelper($administration, $validatedInvoices);
-
-                $sepa = $sepaHelper->generateSepaFile();
-
-                return $sepaHelper->downloadSepa($sepa);
-            }
-
         }
 
         return $response;
@@ -604,6 +610,8 @@ class InvoiceController extends ApiController
         $product->duration_id = $productData['durationId'];
         $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
         $product->administration_id = $productData['administrationId'];
+        $product->ledger_id = $productData['ledgerId'];
+        $product->ledger_id ?: $product->ledger_id = null;
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();

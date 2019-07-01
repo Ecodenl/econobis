@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Organisation;
 
+use App\Eco\Administration\Administration;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Resources\Organisation\OrganisationPeek;
@@ -75,6 +77,11 @@ class OrganisationController extends ApiController
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
             'didAgreeAvg' => 'boolean',
+            'isCollectMandate' => 'boolean',
+            'collectMandateCode' => '',
+            'collectMandateSignatureDate' => 'date',
+            'collectMandateFirstRunDate' => 'date',
+            'collectMandateCollectionSchema' => '',
         ]);
 
         $organisationData = $request->validate([
@@ -91,6 +98,9 @@ class OrganisationController extends ApiController
             'ownerId' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
+            'isCollectMandate' => 'boolean',
+            'collectMandateSignatureDate' => 'nullable',
+            'collectMandateFirstRunDate' => 'nullable',
         ]);
 
         $contact = $organisation->contact;
@@ -109,6 +119,25 @@ class OrganisationController extends ApiController
         $organisation->fill($this->arrayKeysToSnakeCase($organisationData));
         $organisation->save();
 
+        // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
+        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
+        if($contact->twinfieldNumbers())
+        {
+            $messages = [];
+            foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
+
+                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+                $errorMessages = $twinfieldCustomerHelper->updateCustomer($contact);
+                if($errorMessages)
+                {
+                    array_push($messages, $errorMessages);
+                }
+            }
+            if( !empty($messages) )
+            {
+                abort(412, implode(';', $messages));
+            }
+        }
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller
         return (new ContactController())->show($contact->fresh(), $request);

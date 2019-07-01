@@ -3,8 +3,9 @@
 namespace App\Eco\Product;
 
 use App\Eco\Administration\Administration;
-use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceProduct;
+use App\Eco\CostCenter\CostCenter;
+use App\Eco\Ledger\Ledger;
 use App\Eco\Order\OrderProduct;
 use App\Eco\User\User;
 use App\Scopes\NotOneTimeProductScope;
@@ -27,6 +28,14 @@ class Product extends Model
         static::addGlobalScope('is_not_one_time', function (Builder $builder) {
             $builder->where('is_one_time', false);
         });
+    }
+
+    public function ledger(){
+        return $this->belongsTo(Ledger::class);
+    }
+
+    public function costCenter(){
+        return $this->belongsTo(CostCenter::class);
     }
 
     public function priceHistory()

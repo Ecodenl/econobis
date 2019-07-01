@@ -296,6 +296,7 @@ Route::namespace('Api')
 
         Route::get('project/participant/grid', 'ParticipationProject\ParticipationProjectController@grid');
         Route::get('project/participant/csv', 'ParticipationProject\ParticipationProjectController@csv');
+        Route::get('project/participant/excel', 'ParticipationProject\ParticipationProjectController@excel');
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
         Route::get('project/participant/{participantProject}/peek-members', 'ParticipationProject\ParticipationProjectController@peekContactsMembershipRequired');
@@ -338,9 +339,15 @@ Route::namespace('Api')
         Route::get('administration/peek', 'Administration\AdministrationController@peek');
         Route::get('administration/{administration}', 'Administration\AdministrationController@show');
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
+        Route::get('administration/{administration}/ledgers', 'Administration\AdministrationController@getLedgers');
         Route::post('administration/sepa/{sepa}/delete', 'Administration\AdministrationController@deleteSepa');
         Route::post('administration', 'Administration\AdministrationController@store');
+        Route::post('administration/ledger', 'Administration\AdministrationController@storeLedger');
+        Route::post('administration/ledger/{ledger}/update', 'Administration\AdministrationController@updateLedger');
+        Route::post('administration/{administration}/ledger/peek', 'Administration\AdministrationController@peekLedgers');
         Route::post('administration/{administration}', 'Administration\AdministrationController@update');
+        Route::post('administration/{administration}/sync-invoices-to-twinfield', 'Administration\AdministrationController@syncSentInvoicesToTwinfield');
+        Route::post('administration/{administration}/sync-invoices-from-twinfield', 'Administration\AdministrationController@syncSentInvoicesFromTwinfield');
         Route::post('administration/{administration}/delete', 'Administration\AdministrationController@destroy');
         Route::post('administration/{administration}/{user}/attach', 'Administration\AdministrationController@attachUser');
         Route::post('administration/{administration}/{user}/detach', 'Administration\AdministrationController@detachUser');
@@ -414,6 +421,20 @@ Route::namespace('Api')
         Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
+
+        Route::get('vat-code/jory', 'VatCode\VatCodeController@jory');
+        Route::post('vat-code', 'VatCode\VatCodeController@store');
+        Route::post('vat-code/{vatCode}', 'VatCode\VatCodeController@update');
+
+        Route::get('ledger/jory', 'Ledger\LedgerController@jory');
+        Route::post('ledger', 'Ledger\LedgerController@store');
+        Route::post('ledger/{ledger}', 'Ledger\LedgerController@update');
+        Route::post('ledger/{ledger}/delete', 'Ledger\LedgerController@destroy');
+
+        Route::get('cost-center/jory', 'CostCenter\CostCenterController@jory');
+        Route::post('cost-center', 'CostCenter\CostCenterController@store');
+        Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
+        Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
 
         // Jory routes voor ophalen data
         Route::get( 'jory', '\\'.JoryController::class.'@multiple');

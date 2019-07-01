@@ -160,14 +160,8 @@ class SepaHelper
         // Transacties
         foreach($this->invoices AS $invoice){
 
-            $iban = $invoice->order->IBAN;
-            if(!$iban){
-                $iban = $invoice->order->contact->iban;
-            }
-            $iban_attn = $invoice->order->iban_att;
-            if(!$iban_attn){
-                $iban_attn = $invoice->order->contact->iban_attn;
-            }
+            $iban = $invoice->order->contact->iban;
+            $iban_attn = $invoice->order->contact->iban_attn;
             if(!$iban_attn){
                 $iban_attn = $invoice->order->contact->full_name;
             }
@@ -187,8 +181,8 @@ class SepaHelper
             // Direct Debit Transaction
             $xml .= "\n\t\t\t\t<DrctDbtTx>";
             $xml .= "\n\t\t\t\t\t<MndtRltdInf>";
-            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->order->number  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
-            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->order->date_requested . "</DtOfSgntr>"; // Mandaat ondertekening
+            $xml .= "\n\t\t\t\t\t\t<MndtId>" . $invoice->order->contact->collect_mandate_code  . "</MndtId>"; // Uniek nummer per klant, debiteurnummer
+            $xml .= "\n\t\t\t\t\t\t<DtOfSgntr>" .  $invoice->order->contact->collect_mandate_signature_date . "</DtOfSgntr>"; // Mandaat ondertekening
             $xml .= "\n\t\t\t\t\t</MndtRltdInf>";
             $xml .= "\n\t\t\t\t</DrctDbtTx>";
 

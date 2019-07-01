@@ -13,7 +13,9 @@ const ParticipantsListToolbar = props => {
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName="glyphicon-refresh" onClickAction={props.resetParticipantProjectFilters} />
                     <ButtonIcon iconName="glyphicon-filter" onClickAction={props.toggleShowExtraFilters} />
-                    <ButtonIcon iconName="glyphicon-download-alt" onClickAction={props.getCSV} />
+                    {/* todo CSV opruimen */}
+                    {/*<ButtonIcon iconName="glyphicon-download-alt" onClickAction={props.getCSV} />*/}
+                    <ButtonIcon iconName="glyphicon-download-alt" onClickAction={props.getExcel} />
                     <ButtonText buttonText="Rapportage" onClickAction={props.toggleShowCheckboxList} />
                 </div>
             </div>

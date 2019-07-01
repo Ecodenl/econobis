@@ -24,6 +24,7 @@ return [
         'key' => env('SES_KEY'),
         'secret' => env('SES_SECRET'),
         'region' => 'us-east-1',
+        'test' => 'us-east-1',
     ],
 
     'sparkpost' => [
@@ -36,4 +37,9 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'twinfield' => [
+        'verkoop_dagboek_code'         => 'VRK',
+        'verkoop_default_currency'     => 'EUR',
+        'verkoop_grootboek_debiteuren' => '1300',
+    ],
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\SystemData;
 
+use App\Eco\Administration\Administration;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
 use App\Eco\ContactGroup\ContactGroupType;
@@ -15,6 +16,8 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
+use App\Eco\CostCenter\CostCenter;
+use App\Eco\Ledger\Ledger;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnoreType;
 use App\Eco\Measure\MeasureCategory;
@@ -58,7 +61,11 @@ use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Eco\VatCode\VatCode;
+use App\Http\Resources\Administration\FullAdministration;
+use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
@@ -126,67 +133,72 @@ class SystemData extends Resource
         $sortedEnergySuppliers = $sortedEnergySuppliers->values();
 
         return [
-            'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
-            'lastNamePrefixes' => FullLastNamePrefix::collection(LastNamePrefix::all()),
-            'emailAddressTypes' => FullEnumWithIdAndName::collection(EmailAddressType::collection()),
-            'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
-            'personTypes' => FullPersonType::collection(PersonType::all()),
-            'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
-            'industries' => FullIndustry::collection(Industry::all()),
-            'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
-            'occupations' => FullOccupation::collection(Occupation::all()),
-            'titles' => FullTitle::collection(Title::all()),
+            'administrations' => FullAdministration::collection(Administration::all()),
+            'appName' => config('app.name'),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
-            'measures' => MeasurePeek::collection(Measure::all()),
-            'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
-            'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),
-            'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
-            'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
-            'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
-            'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
-            'roles' => Role::select(['id', 'name'])->get()->toArray(),
-            'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
-            'taskTypes' => GenericResource::collection(TaskType::all()),
-            'taskProperties' => GenericResource::collection(TaskProperty::all()),
-            'users' => $users,
-            'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
-            'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),
-            'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
-            'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
-            'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
-            'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
-            'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
-            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
-            'countries' => GenericResource::collection(Country::all()),
-            'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
-            'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
-            'projectTypes' => GenericResource::collection(ProjectType::all()),
-            'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
-            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+            'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
+            'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
+            'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
+            'costCenters' => FullCostCenter::collection(CostCenter::all()),
+            'countries' => GenericResource::collection(Country::all()),
+            'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
+            'documentTemplateTypes' => FullEnumWithIdAndName::collection(DocumentTemplateType::collection()),
+            'documentTypes' => FullEnumWithIdAndName::collection(DocumentType::collection()),
+            'emailAddressTypes' => FullEnumWithIdAndName::collection(EmailAddressType::collection()),
+            'emailStatuses' => FullEnumWithIdAndName::collection(EmailStatus::collection()),
+            'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
+            'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
+            'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
+            'industries' => FullIndustry::collection(Industry::all()),
+            'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
+            'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
+            'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
+            'lastNamePrefixes' => FullLastNamePrefix::collection(LastNamePrefix::all()),
+            'ledgers' => FullLedger::collection(Ledger::all()),
+            'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
+            'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
+            'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
+            'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
+            'measures' => MeasurePeek::collection(Measure::all()),
+            'occupations' => FullOccupation::collection(Occupation::all()),
+            'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
+            'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
+            'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
+            'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
+            'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
             'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
-            'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
-            'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
-            'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
-            'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
-            'appName' => config('app.name'),
+            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+            'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
+            'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
+            'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
+            'personTypes' => FullPersonType::collection(PersonType::all()),
+            'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),
-            'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
-            'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
-            'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
-            'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'products' => FullProduct::collection(Product::all()),
-            'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
-            'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
-            'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
-            'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
+            'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
+            'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
+            'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
+            'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
+            'projectTypes' => GenericResource::collection(ProjectType::all()),
+            'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
+            'roles' => Role::select(['id', 'name'])->get()->toArray(),
+            'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
+            'taskProperties' => GenericResource::collection(TaskProperty::all()),
+            'taskTypes' => GenericResource::collection(TaskType::all()),
+            'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
+            'titles' => FullTitle::collection(Title::all()),
+            'users' => $users,
+            'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,
+            'vatCodes' => VatCode::select(['id', 'description', 'percentage'])->get(),
+            'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
         ];
     }
 }

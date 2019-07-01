@@ -11,6 +11,7 @@ namespace App\Helpers\Twinfield;
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Money\Currency;
 use Money\Money;
@@ -55,7 +56,11 @@ class TwinfieldSalesTransactionHelper
     public function createAllSalesTransactions(){
         set_time_limit(0);
 
-        foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>=', '20190101')->get() as $invoice){
+        foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>=', '20190101')
+            ->whereDoesntHave('invoiceProducts', function ($query) {
+                $query->whereNull('twinfield_ledger_code');
+            })
+            ->get() as $invoice){
             $response = $this->createSalesTransation($invoice);
 
             if($response === true){

@@ -68,6 +68,7 @@ class RevenueDetailsToolbar extends Component {
                                                 <li>
                                                     <Link to={pdfLink}>PDF EM</Link>
                                                 </li>
+                                                {/*ToDo reminder for cleanup code download CSV EM*/}
                                                 <li>
                                                     <Link to={excelLink}>Excel EM</Link>
                                                 </li>

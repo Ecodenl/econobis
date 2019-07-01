@@ -2,6 +2,7 @@
 
 namespace App\Eco\Order;
 
+use App\Eco\CostCenter\CostCenter;
 use App\Eco\Product\Product;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -29,6 +30,10 @@ class OrderProduct extends Model
     public function product()
     {
         return $this->belongsTo(Product::class)->withoutGlobalScope('is_not_one_time');
+    }
+
+    public function costCenter(){
+        return $this->belongsTo(CostCenter::class);
     }
 
     public function getTotalPriceInclVatAndReductionAttribute()

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\Address;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
+use App\Eco\Administration\Administration;
 use App\Helpers\Delete\Models\DeleteAddress;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\Address\FullAddress;
 use App\Rules\EnumExists;
@@ -77,6 +79,25 @@ class AddressController extends ApiController
         $address->fill($this->arrayKeysToSnakeCase($data));
         $address->save();
 
+        // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
+        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
+        if($address->contact->twinfieldNumbers())
+        {
+            $messages = [];
+            foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
+
+                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+                $errorMessages = $twinfieldCustomerHelper->updateCustomer($address->contact);
+                if($errorMessages)
+                {
+                    array_push($messages, $errorMessages);
+                }
+            }
+            if( !empty($messages) )
+            {
+                abort(412, implode(';', $messages));
+            }
+        }
         return new FullAddress($address->fresh()->load('country'));
     }
 

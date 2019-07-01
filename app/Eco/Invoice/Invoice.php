@@ -186,7 +186,7 @@ class Invoice extends Model
 
     public function getIbanAttribute(){
         if($this->status_id === 'to-send'){
-            return $this->order->IBAN ? $this->order->IBAN : $this->order->contact->iban;
+            return $this->order->contact->iban;
         }
         else{
             return $this->attributes['iban'];

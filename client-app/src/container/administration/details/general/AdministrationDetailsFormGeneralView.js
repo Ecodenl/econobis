@@ -30,6 +30,11 @@ const AdministrationDetailsFormGeneralView = props => {
         defaultPaymentTerm,
         logoName,
         mailboxEmail,
+        usesTwinfield,
+        twinfieldUsername,
+        twinfieldOrganizationCode,
+        twinfieldOfficeCode,
+        usesVat,
     } = props.administrationDetails;
 
     return (
@@ -100,11 +105,38 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'E-mail template aanmaning'}
                             value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
                         />
-                        <ViewText label={'Logo'} value={logoName} />
+                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} />
                     </div>
                     <div className="row">
                         <ViewText label={'Afzender van Rapportages en facturen is e-mail adres'} value={mailboxEmail} />
+                        <ViewText label={'Logo'} value={logoName} />
                     </div>
+
+                    {usesTwinfield == true && (
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Twinfield</span>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="row">
+                        <ViewText label={'Gebruikt Twinfield'} value={usesTwinfield ? 'Ja' : 'Nee'} />
+                    </div>
+
+                    {usesTwinfield == true && (
+                        <div className="row">
+                            <ViewText label={'Gebruikersnaam'} value={twinfieldUsername} />
+                            <ViewText label={'Wachtwoord'} value="**********" />
+                        </div>
+                    )}
+
+                    {usesTwinfield == true && (
+                        <div className="row">
+                            <ViewText label={'Omgeving'} value={twinfieldOrganizationCode} />
+                            <ViewText label={'Code'} value={twinfieldOfficeCode} />
+                        </div>
+                    )}
                 </PanelBody>
             </Panel>
         </div>

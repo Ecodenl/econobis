@@ -63,21 +63,18 @@ class ProjectRevenueDistributionCalculator
             $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
 
             // Save returns per Kwh period
-            $deliveredKwhPeriod->delivered_kwh = ($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays;
+            $deliveredKwhPeriod->delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
             $deliveredKwhPeriod->save();
 
             $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
         }
 
             // Return total delivered kwh for per distribution
-        $this->projectRevenueDistribution->delivered_total = round($totalDeliveredKwh, 2);
+        $this->projectRevenueDistribution->delivered_total = $totalDeliveredKwh;
         $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
         $this->projectRevenueDistribution->participations_amount = $this->projectRevenueDistribution->deliveredKwhPeriod->sum('participations_quantity');
 
-//        $this->projectRevenueDistribution->save();
-
         return $this->projectRevenueDistribution;
-//        return round($totalDeliveredKwh, 2);
     }
 
     protected function calculatePayout()

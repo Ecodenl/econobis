@@ -87,6 +87,17 @@ export default {
             });
     },
 
+    createEnergySupplierExcel: (revenueId, templateId, energySupplierId, documentName) => {
+        const requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}/${energySupplierId}`;
+
+        return axiosInstance
+            .post(requestUrl, { documentName: documentName, templateId: templateId })
+            .then(response => response.data.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
+
     downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
         const requestUrl = `distribution/${id}/download-preview`;
 

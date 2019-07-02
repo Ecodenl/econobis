@@ -5,7 +5,20 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsFormOrganisationView = props => {
-    const { number, organisation, iban, ibanAttn, createdAt, newsletter, didAgreeAvg } = props.contactDetails;
+    const {
+        number,
+        organisation,
+        iban,
+        ibanAttn,
+        createdAt,
+        newsletter,
+        didAgreeAvg,
+        isCollectMandate,
+        collectMandateCode,
+        collectMandateSignatureDate,
+        collectMandateFirstRunDate,
+        collectMandateCollectionSchema,
+    } = props.contactDetails;
 
     return (
         <div>
@@ -56,6 +69,37 @@ const ContactDetailsFormOrganisationView = props => {
             <div className="row">
                 <ViewText className={'col-xs-12'} label="Akkoord privacybeleid" value={didAgreeAvg ? 'Ja' : 'Nee'} />
             </div>
+
+            <div className="row">
+                <ViewText
+                    className={'col-xs-12'}
+                    label={'Ingesteld op incasso'}
+                    value={isCollectMandate ? 'Ja' : 'Nee'}
+                />
+            </div>
+
+            {isCollectMandate ? (
+                <React.Fragment>
+                    <div className="row">
+                        <ViewText className={'col-xs-12'} label={'Machtigingskenmerk'} value={collectMandateCode} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            className={'col-xs-12'}
+                            label={'Datum van ondertekening'}
+                            value={collectMandateSignatureDate && moment(collectMandateSignatureDate).format('L')}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            className={'col-xs-12'}
+                            label={'Datum eerste incassoronde'}
+                            value={collectMandateFirstRunDate && moment(collectMandateFirstRunDate).format('L')}
+                        />
+                    </div>
+                </React.Fragment>
+            ) : null}
         </div>
     );
 };
@@ -66,7 +110,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactDetailsFormOrganisationView);
+export default connect(mapStateToProps)(ContactDetailsFormOrganisationView);

@@ -16,6 +16,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
+use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\EnergySupplierCSVHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
@@ -23,6 +24,7 @@ use App\Helpers\CSV\RevenueParticipantsCSVHelper;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Excel\EnergySupplierExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -41,6 +43,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProjectRevenueController extends ApiController
 {
@@ -195,7 +198,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->fill($data);
 
-        $recalculateDistribution = false;
+        $recalculateDistribution = true;
 
         if($projectRevenue->isDirty('date_begin') ||
             $projectRevenue->isDirty('date_end') ||
@@ -208,6 +211,12 @@ class ProjectRevenueController extends ApiController
             $projectRevenue->isDirty('pay_percentage_valid_from_key_amount') ||
             $projectRevenue->isDirty('distribution_type_id')) {
             $recalculateDistribution = true;
+        }
+
+        // If period is changed then remove all values from revenue distribution period
+        if($projectRevenue->isDirty('date_begin') ||
+            $projectRevenue->isDirty('date_end')) {
+                $projectRevenue->deliveredKwhPeriod()->delete();
         }
 
         $projectRevenue->save();
@@ -229,6 +238,13 @@ class ProjectRevenueController extends ApiController
 
         foreach ($participants as $participant) {
             $this->saveDistribution($projectRevenue, $participant);
+        }
+
+        if($projectRevenue->category->code_ref == 'revenueKwh') {
+            foreach($projectRevenue->distribution as $distribution) {
+                $distribution->calculator()->runRevenueKwh();
+                $distribution->save();
+            }
         }
     }
 
@@ -283,9 +299,64 @@ class ProjectRevenueController extends ApiController
         $distribution->participation_id = $participant->id;
         $distribution->save();
 
+        if($projectRevenue->category->code_ref == 'revenueKwh') {
+            $this->saveDeliveredKwhPeriod($distribution);
+            return;
+        }
+
         // Recalculate values of distribution after saving
-        $distribution->calculator()->run();
+        $distribution->calculator()->runRevenueEuro();
         $distribution->save();
+    }
+
+    public function saveDeliveredKwhPeriod(ProjectRevenueDistribution $distribution)
+    {
+        $distributionId = $distribution->id;
+        $revenue = $distribution->revenue;
+
+        $dateBeginFromRevenue = $revenue->date_begin;
+        $dateEndFromRevenue = $revenue->date_end;
+
+        if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
+
+        $quantityOfParticipations = 0;
+
+        $mutations = $distribution->participation->mutationsDefinitive;
+
+        foreach ($mutations as $index => $mutation) {
+            $dateBegin = $dateBeginFromRevenue;
+            $dateEnd = $dateEndFromRevenue;
+
+            $nextMutation = $mutations->get(++$index);
+
+            if($nextMutation) {
+                $dateEnd = $nextMutation->date_entry;
+            }
+
+            $dateEntry = $mutation->date_entry;
+
+            // If date entry is after date begin then date begin is equal to date entry
+            if($dateEntry > $dateBegin) $dateBegin = $dateEntry;
+
+            $daysOfPeriod = $dateEnd->diffInDays($dateBegin);
+
+            $quantityOfParticipations += $mutation->quantity;
+
+            $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
+                [
+                    'distribution_id' => $distributionId,
+                    'revenue_id' => $revenue->id,
+                    'date_begin' => $dateBegin
+                ],
+                [
+                    'date_end' => $dateEnd,
+                    'days_of_period' => $daysOfPeriod,
+                    'participations_quantity' => $quantityOfParticipations
+                ]
+            );
+
+            $deliveredKwhPeriod->save();
+        }
     }
 
     public function createEnergySupplierReport(
@@ -373,9 +444,6 @@ class ProjectRevenueController extends ApiController
         $fileName = $documentName . '.csv';
         $templateId = $request->input('templateId');
 
-        //get current logged in user
-        $user = Auth::user();
-
         if ($templateId) {
             set_time_limit(0);
             $csvHelper = new EnergySupplierCSVHelper($energySupplier,
@@ -395,6 +463,8 @@ class ProjectRevenueController extends ApiController
             . $document->filename));
         file_put_contents($filePath, $csv);
 
+// die("stop hier maar even voor testdoeleinden CSV");
+
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
         $alfrescoResponse = $alfrescoHelper->createFile($filePath,
@@ -407,6 +477,50 @@ class ProjectRevenueController extends ApiController
         Storage::disk('documents')->delete($document->filename);
     }
 
+    public function createEnergySupplierExcel(
+        Request $request,
+        ProjectRevenue $projectRevenue,
+        EnergySupplier $energySupplier
+    )
+    {
+        $documentName = $request->input('documentName');
+        $fileName = $documentName . '.xlsx';
+        $templateId = $request->input('templateId');
+
+        if ($templateId) {
+            set_time_limit(0);
+            $excelHelper = new EnergySupplierExcelHelper($energySupplier,
+                $projectRevenue, $templateId, $fileName);
+            $excel = $excelHelper->getExcel();
+        }
+
+        $document = new Document();
+        $document->document_type = 'internal';
+        $document->document_group = 'revenue';
+
+        $document->filename = $fileName;
+
+        $document->save();
+
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
+            . $document->filename));
+
+        $writer = new Xlsx($excel);
+        $writer->save($filePath);
+
+//        die("stop hier maar even voor testdoeleinden Excel");
+
+        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+
+        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+            $document->filename, $document->getDocumentGroup()->name);
+
+        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+        $document->save();
+
+        //delete file on server, still saved on alfresco.
+        Storage::disk('documents')->delete($document->filename);
+    }
 
     public function destroy(ProjectRevenue $projectRevenue)
     {
@@ -726,7 +840,6 @@ class ProjectRevenueController extends ApiController
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $distribution->participation_id;
         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
-        $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
         $participantMutation->payout_kwh = $distribution->delivered_total;
         $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
         $participantMutation->save();

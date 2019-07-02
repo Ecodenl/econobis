@@ -11,6 +11,8 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import MutationNewDeposit from './MutationNewDeposit';
 import MutationNewValidateForm from './MutationNewValidateForm';
 import MutationNewSubmitHelper from './MutationNewSubmitHelper';
+import MutationNewWithDrawal from './MutationNewWithDrawal';
+import ViewText from '../../../../../components/form/ViewText';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -97,8 +99,20 @@ class MutationFormNew extends Component {
         let errors = {};
         let hasErrors = false;
 
+        const type = this.props.participantMutationTypes.find(
+            participantMutationType => participantMutationType.id == participationMutation.typeId
+        );
+        const typeCodeRef = type ? type.codeRef : null;
+
+        // On type 'withDrawal' default status is 'final'
+        if (typeCodeRef === 'withDrawal') {
+            participationMutation.statusId = this.props.participantMutationStatuses.find(
+                participantMutationStatus => participantMutationStatus.codeRef === 'final'
+            ).id;
+        }
+
         const status = this.props.participantMutationStatuses.find(
-            participantMutationStatuses => participantMutationStatuses.id == participationMutation.statusId
+            participantMutationStatus => participantMutationStatus.id == participationMutation.statusId
         );
         const statusCodeRef = status ? status.codeRef : null;
 
@@ -107,6 +121,7 @@ class MutationFormNew extends Component {
             errors,
             hasErrors,
             statusCodeRef,
+            typeCodeRef,
             this.props.projectTypeCodeRef
         );
 
@@ -114,7 +129,12 @@ class MutationFormNew extends Component {
 
         // If no errors send form
         if (!validatedForm.hasErrors) {
-            const values = MutationNewSubmitHelper(participationMutation, statusCodeRef, this.props.projectTypeCodeRef);
+            const values = MutationNewSubmitHelper(
+                participationMutation,
+                statusCodeRef,
+                typeCodeRef,
+                this.props.projectTypeCodeRef
+            );
 
             ParticipantMutationAPI.newParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
@@ -164,20 +184,46 @@ class MutationFormNew extends Component {
                                     required={'required'}
                                     error={this.state.errors.typeId}
                                 />
-                                <InputSelect
-                                    label={'Status'}
-                                    id="statusId"
-                                    name={'statusId'}
-                                    options={participantMutationStatuses}
-                                    value={statusId}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    error={this.state.errors.statusId}
-                                />
+                                {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (
+                                    <InputSelect
+                                        label={'Status'}
+                                        id="statusId"
+                                        name={'statusId'}
+                                        options={participantMutationStatuses}
+                                        value={statusId}
+                                        onChangeAction={this.handleInputChange}
+                                        required={'required'}
+                                        error={this.state.errors.statusId}
+                                    />
+                                ) : null}
+
+                                {typeCodeRef === 'withDrawal' ? (
+                                    <ViewText
+                                        className={'form-group col-sm-6'}
+                                        label={'Status'}
+                                        value={
+                                            participantMutationStatuses.find(
+                                                participantMutationStatus =>
+                                                    participantMutationStatus.codeRef === 'final'
+                                            ).name
+                                        }
+                                    />
+                                ) : null}
                             </div>
 
                             {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (
                                 <MutationNewDeposit
+                                    statusCodeRef={statusCodeRef}
+                                    {...this.state.participationMutation}
+                                    errors={this.state.errors}
+                                    handleInputChange={this.handleInputChange}
+                                    handleInputChangeDate={this.handleInputChangeDate}
+                                    projectTypeCodeRef={this.props.projectTypeCodeRef}
+                                />
+                            ) : null}
+
+                            {typeCodeRef === 'withDrawal' ? (
+                                <MutationNewWithDrawal
                                     statusCodeRef={statusCodeRef}
                                     {...this.state.participationMutation}
                                     errors={this.state.errors}

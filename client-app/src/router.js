@@ -39,6 +39,7 @@ import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNe
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
 import EnergySupplierReportNewApp from './container/project/details/revenue/energy-supplier-report/EnergySupplierReportNewApp';
 import EnergySupplierCSVNewApp from './container/project/details/revenue/energy-supplier-csv/EnergySupplierCSVNewApp';
+import EnergySupplierExcelNewApp from './container/project/details/revenue/energy-supplier-excel/EnergySupplierExcelNewApp';
 import Forgot from './container/auth/Forgot';
 import HousingFileDetailsApp from './container/housing-file/details/HousingFileDetailsApp';
 import HousingFileNewApp from './container/housing-file/new/HousingFileNewApp';
@@ -104,6 +105,15 @@ import ParticipantReportCreateApp from './container/participant-project/create/P
 import WebformsListApp from './container/webform/list/WebformsListApp';
 import WebformNewApp from './container/webform/new/WebformNewApp';
 import WebformDetailsApp from './container/webform/details/WebformDetailsApp';
+import VatCodesListApp from './container/vat-code/list/VatCodesListApp';
+import VatCodeNewApp from './container/vat-code/new/VatCodeNewApp';
+import VatCodeDetailsApp from './container/vat-code/details/VatCodeDetailsApp';
+import LedgersListApp from './container/ledger/list/LedgersListApp';
+import LedgerNewApp from './container/ledger/new/LedgerNewApp';
+import LedgerDetailsApp from './container/ledger/details/LedgerDetailsApp';
+import CostCentersListApp from './container/cost-center/list/CostCentersListApp';
+import CostCenterNewApp from './container/cost-center/new/CostCenterNewApp';
+import CostCenterDetailsApp from './container/cost-center/details/CostCenterDetailsApp';
 
 const Routes = () => {
     return (
@@ -223,6 +233,14 @@ const Routes = () => {
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />
                 <Route path="campagnes" component={CampaignsListApp} />
+                /* Ledgers */
+                <Route path="grootboekrekeningen" component={LedgersListApp} />
+                <Route path="grootboekrekening/nieuw" component={LedgerNewApp} />
+                <Route path="grootboekrekening/:id" component={LedgerDetailsApp} />
+                /* Costcenters */
+                <Route path="kostenplaatsen" component={CostCentersListApp} />
+                <Route path="kostenplaats/nieuw" component={CostCenterNewApp} />
+                <Route path="kostenplaats/:id" component={CostCenterDetailsApp} />
                 /* Measures */
                 <Route path="maatregelen" component={MeasuresListApp} />
                 <Route path="maatregel/:id" component={MeasureDetailsApp} />
@@ -267,6 +285,10 @@ const Routes = () => {
                     component={EnergySupplierReportNewApp}
                 />
                 <Route path="project/opbrengst/:revenueId/energieleverancier-csv" component={EnergySupplierCSVNewApp} />
+                <Route
+                    path="project/opbrengst/:revenueId/energieleverancier-excel"
+                    component={EnergySupplierExcelNewApp}
+                />
                 <Route path="project/details/:id" component={ProjectDetailsApp} />
                 <Route path="project/opbrengst/:id" component={RevenueDetailsApp} />
                 <Route path="project/opbrengst/:id/facturen" component={PaymentInvoiceCreateApp} />
@@ -298,6 +320,10 @@ const Routes = () => {
                 <Route path="teams" component={TeamsListApp} />
                 <Route path="team/nieuw" component={TeamNewApp} />
                 <Route path="team/:id" component={TeamDetailsApp} />
+                /* Vat codes */
+                <Route path="btw-codes" component={VatCodesListApp} />
+                <Route path="btw-code/nieuw" component={VatCodeNewApp} />
+                <Route path="btw-code/:id" component={VatCodeDetailsApp} />
                 /* Webforms */
                 <Route path="webformulieren" component={WebformsListApp} />
                 <Route path="webformulier/nieuw" component={WebformNewApp} />

@@ -47,43 +47,47 @@ const MutationFormEdit = ({
 
     let buttonTextSubmit = 'Opslaan';
 
-    if (originalStatus.id !== Number(statusId)) {
-        switch (originalStatus.codeRef) {
-            case 'interest':
-                buttonTextSubmit = 'Status doorzetten naar optie';
-                break;
-            case 'option':
-                buttonTextSubmit = 'Status doorzetten naar toegekend';
-                break;
-            case 'granted':
-                buttonTextSubmit = 'Status doorzetten naar definitief';
-                break;
-            default:
-                buttonTextSubmit = 'Opslaan';
-        }
-    }
-
     let participantMutationStatusesOptions = [];
 
-    switch (originalStatus.codeRef) {
-        case 'interest':
-            participantMutationStatusesOptions = participantMutationStatuses.filter(
-                participantMutationStatus =>
-                    participantMutationStatus.codeRef === 'interest' || participantMutationStatus.codeRef === 'option'
-            );
-            break;
-        case 'option':
-            participantMutationStatusesOptions = participantMutationStatuses.filter(
-                participantMutationStatus =>
-                    participantMutationStatus.codeRef === 'option' || participantMutationStatus.codeRef === 'granted'
-            );
-            break;
-        case 'granted':
-            participantMutationStatusesOptions = participantMutationStatuses.filter(
-                participantMutationStatus =>
-                    participantMutationStatus.codeRef === 'granted' || participantMutationStatus.codeRef === 'final'
-            );
-            break;
+    if (originalStatus) {
+        if (originalStatus.id !== Number(statusId)) {
+            switch (originalStatus.codeRef) {
+                case 'interest':
+                    buttonTextSubmit = 'Status doorzetten naar inschrijving';
+                    break;
+                case 'option':
+                    buttonTextSubmit = 'Status doorzetten naar toegekend';
+                    break;
+                case 'granted':
+                    buttonTextSubmit = 'Status doorzetten naar definitief';
+                    break;
+                default:
+                    buttonTextSubmit = 'Opslaan';
+            }
+        }
+
+        switch (originalStatus.codeRef) {
+            case 'interest':
+                participantMutationStatusesOptions = participantMutationStatuses.filter(
+                    participantMutationStatus =>
+                        participantMutationStatus.codeRef === 'interest' ||
+                        participantMutationStatus.codeRef === 'option'
+                );
+                break;
+            case 'option':
+                participantMutationStatusesOptions = participantMutationStatuses.filter(
+                    participantMutationStatus =>
+                        participantMutationStatus.codeRef === 'option' ||
+                        participantMutationStatus.codeRef === 'granted'
+                );
+                break;
+            case 'granted':
+                participantMutationStatusesOptions = participantMutationStatuses.filter(
+                    participantMutationStatus =>
+                        participantMutationStatus.codeRef === 'granted' || participantMutationStatus.codeRef === 'final'
+                );
+                break;
+        }
     }
 
     return (
@@ -129,7 +133,6 @@ const MutationFormEdit = ({
                     {type.codeRef === 'result' ? (
                         <MutationFormEditResult
                             type={type}
-                            originalStatus={originalStatus}
                             returns={returns}
                             datePayment={datePayment}
                             entry={entry}

@@ -4,12 +4,14 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputText from '../../../components/form/InputText';
 import InputDate from '../../../components/form/InputDate';
+import InputMultiSelect from '../../../components/form/InputMultiSelect';
 
 const ParticipantNewForm = ({
     participation,
     errors,
     handleInputChange,
     handleInputChangeDate,
+    handleInputChangeContactId,
     handleSubmit,
     contacts,
     projects,
@@ -43,16 +45,17 @@ const ParticipantNewForm = ({
     return (
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
             <div className="row">
-                <InputSelect
+                <InputMultiSelect
                     label={'Contact'}
                     name={'contactId'}
                     id={'contactId'}
                     options={contacts}
                     optionName={'fullName'}
                     value={contactId}
-                    onChangeAction={handleInputChange}
+                    onChangeAction={handleInputChangeContactId}
                     required={'required'}
                     error={errors.contactId}
+                    multi={false}
                 />
                 <InputSelect
                     label={'Status'}
@@ -113,7 +116,7 @@ const ParticipantNewForm = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
-                            label={'Bedrag optie'}
+                            label={'Bedrag inschrijving'}
                             name={'amountOption'}
                             id={'amountOption'}
                             value={amountOption}
@@ -123,7 +126,7 @@ const ParticipantNewForm = ({
                         />
                     ) : (
                         <InputText
-                            label={'Aantal optie'}
+                            label={'Aantal inschrijving'}
                             name={'quantityOption'}
                             id={'quantityOption'}
                             value={quantityOption}
@@ -134,7 +137,7 @@ const ParticipantNewForm = ({
                     )}
 
                     <InputDate
-                        label={'Optiedatum'}
+                        label={'Inschrijvingdatum'}
                         name={'dateOption'}
                         id={'dateOption'}
                         value={dateOption}

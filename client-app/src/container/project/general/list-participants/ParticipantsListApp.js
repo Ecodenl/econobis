@@ -124,6 +124,24 @@ class ParticipantsListApp extends Component {
         }, 100);
     };
 
+    getExcel = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.participantsProjectFilters);
+            const extraFilters = this.state.extraFilters;
+            const sorts = this.props.participantsProjectSorts;
+
+            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, true)
+                .then(payload => {
+                    fileDownload(payload.data, 'Deelnemers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
     resetParticipantProjectFilters = () => {
         this.props.clearFilterParticipantsProject();
 
@@ -379,6 +397,7 @@ class ParticipantsListApp extends Component {
                             amountOfFilters={this.state.amountOfFilters}
                             filterType={this.state.filterType}
                             getCSV={this.getCSV}
+                            getExcel={this.getExcel}
                             saveAsGroup={this.saveAsGroup}
                         />
                     </div>

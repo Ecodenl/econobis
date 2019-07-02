@@ -3,7 +3,10 @@
 namespace App\Console;
 
 use App\Console\Commands\checkMailboxes;
+use App\Console\Commands\conversionParticipationsToMutations;
+use App\Console\Commands\conversionProjects;
 use App\Console\Commands\getAllEmail;
+use App\Console\Commands\processPaidInvoices;
 use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use Illuminate\Console\Scheduling\Schedule;
@@ -20,7 +23,10 @@ class Kernel extends ConsoleKernel
         getAllEmail::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
+        processPaidInvoices::class,
         checkMailboxes::class,
+        conversionProjects::class,
+        conversionParticipationsToMutations::class,
     ];
 
     /**
@@ -33,9 +39,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
         $schedule->command('email:checkMailboxes')->everyThirtyMinutes();
-
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('00:05');
         $schedule->command('invoice:setDaysToExpire')->dailyAt('00:10');
+        $schedule->command('invoice:processPaidInvoices')->dailyAt('03:00');
     }
 
     /**

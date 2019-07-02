@@ -8,13 +8,11 @@ function ParticipantFormViewPostalcodeLinkCapital({
     participationsDefinitive,
     participationsDefinitiveWorth,
     powerKwhConsumption,
-    valueCourses,
+    currentBookWorth,
     participationsReturnsKwhTotal,
     participationsIndicationOfRestitutionEnergyTaxTotal,
     onClick,
 }) {
-    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
-
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -31,10 +29,7 @@ function ParticipantFormViewPostalcodeLinkCapital({
                 />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText
-                    label={'Huidige boekwaarde per participatie'}
-                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
-                />
+                <ViewText label={'Huidige boekwaarde per participatie'} value={moneyPresenter(currentBookWorth)} />
                 <ViewText label={'Jaarlijks verbruik'} value={powerKwhConsumption} />
             </div>
             <div className="row" onClick={onClick}>

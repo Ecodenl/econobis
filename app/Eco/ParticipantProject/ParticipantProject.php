@@ -111,6 +111,8 @@ class ParticipantProject extends Model
         $mutationStatuses = [];
 
         foreach($this->mutations->unique('status_id')->sortBy('status_id') as $mutation) {
+            if(!$mutation->status) continue;
+
             $mutationStatuses[] = $mutation->status;
         }
 

@@ -18,7 +18,9 @@ class InvoicePaymentObserver
 
     public function creating(InvoicePayment $invoicePayment)
     {
-        $invoicePayment->type_id = '';
+        if(!$invoicePayment->type_id) {
+            $invoicePayment->type_id = '';
+        }
     }
 
     public function saved(InvoicePayment $invoicePayment)

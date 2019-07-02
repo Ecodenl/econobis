@@ -9,6 +9,8 @@ import Panel from '../../../components/panel/Panel';
 import ProductDetailsAPI from '../../../api/product/ProductDetailsAPI';
 import { connect } from 'react-redux';
 import InputSelect from '../../../components/form/InputSelect';
+import AdministrationsAPI from '../../../api/administration/AdministrationsAPI';
+import InputReactSelect from '../../../components/form/InputReactSelect';
 
 class ProductNewForm extends Component {
     constructor(props) {
@@ -26,13 +28,19 @@ class ProductNewForm extends Component {
                 invoiceFrequencyId: 'once',
                 paymentTypeId: '',
                 administrationId: '',
+                ledgerId: '',
+                costCenterId: '',
             },
             errors: {
                 code: false,
                 name: false,
                 administrationId: false,
+                ledgerId: false,
+                costCenterId: false,
             },
         };
+
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     handleInputChange = event => {
@@ -117,6 +125,16 @@ class ProductNewForm extends Component {
         });
     };
 
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: selectedOption,
+            },
+        });
+    }
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -141,6 +159,13 @@ class ProductNewForm extends Component {
         if (validator.isEmpty(product.code + '')) {
             errors.code = true;
             hasErrors = true;
+        }
+
+        if (this.props.usesTwinfield) {
+            if (validator.isEmpty(String(product.ledgerId))) {
+                errors.ledgerId = true;
+                hasErrors = true;
+            }
         }
 
         let productNameNotUnique = false;
@@ -191,6 +216,8 @@ class ProductNewForm extends Component {
             invoiceFrequencyId,
             paymentTypeId,
             administrationId,
+            ledgerId,
+            costCenterId,
         } = this.state.product;
 
         return (
@@ -277,6 +304,30 @@ class ProductNewForm extends Component {
                                 error={this.state.errors.administrationId}
                             />
                         </div>
+
+                        <div className={'row'}>
+                            <InputReactSelect
+                                label={'Grootboek'}
+                                name={'ledgerId'}
+                                options={this.props.ledgers}
+                                optionName={'description'}
+                                value={ledgerId}
+                                onChangeAction={this.handleReactSelectChange}
+                                multi={false}
+                                required={this.props.usesTwinfield ? 'required' : ''}
+                                error={this.state.errors.ledgerId}
+                            />
+                            <InputReactSelect
+                                label={'Kostenplaats'}
+                                name={'costCenterId'}
+                                options={this.props.costCenters}
+                                optionName={'description'}
+                                value={costCenterId}
+                                onChangeAction={this.handleReactSelectChange}
+                                multi={false}
+                            />
+                        </div>
+
                         {this.state.errorMessage && (
                             <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                                 {this.state.errorMessage}
@@ -306,6 +357,9 @@ const mapStateToProps = state => {
         productPaymentTypes: state.systemData.productPaymentTypes,
         administrations: state.meDetails.administrations,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
+        costCenters: state.systemData.costCenters,
+        usesTwinfield: state.systemData.usesTwinfield,
     };
 };
 

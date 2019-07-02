@@ -176,6 +176,7 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
+            ->integer('costCenterId')->onEmpty(null)->whenMissing(null)->alias('cost_center_id')->next()
             ->integer('amount')->validate('required')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
@@ -206,6 +207,10 @@ class OrderController extends ApiController
         $product->invoice_frequency_id = $productData['invoiceFrequencyId'];
         $product->administration_id = $productData['administrationId'];
         $product->invoice_text = $productData['description'];
+        $product->ledger_id = $productData['ledgerId'];
+        $product->ledger_id ?: $product->ledger_id = null;
+        $product->cost_center_id = $productData['costCenterId'];
+        $product->cost_center_id ?: $product->cost_center_id = null;
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
@@ -220,6 +225,7 @@ class OrderController extends ApiController
 
         $orderProduct = new OrderProduct();
         $orderProduct->order_id = $orderProductData['orderId'];
+        $orderProduct->cost_center_id = $productData['costCenterId'] ? $productData['costCenterId'] : null;
         $orderProduct->amount = $orderProductData['amount'];
         $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
@@ -251,6 +257,10 @@ class OrderController extends ApiController
         $product = Product::withoutGlobalScopes()->find($productData['id']);
         $product->invoice_text = $productData['description'];
         $product->duration_id = $productData['durationId'];
+        $product->ledger_id = $productData['ledgerId'];
+        $product->ledger_id ?: $product->ledger_id = null;
+        $product->cost_center_id = $productData['costCenterId'];
+        $product->cost_center_id ?: $product->cost_center_id = null;
 
         $priceHistory = new PriceHistory();
         $priceHistory->product_id = $product->id;
@@ -265,6 +275,7 @@ class OrderController extends ApiController
         $orderProductData = $request->input('orderProduct');
 
         $orderProduct = OrderProduct::find($orderProductData['id']);
+        $orderProduct->cost_center_id = $productData['costCenterId'] ? $productData['costCenterId'] : null;
         $orderProduct->amount = $orderProductData['amount'];
         $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
@@ -287,6 +298,7 @@ class OrderController extends ApiController
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
             ->integer('amount')->validate('required')->next()
+            ->integer('costCenterId')->onEmpty(null)->whenMissing(null)->alias('cost_center_id')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
@@ -328,6 +340,8 @@ class OrderController extends ApiController
             'contactPerson' => $contact->full_name,
             'iban' => $contact->iban,
             'ibanAttn' => $contact->iban_attn,
+            'collectMandate' => $contact->is_collect_mandate,
+            'collectMandateFirstRun' => $contact->collect_mandate_first_run_date,
         ];
 
         if($contact->isOrganisation()){

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 moment.locale('nl');
-import InputText from '../../../../../components/form/InputText';
 import ViewText from '../../../../../components/form/ViewText';
 import moneyPresenter from '../../../../../helpers/MoneyPresenter';
 
@@ -11,10 +10,8 @@ function ParticipantFormEditCapital({
     participationWorth,
     participationsDefinitiveWorth,
     participationsDefinitive,
-    valueCourses,
+    currentBookWorth,
 }) {
-    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
-
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -36,7 +33,7 @@ function ParticipantFormEditCapital({
             <div className="row">
                 <ViewText
                     label={'Huidige boekwaarde per participatie'}
-                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
+                    value={moneyPresenter(currentBookWorth)}
                     className={'col-sm-6 form-group'}
                 />
             </div>

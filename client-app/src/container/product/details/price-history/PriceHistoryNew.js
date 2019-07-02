@@ -10,21 +10,19 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import InputToggle from '../../../../components/form/InputToggle';
-import moment from '../../../financial/order/details/order-products/OrderProductsFormEditProductOneTime';
 
 class PriceHistoryNew extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            vatPercentages: [{ id: '0', name: '0' }, { id: '9', name: '9' }, { id: '21', name: '21' }],
             priceHistory: {
                 productId: props.productId,
                 dateStart: '',
                 inputInclVat: false,
                 price: '',
                 priceInclVat: '',
-                vatPercentage: null,
+                vatPercentage: props.ledger ? props.ledger.vatCode && props.ledger.vatCode.percentage : null,
                 hasVariablePrice: props.hasVariablePrice === 'variable',
             },
             errors: {
@@ -200,10 +198,13 @@ class PriceHistoryNew extends Component {
                             <InputSelect
                                 label={'BTW percentage'}
                                 name={'vatPercentage'}
-                                options={this.state.vatPercentages}
+                                options={this.props.vatCodes}
+                                optionValue={'percentage'}
+                                optionName={'description'}
                                 value={vatPercentage}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.props.usesTwinfield ? null : this.handleInputChange}
                                 placeholder={'Geen'}
+                                readOnly={this.props.usesTwinfield}
                             />
                         </div>
 
@@ -309,7 +310,10 @@ const mapStateToProps = state => {
         productId: state.productDetails.id,
         productName: state.productDetails.name,
         hasVariablePrice: state.productDetails.hasVariablePrice,
+        ledger: state.productDetails.ledger,
         users: state.systemData.users,
+        vatCodes: state.systemData.vatCodes,
+        usesTwinfield: state.systemData.usesTwinfield,
     };
 };
 

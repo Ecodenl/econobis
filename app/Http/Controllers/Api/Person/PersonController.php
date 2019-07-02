@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Person;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
+use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
 use App\Eco\EmailAddress\EmailAddress;
@@ -19,6 +20,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Resources\Person\PersonPeek;
@@ -36,7 +38,6 @@ class PersonController extends ApiController
 
         Validator::make($request['person'],
             [
-//                'statusId' => new EnumExists(ContactStatus::class),
                 'newsletter' => 'boolean',
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
@@ -45,7 +46,6 @@ class PersonController extends ApiController
                 'lastName' => '',
                 'lastNamePrefixId' => 'exists:last_name_prefixes,id',
                 'titleId' => 'exists:titles,id',
-//                'typeId' => 'exists:person_types,id',
                 'dateOfBirth' => 'date',
             ]);
 
@@ -64,7 +64,6 @@ class PersonController extends ApiController
 
         $contactArray =
             [
-//                'status_id' => $contactData['status_id'],
                 'newsletter' => $contactData['newsletter'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
@@ -82,7 +81,6 @@ class PersonController extends ApiController
                 'last_name' => $contactData['last_name'],
                 'last_name_prefix' => $lnp,
                 'title_id' => $contactData['title_id'],
-//                'type_id' => $contactData['type_id'],
                 'date_of_birth' => $contactData['date_of_birth'],
             ];
 
@@ -212,7 +210,6 @@ class PersonController extends ApiController
         $this->authorize('update', $person);
 
         $contactData = $request->validate([
-//            'statusId' => new EnumExists(ContactStatus::class),
             'memberSince' => 'date',
             'memberUntil' => 'date',
             'newsletter' => 'boolean',
@@ -222,6 +219,11 @@ class PersonController extends ApiController
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
             'didAgreeAvg' => 'boolean',
+            'isCollectMandate' => 'boolean',
+            'collectMandateCode' => '',
+            'collectMandateSignatureDate' => 'date',
+            'collectMandateFirstRunDate' => 'date',
+            'collectMandateCollectionSchema' => '',
         ]);
 
         $personData = $request->validate([
@@ -249,6 +251,9 @@ class PersonController extends ApiController
             'memberUntil' => 'nullable',
             'newsletter' => 'boolean',
             'liable' => 'boolean',
+            'isCollectMandate' => 'boolean',
+            'collectMandateSignatureDate' => 'nullable',
+            'collectMandateFirstRunDate' => 'nullable',
         ]);
 
         if(array_key_exists('iban', $contactData) && $contact->iban != $contactData['iban']) $this->authorize('updateIban', $contact);
@@ -288,6 +293,25 @@ class PersonController extends ApiController
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();
 
+        // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
+        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
+        if($contact->twinfieldNumbers())
+        {
+            $messages = [];
+            foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
+
+                $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
+                $errorMessages = $twinfieldCustomerHelper->updateCustomer($contact);
+                if($errorMessages)
+                {
+                    array_push($messages, $errorMessages);
+                }
+            }
+            if( !empty($messages) )
+            {
+                abort(412, implode(';', $messages));
+            }
+        }
         // Contact exact zo teruggeven als bij het openen van een bestaand contact
         // Dus kan hier gebruik maken van bestaande controller
         return (new ContactController())->show($contact->fresh(), $request);

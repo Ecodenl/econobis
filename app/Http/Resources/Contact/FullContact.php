@@ -88,6 +88,11 @@ class FullContact extends Resource
             'relatedOpportunities' => $this->opportunities()->with('measureCategory')->get(),
             'participationCount' => $this->participations()->count(),
             'relatedParticipations' => FullParticipantProject::collection($this->whenLoaded('participations')),
+            'isCollectMandate' => $this->is_collect_mandate,
+            'collectMandateCode' => $this->collect_mandate_code,
+            'collectMandateSignatureDate' => $this->collect_mandate_signature_date,
+            'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
+            'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
         ];
     }
 }

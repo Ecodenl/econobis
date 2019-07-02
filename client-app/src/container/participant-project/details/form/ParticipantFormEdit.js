@@ -34,9 +34,6 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
-            participationsReturnsTotal,
-            participationsReturnsKwhTotal,
-            participationsIndicationOfRestitutionEnergyTaxTotal,
         } = props.participation;
 
         this.state = {
@@ -142,6 +139,8 @@ class ParticipantFormEdit extends Component {
             amountDefinitive,
             powerKwhConsumption,
             participationsReturnsTotal,
+            participationsReturnsKwhTotal,
+            participationsIndicationOfRestitutionEnergyTaxTotal,
         } = this.props.participation;
 
         const projectTypeCodeRef = project.projectType.codeRef;
@@ -210,6 +209,7 @@ class ParticipantFormEdit extends Component {
                             label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
                             id={'amountDefinitive'}
                             value={amountDefinitive}
+                            className={'form-group col-md-6'}
                         />
                     )}
                     <InputText
@@ -243,7 +243,7 @@ class ParticipantFormEdit extends Component {
                         participationWorth={project.participationWorth}
                         participationsDefinitive={participationsDefinitive}
                         participationsDefinitiveWorth={participationsDefinitiveWorth}
-                        valueCourses={project.valueCourses}
+                        currentBookWorth={project.currentBookWorth}
                     />
                 ) : null}
                 {projectTypeCodeRef === 'capital' ? (
@@ -251,7 +251,7 @@ class ParticipantFormEdit extends Component {
                         participationWorth={project.participationWorth}
                         participationsDefinitive={participationsDefinitive}
                         participationsDefinitiveWorth={participationsDefinitiveWorth}
-                        valueCourses={project.valueCourses}
+                        currentBookWorth={project.currentBookWorth}
                     />
                 ) : null}
                 {projectTypeCodeRef === 'postalcode_link_capital' ? (
@@ -259,7 +259,7 @@ class ParticipantFormEdit extends Component {
                         participationWorth={project.participationWorth}
                         participationsDefinitive={participationsDefinitive}
                         participationsDefinitiveWorth={participationsDefinitiveWorth}
-                        valueCourses={project.valueCourses}
+                        currentBookWorth={project.currentBookWorth}
                         powerKwhConsumption={powerKwhConsumption}
                         participationsReturnsKwhTotal={participationsReturnsKwhTotal}
                         participationsIndicationOfRestitutionEnergyTaxTotal={

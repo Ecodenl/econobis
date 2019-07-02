@@ -11,10 +11,8 @@ function ParticipantFormEditObligation({
     participationWorth,
     participationsDefinitiveWorth,
     participationsDefinitive,
-    valueCourses,
+    currentBookWorth,
 }) {
-    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
-
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -35,8 +33,8 @@ function ParticipantFormEditObligation({
             </div>
             <div className="row">
                 <ViewText
-                    label={'Huidige boekwaarde per obligatie'}
-                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
+                    label={'Huidige hoofdsom per obligatie'}
+                    value={moneyPresenter(currentBookWorth)}
                     className={'col-sm-6 form-group'}
                 />
             </div>

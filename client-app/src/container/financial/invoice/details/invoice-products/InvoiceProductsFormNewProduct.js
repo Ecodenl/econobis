@@ -11,6 +11,7 @@ import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
 import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
+import InputReactSelect from '../../../../../components/form/InputReactSelect';
 
 class InvoiceProductsFormNewProduct extends Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class InvoiceProductsFormNewProduct extends Component {
                 vatPercentage: '',
                 price: '',
                 isOneTime: false,
+                ledgerId: '',
             },
             errors: {
                 amount: false,
@@ -49,7 +51,18 @@ class InvoiceProductsFormNewProduct extends Component {
             },
         };
 
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+    }
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: selectedOption,
+            },
+        });
     }
 
     handleInputChange = event => {
@@ -266,7 +279,7 @@ class InvoiceProductsFormNewProduct extends Component {
             percentageReduction,
             dateLastInvoice,
         } = this.state.invoiceProduct;
-        const { code, name, vatPercentage, price } = this.state.product;
+        const { code, name, vatPercentage, price, ledgerId } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -318,6 +331,21 @@ class InvoiceProductsFormNewProduct extends Component {
                                 placeholder={'Geen'}
                             />
                         </div>
+
+                        {this.props.invoiceDetails.order.administration.usesTwinfield == true &&
+                            this.props.invoiceDetails.order.administration.twinfieldIsValid == true && (
+                                <div className="row">
+                                    <InputReactSelect
+                                        label={'Grootboek'}
+                                        name={'ledgerId'}
+                                        options={this.props.ledgers}
+                                        optionName={'description'}
+                                        value={ledgerId}
+                                        onChangeAction={this.handleReactSelectChange}
+                                        multi={false}
+                                    />
+                                </div>
+                            )}
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
@@ -438,6 +466,7 @@ const mapStateToProps = state => {
         productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
         productPaymentTypes: state.systemData.productPaymentTypes,
         products: state.systemData.products,
+        ledgers: state.systemData.ledgers,
     };
 };
 

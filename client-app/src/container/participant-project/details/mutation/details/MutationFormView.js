@@ -53,7 +53,7 @@ const MutationFormView = ({
         >
             <StyledContainer onClick={openEdit}>
                 <StyledColumn columnWidth={'100px'}>{type.name}</StyledColumn>
-                <StyledColumn columnWidth={'80px'}>{status.name}</StyledColumn>
+                <StyledColumn columnWidth={'80px'}>{status && status.name}</StyledColumn>
                 <StyledColumn columnWidth={'100px'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'120px'}>{type.description}</StyledColumn>
@@ -81,7 +81,7 @@ const MutationFormView = ({
                         ) : (
                             ''
                         )}
-                        {showActionButtons && permissions.manageFinancial ? (
+                        {status && status.codeRef !== 'final' && showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={toggleDelete}>
                                 <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                             </a>

@@ -14,7 +14,7 @@ class ProjectRevenueDistributionCalculator
         $this->projectTypeCodeRef = (ProjectType::where('id', $this->projectRevenueDistribution->revenue->project->project_type_id)->first())->code_ref;
     }
 
-    public function run()
+    public function runRevenueEuro()
     {
         // Revenue category REVENUE EURO
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
@@ -23,16 +23,26 @@ class ProjectRevenueDistributionCalculator
         }
 
         // Revenue category REVENUE KWH
-        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
-            $this->projectRevenueDistribution->delivered_total = $this->calculateDeliveredKwh();
-            $this->projectRevenueDistribution->payout_kwh = $this->projectRevenueDistribution->revenue->payout_kwh;
-            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
-        }
+//        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
+//            $this->projectRevenueDistribution->delivered_total = $this->calculateDeliveredKwh();
+//            $this->projectRevenueDistribution->payout_kwh = $this->projectRevenueDistribution->revenue->payout_kwh;
+//            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
+//        }
 
         return $this->projectRevenueDistribution;
     }
 
-    protected function calculateDeliveredKwh()
+    public function runRevenueKwh()
+    {
+        // Revenue category REVENUE KWH
+        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first())->id) {
+            $this->calculateDeliveredKwh();
+        }
+
+//        return $this->projectRevenueDistribution;
+    }
+
+    public function calculateDeliveredKwh()
     {
         $projectRevenue = $this->projectRevenueDistribution->revenue;
 
@@ -47,7 +57,7 @@ class ProjectRevenueDistributionCalculator
 
         $totalDeliveredKwh = 0;
 
-        foreach($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+        foreach ($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
             // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
             // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
             $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
@@ -59,8 +69,15 @@ class ProjectRevenueDistributionCalculator
             $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
         }
 
-        // Return total delivered kwh for per distribution
-        return round($totalDeliveredKwh, 2);
+            // Return total delivered kwh for per distribution
+        $this->projectRevenueDistribution->delivered_total = round($totalDeliveredKwh, 2);
+        $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
+        $this->projectRevenueDistribution->participations_amount = $this->projectRevenueDistribution->deliveredKwhPeriod->sum('participations_quantity');
+
+//        $this->projectRevenueDistribution->save();
+
+        return $this->projectRevenueDistribution;
+//        return round($totalDeliveredKwh, 2);
     }
 
     protected function calculatePayout()

@@ -7,11 +7,9 @@ function ParticipantFormViewObligation({
     participationWorth,
     participationsDefinitive,
     participationsDefinitiveWorth,
-    valueCourses,
+    currentBookWorth,
     onClick,
 }) {
-    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
-
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -23,10 +21,7 @@ function ParticipantFormViewObligation({
                 <ViewText label={'Nominale waarde per obligatie'} value={moneyPresenter(participationWorth)} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText
-                    label={'Huidige boekwaarde per obligatie'}
-                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
-                />
+                <ViewText label={'Huidige hoofdsom per obligatie'} value={moneyPresenter(currentBookWorth)} />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />

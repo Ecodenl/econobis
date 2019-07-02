@@ -591,6 +591,25 @@ class ProjectRevenueController extends ApiController
 
                 array_push($createdInvoices, $paymentInvoice);
             }
+
+            if ($distribution->payout_type === 'Bijschrijven'
+                && $distribution->payout > 0) {
+                $participantMutation = new ParticipantMutation();
+                $participantMutation->participation_id = $distribution->participation_id;
+                $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
+                $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+                $participantMutation->amount = $distribution->payout;
+                $participantMutation->returns = $distribution->payout;
+                $participantMutation->paid_on = 'Rekening';
+                $participantMutation->date_entry = Carbon::now();
+                $participantMutation->save();
+
+                // Recalculate dependent data in participantProject
+                $participantMutation->participation->calculator()->run()->save();
+
+                // Recalculate dependent data in project
+                $participantMutation->participation->project->calculator()->run()->save();
+            }
         }
 
         return $createdInvoices;

@@ -20,7 +20,7 @@ class ContactsInGroupListItem extends Component {
             showActionButtons: true,
             highlightRow: 'highlight-row',
         });
-    };
+    }
 
     onRowLeave() {
         this.setState({

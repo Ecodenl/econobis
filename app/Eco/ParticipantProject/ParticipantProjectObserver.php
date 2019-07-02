@@ -45,6 +45,13 @@ class ParticipantProjectObserver
                 $projectRevenueController = new ProjectRevenueController();
 
                 $projectRevenueController->saveDistribution($projectRevenue, $participantProject);
+
+                if($projectRevenue->category->code_ref == 'revenueKwh') {
+                    foreach($projectRevenue->distribution as $distribution) {
+                        $distribution->calculator()->runRevenueKwh();
+                        $distribution->save();
+                    }
+                }
             }
         }
     }

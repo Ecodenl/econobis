@@ -239,6 +239,13 @@ class ProjectRevenueController extends ApiController
         foreach ($participants as $participant) {
             $this->saveDistribution($projectRevenue, $participant);
         }
+
+        if($projectRevenue->category->code_ref == 'revenueKwh') {
+            foreach($projectRevenue->distribution as $distribution) {
+                $distribution->calculator()->runRevenueKwh();
+                $distribution->save();
+            }
+        }
     }
 
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)
@@ -294,10 +301,11 @@ class ProjectRevenueController extends ApiController
 
         if($projectRevenue->category->code_ref == 'revenueKwh') {
             $this->saveDeliveredKwhPeriod($distribution);
+            return;
         }
 
         // Recalculate values of distribution after saving
-        $distribution->calculator()->run();
+        $distribution->calculator()->runRevenueEuro();
         $distribution->save();
     }
 

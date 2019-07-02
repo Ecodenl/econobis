@@ -7,11 +7,9 @@ function ParticipantFormViewCapital({
     participationWorth,
     participationsDefinitive,
     participationsDefinitiveWorth,
-    valueCourses,
+    currentBookWorth,
     onClick,
 }) {
-    const activeValueCourse = valueCourses ? valueCourses.find(valueCourse => valueCourse.active) : [];
-
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
@@ -23,10 +21,7 @@ function ParticipantFormViewCapital({
                 <ViewText label={'Nominale waarde per participatie'} value={moneyPresenter(participationWorth)} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText
-                    label={'Huidige boekwaarde per participatie'}
-                    value={activeValueCourse && moneyPresenter(activeValueCourse.bookWorth)}
-                />
+                <ViewText label={'Huidige boekwaarde per participatie'} value={moneyPresenter(currentBookWorth)} />
             </div>
             <div className="row" onClick={onClick}>
                 <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />

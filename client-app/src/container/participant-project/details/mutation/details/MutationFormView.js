@@ -43,7 +43,6 @@ const MutationFormView = ({
         payoutKwh,
         indicationOfRestitutionEnergyTax,
         deletedAt,
-        paidOn,
     } = participantMutation;
 
     return (
@@ -73,7 +72,6 @@ const MutationFormView = ({
                         {indicationOfRestitutionEnergyTax && moneyPresenter(indicationOfRestitutionEnergyTax)}
                     </StyledColumn>
                 )}
-                <StyledColumn columnWidth={'120px'}>{paidOn}</StyledColumn>
                 {!deletedAt && (
                     <StyledColumn columnWidth={'6%'}>
                         {showActionButtons && permissions.manageFinancial ? (

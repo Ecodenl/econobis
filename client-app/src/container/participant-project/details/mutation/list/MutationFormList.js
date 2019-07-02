@@ -41,7 +41,6 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
                 {projectTypeCodeRef === 'postalcode_link_capital' && (
                     <StyledColumn>Indicatie teruggave EB</StyledColumn>
                 )}
-                <StyledColumn columnWidth={'120px'}>Uitgekeerd op of via</StyledColumn>
                 <StyledColumn columnWidth={'7%'}>&nbsp;</StyledColumn>
             </StyledContainer>
             {participantMutations.length > 0 ? (

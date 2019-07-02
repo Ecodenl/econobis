@@ -508,7 +508,7 @@ class ProjectRevenueController extends ApiController
         $writer = new Xlsx($excel);
         $writer->save($filePath);
 
-//        die("stop hier maar even voor testdoeleinden Excel");
+//        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");
 
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 

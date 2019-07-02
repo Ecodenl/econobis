@@ -63,10 +63,10 @@ class CreatePaymentInvoices implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $productionProjectRevenueController = new ProjectRevenueController();
+        $projectRevenueController = new ProjectRevenueController();
         if($this->createInvoice) {
             //create invoices
-            $createdInvoices = $productionProjectRevenueController->createInvoices(ProjectRevenueDistribution::whereIn('id',
+            $createdInvoices = $projectRevenueController->createInvoices(ProjectRevenueDistribution::whereIn('id',
                 $this->distributionIds)->get());
 
             if ($createdInvoices) {
@@ -77,7 +77,7 @@ class CreatePaymentInvoices implements ShouldQueue
                         array_push($reportDistributionIds, $createdInvoice->revenue_distribution_id);
                     }
 
-                    $productionProjectRevenueController->createParticipantRevenueReport($this->subject,
+                    $projectRevenueController->createParticipantRevenueReport($this->subject,
                         $reportDistributionIds,
                         DocumentTemplate::find($this->documentTemplateId),
                         EmailTemplate::find($this->emailTemplateId));
@@ -95,7 +95,7 @@ class CreatePaymentInvoices implements ShouldQueue
         }
 
         elseif (!$this->createInvoice && $this->createReport){
-            $productionProjectRevenueController->createParticipantRevenueReport($this->subject,
+            $projectRevenueController->createParticipantRevenueReport($this->subject,
                 $this->distributionIds,
                 DocumentTemplate::find($this->documentTemplateId),
                 EmailTemplate::find($this->emailTemplateId));

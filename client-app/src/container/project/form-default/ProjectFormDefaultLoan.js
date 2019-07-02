@@ -27,7 +27,7 @@ const ProjectFormEditLoan = ({ amountOfLoanNeeded, amountDefinitive, amountOptio
             <div className="row">
                 <div className={'form-group col-md-6'} />
                 <ViewText
-                    label={'Lening opgehaald in optie'}
+                    label={'Lening opgehaald in inschrijving'}
                     value={MoneyPresenter(amountOptioned)}
                     className={'form-group col-sm-6'}
                 />

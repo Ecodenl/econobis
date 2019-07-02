@@ -30,7 +30,7 @@ const ProjectGeneralFormViewPostalcodeLinkCapital = ({ project }) => {
 
                 <div className="row">
                     <ViewText label={'Type project'} value={projectType && projectType.name} />
-                    <ViewText label={'Participaties in optie'} value={participationsOptioned} />
+                    <ViewText label={'Participaties in inschrijving'} value={participationsOptioned} />
                 </div>
 
                 <div className="row">

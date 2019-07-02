@@ -16,7 +16,7 @@ const ProjectFormViewLoan = ({ amountOfLoanNeeded, amountDefinitive, amountOptio
 
             <div className="row">
                 <div className={'form-group col-md-6'} />
-                <ViewText label={'Lening opgehaald in optie'} value={MoneyPresenter(amountOptioned)} />
+                <ViewText label={'Lening opgehaald in inschrijving'} value={MoneyPresenter(amountOptioned)} />
             </div>
 
             <div className="row">

@@ -34,7 +34,7 @@ const ProjectFormViewCapital = ({
                     value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
                 />
                 <ViewText
-                    label={'Participaties in optie'}
+                    label={'Participaties in inschrijving'}
                     value={participationsOptioned ? participationsOptioned : ''}
                 />
             </div>

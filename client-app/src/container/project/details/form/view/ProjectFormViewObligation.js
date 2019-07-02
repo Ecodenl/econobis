@@ -34,7 +34,10 @@ const ProjectFormViewObligation = ({
                     value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
                 />
 
-                <ViewText label={'Obligaties in optie'} value={participationsOptioned ? participationsOptioned : ''} />
+                <ViewText
+                    label={'Obligaties in inschrijving'}
+                    value={participationsOptioned ? participationsOptioned : ''}
+                />
             </div>
             <div className="row">
                 <ViewText

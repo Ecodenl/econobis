@@ -53,7 +53,7 @@ const MutationFormEdit = ({
         if (originalStatus.id !== Number(statusId)) {
             switch (originalStatus.codeRef) {
                 case 'interest':
-                    buttonTextSubmit = 'Status doorzetten naar optie';
+                    buttonTextSubmit = 'Status doorzetten naar inschrijving';
                     break;
                 case 'option':
                     buttonTextSubmit = 'Status doorzetten naar toegekend';

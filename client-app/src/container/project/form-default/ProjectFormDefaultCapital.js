@@ -45,7 +45,7 @@ const ProjectFormDefaultCapital = ({
                     className={'form-group col-sm-6'}
                 />
                 <ViewText
-                    label={'Participaties in optie'}
+                    label={'Participaties in inschrijving'}
                     value={participationsOptioned || 0}
                     className={'form-group col-sm-6'}
                 />

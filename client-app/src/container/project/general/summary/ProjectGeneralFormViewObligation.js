@@ -36,7 +36,7 @@ const ProjectGeneralFormViewObligation = ({ project, projectTypes }) => {
 
                 <div className="row">
                     <ViewText label={'Type project'} value={projectType && projectType.name} />
-                    <ViewText label={'Obligaties in optie'} value={participationsOptioned} />
+                    <ViewText label={'Obligaties in inschrijving'} value={participationsOptioned} />
                 </div>
 
                 <div className="row">

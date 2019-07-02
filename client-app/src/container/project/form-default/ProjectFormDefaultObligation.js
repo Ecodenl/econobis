@@ -46,7 +46,7 @@ const ProjectFormEditObligation = ({
                 />
 
                 <ViewText
-                    label={'Obligaties in optie'}
+                    label={'Obligaties in inschrijving'}
                     value={participationsOptioned || 0}
                     className={'form-group col-sm-6'}
                 />

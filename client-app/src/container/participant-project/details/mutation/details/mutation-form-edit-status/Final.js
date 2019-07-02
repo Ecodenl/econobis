@@ -53,21 +53,21 @@ const MutationFormEditStatusFinal = ({
         <div className="row">
             {projectTypeCodeRef === 'loan' ? (
                 <ViewText
-                    label={'Bedrag optie'}
+                    label={'Bedrag inschrijving'}
                     id={'amountOption'}
                     className={'col-sm-6 form-group'}
                     value={amountOption}
                 />
             ) : (
                 <ViewText
-                    label={'Aantal optie'}
+                    label={'Aantal inschrijving'}
                     id={'quantityOption'}
                     className={'col-sm-6 form-group'}
                     value={quantityOption}
                 />
             )}
             <ViewText
-                label={'Optiedatum'}
+                label={'Inschrijvingdatum'}
                 id={'dateOption'}
                 className={'col-sm-6 form-group'}
                 value={dateOption && moment(dateOption).format('L')}

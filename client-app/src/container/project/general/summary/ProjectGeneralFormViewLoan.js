@@ -30,7 +30,7 @@ const ProjectGeneralFormViewOther = ({ project }) => {
 
                 <div className="row">
                     <ViewText label={'Type project'} value={projectType && projectType.name} />
-                    <ViewText label={'Lening opgehaald in optie'} value={moneyPresenter(amountOptioned)} />
+                    <ViewText label={'Lening opgehaald in inschrijving'} value={moneyPresenter(amountOptioned)} />
                 </div>
 
                 <div className="row">

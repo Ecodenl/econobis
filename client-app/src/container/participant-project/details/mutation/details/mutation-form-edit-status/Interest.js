@@ -49,7 +49,7 @@ const MutationFormEditStatusInterest = ({
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
                             type={'number'}
-                            label={'Bedrag optie'}
+                            label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             name={'amountOption'}
                             value={amountOption}
@@ -60,7 +60,7 @@ const MutationFormEditStatusInterest = ({
                     ) : (
                         <InputText
                             type={'number'}
-                            label={'Aantal optie'}
+                            label={'Aantal inschrijving'}
                             id={'quantityOption'}
                             name={'quantityOption'}
                             value={quantityOption}
@@ -71,7 +71,7 @@ const MutationFormEditStatusInterest = ({
                     )}
 
                     <InputDate
-                        label={'Optiedatum'}
+                        label={'Inschrijvingdatum'}
                         name={'dateOption'}
                         value={dateOption}
                         onChangeAction={handleInputChangeDate}

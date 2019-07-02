@@ -50,21 +50,21 @@ const MutationFormEditStatusOption = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <ViewText
-                            label={'Bedrag optie'}
+                            label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             className={'col-sm-6 form-group'}
                             value={amountOption}
                         />
                     ) : (
                         <ViewText
-                            label={'Aantal optie'}
+                            label={'Aantal inschrijving'}
                             id={'quantityOption'}
                             className={'col-sm-6 form-group'}
                             value={quantityOption}
                         />
                     )}
                     <ViewText
-                        label={'Optiedatum'}
+                        label={'Inschrijvingdatum'}
                         id={'dateOption'}
                         className={'col-sm-6 form-group'}
                         value={dateOption && moment(dateOption).format('L')}
@@ -133,7 +133,7 @@ const MutationFormEditStatusOption = ({
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
                             type={'number'}
-                            label={'Bedrag optie'}
+                            label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             name={'amountOption'}
                             value={amountOption}
@@ -144,7 +144,7 @@ const MutationFormEditStatusOption = ({
                     ) : (
                         <InputText
                             type={'number'}
-                            label={'Aantal optie'}
+                            label={'Aantal inschrijving'}
                             id={'quantityOption'}
                             name={'quantityOption'}
                             value={quantityOption}
@@ -154,7 +154,7 @@ const MutationFormEditStatusOption = ({
                         />
                     )}
                     <InputDate
-                        label={'Datum optie'}
+                        label={'Datum inschrijving'}
                         name={'dateOption'}
                         value={dateOption}
                         onChangeAction={handleInputChangeDate}

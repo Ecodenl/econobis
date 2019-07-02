@@ -116,7 +116,7 @@ const ParticipantNewForm = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
-                            label={'Bedrag optie'}
+                            label={'Bedrag inschrijving'}
                             name={'amountOption'}
                             id={'amountOption'}
                             value={amountOption}
@@ -126,7 +126,7 @@ const ParticipantNewForm = ({
                         />
                     ) : (
                         <InputText
-                            label={'Aantal optie'}
+                            label={'Aantal inschrijving'}
                             name={'quantityOption'}
                             id={'quantityOption'}
                             value={quantityOption}
@@ -137,7 +137,7 @@ const ParticipantNewForm = ({
                     )}
 
                     <InputDate
-                        label={'Optiedatum'}
+                        label={'Inschrijvingdatum'}
                         name={'dateOption'}
                         id={'dateOption'}
                         value={dateOption}

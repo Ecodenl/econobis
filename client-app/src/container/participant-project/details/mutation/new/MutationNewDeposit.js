@@ -59,7 +59,7 @@ const MutationNewDeposit = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
-                            label={'Bedrag optie'}
+                            label={'Bedrag inschrijving'}
                             name={'amountOption'}
                             id={'amountOption'}
                             value={amountOption}
@@ -69,7 +69,7 @@ const MutationNewDeposit = ({
                         />
                     ) : (
                         <InputText
-                            label={'Aantal optie'}
+                            label={'Aantal inschrijving'}
                             name={'quantityOption'}
                             id={'quantityOption'}
                             value={quantityOption}
@@ -80,7 +80,7 @@ const MutationNewDeposit = ({
                     )}
 
                     <InputDate
-                        label={'Optiedatum'}
+                        label={'Inschrijvingsdatum'}
                         name={'dateOption'}
                         id={'dateOption'}
                         value={dateOption}

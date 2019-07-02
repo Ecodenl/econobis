@@ -41,7 +41,7 @@ const MutationFormEditStatusOption = ({
                         />
                     )}
                     <ViewText
-                        label={'Datum interesse'}
+                        label={'Interessedatum'}
                         id={'dateInterest'}
                         className={'col-sm-6 form-group'}
                         value={dateInterest && moment(dateInterest).format('L')}
@@ -64,7 +64,7 @@ const MutationFormEditStatusOption = ({
                         />
                     )}
                     <ViewText
-                        label={'Inschrijvingdatum'}
+                        label={'Inschrijvingsdatum'}
                         id={'dateOption'}
                         className={'col-sm-6 form-group'}
                         value={dateOption && moment(dateOption).format('L')}
@@ -123,7 +123,7 @@ const MutationFormEditStatusOption = ({
                         />
                     )}
                     <ViewText
-                        label={'Datum interesse'}
+                        label={'Interessedatum'}
                         id={'dateInterest'}
                         className={'col-sm-6 form-group'}
                         value={dateInterest && moment(dateInterest).format('L')}
@@ -154,7 +154,7 @@ const MutationFormEditStatusOption = ({
                         />
                     )}
                     <InputDate
-                        label={'Datum inschrijving'}
+                        label={'Inschrijvingsdatum'}
                         name={'dateOption'}
                         value={dateOption}
                         onChangeAction={handleInputChangeDate}

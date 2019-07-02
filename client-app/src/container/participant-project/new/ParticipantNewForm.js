@@ -137,7 +137,7 @@ const ParticipantNewForm = ({
                     )}
 
                     <InputDate
-                        label={'Inschrijvingdatum'}
+                        label={'Inschrijvingsdatum'}
                         name={'dateOption'}
                         id={'dateOption'}
                         value={dateOption}

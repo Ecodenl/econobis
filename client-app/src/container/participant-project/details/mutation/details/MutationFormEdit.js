@@ -5,11 +5,10 @@ import { connect } from 'react-redux';
 import Panel from '../../../../../components/panel/Panel';
 import MutationFormEditResult from './MutationFormEditResult';
 import MutationFormEditDeposit from './MutationFormEditDeposit';
-import ParticipantDetailsMutationConclusion from './conclusion';
-import InputText from '../new/MutationNewDeposit';
 
 const MutationFormEdit = ({
-    participantMutation,
+    participantMutationFromState,
+    participantMutationFromProps,
     errors,
     handleSubmit,
     handleInputChange,
@@ -21,23 +20,8 @@ const MutationFormEdit = ({
 }) => {
     const {
         type,
-        status: originalStatus,
         statusId,
-        quantityInterest,
-        amountInterest,
-        dateInterest,
-        quantityOption,
-        amountOption,
-        dateOption,
-        quantityGranted,
-        amountGranted,
-        dateGranted,
-        quantityFinal,
-        amountFinal,
-        dateContractRetour,
         datePayment,
-        dateEntry,
-        participationWorth,
         returns,
         paidOn,
         entry,
@@ -45,15 +29,15 @@ const MutationFormEdit = ({
         createdBy,
         updatedAt,
         updatedBy,
-    } = participantMutation;
+    } = participantMutationFromState;
 
     let buttonTextSubmit = 'Opslaan';
 
     let participantMutationStatusesOptions = [];
 
-    if (originalStatus) {
-        if (originalStatus.id !== Number(statusId)) {
-            switch (originalStatus.codeRef) {
+    if (participantMutationFromProps.status) {
+        if (participantMutationFromProps.status.id !== Number(statusId)) {
+            switch (participantMutationFromProps.status.codeRef) {
                 case 'interest':
                     buttonTextSubmit = 'Status doorzetten naar inschrijving';
                     break;
@@ -68,7 +52,7 @@ const MutationFormEdit = ({
             }
         }
 
-        switch (originalStatus.codeRef) {
+        switch (participantMutationFromProps.status.codeRef) {
             case 'interest':
                 participantMutationStatusesOptions = participantMutationStatuses.filter(
                     participantMutationStatus =>
@@ -98,35 +82,14 @@ const MutationFormEdit = ({
                 <Panel className={'panel-grey'}>
                     {type.codeRef === 'first_deposit' || type.codeRef === 'deposit' ? (
                         <MutationFormEditDeposit
-                            type={type}
-                            originalStatus={originalStatus}
+                            participantMutationFromState={participantMutationFromState}
+                            participantMutationFromProps={participantMutationFromProps}
                             participantMutationStatusesOptions={participantMutationStatusesOptions}
-                            statusId={statusId}
-                            participationWorth={participationWorth}
-                            quantityInterest={quantityInterest}
-                            amountInterest={amountInterest}
-                            dateInterest={dateInterest}
-                            quantityOption={quantityOption}
-                            amountOption={amountOption}
-                            dateOption={dateOption}
                             errors={errors}
-                            quantityGranted={quantityGranted}
-                            amountGranted={amountGranted}
-                            dateGranted={dateGranted}
-                            quantityFinal={quantityFinal}
-                            amountFinal={amountFinal}
-                            dateEntry={dateEntry}
-                            dateContractRetour={dateContractRetour}
                             projectTypeCodeRef={projectTypeCodeRef}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
                             handleBlurAmount={handleBlurAmount}
-                            datePayment={datePayment}
-                            createdAt={createdAt}
-                            createdBy={createdBy}
-                            updatedAt={updatedAt}
-                            updatedBy={updatedBy}
-                            statusLogs={participantMutation.statusLogs}
                             cancelEdit={cancelEdit}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
@@ -135,15 +98,7 @@ const MutationFormEdit = ({
 
                     {type.codeRef === 'result' ? (
                         <MutationFormEditResult
-                            type={type}
-                            returns={returns}
-                            datePayment={datePayment}
-                            entry={entry}
-                            paidOn={paidOn}
-                            createdAt={createdAt}
-                            createdBy={createdBy}
-                            updatedAt={updatedAt}
-                            updatedBy={updatedBy}
+                            participantMutationFromProps={participantMutationFromProps}
                             cancelEdit={cancelEdit}
                         />
                     ) : null}

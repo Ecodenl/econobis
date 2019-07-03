@@ -6,14 +6,8 @@ import InputDate from '../../../../../../components/form/InputDate';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusInterest = ({
-    originalStatus,
-    statusId,
-    quantityInterest,
-    amountInterest,
-    dateInterest,
-    quantityOption,
-    amountOption,
-    dateOption,
+    participantMutationFromState,
+    participantMutationFromProps,
     handleInputChange,
     handleInputChangeDate,
     handleBlurAmount,
@@ -21,7 +15,7 @@ const MutationFormEditStatusInterest = ({
     projectTypeCodeRef,
 }) => (
     <React.Fragment>
-        {originalStatus.id !== Number(statusId) ? (
+        {participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) ? (
             <React.Fragment>
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -29,14 +23,14 @@ const MutationFormEditStatusInterest = ({
                             label={'Bedrag interesse'}
                             id={'amountInterest'}
                             className={'col-sm-6 form-group'}
-                            value={MoneyPresenter(amountInterest)}
+                            value={MoneyPresenter(participantMutationFromProps.amountInterest)}
                         />
                     ) : (
                         <ViewText
                             label={'Aantal interesse'}
                             id={'quantityInterest'}
                             className={'col-sm-6 form-group'}
-                            value={quantityInterest}
+                            value={participantMutationFromProps.quantityInterest}
                         />
                     )}
 
@@ -44,7 +38,10 @@ const MutationFormEditStatusInterest = ({
                         label={'Interessedatum'}
                         id={'dateInterest'}
                         className={'col-sm-6 form-group'}
-                        value={dateInterest && moment(dateInterest).format('L')}
+                        value={
+                            participantMutationFromProps.dateInterest &&
+                            moment(participantMutationFromProps.dateInterest.date).format('L')
+                        }
                     />
                 </div>
                 <div className="row">
@@ -54,7 +51,7 @@ const MutationFormEditStatusInterest = ({
                             label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             name={'amountOption'}
-                            value={amountOption}
+                            value={participantMutationFromState.amountOption}
                             onChangeAction={handleInputChange}
                             onBlurAction={handleBlurAmount}
                             required={'required'}
@@ -66,7 +63,7 @@ const MutationFormEditStatusInterest = ({
                             label={'Aantal inschrijving'}
                             id={'quantityOption'}
                             name={'quantityOption'}
-                            value={quantityOption}
+                            value={participantMutationFromState.quantityOption}
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.quantityOption}
@@ -76,7 +73,7 @@ const MutationFormEditStatusInterest = ({
                     <InputDate
                         label={'Inschrijvingsdatum'}
                         name={'dateOption'}
-                        value={dateOption}
+                        value={participantMutationFromState.dateOption}
                         onChangeAction={handleInputChangeDate}
                         required={'required'}
                         error={errors.dateOption}
@@ -91,7 +88,7 @@ const MutationFormEditStatusInterest = ({
                         label={'Bedrag interesse'}
                         id={'amountInterest'}
                         name={'amountInterest'}
-                        value={amountInterest}
+                        value={participantMutationFromState.amountInterest}
                         onChangeAction={handleInputChange}
                         onBlurAction={handleBlurAmount}
                         error={errors.amountInterest}
@@ -102,14 +99,14 @@ const MutationFormEditStatusInterest = ({
                         label={'Aantal interesse'}
                         id={'quantityInterest'}
                         name={'quantityInterest'}
-                        value={quantityInterest}
+                        value={participantMutationFromState.quantityInterest}
                         onChangeAction={handleInputChange}
                     />
                 )}
                 <InputDate
                     label={'Interessedatum'}
                     name={'dateInterest'}
-                    value={dateInterest}
+                    value={participantMutationFromState.dateInterest}
                     onChangeAction={handleInputChangeDate}
                 />
             </div>

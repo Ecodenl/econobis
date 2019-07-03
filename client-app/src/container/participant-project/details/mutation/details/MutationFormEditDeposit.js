@@ -35,6 +35,7 @@ function MutationFormEditDeposit({
     projectTypeCodeRef,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     cancelEdit,
     handleSubmit,
     errors,
@@ -90,6 +91,7 @@ function MutationFormEditDeposit({
                     dateOption={dateOption}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -110,6 +112,7 @@ function MutationFormEditDeposit({
                     dateGranted={dateGranted}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -135,6 +138,7 @@ function MutationFormEditDeposit({
                     datePayment={datePayment}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -160,6 +164,7 @@ function MutationFormEditDeposit({
                     datePayment={datePayment}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -197,6 +202,7 @@ MutationFormEditDeposit.propTypes = {
     amountOption: PropTypes.any,
     dateOption: PropTypes.any,
     handleInputChangeDate: PropTypes.any,
+    handleBlurAmount: PropTypes.any,
     errors: PropTypes.any,
     quantityGranted: PropTypes.any,
     amountGranted: PropTypes.any,

@@ -3,6 +3,7 @@ import ViewText from '../../../../../../components/form/ViewText';
 import moment from 'moment';
 import InputText from '../../../../../../components/form/InputText';
 import InputDate from '../../../../../../components/form/InputDate';
+import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusFinal = ({
     originalStatus,
@@ -23,6 +24,7 @@ const MutationFormEditStatusFinal = ({
     datePayment,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     errors,
     projectTypeCodeRef,
 }) => (
@@ -33,7 +35,7 @@ const MutationFormEditStatusFinal = ({
                     label={'Bedrag interesse'}
                     id={'amountInterest'}
                     className={'col-sm-6 form-group'}
-                    value={amountInterest}
+                    value={MoneyPresenter(amountInterest)}
                 />
             ) : (
                 <ViewText
@@ -56,7 +58,7 @@ const MutationFormEditStatusFinal = ({
                     label={'Bedrag inschrijving'}
                     id={'amountOption'}
                     className={'col-sm-6 form-group'}
-                    value={amountOption}
+                    value={MoneyPresenter(amountOption)}
                 />
             ) : (
                 <ViewText
@@ -79,7 +81,7 @@ const MutationFormEditStatusFinal = ({
                     label={'Bedrag toegekend'}
                     id={'amountGranted'}
                     className={'col-sm-6 form-group'}
-                    value={amountGranted}
+                    value={MoneyPresenter(amountGranted)}
                 />
             ) : (
                 <ViewText
@@ -105,6 +107,7 @@ const MutationFormEditStatusFinal = ({
                     name={'amountFinal'}
                     value={amountFinal}
                     onChangeAction={handleInputChange}
+                    onBlurAction={handleBlurAmount}
                     required={'required'}
                     error={errors.amountFinal}
                 />

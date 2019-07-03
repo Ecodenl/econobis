@@ -6,6 +6,7 @@ import Panel from '../../../../../components/panel/Panel';
 import MutationFormEditResult from './MutationFormEditResult';
 import MutationFormEditDeposit from './MutationFormEditDeposit';
 import ParticipantDetailsMutationConclusion from './conclusion';
+import InputText from '../new/MutationNewDeposit';
 
 const MutationFormEdit = ({
     participantMutation,
@@ -13,6 +14,7 @@ const MutationFormEdit = ({
     handleSubmit,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     projectTypeCodeRef,
     cancelEdit,
     participantMutationStatuses,
@@ -118,6 +120,7 @@ const MutationFormEdit = ({
                             projectTypeCodeRef={projectTypeCodeRef}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
+                            handleBlurAmount={handleBlurAmount}
                             datePayment={datePayment}
                             createdAt={createdAt}
                             createdBy={createdBy}

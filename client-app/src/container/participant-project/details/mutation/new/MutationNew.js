@@ -41,8 +41,6 @@ class MutationFormNew extends Component {
             },
             errors: {},
         };
-
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
     handleInputChange = event => {
@@ -81,7 +79,7 @@ class MutationFormNew extends Component {
         }
     };
 
-    handleInputChangeDate(value, name) {
+    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             participationMutation: {
@@ -89,7 +87,21 @@ class MutationFormNew extends Component {
                 [name]: value,
             },
         });
-    }
+    };
+
+    handleBlurAmount = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            participationMutation: {
+                ...this.state.participationMutation,
+                [name]: parseFloat(value).toFixed(2),
+            },
+        });
+    };
 
     handleSubmit = event => {
         event.preventDefault();

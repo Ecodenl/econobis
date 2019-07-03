@@ -63,8 +63,6 @@ class MutationFormListItem extends Component {
             },
             errors: {},
         };
-
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -188,14 +186,28 @@ class MutationFormListItem extends Component {
         });
     };
 
-    handleInputChangeDate(value, name) {
+    handleInputChangeDate = (value, name) => {
         this.setState({
             participantMutation: {
                 ...this.state.participantMutation,
                 [name]: value,
             },
         });
-    }
+    };
+
+    handleBlurAmount = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            participationMutation: {
+                ...this.state.participationMutation,
+                [name]: parseFloat(value).toFixed(2),
+            },
+        });
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -241,6 +253,7 @@ class MutationFormListItem extends Component {
                         participantMutation={this.state.participantMutation}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
+                        handleBlurAmount={this.handleBlurAmount}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
                         errors={this.state.errors}

@@ -3,6 +3,7 @@ import ViewText from '../../../../../../components/form/ViewText';
 import moment from 'moment';
 import InputText from '../../../../../../components/form/InputText';
 import InputDate from '../../../../../../components/form/InputDate';
+import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusInterest = ({
     originalStatus,
@@ -15,6 +16,7 @@ const MutationFormEditStatusInterest = ({
     dateOption,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     errors,
     projectTypeCodeRef,
 }) => (
@@ -27,7 +29,7 @@ const MutationFormEditStatusInterest = ({
                             label={'Bedrag interesse'}
                             id={'amountInterest'}
                             className={'col-sm-6 form-group'}
-                            value={amountInterest}
+                            value={MoneyPresenter(amountInterest)}
                         />
                     ) : (
                         <ViewText
@@ -54,6 +56,7 @@ const MutationFormEditStatusInterest = ({
                             name={'amountOption'}
                             value={amountOption}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountOption}
                         />
@@ -90,6 +93,8 @@ const MutationFormEditStatusInterest = ({
                         name={'amountInterest'}
                         value={amountInterest}
                         onChangeAction={handleInputChange}
+                        onBlurAction={handleBlurAmount}
+                        error={errors.amountInterest}
                     />
                 ) : (
                     <InputText

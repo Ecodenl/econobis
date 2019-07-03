@@ -7,18 +7,19 @@ import * as PropTypes from 'prop-types';
 import React from 'react';
 import ParticipantDetailsMutationConclusion from './conclusion';
 
-function MutationFormEditResult({
-    type,
-    returns,
-    entry,
-    datePayment,
-    paidOn,
-    cancelEdit,
-    createdAt,
-    createdBy,
-    updatedAt,
-    updatedBy,
-}) {
+function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
+    const {
+        type,
+        returns,
+        entry,
+        datePayment,
+        paidOn,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+    } = participantMutationFromProps;
+
     return (
         <PanelBody>
             <div className="row">
@@ -41,7 +42,12 @@ function MutationFormEditResult({
                     className={'col-sm-6 form-group'}
                     value={datePayment ? moment(datePayment).format('L') : ''}
                 />
-                <ViewText label={'Betaald op Iban'} id={'paidOn'} className={'col-sm-6 form-group'} value={paidOn} />
+                <ViewText
+                    label={'Uitgekeerd op of via'}
+                    id={'paidOn'}
+                    className={'col-sm-6 form-group'}
+                    value={paidOn}
+                />
             </div>
 
             <ParticipantDetailsMutationConclusion

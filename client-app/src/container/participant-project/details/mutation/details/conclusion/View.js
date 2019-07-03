@@ -26,12 +26,12 @@ const ParticipantDetailsMutationConclusionView = ({ createdAt, createdBy, update
                 <ViewText
                     label={'Gemaakt op'}
                     className={'col-sm-6 form-group'}
-                    value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
+                    value={createdAt ? moment(createdAt.date).format('L hh:mm') : 'Onbekend'}
                 />
                 <ViewText
                     label={'Laatste update op'}
                     className={'col-sm-6 form-group'}
-                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
+                    value={updatedAt ? moment(updatedAt.date).format('L hh:mm') : 'Onbekend'}
                 />
             </div>
         </React.Fragment>

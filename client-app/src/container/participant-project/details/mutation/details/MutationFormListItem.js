@@ -35,7 +35,9 @@ class MutationFormListItem extends Component {
                     ? props.participantMutation.dateContractRetour.date
                     : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
-                dateEntry: props.participantMutation.dateEntry ? props.participantMutation.dateEntry.date : '',
+                dateEntry: props.participantMutation.dateEntry
+                    ? props.participantMutation.dateEntry.date
+                    : moment().format('YYYY-MM-DD'),
                 quantityInterest: props.participantMutation.quantityInterest
                     ? props.participantMutation.quantityInterest
                     : props.participantMutation.quantity,
@@ -63,8 +65,6 @@ class MutationFormListItem extends Component {
             },
             errors: {},
         };
-
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -188,14 +188,28 @@ class MutationFormListItem extends Component {
         });
     };
 
-    handleInputChangeDate(value, name) {
+    handleInputChangeDate = (value, name) => {
         this.setState({
             participantMutation: {
                 ...this.state.participantMutation,
                 [name]: value,
             },
         });
-    }
+    };
+
+    handleBlurAmount = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            participationMutation: {
+                ...this.state.participationMutation,
+                [name]: parseFloat(value).toFixed(2),
+            },
+        });
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -238,9 +252,11 @@ class MutationFormListItem extends Component {
                 />
                 {this.state.showEdit && this.props.permissions.manageFinancial && (
                     <MutationFormEdit
-                        participantMutation={this.state.participantMutation}
+                        participantMutationFromState={this.state.participantMutation}
+                        participantMutationFromProps={this.props.participantMutation}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
+                        handleBlurAmount={this.handleBlurAmount}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
                         errors={this.state.errors}

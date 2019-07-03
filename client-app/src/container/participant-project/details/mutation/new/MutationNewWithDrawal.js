@@ -10,6 +10,7 @@ const MutationNewWithDrawal = ({
     errors,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     projectTypeCodeRef,
 }) => {
     return (
@@ -17,16 +18,19 @@ const MutationNewWithDrawal = ({
             <div className="row">
                 {projectTypeCodeRef === 'loan' ? (
                     <InputText
+                        type={'number'}
                         label={'Bedrag'}
                         name={'amount'}
                         id={'amount'}
                         value={amount}
                         onChangeAction={handleInputChange}
+                        onBlurAction={handleBlurAmount}
                         required={'required'}
                         error={errors.amount}
                     />
                 ) : (
                     <InputText
+                        type={'number'}
                         label={'Aantal'}
                         name={'quantity'}
                         id={'quantity'}

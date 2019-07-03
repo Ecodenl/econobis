@@ -3,31 +3,19 @@ import ViewText from '../../../../../../components/form/ViewText';
 import moment from 'moment';
 import InputText from '../../../../../../components/form/InputText';
 import InputDate from '../../../../../../components/form/InputDate';
+import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusGranted = ({
-    originalStatus,
-    statusId,
-    quantityInterest,
-    amountInterest,
-    dateInterest,
-    quantityOption,
-    amountOption,
-    dateOption,
-    quantityGranted,
-    amountGranted,
-    dateGranted,
-    quantityFinal,
-    amountFinal,
-    dateEntry,
-    dateContractRetour,
-    datePayment,
+    participantMutationFromState,
+    participantMutationFromProps,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     errors,
     projectTypeCodeRef,
 }) => (
     <React.Fragment>
-        {originalStatus.id !== Number(statusId) ? (
+        {participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) ? (
             <React.Fragment>
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
@@ -35,21 +23,24 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag interesse'}
                             id={'amountInterest'}
                             className={'col-sm-6 form-group'}
-                            value={amountInterest}
+                            value={MoneyPresenter(participantMutationFromProps.amountInterest)}
                         />
                     ) : (
                         <ViewText
                             label={'Aantal interesse'}
                             id={'quantityInterest'}
                             className={'col-sm-6 form-group'}
-                            value={quantityInterest}
+                            value={participantMutationFromProps.quantityInterest}
                         />
                     )}
                     <ViewText
                         label={'Interessedatum'}
                         id={'dateInterest'}
                         className={'col-sm-6 form-group'}
-                        value={dateInterest && moment(dateInterest).format('L')}
+                        value={
+                            participantMutationFromProps.dateInterest &&
+                            moment(participantMutationFromProps.dateInterest.date).format('L')
+                        }
                     />
                 </div>
                 <div className="row">
@@ -58,21 +49,24 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             className={'col-sm-6 form-group'}
-                            value={amountOption}
+                            value={MoneyPresenter(participantMutationFromProps.amountOption)}
                         />
                     ) : (
                         <ViewText
                             label={'Aantal inschrijving'}
                             id={'quantityOption'}
                             className={'col-sm-6 form-group'}
-                            value={quantityOption}
+                            value={participantMutationFromProps.quantityOption}
                         />
                     )}
                     <ViewText
                         label={'Inschrijvingsdatum'}
                         id={'dateOption'}
                         className={'col-sm-6 form-group'}
-                        value={dateOption && moment(dateOption).format('L')}
+                        value={
+                            participantMutationFromProps.dateOption &&
+                            moment(participantMutationFromProps.dateOption.date).format('L')
+                        }
                     />
                 </div>
                 <div className="row">
@@ -81,21 +75,24 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag toegekend'}
                             id={'amountGranted'}
                             className={'col-sm-6 form-group'}
-                            value={amountGranted}
+                            value={MoneyPresenter(participantMutationFromProps.amountGranted)}
                         />
                     ) : (
                         <ViewText
                             label={'Aantal toegekend'}
                             id={'quantityGranted'}
                             className={'col-sm-6 form-group'}
-                            value={quantityGranted}
+                            value={participantMutationFromProps.quantityGranted}
                         />
                     )}
                     <ViewText
                         label={'Toewijzingsdatum'}
                         id={'dateGranted'}
                         className={'col-sm-6 form-group'}
-                        value={dateGranted && moment(dateGranted).format('L')}
+                        value={
+                            participantMutationFromProps.dateGranted &&
+                            moment(participantMutationFromProps.dateGranted.date).format('L')
+                        }
                     />
                 </div>
                 <div className="row">
@@ -105,8 +102,9 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag definitief'}
                             id={'amountFinal'}
                             name={'amountFinal'}
-                            value={amountFinal}
+                            value={participantMutationFromState.amountFinal}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountFinal}
                         />
@@ -116,7 +114,7 @@ const MutationFormEditStatusGranted = ({
                             label={'Aantal definitief'}
                             id={'quantityFinal'}
                             name={'quantityFinal'}
-                            value={quantityFinal}
+                            value={participantMutationFromState.quantityFinal}
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.quantityFinal}
@@ -125,7 +123,7 @@ const MutationFormEditStatusGranted = ({
                     <InputDate
                         label={'Ingangsdatum'}
                         name={'dateEntry'}
-                        value={dateEntry}
+                        value={participantMutationFromState.dateEntry}
                         onChangeAction={handleInputChangeDate}
                         required={'required'}
                         error={errors.dateEntry}
@@ -135,13 +133,13 @@ const MutationFormEditStatusGranted = ({
                     <InputDate
                         label={'Contract retour'}
                         name={'dateContractRetour'}
-                        value={dateContractRetour}
+                        value={participantMutationFromState.dateContractRetour}
                         onChangeAction={handleInputChangeDate}
                     />
                     <InputDate
                         label={'Betaal datum'}
                         name={'datePayment'}
-                        value={datePayment}
+                        value={participantMutationFromState.datePayment}
                         onChangeAction={handleInputChangeDate}
                     />
                 </div>
@@ -154,21 +152,24 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag interesse'}
                             id={'amountInterest'}
                             className={'col-sm-6 form-group'}
-                            value={amountInterest}
+                            value={MoneyPresenter(participantMutationFromProps.amountInterest)}
                         />
                     ) : (
                         <ViewText
                             label={'Aantal interesse'}
                             id={'quantityInterest'}
                             className={'col-sm-6 form-group'}
-                            value={quantityInterest}
+                            value={participantMutationFromProps.quantityInterest}
                         />
                     )}
                     <ViewText
                         label={'Interessedatum'}
                         id={'dateInterest'}
                         className={'col-sm-6 form-group'}
-                        value={dateInterest && moment(dateInterest).format('L')}
+                        value={
+                            participantMutationFromProps.dateInterest &&
+                            moment(participantMutationFromProps.dateInterest.date).format('L')
+                        }
                     />
                 </div>
                 <div className="row">
@@ -177,21 +178,24 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             className={'col-sm-6 form-group'}
-                            value={amountOption}
+                            value={MoneyPresenter(participantMutationFromProps.amountOption)}
                         />
                     ) : (
                         <ViewText
                             label={'Aantal inschrijving'}
                             id={'quantityOption'}
                             className={'col-sm-6 form-group'}
-                            value={quantityOption}
+                            value={participantMutationFromProps.quantityOption}
                         />
                     )}
                     <ViewText
                         label={'Inschrijvingsdatum'}
                         id={'dateOption'}
                         className={'col-sm-6 form-group'}
-                        value={dateOption && moment(dateOption).format('L')}
+                        value={
+                            participantMutationFromProps.dateOption &&
+                            moment(participantMutationFromProps.dateOption.date).format('L')
+                        }
                     />
                 </div>
                 <div className="row">
@@ -201,8 +205,9 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag toegekend'}
                             id={'amountGranted'}
                             name={'amountGranted'}
-                            value={amountGranted}
+                            value={participantMutationFromState.amountGranted}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountGranted}
                         />
@@ -212,7 +217,7 @@ const MutationFormEditStatusGranted = ({
                             label={'Aantal toegekend'}
                             id={'quantityGranted'}
                             name={'quantityGranted'}
-                            value={quantityGranted}
+                            value={participantMutationFromState.quantityGranted}
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.quantityGranted}
@@ -221,7 +226,7 @@ const MutationFormEditStatusGranted = ({
                     <InputDate
                         label={'Datum toegekend'}
                         name={'dateGranted'}
-                        value={dateGranted}
+                        value={participantMutationFromState.dateGranted}
                         onChangeAction={handleInputChangeDate}
                         required={'required'}
                         error={errors.dateGranted}

@@ -508,7 +508,7 @@ class ProjectRevenueController extends ApiController
         $writer = new Xlsx($excel);
         $writer->save($filePath);
 
-//        die("stop hier maar even voor testdoeleinden Excel");
+//        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");
 
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
@@ -590,6 +590,25 @@ class ProjectRevenueController extends ApiController
                 }
 
                 array_push($createdInvoices, $paymentInvoice);
+            }
+
+            if ($distribution->payout_type === 'Bijschrijven'
+                && $distribution->payout > 0) {
+                $participantMutation = new ParticipantMutation();
+                $participantMutation->participation_id = $distribution->participation_id;
+                $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
+                $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+                $participantMutation->amount = $distribution->payout;
+                $participantMutation->returns = $distribution->payout;
+                $participantMutation->paid_on = 'Rekening';
+                $participantMutation->date_entry = Carbon::now();
+                $participantMutation->save();
+
+                // Recalculate dependent data in participantProject
+                $participantMutation->participation->calculator()->run()->save();
+
+                // Recalculate dependent data in project
+                $participantMutation->participation->project->calculator()->run()->save();
             }
         }
 
@@ -842,6 +861,7 @@ class ProjectRevenueController extends ApiController
         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
         $participantMutation->payout_kwh = $distribution->delivered_total;
         $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
+        $participantMutation->paid_on = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->energySupplier->name : '';
         $participantMutation->save();
     }
 

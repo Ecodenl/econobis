@@ -24,7 +24,7 @@ function ParticipantFormViewObligation({
                 <ViewText label={'Huidige hoofdsom per obligatie'} value={moneyPresenter(currentBookWorth)} />
             </div>
             <div className="row" onClick={onClick}>
-                <ViewText label={'Huidige totale waarde'} value={moneyPresenter(participationsDefinitiveWorth)} />
+                <ViewText label={'Huidige totale hoofdsom'} value={moneyPresenter(participationsDefinitiveWorth)} />
             </div>
         </React.Fragment>
     );

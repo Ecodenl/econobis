@@ -37,7 +37,6 @@ class RevenueNewApp extends Component {
                 payPercentage: '',
                 keyAmountFirstPercentage: '',
                 payPercentageValidFromKeyAmount: '',
-                typeId: '',
                 payoutKwh: '',
             },
             errors: {

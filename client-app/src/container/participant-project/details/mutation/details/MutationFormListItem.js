@@ -35,7 +35,9 @@ class MutationFormListItem extends Component {
                     ? props.participantMutation.dateContractRetour.date
                     : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
-                dateEntry: props.participantMutation.dateEntry ? props.participantMutation.dateEntry.date : '',
+                dateEntry: props.participantMutation.dateEntry
+                    ? props.participantMutation.dateEntry.date
+                    : moment().format('YYYY-MM-DD'),
                 quantityInterest: props.participantMutation.quantityInterest
                     ? props.participantMutation.quantityInterest
                     : props.participantMutation.quantity,
@@ -238,7 +240,8 @@ class MutationFormListItem extends Component {
                 />
                 {this.state.showEdit && this.props.permissions.manageFinancial && (
                     <MutationFormEdit
-                        participantMutation={this.state.participantMutation}
+                        participantMutationFromState={this.state.participantMutation}
+                        participantMutationFromProps={this.props.participantMutation}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
                         handleSubmit={this.handleSubmit}

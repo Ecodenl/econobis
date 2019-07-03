@@ -58,6 +58,7 @@ class ParticipantNewApp extends Component {
                 amountFinal: false,
                 dateEntry: false,
             },
+            isLoading: false,
         };
     }
 
@@ -194,6 +195,7 @@ class ParticipantNewApp extends Component {
 
         if (!validatedForm.hasErrors) {
             const values = ParticipantSubmitHelper(participation, statusCodeRef, this.state.projectTypeCodeRef);
+            this.setState({ isLoading: true });
 
             ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
                 if (payload.data.message !== undefined && payload.data.message.length > 0) {
@@ -210,6 +212,7 @@ class ParticipantNewApp extends Component {
                 } else {
                     hashHistory.push(`/project/deelnemer/${payload.data.id}`);
                 }
+                this.setState({ isLoading: false });
             });
         }
     };
@@ -240,6 +243,7 @@ class ParticipantNewApp extends Component {
                                         projectDateEntry={this.state.projectDateEntry}
                                         participantMutationStatuses={this.props.participantMutationStatuses}
                                         handleInputChangeContactId={this.handleInputChangeContactId}
+                                        isLoading={this.state.isLoading}
                                     />
                                 </div>
                             </PanelBody>

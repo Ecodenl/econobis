@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import RevenueDistributionFormStaticView from './RevenueDistributionFormStaticView';
+import RevenueDistributionFormView from './RevenueDistributionFormView';
 import DataTablePagination from '../../../../../../components/dataTable/DataTablePagination';
 
 const RevenueDistributionFormList = props => {
@@ -22,8 +22,6 @@ const RevenueDistributionFormList = props => {
                 ) : (
                     ''
                 )}
-                {!props.showCheckboxList && <div className="col-sm-1">Id</div>}
-
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
                 <div className="col-sm-1">Deelnames</div>
@@ -41,7 +39,7 @@ const RevenueDistributionFormList = props => {
             {props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
                 props.projectRevenue.distribution.data.map(participation => {
                     return (
-                        <RevenueDistributionFormStaticView
+                        <RevenueDistributionFormView
                             key={participation.id}
                             participation={participation}
                             showCheckboxList={props.showCheckboxList}

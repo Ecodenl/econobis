@@ -45,7 +45,6 @@ class RevenueFormEdit extends Component {
             payPercentage,
             keyAmountFirstPercentage,
             payPercentageValidFromKeyAmount,
-            typeId,
             payoutKwh,
         } = props.revenue;
 
@@ -70,7 +69,6 @@ class RevenueFormEdit extends Component {
                 payPercentage: payPercentage ? payPercentage : '',
                 keyAmountFirstPercentage: keyAmountFirstPercentage ? keyAmountFirstPercentage : 0,
                 payPercentageValidFromKeyAmount: payPercentageValidFromKeyAmount ? payPercentageValidFromKeyAmount : '',
-                typeId: typeId ? typeId : '',
                 payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(3) : '',
             },
             errors: {
@@ -80,8 +78,6 @@ class RevenueFormEdit extends Component {
                 dateReference: false,
             },
         };
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-        this.handleInputChangeDateConfirmed = this.handleInputChangeDateConfirmed.bind(this);
     }
 
     toggleShowModal = () => {
@@ -153,7 +149,7 @@ class RevenueFormEdit extends Component {
         }
     };
 
-    handleInputChangeDate(value, name) {
+    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             revenue: {
@@ -161,9 +157,9 @@ class RevenueFormEdit extends Component {
                 [name]: value,
             },
         });
-    }
+    };
 
-    handleInputChangeDateConfirmed(value, name) {
+    handleInputChangeDateConfirmed = (value, name) => {
         if (value) {
             this.setState({
                 ...this.state,
@@ -184,7 +180,7 @@ class RevenueFormEdit extends Component {
                 },
             });
         }
-    }
+    };
 
     handleSubmit = event => {
         event.preventDefault();
@@ -206,10 +202,14 @@ class RevenueFormEdit extends Component {
             errors.dateEnd = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(revenue.dateReference + '')) {
-            errors.dateReference = true;
-            hasErrors = true;
+
+        if (revenue.distributionTypeId === 'inPossessionOf') {
+            if (validator.isEmpty(revenue.dateReference + '')) {
+                errors.dateReference = true;
+                hasErrors = true;
+            }
         }
+
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
@@ -261,6 +261,32 @@ class RevenueFormEdit extends Component {
                     <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} className={'form-group col-sm-6'} />
                 </div>
 
+                {category.codeRef === 'revenueEuro' ? (
+                    <div className="row">
+                        {this.props.revenue &&
+                        this.props.revenue.project &&
+                        this.props.revenue.project.projectType.codeRef !== 'loan' ? (
+                            <InputSelect
+                                label={'Type opbrengst verdeling'}
+                                name={'distributionTypeId'}
+                                options={this.props.projectRevenueDistributionTypes}
+                                value={distributionTypeId}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        ) : null}
+                        {distributionTypeId === 'inPossessionOf' ? (
+                            <InputDate
+                                label={'Peildatum'}
+                                name={'dateReference'}
+                                value={dateReference}
+                                onChangeAction={this.handleInputChangeDate}
+                                required={'required'}
+                                error={this.state.errors.dateReference}
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
+
                 <div className="row">
                     <InputDate
                         label={'Begin periode'}
@@ -284,12 +310,10 @@ class RevenueFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={'Peildatum'}
-                        name={'dateReference'}
-                        value={dateReference}
+                        label={'Datum uitgekeerd'}
+                        name={'datePayed'}
+                        value={datePayed}
                         onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
-                        error={this.state.errors.dateReference}
                     />
                     <InputDate
                         label={'Datum definitief'}
@@ -299,35 +323,8 @@ class RevenueFormEdit extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <InputSelect
-                        label={'Type opbrengst'}
-                        name={'typeId'}
-                        options={this.props.projectRevenueTypes}
-                        value={typeId}
-                        onChangeAction={this.handleInputChange}
-                    />
-                    <InputDate
-                        label={'Datum uitgekeerd'}
-                        name={'datePayed'}
-                        value={datePayed}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
                 {category.codeRef === 'revenueEuro' ? (
                     <React.Fragment>
-                        {project.projectType.codeRef !== 'loan' ? (
-                            <div className="row">
-                                <InputSelect
-                                    label={'Type opbrengst verdeling'}
-                                    name={'distributionTypeId'}
-                                    options={this.props.projectRevenueDistributionTypes}
-                                    value={distributionTypeId}
-                                    onChangeAction={this.handleInputChange}
-                                />
-                            </div>
-                        ) : null}
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
                                 <span className={'h5 text-bold'}>Uitkering euro velden</span>
@@ -486,8 +483,6 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         revenue: state.projectRevenue,
-        projectRevenueTypes: state.systemData.projectRevenueTypes,
-        projectRevenueCategories: state.systemData.projectRevenueCategories,
         projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
     };
 };

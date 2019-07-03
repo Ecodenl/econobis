@@ -208,7 +208,7 @@ class ParticipantFormEdit extends Component {
                         <ViewText
                             label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
                             id={'amountDefinitive'}
-                            value={amountDefinitive}
+                            value={moneyPresenter(amountDefinitive)}
                             className={'form-group col-md-6'}
                         />
                     )}

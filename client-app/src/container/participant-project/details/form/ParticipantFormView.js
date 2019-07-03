@@ -62,7 +62,7 @@ const ParticipantFormView = props => {
                 ) : (
                     <ViewText
                         label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
-                        value={amountDefinitive && moneyPresenter(amountDefinitive)}
+                        value={moneyPresenter(amountDefinitive)}
                     />
                 )}
                 <ViewText label={'IBAN uitkeren t.n.v.'} value={ibanPayoutAttn ? ibanPayoutAttn : ''} />

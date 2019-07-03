@@ -13,7 +13,6 @@ const StyledEm = styled.em`
 
 const RevenueFormView = props => {
     const {
-        type,
         confirmed,
         dateBegin,
         dateEnd,
@@ -25,7 +24,6 @@ const RevenueFormView = props => {
         kwhEndHigh,
         kwhStartLow,
         kwhEndLow,
-        revenue,
         datePayed,
         payPercentage,
         keyAmountFirstPercentage,
@@ -45,23 +43,37 @@ const RevenueFormView = props => {
                 <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} />
             </div>
 
+            {category.codeRef === 'revenueEuro' ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    {props.revenue.project.projectType.codeRef !== 'loan' ? (
+                        <ViewText
+                            label={'Type opbrengst verdeling'}
+                            value={distributionType ? distributionType.name : ''}
+                        />
+                    ) : null}
+                    {distributionType && distributionType.id === 'inPossessionOf' ? (
+                        <ViewText
+                            label={'Peildatum'}
+                            value={dateReference ? moment(dateReference.date).format('L') : ''}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
+
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Begin periode'} value={dateBegin ? moment(dateBegin.date).format('L') : ''} />
                 <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd.date).format('L') : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Peildatum'} value={dateReference ? moment(dateReference.date).format('L') : ''} />
+                <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed.date).format('L') : ''} />
                 <ViewText
                     label={'Datum definitief'}
                     value={dateConfirmed ? moment(dateConfirmed.date).format('L') : ''}
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Type opbrengst'} value={type ? type.name : ''} />
-                <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed.date).format('L') : ''} />
-            </div>
+            <div className="row" onClick={props.switchToEdit} />
 
             {category.codeRef === 'revenueKwh' ? (
                 <React.Fragment>
@@ -102,14 +114,6 @@ const RevenueFormView = props => {
 
             {category.codeRef === 'revenueEuro' ? (
                 <React.Fragment>
-                    {props.revenue.project.projectType.codeRef !== 'loan' ? (
-                        <div className="row" onClick={props.switchToEdit}>
-                            <ViewText
-                                label={'Type opbrengst verdeling'}
-                                value={distributionType ? distributionType.name : ''}
-                            />
-                        </div>
-                    ) : null}
                     <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
                         <span className={'h5 text-bold'}>Opbrengst euro</span>
                     </div>

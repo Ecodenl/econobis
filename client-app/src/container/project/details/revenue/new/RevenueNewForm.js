@@ -55,6 +55,31 @@ const RevenueNew = props => {
                 <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} className={'form-group col-sm-6'} />
             </div>
 
+            {category.codeRef === 'revenueEuro' ? (
+                <div className="row">
+                    {props.project && props.project.projectType && props.project.projectType.codeRef !== 'loan' ? (
+                        <InputSelect
+                            label={'Type opbrengst verdeling'}
+                            name={'distributionTypeId'}
+                            options={props.projectRevenueDistributionTypes}
+                            value={distributionTypeId}
+                            onChangeAction={props.handleInputChange}
+                            error={props.errors.distributionTypeId}
+                        />
+                    ) : null}
+                    {distributionTypeId === 'inPossessionOf' ? (
+                        <InputDate
+                            label={'Peildatum'}
+                            name={'dateReference'}
+                            value={dateReference}
+                            onChangeAction={props.handleInputChangeDate}
+                            required={'required'}
+                            error={props.errors.dateReference}
+                        />
+                    ) : null}
+                </div>
+            ) : null}
+
             <div className="row">
                 <InputDate
                     label={'Begin periode'}
@@ -78,12 +103,10 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputDate
-                    label={'Peildatum'}
-                    name={'dateReference'}
-                    value={dateReference}
+                    label={'Uitgekeerd op'}
+                    name={'datePayed'}
+                    value={datePayed}
                     onChangeAction={props.handleInputChangeDate}
-                    required={'required'}
-                    error={props.errors.dateReference}
                 />
                 <InputDate
                     label={'Datum definitief'}
@@ -93,35 +116,8 @@ const RevenueNew = props => {
                 />
             </div>
 
-            <div className="row">
-                <InputSelect
-                    label={'Type opbrengst'}
-                    name={'typeId'}
-                    options={props.projectRevenueTypes}
-                    value={typeId}
-                    onChangeAction={props.handleInputChange}
-                />
-                <InputDate
-                    label={'Uitgekeerd op'}
-                    name={'datePayed'}
-                    value={datePayed}
-                    onChangeAction={props.handleInputChangeDate}
-                />
-            </div>
-
             {category.codeRef === 'revenueEuro' ? (
                 <React.Fragment>
-                    {props.project && props.project.projectType && props.project.projectType.codeRef !== 'loan' ? (
-                        <div className="row">
-                            <InputSelect
-                                label={'Type opbrengst verdeling'}
-                                name={'distributionTypeId'}
-                                options={props.projectRevenueDistributionTypes}
-                                value={distributionTypeId}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
-                    ) : null}
                     <div className="row">
                         <div className={'panel-part panel-heading'}>
                             <span className={'h5 text-bold'}>Opbrengst euro</span>

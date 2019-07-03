@@ -19,6 +19,7 @@ function MutationFormEditDeposit({
     projectTypeCodeRef,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     cancelEdit,
     handleSubmit,
     errors,
@@ -68,6 +69,7 @@ function MutationFormEditDeposit({
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -79,6 +81,7 @@ function MutationFormEditDeposit({
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -90,6 +93,7 @@ function MutationFormEditDeposit({
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -101,6 +105,7 @@ function MutationFormEditDeposit({
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
+                    handleBlurAmount={handleBlurAmount}
                     errors={errors}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
@@ -130,6 +135,7 @@ MutationFormEditDeposit.propTypes = {
     handleInputChange: PropTypes.any,
     projectTypeCodeRef: PropTypes.any,
     handleInputChangeDate: PropTypes.any,
+    handleBlurAmount: PropTypes.any,
     errors: PropTypes.any,
     participantMutation: PropTypes.any,
     cancelEdit: PropTypes.any,

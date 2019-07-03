@@ -3,12 +3,14 @@ import ViewText from '../../../../../../components/form/ViewText';
 import moment from 'moment';
 import InputText from '../../../../../../components/form/InputText';
 import InputDate from '../../../../../../components/form/InputDate';
+import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusFinal = ({
     participantMutationFromState,
     participantMutationFromProps,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     errors,
     projectTypeCodeRef,
 }) => (
@@ -19,7 +21,7 @@ const MutationFormEditStatusFinal = ({
                     label={'Bedrag interesse'}
                     id={'amountInterest'}
                     className={'col-sm-6 form-group'}
-                    value={participantMutationFromProps.amountInterest}
+                    value={MoneyPresenter(participantMutationFromProps.amountInterest)}
                 />
             ) : (
                 <ViewText
@@ -45,7 +47,7 @@ const MutationFormEditStatusFinal = ({
                     label={'Bedrag inschrijving'}
                     id={'amountOption'}
                     className={'col-sm-6 form-group'}
-                    value={participantMutationFromProps.amountOption}
+                    value={MoneyPresenter(participantMutationFromProps.amountOption)}
                 />
             ) : (
                 <ViewText
@@ -71,7 +73,7 @@ const MutationFormEditStatusFinal = ({
                     label={'Bedrag toegekend'}
                     id={'amountGranted'}
                     className={'col-sm-6 form-group'}
-                    value={participantMutationFromProps.amountGranted}
+                    value={MoneyPresenter(participantMutationFromProps.amountGranted)}
                 />
             ) : (
                 <ViewText
@@ -100,6 +102,7 @@ const MutationFormEditStatusFinal = ({
                     name={'amountFinal'}
                     value={participantMutationFromState.amountFinal}
                     onChangeAction={handleInputChange}
+                    onBlurAction={handleBlurAmount}
                     required={'required'}
                     error={errors.amountFinal}
                 />

@@ -13,6 +13,7 @@ const MutationFormEdit = ({
     handleSubmit,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     projectTypeCodeRef,
     cancelEdit,
     participantMutationStatuses,
@@ -88,6 +89,7 @@ const MutationFormEdit = ({
                             projectTypeCodeRef={projectTypeCodeRef}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
+                            handleBlurAmount={handleBlurAmount}
                             cancelEdit={cancelEdit}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}

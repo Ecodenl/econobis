@@ -3,12 +3,14 @@ import ViewText from '../../../../../../components/form/ViewText';
 import moment from 'moment';
 import InputText from '../../../../../../components/form/InputText';
 import InputDate from '../../../../../../components/form/InputDate';
+import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusGranted = ({
     participantMutationFromState,
     participantMutationFromProps,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     errors,
     projectTypeCodeRef,
 }) => (
@@ -21,7 +23,7 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag interesse'}
                             id={'amountInterest'}
                             className={'col-sm-6 form-group'}
-                            value={participantMutationFromProps.amountInterest}
+                            value={MoneyPresenter(participantMutationFromProps.amountInterest)}
                         />
                     ) : (
                         <ViewText
@@ -47,7 +49,7 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             className={'col-sm-6 form-group'}
-                            value={participantMutationFromProps.amountOption}
+                            value={MoneyPresenter(participantMutationFromProps.amountOption)}
                         />
                     ) : (
                         <ViewText
@@ -73,7 +75,7 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag toegekend'}
                             id={'amountGranted'}
                             className={'col-sm-6 form-group'}
-                            value={participantMutationFromProps.amountGranted}
+                            value={MoneyPresenter(participantMutationFromProps.amountGranted)}
                         />
                     ) : (
                         <ViewText
@@ -102,6 +104,7 @@ const MutationFormEditStatusGranted = ({
                             name={'amountFinal'}
                             value={participantMutationFromState.amountFinal}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountFinal}
                         />
@@ -149,7 +152,7 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag interesse'}
                             id={'amountInterest'}
                             className={'col-sm-6 form-group'}
-                            value={participantMutationFromProps.amountInterest}
+                            value={MoneyPresenter(participantMutationFromProps.amountInterest)}
                         />
                     ) : (
                         <ViewText
@@ -175,7 +178,7 @@ const MutationFormEditStatusGranted = ({
                             label={'Bedrag inschrijving'}
                             id={'amountOption'}
                             className={'col-sm-6 form-group'}
-                            value={participantMutationFromProps.amountOption}
+                            value={MoneyPresenter(participantMutationFromProps.amountOption)}
                         />
                     ) : (
                         <ViewText
@@ -204,6 +207,7 @@ const MutationFormEditStatusGranted = ({
                             name={'amountGranted'}
                             value={participantMutationFromState.amountGranted}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountGranted}
                         />

@@ -61,9 +61,9 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
         values.datePayment = participantMutation.datePayment;
         values.dateEntry = participantMutation.dateEntry;
         if (projectTypeCodeRef === 'loan') {
-            values.amount = participantMutation.amount;
+            values.amount = participantMutation.amount * -1;
         } else {
-            values.quantity = participantMutation.quantity;
+            values.quantity = participantMutation.quantity * -1;
         }
     }
 

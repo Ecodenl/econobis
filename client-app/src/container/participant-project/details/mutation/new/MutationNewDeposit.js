@@ -21,6 +21,7 @@ const MutationNewDeposit = ({
     errors,
     handleInputChange,
     handleInputChangeDate,
+    handleBlurAmount,
     projectTypeCodeRef,
 }) => {
     return (
@@ -29,11 +30,13 @@ const MutationNewDeposit = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
+                            type={'number'}
                             label={'Bedrag interesse'}
                             name={'amountInterest'}
                             id={'amountInterest'}
                             value={amountInterest}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                         />
                     ) : (
                         <InputText
@@ -59,11 +62,13 @@ const MutationNewDeposit = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
+                            type={'number'}
                             label={'Bedrag inschrijving'}
                             name={'amountOption'}
                             id={'amountOption'}
                             value={amountOption}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountOption}
                         />
@@ -95,11 +100,13 @@ const MutationNewDeposit = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
+                            type={'number'}
                             label={'Bedrag toegekend'}
                             name={'amountGranted'}
                             id={'amountGranted'}
                             value={amountGranted}
                             onChangeAction={handleInputChange}
+                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountGranted}
                         />
@@ -132,11 +139,13 @@ const MutationNewDeposit = ({
                     <div className="row">
                         {projectTypeCodeRef === 'loan' ? (
                             <InputText
+                                type={'number'}
                                 label={'Bedrag definitief'}
                                 name={'amountFinal'}
                                 id={'amountFinal'}
                                 value={amountFinal}
                                 onChangeAction={handleInputChange}
+                                onBlurAction={handleBlurAmount}
                                 required={'required'}
                                 error={errors.amountFinal}
                             />

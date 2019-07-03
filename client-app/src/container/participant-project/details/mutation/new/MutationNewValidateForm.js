@@ -70,12 +70,12 @@ export default function(participantMutation, errors, hasErrors, statusCodeRef, t
     // Selling
     if (typeCodeRef === 'withDrawal') {
         if (projectTypeCodeRef === 'loan') {
-            if (!participantMutation.amount || participantMutation.amount > 0) {
+            if (!participantMutation.amount || participantMutation.amount <= 0) {
                 errors.amount = true;
                 hasErrors = true;
             }
         } else {
-            if (!participantMutation.quantity || participantMutation.quantity > 0) {
+            if (!participantMutation.quantity || participantMutation.quantity <= 0) {
                 errors.quantity = true;
                 hasErrors = true;
             }

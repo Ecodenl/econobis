@@ -43,7 +43,7 @@ class FullProjectRevenueDistribution extends Resource
                 'deliveredTotal' => $this->delivered_total,
                 'payoutKwh' => $this->payout_kwh,
                 'kwhReturn' => $this->kwh_return,
-                'hasInvoice' => $this->paymentInvoices()->exists(),
+
             ];
     }
 }

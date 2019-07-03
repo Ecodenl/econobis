@@ -4,12 +4,7 @@ import { browserHistory } from 'react-router';
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ButtonText from '../../../../../../components/button/ButtonText';
 
-const PaymentInvoiceCreateToolbar = ({
-    amountOfDistributions,
-    distributionTypeId,
-    createPaymentInvoices,
-    distributionCategoryCodeRef,
-}) => (
+const PaymentInvoiceCreateToolbar = ({ amountOfDistributions, createPaymentInvoices }) => (
     <div className="row">
         <div className="col-md-4">
             <div className="btn-group btn-group-flex margin-small" role="group">
@@ -17,22 +12,6 @@ const PaymentInvoiceCreateToolbar = ({
                 {amountOfDistributions > 0 && (
                     <ButtonText buttonText={'Rapportage versturen'} onClickAction={() => createPaymentInvoices(1, 0)} />
                 )}
-                {distributionCategoryCodeRef !== 'revenueKwh' ? (
-                    <React.Fragment>
-                        {amountOfDistributions > 0 && distributionTypeId !== 3 && (
-                            <ButtonText
-                                buttonText={'Facturen maken'}
-                                onClickAction={() => createPaymentInvoices(0, 1)}
-                            />
-                        )}
-                        {amountOfDistributions > 0 && distributionTypeId !== 3 && (
-                            <ButtonText
-                                buttonText={'Rapportage versturen en facturen maken'}
-                                onClickAction={() => createPaymentInvoices(1, 1)}
-                            />
-                        )}
-                    </React.Fragment>
-                ) : null}
             </div>
         </div>
         <div className="col-md-4">

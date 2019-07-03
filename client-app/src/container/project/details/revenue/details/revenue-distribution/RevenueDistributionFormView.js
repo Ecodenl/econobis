@@ -16,12 +16,16 @@ const RevenueDistributionFormView = props => {
         payoutType,
         datePayout,
         energySupplierName,
-        hasInvoice,
+        status,
     } = props.participation;
 
     return (
-        <div className={`row border ${hasInvoice && 'warning-row'}`}>
-            {props.showCheckboxList && props.checkedAll && <input type="checkbox" checked />}
+        <div className={`row border ${status === 'processed' ? 'warning-row' : ''}`}>
+            {props.showCheckboxList && props.checkedAll && (
+                <div className="col-sm-1">
+                    <input type="checkbox" checked />
+                </div>
+            )}
             {props.showCheckboxList && !props.checkedAll && contactPrimaryEmailAddress && (
                 <div className="col-sm-1">
                     <input type="checkbox" name={id} onChange={props.toggleParticipantCheck} />

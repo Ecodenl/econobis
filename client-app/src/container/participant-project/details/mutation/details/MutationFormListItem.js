@@ -37,6 +37,8 @@ class MutationFormListItem extends Component {
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
                 dateEntry: props.participantMutation.dateEntry
                     ? props.participantMutation.dateEntry.date
+                    : props.projectDateEntry
+                    ? props.projectDateEntry
                     : moment().format('YYYY-MM-DD'),
                 quantityInterest: props.participantMutation.quantityInterest
                     ? props.participantMutation.quantityInterest
@@ -90,6 +92,8 @@ class MutationFormListItem extends Component {
                         : '',
                     dateEntry: this.props.participantMutation.dateEntry
                         ? this.props.participantMutation.dateEntry.date
+                        : this.props.projectDateEntry
+                        ? this.props.projectDateEntry
                         : moment().format('YYYY-MM-DD'),
                     quantityInterest: this.props.participantMutation.quantityInterest
                         ? this.props.participantMutation.quantityInterest
@@ -164,7 +168,9 @@ class MutationFormListItem extends Component {
                     : '',
                 dateEntry: this.props.participantMutation.dateEntry
                     ? this.props.participantMutation.dateEntry.date
-                    : '',
+                    : this.props.projectDateEntry
+                    ? this.props.projectDateEntry
+                    : moment().format('YYYY-MM-DD'),
             },
         });
 
@@ -276,6 +282,7 @@ const mapStateToProps = state => {
         id: state.participantProjectDetails.id,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+        projectDateEntry: state.participantProjectDetails.project.dateEntry,
     };
 };
 

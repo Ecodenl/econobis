@@ -59,23 +59,9 @@ class PaymentInvoiceCreateApp extends Component {
             createInvoice
         ).then(payload => {
             document.body.style.cursor = 'default';
-            if (createInvoice) {
-                if (createReport) {
-                    this.setState({
-                        successMessage: 'De rapporten worden verzonden en de facturen gemaakt.',
-                        redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
-                    });
-                } else {
-                    this.setState({
-                        successMessage: 'De facturen worden gemaakt.',
-                        redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
-                    });
-                }
-            } else {
-                this.setState({
-                    successMessage: 'De rapporten worden verzonden.',
-                });
-            }
+            this.setState({
+                successMessage: 'De rapporten worden verzonden.',
+            });
         });
     };
 

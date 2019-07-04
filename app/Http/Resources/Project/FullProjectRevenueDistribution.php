@@ -32,6 +32,10 @@ class FullProjectRevenueDistribution extends Resource
                 'address' => $this->address,
                 'postalCode' => $this->postal_code,
                 'city' => $this->city,
+                'contactIban' => $this->contact->iban,
+                'contactIbanAttn' => $this->contact->iban_attn,
+                'payoutIban' => $this->iban,
+                'payoutIbanAttn' => $this->iban_attn,
                 'status' => $this->status,
                 'participationsAmount' => $this->participations_amount,
                 'payout' => $this->payout,
@@ -43,7 +47,7 @@ class FullProjectRevenueDistribution extends Resource
                 'deliveredTotal' => $this->delivered_total,
                 'payoutKwh' => $this->payout_kwh,
                 'kwhReturn' => $this->kwh_return,
-                'hasInvoice' => $this->paymentInvoices()->exists(),
+
             ];
     }
 }

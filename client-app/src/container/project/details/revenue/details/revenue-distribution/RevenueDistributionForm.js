@@ -5,7 +5,6 @@ import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
-import PanelFooter from '../../../../../../components/panel/PanelFooter';
 import ButtonText from '../../../../../../components/button/ButtonText';
 import Modal from '../../../../../../components/modal/Modal';
 import InputSelect from '../../../../../../components/form/InputSelect';
@@ -17,6 +16,7 @@ import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplate
 import InputText from '../../../../../../components/form/InputText';
 import { getDistribution, previewReport } from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
+import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -35,9 +35,12 @@ class RevenueDistributionForm extends Component {
             checkedAll: false,
             showCheckboxList: false,
             showModal: false,
+            showSuccessMessage: false,
             modalText: '',
             buttonConfirmText: '',
             readyForCreation: false,
+            createType: '',
+            redirect: '',
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -110,17 +113,23 @@ class RevenueDistributionForm extends Component {
         });
     }
 
-    toggleShowCheckboxList = () => {
+    toggleShowCheckboxList = createType => {
         if (this.state.showCheckboxList) {
             this.setState({
                 showCheckboxList: false,
                 distributionIds: [],
+                createType: '',
             });
         } else {
             this.setState({
                 showCheckboxList: true,
+                createType: createType,
             });
         }
+    };
+
+    redirectPayoutInvoicesSend = () => {
+        hashHistory.push(this.state.redirect);
     };
 
     toggleModal = () => {
@@ -259,6 +268,52 @@ class RevenueDistributionForm extends Component {
         }
     };
 
+    checkParticipantRevenueInvoices = () => {
+        let distributionIds = [];
+
+        if (this.state.checkedAll) {
+            this.props.projectRevenue.distribution.data.forEach(function(distribution) {
+                distributionIds.push(distribution.id);
+            });
+
+            this.setState(
+                {
+                    distributionIds,
+                },
+                () => this.createPaymentInvoices(false, true)
+            );
+        } else {
+            if (this.state.distributionIds.length) {
+                this.createPaymentInvoices(false, true);
+            } else {
+                this.setState({
+                    showModal: true,
+                    modalText: 'Er zijn geen deelnemers geselecteerd.',
+                    buttonConfirmText: 'Voeg deelnemers toe',
+                });
+            }
+        }
+    };
+
+    createPaymentInvoices = (createReport, createInvoice) => {
+        document.body.style.cursor = 'wait';
+        ProjectRevenueAPI.createPaymentInvoices(
+            null,
+            null,
+            null,
+            this.state.distributionIds,
+            createReport,
+            createInvoice
+        ).then(payload => {
+            document.body.style.cursor = 'default';
+            this.setState({
+                showSuccessMessage: true,
+                successMessage: 'De facturen worden gemaakt.',
+                redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
+            });
+        });
+    };
+
     render() {
         let administrationIds = [];
         this.props.administrations.forEach(function(administration) {
@@ -271,14 +326,82 @@ class RevenueDistributionForm extends Component {
                     <div className="btn-group pull-right">
                         {this.props.projectRevenue.confirmed == 1 &&
                             administrationIds.includes(this.props.projectRevenue.project.administrationId) && (
-                                <ButtonText
-                                    buttonText={'Rapportage maken'}
-                                    onClickAction={this.toggleShowCheckboxList}
-                                />
+                                <React.Fragment>
+                                    <ButtonText
+                                        buttonText={'Rapportage maken'}
+                                        onClickAction={() => this.toggleShowCheckboxList('createReport')}
+                                    />
+
+                                    {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
+                                        <ButtonText
+                                            buttonText={'Maak facturen'}
+                                            onClickAction={this.checkParticipantRevenueInvoices}
+                                            buttonClassName={'btn-primary'}
+                                        />
+                                    ) : (
+                                        <ButtonText
+                                            buttonText={'Facturen maken'}
+                                            onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
+                                            buttonClassName={'btn-primary'}
+                                        />
+                                    )}
+                                </React.Fragment>
                             )}
                     </div>
                 </PanelHeader>
                 <PanelBody>
+                    {this.state.showCheckboxList && this.state.createType === 'createReport' ? (
+                        <Panel>
+                            <PanelBody>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <ViewText label="Documentgroep" value={'Opbrengst'} />
+                                        <InputSelect
+                                            label="Document template"
+                                            name={'templateId'}
+                                            value={this.state.templateId}
+                                            options={this.state.templates}
+                                            onChangeAction={this.handleInputChange}
+                                            required={'required'}
+                                            error={this.state.templateIdError}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <InputSelect
+                                            label="E-mail template"
+                                            name={'emailTemplateId'}
+                                            value={this.state.emailTemplateId}
+                                            options={this.state.emailTemplates}
+                                            onChangeAction={this.handleEmailTemplateChange}
+                                            required={'required'}
+                                            error={this.state.emailTemplateIdError}
+                                        />
+                                        <InputText
+                                            label={'E-mail onderwerp'}
+                                            name={'subject'}
+                                            value={this.state.subject}
+                                            onChangeAction={this.handleSubjectChange}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="margin-10-top pull-right btn-group" role="group">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Annuleren'}
+                                                onClickAction={this.toggleShowCheckboxList}
+                                            />
+                                            <ButtonText
+                                                buttonText={'Maak rapport'}
+                                                onClickAction={this.checkParticipantRevenueReport}
+                                                type={'submit'}
+                                                value={'Submit'}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    ) : null}
                     <div className="col-md-12">
                         <RevenueDistributionFormList
                             changePage={this.changePage}
@@ -290,64 +413,25 @@ class RevenueDistributionForm extends Component {
                         />
                     </div>
                 </PanelBody>
-                {this.state.showCheckboxList && (
-                    <PanelFooter>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <ViewText label="Documentgroep" value={'Opbrengst'} />
-                                <InputSelect
-                                    label="Document template"
-                                    name={'templateId'}
-                                    value={this.state.templateId}
-                                    options={this.state.templates}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    error={this.state.templateIdError}
-                                />
-                            </div>
-                            <div className="col-md-12">
-                                <InputSelect
-                                    label="E-mail template"
-                                    name={'emailTemplateId'}
-                                    value={this.state.emailTemplateId}
-                                    options={this.state.emailTemplates}
-                                    onChangeAction={this.handleEmailTemplateChange}
-                                    required={'required'}
-                                    error={this.state.emailTemplateIdError}
-                                />
-                                <InputText
-                                    label={'E-mail onderwerp'}
-                                    name={'subject'}
-                                    value={this.state.subject}
-                                    onChangeAction={this.handleSubjectChange}
-                                />
-                            </div>
-                            <div className="col-md-12">
-                                <div className="margin-10-top pull-right btn-group" role="group">
-                                    <ButtonText
-                                        buttonClassName={'btn-default'}
-                                        buttonText={'Annuleren'}
-                                        onClickAction={this.toggleShowCheckboxList}
-                                    />
-                                    <ButtonText
-                                        buttonText={'Maak rapport'}
-                                        onClickAction={this.checkParticipantRevenueReport}
-                                        type={'submit'}
-                                        value={'Submit'}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </PanelFooter>
-                )}
                 {this.state.showModal && (
                     <Modal
-                        title={'Participant rapport maken'}
+                        title={'Deelnemer rapport maken'}
                         closeModal={this.toggleModal}
-                        children={this.state.modalText}
                         buttonConfirmText={this.state.buttonConfirmText}
                         confirmAction={this.createParticipantRevenueReport}
-                    />
+                    >
+                        {this.state.modalText}
+                    </Modal>
+                )}
+                {this.state.showSuccessMessage && (
+                    <Modal
+                        title={'Succes'}
+                        closeModal={this.redirectPayoutInvoicesSend}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                    >
+                        {this.state.successMessage}
+                    </Modal>
                 )}
             </Panel>
         );

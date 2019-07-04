@@ -269,7 +269,7 @@ class ProjectRevenueController extends ApiController
         if($projectRevenue->confirmed) {
             $distribution->status = 'confirmed';
         } else {
-            $distribution->status = 'active';
+            $distribution->status = 'concept';
         }
 
         if ($primaryAddress) {
@@ -558,57 +558,71 @@ class ProjectRevenueController extends ApiController
         }
 
         foreach ($distributions as $distribution) {
-            if ($distribution->payout_type === 'Rekening'
-                && $distribution->payout > 0
-                && !(empty($distribution->address)
-                    || empty($distribution->postal_code)
-                    || empty($distribution->city)
-                    || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban)))
-            ) {
-                $currentYear = Carbon::now()->year;
-                // Haal laatst uitgedeelde uitkeringsfactuurnummer op (binnen aanmaakjaar)
-                $lastPaymentInvoice = PaymentInvoice::where('administration_id', $distribution->revenue->project->administration_id)->where('invoice_number', '!=', 0)->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
+            if ($distribution->status === 'confirmed')
+            {
+                if ($distribution->payout_type === 'Rekening'
+                    && $distribution->payout > 0
+                    && !(empty($distribution->address)
+                        || empty($distribution->postal_code)
+                        || empty($distribution->city)
+                        || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban)))
+                ) {
+                    $currentYear = Carbon::now()->year;
+                    // Haal laatst uitgedeelde uitkeringsfactuurnummer op (binnen aanmaakjaar)
+                    $lastPaymentInvoice = PaymentInvoice::where('administration_id',
+                        $distribution->revenue->project->administration_id)->where('invoice_number', '!=', 0)
+                        ->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
 
-                $newInvoiceNumber = 1;
-                if($lastPaymentInvoice)
-                {
-                    $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1) ;
+                    $newInvoiceNumber = 1;
+                    if ($lastPaymentInvoice) {
+                        $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1);
+                    }
+
+                    if (PaymentInvoice::where('administration_id', $distribution->revenue->project->administration_id)
+                        ->where('invoice_number', '=', $newInvoiceNumber)->whereYear('created_at', '=', $currentYear)
+                        ->exists()
+                    ) {
+                        abort(404, "Voor uitkeringsfactuur met administratie ID "
+                            . $distribution->revenue->project->administration_id . " en revenue distribution ID "
+                            . $distribution->id . " kon geen nieuw nummer bepaald worden.");
+                    } else {
+                        $paymentInvoice = new PaymentInvoice();
+                        $paymentInvoice->revenue_distribution_id = $distribution->id;
+                        $paymentInvoice->administration_id
+                            = $distribution->revenue->project->administration_id;
+                        $paymentInvoice->invoice_number = $newInvoiceNumber;
+                        $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
+                        $paymentInvoice->status_id = 'sent';
+                        $paymentInvoice->save();
+                    }
+
+                    array_push($createdInvoices, $paymentInvoice);
                 }
 
-                if(PaymentInvoice::where('administration_id', $distribution->revenue->project->administration_id)->where('invoice_number', '=', $newInvoiceNumber)->whereYear('created_at', '=', $currentYear)->exists())
-                {
-                    abort(404, "Voor uitkeringsfactuur met administratie ID " . $distribution->revenue->project->administration_id . " en revenue distribution ID " . $distribution->id . " kon geen nieuw nummer bepaald worden.");
-                }else{
-                    $paymentInvoice = new PaymentInvoice();
-                    $paymentInvoice->revenue_distribution_id = $distribution->id;
-                    $paymentInvoice->administration_id
-                        = $distribution->revenue->project->administration_id;
-                    $paymentInvoice->invoice_number = $newInvoiceNumber;
-                    $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
-                    $paymentInvoice->status_id = 'sent';
-                    $paymentInvoice->save();
+                if ($distribution->payout_type === 'Bijschrijven'
+                    && $distribution->payout > 0
+                ) {
+                    $participantMutation = new ParticipantMutation();
+                    $participantMutation->participation_id = $distribution->participation_id;
+                    $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')
+                        ->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
+                    $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')
+                        ->value('id');
+                    $participantMutation->amount = $distribution->payout;
+                    $participantMutation->returns = $distribution->payout;
+                    $participantMutation->paid_on = 'Rekening';
+                    $participantMutation->date_entry = Carbon::now();
+                    $participantMutation->save();
+
+                    // Recalculate dependent data in participantProject
+                    $participantMutation->participation->calculator()->run()->save();
+
+                    // Recalculate dependent data in project
+                    $participantMutation->participation->project->calculator()->run()->save();
                 }
 
-                array_push($createdInvoices, $paymentInvoice);
-            }
-
-            if ($distribution->payout_type === 'Bijschrijven'
-                && $distribution->payout > 0) {
-                $participantMutation = new ParticipantMutation();
-                $participantMutation->participation_id = $distribution->participation_id;
-                $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
-                $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
-                $participantMutation->amount = $distribution->payout;
-                $participantMutation->returns = $distribution->payout;
-                $participantMutation->paid_on = 'Rekening';
-                $participantMutation->date_entry = Carbon::now();
-                $participantMutation->save();
-
-                // Recalculate dependent data in participantProject
-                $participantMutation->participation->calculator()->run()->save();
-
-                // Recalculate dependent data in project
-                $participantMutation->participation->project->calculator()->run()->save();
+                $distribution->status = 'processed';
+                $distribution->save();
             }
         }
 
@@ -833,8 +847,10 @@ class ProjectRevenueController extends ApiController
                 Storage::disk('documents')->delete($document->filename);
 
                 // Create participant mutation when revenue category is revenueKwh
-                if($revenue->category->code_ref == 'revenueKwh') {
+                if($revenue->category->code_ref == 'revenueKwh' && $distribution->status === 'confirmed') {
                     $this->createParticipantMutationForRevenueKwh($distribution);
+                    $distribution->status = 'processed';
+                    $distribution->save();
                 }
             }
         }

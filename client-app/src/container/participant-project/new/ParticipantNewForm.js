@@ -17,6 +17,7 @@ const ParticipantNewForm = ({
     projects,
     participantMutationStatuses,
     projectTypeCodeRef,
+    isLoading,
 }) => {
     const {
         contactId,
@@ -248,7 +249,7 @@ const ParticipantNewForm = ({
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
-                    <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
+                    <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} loading={isLoading} />
                 </div>
             </PanelFooter>
         </form>

@@ -69,6 +69,10 @@ class RevenueNewApp extends Component {
 
             let revenue = this.state.revenue;
 
+            if (payload.projectType.codeRef !== 'loan') {
+                revenue.distributionTypeId = 'inPossessionOf';
+            }
+
             if (category.codeRef === 'revenueEuro') {
                 revenue.dateBegin = payload.dateInterestBearing;
                 revenue.dateEnd = payload.dateInterestBearing

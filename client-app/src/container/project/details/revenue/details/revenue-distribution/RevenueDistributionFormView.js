@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment/moment';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
+import validator from 'validator';
 moment.locale('nl');
 
 const RevenueDistributionFormView = props => {
@@ -9,6 +10,11 @@ const RevenueDistributionFormView = props => {
         contactName,
         contactType,
         contactPrimaryEmailAddress,
+        address,
+        postalCode,
+        city,
+        contactIban,
+        payoutIban,
         deliveredTotal,
         kwhReturn,
         participationsAmount,
@@ -19,8 +25,37 @@ const RevenueDistributionFormView = props => {
         status,
     } = props.participation;
 
+    const missingEmail =
+        !contactPrimaryEmailAddress ||
+        !contactPrimaryEmailAddress.email ||
+        validator.isEmpty(contactPrimaryEmailAddress.email)
+            ? true
+            : false;
+    const missingAdress = !address || validator.isEmpty(address) ? true : false;
+    const missingPostCode = !postalCode || validator.isEmpty(postalCode) ? true : false;
+    const missingCity = !city || validator.isEmpty(city) ? true : false;
+    const missingIban =
+        !(props.projectRevenueCategoryCodeRef === 'revenueKwh') &&
+        (!contactIban || validator.isEmpty(contactIban)) &&
+        (!payoutIban || validator.isEmpty(payoutIban))
+            ? true
+            : false;
+
+    const missingContactDataMessage =
+        missingEmail || missingAdress || missingPostCode || missingCity
+            ? 'Er ontbreken contactgegevens (email, adres, postcode of plaats).'
+            : '';
+    const missingIbanDataMessage = missingIban ? 'Iban code ontbreekt.' : '';
+    const missingDataClass =
+        missingEmail || missingAdress || missingPostCode || missingCity || missingIban ? 'missing-data-row' : null;
+
     return (
-        <div className={`row border ${status === 'processed' ? 'warning-row' : ''}`}>
+        <div
+            title={missingContactDataMessage + ' ' + missingIbanDataMessage}
+            className={`row border ${status === 'processed' ? 'warning-row' : ''} ${
+                missingDataClass ? missingDataClass : ''
+            }`}
+        >
             {props.showCheckboxList && props.checkedAll && (
                 <div className="col-sm-1">
                     <input type="checkbox" checked />

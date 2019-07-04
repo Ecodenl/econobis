@@ -35,10 +35,12 @@ class RevenueDistributionForm extends Component {
             checkedAll: false,
             showCheckboxList: false,
             showModal: false,
+            showSuccessMessage: false,
             modalText: '',
             buttonConfirmText: '',
             readyForCreation: false,
             createType: '',
+            redirect: '',
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -124,6 +126,10 @@ class RevenueDistributionForm extends Component {
                 createType: createType,
             });
         }
+    };
+
+    redirectPayoutInvoicesSend = () => {
+        hashHistory.push(this.state.redirect);
     };
 
     toggleModal = () => {
@@ -270,19 +276,22 @@ class RevenueDistributionForm extends Component {
                 distributionIds.push(distribution.id);
             });
 
-            this.setState({
-                distributionIds: distributionIds,
-            });
-        }
-
-        if (this.state.distributionIds.length || distributionIds.length) {
-            this.createPaymentInvoices(false, true);
+            this.setState(
+                {
+                    distributionIds,
+                },
+                () => this.createPaymentInvoices(false, true)
+            );
         } else {
-            this.setState({
-                showModal: true,
-                modalText: 'Er zijn geen deelnemers geselecteerd.',
-                buttonConfirmText: 'Voeg deelnemers toe',
-            });
+            if (this.state.distributionIds.length) {
+                this.createPaymentInvoices(false, true);
+            } else {
+                this.setState({
+                    showModal: true,
+                    modalText: 'Er zijn geen deelnemers geselecteerd.',
+                    buttonConfirmText: 'Voeg deelnemers toe',
+                });
+            }
         }
     };
 
@@ -298,6 +307,7 @@ class RevenueDistributionForm extends Component {
         ).then(payload => {
             document.body.style.cursor = 'default';
             this.setState({
+                showSuccessMessage: true,
                 successMessage: 'De facturen worden gemaakt.',
                 redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
             });
@@ -403,22 +413,22 @@ class RevenueDistributionForm extends Component {
                         />
                     </div>
                 </PanelBody>
-
                 {this.state.showModal && (
                     <Modal
                         title={'Deelnemer rapport maken'}
                         closeModal={this.toggleModal}
-                        children={this.state.modalText}
                         buttonConfirmText={this.state.buttonConfirmText}
                         confirmAction={this.createParticipantRevenueReport}
-                    />
+                    >
+                        {this.state.modalText}
+                    </Modal>
                 )}
-                {this.state.successMessage && (
+                {this.state.showSuccessMessage && (
                     <Modal
-                        closeModal={this.redirect}
+                        title={'Succes'}
+                        closeModal={this.redirectPayoutInvoicesSend}
                         buttonCancelText={'Ok'}
                         showConfirmAction={false}
-                        title={'Succes'}
                     >
                         {this.state.successMessage}
                     </Modal>

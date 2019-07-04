@@ -36,6 +36,7 @@ const RevenueDistributionFormView = props => {
     const missingCity = !city || validator.isEmpty(city) ? true : false;
     const missingIban =
         !(props.projectRevenueCategoryCodeRef === 'revenueKwh') &&
+        payoutType === 'Rekening' &&
         (!contactIban || validator.isEmpty(contactIban)) &&
         (!payoutIban || validator.isEmpty(payoutIban))
             ? true

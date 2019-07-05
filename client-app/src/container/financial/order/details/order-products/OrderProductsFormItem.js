@@ -149,8 +149,8 @@ class OrderProductsFormItem extends Component {
 
         // variable prijs is nog excl. BTW
         if (variable_price) {
-            let vatPercentage = validator.isFloat(this.state.priceHistory.vatPercentage + '')
-                ? this.state.priceHistory.vatPercentage
+            let vatPercentage = validator.isFloat(this.state.orderProduct.product.currentPrice.vatPercentage + '')
+                ? this.state.orderProduct.product.currentPrice.vatPercentage
                 : 0;
             const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
             totalPrice = totalPrice * vatFactor;

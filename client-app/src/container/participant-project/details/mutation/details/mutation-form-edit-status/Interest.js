@@ -10,7 +10,6 @@ const MutationFormEditStatusInterest = ({
     participantMutationFromProps,
     handleInputChange,
     handleInputChangeDate,
-    handleBlurAmount,
     errors,
     projectTypeCodeRef,
 }) => (
@@ -53,7 +52,6 @@ const MutationFormEditStatusInterest = ({
                             name={'amountOption'}
                             value={participantMutationFromState.amountOption}
                             onChangeAction={handleInputChange}
-                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountOption}
                         />
@@ -90,7 +88,6 @@ const MutationFormEditStatusInterest = ({
                         name={'amountInterest'}
                         value={participantMutationFromState.amountInterest}
                         onChangeAction={handleInputChange}
-                        onBlurAction={handleBlurAmount}
                         error={errors.amountInterest}
                     />
                 ) : (
@@ -101,6 +98,7 @@ const MutationFormEditStatusInterest = ({
                         name={'quantityInterest'}
                         value={participantMutationFromState.quantityInterest}
                         onChangeAction={handleInputChange}
+                        error={errors.quantityInterest}
                     />
                 )}
                 <InputDate

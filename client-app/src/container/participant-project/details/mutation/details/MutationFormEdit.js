@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Panel from '../../../../../components/panel/Panel';
 import MutationFormEditResult from './MutationFormEditResult';
 import MutationFormEditDeposit from './MutationFormEditDeposit';
+import MutationFormEditWithDrawal from './MutationFormEditWithDrawal';
 
 const MutationFormEdit = ({
     participantMutationFromState,
@@ -13,23 +14,11 @@ const MutationFormEdit = ({
     handleSubmit,
     handleInputChange,
     handleInputChangeDate,
-    handleBlurAmount,
     projectTypeCodeRef,
     cancelEdit,
     participantMutationStatuses,
 }) => {
-    const {
-        type,
-        statusId,
-        datePayment,
-        returns,
-        paidOn,
-        entry,
-        createdAt,
-        createdBy,
-        updatedAt,
-        updatedBy,
-    } = participantMutationFromState;
+    const { type, statusId } = participantMutationFromState;
 
     let buttonTextSubmit = 'Opslaan';
 
@@ -75,7 +64,6 @@ const MutationFormEdit = ({
                 break;
         }
     }
-
     return (
         <div>
             <form className="form-horizontal" onSubmit={handleSubmit}>
@@ -89,13 +77,25 @@ const MutationFormEdit = ({
                             projectTypeCodeRef={projectTypeCodeRef}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
-                            handleBlurAmount={handleBlurAmount}
                             cancelEdit={cancelEdit}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
                         />
                     ) : null}
-
+                    {type.codeRef === 'withDrawal' ? (
+                        <MutationFormEditWithDrawal
+                            participantMutationFromState={participantMutationFromState}
+                            participantMutationFromProps={participantMutationFromProps}
+                            participantMutationStatusesOptions={participantMutationStatusesOptions}
+                            errors={errors}
+                            projectTypeCodeRef={projectTypeCodeRef}
+                            handleInputChange={handleInputChange}
+                            handleInputChangeDate={handleInputChangeDate}
+                            cancelEdit={cancelEdit}
+                            buttonText={buttonTextSubmit}
+                            handleSubmit={handleSubmit}
+                        />
+                    ) : null}
                     {type.codeRef === 'result' ? (
                         <MutationFormEditResult
                             participantMutationFromProps={participantMutationFromProps}

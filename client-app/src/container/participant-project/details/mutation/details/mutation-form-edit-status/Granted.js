@@ -10,7 +10,6 @@ const MutationFormEditStatusGranted = ({
     participantMutationFromProps,
     handleInputChange,
     handleInputChangeDate,
-    handleBlurAmount,
     errors,
     projectTypeCodeRef,
 }) => (
@@ -104,7 +103,6 @@ const MutationFormEditStatusGranted = ({
                             name={'amountFinal'}
                             value={participantMutationFromState.amountFinal}
                             onChangeAction={handleInputChange}
-                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountFinal}
                         />
@@ -207,7 +205,6 @@ const MutationFormEditStatusGranted = ({
                             name={'amountGranted'}
                             value={participantMutationFromState.amountGranted}
                             onChangeAction={handleInputChange}
-                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountGranted}
                         />

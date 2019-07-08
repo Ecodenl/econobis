@@ -12,7 +12,7 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import * as PropTypes from 'prop-types';
 import React from 'react';
 
-function MutationFormEditDeposit({
+function MutationFormEditWithDrawal({
     participantMutationFromProps,
     participantMutationFromState,
     participantMutationStatusesOptions,
@@ -123,7 +123,7 @@ function MutationFormEditDeposit({
     );
 }
 
-MutationFormEditDeposit.propTypes = {
+MutationFormEditWithDrawal.propTypes = {
     participantMutationFromProps: PropTypes.object,
     participantMutationFromState: PropTypes.object,
     participantMutationStatusesOptions: PropTypes.arrayOf(PropTypes.any),
@@ -137,4 +137,4 @@ MutationFormEditDeposit.propTypes = {
     handleSubmit: PropTypes.any,
 };
 
-export default MutationFormEditDeposit;
+export default MutationFormEditWithDrawal;

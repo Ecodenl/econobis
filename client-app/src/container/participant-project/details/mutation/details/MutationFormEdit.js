@@ -3,6 +3,7 @@ import moment from 'moment/moment';
 moment.locale('nl');
 import { connect } from 'react-redux';
 import Panel from '../../../../../components/panel/Panel';
+import MutationFormEditEnergyTaxRefund from './MutationFormEditEnergyTaxRefund';
 import MutationFormEditResult from './MutationFormEditResult';
 import MutationFormEditDeposit from './MutationFormEditDeposit';
 import MutationFormEditWithDrawal from './MutationFormEditWithDrawal';
@@ -98,6 +99,12 @@ const MutationFormEdit = ({
                     ) : null}
                     {type.codeRef === 'result' ? (
                         <MutationFormEditResult
+                            participantMutationFromProps={participantMutationFromProps}
+                            cancelEdit={cancelEdit}
+                        />
+                    ) : null}
+                    {type.codeRef === 'energyTaxRefund' ? (
+                        <MutationFormEditEnergyTaxRefund
                             participantMutationFromProps={participantMutationFromProps}
                             cancelEdit={cancelEdit}
                         />

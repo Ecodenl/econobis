@@ -866,7 +866,7 @@ class ProjectRevenueController extends ApiController
 
                 if (!$previewPDF && !$previewEmail) {
                     //delete file on server, still saved on alfresco.
-//                    Storage::disk('documents')->delete($document->filename);
+                    Storage::disk('documents')->delete($document->filename);
 
                     // Create participant mutation when revenue category is revenueKwh
                     if ($revenue->category->code_ref === 'revenueKwh' && $distribution->status === 'confirmed') {

@@ -319,6 +319,7 @@ class RevenueDistributionForm extends Component {
         this.props.administrations.forEach(function(administration) {
             administrationIds.push(administration.id);
         });
+
         return (
             <Panel>
                 <PanelHeader>
@@ -339,11 +340,15 @@ class RevenueDistributionForm extends Component {
                                             buttonClassName={'btn-primary'}
                                         />
                                     ) : (
-                                        <ButtonText
-                                            buttonText={'Facturen maken'}
-                                            onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
-                                            buttonClassName={'btn-primary'}
-                                        />
+                                        <React.Fragment>
+                                            {this.props.projectRevenue.category.codeRef !== 'revenueKwh' ? (
+                                                <ButtonText
+                                                    buttonText={'Facturen maken'}
+                                                    onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
+                                                    buttonClassName={'btn-primary'}
+                                                />
+                                            ) : null}
+                                        </React.Fragment>
                                     )}
                                 </React.Fragment>
                             )}

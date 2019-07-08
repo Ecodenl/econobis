@@ -13,24 +13,24 @@ export default function(participantMutation, errors, hasErrors, projectTypeCodeR
                 if (projectTypeCodeRef === 'loan') {
                     // selling specifiek todo later hier ook nog sell toevoegen? en hier dus wellicht betaaldatum dus?
                     if (typeCodeRef === 'withDrawal') {
-                        if (!participantMutation.amountInterest || participantMutation.amountInterest > 0) {
+                        if (participantMutation.amountInterest && participantMutation.amountInterest > 0) {
                             errors.amountInterest = true;
                             hasErrors = true;
                         }
                     } else {
-                        if (!participantMutation.amountInterest || participantMutation.amountInterest < 0) {
+                        if (participantMutation.amountInterest && participantMutation.amountInterest < 0) {
                             errors.amountInterest = true;
                             hasErrors = true;
                         }
                     }
                 } else {
                     if (typeCodeRef === 'withDrawal') {
-                        if (!participantMutation.quantityInterest || participantMutation.quantityInterest > 0) {
+                        if (participantMutation.quantityInterest && participantMutation.quantityInterest > 0) {
                             errors.quantityInterest = true;
                             hasErrors = true;
                         }
                     } else {
-                        if (!participantMutation.quantityInterest || participantMutation.quantityInterest < 0) {
+                        if (participantMutation.quantityInterest && participantMutation.quantityInterest < 0) {
                             errors.quantityInterest = true;
                             hasErrors = true;
                         }

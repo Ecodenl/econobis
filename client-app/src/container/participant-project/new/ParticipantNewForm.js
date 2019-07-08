@@ -87,19 +87,23 @@ const ParticipantNewForm = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
+                            type={'number'}
                             label={'Bedrag interesse'}
                             name={'amountInterest'}
                             id={'amountInterest'}
                             value={amountInterest}
                             onChangeAction={handleInputChange}
+                            error={errors.amountInterest}
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal interesse'}
                             name={'quantityInterest'}
                             id={'quantityInterest'}
                             value={quantityInterest}
                             onChangeAction={handleInputChange}
+                            error={errors.quantityInterest}
                         />
                     )}
 
@@ -117,6 +121,7 @@ const ParticipantNewForm = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
+                            type={'number'}
                             label={'Bedrag inschrijving'}
                             name={'amountOption'}
                             id={'amountOption'}
@@ -127,6 +132,7 @@ const ParticipantNewForm = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal inschrijving'}
                             name={'quantityOption'}
                             id={'quantityOption'}
@@ -153,6 +159,7 @@ const ParticipantNewForm = ({
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
+                            type={'number'}
                             label={'Bedrag toegekend'}
                             name={'amountGranted'}
                             id={'amountGranted'}
@@ -163,6 +170,7 @@ const ParticipantNewForm = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal toegekend'}
                             name={'quantityGranted'}
                             id={'quantityGranted'}
@@ -190,6 +198,7 @@ const ParticipantNewForm = ({
                     <div className="row">
                         {projectTypeCodeRef === 'loan' ? (
                             <InputText
+                                type={'number'}
                                 label={'Bedrag definitief'}
                                 name={'amountFinal'}
                                 id={'amountFinal'}
@@ -200,6 +209,7 @@ const ParticipantNewForm = ({
                             />
                         ) : (
                             <InputText
+                                type={'number'}
                                 label={'Aantal definitief'}
                                 name={'quantityFinal'}
                                 id={'quantityFinal'}

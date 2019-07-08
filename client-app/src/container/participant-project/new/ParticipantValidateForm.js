@@ -13,18 +13,31 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
     } else {
         // Extra check dependable on statusCodeRef
         switch (statusCodeRef) {
+            case 'interest':
+                if (projectTypeCodeRef === 'loan') {
+                    if (participation.amountInterest && participation.amountInterest < 0) {
+                        errors.amountInterest = true;
+                        hasErrors = true;
+                    }
+                } else {
+                    if (participation.quantityInterest && participation.quantityInterest < 0) {
+                        errors.quantityInterest = true;
+                        hasErrors = true;
+                    }
+                }
+                break;
             case 'option':
                 if (!participation.dateOption) {
                     errors.dateOption = true;
                     hasErrors = true;
                 }
                 if (projectTypeCodeRef === 'loan') {
-                    if (!participation.amountOption) {
+                    if (!participation.amountOption || participation.amountOption < 0) {
                         errors.amountOption = true;
                         hasErrors = true;
                     }
                 } else {
-                    if (!participation.quantityOption) {
+                    if (!participation.quantityOption || participation.quantityOption < 0) {
                         errors.quantityOption = true;
                         hasErrors = true;
                     }
@@ -36,12 +49,12 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
                     hasErrors = true;
                 }
                 if (projectTypeCodeRef === 'loan') {
-                    if (!participation.amountGranted) {
+                    if (!participation.amountGranted || participation.amountGranted < 0) {
                         errors.amountGranted = true;
                         hasErrors = true;
                     }
                 } else {
-                    if (!participation.quantityGranted) {
+                    if (!participation.quantityGranted || participation.quantityGranted < 0) {
                         errors.quantityGranted = true;
                         hasErrors = true;
                     }
@@ -53,12 +66,12 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
                     hasErrors = true;
                 }
                 if (projectTypeCodeRef === 'loan') {
-                    if (!participation.amountFinal) {
+                    if (!participation.amountFinal || participation.amountFinal < 0) {
                         errors.amountFinal = true;
                         hasErrors = true;
                     }
                 } else {
-                    if (!participation.quantityFinal) {
+                    if (!participation.quantityFinal || participation.quantityFinal < 0) {
                         errors.quantityFinal = true;
                         hasErrors = true;
                     }

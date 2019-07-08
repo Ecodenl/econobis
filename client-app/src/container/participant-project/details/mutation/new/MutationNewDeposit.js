@@ -21,7 +21,6 @@ const MutationNewDeposit = ({
     errors,
     handleInputChange,
     handleInputChangeDate,
-    handleBlurAmount,
     projectTypeCodeRef,
 }) => {
     return (
@@ -36,7 +35,7 @@ const MutationNewDeposit = ({
                             id={'amountInterest'}
                             value={amountInterest}
                             onChangeAction={handleInputChange}
-                            onBlurAction={handleBlurAmount}
+                            error={errors.amountInterest}
                         />
                     ) : (
                         <InputText
@@ -45,6 +44,7 @@ const MutationNewDeposit = ({
                             id={'quantityInterest'}
                             value={quantityInterest}
                             onChangeAction={handleInputChange}
+                            error={errors.quantityInterest}
                         />
                     )}
 
@@ -68,7 +68,6 @@ const MutationNewDeposit = ({
                             id={'amountOption'}
                             value={amountOption}
                             onChangeAction={handleInputChange}
-                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountOption}
                         />
@@ -106,7 +105,6 @@ const MutationNewDeposit = ({
                             id={'amountGranted'}
                             value={amountGranted}
                             onChangeAction={handleInputChange}
-                            onBlurAction={handleBlurAmount}
                             required={'required'}
                             error={errors.amountGranted}
                         />
@@ -145,12 +143,12 @@ const MutationNewDeposit = ({
                                 id={'amountFinal'}
                                 value={amountFinal}
                                 onChangeAction={handleInputChange}
-                                onBlurAction={handleBlurAmount}
                                 required={'required'}
                                 error={errors.amountFinal}
                             />
                         ) : (
                             <InputText
+                                type={'number'}
                                 label={'Aantal definitief'}
                                 name={'quantityFinal'}
                                 id={'quantityFinal'}

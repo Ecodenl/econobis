@@ -1,13 +1,14 @@
 export default function(participantMutation, projectTypeCodeRef) {
     const orginalStatusCodeRef = participantMutation.status.codeRef;
     const orginalStatusId = participantMutation.status.id;
-
     const values = {
         id: participantMutation.id,
         statusId: participantMutation.statusId,
         typeId: participantMutation.typeId,
     };
 
+    // Buying en nu ook with drawal, todo later hier ook nog sell toevoegen?
+    // if (typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' || typeCodeRef === 'withDrawal') {
     // If form is validated set next status
     if (orginalStatusCodeRef === 'interest') {
         if (projectTypeCodeRef === 'loan') {
@@ -111,6 +112,6 @@ export default function(participantMutation, projectTypeCodeRef) {
         values.dateEntry = participantMutation.dateEntry;
         values.statusId = participantMutation.statusId;
     }
-
+    // }
     return values;
 }

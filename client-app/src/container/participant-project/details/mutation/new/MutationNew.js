@@ -12,7 +12,6 @@ import MutationNewDeposit from './MutationNewDeposit';
 import MutationNewValidateForm from './MutationNewValidateForm';
 import MutationNewSubmitHelper from './MutationNewSubmitHelper';
 import MutationNewWithDrawal from './MutationNewWithDrawal';
-import ViewText from '../../../../../components/form/ViewText';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -89,20 +88,6 @@ class MutationFormNew extends Component {
         });
     };
 
-    handleBlurAmount = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            ...this.state,
-            participationMutation: {
-                ...this.state.participationMutation,
-                [name]: parseFloat(value).toFixed(2),
-            },
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
@@ -115,13 +100,6 @@ class MutationFormNew extends Component {
             participantMutationType => participantMutationType.id == participationMutation.typeId
         );
         const typeCodeRef = type ? type.codeRef : null;
-
-        // On type 'withDrawal' default status is 'final'
-        if (typeCodeRef === 'withDrawal') {
-            participationMutation.statusId = this.props.participantMutationStatuses.find(
-                participantMutationStatus => participantMutationStatus.codeRef === 'final'
-            ).id;
-        }
 
         const status = this.props.participantMutationStatuses.find(
             participantMutationStatus => participantMutationStatus.id == participationMutation.statusId
@@ -196,31 +174,16 @@ class MutationFormNew extends Component {
                                     required={'required'}
                                     error={this.state.errors.typeId}
                                 />
-                                {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (
-                                    <InputSelect
-                                        label={'Status'}
-                                        id="statusId"
-                                        name={'statusId'}
-                                        options={participantMutationStatuses}
-                                        value={statusId}
-                                        onChangeAction={this.handleInputChange}
-                                        required={'required'}
-                                        error={this.state.errors.statusId}
-                                    />
-                                ) : null}
-
-                                {typeCodeRef === 'withDrawal' ? (
-                                    <ViewText
-                                        className={'form-group col-sm-6'}
-                                        label={'Status'}
-                                        value={
-                                            participantMutationStatuses.find(
-                                                participantMutationStatus =>
-                                                    participantMutationStatus.codeRef === 'final'
-                                            ).name
-                                        }
-                                    />
-                                ) : null}
+                                <InputSelect
+                                    label={'Status'}
+                                    id="statusId"
+                                    name={'statusId'}
+                                    options={participantMutationStatuses}
+                                    value={statusId}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.statusId}
+                                />
                             </div>
 
                             {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (

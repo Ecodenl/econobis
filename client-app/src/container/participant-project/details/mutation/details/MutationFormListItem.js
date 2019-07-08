@@ -203,20 +203,6 @@ class MutationFormListItem extends Component {
         });
     };
 
-    handleBlurAmount = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            ...this.state,
-            participationMutation: {
-                ...this.state.participationMutation,
-                [name]: parseFloat(value).toFixed(2),
-            },
-        });
-    };
-
     handleSubmit = event => {
         event.preventDefault();
 
@@ -262,7 +248,6 @@ class MutationFormListItem extends Component {
                         participantMutationFromProps={this.props.participantMutation}
                         handleInputChange={this.handleInputChange}
                         handleInputChangeDate={this.handleInputChangeDate}
-                        handleBlurAmount={this.handleBlurAmount}
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
                         errors={this.state.errors}

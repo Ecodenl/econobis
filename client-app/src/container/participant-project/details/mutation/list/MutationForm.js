@@ -34,11 +34,11 @@ class MutationForm extends Component {
                     )}
                 </PanelHeader>
                 <PanelBody>
-                    <div className="col-md-12">
-                        <MutationFormList />
-                    </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && <MutationNew toggleShowNew={this.toggleShowNew} />}
+                    </div>
+                    <div className="col-md-12">
+                        <MutationFormList />
                     </div>
                 </PanelBody>
             </Panel>

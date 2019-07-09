@@ -136,7 +136,6 @@ class SepaPaymentHelper
                 $iban_attn = $invoice->revenueDistribution->contact->full_name;
             }
 
-
             $xml .= "\n\t\t\t<CdtTrfTxInf>";
             $xml .= "\n\t\t\t\t<PmtId>";
             $xml .= "\n\t\t\t\t\t<EndToEndId>" . $invoice->number . "</EndToEndId>";
@@ -148,11 +147,11 @@ class SepaPaymentHelper
 
             // Crediteur
             $xml .= "\n\t\t\t\t<Cdtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $iban_attn . "</Nm>"; // Naam
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $this->translateToValidCharacterSet($iban_attn) . "</Nm>"; // Naam
             $xml .= "\n\t\t\t\t\t<PstlAdr>";
             $xml .= "\n\t\t\t\t\t\t<Ctry>NL</Ctry>";
-            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->address . "</AdrLine>"; // Postcode
-            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->postal_code . " " . $invoice->revenueDistribution->city .  "</AdrLine>"; // Postcode
+            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $this->translateToValidCharacterSet($invoice->revenueDistribution->address) . "</AdrLine>"; // Postcode
+            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $this->translateToValidCharacterSet($invoice->revenueDistribution->postal_code) . " " . $this->translateToValidCharacterSet($invoice->revenueDistribution->city) .  "</AdrLine>"; // Postcode
             $xml .= "\n\t\t\t\t\t</PstlAdr>";
             $xml .= "\n\t\t\t\t</Cdtr>";
 
@@ -248,4 +247,13 @@ class SepaPaymentHelper
             mkdir($storageDir, 0777, true);
         }
     }
+
+    public function translateToValidCharacterSet($field){
+
+        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
+
 }

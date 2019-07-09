@@ -66,7 +66,6 @@ const RevenueFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Datum uitgekeerd'} value={datePayed ? moment(datePayed.date).format('L') : ''} />
                 <ViewText
                     label={'Datum definitief'}
                     value={dateConfirmed ? moment(dateConfirmed.date).format('L') : ''}

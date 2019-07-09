@@ -611,7 +611,7 @@ class ProjectRevenueController extends ApiController
                     $participantMutation->amount = $distribution->payout;
                     $participantMutation->returns = $distribution->payout;
                     $participantMutation->paid_on = 'Rekening';
-                    $participantMutation->date_entry = Carbon::now();
+                    $participantMutation->date_entry = Carbon::now()->nextWeekday();
                     $participantMutation->save();
 
                     // Recalculate dependent data in participantProject

@@ -16,7 +16,7 @@ const RevenueDistributionFormList = props => {
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
                 {props.projectTypeCodeRef == 'loan' ? (
-                    <div className="col-sm-1">Huidige lening</div>
+                    <div className="col-sm-2">Huidige lening</div>
                 ) : (
                     <div className="col-sm-1">Deelnames</div>
                 )}

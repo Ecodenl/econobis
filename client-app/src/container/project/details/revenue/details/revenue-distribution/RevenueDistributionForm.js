@@ -268,7 +268,7 @@ class RevenueDistributionForm extends Component {
             document.body.style.cursor = 'default';
             this.setState({
                 showSuccessMessage: true,
-                successMessage: 'De facturen worden gemaakt.',
+                successMessage: 'Opbrengst verdeling gemaakt en Sepa aangemaakt.',
                 redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
             });
         });
@@ -288,22 +288,32 @@ class RevenueDistributionForm extends Component {
                         {this.props.projectRevenue.confirmed == 1 &&
                             administrationIds.includes(this.props.projectRevenue.project.administrationId) && (
                                 <React.Fragment>
-                                    <ButtonText
-                                        buttonText={'Rapportage maken'}
-                                        onClickAction={() => this.toggleShowCheckboxList('createReport')}
-                                    />
+                                    {this.state.createType === '' ? (
+                                        <ButtonText
+                                            buttonText={'Selecteer preview rapportage'}
+                                            onClickAction={() => this.toggleShowCheckboxList('createReport')}
+                                        />
+                                    ) : null}
 
                                     {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
-                                        <ButtonText
-                                            buttonText={'Maak facturen'}
-                                            onClickAction={this.checkDistributionRevenueInvoices}
-                                            buttonClassName={'btn-primary'}
-                                        />
+                                        <React.Fragment>
+                                            <ButtonText
+                                                buttonText={'Annuleren'}
+                                                onClickAction={this.toggleShowCheckboxList}
+                                                buttonClassName={'btn-default'}
+                                            />
+                                            <ButtonText
+                                                buttonText={'Opbrengst verdelen en Sepa bestand maken'}
+                                                onClickAction={this.checkDistributionRevenueInvoices}
+                                                buttonClassName={'btn-primary'}
+                                            />
+                                        </React.Fragment>
                                     ) : (
                                         <React.Fragment>
-                                            {this.props.projectRevenue.category.codeRef !== 'revenueKwh' ? (
+                                            {this.state.createType !== 'createReport' &&
+                                            this.props.projectRevenue.category.codeRef !== 'revenueKwh' ? (
                                                 <ButtonText
-                                                    buttonText={'Facturen maken'}
+                                                    buttonText={'Selecteer preview opbrengst verdeling'}
                                                     onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
                                                     buttonClassName={'btn-primary'}
                                                 />

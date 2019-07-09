@@ -313,12 +313,6 @@ class RevenueFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={'Datum uitgekeerd'}
-                        name={'datePayed'}
-                        value={datePayed}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputDate
                         label={'Datum definitief'}
                         name={'dateConfirmed'}
                         value={dateConfirmed}

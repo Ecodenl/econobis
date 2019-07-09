@@ -42,11 +42,6 @@ class RevenueDistributionForm extends Component {
             createType: '',
             redirect: '',
         };
-
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.toggleParticipantCheck = this.toggleParticipantCheck.bind(this);
-        this.toggleParticipantCheckNoEmail = this.toggleParticipantCheckNoEmail.bind(this);
-        this.handleEmailTemplateChange = this.handleEmailTemplateChange.bind(this);
     }
 
     componentDidMount() {
@@ -79,14 +74,14 @@ class RevenueDistributionForm extends Component {
         this.props.getDistribution(this.props.projectRevenue.id, page);
     };
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
         this.setState({
             templateId: value,
         });
-    }
+    };
 
     handleSubjectChange = event => {
         const target = event.target;
@@ -97,7 +92,7 @@ class RevenueDistributionForm extends Component {
         });
     };
 
-    handleEmailTemplateChange(event) {
+    handleEmailTemplateChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -111,7 +106,7 @@ class RevenueDistributionForm extends Component {
                 subject: payload.subject ? payload.subject : this.state.subject,
             });
         });
-    }
+    };
 
     toggleShowCheckboxList = createType => {
         if (this.state.showCheckboxList) {
@@ -124,6 +119,8 @@ class RevenueDistributionForm extends Component {
             this.setState({
                 showCheckboxList: true,
                 createType: createType,
+                distributionIds: this.props.projectRevenue.distribution.data.map(distribution => distribution.id),
+                checkedAll: true,
             });
         }
     };
@@ -138,57 +135,47 @@ class RevenueDistributionForm extends Component {
         });
     };
 
-    toggleCheckedAll = () => {
+    toggleCheckedAll = event => {
+        const isChecked = event.target.checked;
+
+        let distributionsIds = [];
+
+        if (isChecked) {
+            distributionsIds = this.props.projectRevenue.distribution.data.map(distribution => distribution.id);
+        }
+
         this.setState({
-            distributionIds: [],
-            checkedAll: !this.state.checkedAll,
+            distributionIds: distributionsIds,
+            checkedAll: isChecked,
         });
     };
 
-    toggleParticipantCheck = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+    toggleDistributionCheck = event => {
+        const isChecked = event.target.checked;
+        const distributionId = Number(event.target.name);
 
-        let distributionIds = this.state.distributionIds;
-
-        if (value) {
-            distributionIds.push(name);
-            this.setState({
-                distributionIds,
-            });
+        if (isChecked) {
+            this.setState(
+                {
+                    distributionIds: [...this.state.distributionIds, distributionId],
+                },
+                this.checkAllDistributionsAreChecked
+            );
         } else {
-            distributionIds = distributionIds.filter(id => id != name);
             this.setState({
-                distributionIds,
+                distributionIds: this.state.distributionIds.filter(item => item !== distributionId),
+                checkedAll: false,
             });
         }
     };
 
-    toggleParticipantCheckNoEmail = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+    checkAllDistributionsAreChecked() {
+        this.setState({
+            checkedAll: this.state.distributionIds.length === this.props.projectRevenue.distribution.data.length,
+        });
+    }
 
-        let distributionIds = this.state.distributionIds;
-
-        if (value) {
-            distributionIds.push(name);
-            this.setState({
-                distributionIds,
-                showModal: true,
-                modalText: 'Waarschuwing: deze participant heeft nog geen primair e-mailadres.',
-                buttonConfirmText: 'Ok',
-            });
-        } else {
-            distributionIds = distributionIds.filter(id => id != name);
-            this.setState({
-                distributionIds,
-            });
-        }
-    };
-
-    checkParticipantRevenueReport = () => {
+    checkDistributionRevenueReport = () => {
         let error = false;
 
         if (validator.isEmpty(this.state.templateId)) {
@@ -213,19 +200,7 @@ class RevenueDistributionForm extends Component {
             });
         }
 
-        let distributionIds = [];
-
-        if (this.state.checkedAll) {
-            this.props.projectRevenue.distribution.data.forEach(function(distribution) {
-                distributionIds.push(distribution.id);
-            });
-
-            this.setState({
-                distributionIds: distributionIds,
-            });
-        }
-
-        if ((this.state.distributionIds.length > 0 && !error) || (distributionIds.length > 0 && !error)) {
+        if (this.state.distributionIds.length > 0 && !error) {
             this.setState({
                 showModal: true,
                 modalText: "Er wordt eerst een preview getoond van de PDF's en e-mails.",
@@ -241,7 +216,7 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    createParticipantRevenueReport = () => {
+    createDistributionRevenueReport = () => {
         if (!this.state.readyForCreation) {
             this.setState({
                 showModal: false,
@@ -268,30 +243,15 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    checkParticipantRevenueInvoices = () => {
-        let distributionIds = [];
-
-        if (this.state.checkedAll) {
-            this.props.projectRevenue.distribution.data.forEach(function(distribution) {
-                distributionIds.push(distribution.id);
-            });
-
-            this.setState(
-                {
-                    distributionIds,
-                },
-                () => this.createPaymentInvoices(false, true)
-            );
+    checkDistributionRevenueInvoices = () => {
+        if (this.state.distributionIds.length) {
+            this.createPaymentInvoices(false, true);
         } else {
-            if (this.state.distributionIds.length) {
-                this.createPaymentInvoices(false, true);
-            } else {
-                this.setState({
-                    showModal: true,
-                    modalText: 'Er zijn geen deelnemers geselecteerd.',
-                    buttonConfirmText: 'Voeg deelnemers toe',
-                });
-            }
+            this.setState({
+                showModal: true,
+                modalText: 'Er zijn geen deelnemers geselecteerd.',
+                buttonConfirmText: 'Voeg deelnemers toe',
+            });
         }
     };
 
@@ -336,7 +296,7 @@ class RevenueDistributionForm extends Component {
                                     {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
                                         <ButtonText
                                             buttonText={'Maak facturen'}
-                                            onClickAction={this.checkParticipantRevenueInvoices}
+                                            onClickAction={this.checkDistributionRevenueInvoices}
                                             buttonClassName={'btn-primary'}
                                         />
                                     ) : (
@@ -397,7 +357,7 @@ class RevenueDistributionForm extends Component {
                                             />
                                             <ButtonText
                                                 buttonText={'Maak rapport'}
-                                                onClickAction={this.checkParticipantRevenueReport}
+                                                onClickAction={this.checkDistributionRevenueReport}
                                                 type={'submit'}
                                                 value={'Submit'}
                                             />
@@ -411,10 +371,10 @@ class RevenueDistributionForm extends Component {
                         <RevenueDistributionFormList
                             changePage={this.changePage}
                             showCheckboxList={this.state.showCheckboxList}
-                            checkedAll={this.state.checkedAll}
                             toggleCheckedAll={this.toggleCheckedAll}
-                            toggleParticipantCheck={this.toggleParticipantCheck}
-                            toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
+                            checkedAll={this.state.checkedAll}
+                            toggleDistributionCheck={this.toggleDistributionCheck}
+                            distributionIds={this.state.distributionIds}
                         />
                     </div>
                 </PanelBody>
@@ -423,7 +383,7 @@ class RevenueDistributionForm extends Component {
                         title={'Deelnemer rapport maken'}
                         closeModal={this.toggleModal}
                         buttonConfirmText={this.state.buttonConfirmText}
-                        confirmAction={this.createParticipantRevenueReport}
+                        confirmAction={this.createDistributionRevenueReport}
                     >
                         {this.state.modalText}
                     </Modal>
@@ -454,9 +414,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     previewReport: id => {
         dispatch(previewReport(id));
-    },
-    getParticipants: (id, page) => {
-        dispatch(getParticipants({ id, page }));
     },
     getDistribution: (id, page) => {
         dispatch(getDistribution({ id, page }));

@@ -8,20 +8,11 @@ const RevenueDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
-                {props.projectRevenue.confirmed && props.showCheckboxList && props.checkedAll ? (
+                {props.projectRevenue.confirmed && props.showCheckboxList ? (
                     <div className="col-sm-1">
-                        <input type="checkbox" onChange={props.toggleCheckedAll} checked />
+                        <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />
                     </div>
-                ) : (
-                    ''
-                )}
-                {props.projectRevenue.confirmed && props.showCheckboxList && !props.checkedAll ? (
-                    <div className="col-sm-1">
-                        <input type="checkbox" onChange={props.toggleCheckedAll} />
-                    </div>
-                ) : (
-                    ''
-                )}
+                ) : null}
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
                 {props.projectTypeCodeRef == 'loan' ? (
@@ -47,11 +38,10 @@ const RevenueDistributionFormList = props => {
                             key={participation.id}
                             participation={participation}
                             showCheckboxList={props.showCheckboxList}
-                            checkedAll={props.checkedAll}
-                            toggleParticipantCheck={props.toggleParticipantCheck}
-                            toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
+                            toggleDistributionCheck={props.toggleDistributionCheck}
                             projectRevenueCategoryCodeRef={props.projectRevenue.category.codeRef}
                             projectTypeCodeRef={props.projectTypeCodeRef}
+                            distributionIds={props.distributionIds}
                         />
                     );
                 })

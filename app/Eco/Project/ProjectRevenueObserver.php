@@ -24,7 +24,7 @@ class ProjectRevenueObserver
         if($projectRevenue->confirmed == 1 && $projectRevenue->category->code_ref == 'revenueEuro') {
             $project = $projectRevenue->project;
 
-            $project->date_interest_bearing = $projectRevenue->date_end;
+            $project->date_interest_bearing = $projectRevenue->date_end->addDay();;
             $project->save();
         }
     }

@@ -90,7 +90,7 @@ class ProjectRevenueDistributionCalculator
         $participationValue = $currentBookWorth * $amount;
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -114,7 +114,7 @@ class ProjectRevenueDistributionCalculator
         $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -153,7 +153,7 @@ class ProjectRevenueDistributionCalculator
 
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -214,7 +214,7 @@ class ProjectRevenueDistributionCalculator
 
             $mutations->whereDate('date_entry', '<=', $dateReference);
         } else {
-            $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+            $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
             $mutations->whereDate('date_entry', '<=', $dateEnd);
         }

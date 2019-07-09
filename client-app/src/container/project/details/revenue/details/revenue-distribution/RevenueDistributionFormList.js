@@ -24,7 +24,11 @@ const RevenueDistributionFormList = props => {
                 )}
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
-                <div className="col-sm-1">Deelnames</div>
+                {props.projectTypeCodeRef == 'loan' ? (
+                    <div className="col-sm-1">Huidige lening</div>
+                ) : (
+                    <div className="col-sm-1">Deelnames</div>
+                )}
                 <div className="col-sm-1">Uit te keren bedrag</div>
                 <div className="col-sm-1">Uitkeren op</div>
                 <div className="col-sm-1">Datum uitkering</div>
@@ -47,6 +51,7 @@ const RevenueDistributionFormList = props => {
                             toggleParticipantCheck={props.toggleParticipantCheck}
                             toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
                             projectRevenueCategoryCodeRef={props.projectRevenue.category.codeRef}
+                            projectTypeCodeRef={props.projectTypeCodeRef}
                         />
                     );
                 })
@@ -69,7 +74,7 @@ const RevenueDistributionFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        project: state.projectRevenue.project,
+        projectTypeCodeRef: state.projectRevenue.project.projectType.codeRef,
         projectRevenue: state.projectRevenue,
     };
 };

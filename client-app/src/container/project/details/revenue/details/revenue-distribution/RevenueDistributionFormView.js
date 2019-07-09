@@ -75,7 +75,11 @@ const RevenueDistributionFormView = props => {
 
             <div className="col-sm-1">{contactType ? contactType.name : ''}</div>
             <div className="col-sm-2">{contactName}</div>
-            <div className="col-sm-1">{participationsAmount}</div>
+            {props.projectTypeCodeRef === 'loan' ? (
+                <div className="col-sm-2">{MoneyPresenter(participationsAmount)}</div>
+            ) : (
+                <div className="col-sm-1">{participationsAmount}</div>
+            )}
             <div className="col-sm-1">{payout ? MoneyPresenter(payout) : 0}</div>
             <div className="col-sm-1">{payoutType && payoutType}</div>
             <div className="col-sm-1">{datePayout ? moment(datePayout).format('L') : ''}</div>

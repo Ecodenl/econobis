@@ -40,7 +40,7 @@ function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
                     label={'Betaal datum'}
                     id={'datePayment'}
                     className={'col-sm-6 form-group'}
-                    value={datePayment ? moment(datePayment).format('L') : ''}
+                    value={datePayment ? moment(datePayment.date).format('L') : ''}
                 />
                 <ViewText
                     label={'Uitgekeerd op of via'}

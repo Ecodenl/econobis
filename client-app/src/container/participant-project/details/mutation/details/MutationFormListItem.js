@@ -240,7 +240,7 @@ class MutationFormListItem extends Component {
                     onLineLeave={this.onLineLeave}
                     openEdit={this.openEdit}
                     toggleDelete={this.toggleDelete}
-                    participantMutation={this.state.participantMutation}
+                    participantMutation={this.props.participantMutation}
                 />
                 {this.state.showEdit && this.props.permissions.manageFinancial && (
                     <MutationFormEdit

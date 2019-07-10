@@ -106,7 +106,7 @@ class ProjectRevenueDistributionCalculator
             $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
         }
 
-        return number_format($payout, 2);
+        return number_format($payout, 2, '.', '');
     }
 
     protected function calculatePayoutHowLongInPossession()
@@ -142,7 +142,7 @@ class ProjectRevenueDistributionCalculator
             $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
         }
 
-        return number_format($payout, 2);
+        return number_format($payout, 2, '.', '');
     }
 
     protected function calculatePayoutHowLongInPossessionWithFilledKeyAmount()
@@ -202,7 +202,7 @@ class ProjectRevenueDistributionCalculator
             $payout += $payoutTillKeyAmount + $payoutAboveKeyAmount;
         }
 
-        return number_format($payout, 2);
+        return number_format($payout, 2, '.', '');
     }
 
     protected function calculateParticipationsCount()

@@ -39,6 +39,7 @@ class MutationFormNew extends Component {
                     : moment().format('YYYY-MM-DD'),
             },
             errors: {},
+            errorMessage: {},
         };
     }
 
@@ -94,6 +95,7 @@ class MutationFormNew extends Component {
         const { participationMutation } = this.state;
 
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
         const type = this.props.participantMutationTypes.find(
@@ -109,13 +111,14 @@ class MutationFormNew extends Component {
         const validatedForm = MutationNewValidateForm(
             participationMutation,
             errors,
+            errorMessage,
             hasErrors,
             statusCodeRef,
             typeCodeRef,
             this.props.projectTypeCodeRef
         );
 
-        this.setState({ ...this.state, errors: validatedForm.errors });
+        this.setState({ ...this.state, errors: validatedForm.errors, errorMessage: validatedForm.errorMessage });
 
         // If no errors send form
         if (!validatedForm.hasErrors) {
@@ -191,17 +194,19 @@ class MutationFormNew extends Component {
                                     statusCodeRef={statusCodeRef}
                                     {...this.state.participationMutation}
                                     errors={this.state.errors}
+                                    errorMessage={this.state.errorMessage}
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
                                     projectTypeCodeRef={this.props.projectTypeCodeRef}
                                 />
                             ) : null}
 
-                            {typeCodeRef === 'withDrawal' ? (
+                            {typeCodeRef === 'withDrawal' || typeCodeRef === 'sell' ? (
                                 <MutationNewWithDrawal
                                     statusCodeRef={statusCodeRef}
                                     {...this.state.participationMutation}
                                     errors={this.state.errors}
+                                    errorMessage={this.state.errorMessage}
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
                                     projectTypeCodeRef={this.props.projectTypeCodeRef}

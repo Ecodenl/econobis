@@ -160,6 +160,8 @@ const ProjectFormEditGeneral = ({
                         options={administrations}
                         value={administrationId}
                         onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.administrationId}
                     />
                 )}
             </div>

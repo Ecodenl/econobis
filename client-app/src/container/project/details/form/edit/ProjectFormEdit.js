@@ -101,6 +101,11 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty('' + project.administrationId)) {
+            errors.administrationId = true;
+            hasErrors = true;
+        }
+
         if (!validator.isEmpty('' + project.postalCode) && !validator.isPostalCode(project.postalCode, 'any')) {
             errors.postalCode = true;
             hasErrors = true;

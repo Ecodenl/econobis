@@ -8,6 +8,7 @@
 
 namespace App\Eco\ParticipantMutation;
 
+use App\Eco\ParticipantProject\ParticipantProject;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,6 +43,17 @@ class ParticipantMutationObserver
             ]);
 
             $participantMutationStatusLog->save();
+
+            // On first deposit set date_register by participant, if not set earlier
+            $participantMutationFinalStatusId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+            if($participantMutation->status_id == $participantMutationFinalStatusId) {
+                $participantProject = $participantMutation->participation;
+
+                if(!$participantProject->date_register) {
+                    $participantProject->date_register = $participantMutation->date_entry;
+                    $participantProject->save();
+                }
+            }
         }
     }
 

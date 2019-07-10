@@ -48,15 +48,13 @@ class PaymentInvoiceCreateApp extends Component {
         });
     };
 
-    createPaymentInvoices = (createReport, createInvoice) => {
+    createRevenueReport = () => {
         document.body.style.cursor = 'wait';
-        ProjectRevenueAPI.createPaymentInvoices(
+        ProjectRevenueAPI.createRevenueReport(
             this.props.reportPreview.templateId,
             this.props.reportPreview.emailTemplateId,
             this.props.reportPreview.subject,
-            this.props.reportPreview.distributionIds,
-            createReport,
-            createInvoice
+            this.props.reportPreview.distributionIds
         ).then(payload => {
             document.body.style.cursor = 'default';
             this.setState({
@@ -81,7 +79,7 @@ class PaymentInvoiceCreateApp extends Component {
                             <Panel>
                                 <PanelBody className={'panel-small'}>
                                     <PaymentInvoiceCreateToolbar
-                                        createPaymentInvoices={this.createPaymentInvoices}
+                                        createRevenueReport={this.createRevenueReport}
                                         amountOfDistributions={
                                             this.state.distributions ? this.state.distributions.length : 0
                                         }

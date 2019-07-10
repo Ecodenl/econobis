@@ -17,6 +17,8 @@ import InputText from '../../../../../../components/form/InputText';
 import { getDistribution, previewReport } from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
+import moment from 'moment-business-days';
+import InputDate from '../../../../../../components/form/InputDate';
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -30,6 +32,10 @@ class RevenueDistributionForm extends Component {
             emailTemplateId: '',
             emailTemplateIdError: false,
             emailTemplates: [],
+            datePayout: moment()
+                .nextBusinessDay()
+                .format('YYYY-MM-DD'),
+            datePayoutError: false,
             subject: [],
             documentGroup: '',
             checkedAll: false,
@@ -77,9 +83,15 @@ class RevenueDistributionForm extends Component {
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
 
         this.setState({
-            templateId: value,
+            [name]: value,
+        });
+    };
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            [name]: value,
         });
     };
 
@@ -200,6 +212,17 @@ class RevenueDistributionForm extends Component {
             });
         }
 
+        if (validator.isEmpty(this.state.datePayout + '')) {
+            error = true;
+            this.setState({
+                datePayoutError: true,
+            });
+        } else {
+            this.setState({
+                datePayoutError: false,
+            });
+        }
+
         if (this.state.distributionIds.length > 0 && !error) {
             this.setState({
                 showModal: true,
@@ -245,7 +268,7 @@ class RevenueDistributionForm extends Component {
 
     checkDistributionRevenueInvoices = () => {
         if (this.state.distributionIds.length) {
-            this.createPaymentInvoices(false, true);
+            this.createPaymentInvoices();
         } else {
             this.setState({
                 showModal: true,
@@ -255,21 +278,14 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    createPaymentInvoices = (createReport, createInvoice) => {
+    createPaymentInvoices = () => {
         document.body.style.cursor = 'wait';
-        ProjectRevenueAPI.createPaymentInvoices(
-            null,
-            null,
-            null,
-            this.state.distributionIds,
-            createReport,
-            createInvoice
-        ).then(payload => {
+        ProjectRevenueAPI.createPaymentInvoices(this.state.datePayout, this.state.distributionIds).then(payload => {
             document.body.style.cursor = 'default';
             this.setState({
                 showSuccessMessage: true,
                 successMessage: 'Opbrengst verdeling gemaakt en Sepa aangemaakt.',
-                redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
+                // redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
             });
         });
     };
@@ -286,42 +302,20 @@ class RevenueDistributionForm extends Component {
                     <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
                     <div className="btn-group pull-right">
                         {this.props.projectRevenue.confirmed == 1 &&
-                            administrationIds.includes(this.props.projectRevenue.project.administrationId) && (
+                            administrationIds.includes(this.props.projectRevenue.project.administrationId) &&
+                            (this.state.createType === '' ? (
                                 <React.Fragment>
-                                    {this.state.createType === '' ? (
-                                        <ButtonText
-                                            buttonText={'Selecteer preview rapportage'}
-                                            onClickAction={() => this.toggleShowCheckboxList('createReport')}
-                                        />
-                                    ) : null}
-
-                                    {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
-                                        <React.Fragment>
-                                            <ButtonText
-                                                buttonText={'Annuleren'}
-                                                onClickAction={this.toggleShowCheckboxList}
-                                                buttonClassName={'btn-default'}
-                                            />
-                                            <ButtonText
-                                                buttonText={'Opbrengst verdelen en Sepa bestand maken'}
-                                                onClickAction={this.checkDistributionRevenueInvoices}
-                                                buttonClassName={'btn-primary'}
-                                            />
-                                        </React.Fragment>
-                                    ) : (
-                                        <React.Fragment>
-                                            {this.state.createType !== 'createReport' &&
-                                            this.props.projectRevenue.category.codeRef !== 'revenueKwh' ? (
-                                                <ButtonText
-                                                    buttonText={'Selecteer preview opbrengst verdeling'}
-                                                    onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
-                                                    buttonClassName={'btn-primary'}
-                                                />
-                                            ) : null}
-                                        </React.Fragment>
-                                    )}
+                                    <ButtonText
+                                        buttonText={'Selecteer preview rapportage'}
+                                        onClickAction={() => this.toggleShowCheckboxList('createReport')}
+                                    />
+                                    <ButtonText
+                                        buttonText={'Selecteer preview opbrengst verdeling'}
+                                        onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
+                                        buttonClassName={'btn-primary'}
+                                    />
                                 </React.Fragment>
-                            )}
+                            ) : null)}
                     </div>
                 </PanelHeader>
                 <PanelBody>
@@ -377,6 +371,45 @@ class RevenueDistributionForm extends Component {
                             </PanelBody>
                         </Panel>
                     ) : null}
+                    {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
+                        <Panel>
+                            <PanelBody>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <InputDate
+                                            label="Uitkeringsdatum"
+                                            name="datePayout"
+                                            value={this.state.datePayout}
+                                            onChangeAction={this.handleInputChangeDate}
+                                            required={'required'}
+                                            disabledBefore={moment()
+                                                .nextBusinessDay()
+                                                .format('YYYY-MM-DD')}
+                                            disabledAfter={moment()
+                                                .add(1, 'year')
+                                                .format('YYYY-MM-DD')}
+                                            error={this.state.datePayoutError}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="margin-10-top pull-right btn-group" role="group">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Annuleren'}
+                                                onClickAction={this.toggleShowCheckboxList}
+                                            />
+                                            <ButtonText
+                                                buttonText={'Opbrengst verdelen en Sepa bestand maken'}
+                                                onClickAction={this.checkDistributionRevenueInvoices}
+                                                type={'submit'}
+                                                value={'Submit'}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    ) : null}
                     <div className="col-md-12">
                         <RevenueDistributionFormList
                             changePage={this.changePage}
@@ -401,7 +434,9 @@ class RevenueDistributionForm extends Component {
                 {this.state.showSuccessMessage && (
                     <Modal
                         title={'Succes'}
-                        closeModal={this.redirectPayoutInvoicesSend}
+                        closeModal={() => {
+                            this.setState({ showSuccessMessage: false });
+                        }}
                         buttonCancelText={'Ok'}
                         showConfirmAction={false}
                     >

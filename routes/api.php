@@ -136,6 +136,7 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
 
+        Route::post('distribution/create-revenue-report', 'Project\ProjectRevenueController@createRevenueReport');
         Route::post('distribution/create-payment-invoices', 'Project\ProjectRevenueController@createPaymentInvoices');
         Route::post('distribution/peek-by-ids', 'Project\ProjectRevenueController@peekDistributionByIds');
         Route::post('distribution/{distribution}/download-preview', 'Project\ProjectRevenueController@downloadPreview');

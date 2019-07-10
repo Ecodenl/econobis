@@ -23,7 +23,7 @@
         "phpoffice/phpspreadsheet": "^1.7",
         "spatie/laravel-permission": "^2.7",
         "usmanhalalit/laracsv": "1.*@dev",
-        "venturecraft/revisionable": "^1.28",
+        "venturecraft/revisionable": "^1.28"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.4",

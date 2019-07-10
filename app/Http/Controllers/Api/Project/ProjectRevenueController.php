@@ -35,6 +35,7 @@ use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Http\Resources\Project\FullProjectRevenue;
 use App\Http\Resources\Project\FullProjectRevenueDistribution;
 use App\Jobs\Revenue\CreatePaymentInvoices;
+use App\Jobs\Revenue\CreateRevenueReport;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -546,7 +547,7 @@ class ProjectRevenueController extends ApiController
     }
 
     public function createInvoices(
-        $distributions
+        $distributions, $datePayout
     )
     {
 
@@ -596,6 +597,7 @@ class ProjectRevenueController extends ApiController
                         $paymentInvoice->save();
                     }
                     $distribution->status = 'processed';
+                    $distribution->date_payout = $datePayout;
                     $distribution->save();
 
                     array_push($createdInvoices, $paymentInvoice);
@@ -613,7 +615,7 @@ class ProjectRevenueController extends ApiController
                     $participantMutation->amount = $distribution->payout;
                     $participantMutation->returns = $distribution->payout;
                     $participantMutation->paid_on = 'Rekening';
-                    $participantMutation->date_entry = Carbon::now()->nextWeekday();
+                    $participantMutation->date_entry = $datePayout;
                     $participantMutation->save();
 
                     // Recalculate dependent data in participantProject
@@ -623,6 +625,7 @@ class ProjectRevenueController extends ApiController
                     $participantMutation->participation->project->calculator()->run()->save();
 
                     $distribution->status = 'processed';
+                    $distribution->date_payout = $datePayout;
                     $distribution->save();
                 }
 
@@ -882,17 +885,25 @@ class ProjectRevenueController extends ApiController
         }
     }
 
-    public function createPaymentInvoices(Request $request)
+    public function createRevenueReport(Request $request)
     {
         set_time_limit(0);
-        $createReport = $request->input('createReport');
-        $createInvoice = $request->input('createInvoice');
         $distributionIds = $request->input('distributionIds');
         $subject = $request->input('subject');
         $documentTemplateId = $request->input('documentTemplateId');
         $emailTemplateId = $request->input('emailTemplateId');
 
-        CreatePaymentInvoices::dispatch($createReport, $createInvoice, $distributionIds, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
+        CreateRevenueReport::dispatch($distributionIds, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
+
+        return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
+    }
+    public function createPaymentInvoices(Request $request)
+    {
+        set_time_limit(0);
+        $distributionIds = $request->input('distributionIds');
+        $datePayout = $request->input('datePayout');
+
+        CreatePaymentInvoices::dispatch($distributionIds, $datePayout, Auth::id());
 
         return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
     }

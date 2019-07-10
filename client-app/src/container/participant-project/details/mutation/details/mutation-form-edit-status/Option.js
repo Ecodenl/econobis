@@ -11,6 +11,7 @@ const MutationFormEditStatusOption = ({
     handleInputChange,
     handleInputChangeDate,
     errors,
+    errorMessage,
     projectTypeCodeRef,
 }) => (
     <React.Fragment>
@@ -79,6 +80,7 @@ const MutationFormEditStatusOption = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.amountGranted}
+                            errorMessage={errorMessage.amountGranted}
                         />
                     ) : (
                         <InputText
@@ -90,6 +92,7 @@ const MutationFormEditStatusOption = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.quantityGranted}
+                            errorMessage={errorMessage.quantityGranted}
                         />
                     )}
                     <InputDate
@@ -141,6 +144,7 @@ const MutationFormEditStatusOption = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.amountOption}
+                            errorMessage={errorMessage.amountOption}
                         />
                     ) : (
                         <InputText
@@ -152,6 +156,7 @@ const MutationFormEditStatusOption = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.quantityOption}
+                            errorMessage={errorMessage.quantityOption}
                         />
                     )}
                     <InputDate

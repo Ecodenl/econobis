@@ -5,8 +5,6 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
         typeId: participantMutation.typeId,
     };
 
-    // Buying en nu ook with drawal, todo later hier ook nog sell toevoegen?
-    // if (typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' || typeCodeRef === 'withDrawal') {
     // Form values based on current status
     if (statusCodeRef === 'interest') {
         values.dateInterest = participantMutation.dateInterest;
@@ -43,7 +41,6 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
 
     if (statusCodeRef === 'final') {
         values.dateGranted = participantMutation.dateGranted;
-        // todo is betaaldatum niet selling specifiek?
         values.datePayment = participantMutation.datePayment;
         values.dateEntry = participantMutation.dateEntry;
         if (projectTypeCodeRef === 'loan') {
@@ -53,12 +50,7 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
             values.quantityFinal = participantMutation.quantityFinal;
             values.quantity = participantMutation.quantityFinal;
         }
-
-        // buying specifiek
-        if (typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' || typeCodeRef === 'withDrawal') {
-            values.dateContractRetour = participantMutation.dateContractRetour;
-        }
-        // }
+        values.dateContractRetour = participantMutation.dateContractRetour;
     }
 
     return values;

@@ -12,6 +12,7 @@ const MutationFormEdit = ({
     participantMutationFromState,
     participantMutationFromProps,
     errors,
+    errorMessage,
     handleSubmit,
     handleInputChange,
     handleInputChangeDate,
@@ -75,6 +76,7 @@ const MutationFormEdit = ({
                             participantMutationFromProps={participantMutationFromProps}
                             participantMutationStatusesOptions={participantMutationStatusesOptions}
                             errors={errors}
+                            errorMessage={errorMessage}
                             projectTypeCodeRef={projectTypeCodeRef}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
@@ -83,12 +85,13 @@ const MutationFormEdit = ({
                             handleSubmit={handleSubmit}
                         />
                     ) : null}
-                    {type.codeRef === 'withDrawal' ? (
+                    {type.codeRef === 'withDrawal' || type.codeRef === 'sell' ? (
                         <MutationFormEditWithDrawal
                             participantMutationFromState={participantMutationFromState}
                             participantMutationFromProps={participantMutationFromProps}
                             participantMutationStatusesOptions={participantMutationStatusesOptions}
                             errors={errors}
+                            errorMessage={errorMessage}
                             projectTypeCodeRef={projectTypeCodeRef}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}

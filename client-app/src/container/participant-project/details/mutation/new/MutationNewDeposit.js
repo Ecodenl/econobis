@@ -19,6 +19,7 @@ const MutationNewDeposit = ({
     datePayment,
     dateEntry,
     errors,
+    errorMessage,
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
@@ -36,6 +37,7 @@ const MutationNewDeposit = ({
                             value={amountInterest}
                             onChangeAction={handleInputChange}
                             error={errors.amountInterest}
+                            errorMessage={errorMessage.amountInterest}
                         />
                     ) : (
                         <InputText
@@ -45,6 +47,7 @@ const MutationNewDeposit = ({
                             value={quantityInterest}
                             onChangeAction={handleInputChange}
                             error={errors.quantityInterest}
+                            errorMessage={errorMessage.quantityInterest}
                         />
                     )}
 
@@ -70,6 +73,7 @@ const MutationNewDeposit = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.amountOption}
+                            errorMessage={errorMessage.amountOption}
                         />
                     ) : (
                         <InputText
@@ -80,6 +84,7 @@ const MutationNewDeposit = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.quantityOption}
+                            errorMessage={errorMessage.quantityOption}
                         />
                     )}
 
@@ -107,6 +112,7 @@ const MutationNewDeposit = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.amountGranted}
+                            errorMessage={errorMessage.amountGranted}
                         />
                     ) : (
                         <InputText
@@ -117,6 +123,7 @@ const MutationNewDeposit = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.quantityGranted}
+                            errorMessage={errorMessage.quantityGranted}
                         />
                     )}
 
@@ -145,6 +152,7 @@ const MutationNewDeposit = ({
                                 onChangeAction={handleInputChange}
                                 required={'required'}
                                 error={errors.amountFinal}
+                                errorMessage={errorMessage.amountFinal}
                             />
                         ) : (
                             <InputText
@@ -156,6 +164,7 @@ const MutationNewDeposit = ({
                                 onChangeAction={handleInputChange}
                                 required={'required'}
                                 error={errors.quantityFinal}
+                                errorMessage={errorMessage.quantityFinal}
                             />
                         )}
                         <InputDate

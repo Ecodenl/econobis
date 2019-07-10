@@ -79,7 +79,7 @@ class ProjectRevenueController extends ApiController
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $distribution = $projectRevenue->distribution()->limit($limit)->offset($offset)->get();
+        $distribution = $projectRevenue->distribution()->limit($limit)->offset($offset)->orderBy('status')->get();
         $total = $projectRevenue->distribution()->count();
 
         return FullProjectRevenueDistribution::collection($distribution)
@@ -595,6 +595,8 @@ class ProjectRevenueController extends ApiController
                         $paymentInvoice->status_id = 'sent';
                         $paymentInvoice->save();
                     }
+                    $distribution->status = 'processed';
+                    $distribution->save();
 
                     array_push($createdInvoices, $paymentInvoice);
                 }
@@ -619,10 +621,11 @@ class ProjectRevenueController extends ApiController
 
                     // Recalculate dependent data in project
                     $participantMutation->participation->project->calculator()->run()->save();
+
+                    $distribution->status = 'processed';
+                    $distribution->save();
                 }
 
-                $distribution->status = 'processed';
-                $distribution->save();
             }
         }
 

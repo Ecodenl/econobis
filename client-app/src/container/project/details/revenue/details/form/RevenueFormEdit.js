@@ -77,6 +77,7 @@ class RevenueFormEdit extends Component {
                 dateEnd: false,
                 dateReference: false,
             },
+            isSaving: false,
         };
     }
 
@@ -212,16 +213,16 @@ class RevenueFormEdit extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        !hasErrors &&
-            ProjectRevenueAPI.updateProjectRevenue(revenue.id, revenue).then(payload => {
-                this.props.fetchRevenue(revenue.id);
+        !hasErrors && this.setState({ isSaving: true });
+        ProjectRevenueAPI.updateProjectRevenue(revenue.id, revenue).then(payload => {
+            this.props.fetchRevenue(revenue.id);
 
-                setTimeout(() => {
-                    this.props.getDistribution(revenue.id, 0);
-                }, 250);
-
-                this.props.switchToView();
-            });
+            setTimeout(() => {
+                this.props.getDistribution(revenue.id, 0);
+            }, 250);
+            this.setState({ isSaving: true });
+            this.props.switchToView();
+        });
     };
 
     render() {
@@ -443,6 +444,7 @@ class RevenueFormEdit extends Component {
                             onClickAction={this.handleSubmit}
                             type={'submit'}
                             value={'Submit'}
+                            loading={this.state.isSaving}
                         />
                     </div>
                 </PanelFooter>

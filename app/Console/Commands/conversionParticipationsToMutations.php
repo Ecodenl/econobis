@@ -102,8 +102,10 @@ class conversionParticipationsToMutations extends Command
                 $participantMutation->quantity = $participant->participations_granted;
                 $participantMutation->quantity_final = $participant->participations_granted;
             }
-            $participantMutation->date_entry = $participant->date_payed;
-            $participantMutation->date_payment = $participant->date_payed;
+            if($statusId == 4) {
+                $participantMutation->date_entry = $participant->date_payed;
+                $participantMutation->date_payment = $participant->date_payed;
+            }
 
             DB::transaction(function () use ($participantMutation) {
                 // Calculate participation worth based on current book worth of project

@@ -49,7 +49,9 @@ class conversionParticipationsToMutations extends Command
     public function handle()
     {
         $this->makeFirstDepositMutations();
-        $this->makeWithDrawalMutations();
+//        $this->makeWithDrawalMutations();
+
+        dd('klaar');
     }
 
     /**
@@ -62,14 +64,44 @@ class conversionParticipationsToMutations extends Command
         $participants = ParticipantProject::where('participations_granted', '>', 0)->where('participations_definitive', 0)->get();
 
         foreach ($participants as $participant) {
-            $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $participant->project->project_type_id)->first();
+            $projectType = $participant->project->projectType;
+            $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first();
+
+            /* STATUSSEN CONVERSIE  ---
+            | Oud = Nieuw
+            | 4 = 1(Interesse)
+            | 1 = 2(Optie/Inschrijving)
+            | 2 = 4(Definitief)
+            | null = 3(Toegekend)
+            | 5 = null (Beeindigd)
+            | 3 = null (Overgedragen)
+            --------------------------- */
+            switch($participant->status_id) {
+                case 4:
+                    $statusId = 1;
+                    break;
+                case 1:
+                    $statusId = 2;
+                    break;
+                case 2:
+                    $statusId = 4;
+                    break;
+                default:
+                    $statusId = null;
+                    break;
+            }
 
             $participantMutation = new ParticipantMutation();
             $participantMutation->participation_id = $participant->id;
             $participantMutation->type_id = $mutationType->id;
-            $participantMutation->status_id = 4; // 4 is final
-            $participantMutation->quantity = $participant->participations_granted;
-            $participantMutation->quantity_final = $participant->participations_granted;
+            $participantMutation->status_id = $statusId;
+            if($projectType->code_ref == 'loan') {
+                $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
+                $participantMutation->amount_final = $participant->participations_granted / 100; // Loan is filled in cents
+            } else {
+                $participantMutation->quantity = $participant->participations_granted;
+                $participantMutation->quantity_final = $participant->participations_granted;
+            }
             $participantMutation->date_entry = $participant->date_payed;
             $participantMutation->date_payment = $participant->date_payed;
 

@@ -98,6 +98,9 @@ const RevenueNew = props => {
                     required={'required'}
                     error={props.errors.dateEnd}
                     disabledBefore={dateBegin}
+                    disabledAfter={moment(dateBegin)
+                        .endOf('year')
+                        .format('Y-MM-DD')}
                 />
             </div>
 

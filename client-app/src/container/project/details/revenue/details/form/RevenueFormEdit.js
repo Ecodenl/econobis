@@ -305,16 +305,13 @@ class RevenueFormEdit extends Component {
                         required={'required'}
                         error={this.state.errors.dateEnd}
                         disabledBefore={dateBegin}
+                        disabledAfter={moment(dateBegin)
+                            .endOf('year')
+                            .format('Y-MM-DD')}
                     />
                 </div>
 
                 <div className="row">
-                    <InputDate
-                        label={'Datum uitgekeerd'}
-                        name={'datePayed'}
-                        value={datePayed}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
                     <InputDate
                         label={'Datum definitief'}
                         name={'dateConfirmed'}

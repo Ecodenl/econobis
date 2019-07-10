@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
 class ProjectsListItem extends Component {
     constructor(props) {
@@ -70,9 +71,9 @@ class ProjectsListItem extends Component {
                 <td>{projectTypeCodeRef !== 'loan' ? totalParticipations : '-'}</td>
                 <td>{projectTypeCodeRef !== 'loan' ? participationsDefinitive : '-'}</td>
                 <td>{projectTypeCodeRef !== 'loan' ? participationsAvailable : '-'}</td>
-                <td>{projectTypeCodeRef === 'loan' ? amountOfLoanNeeded : '-'}</td>
-                <td>{projectTypeCodeRef === 'loan' ? amountDefinitive : '-'}</td>
-                <td>{projectTypeCodeRef === 'loan' ? amountAvailable : '-'}</td>
+                <td>{projectTypeCodeRef === 'loan' ? MoneyPresenter(amountOfLoanNeeded) : '-'}</td>
+                <td>{projectTypeCodeRef === 'loan' ? MoneyPresenter(amountDefinitive) : '-'}</td>
+                <td>{projectTypeCodeRef === 'loan' ? MoneyPresenter(amountAvailable) : '-'}</td>
                 <td>{`${definitiveIssuedPercentage.toLocaleString('nl', { maximumFractionDigits: 2 })}%`}</td>
                 <td>
                     {this.state.showActionButtons ? (

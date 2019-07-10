@@ -8,23 +8,18 @@ const RevenueDistributionFormList = props => {
     return (
         <div>
             <div className="row border header">
-                {props.projectRevenue.confirmed && props.showCheckboxList && props.checkedAll ? (
+                {props.projectRevenue.confirmed && props.showCheckboxList ? (
                     <div className="col-sm-1">
-                        <input type="checkbox" onChange={props.toggleCheckedAll} checked />
+                        <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />
                     </div>
-                ) : (
-                    ''
-                )}
-                {props.projectRevenue.confirmed && props.showCheckboxList && !props.checkedAll ? (
-                    <div className="col-sm-1">
-                        <input type="checkbox" onChange={props.toggleCheckedAll} />
-                    </div>
-                ) : (
-                    ''
-                )}
+                ) : null}
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Naam</div>
-                <div className="col-sm-1">Deelnames</div>
+                {props.projectTypeCodeRef == 'loan' ? (
+                    <div className="col-sm-2">Huidige lening</div>
+                ) : (
+                    <div className="col-sm-1">Deelnames</div>
+                )}
                 <div className="col-sm-1">Uit te keren bedrag</div>
                 <div className="col-sm-1">Uitkeren op</div>
                 <div className="col-sm-1">Datum uitkering</div>
@@ -43,10 +38,10 @@ const RevenueDistributionFormList = props => {
                             key={participation.id}
                             participation={participation}
                             showCheckboxList={props.showCheckboxList}
-                            checkedAll={props.checkedAll}
-                            toggleParticipantCheck={props.toggleParticipantCheck}
-                            toggleParticipantCheckNoEmail={props.toggleParticipantCheckNoEmail}
+                            toggleDistributionCheck={props.toggleDistributionCheck}
                             projectRevenueCategoryCodeRef={props.projectRevenue.category.codeRef}
+                            projectTypeCodeRef={props.projectTypeCodeRef}
+                            distributionIds={props.distributionIds}
                         />
                     );
                 })
@@ -69,7 +64,7 @@ const RevenueDistributionFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        project: state.projectRevenue.project,
+        projectTypeCodeRef: state.projectRevenue.project.projectType.codeRef,
         projectRevenue: state.projectRevenue,
     };
 };

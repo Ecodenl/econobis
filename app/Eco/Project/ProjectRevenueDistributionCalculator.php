@@ -90,7 +90,7 @@ class ProjectRevenueDistributionCalculator
         $participationValue = $currentBookWorth * $amount;
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -106,7 +106,7 @@ class ProjectRevenueDistributionCalculator
             $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
         }
 
-        return number_format($payout, 2);
+        return number_format($payout, 2, '.', '');
     }
 
     protected function calculatePayoutHowLongInPossession()
@@ -114,7 +114,7 @@ class ProjectRevenueDistributionCalculator
         $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -142,7 +142,7 @@ class ProjectRevenueDistributionCalculator
             $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
         }
 
-        return number_format($payout, 2);
+        return number_format($payout, 2, '.', '');
     }
 
     protected function calculatePayoutHowLongInPossessionWithFilledKeyAmount()
@@ -153,7 +153,7 @@ class ProjectRevenueDistributionCalculator
 
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -202,7 +202,7 @@ class ProjectRevenueDistributionCalculator
             $payout += $payoutTillKeyAmount + $payoutAboveKeyAmount;
         }
 
-        return number_format($payout, 2);
+        return number_format($payout, 2, '.', '');
     }
 
     protected function calculateParticipationsCount()
@@ -214,7 +214,7 @@ class ProjectRevenueDistributionCalculator
 
             $mutations->whereDate('date_entry', '<=', $dateReference);
         } else {
-            $dateEnd = $this->projectRevenueDistribution->revenue->date_end;
+            $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
 
             $mutations->whereDate('date_entry', '<=', $dateEnd);
         }

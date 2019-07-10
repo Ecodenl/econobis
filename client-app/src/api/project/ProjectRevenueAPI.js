@@ -47,8 +47,8 @@ export default {
             });
     },
 
-    createPaymentInvoices: (templateId, emailTemplateId, subject, distributionIds, createReport, createInvoice) => {
-        const requestUrl = `${URL_API}/api/distribution/create-payment-invoices`;
+    createRevenueReport: (templateId, emailTemplateId, subject, distributionIds) => {
+        const requestUrl = `${URL_API}/api/distribution/create-revenue-report`;
 
         return axiosInstance
             .post(requestUrl, {
@@ -56,8 +56,20 @@ export default {
                 emailTemplateId: emailTemplateId,
                 distributionIds: distributionIds,
                 subject: subject,
-                createReport: createReport,
-                createInvoice: createInvoice,
+            })
+            .then(response => response)
+            .catch(error => {
+                console.log(error);
+            });
+    },
+
+    createPaymentInvoices: (datePayout, distributionIds) => {
+        const requestUrl = `${URL_API}/api/distribution/create-payment-invoices`;
+
+        return axiosInstance
+            .post(requestUrl, {
+                distributionIds: distributionIds,
+                datePayout: datePayout,
             })
             .then(response => response)
             .catch(error => {

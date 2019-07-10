@@ -77,7 +77,7 @@ class RevenueNewApp extends Component {
                 revenue.dateBegin = payload.dateInterestBearing;
                 revenue.dateEnd = payload.dateInterestBearing
                     ? moment(payload.dateInterestBearing)
-                          .add(1, 'years')
+                          .endOf('year')
                           .format('Y-MM-DD')
                     : '';
             }

@@ -57,25 +57,24 @@ const RevenueDistributionFormView = props => {
                 missingDataClass ? missingDataClass : ''
             }`}
         >
-            {props.showCheckboxList && props.checkedAll && (
+            {props.showCheckboxList ? (
                 <div className="col-sm-1">
-                    <input type="checkbox" checked />
+                    <input
+                        type="checkbox"
+                        name={id}
+                        onChange={props.toggleDistributionCheck}
+                        checked={props.distributionIds.includes(id)}
+                    />
                 </div>
-            )}
-            {props.showCheckboxList && !props.checkedAll && contactPrimaryEmailAddress && (
-                <div className="col-sm-1">
-                    <input type="checkbox" name={id} onChange={props.toggleParticipantCheck} />
-                </div>
-            )}
-            {props.showCheckboxList && !props.checkedAll && !contactPrimaryEmailAddress && (
-                <div className="col-sm-1">
-                    <input type="checkbox" name={id} onChange={props.toggleParticipantCheckNoEmail} />
-                </div>
-            )}
+            ) : null}
 
             <div className="col-sm-1">{contactType ? contactType.name : ''}</div>
             <div className="col-sm-2">{contactName}</div>
-            <div className="col-sm-1">{participationsAmount}</div>
+            {props.projectTypeCodeRef === 'loan' ? (
+                <div className="col-sm-2">{MoneyPresenter(participationsAmount)}</div>
+            ) : (
+                <div className="col-sm-1">{participationsAmount}</div>
+            )}
             <div className="col-sm-1">{payout ? MoneyPresenter(payout) : 0}</div>
             <div className="col-sm-1">{payoutType && payoutType}</div>
             <div className="col-sm-1">{datePayout ? moment(datePayout).format('L') : ''}</div>

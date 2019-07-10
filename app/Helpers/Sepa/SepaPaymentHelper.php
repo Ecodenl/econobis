@@ -103,7 +103,7 @@ class SepaPaymentHelper
         $xml .= "\n\t\t\t\t</SvcLvl>";
         $xml .= "\n\t\t\t</PmtTpInf>";
 
-        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::now()->nextWeekday()->format('Y-m-d') . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
+        $xml .= "\n\t\t\t<ReqdExctnDt>" . Carbon::parse($invoice->revenueDistribution->date_payout)->format('Y-m-d') . "</ReqdExctnDt>"; // Gewenste uitvoerdatum
 
         $xml .= "\n\t\t\t<Dbtr>"; // Debiteur
         $xml .= "\n\t\t\t\t<Nm>" . $this->administration->name . "</Nm>"; // Naam Debiteur
@@ -136,7 +136,6 @@ class SepaPaymentHelper
                 $iban_attn = $invoice->revenueDistribution->contact->full_name;
             }
 
-
             $xml .= "\n\t\t\t<CdtTrfTxInf>";
             $xml .= "\n\t\t\t\t<PmtId>";
             $xml .= "\n\t\t\t\t\t<EndToEndId>" . $invoice->number . "</EndToEndId>";
@@ -148,11 +147,11 @@ class SepaPaymentHelper
 
             // Crediteur
             $xml .= "\n\t\t\t\t<Cdtr>";
-            $xml .= "\n\t\t\t\t\t<Nm>" .  $iban_attn . "</Nm>"; // Naam
+            $xml .= "\n\t\t\t\t\t<Nm>" .  $this->translateToValidCharacterSet($iban_attn) . "</Nm>"; // Naam
             $xml .= "\n\t\t\t\t\t<PstlAdr>";
             $xml .= "\n\t\t\t\t\t\t<Ctry>NL</Ctry>";
-            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->address . "</AdrLine>"; // Postcode
-            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $invoice->revenueDistribution->postal_code . " " . $invoice->revenueDistribution->city .  "</AdrLine>"; // Postcode
+            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $this->translateToValidCharacterSet($invoice->revenueDistribution->address) . "</AdrLine>"; // Postcode
+            $xml .= "\n\t\t\t\t\t\t<AdrLine>" .  $this->translateToValidCharacterSet($invoice->revenueDistribution->postal_code) . " " . $this->translateToValidCharacterSet($invoice->revenueDistribution->city) .  "</AdrLine>"; // Postcode
             $xml .= "\n\t\t\t\t\t</PstlAdr>";
             $xml .= "\n\t\t\t\t</Cdtr>";
 
@@ -185,7 +184,7 @@ class SepaPaymentHelper
             $participantMutation->payout_kwh = $invoice->revenueDistribution->payout_kwh;
             $participantMutation->paid_on = $invoice->revenueDistribution->participation->iban_payout ? $invoice->revenueDistribution->participation->iban_payout : $invoice->revenueDistribution->contact->iban;
             $participantMutation->entry = $invoice->number;
-            $participantMutation->date_payment = Carbon::today()->nextWeekday();
+            $participantMutation->date_payment = $invoice->revenueDistribution->date_payout;
             $participantMutation->save();
         }
     }
@@ -215,7 +214,7 @@ class SepaPaymentHelper
 
         foreach ($this->invoices as $invoice){
             $invoice->sepa_id = $sepa->id;
-            $invoice->date_paid = Carbon::now()->nextWeekday();
+            $invoice->date_paid = $invoice->revenueDistribution->date_payout;
             $invoice->save();
         }
 
@@ -248,4 +247,13 @@ class SepaPaymentHelper
             mkdir($storageDir, 0777, true);
         }
     }
+
+    public function translateToValidCharacterSet($field){
+
+        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
+
 }

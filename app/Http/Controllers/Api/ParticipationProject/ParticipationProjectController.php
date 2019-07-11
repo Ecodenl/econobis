@@ -385,7 +385,7 @@ class ParticipationProjectController extends ApiController
             if ($payoutPercentageTerminated) {
                 $mutationTypeResultId = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $projectType->id)->value('id');
                 // Calculate result from last revenue distribution till date terminate
-                $this->createMutationResult($participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated);
+                $this->createMutationResult($participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated, $projectType);
             }
             // Make mutation withdrawal of total participations/loan
             $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $projectType->id)->value('id');
@@ -765,7 +765,7 @@ class ParticipationProjectController extends ApiController
             $participantMutation->amount = '-' . $amountDefinitive;
             $participantMutation->amount_final = '-' . $amountDefinitive;
         } else {
-            $participationsDefinitive = $participantProject->calculator()->participationDefinitive();
+            $participationsDefinitive = $participantProject->calculator()->participationsDefinitive();
 
             $participantMutation->quantity = '-' . $participationsDefinitive;
             $participantMutation->quantity_final = '-' . $participationsDefinitive;
@@ -794,7 +794,7 @@ class ParticipationProjectController extends ApiController
      * @param $mutationStatusFinalId
      * @param $projectType
      */
-    protected function createMutationResult(ParticipantProject $participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated): void
+    protected function createMutationResult(ParticipantProject $participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated, $projectType): void
     {
         $result = $this->calculatePayoutHowLongInPossession($participantProject, $payoutPercentageTerminated);
 
@@ -802,10 +802,16 @@ class ParticipationProjectController extends ApiController
         $participantMutation->participation_id = $participantProject->id;
         $participantMutation->type_id = $mutationTypeResultId;
         $participantMutation->status_id = $mutationStatusFinalId;
-        $participantMutation->amount = $result;
+        if ($projectType->code_ref == 'loan') {
+            $participantMutation->amount = $result;
+        }
         $participantMutation->returns = $result;
+        if ($projectType->code_ref == 'loan') {
+            $participantMutation->date_entry = $participantProject->date_terminated;
+        } else {
+            $participantMutation->date_payment = $participantProject->date_terminated;
+        }
         $participantMutation->paid_on = 'Rekening';
-        $participantMutation->date_entry = $participantProject->date_terminated;
         $participantMutation->save();
 
         // Recalculate dependent data in participantProject

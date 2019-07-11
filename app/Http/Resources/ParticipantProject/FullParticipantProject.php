@@ -54,6 +54,7 @@ class FullParticipantProject extends Resource
                 'participationsReturnsTotal' => $this->participationsReturnsTotal,
                 'participationsReturnsKwhTotal' => $this->participationsReturnsKwhTotal,
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
+                'dateTerminated' => $this->date_terminated,
             ];
     }
 }

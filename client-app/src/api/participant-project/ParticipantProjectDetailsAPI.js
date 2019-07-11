@@ -60,4 +60,10 @@ export default {
                 console.log(error);
             });
     },
+
+    terminateParticipantProject: (id, payload) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/terminate`;
+
+        return axiosInstance.post(requestUrl, payload);
+    },
 };

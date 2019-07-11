@@ -27,7 +27,7 @@ class MutationForm extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Mutaties</span>
-                    {this.props.permissions.manageFinancial && (
+                    {this.props.permissions.manageFinancial && !this.props.isTerminated && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />
                         </a>

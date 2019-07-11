@@ -7,6 +7,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ParticipantDetailsDelete from './ParticipantDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
+import ParticipantDetailsTerminate from './ParticipantDetailsTerminate';
 
 class ParticipantDetailsToolbar extends Component {
     constructor(props) {
@@ -14,11 +15,16 @@ class ParticipantDetailsToolbar extends Component {
 
         this.state = {
             showDelete: false,
+            showTerminate: false,
         };
     }
 
     toggleDelete = () => {
         this.setState({ showDelete: !this.state.showDelete });
+    };
+
+    toggleTerminate = () => {
+        this.setState({ showTerminate: !this.state.showTerminate });
     };
 
     render() {
@@ -45,18 +51,23 @@ class ParticipantDetailsToolbar extends Component {
                                     {this.props.permissions.manageParticipation && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                                     )}
-                                    {isTransferable ? (
-                                        <ButtonText
-                                            buttonText={`Deelnames overdragen`}
-                                            onClickAction={() =>
-                                                hashHistory.push(
-                                                    `/project/deelnemer/${participantProject.id}/overdragen`
-                                                )
-                                            }
-                                        />
-                                    ) : (
-                                        <ButtonText buttonText={`Deelnames niet overdraagbaar`} />
-                                    )}
+                                    <ButtonText
+                                        buttonText={`Beëindigen`}
+                                        onClickAction={this.toggleTerminate}
+                                        disabled={participantProject.dateTerminated}
+                                    />
+                                    {/*{isTransferable ? (*/}
+                                    {/*    <ButtonText*/}
+                                    {/*        buttonText={`Deelnames overdragen`}*/}
+                                    {/*        onClickAction={() =>*/}
+                                    {/*            hashHistory.push(*/}
+                                    {/*                `/project/deelnemer/${participantProject.id}/overdragen`*/}
+                                    {/*            )*/}
+                                    {/*        }*/}
+                                    {/*    />*/}
+                                    {/*) : (*/}
+                                    {/*    <ButtonText buttonText={`Deelnames niet overdraagbaar`} readOnly={true} />*/}
+                                    {/*)}*/}
                                 </div>
                             </div>
                             <div className="col-md-6">
@@ -77,6 +88,12 @@ class ParticipantDetailsToolbar extends Component {
                         closeDeleteItemModal={this.toggleDelete}
                         id={participantProject.id}
                         projectid={participantProject.project.id}
+                    />
+                )}
+                {this.state.showTerminate && (
+                    <ParticipantDetailsTerminate
+                        closeDeleteItemModal={this.toggleTerminate}
+                        participantProjectId={participantProject.id}
                     />
                 )}
             </div>

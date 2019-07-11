@@ -316,6 +316,7 @@ Route::namespace('Api')
         Route::post('project/participant/peek-by-ids', 'ParticipationProject\ParticipationProjectController@peekParticipantByIds');
         Route::post('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@update');
         Route::post('project/participant/{participantProject}/delete', 'ParticipationProject\ParticipationProjectController@destroy');
+        Route::post('project/participant/{participantProject}/terminate', 'ParticipationProject\ParticipationProjectController@terminate');
 
         Route::get('project/grid', 'Project\ProjectController@grid');
         Route::get('project/peek', 'Project\ProjectController@peek');

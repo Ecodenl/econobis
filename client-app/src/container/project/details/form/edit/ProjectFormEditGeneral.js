@@ -211,7 +211,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                 />
                 <InputDate
-                    label={'Ingangsdatum (standaard)'}
+                    label={'Standaard ingangsdatum mutatie'}
                     name={'dateEntry'}
                     value={dateEntry}
                     onChangeAction={handleInputChangeDate}

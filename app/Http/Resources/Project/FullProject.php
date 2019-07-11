@@ -84,9 +84,13 @@ class FullProject extends Resource
                 'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
                 'participationsDefinitive' => $this->participations_definitive,
+                'participationsGranted' => $this->participations_granted,
                 'participationsOptioned' => $this->participations_optioned,
+                'participationsInteressed' => $this->participations_interessed,
                 'amountDefinitive' => $this->amount_definitive,
+                'amountGranted' => $this->amount_granted,
                 'amountOptioned' => $this->amount_optioned,
+                'amountInteressed' => $this->amount_interessed,
             ];
     }
 }

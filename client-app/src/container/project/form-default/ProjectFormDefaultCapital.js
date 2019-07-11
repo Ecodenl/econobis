@@ -8,7 +8,9 @@ const ProjectFormDefaultCapital = ({
     participationWorth,
     totalParticipations,
     participationsDefinitive,
+    participationsGranted,
     participationsOptioned,
+    participationsInteressed,
     powerKwAvailable,
     minParticipations,
     maxParticipations,
@@ -33,8 +35,8 @@ const ProjectFormDefaultCapital = ({
                     onChangeAction={handleInputChange}
                 />
                 <ViewText
-                    label={'Uitgegeven participaties'}
-                    value={participationsDefinitive || 0}
+                    label={'Participaties interesse'}
+                    value={participationsInteressed || 0}
                     className={'form-group col-sm-6'}
                 />
             </div>
@@ -45,7 +47,7 @@ const ProjectFormDefaultCapital = ({
                     className={'form-group col-sm-6'}
                 />
                 <ViewText
-                    label={'Participaties in inschrijving'}
+                    label={'Participaties ingeschreven'}
                     value={participationsOptioned || 0}
                     className={'form-group col-sm-6'}
                 />
@@ -57,8 +59,8 @@ const ProjectFormDefaultCapital = ({
                     className={'form-group col-sm-6'}
                 />
                 <ViewText
-                    label={'Uit te geven participaties'}
-                    value={participationsAvailable || 0}
+                    label={'Participaties toegekend'}
+                    value={participationsGranted || 0}
                     className={'form-group col-sm-6'}
                 />
             </div>
@@ -70,12 +72,10 @@ const ProjectFormDefaultCapital = ({
                     value={totalParticipations}
                     onChangeAction={handleInputChange}
                 />
-                <InputText
-                    type={'number'}
-                    label={'Opgesteld vermogen kWh'}
-                    name={'powerKwAvailable'}
-                    value={powerKwAvailable}
-                    onChangeAction={handleInputChange}
+                <ViewText
+                    label={'Uitgegeven participaties'}
+                    value={participationsDefinitive || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
@@ -86,6 +86,11 @@ const ProjectFormDefaultCapital = ({
                     value={minParticipations}
                     onChangeAction={handleInputChange}
                 />
+                <ViewText
+                    label={'Uit te geven participaties'}
+                    value={participationsAvailable || 0}
+                    className={'form-group col-sm-6'}
+                />
             </div>
             <div className="row">
                 <InputText
@@ -93,6 +98,13 @@ const ProjectFormDefaultCapital = ({
                     label={'Max. aantal participaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
+                    onChangeAction={handleInputChange}
+                />
+                <InputText
+                    type={'number'}
+                    label={'Opgesteld vermogen kWh'}
+                    name={'powerKwAvailable'}
+                    value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
             </div>

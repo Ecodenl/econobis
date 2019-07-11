@@ -6,7 +6,9 @@ const ProjectFormViewCapital = ({
     participationWorth,
     totalParticipations,
     participationsDefinitive,
+    participationsGranted,
     participationsOptioned,
+    participationsInteressed,
     powerKwAvailable,
     minParticipations,
     maxParticipations,
@@ -24,8 +26,8 @@ const ProjectFormViewCapital = ({
             <div className="row">
                 <ViewText label={'Nominale waarde participatie'} value={MoneyPresenter(participationWorth)} />
                 <ViewText
-                    label={'Uitgegeven participaties'}
-                    value={participationsDefinitive ? participationsDefinitive : ''}
+                    label={'Participaties interesse'}
+                    value={participationsInteressed ? participationsInteressed : ''}
                 />
             </div>
             <div className="row">
@@ -34,7 +36,7 @@ const ProjectFormViewCapital = ({
                     value={activeValueCourse && MoneyPresenter(activeValueCourse.bookWorth)}
                 />
                 <ViewText
-                    label={'Participaties in inschrijving'}
+                    label={'Participaties ingeschreven'}
                     value={participationsOptioned ? participationsOptioned : ''}
                 />
             </div>
@@ -44,19 +46,27 @@ const ProjectFormViewCapital = ({
                     value={activeValueCourse && MoneyPresenter(activeValueCourse.transferWorth)}
                 />
                 <ViewText
+                    label={'Participaties toegekend'}
+                    value={participationsGranted ? participationsGranted : ''}
+                />
+            </div>
+            <div className="row">
+                <ViewText label={'Aantal participaties nodig'} value={totalParticipations} />
+                <ViewText
+                    label={'Uitgegeven participaties'}
+                    value={participationsDefinitive ? participationsDefinitive : ''}
+                />
+            </div>
+            <div className="row">
+                <ViewText label={'Min. aantal participaties p/p'} value={minParticipations} />
+                <ViewText
                     label={'Uit te geven participaties'}
                     value={participationsAvailable ? participationsAvailable : ''}
                 />
             </div>
             <div className="row">
-                <ViewText label={'Aantal participaties nodig'} value={totalParticipations} />
-                <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
-            </div>
-            <div className="row">
-                <ViewText label={'Min. aantal participaties p/p'} value={minParticipations} />
-            </div>
-            <div className="row">
                 <ViewText label={'Max. aantal participaties p/p'} value={maxParticipations} />
+                <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
             </div>
             <div className="row">
                 <ViewText label={'Max. aantal participaties jeugd'} value={maxParticipationsYouth} />

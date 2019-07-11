@@ -48,9 +48,13 @@ class FullRevenueParticipantProject extends Resource
                 'type' => GenericResource::make($this->whenLoaded('participantProjectPayoutType')),
                 'participationsDefinitive' => $this->participations_definitive,
                 'participationsDefinitiveWorth' => $this->participations_definitive_worth,
+                'participationsGranted' => $this->participations_granted,
                 'participationsOptioned' => $this->participations_optioned,
+                'participationsInteressed' => $this->participations_interessed,
                 'amountDefinitive' => $this->amount_definitive,
                 'amountOptioned' => $this->amount_optioned,
+                'amountGranted' => $this->amount_granted,
+                'amountInteressed' => $this->amount_interessed,
             ];
     }
 }

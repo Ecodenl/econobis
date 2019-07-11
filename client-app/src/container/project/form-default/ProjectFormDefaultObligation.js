@@ -8,7 +8,9 @@ const ProjectFormEditObligation = ({
     participationWorth,
     totalParticipations,
     participationsDefinitive,
+    participationsGranted,
     participationsOptioned,
+    participationsInteressed,
     powerKwAvailable,
     minParticipations,
     maxParticipations,
@@ -33,8 +35,8 @@ const ProjectFormEditObligation = ({
                     onChangeAction={handleInputChange}
                 />
                 <ViewText
-                    label={'Uitgegeven obligaties'}
-                    value={participationsDefinitive || 0}
+                    label={'Obligaties interesse'}
+                    value={participationsInteressed || 0}
                     className={'form-group col-sm-6'}
                 />
             </div>
@@ -44,9 +46,8 @@ const ProjectFormEditObligation = ({
                     value={activeValueCourse ? MoneyPresenter(activeValueCourse.bookWorth) : MoneyPresenter(0)}
                     className={'form-group col-sm-6'}
                 />
-
                 <ViewText
-                    label={'Obligaties in inschrijving'}
+                    label={'Obligaties ingeschreven'}
                     value={participationsOptioned || 0}
                     className={'form-group col-sm-6'}
                 />
@@ -57,10 +58,9 @@ const ProjectFormEditObligation = ({
                     value={activeValueCourse ? MoneyPresenter(activeValueCourse.transferWorth) : MoneyPresenter(0)}
                     className={'form-group col-sm-6'}
                 />
-
                 <ViewText
-                    label={'Uit te geven obligaties'}
-                    value={participationsAvailable || 0}
+                    label={'Obligaties toegekend'}
+                    value={participationsGranted || 0}
                     className={'form-group col-sm-6'}
                 />
             </div>
@@ -72,13 +72,10 @@ const ProjectFormEditObligation = ({
                     value={totalParticipations}
                     onChangeAction={handleInputChange}
                 />
-
-                <InputText
-                    type={'number'}
-                    label={'Opgesteld vermogen kWh'}
-                    name={'powerKwAvailable'}
-                    value={powerKwAvailable}
-                    onChangeAction={handleInputChange}
+                <ViewText
+                    label={'Uitgegeven obligaties'}
+                    value={participationsDefinitive || 0}
+                    className={'form-group col-sm-6'}
                 />
             </div>
             <div className="row">
@@ -89,6 +86,11 @@ const ProjectFormEditObligation = ({
                     value={minParticipations}
                     onChangeAction={handleInputChange}
                 />
+                <ViewText
+                    label={'Uit te geven obligaties'}
+                    value={participationsAvailable || 0}
+                    className={'form-group col-sm-6'}
+                />
             </div>
             <div className="row">
                 <InputText
@@ -96,6 +98,13 @@ const ProjectFormEditObligation = ({
                     label={'Max. aantal obligaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
+                    onChangeAction={handleInputChange}
+                />
+                <InputText
+                    type={'number'}
+                    label={'Opgesteld vermogen kWh'}
+                    name={'powerKwAvailable'}
+                    value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
             </div>

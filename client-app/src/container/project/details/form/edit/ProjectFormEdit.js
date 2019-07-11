@@ -182,9 +182,13 @@ class ProjectFormEdit extends Component {
         } = this.state.project;
         const {
             participationsDefinitive,
+            participationsGranted,
             participationsOptioned,
+            participationsInteressed,
             amountDefinitive,
+            amountGranted,
             amountOptioned,
+            amountInteressed,
             administration,
             hasPaymentInvoices,
             valueCourses,
@@ -226,7 +230,9 @@ class ProjectFormEdit extends Component {
                     <ProjectFormDefaultLoan
                         amountOfLoanNeeded={amountOfLoanNeeded}
                         amountDefinitive={amountDefinitive}
+                        amountGranted={amountGranted}
                         amountOptioned={amountOptioned}
+                        amountInteressed={amountInteressed}
                         handleInputChange={this.handleInputChange}
                     />
                 ) : null}
@@ -236,7 +242,9 @@ class ProjectFormEdit extends Component {
                         participationWorth={participationWorth}
                         totalParticipations={totalParticipations}
                         participationsDefinitive={participationsDefinitive}
+                        participationsGranted={participationsGranted}
                         participationsOptioned={participationsOptioned}
+                        participationsInteressed={participationsInteressed}
                         powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
@@ -254,7 +262,9 @@ class ProjectFormEdit extends Component {
                         participationWorth={participationWorth}
                         totalParticipations={totalParticipations}
                         participationsDefinitive={participationsDefinitive}
+                        participationsGranted={participationsGranted}
                         participationsOptioned={participationsOptioned}
+                        participationsInteressed={participationsInteressed}
                         powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}

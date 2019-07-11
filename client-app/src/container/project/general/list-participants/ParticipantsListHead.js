@@ -26,11 +26,13 @@ const ParticipantsListHead = ({
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'6%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Plaats'} width={'12%'} setSorts={setSorts} />
-            {projectTypeRef === 'loan' ? (
-                <DataTableHeadTitle title={'Huidig aantal lening'} width={'8%'} />
-            ) : (
+            {projectTypeRef === 'loan' ? <DataTableHeadTitle title={'Huidig aantal lening'} width={'8%'} /> : null}
+            {projectTypeRef === 'obligation' ? (
+                <DataTableHeadTitle title={'Huidig aantal obligaties'} width={'8%'} />
+            ) : null}
+            {projectTypeRef === 'capital' || projectTypeRef === 'postalcode_link_capital' ? (
                 <DataTableHeadTitle title={'Huidig aantal deelnames'} width={'8%'} />
-            )}
+            ) : null}
             <DataTableHeadTitleAndSort
                 sortColumn={'participantMutationStatusId'}
                 title={'Deelname status'}
@@ -39,7 +41,7 @@ const ParticipantsListHead = ({
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateRegister'}
-                title={'Datum inschrijving deelname'}
+                title={'Eerste ingangsdatum'}
                 width={'10%'}
                 setSorts={setSorts}
             />

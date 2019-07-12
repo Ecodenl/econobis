@@ -15,6 +15,7 @@ class AddParticipationsInteressedAndGrantedFieldsToProjects extends Migration
     {
         DB::statement('UPDATE participation_project SET participations_granted=0 WHERE participations_granted IS NULL');
         DB::statement('ALTER TABLE participation_project MODIFY participations_granted INT(11) NOT NULL');
+        DB::statement('ALTER TABLE participation_project ALTER COLUMN participations_granted SET DEFAULT 0');
 
         Schema::table('participation_project', function (Blueprint $table) {
             $table->integer('participations_interessed')->nullable(false)->default(0)->after('participations_optioned');

@@ -128,9 +128,10 @@ class SepaPaymentHelper
         // Transacties
         foreach($this->invoices AS $invoice){
 
-
-
-            $iban_attn = $invoice->revenueDistribution->contact->iban_attn;
+            $iban_attn = $invoice->revenueDistribution->participation->iban_payout_attn;
+            if(!$iban_attn) {
+                $iban_attn = $invoice->revenueDistribution->contact->iban_attn;
+            }
             if(!$iban_attn)
             {
                 $iban_attn = $invoice->revenueDistribution->contact->full_name;

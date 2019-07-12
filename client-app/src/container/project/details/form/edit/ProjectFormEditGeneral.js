@@ -160,6 +160,8 @@ const ProjectFormEditGeneral = ({
                         options={administrations}
                         value={administrationId}
                         onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.administrationId}
                     />
                 )}
             </div>
@@ -209,7 +211,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                 />
                 <InputDate
-                    label={'Ingangsdatum (standaard)'}
+                    label={'Standaard ingangsdatum mutatie'}
                     name={'dateEntry'}
                     value={dateEntry}
                     onChangeAction={handleInputChangeDate}

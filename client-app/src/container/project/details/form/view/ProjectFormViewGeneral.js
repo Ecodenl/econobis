@@ -95,7 +95,7 @@ const ProjectFormViewGeneral = ({
 
         <div className="row">
             <ViewText label={'Start productie'} value={dateProduction ? moment(dateProduction).format('L') : ''} />
-            <ViewText label={'Ingangsdatum (standaard)'} value={dateEntry ? moment(dateEntry).format('L') : ''} />
+            <ViewText label={'Standaard ingangsdatum mutatie'} value={dateEntry ? moment(dateEntry).format('L') : ''} />
         </div>
     </React.Fragment>
 );

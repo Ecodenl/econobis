@@ -110,6 +110,9 @@ class ParticipantProject extends Model
     {
         $mutationStatuses = [];
 
+        // If participant is terminated then return status terminated
+        if($this->date_terminated) return [['id' => 'terminated', 'name' => 'Beëindigd']];
+
         foreach($this->mutations->unique('status_id')->sortBy('status_id') as $mutation) {
             if(!$mutation->status) continue;
 

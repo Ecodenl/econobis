@@ -8,7 +8,6 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
-import ProjectFormDefaultLoan from '../edit/ProjectFormEdit';
 
 const ProjectFormView = props => {
     const {
@@ -46,9 +45,13 @@ const ProjectFormView = props => {
         amountOfLoanNeeded,
         valueCourses,
         participationsDefinitive,
+        participationsGranted,
         participationsOptioned,
+        participationsInteressed,
         amountDefinitive,
+        amountGranted,
         amountOptioned,
+        amountInteressed,
     } = props.project;
 
     return (
@@ -82,7 +85,9 @@ const ProjectFormView = props => {
                 <ProjectFormViewLoan
                     amountOfLoanNeeded={amountOfLoanNeeded}
                     amountDefinitive={amountDefinitive}
+                    amountGranted={amountGranted}
                     amountOptioned={amountOptioned}
+                    amountInteressed={amountInteressed}
                 />
             ) : null}
 
@@ -91,7 +96,9 @@ const ProjectFormView = props => {
                     participationWorth={participationWorth}
                     totalParticipations={totalParticipations}
                     participationsDefinitive={participationsDefinitive}
+                    participationsGranted={participationsGranted}
                     participationsOptioned={participationsOptioned}
+                    participationsInteressed={participationsInteressed}
                     powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
@@ -107,7 +114,9 @@ const ProjectFormView = props => {
                     participationWorth={participationWorth}
                     totalParticipations={totalParticipations}
                     participationsDefinitive={participationsDefinitive}
+                    participationsGranted={participationsGranted}
                     participationsOptioned={participationsOptioned}
+                    participationsInteressed={participationsInteressed}
                     powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}

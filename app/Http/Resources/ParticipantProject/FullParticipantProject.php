@@ -47,13 +47,18 @@ class FullParticipantProject extends Resource
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
                 'participationsDefinitive' => $this->participations_definitive,
                 'participationsDefinitiveWorth' => $this->participations_definitive_worth,
+                'participationsGranted' => $this->participations_granted,
                 'participationsOptioned' => $this->participations_optioned,
+                'participationsInteressed' => $this->participations_interessed,
                 'amountDefinitive' => $this->amount_definitive,
+                'amountGranted' => $this->amount_granted,
                 'amountOptioned' => $this->amount_optioned,
+                'amountInteressed' => $this->amount_interessed,
                 'uniqueMutationStatuses' => $this->uniqueMutationStatuses,
                 'participationsReturnsTotal' => $this->participationsReturnsTotal,
                 'participationsReturnsKwhTotal' => $this->participationsReturnsKwhTotal,
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
+                'dateTerminated' => $this->date_terminated,
             ];
     }
 }

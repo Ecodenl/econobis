@@ -199,7 +199,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->fill($data);
 
-        $recalculateDistribution = true;
+        $recalculateDistribution = false;
 
         if($projectRevenue->isDirty('date_begin') ||
             $projectRevenue->isDirty('date_end') ||

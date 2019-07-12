@@ -66,6 +66,7 @@ class MutationFormListItem extends Component {
                     : props.participantMutation.amount,
             },
             errors: {},
+            errorMessage: {},
         };
     }
 
@@ -207,6 +208,7 @@ class MutationFormListItem extends Component {
         event.preventDefault();
 
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
         const { participantMutation } = this.state;
@@ -214,11 +216,12 @@ class MutationFormListItem extends Component {
         const validatedForm = MutationValidateForm(
             participantMutation,
             errors,
+            errorMessage,
             hasErrors,
             this.props.projectTypeCodeRef
         );
 
-        this.setState({ ...this.state, errors: validatedForm.errors });
+        this.setState({ ...this.state, errors: validatedForm.errors, errorMessage: validatedForm.errorMessage });
 
         if (!validatedForm.hasErrors) {
             const values = MutationSubmitHelper(participantMutation, this.props.projectTypeCodeRef);
@@ -251,6 +254,7 @@ class MutationFormListItem extends Component {
                         handleSubmit={this.handleSubmit}
                         cancelEdit={this.cancelEdit}
                         errors={this.state.errors}
+                        errorMessage={this.state.errorMessage}
                     />
                 )}
                 {this.state.showDelete && this.props.permissions.manageFinancial && (

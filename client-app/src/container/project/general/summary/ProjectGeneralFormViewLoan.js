@@ -16,7 +16,9 @@ const ProjectGeneralFormViewOther = ({ project }) => {
         projectType,
         amountOfLoanNeeded,
         amountDefinitive,
+        amountGranted,
         amountOptioned,
+        amountInteressed,
     } = project;
     const amountAvailable = amountOfLoanNeeded - amountDefinitive;
 
@@ -25,21 +27,31 @@ const ProjectGeneralFormViewOther = ({ project }) => {
             <PanelBody>
                 <div className="row">
                     <ViewText label={'Project'} value={name} />
-                    <ViewText label={'Lening opgehaald'} value={moneyPresenter(amountDefinitive)} />
+                    <ViewText label={'Lening interesse'} value={moneyPresenter(amountInteressed)} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Type project'} value={projectType && projectType.name} />
-                    <ViewText label={'Lening opgehaald in inschrijving'} value={moneyPresenter(amountOptioned)} />
+                    <ViewText label={'Lening ingeschreven'} value={moneyPresenter(amountOptioned)} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Status'} value={projectStatus && projectStatus.name} />
-                    <ViewText label={'Lening uit te geven'} value={moneyPresenter(amountAvailable)} />
+                    <ViewText label={'Lening toegekend'} value={moneyPresenter(amountGranted)} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
+                    <ViewText label={'Lening opgehaald'} value={moneyPresenter(amountDefinitive)} />
+                </div>
+
+                <div className="row">
+                    <div className={'form-group col-md-6'} />
+                    <ViewText label={'Lening uit te geven'} value={moneyPresenter(amountAvailable)} />
+                </div>
+
+                <div className="row">
+                    <div className={'form-group col-md-6'} />
                     <ViewText label={'Lening nodig'} value={amountOfLoanNeeded && moneyPresenter(amountOfLoanNeeded)} />
                 </div>
             </PanelBody>

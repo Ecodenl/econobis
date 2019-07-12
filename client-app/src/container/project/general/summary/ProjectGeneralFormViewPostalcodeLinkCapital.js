@@ -13,7 +13,9 @@ const ProjectGeneralFormViewPostalcodeLinkCapital = ({ project }) => {
         dateStart,
         projectStatus,
         participationsDefinitive,
+        participationsGranted,
         participationsOptioned,
+        participationsInteressed,
         totalParticipations,
         projectType,
     } = project;
@@ -25,21 +27,27 @@ const ProjectGeneralFormViewPostalcodeLinkCapital = ({ project }) => {
             <PanelBody>
                 <div className="row">
                     <ViewText label={'Project'} value={name} />
-                    <ViewText label={'Uitgegeven participaties'} value={participationsDefinitive} />
+                    <ViewText label={'Participaties interesse'} value={participationsInteressed} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Type project'} value={projectType && projectType.name} />
-                    <ViewText label={'Participaties in inschrijving'} value={participationsOptioned} />
+                    <ViewText label={'Participaties ingeschreven'} value={participationsOptioned} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Status'} value={projectStatus && projectStatus.name} />
-                    <ViewText label={'Uit te geven participaties'} value={participationsAvailable} />
+                    <ViewText label={'Participaties toegekend'} value={participationsGranted} />
                 </div>
 
                 <div className="row">
                     <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
+                    <ViewText label={'Uitgegeven participaties'} value={participationsDefinitive} />
+                </div>
+
+                <div className="row">
+                    <div className={'form-group col-md-6'} />
+                    <ViewText label={'Uit te geven participaties'} value={participationsAvailable} />
                 </div>
             </PanelBody>
         </Panel>

@@ -362,6 +362,43 @@ class ParticipationProjectController extends ApiController
         }
     }
 
+    public function terminate(ParticipantProject $participantProject, RequestInput $requestInput)
+    {
+        $this->authorize('manage', ParticipantProject::class);
+
+        $data = $requestInput
+            ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
+            ->integer('payoutPercentageTerminated')->validate('nullable')->onEmpty(null)->alias('payout_percentage_terminated')->next()
+            ->get();
+
+        // Set terminated date
+        $participantProject->date_terminated = $data['date_terminated'];
+        $payoutPercentageTerminated = $data['payout_percentage_terminated'];
+
+        DB::transaction(function () use ($participantProject, $payoutPercentageTerminated) {
+            $participantProject->save();
+
+            $projectType = $participantProject->project->projectType;
+            $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+
+            // If Payout percentage is filled then make a result mutation
+            if ($payoutPercentageTerminated) {
+                $mutationTypeResultId = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $projectType->id)->value('id');
+                // Calculate result from last revenue distribution till date terminate
+                $this->createMutationResult($participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated, $projectType);
+            }
+            // Make mutation withdrawal of total participations/loan
+            $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $projectType->id)->value('id');
+
+            $this->createMutationWithDrawal($participantProject, $mutationTypeWithDrawalId, $mutationStatusFinalId, $projectType);
+
+            if($payoutPercentageTerminated) {
+                // Remove distributions on active revenue(s)
+                $participantProject->projectRevenueDistributions()->where('status', 'concept')->forceDelete();
+            }
+        });
+    }
+
     public function peek()
     {
 
@@ -708,5 +745,115 @@ class ParticipationProjectController extends ApiController
             $participantMutation->participation_worth = $currentBookWorthOfProject;
             $participantMutation->save();
         }
+    }
+
+    /**
+     * @param ParticipantProject $participantProject
+     * @param $mutationTypeWithDrawalId
+     * @param $mutationStatusFinalId
+     * @param $projectType
+     */
+    protected function createMutationWithDrawal(ParticipantProject $participantProject, $mutationTypeWithDrawalId, $mutationStatusFinalId, $projectType): void
+    {
+        $participantMutation = new ParticipantMutation();
+        $participantMutation->participation_id = $participantProject->id;
+        $participantMutation->type_id = $mutationTypeWithDrawalId;
+        $participantMutation->status_id = $mutationStatusFinalId;
+        if ($projectType->code_ref == 'loan') {
+            $amountDefinitive = $participantProject->calculator()->amountDefinitive();
+
+            $participantMutation->amount = '-' . $amountDefinitive;
+            $participantMutation->amount_final = '-' . $amountDefinitive;
+        } else {
+            $participationsDefinitive = $participantProject->calculator()->participationsDefinitive();
+
+            $participantMutation->quantity = '-' . $participationsDefinitive;
+            $participantMutation->quantity_final = '-' . $participationsDefinitive;
+        }
+        $participantMutation->date_entry = $participantProject['date_terminated'];
+
+        // Calculate participation worth based on current book worth of project
+        if ($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
+            $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+
+            $participantMutation->participation_worth = $currentBookWorthOfProject;
+        }
+
+        $participantMutation->save();
+
+        // Herbereken de afhankelijke gegevens op het participantProject
+        $participantMutation->participation->calculator()->run()->save();
+
+        // Herbereken de afhankelijke gegevens op het project
+        $participantMutation->participation->project->calculator()->run()->save();
+    }
+
+    /**
+     * @param ParticipantProject $participantProject
+     * @param $mutationTypeWithDrawalId
+     * @param $mutationStatusFinalId
+     * @param $projectType
+     */
+    protected function createMutationResult(ParticipantProject $participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated, $projectType): void
+    {
+        $result = $this->calculatePayoutHowLongInPossession($participantProject, $payoutPercentageTerminated);
+
+        $participantMutation = new ParticipantMutation();
+        $participantMutation->participation_id = $participantProject->id;
+        $participantMutation->type_id = $mutationTypeResultId;
+        $participantMutation->status_id = $mutationStatusFinalId;
+        if ($projectType->code_ref == 'loan') {
+            $participantMutation->amount = $result;
+        }
+        $participantMutation->returns = $result;
+        if ($projectType->code_ref == 'loan') {
+            $participantMutation->date_entry = $participantProject->date_terminated;
+        } else {
+            $participantMutation->date_payment = $participantProject->date_terminated;
+        }
+        $participantMutation->paid_on = 'Rekening';
+        $participantMutation->save();
+
+        // Recalculate dependent data in participantProject
+        $participantMutation->participation->calculator()->run()->save();
+
+        // Recalculate dependent data in project
+        $participantMutation->participation->project->calculator()->run()->save();
+    }
+
+    protected function calculatePayoutHowLongInPossession(ParticipantProject $participantProject, $payoutPercentageTerminated)
+    {
+        $currentBookWorth = $participantProject->project->currentBookWorth();
+        $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
+        $dateBegin = $participantProject->project->date_interest_bearing ? new Carbon($participantProject->project->date_interest_bearing) : null;
+        $dateEnd = new Carbon($participantProject->date_terminated);
+
+        if (!$dateEnd) return 0;
+
+        $mutations = $participantProject->mutationsDefinitive;
+
+        $payout = 0;
+
+        foreach ($mutations as $mutation) {
+            $dateEntry = $mutation->date_entry;
+
+            // If date entry is before date begin then date entry is equal to date begin
+            if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+
+            $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+
+            if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
+                $mutationValue = $currentBookWorth * $mutation->quantity;
+            }
+
+            if($projectTypeCodeRef === 'loan') {
+                $mutationValue = $mutation->amount;
+            }
+
+            if($dateEntry > $dateEnd) $mutationValue = 0;
+            $payout += ($mutationValue * $payoutPercentageTerminated) / 100 / ($dateEntry->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+        }
+
+        return number_format($payout, 2, '.', '');
     }
 }

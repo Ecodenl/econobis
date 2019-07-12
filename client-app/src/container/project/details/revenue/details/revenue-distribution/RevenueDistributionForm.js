@@ -46,7 +46,6 @@ class RevenueDistributionForm extends Component {
             buttonConfirmText: '',
             readyForCreation: false,
             createType: '',
-            redirect: '',
         };
     }
 
@@ -137,10 +136,6 @@ class RevenueDistributionForm extends Component {
         }
     };
 
-    redirectPayoutInvoicesSend = () => {
-        hashHistory.push(this.state.redirect);
-    };
-
     toggleModal = () => {
         this.setState({
             showModal: !this.state.showModal,
@@ -159,6 +154,13 @@ class RevenueDistributionForm extends Component {
         this.setState({
             distributionIds: distributionsIds,
             checkedAll: isChecked,
+        });
+    };
+
+    closeSuccesMessage = () => {
+        this.setState({
+            showSuccessMessage: '',
+            createType: '',
         });
     };
 
@@ -284,8 +286,13 @@ class RevenueDistributionForm extends Component {
             document.body.style.cursor = 'default';
             this.setState({
                 showSuccessMessage: true,
-                successMessage: 'Opbrengst verdeling gemaakt en Sepa aangemaakt.',
-                // redirect: `/financieel/${payload.data}/uitkering-facturen/verzonden`,
+                successMessage: `Opbrengst verdeling gemaakt en Sepa is aangemaakt. Sepa bestand is bij de administratie ${
+                    this.props.projectRevenue &&
+                    this.props.projectRevenue.project &&
+                    this.props.projectRevenue.project.administration
+                        ? this.props.projectRevenue.project.administration.name
+                        : 'onbekend'
+                } toegevoegd.`,
             });
         });
     };
@@ -434,9 +441,7 @@ class RevenueDistributionForm extends Component {
                 {this.state.showSuccessMessage && (
                     <Modal
                         title={'Succes'}
-                        closeModal={() => {
-                            this.setState({ showSuccessMessage: false });
-                        }}
+                        closeModal={this.closeSuccesMessage}
                         buttonCancelText={'Ok'}
                         showConfirmAction={false}
                     >

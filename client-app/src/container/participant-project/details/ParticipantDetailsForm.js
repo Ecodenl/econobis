@@ -31,7 +31,7 @@ class ParticipantDetailsForm extends Component {
         ) : (
             <div>
                 <ParticipantFormGeneral />
-                <MutationForm />
+                <MutationForm isTerminated={Boolean(this.props.participantProject.dateTerminated)} />
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
                 <ParticipantDetailsConclusion />
             </div>

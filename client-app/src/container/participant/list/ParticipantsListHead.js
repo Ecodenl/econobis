@@ -32,7 +32,7 @@ const ParticipantsListHead = props => {
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateRegister'}
-                title={'Datum inschrijving deelname'}
+                title={'Eerste ingangsdatum'}
                 width={'9%'}
                 setSorts={setSorts}
             />

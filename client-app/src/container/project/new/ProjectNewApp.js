@@ -59,9 +59,13 @@ class ProjectNewApp extends Component {
                 contactGroupIds: '',
                 amountOfLoanNeeded: null,
                 amountDefinitive: null,
+                amountGranted: null,
                 amountOptioned: null,
+                amountInterresed: null,
                 participationsDefinitive: null,
+                participationsGranted: null,
                 participationsOptioned: null,
+                participationsInterresed: null,
             },
             errors: {
                 name: false,
@@ -146,6 +150,11 @@ class ProjectNewApp extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty('' + project.administrationId)) {
+            errors.administrationId = true;
+            hasErrors = true;
+        }
+
         if (!validator.isEmpty('' + project.postalCode) && !validator.isPostalCode(project.postalCode, 'any')) {
             errors.postalCode = true;
             hasErrors = true;
@@ -227,9 +236,13 @@ class ProjectNewApp extends Component {
             contactGroupIds,
             amountOfLoanNeeded,
             amountDefinitive,
+            amountGranted,
             amountOptioned,
+            amountInteressed,
             participationsDefinitive,
+            participationsGranted,
             participationsOptioned,
+            participationsInteressed,
         } = this.state.project;
 
         const projectType = this.props.projectTypes.find(projectType => projectType.id == projectTypeId);
@@ -275,7 +288,9 @@ class ProjectNewApp extends Component {
                                         <ProjectFormDefaultLoan
                                             amountOfLoanNeeded={amountOfLoanNeeded}
                                             amountDefinitive={amountDefinitive}
+                                            amountGranted={amountGranted}
                                             amountOptioned={amountOptioned}
+                                            amountInteressed={amountInteressed}
                                             handleInputChange={this.handleInputChange}
                                         />
                                     ) : null}
@@ -285,7 +300,9 @@ class ProjectNewApp extends Component {
                                             participationWorth={participationWorth}
                                             totalParticipations={totalParticipations}
                                             participationsDefinitive={participationsDefinitive}
+                                            participationsGranted={participationsGranted}
                                             participationsOptioned={participationsOptioned}
+                                            participationsInteressed={participationsInteressed}
                                             powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}
@@ -302,7 +319,9 @@ class ProjectNewApp extends Component {
                                             participationWorth={participationWorth}
                                             totalParticipations={totalParticipations}
                                             participationsDefinitive={participationsDefinitive}
+                                            participationsGranted={participationsGranted}
                                             participationsOptioned={participationsOptioned}
+                                            participationsInteressed={participationsInteressed}
                                             powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}

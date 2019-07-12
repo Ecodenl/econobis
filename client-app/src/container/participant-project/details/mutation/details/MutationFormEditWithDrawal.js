@@ -22,6 +22,7 @@ function MutationFormEditWithDrawal({
     cancelEdit,
     handleSubmit,
     errors,
+    errorMessage,
     buttonText,
 }) {
     return (
@@ -69,6 +70,7 @@ function MutationFormEditWithDrawal({
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
+                    errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
@@ -80,6 +82,7 @@ function MutationFormEditWithDrawal({
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
+                    errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
@@ -91,6 +94,7 @@ function MutationFormEditWithDrawal({
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
+                    errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
@@ -102,6 +106,7 @@ function MutationFormEditWithDrawal({
                     handleInputChange={handleInputChange}
                     handleInputChangeDate={handleInputChangeDate}
                     errors={errors}
+                    errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
@@ -131,6 +136,7 @@ MutationFormEditWithDrawal.propTypes = {
     projectTypeCodeRef: PropTypes.any,
     handleInputChangeDate: PropTypes.any,
     errors: PropTypes.any,
+    errorMessage: PropTypes.any,
     participantMutation: PropTypes.any,
     cancelEdit: PropTypes.any,
     buttonText: PropTypes.string,

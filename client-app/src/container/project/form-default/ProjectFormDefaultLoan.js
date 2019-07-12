@@ -3,7 +3,14 @@ import InputText from '../../../components/form/InputText';
 import ViewText from '../../../components/form/ViewText';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
-const ProjectFormEditLoan = ({ amountOfLoanNeeded, amountDefinitive, amountOptioned, handleInputChange }) => {
+const ProjectFormEditLoan = ({
+    amountOfLoanNeeded,
+    amountDefinitive,
+    amountGranted,
+    amountOptioned,
+    amountInteressed,
+    handleInputChange,
+}) => {
     const amountAvailable = amountOfLoanNeeded - amountDefinitive;
 
     return (
@@ -18,8 +25,8 @@ const ProjectFormEditLoan = ({ amountOfLoanNeeded, amountDefinitive, amountOptio
                     onChangeAction={handleInputChange}
                 />
                 <ViewText
-                    label={'Lening opgehaald'}
-                    value={MoneyPresenter(amountDefinitive)}
+                    label={'Lening interesse'}
+                    value={MoneyPresenter(amountInteressed)}
                     className={'form-group col-sm-6'}
                 />
             </div>
@@ -27,8 +34,26 @@ const ProjectFormEditLoan = ({ amountOfLoanNeeded, amountDefinitive, amountOptio
             <div className="row">
                 <div className={'form-group col-md-6'} />
                 <ViewText
-                    label={'Lening opgehaald in inschrijving'}
+                    label={'Lening ingeschreven'}
                     value={MoneyPresenter(amountOptioned)}
+                    className={'form-group col-sm-6'}
+                />
+            </div>
+
+            <div className="row">
+                <div className={'form-group col-md-6'} />
+                <ViewText
+                    label={'Lening toegekend'}
+                    value={MoneyPresenter(amountGranted)}
+                    className={'form-group col-sm-6'}
+                />
+            </div>
+
+            <div className="row">
+                <div className={'form-group col-md-6'} />
+                <ViewText
+                    label={'Lening opgehaald'}
+                    value={MoneyPresenter(amountDefinitive)}
                     className={'form-group col-sm-6'}
                 />
             </div>

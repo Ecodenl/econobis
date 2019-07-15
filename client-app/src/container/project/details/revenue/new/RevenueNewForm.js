@@ -18,7 +18,6 @@ const StyledEm = styled.em`
 
 const RevenueNew = props => {
     const {
-        typeId,
         distributionTypeId,
         confirmed,
         dateBegin,
@@ -31,7 +30,6 @@ const RevenueNew = props => {
         kwhEndHigh,
         kwhStartLow,
         kwhEndLow,
-        datePayed,
         payPercentage,
         keyAmountFirstPercentage,
         payPercentageValidFromKeyAmount,
@@ -105,12 +103,6 @@ const RevenueNew = props => {
             </div>
 
             <div className="row">
-                <InputDate
-                    label={'Uitgekeerd op'}
-                    name={'datePayed'}
-                    value={datePayed}
-                    onChangeAction={props.handleInputChangeDate}
-                />
                 <InputDate
                     label={'Datum definitief'}
                     name={'dateConfirmed'}

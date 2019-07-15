@@ -210,7 +210,8 @@ class ProjectRevenueController extends ApiController
             $projectRevenue->isDirty('pay_percentage') ||
             $projectRevenue->isDirty('key_amount_first_percentage') ||
             $projectRevenue->isDirty('pay_percentage_valid_from_key_amount') ||
-            $projectRevenue->isDirty('distribution_type_id')) {
+            $projectRevenue->isDirty('distribution_type_id') ||
+            $projectRevenue->isDirty('confirmed')) {
             $recalculateDistribution = true;
         }
 

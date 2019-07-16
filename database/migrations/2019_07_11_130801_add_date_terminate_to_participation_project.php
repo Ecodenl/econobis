@@ -15,7 +15,7 @@ class AddDateTerminateToParticipationProject extends Migration
     public function up()
     {
         Schema::table('participation_project', function (Blueprint $table) {
-            $table->date('date_terminate')->nullable()->default(null)->after('deleted_at');
+            $table->date('date_terminated')->nullable()->default(null)->after('deleted_at');
         });
 
     }

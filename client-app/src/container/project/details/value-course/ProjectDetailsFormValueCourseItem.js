@@ -104,24 +104,22 @@ class ProjectDetailsFormValueCourseItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (this.props.projectType.codeRef !== 'obligation') {
-            if (valueCourse.bookWorth) {
-                if (isNaN(valueCourse.bookWorth)) {
-                    valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
-                }
-            } else {
-                errors.bookWorth = true;
-                hasErrors = true;
+        if (valueCourse.bookWorth) {
+            if (isNaN(valueCourse.bookWorth)) {
+                valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
             }
-        }
-
-        if (!valueCourse.date) {
-            errors.date = true;
+        } else {
+            errors.bookWorth = true;
             hasErrors = true;
         }
 
         if (isNaN(valueCourse.transferWorth)) {
             valueCourse.transferWorth = valueCourse.transferWorth.replace(/,/g, '.');
+        }
+
+        if (!valueCourse.date) {
+            errors.date = true;
+            hasErrors = true;
         }
 
         this.setState({ errors });

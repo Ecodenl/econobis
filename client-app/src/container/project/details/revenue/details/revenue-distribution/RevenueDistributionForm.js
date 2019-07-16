@@ -425,6 +425,7 @@ class RevenueDistributionForm extends Component {
                             checkedAll={this.state.checkedAll}
                             toggleDistributionCheck={this.toggleDistributionCheck}
                             distributionIds={this.state.distributionIds}
+                            createType={this.state.createType}
                         />
                     </div>
                 </PanelBody>

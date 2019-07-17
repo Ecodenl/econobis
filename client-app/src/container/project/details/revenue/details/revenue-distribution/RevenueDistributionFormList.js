@@ -30,6 +30,7 @@ const RevenueDistributionFormList = props => {
                         <div className="col-sm-1">Teruggave energiebelasting</div>
                     </React.Fragment>
                 ) : null}
+                <div className="col-sm-2">Status</div>
             </div>
             {props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
                 props.projectRevenue.distribution.data.map(participation => {
@@ -42,6 +43,7 @@ const RevenueDistributionFormList = props => {
                             projectRevenueCategoryCodeRef={props.projectRevenue.category.codeRef}
                             projectTypeCodeRef={props.projectTypeCodeRef}
                             distributionIds={props.distributionIds}
+                            createType={props.createType}
                         />
                     );
                 })

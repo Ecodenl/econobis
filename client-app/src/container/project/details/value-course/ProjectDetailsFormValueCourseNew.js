@@ -64,15 +64,13 @@ class ProjectDetailsFormValueCourseNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (this.props.projectType.codeRef !== 'obligation') {
-            if (valueCourse.bookWorth) {
-                if (isNaN(valueCourse.bookWorth)) {
-                    valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
-                }
-            } else {
-                errors.bookWorth = true;
-                hasErrors = true;
+        if (valueCourse.bookWorth) {
+            if (isNaN(valueCourse.bookWorth)) {
+                valueCourse.bookWorth = valueCourse.bookWorth.replace(/,/g, '.');
             }
+        } else {
+            errors.bookWorth = true;
+            hasErrors = true;
         }
 
         if (isNaN(valueCourse.transferWorth)) {
@@ -123,6 +121,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
 
                         <div className="row">
                             <InputText
+                                type={'number'}
                                 label={this.props.projectType.codeRef === 'obligation' ? 'Hoofdsom' : ' Boekwaarde'}
                                 name={'bookWorth'}
                                 value={bookWorth}
@@ -131,10 +130,12 @@ class ProjectDetailsFormValueCourseNew extends Component {
                                 error={this.state.errors.bookWorth}
                             />
                             <InputText
+                                type={'number'}
                                 label={'Overdrachtswaarde'}
                                 name={'transferWorth'}
                                 value={transferWorth}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.transferWorth}
                             />
                         </div>
 

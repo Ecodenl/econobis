@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment/moment';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 import validator from 'validator';
+import PanelBody from './RevenueDistributionForm';
 moment.locale('nl');
 
 const RevenueDistributionFormView = props => {
@@ -26,9 +27,10 @@ const RevenueDistributionFormView = props => {
     } = props.participation;
 
     const missingEmail =
-        !contactPrimaryEmailAddress ||
-        !contactPrimaryEmailAddress.email ||
-        validator.isEmpty(contactPrimaryEmailAddress.email)
+        props.createType !== 'createInvoices' &&
+        (!contactPrimaryEmailAddress ||
+            !contactPrimaryEmailAddress.email ||
+            validator.isEmpty(contactPrimaryEmailAddress.email))
             ? true
             : false;
     const missingAdress = !address || validator.isEmpty(address) ? true : false;
@@ -49,6 +51,22 @@ const RevenueDistributionFormView = props => {
     const missingIbanDataMessage = missingIban ? 'Iban code ontbreekt.' : '';
     const missingDataClass =
         missingEmail || missingAdress || missingPostCode || missingCity || missingIban ? 'missing-data-row' : null;
+
+    let statusText = '';
+    switch (status) {
+        case 'concept':
+            statusText = 'Concept';
+            break;
+        case 'confirmed':
+            statusText = 'Definitief';
+            break;
+        case 'in-progress':
+            statusText = 'Bezig...';
+            break;
+        case 'processed':
+            statusText = 'Verwerkt';
+            break;
+    }
 
     return (
         <div
@@ -90,6 +108,7 @@ const RevenueDistributionFormView = props => {
                     </div>
                 </React.Fragment>
             ) : null}
+            <div className="col-sm-2">{statusText}</div>
         </div>
     );
 };

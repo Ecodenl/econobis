@@ -567,8 +567,27 @@ class ProjectRevenueController extends ApiController
                     && !(empty($distribution->address)
                         || empty($distribution->postal_code)
                         || empty($distribution->city)
-                        || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban)))
+                        || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban))
+                         )
+                    )
+                {
+                    $distribution->status = 'in-progress';
+                    $distribution->save();
+                }
+                if ($distribution->payout_type === 'Bijschrijven'
+                    && $distribution->payout > 0
                 ) {
+                    $distribution->status = 'in-progress';
+                    $distribution->save();
+                }
+            }
+        }
+
+        foreach ($distributions as $distribution) {
+            if ($distribution->revenue->category->code_ref !== 'revenueKwh' && $distribution->status === 'in-progress')
+            {
+                if ($distribution->payout_type === 'Rekening')
+                {
                     $currentYear = Carbon::now()->year;
                     // Haal laatst uitgedeelde uitkeringsfactuurnummer op (binnen aanmaakjaar)
                     $lastPaymentInvoice = PaymentInvoice::where('administration_id',
@@ -580,10 +599,15 @@ class ProjectRevenueController extends ApiController
                         $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1);
                     }
 
-                    if (PaymentInvoice::where('administration_id', $distribution->revenue->project->administration_id)
-                        ->where('invoice_number', '=', $newInvoiceNumber)->whereYear('created_at', '=', $currentYear)
+                    if (PaymentInvoice::where('administration_id',
+                        $distribution->revenue->project->administration_id)
+                        ->where('invoice_number', '=', $newInvoiceNumber)
+                        ->whereYear('created_at', '=', $currentYear)
                         ->exists()
                     ) {
+                        // voor abort status weer even terug zetten naar confirmed (anders blijft ie op "in-progress" hangen).
+                        $distribution->status = 'confirmed';
+                        $distribution->save();
                         abort(404, "Voor uitkeringsfactuur met administratie ID "
                             . $distribution->revenue->project->administration_id . " en revenue distribution ID "
                             . $distribution->id . " kon geen nieuw nummer bepaald worden.");
@@ -597,16 +621,10 @@ class ProjectRevenueController extends ApiController
                         $paymentInvoice->status_id = 'sent';
                         $paymentInvoice->save();
                     }
-                    $distribution->status = 'processed';
-                    $distribution->date_payout = $datePayout;
-                    $distribution->save();
-
                     array_push($createdInvoices, $paymentInvoice);
                 }
 
-                if ($distribution->payout_type === 'Bijschrijven'
-                    && $distribution->payout > 0
-                ) {
+                if ($distribution->payout_type === 'Bijschrijven') {
                     $participantMutation = new ParticipantMutation();
                     $participantMutation->participation_id = $distribution->participation_id;
                     $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')
@@ -624,11 +642,11 @@ class ProjectRevenueController extends ApiController
 
                     // Recalculate dependent data in project
                     $participantMutation->participation->project->calculator()->run()->save();
-
-                    $distribution->status = 'processed';
-                    $distribution->date_payout = $datePayout;
-                    $distribution->save();
                 }
+
+                $distribution->status = 'processed';
+                $distribution->date_payout = $datePayout;
+                $distribution->save();
 
             }
         }

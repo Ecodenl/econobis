@@ -633,7 +633,7 @@ class ProjectRevenueController extends ApiController
                         ->value('id');
                     $participantMutation->amount = $distribution->payout;
                     $participantMutation->returns = $distribution->payout;
-                    $participantMutation->paid_on = 'Rekening';
+                    $participantMutation->paid_on = 'Bijschrijven';
                     $participantMutation->date_entry = $datePayout;
                     $participantMutation->save();
 

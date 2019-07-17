@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment/moment';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 import validator from 'validator';
-import PanelBody from "./RevenueDistributionForm";
+import PanelBody from './RevenueDistributionForm';
 moment.locale('nl');
 
 const RevenueDistributionFormView = props => {
@@ -28,9 +28,9 @@ const RevenueDistributionFormView = props => {
 
     const missingEmail =
         props.createType !== 'createInvoices' &&
-        ( !contactPrimaryEmailAddress ||
-        !contactPrimaryEmailAddress.email ||
-        validator.isEmpty(contactPrimaryEmailAddress.email ) )
+        (!contactPrimaryEmailAddress ||
+            !contactPrimaryEmailAddress.email ||
+            validator.isEmpty(contactPrimaryEmailAddress.email))
             ? true
             : false;
     const missingAdress = !address || validator.isEmpty(address) ? true : false;
@@ -52,19 +52,19 @@ const RevenueDistributionFormView = props => {
     const missingDataClass =
         missingEmail || missingAdress || missingPostCode || missingCity || missingIban ? 'missing-data-row' : null;
 
-    let statusText = "";
+    let statusText = '';
     switch (status) {
         case 'concept':
-            statusText = "Concept";
+            statusText = 'Concept';
             break;
         case 'confirmed':
-            statusText = "Definitief";
+            statusText = 'Definitief';
             break;
         case 'in-progress':
-            statusText = "Bezig...";
+            statusText = 'Bezig...';
             break;
         case 'processed':
-            statusText = "Verwerkt";
+            statusText = 'Verwerkt';
             break;
     }
 

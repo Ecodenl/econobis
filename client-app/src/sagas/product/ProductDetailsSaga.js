@@ -6,6 +6,8 @@ export function* fetchProductDetailsSaga({ id }) {
         yield put({ type: 'IS_LOADING' });
         const productDetails = yield call(ProductDetailsAPI.fetchProductDetails, id);
         yield put({ type: 'FETCH_PRODUCT_DETAILS_SUCCESS', productDetails });
+        // Reload system data
+        yield put({ type: 'FETCH_SYSTEM_DATA' });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PRODUCT_DETAILS_ERROR', error });

@@ -20,16 +20,19 @@ const RevenueDistributionFormList = props => {
                 ) : (
                     <div className="col-sm-1">Deelnames</div>
                 )}
-                <div className="col-sm-1">Uit te keren bedrag</div>
-                <div className="col-sm-1">Uitkeren op</div>
-                <div className="col-sm-1">Datum uitkering</div>
                 {props.projectRevenue.category.codeRef === 'revenueKwh' ? (
                     <React.Fragment>
                         <div className="col-sm-2">Energieleverancier</div>
                         <div className="col-sm-1">Geleverd totaal</div>
-                        <div className="col-sm-1">Teruggave energiebelasting</div>
+                        <div className="col-sm-2">Teruggave energiebelasting</div>
                     </React.Fragment>
-                ) : null}
+                ) : (
+                    <React.Fragment>
+                        <div className="col-sm-2">Uit te keren bedrag</div>
+                        <div className="col-sm-1">Uitkeren op</div>
+                        <div className="col-sm-2">Datum uitkering</div>
+                    </React.Fragment>
+                )}
                 <div className="col-sm-2">Status</div>
             </div>
             {props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (

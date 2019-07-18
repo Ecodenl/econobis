@@ -45,6 +45,7 @@ class FullParticipantMutation extends Resource
                 'quantityFinal' => $this->quantity_final,
                 'participationWorth' => $this->participation_worth,
                 'returns' => $this->returns,
+                'payoutKwhPrice' => $this->payout_kwh_price,
                 'payoutKwh' => $this->payout_kwh,
                 'indicationOfRestitutionEnergyTax' => $this->indication_of_restitution_energy_tax,
                 'paidOn' => $this->paid_on,

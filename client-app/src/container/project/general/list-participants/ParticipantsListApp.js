@@ -106,24 +106,6 @@ class ParticipantsListApp extends Component {
         }, 100);
     };
 
-    getCSV = () => {
-        this.props.blockUI();
-        setTimeout(() => {
-            const filters = filterHelper(this.props.participantsProjectFilters);
-            const extraFilters = this.state.extraFilters;
-            const sorts = this.props.participantsProjectSorts;
-
-            ParticipantsProjectAPI.getCsv(filters, extraFilters, sorts, true)
-                .then(payload => {
-                    fileDownload(payload.data, 'Deelnemers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
-        }, 100);
-    };
-
     getExcel = () => {
         this.props.blockUI();
         setTimeout(() => {
@@ -396,7 +378,6 @@ class ParticipantsListApp extends Component {
                             extraFilters={this.state.extraFilters}
                             amountOfFilters={this.state.amountOfFilters}
                             filterType={this.state.filterType}
-                            getCSV={this.getCSV}
                             getExcel={this.getExcel}
                             saveAsGroup={this.saveAsGroup}
                         />

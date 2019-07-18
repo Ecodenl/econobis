@@ -20,7 +20,6 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Helpers\CSV\ParticipantCSVHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Template\TemplateTableHelper;
@@ -143,16 +142,6 @@ class ParticipationProjectController extends ApiController
                 return Contact::class;
                 break;
         }
-    }
-
-    public function csv(RequestQuery $requestQuery)
-    {
-        set_time_limit(0);
-        $participants = $requestQuery->getQueryNoPagination()->get();
-
-        $participantCSVHelper = new ParticipantCSVHelper($participants);
-
-        return $participantCSVHelper->downloadCSV();
     }
 
     public function excel(RequestQuery $requestQuery)

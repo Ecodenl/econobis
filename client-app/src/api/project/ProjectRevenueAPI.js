@@ -88,17 +88,6 @@ export default {
             });
     },
 
-    createEnergySupplierCsv: (revenueId, templateId, energySupplierId, documentName) => {
-        const requestUrl = `${URL_REVENUE}/create-energy-supplier-csv/${revenueId}/${energySupplierId}`;
-
-        return axiosInstance
-            .post(requestUrl, { documentName: documentName, templateId: templateId })
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
     createEnergySupplierExcel: (revenueId, templateId, energySupplierId, documentName) => {
         const requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}/${energySupplierId}`;
 

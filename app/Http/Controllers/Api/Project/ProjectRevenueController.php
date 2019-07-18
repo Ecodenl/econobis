@@ -633,7 +633,7 @@ class ProjectRevenueController extends ApiController
                         ->value('id');
                     $participantMutation->amount = $distribution->payout;
                     $participantMutation->returns = $distribution->payout;
-                    $participantMutation->paid_on = 'Rekening';
+                    $participantMutation->paid_on = 'Bijschrijven';
                     $participantMutation->date_entry = $datePayout;
                     $participantMutation->save();
 
@@ -779,8 +779,9 @@ class ProjectRevenueController extends ApiController
                     $document->document_group = 'revenue';
                     $document->contact_id = $contact->id;
 
-                    $filename = str_replace(' ', '', $project->code) . '_'
-                        . str_replace(' ', '', $contact->full_name);
+                    $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
+                        . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
+
 
                     //max length name 25
                     $filename = substr($filename, 0, 25);
@@ -931,6 +932,7 @@ class ProjectRevenueController extends ApiController
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $distribution->participation_id;
         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
+        $participantMutation->payout_kwh_price = $distribution->payout_kwh;
         $participantMutation->payout_kwh = $distribution->delivered_total;
         $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
         $participantMutation->paid_on = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->energySupplier->name : '';
@@ -954,5 +956,14 @@ class ProjectRevenueController extends ApiController
             (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
         }
     }
+
+    protected function translateToValidCharacterSet($field){
+
+        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
+
 
 }

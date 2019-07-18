@@ -19,6 +19,7 @@ import { setError } from '../../../../../../actions/general/ErrorActions';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 import moment from 'moment-business-days';
 import InputDate from '../../../../../../components/form/InputDate';
+import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -72,6 +73,30 @@ class RevenueDistributionForm extends Component {
 
         this.props.getDistribution(this.props.projectRevenue.id, 0);
     }
+
+    reloadPage = () => {
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
+            let templates = [];
+
+            payload.forEach(function(template) {
+                if (template.group == 'revenue') {
+                    templates.push({ id: template.id, name: template.name });
+                }
+            });
+
+            this.setState({
+                templates: templates,
+            });
+        });
+
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
+            this.setState({
+                emailTemplates: payload,
+            });
+        });
+
+        this.props.getDistribution(this.props.projectRevenue.id, 0);
+    };
 
     changePage = event => {
         const page = event.selected;
@@ -158,10 +183,12 @@ class RevenueDistributionForm extends Component {
     };
 
     closeSuccesMessage = () => {
+        this.toggleShowCheckboxList();
         this.setState({
             showSuccessMessage: '',
             createType: '',
         });
+        this.reloadPage();
     };
 
     toggleDistributionCheck = event => {
@@ -296,7 +323,6 @@ class RevenueDistributionForm extends Component {
             });
         });
     };
-
     render() {
         let administrationIds = [];
         this.props.administrations.forEach(function(administration) {
@@ -308,6 +334,7 @@ class RevenueDistributionForm extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
                     <div className="btn-group pull-right">
+                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadPage} />
                         {this.props.projectRevenue.confirmed == 1 &&
                             administrationIds.includes(this.props.projectRevenue.project.administrationId) &&
                             (this.state.createType === '' ? (

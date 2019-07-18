@@ -811,7 +811,7 @@ class ParticipationProjectController extends ApiController
         } else {
             $participantMutation->date_payment = $participantProject->date_terminated;
         }
-        $participantMutation->paid_on = 'Rekening';
+        $participantMutation->paid_on = 'Bijschrijven';
         $participantMutation->save();
 
         // Recalculate dependent data in participantProject

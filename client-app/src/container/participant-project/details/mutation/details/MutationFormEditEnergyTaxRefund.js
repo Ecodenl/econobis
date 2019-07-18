@@ -6,13 +6,21 @@ import React from 'react';
 import ParticipantDetailsMutationConclusion from './conclusion';
 
 function MutationFormEditEnergyTaxRefund({ participantMutationFromProps, cancelEdit }) {
-    const { type, paidOn, createdAt, createdBy, updatedAt, updatedBy } = participantMutationFromProps;
+    const { type, paidOn, payoutKwhPrice, createdAt, createdBy, updatedAt, updatedBy } = participantMutationFromProps;
 
     return (
         <PanelBody>
             <div className="row">
                 <ViewText label={'Type'} id={'type'} className={'col-sm-6 form-group'} value={type.name} />
                 <ViewText label={'Energieleverancier'} id={'paidOn'} className={'col-sm-6 form-group'} value={paidOn} />
+            </div>
+            <div className="row">
+                <ViewText
+                    label={'Opbrengst kWh'}
+                    id={'payoutKwhPrice'}
+                    className={'col-sm-6 form-group'}
+                    value={payoutKwhPrice}
+                />
             </div>
 
             <ParticipantDetailsMutationConclusion

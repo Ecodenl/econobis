@@ -295,7 +295,6 @@ Route::namespace('Api')
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
 
         Route::get('project/participant/grid', 'ParticipationProject\ParticipationProjectController@grid');
-        Route::get('project/participant/csv', 'ParticipationProject\ParticipationProjectController@csv');
         Route::get('project/participant/excel', 'ParticipationProject\ParticipationProjectController@excel');
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');

@@ -43,15 +43,16 @@ class ParticipantsList extends Component {
                     <DataTableHead>
                         <ParticipantsListHead
                             refreshParticipantsProjectData={() => this.props.refreshParticipantsProjectData()}
-                            showCheckboxList={this.props.showCheckboxList}
                         />
-                        <ParticipantsListFilter
-                            onSubmitFilter={this.props.onSubmitFilter}
-                            toggleCheckedAll={this.props.toggleCheckedAll}
-                            showCheckboxList={this.props.showCheckboxList}
-                            checkedAll={this.props.checkedAll}
-                            projects={this.props.projects}
-                        />
+                        {!this.props.showCheckboxList ? (
+                            <ParticipantsListFilter
+                                onSubmitFilter={this.props.onSubmitFilter}
+                                toggleCheckedAll={this.props.toggleCheckedAll}
+                                showCheckboxList={this.props.showCheckboxList}
+                                checkedAll={this.props.checkedAll}
+                                projects={this.props.projects}
+                            />
+                        ) : null}
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
@@ -66,7 +67,7 @@ class ParticipantsList extends Component {
                                         showCheckboxList={this.props.showCheckboxList}
                                         checkedAll={this.props.checkedAll}
                                         toggleParticipantCheck={this.props.toggleParticipantCheck}
-                                        toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
+                                        participantIds={this.props.participantIds}
                                         {...participantProject}
                                     />
                                 );

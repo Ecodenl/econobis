@@ -14,6 +14,7 @@ use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
@@ -546,7 +547,7 @@ class ParticipationProjectController extends ApiController
             $document->document_group = 'revenue';
             $document->contact_id = $contact->id;
 
-            $filename = str_replace(' ', '', $project->code) . '_' . str_replace(' ', '', $contact->full_name);
+            $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
 
             //max length name 25
             $filename = substr($filename, 0, 25);
@@ -568,7 +569,7 @@ class ParticipationProjectController extends ApiController
             }
 
             //send email
-            if($primaryEmailAddress && !$previewPDF){
+            if($primaryEmailAddress){
 
                 $email = Mail::to($primaryEmailAddress->email);
 
@@ -590,27 +591,20 @@ class ParticipationProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $project->administration);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                if ($previewEmail) {
-                    return [
-                        'to' => $primaryEmailAddress->email,
-                        'subject' => $subject,
-                        'htmlBody' => $htmlBodyWithContactVariables
-                    ];
-                }else {
-                    $email->send(new ParticipantReportMail($email,
-                        $htmlBodyWithContactVariables, $document));
+                $primaryMailbox = Mailbox::getDefault();
+                if ($primaryMailbox) {
+                    $fromEmail = $primaryMailbox->email;
+                    $fromName = $primaryMailbox->name;
+                } else {
+                    $fromEmail = \Config::get('mail.from.address');
+                    $fromName = \Config::get('mail.from.name');
                 }
 
-            }
-            else{
-                return [
-                    'to' => 'Geen e-mail bekend.',
-                    'subject' => 'Geen e-mail bekend.',
-                    'htmlBody' => 'Geen e-mail bekend.'
-                ];
+                $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
+                    $htmlBodyWithContactVariables, $document));
             }
 
-            if(!$previewEmail && !$previewPDF) {
+            if(!$previewEmail) {
                 //delete file on server, still saved on alfresco.
                 Storage::disk('documents')->delete($document->filename);
             }
@@ -845,4 +839,13 @@ class ParticipationProjectController extends ApiController
 
         return number_format($payout, 2, '.', '');
     }
+
+    protected function translateToValidCharacterSet($field){
+
+        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
+
 }

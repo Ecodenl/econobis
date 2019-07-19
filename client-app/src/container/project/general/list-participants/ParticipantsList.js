@@ -8,6 +8,7 @@ import ParticipantsListFilter from './ParticipantsListFilter';
 import ParticipantsListItem from './ParticipantsListItem';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import { connect } from 'react-redux';
+import PanelBody from '../../../participant/list/ParticipantsListApp';
 
 class ParticipantsList extends Component {
     constructor(props) {
@@ -45,13 +46,15 @@ class ParticipantsList extends Component {
                             refreshParticipantsProjectData={() => this.props.refreshParticipantsProjectData()}
                             projectTypeRef={this.props.projectTypeRef}
                         />
-                        <ParticipantsListFilter
-                            onSubmitFilter={this.props.onSubmitFilter}
-                            toggleCheckedAll={this.props.toggleCheckedAll}
-                            showCheckboxList={this.props.showCheckboxList}
-                            checkedAll={this.props.checkedAll}
-                            projectTypeRef={this.props.projectTypeRef}
-                        />
+                        {!this.props.showCheckboxList ? (
+                            <ParticipantsListFilter
+                                onSubmitFilter={this.props.onSubmitFilter}
+                                toggleCheckedAll={this.props.toggleCheckedAll}
+                                showCheckboxList={this.props.showCheckboxList}
+                                checkedAll={this.props.checkedAll}
+                                projectTypeRef={this.props.projectTypeRef}
+                            />
+                        ) : null}
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
@@ -68,8 +71,8 @@ class ParticipantsList extends Component {
                                         showCheckboxList={this.props.showCheckboxList}
                                         checkedAll={this.props.checkedAll}
                                         toggleParticipantCheck={this.props.toggleParticipantCheck}
-                                        toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
                                         projectTypeRef={this.props.projectTypeRef}
+                                        participantIds={this.props.participantIds}
                                         {...participantProject}
                                     />
                                 );

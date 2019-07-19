@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment/moment';
 import MoneyPresenter from '../../../../helpers/MoneyPresenter';
+import validator from 'validator';
 moment.locale('nl');
 
 class ParticipantsListItem extends Component {
@@ -51,23 +52,34 @@ class ParticipantsListItem extends Component {
             primaryAddress.number && (number = primaryAddress.number);
             primaryAddress.addition && (addition = primaryAddress.addition);
         }
+        const missingEmail =
+            !contact.primaryEmailAddress ||
+            !contact.primaryEmailAddress.email ||
+            validator.isEmpty(contact.primaryEmailAddress.email)
+                ? true
+                : false;
+        const missingContactDataMessage = missingEmail ? 'Primair e-mailadres bij contact ontbreekt.' : '';
+        const missingDataClass = missingEmail ? this.state.highlightRow + ' missing-data-row' : this.state.highlightRow;
 
         return (
             <tr
-                className={this.state.highlightRow}
+                title={missingContactDataMessage}
+                className={missingDataClass}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>
-                    {this.props.showCheckboxList && this.props.checkedAll && <input type="checkbox" checked />}
-                    {this.props.showCheckboxList && !this.props.checkedAll && contact.primaryEmailAddress && (
-                        <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheck} />
-                    )}
-                    {this.props.showCheckboxList && !this.props.checkedAll && !contact.primaryEmailAddress && (
-                        <input type="checkbox" name={id} onChange={this.props.toggleParticipantCheckNoEmail} />
-                    )}
+                    {this.props.showCheckboxList ? (
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={this.props.toggleParticipantCheck}
+                            checked={this.props.participantIds.includes(id)}
+                        />
+                    ) : null}
                 </td>
+
                 <td>{contact.type ? contact.type.name : ''}</td>
                 <td>{contact.fullName}</td>
                 <td>{primaryAddress ? street + ' ' + number + addition : ''}</td>

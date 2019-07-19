@@ -19,19 +19,6 @@ export default {
         });
     },
 
-    getCsv: (filters, extraFilters, sorts, fetchFromProject) => {
-        const requestUrl = `${URL_PARTICIPANT_PROJECT}/csv`;
-
-        return axiosInstance.get(requestUrl, {
-            params: {
-                filters: JSON.stringify(filters),
-                extraFilters: JSON.stringify(extraFilters),
-                sorts: JSON.stringify(sorts),
-                fetchFromProject: fetchFromProject,
-            },
-        });
-    },
-
     getExcel: (filters, extraFilters, sorts, fetchFromProject) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/excel`;
 

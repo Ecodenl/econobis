@@ -16,7 +16,7 @@ const ParticipantsListHead = props => {
 
     return (
         <tr className="thead-title">
-            {props.showCheckboxList ? <th>#</th> : null}
+            <DataTableHeadTitle title={''} width={'2%'} />
             <DataTableHeadTitleAndSort sortColumn={'contactType'} title={'Type'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'9%'} setSorts={setSorts} />

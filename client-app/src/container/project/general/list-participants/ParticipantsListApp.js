@@ -23,7 +23,6 @@ import Modal from '../../../../components/modal/Modal';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
-import PanelFooter from '../../../../components/panel/PanelFooter';
 import ViewText from '../../../../components/form/ViewText';
 import ParticipantsProjectAPI from '../../../../api/participant-project/ParticipantsProjectAPI';
 import fileDownload from 'js-file-download';
@@ -58,7 +57,6 @@ class ParticipantsListApp extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
         this.toggleParticipantCheck = this.toggleParticipantCheck.bind(this);
-        this.toggleParticipantCheckNoEmail = this.toggleParticipantCheckNoEmail.bind(this);
         this.handleEmailTemplateChange = this.handleEmailTemplateChange.bind(this);
         this.handleSubjectChange = this.handleSubjectChange.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -103,42 +101,6 @@ class ParticipantsListApp extends Component {
             const fetchFromProject = true;
 
             this.props.fetchParticipantsProject(filters, extraFilters, sorts, pagination, filterType, fetchFromProject);
-        }, 100);
-    };
-
-    getCSV = () => {
-        this.props.blockUI();
-        setTimeout(() => {
-            const filters = filterHelper(this.props.participantsProjectFilters);
-            const extraFilters = this.state.extraFilters;
-            const sorts = this.props.participantsProjectSorts;
-
-            ParticipantsProjectAPI.getCsv(filters, extraFilters, sorts, true)
-                .then(payload => {
-                    fileDownload(payload.data, 'Deelnemers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
-        }, 100);
-    };
-
-    getExcel = () => {
-        this.props.blockUI();
-        setTimeout(() => {
-            const filters = filterHelper(this.props.participantsProjectFilters);
-            const extraFilters = this.state.extraFilters;
-            const sorts = this.props.participantsProjectSorts;
-
-            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, true)
-                .then(payload => {
-                    fileDownload(payload.data, 'Deelnemers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
         }, 100);
     };
 
@@ -233,6 +195,8 @@ class ParticipantsListApp extends Component {
         } else {
             this.setState({
                 showCheckboxList: true,
+                participantIds: this.props.participantsProject.data.map(participant => participant.id),
+                checkedAll: true,
             });
         }
     };
@@ -244,54 +208,44 @@ class ParticipantsListApp extends Component {
     };
 
     toggleCheckedAll = () => {
+        const isChecked = event.target.checked;
+
+        let participantIds = [];
+
+        if (isChecked) {
+            participantIds = this.props.participantsProject.data.map(participant => participant.id);
+        }
+
         this.setState({
-            participantIds: [],
-            checkedAll: !this.state.checkedAll,
+            participantIds: participantIds,
+            checkedAll: isChecked,
         });
     };
 
     toggleParticipantCheck = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        const isChecked = event.target.checked;
+        const participantId = Number(event.target.name);
 
-        let participantIds = this.state.participantIds;
-
-        if (value) {
-            participantIds.push(name);
-            this.setState({
-                participantIds,
-            });
+        if (isChecked) {
+            this.setState(
+                {
+                    participantIds: [...this.state.participantIds, participantId],
+                },
+                this.checkAllParticipantsAreChecked
+            );
         } else {
-            participantIds = participantIds.filter(id => id != name);
             this.setState({
-                participantIds,
+                participantIds: this.state.participantIds.filter(item => item !== participantId),
+                checkedAll: false,
             });
         }
     };
 
-    toggleParticipantCheckNoEmail = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        let participantIds = this.state.participantIds;
-
-        if (value) {
-            participantIds.push(name);
-            this.setState({
-                participantIds,
-                showModal: true,
-                modalText: 'Waarschuwing: deze participant heeft nog geen primair e-mailadres.',
-                buttonConfirmText: 'Ok',
-            });
-        } else {
-            participantIds = participantIds.filter(id => id != name);
-            this.setState({
-                participantIds,
-            });
-        }
-    };
+    checkAllParticipantsAreChecked() {
+        this.setState({
+            checkedAll: this.state.participantIds.length === this.props.participantsProject.data.length,
+        });
+    }
 
     checkParticipantReport = () => {
         let error = false;
@@ -317,24 +271,12 @@ class ParticipantsListApp extends Component {
                 emailTemplateIdError: false,
             });
         }
-        let participantIds = [];
 
-        if (this.state.checkedAll) {
-            this.props.participantsProject.data.forEach(function(participant) {
-                participantIds.push(participant.id);
-            });
-
-            this.setState({
-                participantIds: participantIds,
-            });
-        }
-
-        if ((this.state.participantIds.length > 0 && !error) || (participantIds.length > 0 && !error)) {
+        if (this.state.participantIds.length > 0 && !error) {
             this.setState({
                 showModal: true,
-                modalText:
-                    'De rapporten worden per participant gemaakt met het gekozen documenttemplate en per e-mail verzonden.',
-                buttonConfirmText: 'Maken',
+                modalText: "Er wordt eerst een preview getoond van de PDF's en e-mails.",
+                buttonConfirmText: 'Preview',
                 readyForCreation: true,
             });
         } else if (!error) {
@@ -362,6 +304,24 @@ class ParticipantsListApp extends Component {
         }
     };
 
+    getExcel = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.participantsProjectFilters);
+            const extraFilters = this.state.extraFilters;
+            const sorts = this.props.participantsProjectSorts;
+
+            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, true)
+                .then(payload => {
+                    fileDownload(payload.data, 'Deelnemers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
     saveAsGroup = () => {
         const extraFilters = this.state.extraFilters;
         const filters = filterHelper(this.props.participantsProjectFilters);
@@ -387,21 +347,70 @@ class ParticipantsListApp extends Component {
         return (
             <Panel>
                 <PanelBody>
-                    <div className="col-md-12 margin-10-top">
-                        <ParticipantsListToolbar
-                            resetParticipantProjectFilters={() => this.resetParticipantProjectFilters()}
-                            toggleShowCheckboxList={this.toggleShowCheckboxList}
-                            handleExtraFiltersChange={this.handleExtraFiltersChange}
-                            toggleShowExtraFilters={this.toggleShowExtraFilters}
-                            extraFilters={this.state.extraFilters}
-                            amountOfFilters={this.state.amountOfFilters}
-                            filterType={this.state.filterType}
-                            getCSV={this.getCSV}
-                            getExcel={this.getExcel}
-                            saveAsGroup={this.saveAsGroup}
-                        />
-                    </div>
-
+                    {!this.state.showCheckboxList ? (
+                        <div className="col-md-12 margin-10-top">
+                            <ParticipantsListToolbar
+                                resetParticipantProjectFilters={() => this.resetParticipantProjectFilters()}
+                                toggleShowCheckboxList={this.toggleShowCheckboxList}
+                                handleExtraFiltersChange={this.handleExtraFiltersChange}
+                                toggleShowExtraFilters={this.toggleShowExtraFilters}
+                                getExcel={this.getExcel}
+                                saveAsGroup={this.saveAsGroup}
+                            />
+                        </div>
+                    ) : null}
+                    {this.state.showCheckboxList ? (
+                        <Panel>
+                            <PanelBody>
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <ViewText label="Documentgroep" value={'Opbrengst'} />
+                                        <InputSelect
+                                            label="Document template"
+                                            name={'templateId'}
+                                            value={this.state.templateId}
+                                            options={this.state.templates}
+                                            onChangeAction={this.handleInputChange}
+                                            required={'required'}
+                                            error={this.state.templateIdError}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <InputSelect
+                                            label="E-mail template"
+                                            name={'emailTemplateId'}
+                                            value={this.state.emailTemplateId}
+                                            options={this.state.emailTemplates}
+                                            onChangeAction={this.handleEmailTemplateChange}
+                                            required={'required'}
+                                            error={this.state.emailTemplateIdError}
+                                        />
+                                        <InputText
+                                            label={'E-mail onderwerp'}
+                                            name={'subject'}
+                                            value={this.state.subject}
+                                            onChangeAction={this.handleSubjectChange}
+                                        />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <div className="margin-10-top pull-right btn-group" role="group">
+                                            <ButtonText
+                                                buttonClassName={'btn-default'}
+                                                buttonText={'Annuleren'}
+                                                onClickAction={this.toggleShowCheckboxList}
+                                            />
+                                            <ButtonText
+                                                buttonText={'Maak rapport'}
+                                                onClickAction={this.checkParticipantReport}
+                                                type={'submit'}
+                                                value={'Submit'}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    ) : null}
                     <div className="col-md-12 margin-10-top">
                         <ParticipantsList
                             participantsProject={this.props.participantsProject}
@@ -410,73 +419,25 @@ class ParticipantsListApp extends Component {
                             refreshParticipantsProjectData={() => this.fetchParticipantsProjectData()}
                             handlePageClick={this.handlePageClick}
                             showCheckboxList={this.state.showCheckboxList}
+                            toggleCheckedAll={this.toggleCheckedAll}
                             checkedAll={this.state.checkedAll}
+                            participantIds={this.state.participantIds}
                             toggleParticipantCheck={this.toggleParticipantCheck}
-                            toggleParticipantCheckNoEmail={this.toggleParticipantCheckNoEmail}
                             toggleCheckedAll={this.toggleCheckedAll}
                             projectTypeRef={this.props.projectTypeRef}
                         />
                     </div>
                 </PanelBody>
 
-                {this.state.showCheckboxList && (
-                    <PanelFooter>
-                        <div className="row">
-                            <div className="col-md-12">
-                                <ViewText label="Documentgroep" value={'Opbrengst'} />
-                                <InputSelect
-                                    label="Document template"
-                                    name={'templateId'}
-                                    value={this.state.templateId}
-                                    options={this.state.templates}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    error={this.state.templateIdError}
-                                />
-                            </div>
-                            <div className="col-md-12">
-                                <InputSelect
-                                    label="E-mail template"
-                                    name={'emailTemplateId'}
-                                    value={this.state.emailTemplateId}
-                                    options={this.state.emailTemplates}
-                                    onChangeAction={this.handleEmailTemplateChange}
-                                    required={'required'}
-                                    error={this.state.emailTemplateIdError}
-                                />
-                                <InputText
-                                    label={'E-mail onderwerp'}
-                                    name={'subject'}
-                                    value={this.state.subject}
-                                    onChangeAction={this.handleSubjectChange}
-                                />
-                            </div>
-                            <div className="col-md-12">
-                                <div className="margin-10-top pull-right btn-group" role="group">
-                                    <ButtonText
-                                        buttonClassName={'btn-default'}
-                                        buttonText={'Annuleren'}
-                                        onClickAction={this.toggleShowCheckboxList}
-                                    />
-                                    <ButtonText
-                                        buttonText={'Maak rapport'}
-                                        onClickAction={this.checkParticipantReport}
-                                        type={'submit'}
-                                        value={'Submit'}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </PanelFooter>
-                )}
                 {this.state.showModal && (
                     <Modal
-                        title={'Participant rapport maken'}
+                        title={'Deelnemer rapport maken'}
                         closeModal={this.toggleModal}
-                        children={this.state.modalText}
                         buttonConfirmText={this.state.buttonConfirmText}
                         confirmAction={this.createParticipantReport}
-                    />
+                    >
+                        {this.state.modalText}
+                    </Modal>
                 )}
                 {this.state.showExtraFilters && (
                     <ParticipantsListExtraFilters

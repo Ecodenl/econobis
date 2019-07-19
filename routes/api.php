@@ -289,14 +289,12 @@ Route::namespace('Api')
         Route::post('project/revenue/{projectRevenue}/distribution', 'Project\ProjectRevenueController@getRevenueDistribution');
         Route::post('project/revenue/{projectRevenue}/participants', 'Project\ProjectRevenueController@getRevenueParticipants');
         Route::post('project/revenue/create-energy-supplier-report/{projectRevenue}/{documentTemplate}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierReport');
-        Route::post('project/revenue/create-energy-supplier-csv/{projectRevenue}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierCsv');
         Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierExcel');
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
 
         Route::get('project/participant/grid', 'ParticipationProject\ParticipationProjectController@grid');
-        Route::get('project/participant/csv', 'ParticipationProject\ParticipationProjectController@csv');
         Route::get('project/participant/excel', 'ParticipationProject\ParticipationProjectController@excel');
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');

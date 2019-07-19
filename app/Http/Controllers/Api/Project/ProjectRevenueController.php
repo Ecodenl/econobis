@@ -18,10 +18,8 @@ use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
 use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Helpers\CSV\EnergySupplierCSVHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
 use App\Helpers\CSV\RevenueParticipantsCSVHelper;
-use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
@@ -423,49 +421,6 @@ class ProjectRevenueController extends ApiController
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/'
             . $document->filename));
         file_put_contents($filePath, $pdf);
-
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-            $document->filename, $document->getDocumentGroup()->name);
-
-        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-        $document->save();
-
-        //delete file on server, still saved on alfresco.
-        Storage::disk('documents')->delete($document->filename);
-    }
-
-    public function createEnergySupplierCSV(
-        Request $request,
-        ProjectRevenue $projectRevenue,
-        EnergySupplier $energySupplier
-    )
-    {
-        $documentName = $request->input('documentName');
-        $fileName = $documentName . '.csv';
-        $templateId = $request->input('templateId');
-
-        if ($templateId) {
-            set_time_limit(0);
-            $csvHelper = new EnergySupplierCSVHelper($energySupplier,
-                $projectRevenue, $templateId, $fileName);
-            $csv = $csvHelper->getCSV();
-        }
-
-        $document = new Document();
-        $document->document_type = 'internal';
-        $document->document_group = 'revenue';
-
-        $document->filename = $fileName;
-
-        $document->save();
-
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
-            . $document->filename));
-        file_put_contents($filePath, $csv);
-
-// die("stop hier maar even voor testdoeleinden CSV");
 
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 

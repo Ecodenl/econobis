@@ -21,7 +21,8 @@ class ParticipantExcelHelper
         $completeData = [];
 
         $headerData = [];
-        $headerData[] = '#';
+        $headerData[] = '#participant';
+        $headerData[] = '#mutation';
         $headerData[] = 'Contact id';
         $headerData[] = 'Contactnummer';
         $headerData[] = 'Deelname naam';
@@ -80,7 +81,6 @@ class ParticipantExcelHelper
         $headerData[] = 'Contract verstuurd';
         $headerData[] = 'Contract retour';
         $headerData[] = 'Betaald op';
-        $headerData[] = 'Wettelijk vertegenwoordiger';
         $headerData[] = 'Geschonken door';
         $headerData[] = 'Akkoord regelement';
         $headerData[] = 'Jaarlijks verbruik';
@@ -115,6 +115,25 @@ class ParticipantExcelHelper
         $headerData[] = 'Wettelijke vertegenwoordiger geboortedatum';
         $headerData[] = 'Wettelijke vertegenwoordiger primair e-mailaddress';
         $headerData[] = 'Wettelijke vertegenwoordiger primair telefoonnummer';
+
+        $headerData[] = 'Type mutatie';
+        $headerData[] = 'Status';
+        $headerData[] = 'Aantal interesse';
+        $headerData[] = 'Bedrag interesse';
+        $headerData[] = 'Datum interesse';
+        $headerData[] = 'Datum log interesse';
+        $headerData[] = 'Aantal ingeschreven';
+        $headerData[] = 'Bedrag ingeschreven';
+        $headerData[] = 'Datum ingeschreven';
+        $headerData[] = 'Datum log ingeschreven';
+        $headerData[] = 'Aantal toegekend';
+        $headerData[] = 'Bedrag toegekend';
+        $headerData[] = 'Datum toegekend';
+        $headerData[] = 'Datum log toegekend';
+        $headerData[] = 'Aantal definitief';
+        $headerData[] = 'Bedrag definitief';
+        $headerData[] = 'Ingangsdatum';
+        $headerData[] = 'Log Ingangsdatum';
 
         $completeData[] = $headerData;
 
@@ -253,115 +272,175 @@ class ParticipantExcelHelper
                     : '';
 
                 $rowData = [];
-                $rowData[] = $participant->id;
-                $rowData[] = $participant->contact->id;
-                $rowData[] = $participant->contact->number;
-                $rowData[] = $participant->project->name;
-                $rowData[] = $participant->contact->full_name;
-                $rowData[] = $participant->contact->organisation ? $participant->contact->organisation->name : '';
-                $rowData[] = $participant->title ? $participant->title->name : '';
-                $rowData[] = $participant->initials;
-                $rowData[] = $participant->first_name;
-                $rowData[] = $participant->last_name_prefix;
-                $rowData[] = $participant->last_name;
-                $rowData[] = $participant->date_of_birth;
-                $rowData[] = $participant['address_deliver']['street'];
-                $rowData[] = $participant['address_deliver']['number'];
-                $rowData[] = $participant['address_deliver']['addition'];
-                $rowData[] = $participant['address_deliver']['postal_code'];
-                $rowData[] = $participant['address_deliver']['city'];
-                $rowData[] = $participant['address_deliver']['country'];
-                $rowData[] = $participant['address_visit']['street'];
-                $rowData[] = $participant['address_visit']['number'];
-                $rowData[] = $participant['address_visit']['addition'];
-                $rowData[] = $participant['address_visit']['postal_code'];
-                $rowData[] = $participant['address_visit']['city'];
-                $rowData[] = $participant['address_visit']['country'];
-                $rowData[] = $participant['address_postal']['street'];
-                $rowData[] = $participant['address_postal']['number'];
-                $rowData[] = $participant['address_postal']['addition'];
-                $rowData[] = $participant['address_postal']['postal_code'];
-                $rowData[] = $participant['address_postal']['city'];
-                $rowData[] = $participant['address_postal']['country'];
-                $rowData[] = $participant['address_invoice']['street'];
-                $rowData[] = $participant['address_invoice']['number'];
-                $rowData[] = $participant['address_invoice']['addition'];
-                $rowData[] = $participant['address_invoice']['postal_code'];
-                $rowData[] = $participant['address_invoice']['city'];
-                $rowData[] = $participant['address_invoice']['country'];
-                $rowData[] = $participant->contact->primaryEmailAddress ? $participant->contact->primaryEmailAddress->email : '';
-                $rowData[] = $participant->emailAddress_2;
-                $rowData[] = $participant->emailAddress_3;
-                $rowData[] = $participant->emailAddress_4;
-                $rowData[] = $participant->emailAddress_5;
-                $rowData[] = $participant->contact->primaryphoneNumber ? $participant->contact->primaryphoneNumber->number : '';
-                $rowData[] = $participant->phonenumber_2;
-                $rowData[] = $participant->phonenumber_3;
-                $rowData[] = $participant->energy_supplier_name;
-                $rowData[] = $participant->energy_supplier_member_since;
-                $rowData[] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->es_number : '';
-                $rowData[] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_electricity : '';
-                $rowData[] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_gas : '';
-                $rowData[] = $participant->project->code;
-                $rowData[] = $participant->project->participation_worth;
-                $rowData[] = $participant->participations_requested;
-                $rowData[] = $participant->participations_granted;
-                $rowData[] = $participant->participations_rest_sale;
-                $rowData[] = $participant->participations_definitive;
-                $rowData[] = $participant->participations_worth_total;
-                $rowData[] = $participant->date_contract_send;
-                $rowData[] = $participant->date_contract_retour;
-                $rowData[] = $participant->date_payed;
-                $rowData[] = $participant->legalRepContact ? $participant->legalRepContact->full_name : '';
-                $rowData[] = $participant->giftedByContact ? $participant->giftedByContact->full_name : '';
-                $rowData[] = $participant->did_accept_agreement;
-                $rowData[] = $participant->power_kwh_consumption;
-                $rowData[] = $participant->iban_payout;
-                $rowData[] = $participant->iban_attn;
-                $rowData[] = $participant->iban_contact;
-                $rowData[] = $participant->iban_attn_contact;
-                $rowData[] = $participant->date_register;
-                $rowData[] = $participant->date_end;
-                $rowData[] = $participant->participantProjectPayoutType ? $participant->participantProjectPayoutType->name : '';
-                $rowData[] = $participant->cpStartDate;
-                $rowData[] = $participant->cpEndDate;
-                $rowData[] = $participant->cpOccupation;
-                $rowData[] = $participant->cpTitle;
-                $rowData[] = $participant->cpFullName;
-                $rowData[] = $participant->cpInitials;
-                $rowData[] = $participant->cpFirstName;
-                $rowData[] = $participant->cpLastNamePrefix;
-                $rowData[] = $participant->cpLastName;
-                $rowData[] = $participant->cpDateOfBirth;
-                $rowData[] = $participant->cpPrimaryEmailAddress;
-                $rowData[] = $participant->cpPrimaryPhonenumber;
-                $rowData[] = $participant->lrcStartDate;
-                $rowData[] = $participant->lrcEndDate;
-                $rowData[] = $participant->lrcOccupation;
-                $rowData[] = $participant->lrcTitle;
-                $rowData[] = $participant->lrcFullName;
-                $rowData[] = $participant->lrcInitials;
-                $rowData[] = $participant->lrcFirstName;
-                $rowData[] = $participant->lrcLastNamePrefix;
-                $rowData[] = $participant->lrcLastName;
-                $rowData[] = $participant->lrcDateOfBirth;
-                $rowData[] = $participant->lrcPrimaryEmailAddress;
-                $rowData[] = $participant->lrcPrimaryPhonenumber;
+                $rowData[0] = $participant->id;
+                $rowData[1] = 0;
+                $rowData[2] = $participant->contact->id;
+                $rowData[3] = $participant->contact->number;
+                $rowData[4] = $participant->project->name;
+                $rowData[5] = $participant->contact->full_name;
+                $rowData[6] = $participant->contact->organisation ? $participant->contact->organisation->name : '';
+                $rowData[7] = $participant->title ? $participant->title->name : '';
+                $rowData[8] = $participant->initials;
+                $rowData[9] = $participant->first_name;
+                $rowData[10] = $participant->last_name_prefix;
+                $rowData[11] = $participant->last_name;
+                $rowData[12] = $participant->date_of_birth;
+                $rowData[13] = $participant['address_deliver']['street'];
+                $rowData[14] = $participant['address_deliver']['number'];
+                $rowData[15] = $participant['address_deliver']['addition'];
+                $rowData[16] = $participant['address_deliver']['postal_code'];
+                $rowData[17] = $participant['address_deliver']['city'];
+                $rowData[18] = $participant['address_deliver']['country'];
+                $rowData[19] = $participant['address_visit']['street'];
+                $rowData[20] = $participant['address_visit']['number'];
+                $rowData[21] = $participant['address_visit']['addition'];
+                $rowData[22] = $participant['address_visit']['postal_code'];
+                $rowData[23] = $participant['address_visit']['city'];
+                $rowData[24] = $participant['address_visit']['country'];
+                $rowData[25] = $participant['address_postal']['street'];
+                $rowData[26] = $participant['address_postal']['number'];
+                $rowData[27] = $participant['address_postal']['addition'];
+                $rowData[28] = $participant['address_postal']['postal_code'];
+                $rowData[29] = $participant['address_postal']['city'];
+                $rowData[30] = $participant['address_postal']['country'];
+                $rowData[31] = $participant['address_invoice']['street'];
+                $rowData[32] = $participant['address_invoice']['number'];
+                $rowData[33] = $participant['address_invoice']['addition'];
+                $rowData[34] = $participant['address_invoice']['postal_code'];
+                $rowData[35] = $participant['address_invoice']['city'];
+                $rowData[36] = $participant['address_invoice']['country'];
+                $rowData[37] = $participant->contact->primaryEmailAddress ? $participant->contact->primaryEmailAddress->email : '';
+                $rowData[38] = $participant->emailAddress_2;
+                $rowData[39] = $participant->emailAddress_3;
+                $rowData[40] = $participant->emailAddress_4;
+                $rowData[41] = $participant->emailAddress_5;
+                $rowData[42] = $participant->contact->primaryphoneNumber ? $participant->contact->primaryphoneNumber->number : '';
+                $rowData[43] = $participant->phonenumber_2;
+                $rowData[44] = $participant->phonenumber_3;
+                $rowData[45] = $participant->energy_supplier_name;
+                $rowData[46] = $participant->energy_supplier_member_since;
+                $rowData[47] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->es_number : '';
+                $rowData[48] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_electricity : '';
+                $rowData[49] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_gas : '';
+                $rowData[50] = $participant->project->code;
+                $rowData[51] = $participant->project->participation_worth;
+                $rowData[52] = $participant->participations_requested;
+                $rowData[53] = $participant->participations_granted;
+                $rowData[54] = $participant->participations_rest_sale;
+                $rowData[55] = $participant->participations_definitive;
+                $rowData[56] = $participant->participations_worth_total;
+                $rowData[57] = $participant->date_contract_send;
+                $rowData[58] = $participant->date_contract_retour;
+                $rowData[59] = $participant->date_payed;
+                $rowData[60] = $participant->giftedByContact ? $participant->giftedByContact->full_name : '';
+                $rowData[61] = $participant->did_accept_agreement;
+                $rowData[62] = $participant->power_kwh_consumption;
+                $rowData[63] = $participant->iban_payout;
+                $rowData[64] = $participant->iban_attn;
+                $rowData[65] = $participant->iban_contact;
+                $rowData[66] = $participant->iban_attn_contact;
+                $rowData[67] = $participant->date_register;
+                $rowData[68] = $participant->date_end;
+                $rowData[69] = $participant->participantProjectPayoutType ? $participant->participantProjectPayoutType->name : '';
+                $rowData[70] = $participant->cpStartDate;
+                $rowData[71] = $participant->cpEndDate;
+                $rowData[72] = $participant->cpOccupation;
+                $rowData[73] = $participant->cpTitle;
+                $rowData[74] = $participant->cpFullName;
+                $rowData[75] = $participant->cpInitials;
+                $rowData[76] = $participant->cpFirstName;
+                $rowData[77] = $participant->cpLastNamePrefix;
+                $rowData[78] = $participant->cpLastName;
+                $rowData[79] = $participant->cpDateOfBirth;
+                $rowData[80] = $participant->cpPrimaryEmailAddress;
+                $rowData[81] = $participant->cpPrimaryPhonenumber;
+                $rowData[82] = $participant->lrcStartDate;
+                $rowData[83] = $participant->lrcEndDate;
+                $rowData[84] = $participant->lrcOccupation;
+                $rowData[85] = $participant->lrcTitle;
+                $rowData[86] = $participant->lrcFullName;
+                $rowData[87] = $participant->lrcInitials;
+                $rowData[88] = $participant->lrcFirstName;
+                $rowData[89] = $participant->lrcLastNamePrefix;
+                $rowData[90] = $participant->lrcLastName;
+                $rowData[91] = $participant->lrcDateOfBirth;
+                $rowData[92] = $participant->lrcPrimaryEmailAddress;
+                $rowData[93] = $participant->lrcPrimaryPhonenumber;
+
+                $rowData[94] = "";
+                $rowData[95] = "";
+                $rowData[96] = $participant->participations_interessed;
+                $rowData[97] = $participant->amount_interessed;
+                $rowData[98] = "";
+                $rowData[99] = "";
+                $rowData[100] = $participant->participations_optioned;
+                $rowData[101] = $participant->amount_optioned;
+                $rowData[102] = "";
+                $rowData[103] = "";
+                $rowData[104] = $participant->participations_granted;
+                $rowData[105] = $participant->amount_granted;
+                $rowData[106] = "";
+                $rowData[107] = "";
+                $rowData[108] = $participant->participations_definitive;
+                $rowData[109] = $participant->amount_definitive;
+                $rowData[110] = "";
+                $rowData[111] = "";
 
                 $completeData[] = $rowData;
+
+                foreach ($participant->mutations as $mutation) {
+                    $rowData[1] = $mutation->id;
+
+                    $mutationType = $mutation->type;
+                    $mutationStatus = $mutation->status;
+                    $mutationStatusLogInterest = $mutation->statusLog->where('to_status_id', 1)->first();
+                    $logInterestDateTime = $mutationStatusLogInterest ? Carbon::parse($mutationStatusLogInterest->date_status)->format('d-m-Y H:i:s') : "";
+                    $mutationStatusLogOption   = $mutation->statusLog->where('to_status_id', 2)->first();
+                    $logOptionDateTime = $mutationStatusLogOption ? Carbon::parse($mutationStatusLogOption->date_status)->format('d-m-Y H:i:s') : "";
+                    $mutationStatusLogGranted  = $mutation->statusLog->where('to_status_id', 3)->first();
+                    $logGrantedDateTime = $mutationStatusLogGranted ? Carbon::parse($mutationStatusLogGranted->date_status)->format('d-m-Y H:i:s') : "";
+                    $mutationStatusLogFinal    = $mutation->statusLog->where('to_status_id', 4)->first();
+                    $logFinalDateTime = $mutationStatusLogFinal ? Carbon::parse($mutationStatusLogFinal->date_status)->format('d-m-Y H:i:s') : "";
+
+                    if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' )
+                    {
+                        $rowData[94] = $mutationType->name;
+                        $rowData[95] = $mutationStatus->name;
+                        $rowData[96] = $mutation->quantity_interessed;
+                        $rowData[97] = $mutation->amount_interest;
+                        $rowData[98] = $mutation->date_interest ? Carbon::parse($mutation->date_interest)->format('d-m-Y') : "";
+                        $rowData[99] = $logInterestDateTime;
+                        $rowData[100] = $mutation->quantity_optioned;
+                        $rowData[101] = $mutation->amount_option;
+                        $rowData[102] = $mutation->date_option ? Carbon::parse($mutation->date_option)->format('d-m-Y') : "";
+                        $rowData[103] = $logOptionDateTime;
+                        $rowData[104] = $mutation->quantity_granted;
+                        $rowData[105] = $mutation->amount_granted;
+                        $rowData[106] = $mutation->date_granted ? Carbon::parse($mutation->date_granted)->format('d-m-Y') : "";
+                        $rowData[107] = $logGrantedDateTime;
+                        $rowData[108] = $mutation->quantity_final;
+                        $rowData[109] = $mutation->amount_final;
+                        $rowData[110] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
+                        $rowData[111] = $logFinalDateTime;
+
+                        $completeData[] = $rowData;
+                    }
+
+                }
+
             }
         }
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'CZ'; $col++) {
+        for ($col = 'A'; $col !== 'DI'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:CZ1')
+        $sheet->getStyle('A1:DH1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

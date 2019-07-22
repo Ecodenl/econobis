@@ -43,7 +43,7 @@ class TwinfieldHelper
         $result = true;
 
         try {
-           $officeApiConnector->listAll();
+           $officeApiConnector->listAllWithoutOfficeCode();
         }
         catch(Exception $e){
             Log::error($e->getMessage());

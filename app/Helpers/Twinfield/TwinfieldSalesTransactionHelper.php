@@ -149,7 +149,7 @@ class TwinfieldSalesTransactionHelper
             ->setDim1($this->grootboekDebiteuren)
             ->setDim2($twinfieldCustomer->getCode())
             ->setValue($totaalBedragIncl)
-            ->setDebitCredit(DebitCredit::DEBIT() )
+            ->setDebitCredit($totaalBedragIncl->getAmount()<0 ? DebitCredit::CREDIT() : DebitCredit::DEBIT())
             ->setDescription($twinfieldCustomer ? $twinfieldCustomer->getName() : '' ." / ". $invoice->number );
         $twinfieldSalesTransaction->addLine($twinfieldTransactionLineTotal);
 
@@ -195,7 +195,7 @@ class TwinfieldSalesTransactionHelper
                 ->setDim1($ledgerCode)
                 ->setDim2($costCenterCode)
                 ->setValue($invoiceDetailExcl)
-                ->setDebitCredit(DebitCredit::CREDIT() );
+                ->setDebitCredit($invoiceDetailExcl->getAmount()<0 ? DebitCredit::DEBIT() : DebitCredit::CREDIT());
             if($vatCode && $vatCode->id>0)
             {
                 $twinfieldTransactionLineDetail
@@ -216,7 +216,7 @@ class TwinfieldSalesTransactionHelper
                 ->setDim1($vatDataDetail['vatLedgerCode'])
                 ->setVatCode($code)
                 ->setValue($invoiceDetailExcl)
-                ->setDebitCredit(DebitCredit::CREDIT() );
+                ->setDebitCredit($invoiceDetailExcl->getAmount()<0 ? DebitCredit::DEBIT() : DebitCredit::CREDIT());
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
         }
         //Salestransaction - versturen naar Twinfield

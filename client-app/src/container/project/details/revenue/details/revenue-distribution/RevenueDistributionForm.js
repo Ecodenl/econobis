@@ -419,9 +419,10 @@ class RevenueDistributionForm extends Component {
                                             disabledBefore={moment()
                                                 .nextBusinessDay()
                                                 .format('YYYY-MM-DD')}
-                                            disabledAfter={moment()
-                                                .add(1, 'year')
-                                                .format('YYYY-MM-DD')}
+                                            // todo In testfase niet handig, wellicht na in gebruik name wel ?
+                                            // disabledAfter={moment()
+                                            //     .add(1, 'year')
+                                            //     .format('YYYY-MM-DD')}
                                             error={this.state.datePayoutError}
                                         />
                                     </div>

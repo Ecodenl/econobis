@@ -17,6 +17,7 @@ use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
+use App\Eco\Project\ProjectType;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
 use App\Helpers\CSV\RevenueParticipantsCSVHelper;
@@ -240,6 +241,15 @@ class ProjectRevenueController extends ApiController
             $this->saveDistribution($projectRevenue, $participant);
         }
 
+        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+        if($projectRevenue->category->code_ref == 'revenueEuro'
+            && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
+            foreach($projectRevenue->distribution as $distribution) {
+                $distribution->calculator()->runRevenueCaptitalResult();
+                $distribution->save();
+            }
+        }
+
         if($projectRevenue->category->code_ref == 'revenueKwh') {
             foreach($projectRevenue->distribution as $distribution) {
                 $distribution->calculator()->runRevenueKwh();
@@ -302,6 +312,11 @@ class ProjectRevenueController extends ApiController
         if($projectRevenue->category->code_ref == 'revenueKwh') {
             $this->saveDeliveredKwhPeriod($distribution);
             return;
+        }
+
+        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+        if($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
+            $this->saveDeliveredKwhPeriod($distribution);
         }
 
         // Recalculate values of distribution after saving

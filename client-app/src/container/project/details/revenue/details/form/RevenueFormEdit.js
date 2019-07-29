@@ -267,7 +267,7 @@ class RevenueFormEdit extends Component {
                     <div className="row">
                         {this.props.revenue &&
                         this.props.revenue.project &&
-                        this.props.revenue.project.projectType.codeRef !== 'loan' ? (
+                        this.props.revenue.project.projectType.codeRef === 'obligation' ? (
                             <InputSelect
                                 label={'Type opbrengst verdeling'}
                                 name={'distributionTypeId'}
@@ -326,7 +326,7 @@ class RevenueFormEdit extends Component {
                     <React.Fragment>
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Uitkering euro velden</span>
+                                <span className={'h5 text-bold'}>Opbrengst euro</span>
                             </div>
                         </div>
                         {this.props.revenue.project.projectType.codeRef === 'loan' ||
@@ -369,6 +369,7 @@ class RevenueFormEdit extends Component {
                             <React.Fragment>
                                 <div className="row">
                                     <InputText
+                                        type={'number'}
                                         label={'Resultaat'}
                                         name={'revenue'}
                                         value={revenue}

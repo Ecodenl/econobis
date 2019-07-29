@@ -202,16 +202,24 @@ class ParticipantFormEdit extends Component {
                     />
                 </div>
                 <div className="row">
-                    {projectTypeCodeRef === 'obligation' ? (
-                        <div className={'form-group col-md-6'} />
-                    ) : (
+                    {projectTypeCodeRef === 'obligation' ? <div className={'form-group col-md-6'} /> : null}
+                    {projectTypeCodeRef === 'loan' ? (
                         <ViewText
-                            label={`Huidig saldo ${projectTypeCodeRef === 'loan' ? 'lening' : 'kapitaal'} rekening`}
+                            label={`Huidig saldo lening rekening`}
                             id={'amountDefinitive'}
                             value={moneyPresenter(amountDefinitive)}
                             className={'form-group col-md-6'}
                         />
-                    )}
+                    ) : null}
+                    {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                        <ViewText
+                            label={`Huidig saldo kapitaal rekening`}
+                            id={'amountDefinitive'}
+                            value={moneyPresenter(amountDefinitive + participationsDefinitiveWorth)}
+                            className={'form-group col-md-6'}
+                        />
+                    ) : null}
+
                     <InputText
                         label={'IBAN uitkeren t.n.v.'}
                         name={'ibanPayoutAttn'}

@@ -239,6 +239,7 @@ class RevenueFormEdit extends Component {
             kwhEndHigh,
             kwhStartLow,
             kwhEndLow,
+            revenue,
             datePayed,
             payPercentage,
             keyAmountFirstPercentage,
@@ -328,35 +329,53 @@ class RevenueFormEdit extends Component {
                                 <span className={'h5 text-bold'}>Uitkering euro velden</span>
                             </div>
                         </div>
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Uitkering %'}
-                                name={'payPercentage'}
-                                value={payPercentage}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <InputText
-                                label={
-                                    <React.Fragment>
-                                        Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                    </React.Fragment>
-                                }
-                                name={'keyAmountFirstPercentage'}
-                                value={keyAmountFirstPercentage}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                        {this.state.revenue.keyAmountFirstPercentage ? (
-                            <div className="row">
-                                <InputText
-                                    type={'number'}
-                                    label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
-                                    name={'payPercentageValidFromKeyAmount'}
-                                    value={payPercentageValidFromKeyAmount}
-                                    onChangeAction={this.handleInputChange}
-                                />
-                            </div>
+                        {this.props.revenue.project.projectType.codeRef === 'loan' ||
+                        this.props.revenue.project.projectType.codeRef === 'obligation' ? (
+                            <React.Fragment>
+                                <div className="row">
+                                    <InputText
+                                        type={'number'}
+                                        label={'Uitkering %'}
+                                        name={'payPercentage'}
+                                        value={payPercentage}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                    <InputText
+                                        label={
+                                            <React.Fragment>
+                                                Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                            </React.Fragment>
+                                        }
+                                        name={'keyAmountFirstPercentage'}
+                                        value={keyAmountFirstPercentage}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                </div>
+                                {this.state.revenue.keyAmountFirstPercentage ? (
+                                    <div className="row">
+                                        <InputText
+                                            type={'number'}
+                                            label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                            name={'payPercentageValidFromKeyAmount'}
+                                            value={payPercentageValidFromKeyAmount}
+                                            onChangeAction={this.handleInputChange}
+                                        />
+                                    </div>
+                                ) : null}
+                            </React.Fragment>
+                        ) : null}
+                        {this.props.revenue.project.projectType.codeRef === 'capital' ||
+                        this.props.revenue.project.projectType.codeRef === 'postalcode_link_capital' ? (
+                            <React.Fragment>
+                                <div className="row">
+                                    <InputText
+                                        label={'Resultaat'}
+                                        name={'revenue'}
+                                        value={revenue}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                </div>
+                            </React.Fragment>
                         ) : null}
                     </React.Fragment>
                 ) : null}

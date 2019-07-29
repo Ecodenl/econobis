@@ -24,6 +24,7 @@ const RevenueFormView = props => {
         kwhEndHigh,
         kwhStartLow,
         kwhEndLow,
+        revenue,
         datePayed,
         payPercentage,
         keyAmountFirstPercentage,
@@ -117,15 +118,26 @@ const RevenueFormView = props => {
                         <span className={'h5 text-bold'}>Opbrengst euro</span>
                     </div>
                     <div className="row" onClick={props.switchToEdit}>
-                        <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
-                        <ViewText
-                            label={
-                                <React.Fragment>
-                                    Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                </React.Fragment>
-                            }
-                            value={keyAmountFirstPercentage && '€ ' + keyAmountFirstPercentage}
-                        />
+                        {props.revenue.project.projectType.codeRef === 'loan' ||
+                        props.revenue.project.projectType.codeRef === 'obligation' ? (
+                            <React.Fragment>
+                                <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
+                                <ViewText
+                                    label={
+                                        <React.Fragment>
+                                            Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                        </React.Fragment>
+                                    }
+                                    value={keyAmountFirstPercentage && '€ ' + keyAmountFirstPercentage}
+                                />
+                            </React.Fragment>
+                        ) : null}
+                        {props.revenue.project.projectType.codeRef === 'capital' ||
+                        props.revenue.project.projectType.codeRef === 'postalcode_link_capital' ? (
+                            <React.Fragment>
+                                <ViewText label={'Resultaat'} value={revenue} />
+                            </React.Fragment>
+                        ) : null}
                     </div>
                     {keyAmountFirstPercentage ? (
                         <div className="row">

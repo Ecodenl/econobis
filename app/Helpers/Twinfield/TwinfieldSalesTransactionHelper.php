@@ -181,8 +181,11 @@ class TwinfieldSalesTransactionHelper
             if($vatCode && $vatCode->id>0)
             {
                 $vatAmount = $invoiceProduct->getAmountVatAttribute();
+                $invoiceVatAmount = new Money(round($vatAmount*100, 0), $this->currency );
                 $vatAmountOld  = isset( $vatData[$vatCodeTwinfield]) ? $vatData[$vatCodeTwinfield]['vatAmount'] : 0;
                 $vatData[$vatCodeTwinfield] = ['vatLedgerCode' => $vatLedgerCodeTwinfield, 'vatAmount' => $vatAmountOld + $vatAmount];
+            }else{
+                $invoiceVatAmount = new Money(0, $this->currency );
             }
 
             $exclAmount = round($invoiceProduct->getPriceExVatInclReductionAttribute()*100, 0);
@@ -194,6 +197,7 @@ class TwinfieldSalesTransactionHelper
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
                 ->setDim2($costCenterCode)
+                ->setVatValue($invoiceVatAmount)
                 ->setValue($invoiceDetailExcl)
                 ->setDebitCredit($invoiceDetailExcl->getAmount()<0 ? DebitCredit::DEBIT() : DebitCredit::CREDIT());
             if($vatCode && $vatCode->id>0)

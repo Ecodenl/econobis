@@ -24,6 +24,7 @@ const RevenueNew = props => {
         dateEnd,
         dateReference,
         dateConfirmed,
+        payoutType,
         kwhStart,
         kwhEnd,
         kwhStartHigh,
@@ -115,6 +116,19 @@ const RevenueNew = props => {
                     value={dateConfirmed}
                     onChangeAction={props.handleInputChangeDateConfirmed}
                 />
+                {category.codeRef === 'revenueEuro' &&
+                (projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') ? (
+                    <InputSelect
+                        label={'Uitkeren op'}
+                        name={'payoutType'}
+                        id={'payoutType'}
+                        options={props.participantProjectPayoutTypes}
+                        value={payoutType}
+                        onChangeAction={props.handleInputChange}
+                        required={'required'}
+                        error={props.errors.payoutType}
+                    />
+                ) : null}
             </div>
 
             {category.codeRef === 'revenueEuro' ? (
@@ -267,6 +281,7 @@ const mapStateToProps = state => {
         projectRevenueTypes: state.systemData.projectRevenueTypes,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
         projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
+        participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
     };
 };
 

@@ -26,6 +26,7 @@ class RevenueNewApp extends Component {
                 dateEnd: '',
                 dateReference: moment(),
                 dateConfirmed: '',
+                payoutType: '',
                 kwhStart: 0,
                 kwhEnd: 0,
                 kwhStartHigh: '',
@@ -44,6 +45,7 @@ class RevenueNewApp extends Component {
                 dateBegin: false,
                 dateEnd: false,
                 dateReference: false,
+                payoutType: false,
             },
             project: {},
         };
@@ -68,9 +70,14 @@ class RevenueNewApp extends Component {
             );
 
             let revenue = this.state.revenue;
-
             if (payload.projectType.codeRef !== 'loan') {
                 revenue.distributionTypeId = 'inPossessionOf';
+            }
+            if (payload.projectType.codeRef === 'obligation') {
+                const payoutType = this.props.participantProjectPayoutTypes.find(
+                    participantProjectPayoutType => participantProjectPayoutType.codeRef === 'credit'
+                ).id;
+                revenue.payoutType = payoutType;
             }
 
             if (category.codeRef === 'revenueEuro') {
@@ -198,6 +205,20 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
 
+        const category = this.props.projectRevenueCategories.find(
+            projectRevenueCategorie => projectRevenueCategorie.id == revenue.categoryId
+        );
+        if (
+            category.codeRef === 'revenueEuro' &&
+            (this.state.project.projectType.codeRef === 'capital' ||
+                this.state.project.projectType.codeRef === 'postalcode_link_capital')
+        ) {
+            if (validator.isEmpty(revenue.payoutType + '')) {
+                errors.payoutType = true;
+                hasErrors = true;
+            }
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
@@ -241,6 +262,7 @@ class RevenueNewApp extends Component {
 const mapStateToProps = state => {
     return {
         projectRevenueCategories: state.systemData.projectRevenueCategories,
+        participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
     };
 };
 

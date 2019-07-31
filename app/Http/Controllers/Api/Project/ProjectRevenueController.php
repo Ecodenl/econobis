@@ -143,6 +143,7 @@ class ProjectRevenueController extends ApiController
             ->validate('nullable|exists:project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
+            ->string('payoutType')->onEmpty(null)->alias('payout_type')->next()
             ->get();
 
         $projectRevenue = new ProjectRevenue();
@@ -194,6 +195,7 @@ class ProjectRevenueController extends ApiController
             ->validate('nullable|exists:project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
+            ->string('payoutType')->onEmpty(null)->alias('payout_type')->next()
             ->get();
 
         $projectRevenue->fill($data);

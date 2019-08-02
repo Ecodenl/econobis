@@ -45,7 +45,7 @@ class ParticipantFormEdit extends Component {
                 ibanPayout: ibanPayout ? ibanPayout : '',
                 legalRepContactId: legalRepContactId ? legalRepContactId : '',
                 ibanPayoutAttn: ibanPayoutAttn ? ibanPayoutAttn : '',
-                typeId,
+                typeId: typeId ? typeId : '',
                 powerKwhConsumption: powerKwhConsumption ? powerKwhConsumption : '',
             },
             errors: {
@@ -107,10 +107,13 @@ class ParticipantFormEdit extends Component {
             errors.projectId = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(participation.typeId + '')) {
-            errors.typeId = true;
-            hasErrors = true;
+        if (this.props.participation.project.projectType.codeRef === 'loan') {
+            if (validator.isEmpty(participation.typeId + '')) {
+                errors.typeId = true;
+                hasErrors = true;
+            }
         }
+
         if (!validator.isEmpty(participation.ibanPayout)) {
             if (!ibantools.isValidIBAN(participation.ibanPayout)) {
                 errors.ibanPayout = true;
@@ -235,16 +238,19 @@ class ParticipantFormEdit extends Component {
                         className={'col-sm-6 form-group'}
                         value={moneyPresenter(participationsReturnsTotal)}
                     />
-                    <InputSelect
-                        label={'Uitkeren op'}
-                        name={'typeId'}
-                        id={'typeId'}
-                        options={this.props.participantProjectPayoutTypes}
-                        value={typeId}
-                        onChangeAction={this.handleInputChange}
-                        required={'required'}
-                        error={this.state.errors.typeId}
-                    />
+
+                    {projectTypeCodeRef === 'loan' ? (
+                        <InputSelect
+                            label={'Uitkeren op'}
+                            name={'typeId'}
+                            id={'typeId'}
+                            options={this.props.participantProjectPayoutTypes}
+                            value={typeId}
+                            onChangeAction={this.handleInputChange}
+                            required={'required'}
+                            error={this.state.errors.typeId}
+                        />
+                    ) : null}
                 </div>
                 {projectTypeCodeRef === 'obligation' ? (
                     <ParticipantFormEditObligation

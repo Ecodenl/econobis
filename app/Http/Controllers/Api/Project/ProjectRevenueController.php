@@ -54,7 +54,8 @@ class ProjectRevenueController extends ApiController
             'category',
             'project.administration',
             'project.projectType',
-            'createdBy',
+            'participantProjectPayoutType',
+        'createdBy',
         ]);
 
         return FullProjectRevenue::make($projectRevenue);
@@ -143,7 +144,7 @@ class ProjectRevenueController extends ApiController
             ->validate('nullable|exists:project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
-            ->string('payoutType')->onEmpty(null)->alias('payout_type')->next()
+            ->integer('payoutTypeId')->onEmpty(null)->alias('payout_type_id')->next()
             ->get();
 
         $projectRevenue = new ProjectRevenue();
@@ -195,7 +196,7 @@ class ProjectRevenueController extends ApiController
             ->validate('nullable|exists:project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
-            ->string('payoutType')->onEmpty(null)->alias('payout_type')->next()
+            ->integer('payoutTypeId')->onEmpty(null)->alias('payout_type_id')->next()
             ->get();
 
         $projectRevenue->fill($data);
@@ -291,8 +292,13 @@ class ProjectRevenueController extends ApiController
             $distribution->city = $primaryAddress->city;
         }
 
-        $distribution->payout_type
-            = $participant->participantProjectPayoutType->name;
+        if($participant->participantProjectPayoutType){
+            $distribution->payout_type = $participant->participantProjectPayoutType->name;
+        }elseif($projectRevenue->participantProjectPayoutType){
+            $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
+        }else{
+            $distribution->payout_type = '';
+        }
 
         if ($primaryContactEnergySupplier) {
             $distribution->energy_supplier_name

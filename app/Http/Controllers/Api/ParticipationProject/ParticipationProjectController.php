@@ -195,15 +195,18 @@ class ParticipationProjectController extends ApiController
 
         $participantProject = new ParticipantProject();
 
-        // Default type id worth is account
-        $data['type_id'] = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
-
         $participantProject->fill($data);
 
         $participantProject->save();
 
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
+
+        // Loan / Obligation: Default type id is account.
+        if($project->projectType->code_ref == 'loan' ||$project->projectType->code_ref == 'obligation'){
+            $participantProject->type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
+            $participantProject->save();
+        }
 
         // Create first mutation
         $this->storeFirstMutation($requestInput, $participantProject, $project);
@@ -256,7 +259,7 @@ class ParticipationProjectController extends ApiController
             ->string('ibanPayout')->alias('iban_payout')->next()
             ->integer('legalRepContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('legal_rep_contact_id')->next()
             ->string('ibanPayoutAttn')->alias('iban_payout_attn')->next()
-            ->integer('typeId')->validate('required|exists:participant_project_payout_type,id')->alias('type_id')->next()
+            ->integer('typeId')->validate('nullable|exists:participant_project_payout_type,id')->onEmpty(null)->alias('type_id')->next()
             ->integer('powerKwhConsumption')->alias('power_kwh_consumption')->next()
             ->get();
 

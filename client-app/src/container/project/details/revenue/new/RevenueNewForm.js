@@ -24,7 +24,7 @@ const RevenueNew = props => {
         dateEnd,
         dateReference,
         dateConfirmed,
-        payoutType,
+        payoutTypeId,
         kwhStart,
         kwhEnd,
         kwhStartHigh,
@@ -120,13 +120,13 @@ const RevenueNew = props => {
                 (projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') ? (
                     <InputSelect
                         label={'Uitkeren op'}
-                        name={'payoutType'}
-                        id={'payoutType'}
+                        name={'payoutTypeId'}
+                        id={'payoutTypeId'}
                         options={props.participantProjectPayoutTypes}
-                        value={payoutType}
+                        value={payoutTypeId}
                         onChangeAction={props.handleInputChange}
                         required={'required'}
-                        error={props.errors.payoutType}
+                        error={props.errors.payoutTypeId}
                     />
                 ) : null}
             </div>

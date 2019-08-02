@@ -6,6 +6,7 @@ moment.locale('nl');
 
 import ViewText from '../../../../../../components/form/ViewText';
 import styled from '@emotion/styled';
+import InputSelect from './RevenueFormEdit';
 
 const StyledEm = styled.em`
     font-weight: normal;
@@ -18,6 +19,7 @@ const RevenueFormView = props => {
         dateEnd,
         dateReference,
         dateConfirmed,
+        participantProjectPayoutType,
         kwhStart,
         kwhEnd,
         kwhStartHigh,
@@ -30,6 +32,7 @@ const RevenueFormView = props => {
         keyAmountFirstPercentage,
         payPercentageValidFromKeyAmount,
         category,
+        project,
         payoutKwh,
         distributionType,
     } = props.revenue;
@@ -46,7 +49,7 @@ const RevenueFormView = props => {
 
             {category.codeRef === 'revenueEuro' ? (
                 <div className="row" onClick={props.switchToEdit}>
-                    {props.revenue.project.projectType.codeRef === 'obligation' ? (
+                    {project.projectType.codeRef === 'obligation' ? (
                         <ViewText
                             label={'Type opbrengst verdeling'}
                             value={distributionType ? distributionType.name : ''}
@@ -71,6 +74,14 @@ const RevenueFormView = props => {
                     label={'Datum definitief'}
                     value={dateConfirmed ? moment(dateConfirmed.date).format('L') : ''}
                 />
+                {category.codeRef === 'revenueEuro' &&
+                (project.projectType.codeRef === 'capital' ||
+                    project.projectType.codeRef === 'postalcode_link_capital') ? (
+                    <ViewText
+                        label={'Uitkeren op'}
+                        value={participantProjectPayoutType ? participantProjectPayoutType.name : ''}
+                    />
+                ) : null}
             </div>
 
             <div className="row" onClick={props.switchToEdit} />
@@ -118,8 +129,7 @@ const RevenueFormView = props => {
                         <span className={'h5 text-bold'}>Opbrengst euro</span>
                     </div>
                     <div className="row" onClick={props.switchToEdit}>
-                        {props.revenue.project.projectType.codeRef === 'loan' ||
-                        props.revenue.project.projectType.codeRef === 'obligation' ? (
+                        {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
                             <React.Fragment>
                                 <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
                                 <ViewText
@@ -132,8 +142,8 @@ const RevenueFormView = props => {
                                 />
                             </React.Fragment>
                         ) : null}
-                        {props.revenue.project.projectType.codeRef === 'capital' ||
-                        props.revenue.project.projectType.codeRef === 'postalcode_link_capital' ? (
+                        {project.projectType.codeRef === 'capital' ||
+                        project.projectType.codeRef === 'postalcode_link_capital' ? (
                             <React.Fragment>
                                 <ViewText label={'Resultaat'} value={revenue} />
                             </React.Fragment>

@@ -72,7 +72,9 @@ const ParticipantFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Totale opbrengsten'} value={moneyPresenter(participationsReturnsTotal)} />
-                <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
+                {project.projectType.codeRef === 'loan' ? (
+                    <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
+                ) : null}
             </div>
 
             {projectTypeCodeRef === 'obligation' ? (

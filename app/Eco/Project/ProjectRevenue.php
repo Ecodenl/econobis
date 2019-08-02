@@ -2,6 +2,7 @@
 
 namespace App\Eco\Project;
 
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -42,6 +43,10 @@ class ProjectRevenue extends Model
 
     public function category(){
         return $this->belongsTo(ProjectRevenueCategory::class, 'category_id');
+    }
+
+    public function participantProjectPayoutType(){
+        return $this->belongsTo(ParticipantProjectPayoutType::class, 'payout_type_id');
     }
 
     public function createdBy()

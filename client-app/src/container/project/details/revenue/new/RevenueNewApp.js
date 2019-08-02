@@ -26,7 +26,7 @@ class RevenueNewApp extends Component {
                 dateEnd: '',
                 dateReference: moment(),
                 dateConfirmed: '',
-                payoutType: '',
+                payoutTypeId: '',
                 kwhStart: 0,
                 kwhEnd: 0,
                 kwhStartHigh: '',
@@ -45,7 +45,7 @@ class RevenueNewApp extends Component {
                 dateBegin: false,
                 dateEnd: false,
                 dateReference: false,
-                payoutType: false,
+                payoutTypeId: false,
             },
             project: {},
         };
@@ -74,10 +74,10 @@ class RevenueNewApp extends Component {
                 revenue.distributionTypeId = 'inPossessionOf';
             }
             if (payload.projectType.codeRef === 'obligation') {
-                const payoutType = this.props.participantProjectPayoutTypes.find(
-                    participantProjectPayoutType => participantProjectPayoutType.codeRef === 'credit'
+                const payoutTypeId = this.props.participantProjectPayoutTypes.find(
+                    participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
                 ).id;
-                revenue.payoutType = payoutType;
+                revenue.payoutTypeId = payoutTypeId;
             }
 
             if (category.codeRef === 'revenueEuro') {
@@ -213,8 +213,8 @@ class RevenueNewApp extends Component {
             (this.state.project.projectType.codeRef === 'capital' ||
                 this.state.project.projectType.codeRef === 'postalcode_link_capital')
         ) {
-            if (validator.isEmpty(revenue.payoutType + '')) {
-                errors.payoutType = true;
+            if (validator.isEmpty(revenue.payoutTypeId + '')) {
+                errors.payoutTypeId = true;
                 hasErrors = true;
             }
         }

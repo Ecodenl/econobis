@@ -34,6 +34,7 @@ class RevenueFormEdit extends Component {
             dateEnd,
             dateReference,
             dateConfirmed,
+            payoutTypeId,
             kwhStart,
             kwhEnd,
             kwhStartHigh,
@@ -58,6 +59,7 @@ class RevenueFormEdit extends Component {
                 dateEnd: dateEnd ? moment(dateEnd.date).format('Y-MM-DD') : '',
                 dateReference: dateReference ? moment(dateReference.date).format('Y-MM-DD') : '',
                 dateConfirmed: dateConfirmed ? moment(dateConfirmed.date).format('Y-MM-DD') : '',
+                payoutTypeId: payoutTypeId ? payoutTypeId : '',
                 kwhStart: kwhStart ? kwhStart : 0,
                 kwhEnd: kwhEnd ? kwhEnd : 0,
                 kwhStartHigh: kwhStartHigh ? kwhStartHigh : '',
@@ -211,6 +213,17 @@ class RevenueFormEdit extends Component {
             }
         }
 
+        if (
+            this.props.revenue.category.codeRef === 'revenueEuro' &&
+            (this.props.revenue.project.projectType.codeRef === 'capital' ||
+                this.props.revenue.project.projectType.codeRef === 'postalcode_link_capital')
+        ) {
+            if (validator.isEmpty(revenue.payoutTypeId + '')) {
+                errors.payoutTypeId = true;
+                hasErrors = true;
+            }
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors && this.setState({ isSaving: true });
@@ -246,10 +259,15 @@ class RevenueFormEdit extends Component {
             payPercentageValidFromKeyAmount,
             typeId,
             payoutKwh,
+            payoutTypeId,
         } = this.state.revenue;
 
         const project = this.props.revenue.project;
         const { category } = this.props.revenue;
+        let projectTypeCodeRef = '';
+        if (project && project.projectType && project.projectType.codeRef) {
+            projectTypeCodeRef = project.projectType.codeRef;
+        }
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -265,9 +283,7 @@ class RevenueFormEdit extends Component {
 
                 {category.codeRef === 'revenueEuro' ? (
                     <div className="row">
-                        {this.props.revenue &&
-                        this.props.revenue.project &&
-                        this.props.revenue.project.projectType.codeRef === 'obligation' ? (
+                        {projectTypeCodeRef === 'obligation' ? (
                             <InputSelect
                                 label={'Type opbrengst verdeling'}
                                 name={'distributionTypeId'}
@@ -320,6 +336,19 @@ class RevenueFormEdit extends Component {
                         value={dateConfirmed}
                         onChangeAction={this.handleInputChangeDateConfirmed}
                     />
+                    {category.codeRef === 'revenueEuro' &&
+                    (projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') ? (
+                        <InputSelect
+                            label={'Uitkeren op'}
+                            name={'payoutTypeId'}
+                            id={'payoutTypeId'}
+                            options={this.props.participantProjectPayoutTypes}
+                            value={payoutTypeId}
+                            onChangeAction={this.handleInputChange}
+                            required={'required'}
+                            error={this.state.errors.payoutTypeId}
+                        />
+                    ) : null}
                 </div>
 
                 {category.codeRef === 'revenueEuro' ? (
@@ -329,8 +358,7 @@ class RevenueFormEdit extends Component {
                                 <span className={'h5 text-bold'}>Opbrengst euro</span>
                             </div>
                         </div>
-                        {this.props.revenue.project.projectType.codeRef === 'loan' ||
-                        this.props.revenue.project.projectType.codeRef === 'obligation' ? (
+                        {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
                             <React.Fragment>
                                 <div className="row">
                                     <InputText
@@ -364,8 +392,7 @@ class RevenueFormEdit extends Component {
                                 ) : null}
                             </React.Fragment>
                         ) : null}
-                        {this.props.revenue.project.projectType.codeRef === 'capital' ||
-                        this.props.revenue.project.projectType.codeRef === 'postalcode_link_capital' ? (
+                        {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
                             <React.Fragment>
                                 <div className="row">
                                     <InputText
@@ -385,7 +412,7 @@ class RevenueFormEdit extends Component {
                     <React.Fragment>
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Uitkering kWh velden</span>
+                                <span className={'h5 text-bold'}>Opbrengst kWh</span>
                             </div>
                         </div>
 
@@ -503,6 +530,7 @@ const mapStateToProps = state => {
     return {
         revenue: state.projectRevenue,
         projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
+        participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
     };
 };
 

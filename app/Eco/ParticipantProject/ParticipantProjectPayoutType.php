@@ -24,4 +24,9 @@ class ParticipantProjectPayoutType extends Model
     {
         return $this->hasMany(ParticipantProject::class);
     }
+    public function projectRevenue()
+    {
+        return $this->hasMany(ProjectRevenue::class, 'id', 'payout_type_id');
+    }
+
 }

@@ -313,13 +313,16 @@ class RevenueDistributionForm extends Component {
             document.body.style.cursor = 'default';
             this.setState({
                 showSuccessMessage: true,
-                successMessage: `Opbrengst verdeling gemaakt en Sepa is aangemaakt. Sepa bestand is bij de administratie ${
-                    this.props.projectRevenue &&
-                    this.props.projectRevenue.project &&
-                    this.props.projectRevenue.project.administration
-                        ? this.props.projectRevenue.project.administration.name
-                        : 'onbekend'
-                } toegevoegd.`,
+                successMessage: `Opbrengst verdeling gemaakt ${
+                    this.props.projectRevenue.category.codeRef !== 'revenueKwh'
+                        ? this.props.projectRevenue &&
+                          this.props.projectRevenue.project &&
+                          this.props.projectRevenue.project.administration
+                            ? 'en Sepa is aangemaakt. Sepa bestand is bij de administratie ' +
+                              this.props.projectRevenue.project.administration.name
+                            : 'onbekend'
+                        : '.'
+                } ${this.props.projectRevenue.category.codeRef !== 'revenueKwh' ? 'toegevoegd.' : ''}`,
             });
         });
     };
@@ -328,7 +331,6 @@ class RevenueDistributionForm extends Component {
         this.props.administrations.forEach(function(administration) {
             administrationIds.push(administration.id);
         });
-
         return (
             <Panel>
                 <PanelHeader>
@@ -419,9 +421,10 @@ class RevenueDistributionForm extends Component {
                                             disabledBefore={moment()
                                                 .nextBusinessDay()
                                                 .format('YYYY-MM-DD')}
-                                            disabledAfter={moment()
-                                                .add(1, 'year')
-                                                .format('YYYY-MM-DD')}
+                                            // todo In testfase niet handig, wellicht na in gebruik name wel ?
+                                            // disabledAfter={moment()
+                                            //     .add(1, 'year')
+                                            //     .format('YYYY-MM-DD')}
                                             error={this.state.datePayoutError}
                                         />
                                     </div>
@@ -433,7 +436,11 @@ class RevenueDistributionForm extends Component {
                                                 onClickAction={this.toggleShowCheckboxList}
                                             />
                                             <ButtonText
-                                                buttonText={'Opbrengst verdelen en Sepa bestand maken'}
+                                                buttonText={
+                                                    this.props.projectRevenue.category.codeRef === 'revenueKwh'
+                                                        ? 'Opbrengst verdelen'
+                                                        : 'Opbrengst verdelen en Sepa bestand maken'
+                                                }
                                                 onClickAction={this.checkDistributionRevenueInvoices}
                                                 type={'submit'}
                                                 value={'Submit'}

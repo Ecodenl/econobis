@@ -9,6 +9,7 @@
 namespace App\Eco\ParticipantProject;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Project\ProjectType;
 use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,6 +47,14 @@ class ParticipantProjectObserver
 
                 $projectRevenueController->saveDistribution($projectRevenue, $participantProject);
 
+                $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+                if($projectRevenue->category->code_ref == 'revenueEuro'
+                && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
+                    foreach($projectRevenue->distribution as $distribution) {
+                        $distribution->calculator()->runRevenueCaptitalResult();
+                        $distribution->save();
+                    }
+                }
                 if($projectRevenue->category->code_ref == 'revenueKwh') {
                     foreach($projectRevenue->distribution as $distribution) {
                         $distribution->calculator()->runRevenueKwh();

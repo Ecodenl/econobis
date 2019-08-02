@@ -23,7 +23,7 @@ class CostCenterController extends Controller
         $this->authorize('manage', CostCenter::class);
 
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
-            ->string('twinfieldCostCenterCode')->validate('unique:cost_centers,twinfield_cost_center_code')->whenMissing('')->onEmpty('')->alias('twinfield_cost_center_code')->next()
+            ->string('twinfieldCostCenterCode')->validate('unique:cost_centers,twinfield_cost_center_code,0,id,deleted_at,NULL')->whenMissing('')->onEmpty('')->alias('twinfield_cost_center_code')->next()
             ->get();
 
         $costCenter = new CostCenter($data);
@@ -36,7 +36,7 @@ class CostCenterController extends Controller
     {
         $this->authorize('manage', CostCenter::class);
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
-            ->string('twinfieldCostCenterCode')->validate('unique:cost_centers,twinfield_cost_center_code,' . $costCenter->id )->whenMissing('')->onEmpty('')->alias('twinfield_cost_center_code')->next()
+            ->string('twinfieldCostCenterCode')->validate('unique:cost_centers,twinfield_cost_center_code,' . $costCenter->id . ',id,deleted_at,NULL' )->whenMissing('')->onEmpty('')->alias('twinfield_cost_center_code')->next()
             ->get();
 
         $costCenter->fill($data);

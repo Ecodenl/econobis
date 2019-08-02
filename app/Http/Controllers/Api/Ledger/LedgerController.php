@@ -24,7 +24,7 @@ class LedgerController extends Controller
 
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
             ->integer('vatCodeId')->validate('nullable|exists:vat_codes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
-            ->string('twinfieldLedgerCode')->validate('unique:ledgers,twinfield_ledger_code')->whenMissing('')->onEmpty('')->alias('twinfield_ledger_code')->next()
+            ->string('twinfieldLedgerCode')->validate('unique:ledgers,twinfield_ledger_code,0,id,deleted_at,NULL')->whenMissing('')->onEmpty('')->alias('twinfield_ledger_code')->next()
             ->get();
 
         $ledger = new Ledger($data);
@@ -38,7 +38,7 @@ class LedgerController extends Controller
         $this->authorize('manage', Ledger::class);
         $data = $input->string('description')->whenMissing('')->onEmpty('')->next()
             ->integer('vatCodeId')->validate('nullable|exists:vat_codes,id')->onEmpty(null)->whenMissing(null)->alias('vat_code_id')->next()
-            ->string('twinfieldLedgerCode')->validate('unique:ledgers,twinfield_ledger_code,' . $ledger->id )->whenMissing('')->onEmpty('')->alias('twinfield_ledger_code')->next()
+            ->string('twinfieldLedgerCode')->validate('unique:ledgers,twinfield_ledger_code,' . $ledger->id . ',id,deleted_at,NULL' )->whenMissing('')->onEmpty('')->alias('twinfield_ledger_code')->next()
             ->get();
 
         $ledger->fill($data);

@@ -104,6 +104,7 @@ class TwinfieldInvoiceHelper
                         // [4] - Openstaand bedrag
                         // [5] - Betaaldatum
                         // [6] - Twinfieldnumber
+                        // [7] - Matchnumber
 
                         $dagBoek     = ($row->getCells()[1]->getValue());
                         $amountInvoice = $row->getCells()[3]->getValue();
@@ -111,19 +112,21 @@ class TwinfieldInvoiceHelper
                         $dateInput = $row->getCells()[5]->getValue(); //datetime
                         $dateInput = date_format($dateInput, 'Y-m-d');
                         $twinfieldNumber = ($row->getCells()[6]->getValue());
+                        $twinfieldMatchNumber = ($row->getCells()[7]->getValue());
 
                         //VRK is de verkoop factuur, die slaan we nu over
                         if($dagBoek !== 'VRK')
                         {
                             //-100 op debiteur is dus 100 betaald
                             $amount = ($amountInvoice-$amountOpen) * -1;
-                            $invoicePaymentCheck = InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('twinfield_number', $twinfieldNumber);
+                            $invoicePaymentCheck = InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('twinfield_number', $twinfieldNumber)->where('twinfield_match_number', $twinfieldMatchNumber);
                             // InvoicePayment bestaat nog niet, dan nieuw aanmaken
                             if(!$invoicePaymentCheck->exists())
                             {
                                 $invoicePayment = new InvoicePayment();
                                 $invoicePayment->invoice_id = $invoiceToBeChecked->id;
                                 $invoicePayment->twinfield_number = $twinfieldNumber;
+                                $invoicePayment->twinfield_match_number = $twinfieldMatchNumber;
                                 $invoicePayment->amount = $amount;
                                 $invoicePayment->type_id = $dagBoek;
                                 $invoicePayment->date_paid = $dateInput;
@@ -259,6 +262,12 @@ class TwinfieldInvoiceHelper
             ->setLabel('Boekst.nr.')
             ->setVisible(true)
             ->setAsk(true);
+        // [7] - Matchnumber
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchnumber')
+            ->setLabel('Betaalnr.')
+            ->setVisible(true)
+            ->setAsk(false);
 
         return $columns;
 

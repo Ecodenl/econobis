@@ -31,6 +31,8 @@ class FullProjectRevenue extends Resource
                 'dateEnd' => $this->date_end,
                 'dateReference' => $this->date_reference,
                 'dateConfirmed' => $this->date_confirmed,
+                'payoutTypeId' => $this->payout_type_id,
+                'participantProjectPayoutType' => GenericResource::make($this->whenLoaded('participantProjectPayoutType')),
                 'kwhStart' => $this->kwh_start,
                 'kwhEnd' => $this->kwh_end,
                 'kwhStartHigh' => $this->kwh_start_high,

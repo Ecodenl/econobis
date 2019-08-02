@@ -24,12 +24,14 @@ const RevenueNew = props => {
         dateEnd,
         dateReference,
         dateConfirmed,
+        payoutTypeId,
         kwhStart,
         kwhEnd,
         kwhStartHigh,
         kwhEndHigh,
         kwhStartLow,
         kwhEndLow,
+        revenue,
         payPercentage,
         keyAmountFirstPercentage,
         payPercentageValidFromKeyAmount,
@@ -40,6 +42,11 @@ const RevenueNew = props => {
     const category = props.projectRevenueCategories.find(
         projectRevenueCategorie => projectRevenueCategorie.id == categoryId
     );
+
+    let projectTypeCodeRef = '';
+    if (props.project && props.project.projectType && props.project.projectType.codeRef) {
+        projectTypeCodeRef = props.project.projectType.codeRef;
+    }
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -55,7 +62,7 @@ const RevenueNew = props => {
 
             {category.codeRef === 'revenueEuro' ? (
                 <div className="row">
-                    {props.project && props.project.projectType && props.project.projectType.codeRef !== 'loan' ? (
+                    {projectTypeCodeRef === 'obligation' ? (
                         <InputSelect
                             label={'Type opbrengst verdeling'}
                             name={'distributionTypeId'}
@@ -109,6 +116,19 @@ const RevenueNew = props => {
                     value={dateConfirmed}
                     onChangeAction={props.handleInputChangeDateConfirmed}
                 />
+                {category.codeRef === 'revenueEuro' &&
+                (projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') ? (
+                    <InputSelect
+                        label={'Uitkeren op'}
+                        name={'payoutTypeId'}
+                        id={'payoutTypeId'}
+                        options={props.participantProjectPayoutTypes}
+                        value={payoutTypeId}
+                        onChangeAction={props.handleInputChange}
+                        required={'required'}
+                        error={props.errors.payoutTypeId}
+                    />
+                ) : null}
             </div>
 
             {category.codeRef === 'revenueEuro' ? (
@@ -118,35 +138,52 @@ const RevenueNew = props => {
                             <span className={'h5 text-bold'}>Opbrengst euro</span>
                         </div>
                     </div>
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Uitkering %'}
-                            name={'payPercentage'}
-                            value={payPercentage}
-                            onChangeAction={props.handleInputChange}
-                        />
-                        <InputText
-                            label={
-                                <React.Fragment>
-                                    Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                </React.Fragment>
-                            }
-                            name={'keyAmountFirstPercentage'}
-                            value={keyAmountFirstPercentage}
-                            onChangeAction={props.handleInputChange}
-                        />
-                    </div>
-                    {keyAmountFirstPercentage ? (
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
-                                name={'payPercentageValidFromKeyAmount'}
-                                value={payPercentageValidFromKeyAmount}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        </div>
+                    {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                        <React.Fragment>
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={'Uitkering %'}
+                                    name={'payPercentage'}
+                                    value={payPercentage}
+                                    onChangeAction={props.handleInputChange}
+                                />
+                                <InputText
+                                    label={
+                                        <React.Fragment>
+                                            Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                        </React.Fragment>
+                                    }
+                                    name={'keyAmountFirstPercentage'}
+                                    value={keyAmountFirstPercentage}
+                                    onChangeAction={props.handleInputChange}
+                                />
+                            </div>
+                            {keyAmountFirstPercentage ? (
+                                <div className="row">
+                                    <InputText
+                                        type={'number'}
+                                        label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                        name={'payPercentageValidFromKeyAmount'}
+                                        value={payPercentageValidFromKeyAmount}
+                                        onChangeAction={props.handleInputChange}
+                                    />
+                                </div>
+                            ) : null}
+                        </React.Fragment>
+                    ) : null}
+                    {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                        <React.Fragment>
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={'Resultaat'}
+                                    name={'revenue'}
+                                    value={revenue}
+                                    onChangeAction={props.handleInputChange}
+                                />
+                            </div>
+                        </React.Fragment>
                     ) : null}
                 </React.Fragment>
             ) : null}
@@ -244,6 +281,7 @@ const mapStateToProps = state => {
         projectRevenueTypes: state.systemData.projectRevenueTypes,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
         projectRevenueDistributionTypes: state.systemData.projectRevenueDistributionTypes,
+        participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
     };
 };
 

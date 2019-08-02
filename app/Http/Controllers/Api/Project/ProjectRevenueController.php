@@ -17,6 +17,7 @@ use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
+use App\Eco\Project\ProjectType;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
 use App\Helpers\CSV\RevenueParticipantsCSVHelper;
@@ -53,7 +54,8 @@ class ProjectRevenueController extends ApiController
             'category',
             'project.administration',
             'project.projectType',
-            'createdBy',
+            'participantProjectPayoutType',
+        'createdBy',
         ]);
 
         return FullProjectRevenue::make($projectRevenue);
@@ -142,6 +144,7 @@ class ProjectRevenueController extends ApiController
             ->validate('nullable|exists:project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
+            ->integer('payoutTypeId')->onEmpty(null)->alias('payout_type_id')->next()
             ->get();
 
         $projectRevenue = new ProjectRevenue();
@@ -193,6 +196,7 @@ class ProjectRevenueController extends ApiController
             ->validate('nullable|exists:project_revenue_type,id')
             ->onEmpty(null)->alias('type_id')->next()
             ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
+            ->integer('payoutTypeId')->onEmpty(null)->alias('payout_type_id')->next()
             ->get();
 
         $projectRevenue->fill($data);
@@ -240,6 +244,15 @@ class ProjectRevenueController extends ApiController
             $this->saveDistribution($projectRevenue, $participant);
         }
 
+        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+        if($projectRevenue->category->code_ref == 'revenueEuro'
+            && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
+            foreach($projectRevenue->distribution as $distribution) {
+                $distribution->calculator()->runRevenueCaptitalResult();
+                $distribution->save();
+            }
+        }
+
         if($projectRevenue->category->code_ref == 'revenueKwh') {
             foreach($projectRevenue->distribution as $distribution) {
                 $distribution->calculator()->runRevenueKwh();
@@ -279,8 +292,13 @@ class ProjectRevenueController extends ApiController
             $distribution->city = $primaryAddress->city;
         }
 
-        $distribution->payout_type
-            = $participant->participantProjectPayoutType->name;
+        if($participant->participantProjectPayoutType){
+            $distribution->payout_type = $participant->participantProjectPayoutType->name;
+        }elseif($projectRevenue->participantProjectPayoutType){
+            $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
+        }else{
+            $distribution->payout_type = '';
+        }
 
         if ($primaryContactEnergySupplier) {
             $distribution->energy_supplier_name
@@ -302,6 +320,11 @@ class ProjectRevenueController extends ApiController
         if($projectRevenue->category->code_ref == 'revenueKwh') {
             $this->saveDeliveredKwhPeriod($distribution);
             return;
+        }
+
+        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+        if($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
+            $this->saveDeliveredKwhPeriod($distribution);
         }
 
         // Recalculate values of distribution after saving
@@ -515,97 +538,114 @@ class ProjectRevenueController extends ApiController
         }
 
         foreach ($distributions as $distribution) {
-            if ($distribution->revenue->category->code_ref !== 'revenueKwh' && $distribution->status === 'confirmed')
+            $projectTypeCodeRef = (ProjectType::where('id', $distribution->revenue->project->project_type_id)->first())->code_ref;
+            //status moet nog bevestigd (confirmed zijn)
+            if ($distribution->status === 'confirmed')
             {
-                if ($distribution->payout_type === 'Rekening'
-                    && $distribution->payout > 0
-                    && !(empty($distribution->address)
-                        || empty($distribution->postal_code)
-                        || empty($distribution->city)
-                        || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban))
-                         )
+                // indien Opbrengst Kwh, dan geen voorwaarden inzake adres of IBAN
+                if ($distribution->revenue->category->code_ref === 'revenueKwh') {
+                    $distribution->status = 'in-progress';
+                    $distribution->save();
+                }else{
+                    // indien Opbrengst Euro, dan wel voorwaarden inzake adres of IBAN (afhankellijk van payout type)
+                    if ($distribution->payout_type === 'Rekening'
+                        && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
+                        && !(empty($distribution->address)
+                            || empty($distribution->postal_code)
+                            || empty($distribution->city)
+                            || (empty($distribution->participation->iban_payout) && empty($distribution->contact->iban))
+                        )
                     )
-                {
-                    $distribution->status = 'in-progress';
-                    $distribution->save();
-                }
-                if ($distribution->payout_type === 'Bijschrijven'
-                    && $distribution->payout > 0
-                ) {
-                    $distribution->status = 'in-progress';
-                    $distribution->save();
+                    {
+                            $distribution->status = 'in-progress';
+                        $distribution->save();
+                    }
+                    if ($distribution->payout_type === 'Bijschrijven'
+                        && $distribution->payout > 0
+                    ) {
+                        $distribution->status = 'in-progress';
+                        $distribution->save();
+                    }
                 }
             }
         }
 
         foreach ($distributions as $distribution) {
-            if ($distribution->revenue->category->code_ref !== 'revenueKwh' && $distribution->status === 'in-progress')
+            //status moet nu onderhanden zijn (in-progess zijn)
+            if ($distribution->status === 'in-progress')
             {
-                if ($distribution->payout_type === 'Rekening')
-                {
-                    $currentYear = Carbon::now()->year;
-                    // Haal laatst uitgedeelde uitkeringsfactuurnummer op (binnen aanmaakjaar)
-                    $lastPaymentInvoice = PaymentInvoice::where('administration_id',
-                        $distribution->revenue->project->administration_id)->where('invoice_number', '!=', 0)
-                        ->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
+                // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
+                if ($distribution->revenue->category->code_ref === 'revenueKwh') {
+                    $this->createParticipantMutationForRevenueKwh($distribution);
+                    $distribution->status = 'processed';
+                    $distribution->save();
+                }else{
+                    // indien Opbrengst Euro, dan gaan we of facturen en sepa aanmaken of bijschrijven (afhankellijk van payout type)
+                    if ($distribution->payout_type === 'Rekening')
+                    {
+                        $currentYear = Carbon::now()->year;
+                        // Haal laatst uitgedeelde uitkeringsfactuurnummer op (binnen aanmaakjaar)
+                        $lastPaymentInvoice = PaymentInvoice::where('administration_id',
+                            $distribution->revenue->project->administration_id)->where('invoice_number', '!=', 0)
+                            ->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
 
-                    $newInvoiceNumber = 1;
-                    if ($lastPaymentInvoice) {
-                        $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1);
+                        $newInvoiceNumber = 1;
+                        if ($lastPaymentInvoice) {
+                            $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1);
+                        }
+
+                        if (PaymentInvoice::where('administration_id',
+                            $distribution->revenue->project->administration_id)
+                            ->where('invoice_number', '=', $newInvoiceNumber)
+                            ->whereYear('created_at', '=', $currentYear)
+                            ->exists()
+                        ) {
+                            // voor abort status weer even terug zetten naar confirmed (anders blijft ie op "in-progress" hangen).
+                            $distribution->status = 'confirmed';
+                            $distribution->save();
+                            abort(404, "Voor uitkeringsfactuur met administratie ID "
+                                . $distribution->revenue->project->administration_id . " en revenue distribution ID "
+                                . $distribution->id . " kon geen nieuw nummer bepaald worden.");
+                        } else {
+                            $paymentInvoice = new PaymentInvoice();
+                            $paymentInvoice->revenue_distribution_id = $distribution->id;
+                            $paymentInvoice->administration_id
+                                = $distribution->revenue->project->administration_id;
+                            $paymentInvoice->invoice_number = $newInvoiceNumber;
+                            $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
+                            $paymentInvoice->status_id = 'sent';
+                            $paymentInvoice->save();
+                        }
+                        array_push($createdInvoices, $paymentInvoice);
                     }
 
-                    if (PaymentInvoice::where('administration_id',
-                        $distribution->revenue->project->administration_id)
-                        ->where('invoice_number', '=', $newInvoiceNumber)
-                        ->whereYear('created_at', '=', $currentYear)
-                        ->exists()
-                    ) {
-                        // voor abort status weer even terug zetten naar confirmed (anders blijft ie op "in-progress" hangen).
-                        $distribution->status = 'confirmed';
-                        $distribution->save();
-                        abort(404, "Voor uitkeringsfactuur met administratie ID "
-                            . $distribution->revenue->project->administration_id . " en revenue distribution ID "
-                            . $distribution->id . " kon geen nieuw nummer bepaald worden.");
-                    } else {
-                        $paymentInvoice = new PaymentInvoice();
-                        $paymentInvoice->revenue_distribution_id = $distribution->id;
-                        $paymentInvoice->administration_id
-                            = $distribution->revenue->project->administration_id;
-                        $paymentInvoice->invoice_number = $newInvoiceNumber;
-                        $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
-                        $paymentInvoice->status_id = 'sent';
-                        $paymentInvoice->save();
+                    if ($distribution->payout_type === 'Bijschrijven') {
+                        $participantMutation = new ParticipantMutation();
+                        $participantMutation->participation_id = $distribution->participation_id;
+                        $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')
+                            ->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
+                        $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')
+                            ->value('id');
+                        $participantMutation->amount = $distribution->payout;
+                        $participantMutation->returns = $distribution->payout;
+                        $participantMutation->paid_on = 'Bijschrijven';
+                        $participantMutation->date_entry = $datePayout;
+                        $participantMutation->save();
+
+                        // Recalculate dependent data in participantProject
+                        $participantMutation->participation->calculator()->run()->save();
+
+                        // Recalculate dependent data in project
+                        $participantMutation->participation->project->calculator()->run()->save();
                     }
-                    array_push($createdInvoices, $paymentInvoice);
+
+                    // Nu kan status op Afgehandeld (processed).
+                    $distribution->status = 'processed';
+                    $distribution->date_payout = $datePayout;
+                    $distribution->save();
                 }
-
-                if ($distribution->payout_type === 'Bijschrijven') {
-                    $participantMutation = new ParticipantMutation();
-                    $participantMutation->participation_id = $distribution->participation_id;
-                    $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')
-                        ->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
-                    $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')
-                        ->value('id');
-                    $participantMutation->amount = $distribution->payout;
-                    $participantMutation->returns = $distribution->payout;
-                    $participantMutation->paid_on = 'Bijschrijven';
-                    $participantMutation->date_entry = $datePayout;
-                    $participantMutation->save();
-
-                    // Recalculate dependent data in participantProject
-                    $participantMutation->participation->calculator()->run()->save();
-
-                    // Recalculate dependent data in project
-                    $participantMutation->participation->project->calculator()->run()->save();
-                }
-
-                $distribution->status = 'processed';
-                $distribution->date_payout = $datePayout;
-                $distribution->save();
-
             }
         }
-
         return $createdInvoices;
     }
 
@@ -848,13 +888,6 @@ class ProjectRevenueController extends ApiController
                 if (!$previewPDF && !$previewEmail) {
                     //delete file on server, still saved on alfresco.
                     Storage::disk('documents')->delete($document->filename);
-
-                    // Create participant mutation when revenue category is revenueKwh
-                    if ($revenue->category->code_ref === 'revenueKwh' && $distribution->status === 'confirmed') {
-                        $this->createParticipantMutationForRevenueKwh($distribution);
-                        $distribution->status = 'processed';
-                        $distribution->save();
-                    }
                 }
             }
         }

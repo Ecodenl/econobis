@@ -38,6 +38,7 @@ const MutationFormView = ({
         datePayment,
         dateEntry,
         amount,
+        participationWorth,
         quantity,
         returns,
         payoutKwh,
@@ -59,11 +60,12 @@ const MutationFormView = ({
                 </StyledColumn>
                 <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry.date).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'120px'}>{type.description}</StyledColumn>
-                {(projectTypeCodeRef === 'loan' ||
-                    projectTypeCodeRef === 'capital' ||
-                    projectTypeCodeRef === 'postalcode_link_capital') && (
-                    <StyledColumn>{amount && moneyPresenter(amount)}</StyledColumn>
-                )}
+                {projectTypeCodeRef === 'loan' ? <StyledColumn>{amount && moneyPresenter(amount)}</StyledColumn> : null}
+                {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                    <StyledColumn>
+                        {(amount || participationWorth) && moneyPresenter(amount + participationWorth)}
+                    </StyledColumn>
+                ) : null}
                 {(projectTypeCodeRef === 'obligation' ||
                     projectTypeCodeRef === 'capital' ||
                     projectTypeCodeRef === 'postalcode_link_capital') && <StyledColumn>{quantity}</StyledColumn>}

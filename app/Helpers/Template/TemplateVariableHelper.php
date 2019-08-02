@@ -585,7 +585,7 @@ class TemplateVariableHelper
                 return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
                 break;
             case 'uitkeren_op':
-                return $model->participantProjectPayoutType->name;
+                return $model->participantProjectPayoutType ? $model->participantProjectPayoutType->name : '';
                 break;
             default:
                 return '';

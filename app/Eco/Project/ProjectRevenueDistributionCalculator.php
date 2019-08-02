@@ -32,8 +32,7 @@ class ProjectRevenueDistributionCalculator
             $this->calculateDeliveredKwh();
         }
     }
-
-    public function calculateDeliveredKwh()
+    protected function calculateDeliveredKwh()
     {
         $projectRevenue = $this->projectRevenueDistribution->revenue;
 
@@ -64,6 +63,46 @@ class ProjectRevenueDistributionCalculator
         $this->projectRevenueDistribution->delivered_total = $totalDeliveredKwh;
         $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
         $this->projectRevenueDistribution->participations_amount = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first()->participations_quantity;
+
+        return $this->projectRevenueDistribution;
+    }
+
+    public function runRevenueCaptitalResult()
+    {
+        // Revenue category REVENUE EUR
+        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
+            $this->calculateCapitalResult();
+        }
+    }
+
+    protected function calculateCapitalResult()
+    {
+        $projectRevenue = $this->projectRevenueDistribution->revenue;
+
+        // Calculate total result
+        $totalResult = $projectRevenue->revenue;
+
+        // Total sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
+        // With this value we can calculate the amount of kwh per day and per participation ($totalResult / $totalSumOfParticipationsTimesDays)
+        $totalSumOfParticipationsAndDays = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
+            return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+        });
+
+        $totalDistributionResult = 0;
+        foreach ($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+            // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
+            // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
+            $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+
+            // Save returns per Kwh period
+            $deliveredKwhPeriod->amount_result = round(($totalResult / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
+            $deliveredKwhPeriod->save();
+
+            $totalDistributionResult += $deliveredKwhPeriod->amount_result;
+        }
+
+        // Return total delivered kwh for per distribution
+        $this->projectRevenueDistribution->payout = $totalDistributionResult;
 
         return $this->projectRevenueDistribution;
     }

@@ -2,7 +2,6 @@ import React from 'react';
 import moment from 'moment/moment';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 import validator from 'validator';
-import PanelBody from './RevenueDistributionForm';
 moment.locale('nl');
 
 const RevenueDistributionFormView = props => {

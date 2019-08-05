@@ -74,27 +74,7 @@ class RevenueDistributionForm extends Component {
         this.props.getDistribution(this.props.projectRevenue.id, 0);
     }
 
-    reloadPage = () => {
-        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
-            let templates = [];
-
-            payload.forEach(function(template) {
-                if (template.group == 'revenue') {
-                    templates.push({ id: template.id, name: template.name });
-                }
-            });
-
-            this.setState({
-                templates: templates,
-            });
-        });
-
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
-            this.setState({
-                emailTemplates: payload,
-            });
-        });
-
+    reloadDistributions = () => {
         this.props.getDistribution(this.props.projectRevenue.id, 0);
     };
 
@@ -188,7 +168,7 @@ class RevenueDistributionForm extends Component {
             showSuccessMessage: '',
             createType: '',
         });
-        this.reloadPage();
+        this.reloadDistributions();
     };
 
     toggleDistributionCheck = event => {
@@ -336,7 +316,7 @@ class RevenueDistributionForm extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Opbrengstverdeling deelnemers</span>
                     <div className="btn-group pull-right">
-                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadPage} />
+                        <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.reloadDistributions} />
                         {this.props.projectRevenue.confirmed == 1 &&
                             administrationIds.includes(this.props.projectRevenue.project.administrationId) &&
                             (this.state.createType === '' ? (

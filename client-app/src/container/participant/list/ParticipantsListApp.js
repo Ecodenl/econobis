@@ -347,22 +347,22 @@ class ParticipantsListApp extends Component {
         });
     };
 
-    // prefillExtraFilter() {
-    //     this.setState({
-    //         filterType: 'and',
-    //         amountOfFilters: 1,
-    //         extraFilters: [
-    //             {
-    //                 field: 'name',
-    //                 type: 'eq',
-    //                 data: '',
-    //             },
-    //         ],
-    //     });
-    // }
+    prefillExtraFilter() {
+        this.setState({
+            filterType: 'and',
+            amountOfFilters: 1,
+            extraFilters: [
+                {
+                    field: 'name',
+                    type: 'eq',
+                    data: '',
+                },
+            ],
+        });
+    }
 
     toggleShowExtraFilters() {
-        // this.state.extraFilters.length === 0 && !this.state.showExtraFilters && this.prefillExtraFilter();
+        this.state.extraFilters.length === 0 && !this.state.showExtraFilters && this.prefillExtraFilter();
 
         this.setState({
             showExtraFilters: !this.state.showExtraFilters,

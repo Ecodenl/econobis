@@ -11,6 +11,7 @@ import ParticipantProjectDetailsAPI from '../../../api/participant-project/Parti
 const ParticipantDetailsTerminate = ({
     participantProjectId,
     closeDeleteItemModal,
+    projectTypeCodeRef,
     fetchParticipantProjectDetails,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(moment().format('Y-MM-DD'));
@@ -60,12 +61,14 @@ const ParticipantDetailsTerminate = ({
                     onChangeAction={onChangeDateTerminated}
                     disabledAfter={moment().format('Y-MM-DD')}
                 />
-                <InputText
-                    label={'Uitkeringspercentage'}
-                    name="payoutPercentageTerminated"
-                    value={payoutPercentageTerminated}
-                    onChangeAction={onChangePayoutPercentageTerminated}
-                />
+                {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                    <InputText
+                        label={'Uitkeringspercentage'}
+                        name="payoutPercentageTerminated"
+                        value={payoutPercentageTerminated}
+                        onChangeAction={onChangePayoutPercentageTerminated}
+                    />
+                ) : null}
             </div>
         </Modal>
     );

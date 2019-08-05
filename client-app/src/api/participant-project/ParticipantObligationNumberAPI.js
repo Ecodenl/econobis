@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL_OBLIGATION_NUMBER = `${URL_API}/api/production-project/participant/obligation-number`;
+const URL_OBLIGATION_NUMBER = `${URL_API}/api/project/participant/obligation-number`;
 
 export default {
     newObligationNumber: obligationNumber => {

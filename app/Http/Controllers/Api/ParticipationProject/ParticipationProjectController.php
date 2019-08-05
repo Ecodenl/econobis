@@ -375,8 +375,8 @@ class ParticipationProjectController extends ApiController
             $projectType = $participantProject->project->projectType;
             $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
 
-            // If Payout percentage is filled then make a result mutation
-            if ($payoutPercentageTerminated) {
+            // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
+            if ($payoutPercentageTerminated && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
                 $mutationTypeResultId = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $projectType->id)->value('id');
                 // Calculate result from last revenue distribution till date terminate
                 $this->createMutationResult($participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated, $projectType);
@@ -785,64 +785,27 @@ class ParticipationProjectController extends ApiController
     {
         $result = $this->calculatePayoutHowLongInPossession($participantProject, $payoutPercentageTerminated);
 
-        // Obligaties kunnen geen Rente bijschrijven krijgen. Deze moet altijd uitgekeerd worden.
-        if ($projectType->code_ref == 'obligation') {
-//todo Een PaymentInvoice moet verwijzen nu naar een geldig revenue_distribution_id. Die hebben we nu niet omdat we geen echte revenue distribution hebben gemaakt.
-
-//            $currentYear = Carbon::now()->year;
-//            // Haal laatst uitgedeelde uitkeringsfactuurnummer op (binnen aanmaakjaar)
-//            $lastPaymentInvoice = PaymentInvoice::where('administration_id',
-//                $participantProject->project->administration_id)->where('invoice_number', '!=', 0)
-//                ->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
-//
-//            $newInvoiceNumber = 1;
-//            if ($lastPaymentInvoice) {
-//                $newInvoiceNumber = ($lastPaymentInvoice->invoice_number + 1);
-//            }
-//
-//            if (PaymentInvoice::where('administration_id',
-//                $participantProject->project->administration_id)
-//                ->where('invoice_number', '=', $newInvoiceNumber)
-//                ->whereYear('created_at', '=', $currentYear)
-//                ->exists()
-//            ) {
-//                abort(404, "Voor uitkeringsfactuur met administratie ID "
-//                    . $participantProject->project->administration_id . " en project deelnemer ID "
-//                    . $participantProject->id . " kon geen nieuw nummer bepaald worden.");
-//            } else {
-//                $paymentInvoice = new PaymentInvoice();
-//                $paymentInvoice->revenue_distribution_id = $participantProject->id;
-//                $paymentInvoice->administration_id
-//                    = $participantProject->project->administration_id;
-//                $paymentInvoice->invoice_number = $newInvoiceNumber;
-//                $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
-//                $paymentInvoice->status_id = 'sent';
-//                $paymentInvoice->save();
-//            }
+        $participantMutation = new ParticipantMutation();
+        $participantMutation->participation_id = $participantProject->id;
+        $participantMutation->type_id = $mutationTypeResultId;
+        $participantMutation->status_id = $mutationStatusFinalId;
+        if ($projectType->code_ref == 'loan') {
+            $participantMutation->amount = $result;
         }
-        else{
-            $participantMutation = new ParticipantMutation();
-            $participantMutation->participation_id = $participantProject->id;
-            $participantMutation->type_id = $mutationTypeResultId;
-            $participantMutation->status_id = $mutationStatusFinalId;
-            if ($projectType->code_ref == 'loan') {
-                $participantMutation->amount = $result;
-            }
-            $participantMutation->returns = $result;
-            if ($projectType->code_ref == 'loan') {
-                $participantMutation->date_entry = $participantProject->date_terminated;
-            } else {
-                $participantMutation->date_payment = $participantProject->date_terminated;
-            }
-            $participantMutation->paid_on = 'Bijschrijven';
-            $participantMutation->save();
-
-            // Recalculate dependent data in participantProject
-            $participantMutation->participation->calculator()->run()->save();
-
-            // Recalculate dependent data in project
-            $participantMutation->participation->project->calculator()->run()->save();
+        $participantMutation->returns = $result;
+        if ($projectType->code_ref == 'loan') {
+            $participantMutation->date_entry = $participantProject->date_terminated;
+        } else {
+            $participantMutation->date_payment = $participantProject->date_terminated;
         }
+        $participantMutation->paid_on = 'Bijschrijven';
+        $participantMutation->save();
+
+        // Recalculate dependent data in participantProject
+        $participantMutation->participation->calculator()->run()->save();
+
+        // Recalculate dependent data in project
+        $participantMutation->participation->project->calculator()->run()->save();
     }
 
     protected function calculatePayoutHowLongInPossession(ParticipantProject $participantProject, $payoutPercentageTerminated)

@@ -159,8 +159,20 @@ class ContactsListExtraFilters extends Component {
                 name: 'Gemaakt op',
                 type: 'date',
             },
+            currentObligations: {
+                name: 'Huidig aantal obligaties',
+                type: 'number',
+            },
             currentParticipations: {
-                name: 'Huidig aantal deelnames',
+                name: 'Huidig aantal participaties',
+                type: 'number',
+            },
+            currentPostalcodeLinkCapital: {
+                name: 'Huidig aantal postcoderoos',
+                type: 'number',
+            },
+            currentLoan: {
+                name: 'Huidig bedrag lening',
                 type: 'number',
             },
             occupation: {

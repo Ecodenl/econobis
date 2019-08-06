@@ -26,8 +26,14 @@ export default (type, field) => {
                     return 'Naam';
                 case 'postalCodeNumber':
                     return 'Postcode nummer';
+                case 'currentObligations':
+                    return 'Aantal obligaties';
                 case 'currentParticipations':
-                    return 'Aantal deelnames';
+                    return 'Aantal participaties';
+                case 'currentPostalcodeLinkCapital':
+                    return 'Aantal postcoderoos';
+                case 'currentLoan':
+                    return 'Bedrag lening';
                 case 'occupation':
                     return 'Verbinding';
                 case 'opportunity':

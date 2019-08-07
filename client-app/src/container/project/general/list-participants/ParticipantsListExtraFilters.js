@@ -123,7 +123,7 @@ class ParticipantsListExtraFilters extends Component {
     }
 
     render() {
-        const fields = {
+        let fields = {
             name: {
                 name: 'Naam',
                 type: 'string',
@@ -136,46 +136,8 @@ class ParticipantsListExtraFilters extends Component {
                 name: 'Postcode nummer',
                 type: 'number',
             },
-            amountDefinitive: {
-                name: 'Huidig aantal lening',
-                type: 'number',
-            },
-            participationsDefinitive: {
-                name: 'Huidig aantal deelnames',
-                type: 'number',
-            },
-            dateRegister: {
-                name: 'Datum inschrijving',
-                type: 'date',
-            },
-            datePayed: {
-                name: 'Datum betaald',
-                type: 'date',
-            },
-            participationStatusId: {
-                name: 'Deelname status',
-                type: 'dropdown',
-                dropDownOptions: this.props.participantProjectStatus,
-            },
             contactBirthday: {
                 name: 'Contact geboortedatum',
-                type: 'date',
-            },
-            projectId: {
-                name: 'Project',
-                type: 'dropdownHas',
-                dropDownOptions: this.state.projects,
-            },
-            dateContractSend: {
-                name: 'Datum contract verzonden',
-                type: 'date',
-            },
-            dateContractRetour: {
-                name: 'Datum contract retour',
-                type: 'date',
-            },
-            dateEnd: {
-                name: 'Einddatum',
                 type: 'date',
             },
             giftedByContactId: {
@@ -184,20 +146,73 @@ class ParticipantsListExtraFilters extends Component {
                 dropDownOptions: this.state.contacts,
                 optionName: 'fullName',
             },
-            participationsSold: {
-                name: 'Deelnames overgedragen',
-                type: 'number',
-            },
             didAcceptAgreement: {
                 name: 'Akkoord reglement',
                 type: 'dropdown',
                 dropDownOptions: this.state.yesNoOptions,
             },
-            participationsRequested: {
-                name: 'Deelnames aangevraagd',
-                type: 'number',
+            projectId: {
+                name: 'Project',
+                type: 'dropdownHas',
+                dropDownOptions: this.state.projects,
+            },
+            dateRegister: {
+                name: 'Eerste ingangsdatum',
+                type: 'date',
+            },
+            participantMutationTypeId: {
+                name: 'Mutatie type (Mutaties)',
+                type: 'dropdown',
+                dropDownOptions: this.props.participantMutationTypes.filter(
+                    participantMutationType => participantMutationType.projectTypeCodeRef === this.props.projectTypeRef
+                ),
+            },
+            participantMutationStatusId: {
+                name: 'Deelname status (Mutaties)',
+                type: 'dropdown',
+                dropDownOptions: this.props.participantMutationStatuses,
+            },
+            participantMutationDateContractRetour: {
+                name: 'Datum contract retour (Mutaties)',
+                type: 'date',
+            },
+            participantMutationDatePayment: {
+                name: 'Betaaldatum (Mutaties)',
+                type: 'date',
             },
         };
+
+        switch (this.props.projectTypeRef) {
+            case 'obligation':
+                fields.obligationsDefinitive = {
+                    name: 'Huidig aantal obligaties',
+                    type: 'number',
+                };
+                break;
+            case 'capital':
+                fields.participationsDefinitive = {
+                    name: 'Huidig aantal participaties',
+                    type: 'number',
+                };
+                break;
+            case 'postalcode_link_capital':
+                fields.postalcodeLinkCapitalDefinitive = {
+                    name: 'Huidig aantal postcoderoos',
+                    type: 'number',
+                };
+                break;
+            case 'loan':
+                fields.payoutTypeId = {
+                    name: 'Uitkeren op',
+                    type: 'dropdown',
+                    dropDownOptions: this.props.participantProjectPayoutTypes,
+                };
+                fields.loanDefinitive = {
+                    name: 'Huidig bedrag lening',
+                    type: 'number',
+                };
+                break;
+        }
 
         return (
             <Modal
@@ -276,8 +291,11 @@ class ParticipantsListExtraFilters extends Component {
 }
 
 const mapStateToProps = state => ({
-    participantProjectStatus: state.systemData.participantProjectStatus,
+    participantMutationStatuses: state.systemData.participantMutationStatuses,
     contactStatuses: state.systemData.contactStatuses,
+    participantMutationTypes: state.systemData.participantMutationTypes,
+    participantProjectPayoutTypes: state.systemData.participantProjectPayoutTypes,
+    projectTypeRef: state.projectDetails.projectType.codeRef,
 });
 
 export default connect(mapStateToProps)(ParticipantsListExtraFilters);

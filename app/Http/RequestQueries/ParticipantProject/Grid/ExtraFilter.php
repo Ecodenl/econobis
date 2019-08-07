@@ -19,46 +19,67 @@ class ExtraFilter extends RequestExtraFilter
         'name',
         'postalCode',
         'postalCodeNumber',
-        'amountDefinitive',
+        'obligationsDefinitive',
         'participationsDefinitive',
+        'postalcodeLinkCapitalDefinitive',
+        'loanDefinitive',
         'dateRegister',
-        'datePayed',
-        'participationStatusId',
         'contactBirthday',
         'projectId',
-        'dateContractSend',
-        'dateContractRetour',
-        'dateEnd',
         'giftedByContactId',
         'participationsSold',
         'didAcceptAgreement',
         'participationsRequested',
+        'participantMutationStatusId',
+        'participantMutationTypeId',
+        'participantMutationDateContractRetour',
+        'participantMutationDatePayment',
+        'payoutTypeId',
     ];
 
     protected $mapping = [
         'dateRegister' => 'participation_project.date_register',
-        'datePayed' => 'participation_project.date_payed',
-        'participationStatusId' => 'participation_project.status_id',
         'projectId' => 'participation_project.project_id',
-        'dateContractSend' => 'participation_project.date_contract_send',
-        'dateContractRetour' => 'participation_project.date_contract_retour',
-        'dateEnd' => 'participation_project.date_end',
         'giftedByContactId' => 'participation_project.gifted_by_contact_id',
         'participationsSold' => 'participation_project.participations_sold',
         'didAcceptAgreement' => 'participation_project.did_accept_agreement',
         'participationsRequested' => 'participation_project.participations_requested',
         'amountDefinitive' => 'participation_project.amount_definitive',
         'participationsDefinitive' => 'participation_project.participations_definitive',
+        'obligationsDefinitive' => 'participation_project.participations_definitive',
+        'participationsDefinitive' => 'participation_project.participations_definitive',
+        'postalcodeLinkCapitalDefinitive' => 'participation_project.participations_definitive',
+        'loanDefinitive' => 'participation_project.amount_definitive',
+        'payoutTypeId' => 'participation_project.type_id',
     ];
 
-    protected $joins = [];
+    protected $joins = [
+    ];
 
-    protected function applyCurrentParticipationsFilter($query, $type, $data)
+    protected function applyParticipantMutationDateContractRetourFilter($query, $type, $data)
     {
-        $raw = DB::raw('participation_project.participations_granted - participation_project.participations_sold');
-        RequestFilter::applyFilter($query, $raw, $type, $data);
-        $query->where('participation_project.status_id', 2);
-        return false;
+        $query->whereHas('mutations', function ($query) use ($type, $data) {
+            RequestFilter::applyFilter($query, 'date_contract_retour', $type, $data);
+        });
+    }
+    protected function applyParticipantMutationDatePaymentFilter($query, $type, $data)
+    {
+        $query->whereHas('mutations', function ($query) use ($type, $data) {
+            RequestFilter::applyFilter($query, 'date_payment', $type, $data);
+        });
+    }
+    protected function applyParticipantMutationStatusIdFilter($query, $type, $data)
+    {
+        $query->whereHas('mutations', function ($query) use ($type, $data) {
+            RequestFilter::applyFilter($query, 'status_id', $type, $data);
+        });
+        $query->where('date_terminated', null);
+    }
+    protected function applyParticipantMutationTypeIdFilter($query, $type, $data)
+    {
+        $query->whereHas('mutations', function ($query) use ($type, $data) {
+            RequestFilter::applyFilter($query, 'type_id', $type, $data);
+        });
     }
 
     protected function applyNameFilter($query, $type, $data)

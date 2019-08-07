@@ -37,7 +37,6 @@ class Filter extends RequestFilter
         'city' => 'addresses.city',
         'amountDefinitive' => 'participation_project.amount_definitive',
         'participationsDefinitive' => 'participation_project.participations_definitive',
-        'participantMutationStatusId' => 'participant_mutations.status_id',
         'dateRegister' => 'participation_project.date_register',
         'energySupplierId' => 'energy_suppliers.id',
         'projectId' => 'participation_project.project_id',
@@ -71,8 +70,10 @@ class Filter extends RequestFilter
         return false;
     }
 
-    protected function applyCurrentParticipationsFilter($query, $type, $data)
+    protected function applyParticipantMutationStatusIdFilter($query, $type, $data)
     {
-        $query->whereRaw('(participation_project.participations_granted - participation_project.participations_sold) =' . DB::connection()->getPdo()->quote($data))->where('participation_project.status_id', 2);
+        $query->whereRaw('participant_mutations.status_id =' . DB::connection()->getPdo()->quote($data))->where('participation_project.date_terminated', null);
     }
+
+
 }

@@ -21,7 +21,10 @@ class ExtraFilter extends RequestExtraFilter
         'postalCode',
         'postalCodeNumber',
         'createdAt',
+        'currentObligations',
         'currentParticipations',
+        'currentPostalcodeLinkCapital',
+        'currentLoan',
         'occupation',
         'opportunity',
         'product',
@@ -35,7 +38,10 @@ class ExtraFilter extends RequestExtraFilter
     protected $mapping = [
         'name' => 'contacts.full_name',
         'createdAt' => 'contacts.created_at',
+        'currentObligations' => 'contacts.obligations_current',
         'currentParticipations' => 'contacts.participations_current',
+        'currentPostalcodeLinkCapital' => 'contacts.postalcode_link_capital_current',
+        'currentLoan' => 'contacts.loan_current',
     ];
 
     protected $joins = [];

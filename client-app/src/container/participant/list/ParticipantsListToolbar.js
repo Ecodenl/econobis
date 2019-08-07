@@ -12,7 +12,8 @@ const ParticipantsListToolbar = props => {
             <div className="col-md-2">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName="glyphicon-refresh" onClickAction={props.resetParticipantProjectFilters} />
-                    <ButtonIcon iconName="glyphicon-filter" onClickAction={props.toggleShowExtraFilters} />
+                    {/*Filter hier voorlopig even uitgezet op verzoek*/}
+                    {/*<ButtonIcon iconName="glyphicon-filter" onClickAction={props.toggleShowExtraFilters} />*/}
                     <ButtonIcon iconName="glyphicon-download-alt" onClickAction={props.getExcel} />
                     <ButtonText buttonText="Rapportage" onClickAction={props.toggleShowCheckboxList} />
                 </div>

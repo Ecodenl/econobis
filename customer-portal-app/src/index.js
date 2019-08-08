@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './css/econobis.webflow.css';
+import './css/normalize.css';
+import './css/webflow.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 

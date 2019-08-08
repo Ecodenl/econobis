@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "formik": "^1.5.8",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "5.0.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "react-spinners": "^0.5.13",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "prettier": "^1.18.2"

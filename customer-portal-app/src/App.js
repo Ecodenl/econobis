@@ -10,8 +10,7 @@ function App() {
         <Router>
             <AuthProvider>
                 <Switch>
-                    {/*<ProtectedRoute path="/" component={Dashboard} />*/}
-                    <ProtectedRoute path="/dashboard" component={Dashboard} />
+                    <ProtectedRoute exact path="/" component={Dashboard} />
                     <Route path="/login" component={Login} />
                 </Switch>
             </AuthProvider>

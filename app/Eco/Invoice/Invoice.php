@@ -149,12 +149,10 @@ class Invoice extends Model
     public function getAmountOpenAttribute()
     {
         $amountOpen = $this->total_price_incl_vat_and_reduction;
-
         foreach($this->payments as $payment){
             $amountOpen -= $payment->amount;
         }
-
-        return $amountOpen;
+        return floatval( number_format( $amountOpen, 2, '.', '') );
     }
 
     public function getVatInfoAttribute(){

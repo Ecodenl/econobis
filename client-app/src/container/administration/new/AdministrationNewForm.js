@@ -16,6 +16,7 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import axios from 'axios';
 import InputToggle from '../../../components/form/InputToggle';
+import ViewText from "../details/general/AdministrationDetailsFormGeneralEdit";
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -486,11 +487,16 @@ class AdministrationNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <InputToggle
+                            {/*<InputToggle*/}
+                                {/*label={'Gebruikt BTW'}*/}
+                                {/*name={'usesVat'}*/}
+                                {/*value={usesVat}*/}
+                                {/*onChangeAction={this.handleInputChange}*/}
+                            {/*/>*/}
+                            <ViewText
                                 label={'Gebruikt BTW'}
-                                name={'usesVat'}
-                                value={usesVat}
-                                onChangeAction={this.handleInputChange}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
                             />
                         </div>
 

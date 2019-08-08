@@ -5,12 +5,11 @@ import Header from '../container/Header';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
     <AuthConsumer>
-
         {({ isAuth }) => (
-            <>
-            <Header />
-            <Route render={props => (isAuth ? <Component {...props} /> : <Redirect to="/login" />)} {...rest} />
-            </>
+            <div className="body-2">
+                <Header />
+                <Route render={props => (isAuth ? <Component {...props} /> : <Redirect to="/login" />)} {...rest} />
+            </div>
         )}
     </AuthConsumer>
 );

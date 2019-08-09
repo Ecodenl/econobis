@@ -11,7 +11,7 @@ import ParticipantReportCreateToolbar from './ParticipantReportCreateToolbar';
 import { connect } from 'react-redux';
 import { clearPreviewParticipantReport } from '../../../actions/project/ProjectDetailsActions';
 import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
-import Modal from '../../project/details/revenue/details/create/PaymentInvoiceCreateApp';
+import Modal from "../../../components/modal/Modal";
 
 class ParticipantReportCreateApp extends Component {
     constructor(props) {
@@ -56,12 +56,9 @@ class ParticipantReportCreateApp extends Component {
         ).then(payload => {
             document.body.style.cursor = 'default';
             this.setState({
-                //todo WM om een of andere reden werkt dit niet!? Later uitzoeken
-                //voor nu hierna maar even een goBack
-                // successMessage: 'De rapporten zijn verzonden.',
+                successMessage: 'De rapporten zijn verzonden.',
                 isBusy: false,
             });
-            browserHistory.goBack();
         });
     };
 

@@ -579,7 +579,7 @@ class ProjectRevenueController extends ApiController
             {
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
                 if ($distribution->revenue->category->code_ref === 'revenueKwh') {
-                    $this->createParticipantMutationForRevenueKwh($distribution);
+                    $this->createParticipantMutationForRevenueKwh($distribution, $datePayout);
                     $distribution->status = 'processed';
                     $distribution->save();
                 }else{
@@ -919,7 +919,7 @@ class ProjectRevenueController extends ApiController
         return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
     }
 
-    protected function createParticipantMutationForRevenueKwh(ProjectRevenueDistribution $distribution){
+    protected function createParticipantMutationForRevenueKwh(ProjectRevenueDistribution $distribution, $datePayout){
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $distribution->participation_id;
         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
@@ -927,6 +927,7 @@ class ProjectRevenueController extends ApiController
         $participantMutation->payout_kwh = $distribution->delivered_total;
         $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
         $participantMutation->paid_on = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->energySupplier->name : '';
+        $participantMutation->date_payment = $datePayout;
         $participantMutation->save();
     }
 

@@ -152,6 +152,13 @@ h3 {
   margin-right: 2%;
 }
 
+.w-select.content._w-40 {
+  display: inline-block;
+  width: 25%;
+  min-width: 40px;
+  margin-right: 10px;
+}
+
 .image {
   display: block;
   max-width: 80%;

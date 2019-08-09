@@ -65,11 +65,14 @@ class ProjectRevenueController extends ApiController
     {
         set_time_limit(0);
 
-        if ($projectRevenue->confirmed) {
+        //todo WM onderscheid tussen confirmed en niet comfirmed toch niet meer nodig?
+        //todo Volgens mij kan RevenueParticipantsCSVHelper dan helemaal weg cq opgeschoond worden, toch?
+//        if ($projectRevenue->confirmed) {
+//            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
+//        } else {
+//            $projectRevenue = new RevenueParticipantsCSVHelper($projectRevenue->project->participantsProject, $projectRevenue);
+//        }
             $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
-        } else {
-            $projectRevenue = new RevenueParticipantsCSVHelper($projectRevenue->project->participantsProject, $projectRevenue);
-        }
 
 
         return $projectRevenue->downloadCSV();
@@ -549,7 +552,7 @@ class ProjectRevenueController extends ApiController
                 }else{
                     // indien Opbrengst Euro, dan wel voorwaarden inzake adres of IBAN (afhankellijk van payout type)
                     if ($distribution->payout_type === 'Rekening'
-                        && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
+                        && ($distribution->payout > 0)
                         && !(empty($distribution->address)
                             || empty($distribution->postal_code)
                             || empty($distribution->city)
@@ -561,7 +564,7 @@ class ProjectRevenueController extends ApiController
                         $distribution->save();
                     }
                     if ($distribution->payout_type === 'Bijschrijven'
-                        && $distribution->payout > 0
+                        && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
                     ) {
                         $distribution->status = 'in-progress';
                         $distribution->save();

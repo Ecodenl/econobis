@@ -254,9 +254,9 @@ class ParticipantNewApp extends Component {
                 {this.state.showModal && (
                     <MultipleMessagesModal
                         closeModal={this.redirectParticipation}
-                        buttonCancelText={'Ga naar deelname'}
+                        buttonCancelText={'Maak deelname aan'}
                         confirmAction={this.redirectTask}
-                        buttonConfirmText={'Maak taak aan'}
+                        buttonConfirmText={'Maak deelname aan en maak taak aan'}
                     >
                         {this.state.modalText}
                     </MultipleMessagesModal>

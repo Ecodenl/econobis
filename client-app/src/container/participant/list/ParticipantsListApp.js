@@ -283,27 +283,6 @@ class ParticipantsListApp extends Component {
         }
 
         if (this.state.participantIds.length > 0 && !error) {
-            this.setState({
-                showModal: true,
-                modalText: "Er wordt eerst een preview getoond van de PDF's en e-mails.",
-                buttonConfirmText: 'Preview',
-                readyForCreation: true,
-            });
-        } else if (!error) {
-            this.setState({
-                showModal: true,
-                modalText: 'Er zijn geen deelnemers geselecteerd.',
-                buttonConfirmText: 'Voeg deelnemers toe',
-            });
-        }
-    };
-
-    createParticipantReport = () => {
-        if (!this.state.readyForCreation) {
-            this.setState({
-                showModal: false,
-            });
-        } else {
             this.props.previewParticipantReport({
                 templateId: this.state.templateId,
                 emailTemplateId: this.state.emailTemplateId,
@@ -311,6 +290,12 @@ class ParticipantsListApp extends Component {
                 participantIds: this.state.participantIds,
             });
             hashHistory.push(`/project/preview-rapportage`);
+        } else if (!error) {
+            this.setState({
+                showModal: true,
+                modalText: 'Er zijn geen deelnemers geselecteerd.',
+                buttonConfirmText: 'Voeg deelnemers toe',
+            });
         }
     };
 
@@ -426,7 +411,7 @@ class ParticipantsListApp extends Component {
                                                 onClickAction={this.toggleShowCheckboxList}
                                             />
                                             <ButtonText
-                                                buttonText={'Maak rapport'}
+                                                buttonText={'Preview rapportage'}
                                                 onClickAction={this.checkParticipantReport}
                                                 type={'submit'}
                                                 value={'Submit'}
@@ -455,16 +440,6 @@ class ParticipantsListApp extends Component {
                     </div>
                 </PanelBody>
 
-                {this.state.showModal && (
-                    <Modal
-                        title={'Deelnemer rapport maken'}
-                        closeModal={this.toggleModal}
-                        buttonConfirmText={this.state.buttonConfirmText}
-                        confirmAction={this.createParticipantReport}
-                    >
-                        {this.state.modalText}
-                    </Modal>
-                )}
                 {this.state.showExtraFilters && (
                     <ParticipantsListExtraFilters
                         toggleShowExtraFilters={this.toggleShowExtraFilters}

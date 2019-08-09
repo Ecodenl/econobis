@@ -21,6 +21,7 @@ class PaymentInvoiceCreateApp extends Component {
             distribution: {},
             successMessage: '',
             redirect: '',
+            isBusy: false,
         };
     }
 
@@ -50,6 +51,9 @@ class PaymentInvoiceCreateApp extends Component {
 
     createRevenueReport = () => {
         document.body.style.cursor = 'wait';
+        this.setState({
+            isBusy: true,
+        });
         ProjectRevenueAPI.createRevenueReport(
             this.props.reportPreview.templateId,
             this.props.reportPreview.emailTemplateId,
@@ -58,7 +62,8 @@ class PaymentInvoiceCreateApp extends Component {
         ).then(payload => {
             document.body.style.cursor = 'default';
             this.setState({
-                successMessage: 'De rapporten worden verzonden.',
+                successMessage: 'De rapporten zijn verzonden.',
+                isBusy: false,
             });
         });
     };
@@ -70,8 +75,20 @@ class PaymentInvoiceCreateApp extends Component {
             browserHistory.goBack();
         }
     };
+
     render() {
-        return (
+        let busyText = '';
+        let busy = true;
+
+        if (this.state.isBusy) {
+            busyText = 'Bezig met versturen rapportage. Dit kan enige tijd duren.';
+        } else {
+            busy = false;
+        }
+
+        return busy ? (
+            <div>{busyText}</div>
+        ) : (
             <div>
                 <div className="row">
                     <div className="col-md-12 margin-10-top">

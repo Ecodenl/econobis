@@ -93,7 +93,13 @@ const RevenueNew = props => {
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
                     error={props.errors.dateBegin}
-                    disabledBefore={category.codeRef === 'revenueEuro' ? props.project.dateInterestBearing : ''}
+                    disabledBefore={
+                        category.codeRef === 'revenueEuro'
+                            ? props.project.dateInterestBearing
+                            : category.codeRef === 'revenueKwh'
+                            ? props.project.dateInterestBearingKwh
+                            : ''
+                    }
                 />
                 <InputDate
                     label={'Eind periode'}

@@ -38,6 +38,7 @@ class FullProject extends Resource
                 'dateEndRegistrations' => $this->date_end_registrations,
                 'dateEntry' => $this->date_entry,
                 'dateInterestBearing' => $this->date_interest_bearing,
+                'dateInterestBearingKwh' => $this->date_interest_bearing_kwh,
                 'projectTypeId' => $this->project_type_id,
                 'projectType' => GenericResource::make($this->whenLoaded('projectType')),
                 'postalCode' => $this->postal_code,

@@ -26,13 +26,23 @@ const LoginForm = function({ handleSubmit, login }) {
                         <Field
                             name="email"
                             render={({ field /* _form */ }) => (
-                                <InputText field={field} id="email" placeholder={'email'} />
+                                <InputText
+                                    field={field}
+                                    id="email"
+                                    className={'text-input w-input'}
+                                    placeholder={'email'}
+                                />
                             )}
                         />
                         <Field
                             name="password"
                             render={({ field /* _form */ }) => (
-                                <InputText field={field} id="password" placeholder={'wachtwoord'} />
+                                <InputText
+                                    field={field}
+                                    id="password"
+                                    className={'text-input w-input'}
+                                    placeholder={'wachtwoord'}
+                                />
                             )}
                         />
                         <ButtonText

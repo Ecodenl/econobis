@@ -8,7 +8,7 @@ export default () => (
             {({ isAuth, login, logout }) => {
                 return (
                     <div className="header-deltaw">
-                        <div className="profile-pic" />
+                        <div className="profile-pic corporate" />
                         {isAuth ? (
                             <ul>
                                 <button onClick={logout}>logout (temp)</button>

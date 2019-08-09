@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const InputText = ({ field, className, id, readOnly, error, placeholder }) => {
-    return <input className={className} id={id} {...field} readOnly={readOnly} placeholder={placeholder} />;
+const InputText = ({ field, type, className, id, readOnly, error, placeholder }) => {
+    return <input type={type} className={className} id={id} {...field} readOnly={readOnly} placeholder={placeholder} />;
 };
 
 InputText.defaultProps = {
-    className: 'text-input w-input',
+    type: 'text',
+    className: 'text-input content w-input',
     readOnly: false,
     error: false,
     placeholder: '',

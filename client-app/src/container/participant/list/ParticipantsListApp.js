@@ -440,6 +440,16 @@ class ParticipantsListApp extends Component {
                     </div>
                 </PanelBody>
 
+                {this.state.showModal && (
+                    <Modal
+                        title={'Deelnemer rapport maken'}
+                        closeModal={this.toggleModal}
+                        buttonConfirmText={this.state.buttonConfirmText}
+                        confirmAction={this.createParticipantReport}
+                    >
+                        {this.state.modalText}
+                    </Modal>
+                )}
                 {this.state.showExtraFilters && (
                     <ParticipantsListExtraFilters
                         toggleShowExtraFilters={this.toggleShowExtraFilters}

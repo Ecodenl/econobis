@@ -26,7 +26,7 @@ class ContactEnergySupplierObserver
         {
             // Check if any project revenue distribution is present with status concept
             // If so, then change energy supplier
-            $projectRevenueDistributions = $contactEnergySupplier->contact->projectRevenueDistributions->where('status', '=', 'concept');
+            $projectRevenueDistributions = $contactEnergySupplier->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
 
             foreach($projectRevenueDistributions as $projectRevenueDistribution) {
                 if( $contactEnergySupplier->is_current_supplier == true){

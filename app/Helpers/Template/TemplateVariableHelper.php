@@ -91,7 +91,13 @@ class TemplateVariableHelper
 
     public static function getVar($model, $varname){
 
-        switch (class_basename($model)) {
+        $classBaseName = class_basename($model);
+        if($classBaseName == 'Collection')
+        {
+            $classBaseName = class_basename($model->first());
+        }
+
+        switch ($classBaseName) {
             case 'Contact':
                 return TemplateVariableHelper::getContactVar($model, $varname);
                 break;
@@ -112,6 +118,9 @@ class TemplateVariableHelper
                 break;
             case 'ParticipantProject':
                 return TemplateVariableHelper::getParticipantProjectVar($model, $varname);
+                break;
+            case 'ParticipantMutation':
+                return TemplateVariableHelper::getParticipantMutationVar($model, $varname);
                 break;
             case 'ProjectRevenue':
                 return TemplateVariableHelper::getProjectRevenueVar($model, $varname);
@@ -273,6 +282,13 @@ class TemplateVariableHelper
                 }
 
                 break;
+            case 'iban':
+                return $model->iban;
+                break;
+            case 'iban_tnv':
+                return $model->iban_attn;
+                break;
+
             default:
                 return '';
                 break;
@@ -377,23 +393,50 @@ class TemplateVariableHelper
             case 'opgesteld_vermogen':
                 return $model->power_kw_available;
                 break;
+            case 'total_participations':
+                return $model->total_participations;
+                break;
             case 'max_participaties':
                 return $model->max_participations;
-                break;
-            case 'aanwijzing_belastingdienst':
-                return $model->tax_referral;
-                break;
-            case 'max_participaties_jeugd':
-                return $model->max_participations_youth;
                 break;
             case 'min_participaties':
                 return $model->min_participations;
                 break;
-            case 'participaties_in_optie':
-                return $model->getParticipationsInOption();
+            case 'max_participaties_jeugd':
+                return $model->max_participations_youth;
+                break;
+            case 'amount_of_loan_needed':
+                return $model->amount_of_loan_needed;
+                break;
+            case 'aanwijzing_belastingdienst':
+                return $model->tax_referral;
+                break;
+            case 'aantal_interesse':
+                return  $model->participations_interessed;
+                break;
+            case 'aantal_ingeschreven':
+                return  $model->participations_optioned;
+                break;
+            case 'aantal_toegekend':
+                return  $model->participations_granted;
+                break;
+            case 'aantal_definitief':
+                return  $model->participations_definitive;
                 break;
             case 'uit_te_geven_participaties':
-                return $model->getIssuableParticipations();
+                return  $model->total_participations - $model->participations_definitive;
+                break;
+            case 'bedrag_interesse':
+                return number_format($model->amount_interessed, 2, ',', '');
+                break;
+            case 'bedrag_ingeschreven':
+                return number_format($model->amount_optioned, 2, ',', '');
+                break;
+            case 'bedrag_toegekend':
+                return number_format($model->amount_granted, 2, ',', '');
+                break;
+            case 'bedrag_definitief':
+                return number_format($model->amount_definitive, 2, ',', '');
                 break;
             case 'aantal_participanten':
                 return $model->participantsProject->count();
@@ -454,41 +497,52 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
-            case 'status':
-                return $model->UniqueMutationStatuses->implode('name', ', ');
+            case 'contact_iban':
+                return $model->contact->iban;
                 break;
-            case 'productie_project':
+            case 'contact_iban_tnv':
+                return $model->contact->iban_attn;
+                break;
+            case 'statussen':
+                return implode(', ', array_map(function ($status) {
+                    return $status->name;
+                }, $model->UniqueMutationStatuses)) ;
+                break;
+            case 'project':
                 return $model->project->name;
+                break;
+            case 'jaarlijks_verbruik':
+                return $model->power_kwh_consumption;
                 break;
             case 'inschrijf_datum':
                 return $model->date_register ? Carbon::parse($model->date_register)->format('d/m/Y') : null;
                 break;
-            case 'aangevraagd':
-                return $model->participations_requested;
+            case 'aantal_interesse':
+                return  $model->participations_interessed;
                 break;
-            case 'toegekend':
-                return $model->participations_granted;
+            case 'aantal_ingeschreven':
+                return  $model->participations_optioned;
                 break;
-            case 'verkocht':
-                return $model->participations_sold;
+            case 'aantal_toegekend':
+                return  $model->participations_granted;
                 break;
-            case 'huidig':
-                return $model->participations_current;
+            case 'aantal_definitief':
+                return  $model->participations_definitive;
+                break;
+            case 'bedrag_interesse':
+                return number_format($model->amount_interessed, 2, ',', '');
+                break;
+            case 'bedrag_ingeschreven':
+                return number_format($model->amount_optioned, 2, ',', '');
+                break;
+            case 'bedrag_toegekend':
+                return number_format($model->amount_granted, 2, ',', '');
+                break;
+            case 'bedrag_definitief':
+                return number_format($model->amount_definitive, 2, ',', '');
                 break;
             case 'waarde_totaal':
-                return $model->participations_worth_total;
-                break;
-            case 'restverkoop':
-                return $model->participations_rest_sale;
-                break;
-            case 'contract_verstuurd':
-                return $model->date_contract_send ? Carbon::parse($model->date_contract_send)->format('d/m/Y') : null;
-                break;
-            case 'contract_retour':
-                return $model->date_contract_retour ? Carbon::parse($model->date_contract_retour)->format('d/m/Y') : null;
-                break;
-            case 'betaald_op':
-                return $model->date_payed ? Carbon::parse($model->date_payed)->format('d/m/Y') : null;
+                return number_format($model->participations_definitive_worth, 2, ',', '');
                 break;
             case 'akkoord_reglement':
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
@@ -581,11 +635,44 @@ class TemplateVariableHelper
             case 'iban_uitkeren_tnv':
                 return $model->iban_payout_attn ? $model->iban_payout_attn : $model->contact->iban_attn;
                 break;
-            case 'einddatum':
-                return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
-                break;
             case 'uitkeren_op':
                 return $model->participantProjectPayoutType ? $model->participantProjectPayoutType->name : '';
+                break;
+            case 'beeindigd_op':
+                return $model->date_terminated ? Carbon::parse($model->date_terminated)->format('d/m/Y') : null;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getParticipantMutationVar($model, $varname){
+        // Tabel uitspugen
+        switch ($varname) {
+            case 'tabel':
+                $html = "
+                <table style='width:100%; border-collapse: collapse;'>
+                  <tr>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Type</th>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Status</th>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Betaaldatum</th>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Ingangsdatum</th>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Omschrijving</th>
+                </tr>";
+                foreach($model as $mutatie){
+                    $html .= "
+                    <tr>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->type ? $mutatie->type->name : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->status ? $mutatie->status->name : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_payment ? Carbon::parse($mutatie->date_payment)->format('d/m/Y') : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_entry ? Carbon::parse($mutatie->date_entry)->format('d/m/Y') : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->type ? $mutatie->type->description : '' ) . "</td>
+                    </tr>
+                    ";
+                }
+                $html .= "</table>";
+                return $html;
                 break;
             default:
                 return '';
@@ -595,6 +682,21 @@ class TemplateVariableHelper
 
     public static function getProjectRevenueVar($model, $varname){
         switch ($varname) {
+            case 'categorie':
+                return $model->category->name;
+                break;
+            case 'project':
+                return $model->project->name;
+                break;
+            case 'type_verdeling':
+                return $model->getDistributionType() ? $model->getDistributionType()->name : '';
+                break;
+            case 'peildatum':
+                return $model->date_reference ? Carbon::parse($model->date_reference)->format('d/m/Y') : null;
+                break;
+            case 'datum_definitief':
+                return $model->date_confirmed ? Carbon::parse($model->date_confirmed)->format('d/m/Y') : null;
+                break;
             case 'kwh_start':
                 return $model->kwh_start;
                 break;
@@ -606,6 +708,12 @@ class TemplateVariableHelper
                 $end = $model->kwh_end ? $model->kwh_end : 0;
                 return $end - $start;
                 break;
+            case 'opbrengst_kwh_euro':
+                return $model->payout_kwh;
+                break;
+            case 'uitkeren_op':
+                return $model->participantProjectPayoutType ? $model->participantProjectPayoutType->name : '';
+                break;
             case 'datum_uitgekeerd':
                 return $model->date_payed ? Carbon::parse($model->date_payed)->format('d/m/Y') : null;
                 break;
@@ -615,18 +723,23 @@ class TemplateVariableHelper
             case 'eindperiode':
                 return $model->date_end ? Carbon::parse($model->date_end)->format('d/m/Y') : null;
                 break;
-            case 'invoerdatum':
-                return $model->date_entry ? Carbon::parse($model->date_entry)->format('d/m/Y') : null;
-                break;
-            case 'euro':
-                return $model->revenue;
-                break;
             case 'teruggave':
                 $start = $model->kwh_start ? $model->kwh_start : 0;
                 $end = $model->kwh_end ? $model->kwh_end : 0;
-                $revenue = $model->revenue ? $model->revenue : 0;
-
-                return ($end - $start) * $revenue;
+                $payoutKwh = $model->payout_kwh ? $model->revenue : 0;
+                return ($end - $start) * $payoutKwh;
+                break;
+            case 'resultaat':
+                return $model->revenue;
+                break;
+            case 'uitkering_percentage':
+                return number_format($model->pay_percentage, 2, ',', '');
+                break;
+            case 'bedrag_eerste_percentage':
+                return number_format($model->key_amount_first_percentage, 2, ',', '');
+                break;
+            case 'uitkering_percentage_vanaf_bedrag':
+                return number_format($model->pay_percentage_valid_from_key_amount, 2, ',', '');
                 break;
             default:
                 return '';
@@ -635,6 +748,7 @@ class TemplateVariableHelper
     }
 
     public static function getProjectRevenueDistributionVar($model, $varname){
+
         switch ($varname) {
             case 'adres':
                 return $model->address;
@@ -646,19 +760,26 @@ class TemplateVariableHelper
                 return $model->city;
                 break;
             case 'status':
-                return $model->status;
+                switch ($model->status) {
+                    case 'concept':
+                        return 'Concept';
+                        break;
+                    case 'confirmed':
+                        return 'Definitief';
+                        break;
+                    case 'processed':
+                        return 'Verwerkt';
+                        break;
+                    default:
+                        return '**onbepaald**';
+                        break;
+                }
                 break;
             case 'participaties':
                 return $model->participations_amount;
                 break;
             case 'bedrag':
                 return number_format($model->payout, 2, ',', '');
-                break;
-            case 'kwh':
-                return $model->delivered_total;
-                break;
-            case 'teruggave_energiebelasting':
-                return $model->kwh_return;
                 break;
             case 'uitkeren_op':
                 return $model->payout_type;
@@ -668,6 +789,12 @@ class TemplateVariableHelper
                 break;
             case 'energieleverancier':
                 return $model->energy_supplier_name;
+                break;
+            case 'kwh':
+                return $model->delivered_total;
+                break;
+            case 'teruggave_energiebelasting':
+                return $model->kwh_return;
                 break;
             case 'energieleverancier_ean_elektra':
                 return $model->energy_supplier_ean_electricity;
@@ -765,9 +892,6 @@ class TemplateVariableHelper
                 break;
             case 'onderwerp':
                 return $model->subject;
-                break;
-            case 'iban':
-                return $model->IBAN;
                 break;
             case 'prijs':
                 return $model->total_price_incl_vat;
@@ -905,7 +1029,7 @@ class TemplateVariableHelper
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'maatregel', $document->measure);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'taak', $document->task);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'productie_project', $document->project);
-        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'participant', $document->participant);
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'deelname', $document->participant);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', $document->order);
 
         //Als laatste verwijder alle niet bestaande tags

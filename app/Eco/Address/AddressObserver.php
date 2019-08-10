@@ -45,7 +45,7 @@ class AddressObserver
         {
             // Check if any project revenue distribution is present with status concept
             // If so, then change address
-            $projectRevenueDistributions = $address->contact->projectRevenueDistributions->where('status', '=', 'concept');
+            $projectRevenueDistributions = $address->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
 
             foreach($projectRevenueDistributions as $projectRevenueDistribution) {
                 $projectRevenueDistribution->address = $address->present()

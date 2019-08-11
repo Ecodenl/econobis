@@ -88,8 +88,8 @@ class ProjectValueCourseController extends ApiController
 
     public function makeActive(ProjectValueCourse $projectValueCourse)
     {
-        // Make other active project value course inactive
-        foreach (ProjectValueCourse::where('active', 1)
+        // Make other active project value course inactive within the same project
+        foreach (ProjectValueCourse::where('project_id', $projectValueCourse->project_id)->where('active', 1)
                      ->where('id', '<>', $projectValueCourse->id) // Exclude this project value course
             ->get() as $pvc){
             $pvc->active = false;

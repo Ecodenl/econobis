@@ -541,8 +541,35 @@ class TemplateVariableHelper
             case 'bedrag_definitief':
                 return number_format($model->amount_definitive, 2, ',', '');
                 break;
+            case 'saldo_kapitaal_rekening':
+                return number_format($model->amount_definitive + $model->participations_definitive_worth, 2, ',', '');
+                break;
+            case 'saldo_lening_rekening':
+                //todo moet dit niet + opbrengsten rente zijn net als bij kapitaal ?
+                return number_format($model->amount_definitive, 2, ',', '');
+                break;
+            case 'totale_opbrengsten':
+                //todo of dit som van mutations->return ?
+                return number_format($model->participationsReturnsTotal, 2, ',', '');
+                break;
             case 'waarde_totaal':
+            case 'huidige_totale_waarde':
                 return number_format($model->participations_definitive_worth, 2, ',', '');
+                break;
+            case 'nominale_waarde':
+                // deze waarde is bij project vastgelegd!
+                return number_format($model->project->participation_worth, 2, ',', '');
+                break;
+            case 'huidige_boekwaarde':
+            case 'huidige_hoofdsom':
+                // deze waarde wordt bij project bepaald!
+                return number_format($model->project->currentBookWorth(), 2, ',', '');
+                break;
+            case 'totale_opbrengsten_kwh':
+                return number_format($model->participationsReturnsKwhTotal, 2, ',', '');
+                break;
+            case 'totale_teruggave_eb':
+                return number_format($model->participationsIndicationOfRestitutionEnergyTaxTotal, 2, ',', '');
                 break;
             case 'akkoord_reglement':
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
@@ -648,28 +675,57 @@ class TemplateVariableHelper
     }
 
     public static function getParticipantMutationVar($model, $varname){
-        // Tabel uitspugen
+        // Tabel genereren
         switch ($varname) {
             case 'tabel':
+                if(!$model || $model->count() == 0) return '';
+                $projectTypeCodeRef = $model->first()->participation->project->projectType->code_ref;
+
                 $html = "
                 <table style='width:100%; border-collapse: collapse;'>
                   <tr>
-                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Type</th>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Omschrijving</th>
                     <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Status</th>
                     <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Betaaldatum</th>
-                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Ingangsdatum</th>
-                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Omschrijving</th>
-                </tr>";
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Ingangsdatum</th>";
+                    switch ($projectTypeCodeRef) {
+                        case 'loan':
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Lening rekening</th>";
+                            break;
+                        case 'capital':
+                        case 'postalcode_link_capital':
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Kapitaal rekening</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal part.</th>";
+                            break;
+                        case 'obligation':
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal obligaties</th>";
+                            break;
+                    };
+                $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Opbrengst</th>";
+                $html .= "</tr>";
                 foreach($model as $mutatie){
                     $html .= "
                     <tr>
-                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->type ? $mutatie->type->name : '' ) . "</td>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->type ? $mutatie->type->description : '' ) . "</td>
                       <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->status ? $mutatie->status->name : '' ) . "</td>
                       <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_payment ? Carbon::parse($mutatie->date_payment)->format('d/m/Y') : '' ) . "</td>
-                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_entry ? Carbon::parse($mutatie->date_entry)->format('d/m/Y') : '' ) . "</td>
-                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->type ? $mutatie->type->description : '' ) . "</td>
-                    </tr>
-                    ";
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_entry ? Carbon::parse($mutatie->date_entry)->format('d/m/Y') : '' ) . "</td>";
+                    switch ($projectTypeCodeRef) {
+                        case 'loan':
+                            $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( $mutatie->amount ? number_format($model->amount, 2, ',', '') : '' ) . "</td>";
+                            break;
+                        case 'capital':
+                        case 'postalcode_link_capital':
+                            $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( ($mutatie->amount || $mutatie->participation_worth ) ? number_format(($mutatie->amount + $mutatie->participation_worth), 2, ',', '') : '' ) . "</td>";
+                            $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( $mutatie->quantity ? $mutatie->quantity : '' ) . "</td>";
+                            break;
+                        case 'obligation':
+                            $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( $mutatie->quantity ? $mutatie->quantity : '' ) . "</td>";
+                            break;
+                    };
+                    $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( $mutatie->returns ? number_format($mutatie->returns, 2, ',', '') : '' ) . "</td>";
+                    $html .= "</tr>";
+
                 }
                 $html .= "</table>";
                 return $html;

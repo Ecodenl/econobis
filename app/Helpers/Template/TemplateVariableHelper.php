@@ -712,7 +712,7 @@ class TemplateVariableHelper
                       <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $mutatie->date_entry ? Carbon::parse($mutatie->date_entry)->format('d/m/Y') : '' ) . "</td>";
                     switch ($projectTypeCodeRef) {
                         case 'loan':
-                            $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( $mutatie->amount ? number_format($model->amount, 2, ',', '') : '' ) . "</td>";
+                            $html .= "<td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal;'>" . ( $mutatie->amount ? number_format($mutatie->amount, 2, ',', '') : '' ) . "</td>";
                             break;
                         case 'capital':
                         case 'postalcode_link_capital':

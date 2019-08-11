@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\ParticipantMutation;
 
 use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
@@ -40,6 +41,18 @@ class ParticipantMutationController extends ApiController
             ->double('indicationOfRestitutionEnergyTax')->onEmpty(null)->alias('indication_of_restitution_energy_tax')->next()
             ->string('paidOn')->onEmpty(null)->alias('paid_on')->next()
             ->get();
+
+        if(ParticipantMutationStatus::find( $data['status_id'] )->code_ref == 'final'
+            && isset( $data['date_granted'] ) )
+        {
+            if($data['amount_final'] <> 0 && !isset( $data['amount_granted'] ) )
+            {
+                $data = array_merge($data, ['amount_granted' =>  $data['amount_final']]);
+            }elseif($data['quantity_final'] <> 0 && !isset( $data['quantity_granted'] ) )
+            {
+                $data = array_merge($data, ['quantity_granted' =>  $data['quantity_final']]);
+            }
+        }
 
         $participantMutation = new ParticipantMutation();
 

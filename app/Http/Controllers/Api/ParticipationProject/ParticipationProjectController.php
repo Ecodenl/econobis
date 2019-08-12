@@ -525,51 +525,52 @@ class ParticipationProjectController extends ApiController
 
             $project = $participant->project;
 
-            if(!$previewEmail){
-            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html,'contact', $contact);
-            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'participant', $participant);
-            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'productie_project', $project);
-            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'ik', $user);
-            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'administratie', $project->administration);
+            if(!$previewEmail)
+            {
+                $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html,'contact', $contact);
+                $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'project', $project);
+                $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'deelname', $participant);
+                $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'mutaties', $participant->mutations);
+                $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'ik', $user);
+                $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'administratie', $project->administration);
 
-            $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
+                $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
 
+                //if preview there is 1 participantId so we return
+                $pdf = PDF::loadView('documents.generic', [
+                    'html' => $revenueHtml,
+                ])->output();
 
-            //if preview there is 1 participantId so we return
-            $pdf = PDF::loadView('documents.generic', [
-                'html' => $revenueHtml,
-            ])->output();
+                if ($previewPDF) {
+                    return $pdf;
+                }
 
-            if ($previewPDF) {
-                return $pdf;
-            }
+                $time = Carbon::now();
 
-            $time = Carbon::now();
+                $document = new Document();
+                $document->document_type = 'internal';
+                $document->document_group = 'revenue';
+                $document->contact_id = $contact->id;
 
-            $document = new Document();
-            $document->document_type = 'internal';
-            $document->document_group = 'revenue';
-            $document->contact_id = $contact->id;
+                $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
 
-            $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
+                //max length name 25
+                $filename = substr($filename, 0, 25);
 
-            //max length name 25
-            $filename = substr($filename, 0, 25);
+                $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
 
-            $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+                $document->save();
 
-            $document->save();
+                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $document->filename));
 
-            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $document->filename));
+                file_put_contents($filePath, $pdf);
 
-            file_put_contents($filePath, $pdf);
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
 
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
-
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-            $document->save();
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                $document->save();
             }
 
             //send email
@@ -590,8 +591,9 @@ class ParticipationProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'participant', $participant);
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'productie_project', $project);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'project', $project);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'deelname', $participant);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'mutaties', $participant->mutations);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $project->administration);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
@@ -604,10 +606,24 @@ class ParticipationProjectController extends ApiController
                     $fromName = \Config::get('mail.from.name');
                 }
 
-                $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
-                    $htmlBodyWithContactVariables, $document));
+                if ($previewEmail) {
+                    return [
+                        'from' => $fromEmail,
+                        'to' => $primaryEmailAddress->email,
+                        'subject' => $subject,
+                        'htmlBody' => $htmlBodyWithContactVariables
+                    ];
+                } else {
+                    $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
+                        $htmlBodyWithContactVariables, $document));
+                }
+
             }
 
+            if (!$previewPDF && !$previewEmail) {
+                //delete file on server, still saved on alfresco.
+                Storage::disk('documents')->delete($document->filename);
+            }
             if(!$previewEmail) {
                 //delete file on server, still saved on alfresco.
                 Storage::disk('documents')->delete($document->filename);

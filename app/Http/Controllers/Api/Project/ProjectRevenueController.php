@@ -421,7 +421,7 @@ class ProjectRevenueController extends ApiController
             'opbrengst', $projectRevenue);
         $energySupplierHtml
             = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
-            'productie_project', $project);
+            'project', $project);
         $energySupplierHtml
             = TemplateVariableHelper::replaceTemplateVariables($energySupplierHtml,
             'ik', $user);

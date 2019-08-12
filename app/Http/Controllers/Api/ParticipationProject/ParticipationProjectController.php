@@ -624,10 +624,6 @@ class ParticipationProjectController extends ApiController
                 //delete file on server, still saved on alfresco.
                 Storage::disk('documents')->delete($document->filename);
             }
-            if(!$previewEmail) {
-                //delete file on server, still saved on alfresco.
-                Storage::disk('documents')->delete($document->filename);
-            }
         }
     }
 

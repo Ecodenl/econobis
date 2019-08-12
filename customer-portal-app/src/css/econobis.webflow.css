@@ -139,6 +139,12 @@ h3 {
   display: inline-block;
 }
 
+.text-input.content._w-90 {
+  display: inline-block;
+  width: 92%;
+  min-width: 60px;
+}
+
 .text-input.content._w-70 {
   display: inline-block;
   width: 72%;
@@ -353,7 +359,7 @@ h3 {
   margin-top: 40px;
   border-radius: 7px;
   background-color: #00d371;
-  text-align: left;
+  text-align: center;
 }
 
 .checkbox-label {
@@ -501,6 +507,12 @@ h3 {
 }
 
 @media (max-width: 991px) {
+  .text-input.content._w-90 {
+    display: inline-block;
+  }
+}
+
+@media (max-width: 991px) {
   .text-input.content._w-70 {
     display: inline-block;
   }
@@ -541,6 +553,12 @@ h3 {
   }
   .text-input.content._w-40._w-40-mob {
     width: 25%;
+  }
+  .text-input.content._w-90 {
+    width: 100%;
+  }
+  .text-input.content._w-90._w-90-mob {
+    width: 91%;
   }
   .text-input.content._w-70 {
     width: 100%;

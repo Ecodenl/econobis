@@ -34,13 +34,13 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="email"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="email" placeholder={'E-mail'} />
                                     )}
                                 />
                                 <Field
                                     name="password"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText
                                             field={field}
                                             id="password"
@@ -58,7 +58,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="titleId"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <Select
                                             field={field}
                                             id="title_id"
@@ -77,13 +77,13 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 />
                                 <Field
                                     name="firstName"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="first_name" placeholder={'Voornaam'} />
                                     )}
                                 />
                                 <Field
                                     name="lastNamePrefixId"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <Select
                                             field={field}
                                             id="last_name_prefix_id"
@@ -104,7 +104,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 />
                                 <Field
                                     name="lastName"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText
                                             field={field}
                                             id="last_name"
@@ -119,7 +119,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="emailAddress1"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="e-mail-address-1" placeholder={'E-mail'} />
                                     )}
                                 />
@@ -129,7 +129,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="emailAddress2"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="e-mail-address-2" placeholder={'E-mail'} />
                                     )}
                                 />
@@ -139,7 +139,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="telephoneNumber1"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="telephone-number-1" placeholder={'Nummer'} />
                                     )}
                                 />
@@ -149,7 +149,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="telephoneNumber2"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="telephone-number-2" placeholder={'Nummer'} />
                                     )}
                                 />
@@ -159,13 +159,13 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="street"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="street" placeholder={'Straat'} />
                                     )}
                                 />
                                 <Field
                                     name="number"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText
                                             field={field}
                                             id="number"
@@ -176,7 +176,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 />
                                 <Field
                                     name="addition"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText
                                             field={field}
                                             id="addition"
@@ -187,7 +187,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 />
                                 <Field
                                     name="postalCode"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText
                                             field={field}
                                             id="postal_code"
@@ -198,7 +198,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 />
                                 <Field
                                     name="city"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText
                                             field={field}
                                             id="city"
@@ -209,7 +209,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 />
                                 <Field
                                     name="countryId"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <Select
                                             field={field}
                                             id="country_id"
@@ -228,13 +228,13 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="iban"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="iban" placeholder={'Rekeningnummer (IBAN)'} />
                                     )}
                                 />
                                 <Field
                                     name="ibanName"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <InputText field={field} id="iban_name" placeholder={'Tenaamstelling IBAN'} />
                                     )}
                                 />
@@ -244,7 +244,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="didAgreeAvg"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <input
                                             type="checkbox"
                                             id="did_agree_avg"
@@ -260,7 +260,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                 </label>
                                 <Field
                                     name="energySupplierId"
-                                    render={({ field /* _form */ }) => (
+                                    render={({ field }) => (
                                         <Select
                                             field={field}
                                             id="energy_supplier_id"

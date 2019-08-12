@@ -92,110 +92,132 @@ const ParticipantsListFilter = props => {
             </th>
 
             <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.contactType.data}
-                    onChange={onContactTypeChange}
-                >
-                    <option />
-                    {props.contactTypes.map(contactType => {
-                        return (
-                            <option key={contactType.id} value={contactType.id}>
-                                {contactType.name}
-                            </option>
-                        );
-                    })}
-                </select>
-            </th>
-
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.name.data}
-                    onChange={onNameChange}
-                />
-            </th>
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.address.data}
-                    onChange={onAddressChange}
-                />
-            </th>
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.postalCode.data}
-                    onChange={onPostalCodeChange}
-                />
-            </th>
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.city.data}
-                    onChange={onCityChange}
-                />
-            </th>
-            {props.projectTypeRef === 'loan' ? (
-                <th>
-                    <input
-                        type="text"
-                        className="form-control input-sm"
-                        value={props.filters.amountDefinitive.data}
-                        onChange={onAmountDefinitiveChange}
-                    />
-                </th>
-            ) : (
-                <th>
-                    <input
-                        type="text"
-                        className="form-control input-sm"
-                        value={props.filters.participationsDefinitive.data}
-                        onChange={onParticipationsDefinitiveChange}
-                    />
-                </th>
-            )}
-            <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.participantMutationStatusId.data}
-                    onChange={onParticipationMutationStatusIdChange}
-                >
-                    <option />
-                    {props.participantMutationStatuses.map(participantMutationStatus => {
-                        return (
-                            <option key={participantMutationStatus.id} value={participantMutationStatus.id}>
-                                {participantMutationStatus.name}
-                            </option>
-                        );
-                    })}
-                </select>
-            </th>
-
-            <DataTableFilterDate
-                value={props.filters.dateRegister.data && props.filters.dateRegister.data}
-                onChangeAction={onDateRegisterChange}
-            />
-            {props.projectTypeRef === 'postalcode_link_capital' ? (
-                <th>
+                {!props.showCheckboxList ? (
                     <select
                         className="form-control input-sm"
-                        value={props.filters.energySupplierId.data}
-                        onChange={onEnergySupplierIdChange}
+                        value={props.filters.contactType.data}
+                        onChange={onContactTypeChange}
                     >
                         <option />
-                        {props.energySuppliers.map(energySupplier => {
+                        {props.contactTypes.map(contactType => {
                             return (
-                                <option key={energySupplier.id} value={energySupplier.id}>
-                                    {energySupplier.name}
+                                <option key={contactType.id} value={contactType.id}>
+                                    {contactType.name}
                                 </option>
                             );
                         })}
                     </select>
+                ) : null}
+            </th>
+
+            <th>
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.name.data}
+                        onChange={onNameChange}
+                    />
+                ) : null}
+            </th>
+            <th>
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.address.data}
+                        onChange={onAddressChange}
+                    />
+                ) : null}
+            </th>
+            <th>
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.postalCode.data}
+                        onChange={onPostalCodeChange}
+                    />
+                ) : null}
+            </th>
+            <th>
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.city.data}
+                        onChange={onCityChange}
+                    />
+                ) : null}
+            </th>
+            {props.projectTypeRef === 'loan' ? (
+                <th>
+                    {!props.showCheckboxList ? (
+                        <input
+                            type="text"
+                            className="form-control input-sm"
+                            value={props.filters.amountDefinitive.data}
+                            onChange={onAmountDefinitiveChange}
+                        />
+                    ) : null}
+                </th>
+            ) : (
+                <th>
+                    {!props.showCheckboxList ? (
+                        <input
+                            type="text"
+                            className="form-control input-sm"
+                            value={props.filters.participationsDefinitive.data}
+                            onChange={onParticipationsDefinitiveChange}
+                        />
+                    ) : null}
+                </th>
+            )}
+            <th>
+                {!props.showCheckboxList ? (
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.participantMutationStatusId.data}
+                        onChange={onParticipationMutationStatusIdChange}
+                    >
+                        <option />
+                        {props.participantMutationStatuses.map(participantMutationStatus => {
+                            return (
+                                <option key={participantMutationStatus.id} value={participantMutationStatus.id}>
+                                    {participantMutationStatus.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                ) : null}
+            </th>
+
+            {!props.showCheckboxList ? (
+                <DataTableFilterDate
+                    value={props.filters.dateRegister.data && props.filters.dateRegister.data}
+                    onChangeAction={onDateRegisterChange}
+                />
+            ) : (
+                <th />
+            )}
+            {props.projectTypeRef === 'postalcode_link_capital' ? (
+                <th>
+                    {!props.showCheckboxList ? (
+                        <select
+                            className="form-control input-sm"
+                            value={props.filters.energySupplierId.data}
+                            onChange={onEnergySupplierIdChange}
+                        >
+                            <option />
+                            {props.energySuppliers.map(energySupplier => {
+                                return (
+                                    <option key={energySupplier.id} value={energySupplier.id}>
+                                        {energySupplier.name}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    ) : null}
                 </th>
             ) : null}
 

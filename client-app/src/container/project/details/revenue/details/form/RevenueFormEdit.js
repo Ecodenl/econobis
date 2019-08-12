@@ -313,7 +313,13 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateBegin}
-                        disabledBefore={project.dateInterestBearing}
+                        disabledBefore={
+                            category.codeRef === 'revenueEuro'
+                                ? project.dateInterestBearing
+                                : category.codeRef === 'revenueKwh'
+                                ? project.dateInterestBearingKwh
+                                : ''
+                        }
                     />
                     <InputDate
                         label={'Eind periode'}

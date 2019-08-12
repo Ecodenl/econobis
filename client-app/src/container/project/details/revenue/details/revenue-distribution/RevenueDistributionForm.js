@@ -233,27 +233,6 @@ class RevenueDistributionForm extends Component {
         }
 
         if (this.state.distributionIds.length > 0 && !error) {
-            this.setState({
-                showModal: true,
-                modalText: "Er wordt eerst een preview getoond van de PDF's en e-mails.",
-                buttonConfirmText: 'Preview',
-                readyForCreation: true,
-            });
-        } else if (!error) {
-            this.setState({
-                showModal: true,
-                modalText: 'Er zijn geen deelnemers geselecteerd.',
-                buttonConfirmText: 'Voeg deelnemers toe',
-            });
-        }
-    };
-
-    createDistributionRevenueReport = () => {
-        if (!this.state.readyForCreation) {
-            this.setState({
-                showModal: false,
-            });
-        } else {
             if (!this.props.projectRevenue.project.administration.canCreatePaymentInvoices['can']) {
                 this.props.setError(
                     412,
@@ -272,6 +251,12 @@ class RevenueDistributionForm extends Component {
                 });
                 hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/facturen`);
             }
+        } else if (!error) {
+            this.setState({
+                showModal: true,
+                modalText: 'Er zijn geen deelnemers geselecteerd.',
+                buttonConfirmText: 'Voeg deelnemers toe',
+            });
         }
     };
 
@@ -288,21 +273,33 @@ class RevenueDistributionForm extends Component {
     };
 
     createPaymentInvoices = () => {
+        let administrationName = '**onbekend**';
+        if (
+            this.props.projectRevenue &&
+            this.props.projectRevenue.project &&
+            this.props.projectRevenue.project.administration
+        ) {
+            administrationName = this.props.projectRevenue.project.administration.name;
+        }
+
+        let succesMessageText = '';
+        if (this.props.projectRevenue.category.codeRef === 'revenueKwh') {
+            succesMessageText = `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in Verwerkt.
+                Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkering met de status "Definitief".`;
+        } else {
+            succesMessageText =
+                `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in Verwerkt.
+                Indien er sprake is van uitkeren op rekening, dan is er van de betreffende uitkeringen een Sepa betaalbestand aangemaakt. Deze kan je vinden bij de administratie "` +
+                administrationName +
+                `". Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkering met de status "Definitief."`;
+        }
+
         document.body.style.cursor = 'wait';
         ProjectRevenueAPI.createPaymentInvoices(this.state.datePayout, this.state.distributionIds).then(payload => {
             document.body.style.cursor = 'default';
             this.setState({
                 showSuccessMessage: true,
-                successMessage: `Opbrengst verdeling gemaakt ${
-                    this.props.projectRevenue.category.codeRef !== 'revenueKwh'
-                        ? this.props.projectRevenue &&
-                          this.props.projectRevenue.project &&
-                          this.props.projectRevenue.project.administration
-                            ? 'en Sepa is aangemaakt. Sepa bestand is bij de administratie ' +
-                              this.props.projectRevenue.project.administration.name
-                            : 'onbekend'
-                        : '.'
-                } ${this.props.projectRevenue.category.codeRef !== 'revenueKwh' ? 'toegevoegd.' : ''}`,
+                successMessage: succesMessageText,
             });
         });
     };
@@ -376,7 +373,7 @@ class RevenueDistributionForm extends Component {
                                                 onClickAction={this.toggleShowCheckboxList}
                                             />
                                             <ButtonText
-                                                buttonText={'Maak rapport'}
+                                                buttonText={'Preview rapportage'}
                                                 onClickAction={this.checkDistributionRevenueReport}
                                                 type={'submit'}
                                                 value={'Submit'}

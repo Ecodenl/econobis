@@ -88,6 +88,14 @@ class RevenueNewApp extends Component {
                           .format('Y-MM-DD')
                     : '';
             }
+            if (category.codeRef === 'revenueKwh') {
+                revenue.dateBegin = payload.dateInterestBearingKwh;
+                revenue.dateEnd = payload.dateInterestBearingKwh
+                    ? moment(payload.dateInterestBearingKwh)
+                          .endOf('year')
+                          .format('Y-MM-DD')
+                    : '';
+            }
 
             this.setState({
                 ...this.state,

@@ -46,15 +46,13 @@ class ParticipantsList extends Component {
                             refreshParticipantsProjectData={() => this.props.refreshParticipantsProjectData()}
                             projectTypeRef={this.props.projectTypeRef}
                         />
-                        {!this.props.showCheckboxList ? (
-                            <ParticipantsListFilter
-                                onSubmitFilter={this.props.onSubmitFilter}
-                                toggleCheckedAll={this.props.toggleCheckedAll}
-                                showCheckboxList={this.props.showCheckboxList}
-                                checkedAll={this.props.checkedAll}
-                                projectTypeRef={this.props.projectTypeRef}
-                            />
-                        ) : null}
+                        <ParticipantsListFilter
+                            onSubmitFilter={this.props.onSubmitFilter}
+                            toggleCheckedAll={this.props.toggleCheckedAll}
+                            showCheckboxList={this.props.showCheckboxList}
+                            checkedAll={this.props.checkedAll}
+                            projectTypeRef={this.props.projectTypeRef}
+                        />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (

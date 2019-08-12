@@ -65,11 +65,14 @@ class ProjectRevenueController extends ApiController
     {
         set_time_limit(0);
 
-        if ($projectRevenue->confirmed) {
+        //todo WM onderscheid tussen confirmed en niet comfirmed toch niet meer nodig?
+        //todo Volgens mij kan RevenueParticipantsCSVHelper dan helemaal weg cq opgeschoond worden, toch?
+//        if ($projectRevenue->confirmed) {
+//            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
+//        } else {
+//            $projectRevenue = new RevenueParticipantsCSVHelper($projectRevenue->project->participantsProject, $projectRevenue);
+//        }
             $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
-        } else {
-            $projectRevenue = new RevenueParticipantsCSVHelper($projectRevenue->project->participantsProject, $projectRevenue);
-        }
 
 
         return $projectRevenue->downloadCSV();
@@ -549,7 +552,7 @@ class ProjectRevenueController extends ApiController
                 }else{
                     // indien Opbrengst Euro, dan wel voorwaarden inzake adres of IBAN (afhankellijk van payout type)
                     if ($distribution->payout_type === 'Rekening'
-                        && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
+                        && ($distribution->payout > 0)
                         && !(empty($distribution->address)
                             || empty($distribution->postal_code)
                             || empty($distribution->city)
@@ -561,7 +564,7 @@ class ProjectRevenueController extends ApiController
                         $distribution->save();
                     }
                     if ($distribution->payout_type === 'Bijschrijven'
-                        && $distribution->payout > 0
+                        && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
                     ) {
                         $distribution->status = 'in-progress';
                         $distribution->save();
@@ -576,7 +579,7 @@ class ProjectRevenueController extends ApiController
             {
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
                 if ($distribution->revenue->category->code_ref === 'revenueKwh') {
-                    $this->createParticipantMutationForRevenueKwh($distribution);
+                    $this->createParticipantMutationForRevenueKwh($distribution, $datePayout);
                     $distribution->status = 'processed';
                     $distribution->save();
                 }else{
@@ -726,39 +729,32 @@ class ProjectRevenueController extends ApiController
                     $revenueHtml = TemplateTableHelper::replaceTemplateTables($html, $contact);
 
                     $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                        'contact', $contact);
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'contact', $contact);
 
                     //wettelijk vertegenwoordiger
                     if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
                         $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)
                             ->where('occupation_id', 7)->first()->primaryContact;
                         $revenueHtml
-                            = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                            'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
+                            = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
                     }
                     $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                        'administratie', $administration);
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'ik', $user);
                     $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                        'verdeling', $distribution);
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'administratie', $administration);
                     $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                        'opbrengst', $revenue);
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'verdeling', $distribution);
                     $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                        'project', $project);
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'opbrengst', $revenue);
                     $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                        'ik', $user);
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'project', $project);
                     $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,
-                        'participant', $distribution->participation);
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'deelname', $distribution->participation);
+                    $revenueHtml
+                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'mutaties', $distribution->participation->mutations);
 
                     $revenueHtml
                         = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
-
                     $pdf = PDF::loadView('documents.generic', [
                         'html' => $revenueHtml,
                     ])->output();
@@ -823,8 +819,6 @@ class ProjectRevenueController extends ApiController
                     $htmlBodyWithContactVariables
                         = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact',
                         $contact);
-                    $htmlBodyWithContactVariables
-                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
 
                     //wettelijk vertegenwoordiger
                     if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
@@ -836,22 +830,22 @@ class ProjectRevenueController extends ApiController
                     }
 
                     $htmlBodyWithContactVariables
-                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'participant',
-                        $distribution->participation);
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
                     $htmlBodyWithContactVariables
-                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,
-                        'administratie', $administration);
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'administratie', $administration);
                     $htmlBodyWithContactVariables
-                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'verdeling',
-                        $distribution);
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'verdeling', $distribution);
                     $htmlBodyWithContactVariables
-                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'opbrengst',
-                        $revenue);
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'opbrengst', $revenue);
                     $htmlBodyWithContactVariables
-                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'project',
-                        $project);
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'project', $project);
+                    $htmlBodyWithContactVariables
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'deelname', $distribution->participation);
+                    $htmlBodyWithContactVariables
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'mutaties', $distribution->participation->mutations);
                     $htmlBodyWithContactVariables
                         = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+
                     $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
                     $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
                         $htmlBodyWithContactVariables);
@@ -916,7 +910,7 @@ class ProjectRevenueController extends ApiController
         return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
     }
 
-    protected function createParticipantMutationForRevenueKwh(ProjectRevenueDistribution $distribution){
+    protected function createParticipantMutationForRevenueKwh(ProjectRevenueDistribution $distribution, $datePayout){
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $distribution->participation_id;
         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
@@ -924,6 +918,7 @@ class ProjectRevenueController extends ApiController
         $participantMutation->payout_kwh = $distribution->delivered_total;
         $participantMutation->indication_of_restitution_energy_tax = $distribution->KwhReturn;
         $participantMutation->paid_on = $distribution->contact->primaryContactEnergySupplier ? $distribution->contact->primaryContactEnergySupplier->energySupplier->name : '';
+        $participantMutation->date_payment = $datePayout;
         $participantMutation->save();
     }
 

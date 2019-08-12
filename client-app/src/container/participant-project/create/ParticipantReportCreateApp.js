@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { browserHistory, hashHistory } from 'react-router';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -11,6 +11,7 @@ import ParticipantReportCreateToolbar from './ParticipantReportCreateToolbar';
 import { connect } from 'react-redux';
 import { clearPreviewParticipantReport } from '../../../actions/project/ProjectDetailsActions';
 import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
+import Modal from '../../../components/modal/Modal';
 
 class ParticipantReportCreateApp extends Component {
     constructor(props) {
@@ -18,6 +19,9 @@ class ParticipantReportCreateApp extends Component {
         this.state = {
             participants: [],
             participantId: '',
+            successMessage: '',
+            redirect: '',
+            isBusy: false,
         };
     }
 
@@ -40,18 +44,45 @@ class ParticipantReportCreateApp extends Component {
     };
 
     createParticipantReports = () => {
+        document.body.style.cursor = 'wait';
+        this.setState({
+            isBusy: true,
+        });
         ParticipantsProjectAPI.createParticipantReport(
             this.props.reportPreview.templateId,
             this.props.reportPreview.emailTemplateId,
             this.props.reportPreview.subject,
             this.props.reportPreview.participantIds
         ).then(payload => {
-            browserHistory.goBack();
+            document.body.style.cursor = 'default';
+            this.setState({
+                successMessage: 'De rapporten zijn verzonden.',
+                isBusy: false,
+            });
         });
     };
 
+    redirect = () => {
+        if (this.state.redirect) {
+            hashHistory.push(this.state.redirect);
+        } else {
+            browserHistory.goBack();
+        }
+    };
+
     render() {
-        return (
+        let busyText = '';
+        let busy = true;
+
+        if (this.state.isBusy) {
+            busyText = 'Bezig met versturen rapportage. Dit kan enige tijd duren.';
+        } else {
+            busy = false;
+        }
+
+        return busy ? (
+            <div>{busyText}</div>
+        ) : (
             <div>
                 <div className="row">
                     <div className="col-md-12 margin-10-top">
@@ -112,6 +143,16 @@ class ParticipantReportCreateApp extends Component {
                         </div>
                     </div>
                 </div>
+                {this.state.successMessage && (
+                    <Modal
+                        closeModal={this.redirect}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Succes'}
+                    >
+                        {this.state.successMessage}
+                    </Modal>
+                )}
             </div>
         );
     }

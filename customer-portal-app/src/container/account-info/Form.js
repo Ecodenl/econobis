@@ -12,7 +12,7 @@ const validationSchema = Yup.object().shape({
         .required('Verplicht'),
 });
 
-const AccountInfoForm = function({ handleSubmit, initialValues }) {
+const AccountInfoForm = function({ handleSubmit, initialValues, energySuppliers, handleEnergySupplierChange }) {
     return (
         <Formik
             initialValues={initialValues}
@@ -22,13 +22,13 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                 actions.setSubmitting(true);
                 console.log(values);
             }}
-            render={({ errors, touched, setFieldValue, isSubmitting }) => {
+            render={({ errors, touched, setFieldValue, isSubmitting, values }) => {
                 return (
                     <Form id="email-form" name="email-form">
                         <div className="w-row">
                             <div className="w-col w-col-6">
                                 <h6 className="heading-content">Contactnummer</h6>
-                                <div className="text-block">{initialValues.clientNr}</div>
+                                <div className="text-block">{initialValues.number}</div>
                                 <label htmlFor="email" className="field-label">
                                     Inloggegevens
                                 </label>
@@ -164,22 +164,22 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                     )}
                                 />
                                 <Field
-                                    name="number"
+                                    name="streetNumber"
                                     render={({ field }) => (
                                         <InputText
                                             field={field}
-                                            id="number"
+                                            id="street_number"
                                             placeholder={'Nummer'}
                                             className={'text-input content _w-40 w-input'}
                                         />
                                     )}
                                 />
                                 <Field
-                                    name="addition"
+                                    name="streetAddition"
                                     render={({ field }) => (
                                         <InputText
                                             field={field}
-                                            id="addition"
+                                            id="street_addition"
                                             placeholder={'Toevoeging'}
                                             className={'text-input content _w-70 w-input'}
                                         />
@@ -262,23 +262,115 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                     name="energySupplierId"
                                     render={({ field }) => (
                                         <Select
-                                            field={field}
+                                            field={{
+                                                ...field,
+                                                onChange: e => handleEnergySupplierChange(e, setFieldValue),
+                                            }}
                                             id="energy_supplier_id"
-                                            options={[
-                                                { id: 1, name: 'OM' },
-                                                { id: 2, name: 'Budget Energie' },
-                                                { id: 3, name: 'E.on' },
-                                                { id: 4, name: 'Eneco' },
-                                                { id: 5, name: 'Energiedirect' },
-                                                { id: 6, name: 'Engie' },
-                                                { id: 7, name: 'Essent' },
-                                                { id: 8, name: 'Greenchoice' },
-                                                { id: 9, name: 'Holland Wind' },
-                                            ]}
+                                            options={energySuppliers}
                                             placeholder={'Selecteer uw energieleverancier'}
                                         />
                                     )}
                                 />
+
+                                {/* Energy supplier details */}
+                                {values.energySupplierId ? (
+                                    <div className="current_es_wrapper">
+                                        <h3 id="current_es_id" className="h3">
+                                            {
+                                                energySuppliers.find(
+                                                    energySupplier =>
+                                                        energySupplier.id === Number(values.energySupplierId)
+                                                ).name
+                                            }
+                                        </h3>
+                                        <div className="w-row">
+                                            <div className="w-col w-col-6">
+                                                <h6 className="heading-content inline">Nummer leverancier</h6>
+                                            </div>
+                                            <div className="w-col w-col-6">
+                                                <Field
+                                                    name="esNumber"
+                                                    render={({ field }) => (
+                                                        <InputText
+                                                            field={field}
+                                                            id="es_number"
+                                                            className={'text-input content _w-90 w-input'}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-row">
+                                            <div className="w-col w-col-6">
+                                                <h6 className="heading-content inline">Lid sinds</h6>
+                                            </div>
+                                            <div className="w-col w-col-6">
+                                                <Field
+                                                    name="memberSince"
+                                                    render={({ field }) => (
+                                                        <InputText
+                                                            field={field}
+                                                            id="member_since"
+                                                            className={'text-input content _w-90 w-input'}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-row">
+                                            <div className="w-col w-col-6">
+                                                <h6 className="heading-content inline">EAN nummer electriciteit</h6>
+                                            </div>
+                                            <div className="w-col w-col-6">
+                                                <Field
+                                                    name="eanElectricity"
+                                                    render={({ field }) => (
+                                                        <InputText
+                                                            field={field}
+                                                            id="ean_electricity"
+                                                            className={'text-input content _w-90 w-input'}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-row">
+                                            <div className="w-col w-col-6">
+                                                <h6 className="heading-content inline">Klant nummer </h6>
+                                            </div>
+                                            <div className="w-col w-col-6">
+                                                <Field
+                                                    name="clientNr"
+                                                    render={({ field }) => (
+                                                        <InputText
+                                                            field={field}
+                                                            id="client_nr"
+                                                            className={'text-input content _w-90 w-input'}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-row">
+                                            <div className="w-col w-col-6">
+                                                <h6 className="heading-content inline">Klant sinds</h6>
+                                            </div>
+                                            <div className="w-col w-col-6">
+                                                <Field
+                                                    name="clientSince"
+                                                    render={({ field }) => (
+                                                        <InputText
+                                                            field={field}
+                                                            id="client_since"
+                                                            className={'text-input content _w-90 w-input'}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : null}
                             </div>
                         </div>
 
@@ -289,7 +381,6 @@ const AccountInfoForm = function({ handleSubmit, initialValues }) {
                                     buttonClassName={'save-btn w-button'}
                                     type={'submit'}
                                     loading={isSubmitting}
-                                    loadingSpinnerColor={'#034b8c'}
                                 />
                             </div>
                             <div className="w-col w-col-6" />

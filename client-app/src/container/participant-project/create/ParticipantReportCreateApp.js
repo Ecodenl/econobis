@@ -11,7 +11,7 @@ import ParticipantReportCreateToolbar from './ParticipantReportCreateToolbar';
 import { connect } from 'react-redux';
 import { clearPreviewParticipantReport } from '../../../actions/project/ProjectDetailsActions';
 import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
-import Modal from "../../../components/modal/Modal";
+import Modal from '../../../components/modal/Modal';
 
 class ParticipantReportCreateApp extends Component {
     constructor(props) {

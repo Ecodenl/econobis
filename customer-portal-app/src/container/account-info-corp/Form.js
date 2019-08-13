@@ -88,13 +88,18 @@ const AccountInfoCorpForm = function({ handleSubmit, initialValues, energySuppli
                                 <Field
                                     name="didAgreeAvg"
                                     render={({ field }) => (
-                                        <input
-                                            type="checkbox"
-                                            id="did_agree_avg"
-                                            {...field}
-                                            checked=""
-                                            className="w-checkbox-input checkbox"
-                                        />
+                                        <label className="w-checkbox checkbox-fld">
+                                            <input
+                                                type="checkbox"
+                                                {...field}
+                                                id="did_agree_avg"
+                                                checked={field.value}
+                                                className="w-checkbox-input checkbox"
+                                            />
+                                            <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
+                                                Akkoord
+                                            </span>
+                                        </label>
                                     )}
                                 />
 

@@ -33,7 +33,7 @@ const AccountInfoCorp = function() {
         invoicePostalCode: '',
         invoiceCity: '',
         invoiceCountryId: '',
-        didAgreeAvg: '',
+        didAgreeAvg: false,
         primaryOccupationContactName: 'Rob Rollenberg',
         primaryOccupationContactRole: 'Eigenaar',
         occupations: [

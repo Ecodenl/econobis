@@ -36,7 +36,7 @@ const AccountInfo = function() {
         countryId: '',
         iban: '',
         ibanName: '',
-        didAgreeAvg: '',
+        didAgreeAvg: true,
         energySupplierId: '1',
         esNumber: '123',
         memberSince: '01-04-2019',

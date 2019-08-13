@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 import { Link } from 'react-router';
 
 import Panel from '../../../../../components/panel/Panel';
@@ -55,7 +55,7 @@ class RevenueDetailsToolbar extends Component {
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon
                                         iconName={'glyphicon-arrow-left'}
-                                        onClickAction={browserHistory.goBack}
+                                        onClickAction={() => hashHistory.push(`/project/details/${this.props.revenue.project.id}`)}
                                     />
                                     {this.props.permissions.manageFinancial && !this.props.revenue.confirmed && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />

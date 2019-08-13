@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import ProtectedRoute from './route/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import Login from './container/login';

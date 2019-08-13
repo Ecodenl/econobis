@@ -78,6 +78,10 @@ class RevenueFormEdit extends Component {
                 dateBegin: false,
                 dateEnd: false,
                 dateReference: false,
+                payoutTypeId: false,
+            },
+            errorMessage: {
+                payoutTypeId: '',
             },
             isSaving: false,
         };
@@ -191,6 +195,7 @@ class RevenueFormEdit extends Component {
         const { revenue } = this.state;
 
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
         if (validator.isEmpty(revenue.categoryId + '')) {
@@ -222,20 +227,32 @@ class RevenueFormEdit extends Component {
                 errors.payoutTypeId = true;
                 hasErrors = true;
             }
+            const accountPayoutTypeId = this.props.participantProjectPayoutTypes.find(
+                participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
+            ).id;
+
+            if (revenue.revenue < 0 && revenue.payoutTypeId == accountPayoutTypeId) {
+                errors.payoutTypeId = true;
+                errorMessage.payoutTypeId =
+                    'Als je een negatief resultaat wilt verdelen dan kan dat niet uitgekeerd worden op een rekening. Kies voor bijschrijven.';
+                hasErrors = true;
+            }
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
-        !hasErrors && this.setState({ isSaving: true });
-        ProjectRevenueAPI.updateProjectRevenue(revenue.id, revenue).then(payload => {
-            this.props.fetchRevenue(revenue.id);
-
-            setTimeout(() => {
-                this.props.getDistribution(revenue.id, 0);
-            }, 250);
+        if (!hasErrors) {
             this.setState({ isSaving: true });
-            this.props.switchToView();
-        });
+            ProjectRevenueAPI.updateProjectRevenue(revenue.id, revenue).then(payload => {
+                this.props.fetchRevenue(revenue.id);
+
+                setTimeout(() => {
+                    this.props.getDistribution(revenue.id, 0);
+                }, 250);
+                this.setState({ isSaving: true });
+                this.props.switchToView();
+            });
+        }
     };
 
     render() {
@@ -353,6 +370,7 @@ class RevenueFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                             required={'required'}
                             error={this.state.errors.payoutTypeId}
+                            errorMessage={this.state.errorMessage.payoutTypeId}
                         />
                     ) : null}
                 </div>

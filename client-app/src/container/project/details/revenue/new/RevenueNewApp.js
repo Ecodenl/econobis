@@ -47,6 +47,9 @@ class RevenueNewApp extends Component {
                 dateReference: false,
                 payoutTypeId: false,
             },
+            errorMessage: {
+                payoutTypeId: '',
+            },
             project: {},
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
@@ -191,6 +194,7 @@ class RevenueNewApp extends Component {
         const { revenue } = this.state;
 
         let errors = {};
+        let errorMessage = {};
         let hasErrors = false;
 
         if (validator.isEmpty(revenue.categoryId + '')) {
@@ -225,9 +229,18 @@ class RevenueNewApp extends Component {
                 errors.payoutTypeId = true;
                 hasErrors = true;
             }
+            const accountPayoutTypeId = this.props.participantProjectPayoutTypes.find(
+                participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
+            ).id;
+            if (revenue.revenue < 0 && revenue.payoutTypeId == accountPayoutTypeId) {
+                errors.payoutTypeId = true;
+                errorMessage.payoutTypeId =
+                    'Als je een negatief resultaat wilt verdelen dan kan dat niet uitgekeerd worden op een rekening. Kies voor bijschrijven.';
+                hasErrors = true;
+            }
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         !hasErrors &&
             ProjectRevenueAPI.storeProjectRevenue(revenue).then(payload => {
@@ -250,6 +263,7 @@ class RevenueNewApp extends Component {
                                     <RevenueNewForm
                                         revenue={this.state.revenue}
                                         errors={this.state.errors}
+                                        errorMessage={this.state.errorMessage}
                                         handleInputChange={this.handleInputChange}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleInputChangeDateConfirmed={this.handleInputChangeDateConfirmed}

@@ -14,6 +14,7 @@ const InputSelect = props => {
         onBlurAction,
         required,
         error,
+        errorMessage,
         optionValue,
         optionName,
         readOnly,
@@ -47,6 +48,11 @@ const InputSelect = props => {
                     })}
                 </select>
             </div>
+            {error && (
+                <div className="col-sm-offset-6 col-sm-6">
+                    <span className="has-error-message"> {errorMessage}</span>
+                </div>
+            )}
         </div>
     );
 };
@@ -58,6 +64,7 @@ InputSelect.defaultProps = {
     readOnly: false,
     required: '',
     error: false,
+    errorMessage: '',
     value: '',
     optionValue: 'id',
     optionName: 'name',
@@ -78,6 +85,7 @@ InputSelect.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    errorMessage: PropTypes.string,
     emptyOption: PropTypes.bool,
     optionValue: PropTypes.string,
     optionName: PropTypes.string,

@@ -267,6 +267,9 @@ class RevenueNewApp extends Component {
 
             ProjectRevenueAPI.storeProjectRevenue(revenue).then(payload => {
                 this.setState({ isLoading: false });
+                // Delete path new-project-revenue in history, so when go back the page goes to the project details
+                hashHistory.replace(`/project/details/${this.props.params.projectId}`);
+                // Push to new revenue
                 hashHistory.push(`/project/opbrengst/${payload.data.data.id}`);
             }).catch(error => {
                 console.log(error);

@@ -364,7 +364,8 @@ class ProjectRevenueController extends ApiController
             // If date entry is after date begin then date begin is equal to date entry
             if($dateEntry > $dateBegin) $dateBegin = $dateEntry;
 
-            $daysOfPeriod = $dateEnd->diffInDays($dateBegin);
+            $dateEndForPeriod = clone $dateEnd;
+            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
 
             $quantityOfParticipations += $mutation->quantity;
 

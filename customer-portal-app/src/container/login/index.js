@@ -7,7 +7,7 @@ import LoginForm from './Form';
 
 export default props => {
     const [redirectToReferrer, toggleRedirect] = useState(false);
-    let { from } = props.location.state || { from: { pathname: '/' } };
+    let { from } = props.location.state || { from: { pathname: '/account-info' } };
 
     function handleSubmit(values, actions, login) {
         // TODO Call api and then handle submit functions

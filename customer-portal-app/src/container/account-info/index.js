@@ -20,7 +20,6 @@ const AccountInfo = function() {
         number: 'C2019-1',
         contactName: 'Rob Rollenberg',
         email: 'robennoortje@rollenberg.net',
-        password: 'geheim',
         titleId: '1',
         firstName: 'Rob',
         lastNamePrefixId: '',

@@ -32,23 +32,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues, energySuppliers,
                                 <label htmlFor="email" className="field-label">
                                     Inloggegevens
                                 </label>
-                                <Field
-                                    name="email"
-                                    render={({ field }) => (
-                                        <InputText field={field} id="email" placeholder={'E-mail'} />
-                                    )}
-                                />
-                                <Field
-                                    name="password"
-                                    render={({ field }) => (
-                                        <InputText
-                                            field={field}
-                                            id="password"
-                                            placeholder={'Wachtwoord'}
-                                            type={'password'}
-                                        />
-                                    )}
-                                />
+                                <div className="text-block">{initialValues.email}</div>
                                 <a href="change-password.html" className="link-content">
                                     wijzig wachtwoord
                                 </a>

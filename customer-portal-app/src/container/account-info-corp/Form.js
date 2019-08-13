@@ -13,7 +13,7 @@ const validationSchema = Yup.object().shape({
     website: Yup.string().url(),
 });
 
-const AccountInfoCorpForm = function({ handleSubmit, initialValues, energySuppliers, handleEnergySupplierChange }) {
+const AccountInfoCorpForm = function({ handleSubmit, initialValues }) {
     return (
         <Formik
             initialValues={initialValues}

@@ -72,9 +72,9 @@ class conversionParticipationsToMutations extends Command
             | 4 = 1(Interesse)
             | 1 = 2(Optie/Inschrijving)
             | 2 = 4(Definitief)
+            | 5 = 4 (Beeindigd, nu Definitief, later verkoopmutatie? + datum beeindigd)
+            | 3 = 4 (Overgedragen, nu Definitief, later verkoopmutatie? + datum beeindigd)
             | null = 3(Toegekend)
-            | 5 = null (Beeindigd)
-            | 3 = null (Overgedragen)
             --------------------------- */
             switch($participant->status_id) {
                 case 4:
@@ -84,6 +84,8 @@ class conversionParticipationsToMutations extends Command
                     $statusId = 2;
                     break;
                 case 2:
+                case 3:
+                case 5:
                     $statusId = 4;
                     break;
                 default:
@@ -103,7 +105,7 @@ class conversionParticipationsToMutations extends Command
                 $participantMutation->quantity_final = $participant->participations_granted;
             }
             if($statusId == 4) {
-                $participantMutation->date_entry = $participant->date_payed;
+                $participantMutation->date_entry = $participant->date_register;
                 $participantMutation->date_payment = $participant->date_payed;
             }
 

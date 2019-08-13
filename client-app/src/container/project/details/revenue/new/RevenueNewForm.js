@@ -133,6 +133,7 @@ const RevenueNew = props => {
                         onChangeAction={props.handleInputChange}
                         required={'required'}
                         error={props.errors.payoutTypeId}
+                        errorMessage={props.errorMessage.payoutTypeId}
                     />
                 ) : null}
             </div>

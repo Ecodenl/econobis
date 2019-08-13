@@ -39,6 +39,8 @@ class FullProject extends Resource
                 'dateEntry' => $this->date_entry,
                 'dateInterestBearing' => $this->date_interest_bearing,
                 'dateInterestBearingKwh' => $this->date_interest_bearing_kwh,
+                'kwhStartHighNextRevenue' => $this->kwh_start_high_next_revenue,
+                'kwhStartLowNextRevenue' => $this->kwh_start_low_next_revenue,
                 'projectTypeId' => $this->project_type_id,
                 'projectType' => GenericResource::make($this->whenLoaded('projectType')),
                 'postalCode' => $this->postal_code,

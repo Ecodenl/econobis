@@ -27,6 +27,14 @@ class ProjectRevenueObserver
                 $project->date_interest_bearing = $projectRevenue->date_end->addDay();
             }elseif($projectRevenue->category->code_ref == 'revenueKwh'){
                 $project->date_interest_bearing_kwh = $projectRevenue->date_end->addDay();
+                if($projectRevenue->kwh_end_high <> 0)
+                {
+                    $project->kwh_start_high_next_revenue = $projectRevenue->kwh_end_high +1;
+                }
+                if($projectRevenue->kwh_end_low <> 0)
+                {
+                    $project->kwh_start_low_next_revenue = $projectRevenue->kwh_end_low +1;
+                }
             }
 
             $project->save();

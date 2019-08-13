@@ -79,9 +79,13 @@ class RevenueFormEdit extends Component {
                 dateEnd: false,
                 dateReference: false,
                 payoutTypeId: false,
+                kwhEndHigh: false,
+                kwhEndLow: false,
             },
             errorMessage: {
                 payoutTypeId: '',
+                kwhEndHigh: '',
+                kwhEndLow: '',
             },
             isSaving: false,
         };
@@ -214,6 +218,19 @@ class RevenueFormEdit extends Component {
         if (revenue.distributionTypeId === 'inPossessionOf') {
             if (validator.isEmpty(revenue.dateReference + '')) {
                 errors.dateReference = true;
+                hasErrors = true;
+            }
+        }
+
+        if (this.props.revenue.category.codeRef === 'revenueKwh') {
+            if (revenue.kwhEndHigh < revenue.kwhStartHigh) {
+                errors.kwhEndHigh = true;
+                errorMessage.kwhEndHigh = 'Eindstand kWh hoog mag niet lager zijn dan Beginstand kWh hoog.';
+                hasErrors = true;
+            }
+            if (revenue.kwhEndLow < revenue.kwhStartLow) {
+                errors.kwhEndLow = true;
+                errorMessage.kwhEndLow = 'Eindstand kWh laag mag niet lager zijn dan Beginstand kWh laag.';
                 hasErrors = true;
             }
         }
@@ -441,36 +458,60 @@ class RevenueFormEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh hoog'}
-                                name={'kwhStartHigh'}
-                                value={kwhStartHigh}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            {this.props.revenue.project.kwhStartHighNextRevenue > 0 ? (
+                                <InputText
+                                    type={'number'}
+                                    label={'Beginstand kWh hoog'}
+                                    name={'kwhStartHigh'}
+                                    value={kwhStartHigh}
+                                    readOnly={true}
+                                />
+                            ) : (
+                                <InputText
+                                    type={'number'}
+                                    label={'Beginstand kWh hoog'}
+                                    name={'kwhStartHigh'}
+                                    value={kwhStartHigh}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            )}
                             <InputText
                                 type={'number'}
                                 label={'Eindstand kWh hoog'}
                                 name={'kwhEndHigh'}
                                 value={kwhEndHigh}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.kwhEndHigh}
+                                errorMessage={this.state.errorMessage.kwhEndHigh}
                             />
                         </div>
 
                         <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh laag'}
-                                name={'kwhStartLow'}
-                                value={kwhStartLow}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            {this.props.revenue.project.kwhStartLowNextRevenue > 0 ? (
+                                <InputText
+                                    type={'number'}
+                                    label={'Beginstand kWh laag'}
+                                    name={'kwhStartLow'}
+                                    value={kwhStartLow}
+                                    readOnly={true}
+                                />
+                            ) : (
+                                <InputText
+                                    type={'number'}
+                                    label={'Beginstand kWh laag'}
+                                    name={'kwhStartLow'}
+                                    value={kwhStartLow}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            )}
                             <InputText
                                 type={'number'}
                                 label={'Eindstand kWh laag'}
                                 name={'kwhEndLow'}
                                 value={kwhEndLow}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.kwhEndLow}
+                                errorMessage={this.state.errorMessage.kwhEndLow}
                             />
                         </div>
 

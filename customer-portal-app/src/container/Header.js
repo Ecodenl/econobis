@@ -20,29 +20,29 @@ function Header({ location }) {
                                         <nav role="navigation" className="nav-menu w-nav-menu">
                                             <h6 className="heading in-menu">MENU</h6>
                                             <Link
-                                                to={'account-info'}
+                                                to={'gegevens'}
                                                 className={`nav-link w-nav-link w--nav-link-open ${
-                                                    location.pathname === '/account-info' ? 'w--current' : ''
+                                                    location.pathname === '/gegevens' ? 'w--current' : ''
                                                 }`}
                                             >
                                                 Gegevens
                                             </Link>
                                             <Link
-                                                to={'account-info-corp'}
+                                                to={'gegevens-zakelijk'}
                                                 className={`nav-link w-nav-link w--nav-link-open ${
-                                                    location.pathname === '/account-info-corp' ? 'w--current' : ''
+                                                    location.pathname === '/gegevens-zakelijk' ? 'w--current' : ''
                                                 }`}
                                             >
                                                 Gegevens zakelijk
                                             </Link>
-                                            <a
-                                                href="settings.html"
-                                                className={`nav-link w-nav-link ${
-                                                    location.pathname ? 'w--current' : ''
+                                            <Link
+                                                to={'mijn-interessegebieden'}
+                                                className={`nav-link w-nav-link w--nav-link-open ${
+                                                    location.pathname === '/mijn-interessegebieden' ? 'w--current' : ''
                                                 }`}
                                             >
                                                 Mijn interessegebieden
-                                            </a>
+                                            </Link>
 
                                             <a href="#" onClick={logout} className="nav-link w-nav-link">
                                                 Log uit

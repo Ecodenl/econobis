@@ -29,11 +29,7 @@ export default {
         const requestUrl = `${URL_REVENUE}`;
 
         return axiosInstance
-            .post(requestUrl, data)
-            .then(response => response.data.data)
-            .catch(error => {
-                console.log(error);
-            });
+            .post(requestUrl, data);
     },
 
     deleteProjectRevenue: id => {

@@ -55,6 +55,7 @@ class RevenueNewApp extends Component {
                 kwhEndLow: '',
             },
             project: {},
+            isLoading: false,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleInputChangeDateConfirmed = this.handleInputChangeDateConfirmed.bind(this);
@@ -261,10 +262,18 @@ class RevenueNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
-        !hasErrors &&
+        if(!hasErrors) {
+            this.setState({ isLoading: true });
+
             ProjectRevenueAPI.storeProjectRevenue(revenue).then(payload => {
-                hashHistory.push(`/project/opbrengst/${payload.id}`);
+                this.setState({ isLoading: false });
+                hashHistory.push(`/project/opbrengst/${payload.data.data.id}`);
+            }).catch(error => {
+                console.log(error);
+                alert('Er is iets misgegaan bij opslaan. Probeer nogmaals een nieuwe opbrengstverdeling te maken vanuit het project.');
+                hashHistory.goBack();
             });
+        }
     };
 
     render() {
@@ -288,6 +297,7 @@ class RevenueNewApp extends Component {
                                         handleInputChangeDateConfirmed={this.handleInputChangeDateConfirmed}
                                         handleSubmit={this.handleSubmit}
                                         project={this.state.project}
+                                        isLoading={this.state.isLoading}
                                     />
                                 </div>
                             </PanelBody>

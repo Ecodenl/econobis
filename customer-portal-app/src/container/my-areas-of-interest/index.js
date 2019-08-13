@@ -4,9 +4,14 @@ import MyAreasOfInterestForm from './Form';
 const MyAreasOfInterest = function() {
     // TODO Fetch values from API
     const initialValues = {
-        general: [],
-        participation: [{ id: 1, name: 'Test groep', value: true }, { id: 2, name: 'Test download', value: false }],
-        myAreasOfInterest: [],
+        myAreasOfInterest: [
+            { id: 4, name: 'Gevel isolatie', value: true },
+            { id: 5, name: 'Zonnepanelen', value: false },
+            { id: 6, name: 'Dak isolatie', value: false },
+            { id: 7, name: 'Zonneboiler', value: true },
+        ],
+        participations: [{ id: 2, name: 'Test groep', value: true }, { id: 3, name: 'De leuke mensen', value: false }],
+        generalOptions: [{ id: 1, name: 'Test algemeen groep', value: false }],
     };
 
     return (

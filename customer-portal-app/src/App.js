@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import ProtectedRoute from './route/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
-import Dashboard from './container/Dashboard';
 import Login from './container/login';
 import AccountInfo from './container/account-info';
+import AccountInfoCorp from './container/account-info-corp';
 
 function App() {
     return (
@@ -12,7 +12,8 @@ function App() {
             <AuthProvider>
                 <Switch>
                     <ProtectedRoute exact path="/" component={AccountInfo} />
-                    <ProtectedRoute exact path="/account-info" component={AccountInfo} />
+                    <ProtectedRoute path="/account-info" component={AccountInfo} />
+                    <ProtectedRoute path="/account-info-corp" component={AccountInfoCorp} />
                     <Route path="/login" component={Login} />
                 </Switch>
             </AuthProvider>

@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './container/login';
 import AccountInfo from './container/account-info';
 import AccountInfoCorp from './container/account-info-corp';
+import PublicRoute from './route/PublicRoute';
 
 function App() {
     return (
@@ -14,7 +15,7 @@ function App() {
                     <ProtectedRoute exact path="/" component={AccountInfo} />
                     <ProtectedRoute path="/account-info" component={AccountInfo} />
                     <ProtectedRoute path="/account-info-corp" component={AccountInfoCorp} />
-                    <Route path="/login" component={Login} />
+                    <PublicRoute path="/login" component={Login} />
                 </Switch>
             </AuthProvider>
         </Router>

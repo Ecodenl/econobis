@@ -46,9 +46,13 @@ class RevenueNewApp extends Component {
                 dateEnd: false,
                 dateReference: false,
                 payoutTypeId: false,
+                kwhEndHigh: false,
+                kwhEndLow: false,
             },
             errorMessage: {
                 payoutTypeId: '',
+                kwhEndHigh: '',
+                kwhEndLow: '',
             },
             project: {},
         };
@@ -98,6 +102,8 @@ class RevenueNewApp extends Component {
                           .endOf('year')
                           .format('Y-MM-DD')
                     : '';
+                revenue.kwhStartHigh = payload.kwhStartHighNextRevenue;
+                revenue.kwhStartLow = payload.kwhStartLowNextRevenue;
             }
 
             this.setState({
@@ -220,6 +226,19 @@ class RevenueNewApp extends Component {
         const category = this.props.projectRevenueCategories.find(
             projectRevenueCategorie => projectRevenueCategorie.id == revenue.categoryId
         );
+        if (category.codeRef === 'revenueKwh') {
+            if (revenue.kwhEndHigh < revenue.kwhStartHigh) {
+                errors.kwhEndHigh = true;
+                errorMessage.kwhEndHigh = 'Eindstand kWh hoog mag niet lager zijn dan Beginstand kWh hoog.';
+                hasErrors = true;
+            }
+            if (revenue.kwhEndLow < revenue.kwhStartLow) {
+                errors.kwhEndLow = true;
+                errorMessage.kwhEndLow = 'Eindstand kWh laag mag niet lager zijn dan Beginstand kWh laag.';
+                hasErrors = true;
+            }
+        }
+
         if (
             category.codeRef === 'revenueEuro' &&
             (this.state.project.projectType.codeRef === 'capital' ||

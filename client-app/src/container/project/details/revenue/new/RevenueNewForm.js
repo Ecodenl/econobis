@@ -116,12 +116,7 @@ const RevenueNew = props => {
             </div>
 
             <div className="row">
-                <InputDate
-                    label={'Datum definitief'}
-                    name={'dateConfirmed'}
-                    value={dateConfirmed}
-                    onChangeAction={props.handleInputChangeDateConfirmed}
-                />
+                <div className="form-group col-sm-6" />
                 {category.codeRef === 'revenueEuro' &&
                 (projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') ? (
                     <InputSelect
@@ -204,36 +199,60 @@ const RevenueNew = props => {
                     </div>
 
                     <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Beginstand kWh hoog'}
-                            name={'kwhStartHigh'}
-                            value={kwhStartHigh}
-                            onChangeAction={props.handleInputChange}
-                        />
+                        {props.project.kwhStartHighNextRevenue > 0 ? (
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh hoog'}
+                                name={'kwhStartHigh'}
+                                value={kwhStartHigh}
+                                readOnly={true}
+                            />
+                        ) : (
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh hoog'}
+                                name={'kwhStartHigh'}
+                                value={kwhStartHigh}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        )}
                         <InputText
                             type={'number'}
                             label={'Eindstand kWh hoog'}
                             name={'kwhEndHigh'}
                             value={kwhEndHigh}
                             onChangeAction={props.handleInputChange}
+                            error={props.errors.kwhEndHigh}
+                            errorMessage={props.errorMessage.kwhEndHigh}
                         />
                     </div>
 
                     <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Beginstand kWh laag'}
-                            name={'kwhStartLow'}
-                            value={kwhStartLow}
-                            onChangeAction={props.handleInputChange}
-                        />
+                        {props.project.kwhStartHighNextRevenue > 0 ? (
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh laag'}
+                                name={'kwhStartLow'}
+                                value={kwhStartLow}
+                                readOnly={true}
+                            />
+                        ) : (
+                            <InputText
+                                type={'number'}
+                                label={'Beginstand kWh laag'}
+                                name={'kwhStartLow'}
+                                value={kwhStartLow}
+                                onChangeAction={props.handleInputChange}
+                            />
+                        )}
                         <InputText
                             type={'number'}
                             label={'Eindstand kWh laag'}
                             name={'kwhEndLow'}
                             value={kwhEndLow}
                             onChangeAction={props.handleInputChange}
+                            error={props.errors.kwhEndLow}
+                            errorMessage={props.errorMessage.kwhEndLow}
                         />
                     </div>
 

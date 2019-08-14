@@ -65,8 +65,7 @@ class ProjectRevenueController extends ApiController
     {
         set_time_limit(0);
 
-        //todo WM onderscheid tussen confirmed en niet comfirmed toch niet meer nodig?
-        //todo Volgens mij kan RevenueParticipantsCSVHelper dan helemaal weg cq opgeschoond worden, toch?
+        //todo WM Volgens mij kan RevenueParticipantsCSVHelper dan helemaal weg cq opgeschoond worden, toch?
 //        if ($projectRevenue->confirmed) {
 //            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
 //        } else {

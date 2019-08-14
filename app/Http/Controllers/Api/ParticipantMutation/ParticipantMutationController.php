@@ -45,10 +45,10 @@ class ParticipantMutationController extends ApiController
         if(ParticipantMutationStatus::find( $data['status_id'] )->code_ref == 'final'
             && isset( $data['date_granted'] ) )
         {
-            if($data['amount_final'] <> 0 && !isset( $data['amount_granted'] ) )
+            if(isset($data['amount_final']) && ($data['amount_final'] <> 0 && !isset( $data['amount_granted']) ) )
             {
                 $data = array_merge($data, ['amount_granted' =>  $data['amount_final']]);
-            }elseif($data['quantity_final'] <> 0 && !isset( $data['quantity_granted'] ) )
+            }elseif(isset($data['quantity_final']) && ($data['quantity_final'] <> 0 && !isset( $data['quantity_granted']) ) )
             {
                 $data = array_merge($data, ['quantity_granted' =>  $data['quantity_final']]);
             }

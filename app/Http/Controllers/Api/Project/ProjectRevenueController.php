@@ -324,10 +324,10 @@ class ProjectRevenueController extends ApiController
             return;
         }
 
-        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
-            $this->saveDeliveredKwhPeriod($distribution);
-        }
+//        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+//        if($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
+//            $this->saveDeliveredKwhPeriod($distribution);
+//        }
 
         // Recalculate values of distribution after saving
         $distribution->calculator()->runRevenueEuro();

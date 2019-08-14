@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 import * as ibantools from 'ibantools';
+import axios from 'axios';
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
@@ -14,9 +15,8 @@ import AdministrationLogoNew from './AdministrationLogoNew';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
-import axios from 'axios';
 import InputToggle from '../../../components/form/InputToggle';
-import ViewText from '../details/general/AdministrationDetailsFormGeneralEdit';
+import ViewText from '../../../components/form/ViewText';
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -52,7 +52,6 @@ class AdministrationNewForm extends Component {
                 emailTemplateExhortationId: '',
                 attachment: '',
                 mailboxId: '',
-                attachment: '',
                 usesTwinfield: false,
                 twinfieldUsername: '',
                 twinfieldPassword: '',
@@ -488,10 +487,10 @@ class AdministrationNewForm extends Component {
                                 multi={false}
                             />
                             {/*<InputToggle*/}
-                            {/*label={'Gebruikt BTW'}*/}
-                            {/*name={'usesVat'}*/}
-                            {/*value={usesVat}*/}
-                            {/*onChangeAction={this.handleInputChange}*/}
+                                {/*label={'Gebruikt BTW'}*/}
+                                {/*name={'usesVat'}*/}
+                                {/*value={usesVat}*/}
+                                {/*onChangeAction={this.handleInputChange}*/}
                             {/*/>*/}
                             <ViewText
                                 label={'Gebruikt BTW'}

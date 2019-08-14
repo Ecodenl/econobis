@@ -295,6 +295,7 @@ const RevenueNew = props => {
                         onClickAction={props.handleSubmit}
                         type={'submit'}
                         value={'Submit'}
+                        loading={props.isLoading}
                     />
                 </div>
             </PanelFooter>

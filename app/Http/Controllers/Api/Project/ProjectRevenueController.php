@@ -349,8 +349,6 @@ class ProjectRevenueController extends ApiController
         $mutations = $distribution->participation->mutationsDefinitive;
 
         foreach ($mutations as $index => $mutation) {
-            if($mutation->date_entry > $dateEndFromRevenue) continue;
-
             $dateBegin = $dateBeginFromRevenue;
             $dateEnd = $dateEndFromRevenue;
 
@@ -363,7 +361,7 @@ class ProjectRevenueController extends ApiController
             $dateEntry = $mutation->date_entry;
 
             // If date entry is after date begin then date begin is equal to date entry
-            if($dateEntry > $dateBegin && $dateEntry < $dateEnd) $dateBegin = $dateEntry;
+            if($dateEntry > $dateBegin) $dateBegin = $dateEntry;
 
             $dateEndForPeriod = clone $dateEnd;
             $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);

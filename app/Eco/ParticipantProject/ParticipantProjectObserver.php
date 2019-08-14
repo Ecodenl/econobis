@@ -70,7 +70,7 @@ class ParticipantProjectObserver
                 if($projectRevenue->category->code_ref == 'revenueEuro'
                 && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
                     foreach($projectRevenue->distribution as $distribution) {
-                        $distribution->calculator()->runRevenueCaptitalResult();
+                        $distribution->calculator()->runRevenueCapitalResult();
                         $distribution->save();
                     }
                 }

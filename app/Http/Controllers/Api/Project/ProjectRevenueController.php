@@ -65,8 +65,7 @@ class ProjectRevenueController extends ApiController
     {
         set_time_limit(0);
 
-        //todo WM onderscheid tussen confirmed en niet comfirmed toch niet meer nodig?
-        //todo Volgens mij kan RevenueParticipantsCSVHelper dan helemaal weg cq opgeschoond worden, toch?
+        //todo WM Volgens mij kan RevenueParticipantsCSVHelper dan helemaal weg cq opgeschoond worden, toch?
 //        if ($projectRevenue->confirmed) {
 //            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
 //        } else {
@@ -251,7 +250,7 @@ class ProjectRevenueController extends ApiController
         if($projectRevenue->category->code_ref == 'revenueEuro'
             && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
             foreach($projectRevenue->distribution as $distribution) {
-                $distribution->calculator()->runRevenueCaptitalResult();
+                $distribution->calculator()->runRevenueCapitalResult();
                 $distribution->save();
             }
         }
@@ -323,11 +322,6 @@ class ProjectRevenueController extends ApiController
         if($projectRevenue->category->code_ref == 'revenueKwh') {
             $this->saveDeliveredKwhPeriod($distribution);
             return;
-        }
-
-        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
-        if($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
-            $this->saveDeliveredKwhPeriod($distribution);
         }
 
         // Recalculate values of distribution after saving

@@ -67,51 +67,43 @@ class ProjectRevenueDistributionCalculator
         return $this->projectRevenueDistribution;
     }
 
-    public function runRevenueCaptitalResult()
+    public function runRevenueCapitalResult()
     {
         // Revenue category REVENUE EUR
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
-            $this->calculateCapitalResult();
+            return $this->projectRevenueDistribution->payout = $this->calculateCapitalResult();
         }
     }
 
     protected function calculateCapitalResult()
     {
         $projectRevenue = $this->projectRevenueDistribution->revenue;
-
-        // Calculate total result
         $totalResult = $projectRevenue->revenue;
 
-        // Total sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
-        // With this value we can calculate the amount of kwh per day and per participation ($totalResult / $totalSumOfParticipationsTimesDays)
-        $totalSumOfParticipationsAndDays = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
-            return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-        });
+        $participationsAmount = $this->projectRevenueDistribution->participations_amount;
+        $totalParticipations = $this->projectRevenueDistribution->where('revenue_id', $projectRevenue->id)->sum('participations_amount');
 
-        $totalDistributionResult = 0;
-        foreach ($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
-            // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
-            // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
-            $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
+        if(!$totalParticipations) return 0;
 
-            // Save returns per Kwh period
-            $deliveredKwhPeriod->amount_result = round(($totalResult / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
-            $deliveredKwhPeriod->save();
-
-            $totalDistributionResult += $deliveredKwhPeriod->amount_result;
-        }
+        // If key amount first percentage is filled and is greater participationValue, then split calculation with the two percentages
+        $payout = $totalResult / $totalParticipations * $participationsAmount;
 
         // Return total delivered kwh for per distribution
-        $this->projectRevenueDistribution->payout = $totalDistributionResult;
-
-        return $this->projectRevenueDistribution;
+        return number_format($payout, 2, '.', '');
     }
 
     protected function calculatePayout()
     {
-        // Project type OBLIGATION, CAPITAL and PCR
-        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') return $this->calculatePayoutInPossessionOf();
+        // --- IN POSSESSION OF --- //
+        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
+            // Project type OBLIGATION
+            if ($this->projectTypeCodeRef === 'obligation') return $this->calculatePayoutInPossessionOf();
 
+            // Project type CAPITAL and PCR
+//            if ($this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') return $this->calculateCapitalResult();
+        }
+
+        // --- HOW LONG IN POSSESSION --- //
         // Project type OBLIGATION, CAPITAL, PCR and LOAN
         if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'howLongInPossession' || $this->projectTypeCodeRef === 'loan') {
             if($this->projectRevenueDistribution->revenue->key_amount_first_percentage) {

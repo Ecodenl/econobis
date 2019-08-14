@@ -545,11 +545,9 @@ class TemplateVariableHelper
                 return number_format($model->amount_definitive + $model->participations_definitive_worth, 2, ',', '');
                 break;
             case 'saldo_lening_rekening':
-                //todo moet dit niet + opbrengsten rente zijn net als bij kapitaal ?
                 return number_format($model->amount_definitive, 2, ',', '');
                 break;
             case 'totale_opbrengsten':
-                //todo of dit som van mutations->return ?
                 return number_format($model->participationsReturnsTotal, 2, ',', '');
                 break;
             case 'waarde_totaal':
@@ -616,13 +614,13 @@ class TemplateVariableHelper
                 }
                 break;
             case 'wettelijke_vertegenwoordiger':
-                if($model->legalRepContact) {
-                    if ($model->legalRepContact->type_id == 'person') {
-                        $prefix = $model->legalRepContact->person->last_name_prefix;
-                        return $prefix ? $model->legalRepContact->person->first_name . ' ' . $prefix . ' ' . $model->legalRepContact->person->last_name
-                            : $model->legalRepContact->person->first_name . ' ' . $model->legalRepContact->person->last_name;
-                    } elseif ($model->legalRepContact->type_id == 'organisation') {
-                        return $model->legalRepContact->full_name;
+                if($model->contact->legalRepContact && $model->contact->legalRepContact->contact) {
+                    if ($model->contact->legalRepContact->contact->type_id == 'person') {
+                        $prefix = $model->contact->legalRepContact->contact->person->last_name_prefix;
+                        return $prefix ? $model->contact->legalRepContact->contact->person->first_name . ' ' . $prefix . ' ' . $model->contact->legalRepContact->contact->person->last_name
+                            : $model->contact->legalRepContact->contact->person->first_name . ' ' . $model->contact->legalRepContact->contact->person->last_name;
+                    } elseif ($model->contact->legalRepContact->contact->type_id == 'organisation') {
+                        return $model->contact->legalRepContact->contact->full_name;
                     }
                 }
                 else{
@@ -630,11 +628,11 @@ class TemplateVariableHelper
                 }
                 break;
             case 'wettelijke_vertegenwoordiger_voornaam':
-                if($model->legalRepContact) {
-                    if($model->legalRepContact->type_id == 'person'){
-                        return $model->legalRepContact->person->first_name;
+                if($model->contact->legalRepContact && $model->contact->legalRepContact->contact) {
+                    if($model->contact->legalRepContact->contact->type_id == 'person'){
+                        return $model->contact->legalRepContact->contact->person->first_name;
                     }
-                    elseif($model->legalRepContact->type_id == 'organisation'){
+                    elseif($model->contact->legalRepContact->contact->type_id == 'organisation'){
                         return '';
                     }
                 }
@@ -643,13 +641,13 @@ class TemplateVariableHelper
                 }
                 break;
             case 'wettelijke_vertegenwoordiger_achternaam':
-                if($model->legalRepContact) {
-                    if($model->legalRepContact->type_id == 'person'){
-                        $prefix = $model->legalRepContact->person->last_name_prefix;
-                        return $prefix ? $prefix . ' ' . $model->legalRepContact->person->last_name : $model->legalRepContact->person->last_name;
+                if($model->contact->legalRepContact && $model->contact->legalRepContact->contact) {
+                    if($model->contact->legalRepContact->contact->type_id == 'person'){
+                        $prefix = $model->contact->legalRepContact->contact->person->last_name_prefix;
+                        return $prefix ? $prefix . ' ' . $model->contact->legalRepContact->contact->person->last_name : $model->contact->legalRepContact->contact->person->last_name;
                     }
-                    elseif($model->legalRepContact->type_id == 'organisation'){
-                        return $model->legalRepContact->full_name;
+                    elseif($model->contact->legalRepContact->contact->type_id == 'organisation'){
+                        return $model->contact->legalRepContact->contact->full_name;
                     }
                 }
                 else{

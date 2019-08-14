@@ -711,10 +711,10 @@ class ParticipationProjectController extends ApiController
                 $mutationData['amount'] = isset($mutationData['amount_final']) ? $mutationData['amount_final'] : null;
                 if(isset( $mutationData['date_granted'] ) )
                 {
-                    if($mutationData['amount_final'] <> 0 && !isset( $mutationData['amount_granted'] ) )
+                    if(isset($mutationData['amount_final']) && $mutationData['amount_final'] <> 0 && !isset( $mutationData['amount_granted'] ) )
                     {
                         $mutationData = array_merge($mutationData, ['amount_granted' =>  $mutationData['amount_final']]);
-                    }elseif($mutationData['quantity_final'] <> 0 && !isset( $mutationData['quantity_granted'] ) )
+                    }elseif(isset($mutationData['quantity_final']) && $mutationData['quantity_final'] <> 0 && !isset( $mutationData['quantity_granted'] ) )
                     {
                         $mutationData = array_merge($mutationData, ['quantity_granted' =>  $mutationData['quantity_final']]);
                     }

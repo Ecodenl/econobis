@@ -209,19 +209,30 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(revenue.dateBegin + '')) {
+        if (!revenue.dateBegin) {
             errors.dateBegin = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(revenue.dateEnd + '')) {
+        if (!revenue.dateEnd) {
             errors.dateEnd = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(revenue.dateReference + '')) {
-            errors.dateReference = true;
-            hasErrors = true;
+        if (revenue.distributionTypeId === 'inPossessionOf') {
+            if (validator.isEmpty(revenue.dateReference + '')) {
+                errors.dateReference = true;
+                hasErrors = true;
+            }
+
+            const dateBegin = moment(revenue.dateBegin);
+            const dateEnd = moment(revenue.dateEnd);
+            const dateReference = moment(revenue.dateReference);
+
+            if(dateReference.isBefore(dateBegin) || dateReference.isAfter(dateEnd)) {
+                errors.dateReference = true;
+                hasErrors = true;
+            }
         }
 
         const category = this.props.projectRevenueCategories.find(

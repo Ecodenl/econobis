@@ -220,6 +220,15 @@ class RevenueFormEdit extends Component {
                 errors.dateReference = true;
                 hasErrors = true;
             }
+
+            const dateBegin = moment(revenue.dateBegin);
+            const dateEnd = moment(revenue.dateEnd);
+            const dateReference = moment(revenue.dateReference);
+
+            if(dateReference.isBefore(dateBegin) || dateReference.isAfter(dateEnd)) {
+                errors.dateReference = true;
+                hasErrors = true;
+            }
         }
 
         if (this.props.revenue.category.codeRef === 'revenueKwh') {

@@ -67,7 +67,7 @@ class FullProject extends Resource
                 'updatedAt' => $this->updated_at,
                 'valueCourses' => FullProjectValueCourse::collection($this->whenLoaded('projectValueCourses')),
                 'currentBookWorth' => $this->currentBookWorth(),
-                'revenues' => FullProjectRevenue::collection($this->whenLoaded('projectRevenues')),
+                'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'participants' => FullParticipantProject::collection($this->whenLoaded('participantsProject')),
                 'typeId' => $this->project_type_id,
                 'amountOfParticipants' => $this->participantsProject()->count(),

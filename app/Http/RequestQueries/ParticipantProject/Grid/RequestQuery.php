@@ -30,19 +30,20 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         $query = ParticipantProject::query()
             ->select('participation_project.*');
 
+        // The operation of below is not working. For now the code outcommented, so that the count is working after setting extra filter
         //If the request is called from the production project we catch the projectId filter. This will avoid errors with 'or' and 'and' filters.
-        if(json_decode($this->request->input('fetchFromProject')) == true){
-            $extraFilters = json_decode($this->request->input('extraFilters'));
-
-            if(count($extraFilters) > 0) {
-                $query->where('participation_project.project_id', $extraFilters[0]->data);
-
-                unset($extraFilters[0]);
-
-                $extraFilters = array_values($extraFilters);
-                Input::merge(['extraFilters' => json_encode($extraFilters)]);
-            }
-        }
+//        if(json_decode($this->request->input('fetchFromProject')) == true){
+//            $extraFilters = json_decode($this->request->input('extraFilters'));
+//
+//            if(count($extraFilters) > 0) {
+//                $query->where('participation_project.project_id', $extraFilters[0]->data);
+//
+//                unset($extraFilters[0]);
+//
+//                $extraFilters = array_values($extraFilters);
+//                Input::merge(['extraFilters' => json_encode($extraFilters)]);
+//            }
+//        }
 
         return $query;
     }

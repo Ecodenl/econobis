@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\ParticipantMutation;
 
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
@@ -61,9 +62,12 @@ class ParticipantMutationController extends ApiController
         DB::transaction(function () use ($participantMutation) {
             // Calculate participation worth based on current book worth of project
             if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-                $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+               $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                    ->where('date', '<=', $participantMutation->date_entry)
+                    ->orderBy('date', 'desc')
+                    ->value('book_worth');
 
-                $participantMutation->participation_worth = $currentBookWorthOfProject;
+                $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
             }
 
             $participantMutation->save();
@@ -114,9 +118,12 @@ class ParticipantMutationController extends ApiController
         DB::transaction(function () use ($participantMutation) {
             // Calculate participation worth based on current book worth of project
             if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-                $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+                $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                    ->where('date', '<=', $participantMutation->date_entry)
+                    ->orderBy('date', 'desc')
+                    ->value('book_worth');
 
-                $participantMutation->participation_worth = $currentBookWorthOfProject;
+                $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
             }
 
             $participantMutation->save();

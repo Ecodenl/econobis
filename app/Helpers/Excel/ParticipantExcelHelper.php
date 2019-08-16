@@ -21,119 +21,123 @@ class ParticipantExcelHelper
         $completeData = [];
 
         $headerData = [];
-        $headerData[] = '#participant';
-        $headerData[] = '#mutation';
-        $headerData[] = 'Contact id';
-        $headerData[] = 'Contactnummer';
-        $headerData[] = 'Deelname naam';
-        $headerData[] = 'Naam';
-        $headerData[] = 'Organisatie';
-        $headerData[] = 'Aanspreektitel';
-        $headerData[] = 'Initialen';
-        $headerData[] = 'Voornaam';
-        $headerData[] = 'Tussenvoegsel';
-        $headerData[] = 'Achternaam';
-        $headerData[] = 'Geboortedatum';
-        $headerData[] = 'Bezorg adres';
-        $headerData[] = 'Bezorg huisnummer';
-        $headerData[] = 'Bezorg toevoeging';
-        $headerData[] = 'Bezorg postcode';
-        $headerData[] = 'Bezorg plaats';
-        $headerData[] = 'Bezorg land';
-        $headerData[] = 'Bezoek adres';
-        $headerData[] = 'Bezoek huisnummer';
-        $headerData[] = 'Bezoek toevoeging';
-        $headerData[] = 'Bezoek postcode';
-        $headerData[] = 'Bezoek plaats';
-        $headerData[] = 'Bezoek land';
-        $headerData[] = 'Post adres';
-        $headerData[] = 'Post huisnummer';
-        $headerData[] = 'Post toevoeging';
-        $headerData[] = 'Post postcode';
-        $headerData[] = 'Post plaats';
-        $headerData[] = 'Post land';
-        $headerData[] = 'Factuur adres';
-        $headerData[] = 'Factuur huisnummer';
-        $headerData[] = 'Factuur toevoeging';
-        $headerData[] = 'Factuur postcode';
-        $headerData[] = 'Factuur plaats';
-        $headerData[] = 'Factuur land';
-        $headerData[] = 'Email primair';
-        $headerData[] = 'Email 2';
-        $headerData[] = 'Email 3';
-        $headerData[] = 'Email 4';
-        $headerData[] = 'Email 5';
-        $headerData[] = 'Telefoonnummer primair';
-        $headerData[] = 'Telefoonnummer 2';
-        $headerData[] = 'Telefoonnummer 3';
-        $headerData[] = 'Energieleverancier';
-        $headerData[] = 'Energieleverancier klant sinds';
-        $headerData[] = 'Klantnummer';
-        $headerData[] = 'EAN electra';
-        $headerData[] = 'EAN gas';
-        $headerData[] = 'Projectcode';
-        $headerData[] = 'Waarde per deelname';
-        $headerData[] = 'Deelnames aangevraagd';
-        $headerData[] = 'Deelnames toegekend';
-        $headerData[] = 'Deelnames restverkoop';
-        $headerData[] = 'Deelnames huidig';
-        $headerData[] = 'Huidige waarde';
-        $headerData[] = 'Contract verstuurd';
-        $headerData[] = 'Contract retour';
-        $headerData[] = 'Betaald op';
-        $headerData[] = 'Geschonken door';
-        $headerData[] = 'Akkoord regelement';
-        $headerData[] = 'Jaarlijks verbruik';
-        $headerData[] = 'Iban uitkeren';
-        $headerData[] = 'Iban uitkeren t.n.v.';
-        $headerData[] = 'Iban contact';
-        $headerData[] = 'Iban contact t.n.v.';
-        $headerData[] = 'Inschrijfdatum';
-        $headerData[] = 'Einddatum';
-        $headerData[] = 'Uitkeren op';
-        $headerData[] = 'Contactpersoon startdatum';
-        $headerData[] = 'Contactpersoon einddatum';
-        $headerData[] = 'Contactpersoon rol';
-        $headerData[] = 'Contactpersoon aanspreektitel';
-        $headerData[] = 'Contactpersoon naam';
-        $headerData[] = 'Contactpersoon initialen';
-        $headerData[] = 'Contactpersoon voornaam';
-        $headerData[] = 'Contactpersoon tussenvoegsel';
-        $headerData[] = 'Contactpersoon achternaam';
-        $headerData[] = 'Contactpersoon geboortedatum';
-        $headerData[] = 'Contactpersoon primair e-mailaddress';
-        $headerData[] = 'Contactpersoon primair telefoonnummer';
-        $headerData[] = 'Wettelijke vertegenwoordiger startdatum';
-        $headerData[] = 'Wettelijke vertegenwoordiger einddatum';
-        $headerData[] = 'Wettelijke vertegenwoordiger rol';
-        $headerData[] = 'Wettelijke vertegenwoordiger aanspreektitel';
-        $headerData[] = 'Wettelijke vertegenwoordiger naam';
-        $headerData[] = 'Wettelijke vertegenwoordiger initialen';
-        $headerData[] = 'Wettelijke vertegenwoordiger voornaam';
-        $headerData[] = 'Wettelijke vertegenwoordiger tussenvoegsel';
-        $headerData[] = 'Wettelijke vertegenwoordiger achternaam';
-        $headerData[] = 'Wettelijke vertegenwoordiger geboortedatum';
-        $headerData[] = 'Wettelijke vertegenwoordiger primair e-mailaddress';
-        $headerData[] = 'Wettelijke vertegenwoordiger primair telefoonnummer';
+        $headerData[0] = '#participant';
+        $headerData[1] = '#mutation';
+        $headerData[2] = 'Contact id';
+        $headerData[3] = 'Contactnummer';
+        $headerData[4] = 'Deelname naam';
+        $headerData[5] = 'Naam';
+        $headerData[6] = 'Organisatie';
+        $headerData[7] = 'Aanspreektitel';
+        $headerData[8] = 'Initialen';
+        $headerData[9] = 'Voornaam';
+        $headerData[10] = 'Tussenvoegsel';
+        $headerData[11] = 'Achternaam';
+        $headerData[12] = 'Geboortedatum';
+        $headerData[13] = 'Bezorg adres';
+        $headerData[14] = 'Bezorg huisnummer';
+        $headerData[15] = 'Bezorg toevoeging';
+        $headerData[16] = 'Bezorg postcode';
+        $headerData[17] = 'Bezorg plaats';
+        $headerData[18] = 'Bezorg land';
+        $headerData[19] = 'Bezoek adres';
+        $headerData[20] = 'Bezoek huisnummer';
+        $headerData[21] = 'Bezoek toevoeging';
+        $headerData[22] = 'Bezoek postcode';
+        $headerData[23] = 'Bezoek plaats';
+        $headerData[24] = 'Bezoek land';
+        $headerData[25] = 'Post adres';
+        $headerData[26] = 'Post huisnummer';
+        $headerData[27] = 'Post toevoeging';
+        $headerData[28] = 'Post postcode';
+        $headerData[29] = 'Post plaats';
+        $headerData[30] = 'Post land';
+        $headerData[31] = 'Factuur adres';
+        $headerData[32] = 'Factuur huisnummer';
+        $headerData[33] = 'Factuur toevoeging';
+        $headerData[34] = 'Factuur postcode';
+        $headerData[35] = 'Factuur plaats';
+        $headerData[36] = 'Factuur land';
+        $headerData[37] = 'Email primair';
+        $headerData[38] = 'Email 2';
+        $headerData[39] = 'Email 3';
+        $headerData[40] = 'Email 4';
+        $headerData[41] = 'Email 5';
+        $headerData[42] = 'Telefoonnummer primair';
+        $headerData[43] = 'Telefoonnummer 2';
+        $headerData[44] = 'Telefoonnummer 3';
+        $headerData[45] = 'Energieleverancier';
+        $headerData[46] = 'Energieleverancier klant sinds';
+        $headerData[47] = 'Klantnummer';
+        $headerData[48] = 'EAN electra';
+        $headerData[49] = 'EAN gas';
+        $headerData[50] = 'Projectcode';
+        $headerData[51] = 'Waarde per deelname';
+        $headerData[52] = 'Deelnames aangevraagd';
+        $headerData[53] = 'Deelnames toegekend';
+        $headerData[54] = 'Deelnames restverkoop';
+        $headerData[55] = 'Deelnames huidig';
+        $headerData[56] = 'Huidige waarde';
+        $headerData[57] = 'Contract verstuurd';
+        $headerData[58] = 'Contract retour';
+        $headerData[59] = 'Betaald op';
+        $headerData[60] = 'Geschonken door';
+        $headerData[61] = 'Akkoord regelement';
+        $headerData[62] = 'Jaarlijks verbruik';
+        $headerData[63] = 'Iban uitkeren';
+        $headerData[64] = 'Iban uitkeren t.n.v.';
+        $headerData[65] = 'Iban contact';
+        $headerData[66] = 'Iban contact t.n.v.';
+        $headerData[67] = 'Inschrijfdatum';
+        $headerData[68] = 'Einddatum';
+        $headerData[69] = 'Uitkeren op';
+        $headerData[70] = 'Contactpersoon startdatum';
+        $headerData[71] = 'Contactpersoon einddatum';
+        $headerData[72] = 'Contactpersoon rol';
+        $headerData[73] = 'Contactpersoon aanspreektitel';
+        $headerData[74] = 'Contactpersoon naam';
+        $headerData[75] = 'Contactpersoon initialen';
+        $headerData[76] = 'Contactpersoon voornaam';
+        $headerData[77] = 'Contactpersoon tussenvoegsel';
+        $headerData[78] = 'Contactpersoon achternaam';
+        $headerData[79] = 'Contactpersoon geboortedatum';
+        $headerData[80] = 'Contactpersoon primair e-mailaddress';
+        $headerData[81] = 'Contactpersoon primair telefoonnummer';
+        $headerData[82] = 'Wettelijke vertegenwoordiger startdatum';
+        $headerData[83] = 'Wettelijke vertegenwoordiger einddatum';
+        $headerData[84] = 'Wettelijke vertegenwoordiger rol';
+        $headerData[85] = 'Wettelijke vertegenwoordiger aanspreektitel';
+        $headerData[86] = 'Wettelijke vertegenwoordiger naam';
+        $headerData[87] = 'Wettelijke vertegenwoordiger initialen';
+        $headerData[88] = 'Wettelijke vertegenwoordiger voornaam';
+        $headerData[89] = 'Wettelijke vertegenwoordiger tussenvoegsel';
+        $headerData[90] = 'Wettelijke vertegenwoordiger achternaam';
+        $headerData[91] = 'Wettelijke vertegenwoordiger geboortedatum';
+        $headerData[92] = 'Wettelijke vertegenwoordiger primair e-mailaddress';
+        $headerData[93] = 'Wettelijke vertegenwoordiger primair telefoonnummer';
 
-        $headerData[] = 'Type mutatie';
-        $headerData[] = 'Status';
-        $headerData[] = 'Aantal interesse';
-        $headerData[] = 'Bedrag interesse';
-        $headerData[] = 'Datum interesse';
-        $headerData[] = 'Datum log interesse';
-        $headerData[] = 'Aantal ingeschreven';
-        $headerData[] = 'Bedrag ingeschreven';
-        $headerData[] = 'Datum ingeschreven';
-        $headerData[] = 'Datum log ingeschreven';
-        $headerData[] = 'Aantal toegekend';
-        $headerData[] = 'Bedrag toegekend';
-        $headerData[] = 'Datum toegekend';
-        $headerData[] = 'Datum log toegekend';
-        $headerData[] = 'Aantal definitief';
-        $headerData[] = 'Bedrag definitief';
-        $headerData[] = 'Ingangsdatum';
-        $headerData[] = 'Log Ingangsdatum';
+        $headerData[94] = 'Type mutatie';
+        $headerData[95] = 'Status';
+        $headerData[96] = 'Aantal interesse';
+        $headerData[97] = 'Bedrag interesse';
+        $headerData[98] = 'Datum interesse';
+        $headerData[99] = 'Datum log interesse';
+        $headerData[100] = 'Aantal ingeschreven';
+        $headerData[101] = 'Bedrag ingeschreven';
+        $headerData[102] = 'Datum ingeschreven';
+        $headerData[103] = 'Datum log ingeschreven';
+        $headerData[104] = 'Aantal toegekend';
+        $headerData[105] = 'Bedrag toegekend';
+        $headerData[106] = 'Datum toegekend';
+        $headerData[107] = 'Datum log toegekend';
+        $headerData[108] = 'Aantal definitief';
+        $headerData[109] = 'Bedrag definitief';
+        $headerData[110] = 'Ingangsdatum';
+        $headerData[111] = 'Log Ingangsdatum';
+        $headerData[112] = 'Opbrengst';
+        $headerData[113] = 'Betaaldatum';
+        $headerData[114] = 'Boekstuk';
+        $headerData[115] = 'Uitgekeerd op';
 
         $completeData[] = $headerData;
 
@@ -162,6 +166,8 @@ class ParticipantExcelHelper
             ]);
 
             foreach ($chunk as $participant) {
+                $projectCode = $participant->project->code;
+                $currentBookWorth = $participant->project->currentBookWorth();
 
                 // Addresses
                 if ($participant->contact->addresses) {
@@ -322,13 +328,13 @@ class ParticipantExcelHelper
                 $rowData[47] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->es_number : '';
                 $rowData[48] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_electricity : '';
                 $rowData[49] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_gas : '';
-                $rowData[50] = $participant->project->code;
-                $rowData[51] = $participant->project->participation_worth;
+                $rowData[50] = $projectCode;
+                $rowData[51] = $currentBookWorth;
                 $rowData[52] = $participant->participations_requested;
                 $rowData[53] = $participant->participations_granted;
                 $rowData[54] = $participant->participations_rest_sale;
                 $rowData[55] = $participant->participations_definitive;
-                $rowData[56] = $participant->participations_worth_total;
+                $rowData[56] = $participant->participations_definitive * $currentBookWorth;
                 $rowData[57] = $participant->date_contract_send;
                 $rowData[58] = $participant->date_contract_retour;
                 $rowData[59] = $participant->date_payed;
@@ -385,8 +391,12 @@ class ParticipantExcelHelper
                 $rowData[109] = $participant->amount_definitive;
                 $rowData[110] = "";
                 $rowData[111] = "";
+                $rowData[112] = "";
+                $rowData[113] = "";
+                $rowData[114] = "";
+                $rowData[115] = "";
 
-                $completeData[] = $rowData;
+//                $completeData[] = $rowData;
 
                 foreach ($participant->mutations as $mutation) {
                     $rowData[1] = $mutation->id;
@@ -402,10 +412,11 @@ class ParticipantExcelHelper
                     $mutationStatusLogFinal    = $mutation->statusLog->where('to_status_id', 4)->first();
                     $logFinalDateTime = $mutationStatusLogFinal ? Carbon::parse($mutationStatusLogFinal->date_status)->format('d-m-Y H:i:s') : "";
 
+                    $rowData[94] = $mutationType->name;
+                    $rowData[95] = $mutationStatus->name;
+
                     if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' )
                     {
-                        $rowData[94] = $mutationType->name;
-                        $rowData[95] = $mutationStatus->name;
                         $rowData[96] = $mutation->quantity_interessed;
                         $rowData[97] = $mutation->amount_interest;
                         $rowData[98] = $mutation->date_interest ? Carbon::parse($mutation->date_interest)->format('d-m-Y') : "";
@@ -422,10 +433,22 @@ class ParticipantExcelHelper
                         $rowData[109] = $mutation->amount_final;
                         $rowData[110] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
                         $rowData[111] = $logFinalDateTime;
+                        $rowData[112] = "";
+                        $rowData[113] = "";
+                        $rowData[114] = "";
+                        $rowData[115] = "";
 
-                        $completeData[] = $rowData;
                     }
 
+                    if($mutationType->code_ref === 'result')
+                    {
+                        $rowData[112] = $mutation->returns;
+                        $rowData[113] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
+                        $rowData[114] = $mutation->entry;
+                        $rowData[115] = $mutation->paid_on;
+                    }
+
+                    $completeData[] = $rowData;
                 }
 
             }
@@ -434,13 +457,13 @@ class ParticipantExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'DI'; $col++) {
+        for ($col = 'A'; $col !== 'DL'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:DH1')
+        $sheet->getStyle('A1:DL1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

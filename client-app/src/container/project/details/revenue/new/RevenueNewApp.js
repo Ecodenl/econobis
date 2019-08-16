@@ -264,20 +264,24 @@ class RevenueNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
-        if(!hasErrors) {
+        if (!hasErrors) {
             this.setState({ isLoading: true });
 
-            ProjectRevenueAPI.storeProjectRevenue(revenue).then(payload => {
-                this.setState({ isLoading: false });
-                // Delete path new-project-revenue in history, so when go back the page goes to the project details
-                hashHistory.replace(`/project/details/${this.props.params.projectId}`);
-                // Push to new revenue
-                hashHistory.push(`/project/opbrengst/${payload.data.data.id}`);
-            }).catch(error => {
-                console.log(error);
-                alert('Er is iets misgegaan bij opslaan. Probeer nogmaals een nieuwe opbrengstverdeling te maken vanuit het project.');
-                hashHistory.goBack();
-            });
+            ProjectRevenueAPI.storeProjectRevenue(revenue)
+                .then(payload => {
+                    this.setState({ isLoading: false });
+                    // Delete path new-project-revenue in history, so when go back the page goes to the project details
+                    hashHistory.replace(`/project/details/${this.props.params.projectId}`);
+                    // Push to new revenue
+                    hashHistory.push(`/project/opbrengst/${payload.data.data.id}`);
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert(
+                        'Er is iets misgegaan bij opslaan. Probeer nogmaals een nieuwe opbrengstverdeling te maken vanuit het project.'
+                    );
+                    hashHistory.goBack();
+                });
         }
     };
 

@@ -487,10 +487,10 @@ class AdministrationNewForm extends Component {
                                 multi={false}
                             />
                             {/*<InputToggle*/}
-                                {/*label={'Gebruikt BTW'}*/}
-                                {/*name={'usesVat'}*/}
-                                {/*value={usesVat}*/}
-                                {/*onChangeAction={this.handleInputChange}*/}
+                            {/*label={'Gebruikt BTW'}*/}
+                            {/*name={'usesVat'}*/}
+                            {/*value={usesVat}*/}
+                            {/*onChangeAction={this.handleInputChange}*/}
                             {/*/>*/}
                             <ViewText
                                 label={'Gebruikt BTW'}

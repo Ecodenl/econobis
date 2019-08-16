@@ -142,29 +142,6 @@ class ParticipantExcelHelper
         $completeData[] = $headerData;
 
         foreach ($this->participants->chunk(500) as $chunk) {
-            $chunk->load([
-                'contact.person.title',
-                'contact.organisation',
-                'contact.contactPerson.contact.person.title',
-                'contact.contactPerson.contact.primaryEmailaddress',
-                'contact.contactPerson.contact.primaryphoneNumber',
-                'contact.contactPerson.occupation',
-                'contact.legalRepContact.contact.person.title',
-                'contact.legalRepContact.contact.primaryEmailaddress',
-                'contact.legalRepContact.contact.primaryphoneNumber',
-                'contact.legalRepContact.occupation',
-                'contact.addresses',
-                'contact.emailAddresses',
-                'contact.primaryEmailAddress',
-                'contact.primaryphoneNumber',
-                'contact.primaryAddress.country',
-                'contact.primaryContactEnergySupplier.energySupplier',
-                'giftedByContact',
-                'legalRepContact',
-                'project',
-                'participantProjectPayoutType'
-            ]);
-
             foreach ($chunk as $participant) {
                 $projectCode = $participant->project->code;
                 $currentBookWorth = $participant->project->currentBookWorth();
@@ -412,8 +389,8 @@ class ParticipantExcelHelper
                     $mutationStatusLogFinal    = $mutation->statusLog->where('to_status_id', 4)->first();
                     $logFinalDateTime = $mutationStatusLogFinal ? Carbon::parse($mutationStatusLogFinal->date_status)->format('d-m-Y H:i:s') : "";
 
-                    $rowData[94] = $mutationType->name;
-                    $rowData[95] = $mutationStatus->name;
+                    $rowData[94] = $mutationType ? $mutationType->name : '';
+                    $rowData[95] = $mutationStatus ? $mutationStatus->name : '';
 
                     if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' )
                     {

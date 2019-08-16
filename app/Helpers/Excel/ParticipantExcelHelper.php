@@ -463,13 +463,7 @@ class ParticipantExcelHelper
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:DL1')
-            ->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                ],
-
-            ]);
+        $sheet->getStyle('1:1')->getFont()->setBold(true);
 
         // Load all data in worksheet
         $sheet->fromArray($completeData);

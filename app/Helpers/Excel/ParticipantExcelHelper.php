@@ -77,7 +77,7 @@ class ParticipantExcelHelper
         $headerData[] = 'Deelnames toegekend';
         $headerData[] = 'Deelnames restverkoop';
         $headerData[] = 'Deelnames huidig';
-        $headerData[] = 'Hudige waarde';
+        $headerData[] = 'Huidige waarde';
         $headerData[] = 'Contract verstuurd';
         $headerData[] = 'Contract retour';
         $headerData[] = 'Betaald op';

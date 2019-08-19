@@ -289,7 +289,7 @@ const Routes = () => {
                 />
                 <Route path="project/details/:id" component={ProjectDetailsApp} />
                 <Route path="project/opbrengst/:id" component={RevenueDetailsApp} />
-                <Route path="project/opbrengst/:id/facturen" component={PaymentInvoiceCreateApp} />
+                <Route path="project/opbrengst/:id/rapportage" component={PaymentInvoiceCreateApp} />
                 <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
                 <Route path="project/:id" component={ProjectGeneralApp} />
                 <Route path="projecten" component={ProjectsListApp} />

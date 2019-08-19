@@ -70,10 +70,18 @@ class ExtraFilter extends RequestExtraFilter
     }
     protected function applyParticipantMutationStatusIdFilter($query, $type, $data)
     {
-        $query->whereHas('mutations', function ($query) use ($type, $data) {
-            RequestFilter::applyFilter($query, 'status_id', $type, $data);
-        });
-        $query->where('date_terminated', null);
+        if($data === 'isTerminated') {
+            if($type == 'neq' || $type == 'nl') {
+                $query->whereNull('date_terminated');
+            } else {
+                $query->whereNotNull('date_terminated');
+            }
+        } else {
+            $query->whereHas('mutations', function ($query) use ($type, $data) {
+                RequestFilter::applyFilter($query, 'status_id', $type, $data);
+            });
+            $query->where('date_terminated', null);
+        }
     }
     protected function applyParticipantMutationTypeIdFilter($query, $type, $data)
     {

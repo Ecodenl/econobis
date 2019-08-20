@@ -49,7 +49,6 @@ class Filter extends RequestFilter
         'postalCode' => 'addresses',
         'city' => 'addresses',
         'energySupplierId' => 'energy_suppliers',
-        'participantMutationStatusId' => 'participant_mutations',
     ];
 
     protected $defaultTypes = [
@@ -72,7 +71,14 @@ class Filter extends RequestFilter
 
     protected function applyParticipantMutationStatusIdFilter($query, $type, $data)
     {
-        $query->whereRaw('participant_mutations.status_id =' . DB::connection()->getPdo()->quote($data))->where('participation_project.date_terminated', null);
+        if($data === 'isTerminated') {
+            $query->whereNotNull('date_terminated');
+        } else {
+            $query->whereHas('mutations', function ($query) use ($type, $data) {
+                RequestFilter::applyFilter($query, 'status_id', $type, $data);
+            });
+            $query->where('date_terminated', null);
+        }
     }
 
 

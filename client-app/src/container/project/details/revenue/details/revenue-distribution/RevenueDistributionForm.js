@@ -233,24 +233,13 @@ class RevenueDistributionForm extends Component {
         }
 
         if (this.state.distributionIds.length > 0 && !error) {
-            if (!this.props.projectRevenue.project.administration.canCreatePaymentInvoices['can']) {
-                this.props.setError(
-                    412,
-                    this.props.projectRevenue.project.administration.canCreatePaymentInvoices['message']
-                );
-                this.setState({
-                    showModal: false,
-                });
-                return;
-            } else {
                 this.props.previewReport({
                     templateId: this.state.templateId,
                     emailTemplateId: this.state.emailTemplateId,
                     subject: this.state.subject,
                     distributionIds: this.state.distributionIds,
                 });
-                hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/facturen`);
-            }
+                hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -262,7 +251,18 @@ class RevenueDistributionForm extends Component {
 
     checkDistributionRevenueInvoices = () => {
         if (this.state.distributionIds.length) {
-            this.createPaymentInvoices();
+            if (!this.props.projectRevenue.project.administration.canCreatePaymentInvoices['can']) {
+                this.props.setError(
+                    412,
+                    this.props.projectRevenue.project.administration.canCreatePaymentInvoices['message']
+                );
+                this.setState({
+                    showModal: false,
+                });
+                return;
+            } else {
+                this.createPaymentInvoices();
+            }
         } else {
             this.setState({
                 showModal: true,

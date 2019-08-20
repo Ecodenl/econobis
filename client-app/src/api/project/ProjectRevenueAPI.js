@@ -28,8 +28,7 @@ export default {
     storeProjectRevenue: data => {
         const requestUrl = `${URL_REVENUE}`;
 
-        return axiosInstance
-            .post(requestUrl, data);
+        return axiosInstance.post(requestUrl, data);
     },
 
     deleteProjectRevenue: id => {

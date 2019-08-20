@@ -5,6 +5,7 @@ import ContactDetailsFormOccupationsNew from './ContactDetailsFormOccupationsNew
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import ContactsAPI from '../../../../api/contact/ContactsAPI';
 
 class ContactDetailsFormOccupations extends Component {
     constructor(props) {
@@ -12,7 +13,23 @@ class ContactDetailsFormOccupations extends Component {
 
         this.state = {
             showNew: false,
+            contacts: [],
+            peekLoading: {
+                contacts: true,
+            },
         };
+    }
+
+    componentDidMount() {
+        ContactsAPI.getContactsPeek().then(payload => {
+            this.setState({
+                contacts: payload,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    contacts: false,
+                },
+            });
+        });
     }
 
     toggleShowNew = () => {
@@ -32,7 +49,10 @@ class ContactDetailsFormOccupations extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <ContactDetailsFormOccupationsList />
+                        <ContactDetailsFormOccupationsList
+                            contacts={this.state.contacts}
+                            peekLoading={this.state.peekLoading}
+                        />
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && <ContactDetailsFormOccupationsNew toggleShowNew={this.toggleShowNew} />}

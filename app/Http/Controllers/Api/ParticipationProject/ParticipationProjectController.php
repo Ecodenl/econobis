@@ -151,6 +151,32 @@ class ParticipationProjectController extends ApiController
         set_time_limit(0);
         $participants = $requestQuery->getQueryNoPagination()->get();
 
+        $participants->load([
+            'contact.person.title',
+            'contact.organisation',
+            'contact.contactPerson.contact.person.title',
+            'contact.contactPerson.contact.primaryEmailaddress',
+            'contact.contactPerson.contact.primaryphoneNumber',
+            'contact.contactPerson.occupation',
+            'contact.legalRepContact.contact.person.title',
+            'contact.legalRepContact.contact.primaryEmailaddress',
+            'contact.legalRepContact.contact.primaryphoneNumber',
+            'contact.legalRepContact.occupation',
+            'contact.addresses',
+            'contact.emailAddresses',
+            'contact.primaryEmailAddress',
+            'contact.primaryphoneNumber',
+            'contact.primaryAddress.country',
+            'contact.primaryContactEnergySupplier.energySupplier',
+            'giftedByContact',
+            'legalRepContact',
+            'project',
+            'participantProjectPayoutType',
+            'mutations.statusLog',
+            'mutations.status',
+            'mutations.type',
+        ]);
+
         $participantExcelHelper = new ParticipantExcelHelper($participants);
 
         return $participantExcelHelper->downloadExcel();

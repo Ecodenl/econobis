@@ -170,7 +170,7 @@ class ParticipantsListExtraFilters extends Component {
             participantMutationStatusId: {
                 name: 'Deelname status (Mutaties)',
                 type: 'dropdown',
-                dropDownOptions: this.props.participantMutationStatuses,
+                dropDownOptions: [...this.props.participantMutationStatuses, {id: 'isTerminated', name: 'Beëindigd'}],
             },
             participantMutationDateContractRetour: {
                 name: 'Datum contract retour (Mutaties)',

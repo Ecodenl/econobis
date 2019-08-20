@@ -23,6 +23,8 @@ const ContactDetailsFormOccupationsList = props => {
                             key={primaryOccupation.id}
                             occupation={primaryOccupation}
                             primaryOccupation={true}
+                            contacts={props.contacts}
+                            peekLoading={props.peekLoading}
                         />
                     );
                 })}
@@ -33,6 +35,8 @@ const ContactDetailsFormOccupationsList = props => {
                             key={occupation.id}
                             occupation={occupation}
                             primaryOccupation={false}
+                            contacts={props.contacts}
+                            peekLoading={props.peekLoading}
                         />
                     );
                 })}

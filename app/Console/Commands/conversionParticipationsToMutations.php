@@ -6,12 +6,14 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Project\ProjectValueCourse;
 use App\Eco\User\User;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use ParticipantTransactions;
 
 class conversionParticipationsToMutations extends Command
 {
@@ -49,7 +51,7 @@ class conversionParticipationsToMutations extends Command
     public function handle()
     {
         $this->makeFirstDepositMutations();
-//        $this->makeWithDrawalMutations();
+        $this->makeWithDrawalMutations();
 
         dd('klaar');
     }
@@ -97,24 +99,54 @@ class conversionParticipationsToMutations extends Command
             $participantMutation->participation_id = $participant->id;
             $participantMutation->type_id = $mutationType->id;
             $participantMutation->status_id = $statusId;
-            if($projectType->code_ref == 'loan') {
-                $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
-                $participantMutation->amount_final = $participant->participations_granted / 100; // Loan is filled in cents
-            } else {
-                $participantMutation->quantity = $participant->participations_granted;
-                $participantMutation->quantity_final = $participant->participations_granted;
-            }
-            if($statusId == 4) {
-                $participantMutation->date_entry = $participant->date_register;
-                $participantMutation->date_payment = $participant->date_payed;
+
+            switch($statusId) {
+                case 1:
+                    if($projectType->code_ref == 'loan') {
+                        $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
+                        $participantMutation->amount_interest = $participant->participations_requested / 100; // Loan is filled in cents
+                    } else {
+                        $participantMutation->quantity = $participant->participations_requested;
+                        $participantMutation->quantity_interest = $participant->participations_requested;
+                    }
+                    break;
+                case 2:
+                    if($projectType->code_ref == 'loan') {
+                        $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
+                        $participantMutation->amount_option = $participant->participations_requested / 100; // Loan is filled in cents
+                    } else {
+                        $participantMutation->quantity = $participant->participations_requested;
+                        $participantMutation->quantity_option = $participant->participations_requested;
+                    }
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    if($projectType->code_ref == 'loan') {
+                        $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
+                        $participantMutation->amount_final = $participant->participations_granted / 100; // Loan is filled in cents
+                    } else {
+                        $participantMutation->quantity = $participant->participations_granted;
+                        $participantMutation->quantity_final = $participant->participations_granted;
+                    }
+                    $participantMutation->date_entry = $participant->date_register;
+                    $participantMutation->date_payment = $participant->date_payed;
+                    break;
+                default:
+                    $statusId = null;
+                    break;
             }
 
-            DB::transaction(function () use ($participantMutation) {
+//            dd($participantMutation);
+            DB::transaction(function () use ($participantMutation, $projectType) {
                 // Calculate participation worth based on current book worth of project
-                if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-                    $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+                if($participantMutation->status->code_ref === 'final' && $projectType->code_ref !== 'loan') {
+                    $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                        ->where('date', '<=', $participantMutation->date_entry)
+                        ->orderBy('date', 'desc')
+                        ->value('book_worth');
 
-                    $participantMutation->participation_worth = $currentBookWorthOfProject;
+                    $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
                 }
 
                 $participantMutation->save();
@@ -135,34 +167,44 @@ class conversionParticipationsToMutations extends Command
      */
     public function makeWithDrawalMutations()
     {
-        $participants = ParticipantProject::whereNotNull('date_end')->where('participations_definitive', '!=', 0)->get();
+        $participants = ParticipantProject::where('participations_sold', '!=', 0)->where('participations_definitive', '!=', 0)->get();
 
         foreach ($participants as $participant) {
             $mutationType = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $participant->project->project_type_id)->first();
 
-            $participantMutation = new ParticipantMutation();
-            $participantMutation->participation_id = $participant->id;
-            $participantMutation->type_id = $mutationType->id;
-            $participantMutation->status_id = 4; // 4 is final
-            $participantMutation->quantity = '-' . $participant->participations_granted;
-            $participantMutation->date_entry = $participant->date_end;
+            $participantTransactions = DB::table('participant_transactions')->where('participation_id', $participant->id)->where('type_id', 3)->get();
 
-            DB::transaction(function () use ($participantMutation) {
-                // Calculate participation worth based on current book worth of project
-                if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-                    $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
+            $project = $participant->project;
 
-                    $participantMutation->participation_worth = $currentBookWorthOfProject;
-                }
+            foreach($participantTransactions as $participantTransaction) {
+                $quantity = $participantTransaction->amount / $project->participation_worth;
+//                dd($quantity);
+                $participantMutation = new ParticipantMutation();
+                $participantMutation->participation_id = $participant->id;
+                $participantMutation->type_id = $mutationType->id;
+                $participantMutation->status_id = 4; // 4 is final
+                $participantMutation->quantity = '-' . $quantity;
+                $participantMutation->quantity_final = '-' . $quantity;
+                $participantMutation->date_entry = $participantTransaction->date_transaction;
+                $participantMutation->date_payment = $participantTransaction->date_booking;
 
-                $participantMutation->save();
+                $participantMutation->participation_worth = $participantTransaction->amount;
 
-                // Herbereken de afhankelijke gegevens op het participantProject
-                $participantMutation->participation->calculator()->run()->save();
+                DB::transaction(function () use ($participantMutation, $participantTransaction) {
+                    // Calculate participation worth based on current book worth of project
+                    if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
+                        $participantMutation->participation_worth = $participantTransaction->amount;
+                    }
+//                    dd($participantMutation->participation_worth);
+                    $participantMutation->save();
 
-                // Herbereken de afhankelijke gegevens op het project
-                $participantMutation->participation->project->calculator()->run()->save();
-            });
+                    // Herbereken de afhankelijke gegevens op het participantProject
+                    $participantMutation->participation->calculator()->run()->save();
+
+                    // Herbereken de afhankelijke gegevens op het project
+                    $participantMutation->participation->project->calculator()->run()->save();
+                });
+            }
         }
     }
 }

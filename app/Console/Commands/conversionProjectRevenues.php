@@ -43,16 +43,19 @@ class conversionProjectRevenues extends Command
     public function handle()
     {
         foreach(ProjectRevenue::all() as $projectRevenue) {
-            $projectType = $projectRevenue->project->projectType->code_ref;
-            if($projectType == 'obligation'){
-                $waardeTotaal = $projectRevenue->project->total_participations * $projectRevenue->project->participation_worth;
-                if($waardeTotaal <> 0 && $projectRevenue->revenue <> 0)
-                {
-                    $factor = $projectRevenue->revenue / $waardeTotaal;
-                    $pay_percentage_old = $projectRevenue->pay_percentage;
-                    $projectRevenue->pay_percentage = round($factor*100, 2);
-                    print_r("Id: " . $projectRevenue->id . " - Percentage oud: " . $pay_percentage_old . " - Percentage new: " . $projectRevenue->pay_percentage . "\n");
-                    $projectRevenue->save();
+            if($projectRevenue->project)
+            {
+                $projectType = $projectRevenue->project->projectType->code_ref;
+                if($projectType == 'obligation'){
+                    $waardeTotaal = $projectRevenue->project->total_participations * $projectRevenue->project->participation_worth;
+                    if($waardeTotaal <> 0 && $projectRevenue->revenue <> 0)
+                    {
+                        $factor = $projectRevenue->revenue / $waardeTotaal;
+                        $pay_percentage_old = $projectRevenue->pay_percentage;
+                        $projectRevenue->pay_percentage = round($factor*100, 2);
+                        print_r("Id: " . $projectRevenue->id . " - Percentage oud: " . $pay_percentage_old . " - Percentage new: " . $projectRevenue->pay_percentage . "\n");
+                        $projectRevenue->save();
+                    }
                 }
             }
         }

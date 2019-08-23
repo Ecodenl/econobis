@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/normalize.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/webflow.css';
 import './css/econobis.webflow.css';
 import App from './App';

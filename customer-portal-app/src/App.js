@@ -7,6 +7,7 @@ import Login from './container/login';
 import AccountInfo from './container/account-info';
 import AccountInfoCorp from './container/account-info-corp';
 import MyAreasOfInterest from './container/my-areas-of-interest';
+import RegisterCapital from './container/register/capital';
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                     <ProtectedRoute path="/gegevens" component={AccountInfo} />
                     <ProtectedRoute path="/gegevens-zakelijk" component={AccountInfoCorp} />
                     <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
+                    <ProtectedRoute path="/inschrijven/kapitaal/:project" component={RegisterCapital} />
                     <PublicRoute path="/login" component={Login} />
                 </Switch>
             </AuthProvider>

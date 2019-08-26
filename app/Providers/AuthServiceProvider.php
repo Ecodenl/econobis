@@ -74,7 +74,7 @@ use App\Eco\VatCode\VatCode;
 use App\Eco\VatCode\VatCodePolicy;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformPolicy;
-use Illuminate\Support\Facades\Gate;
+use App\Helpers\Portal\Auth\PortalUserProvider;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -137,5 +137,11 @@ class AuthServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(now()->addHours(12));
 
         Passport::routes();
+
+        Passport::routes(null, [
+            'middleware' => 'passport-portal',
+            'prefix' => 'portal/oauth',
+        ]);
+
     }
 }

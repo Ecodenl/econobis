@@ -39,6 +39,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapPortalRoutes();
+
         //
     }
 
@@ -69,5 +71,12 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapPortalRoutes()
+    {
+        Route::prefix('portal')
+             ->middleware(['passport-portal', 'api'])
+             ->group(base_path('routes/portal.php'));
     }
 }

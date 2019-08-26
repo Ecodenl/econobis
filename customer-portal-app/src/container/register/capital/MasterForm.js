@@ -1,13 +1,9 @@
 import React from 'react';
-import StepOne from './steps/StepOne';
-import StepTwo from './steps/StepTwo';
-import Button from 'react-bootstrap/Button';
 import Steps from './steps';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function MasterForm() {
+function MasterForm({initialValues, energySuppliers}) {
     const [currentStep, setStep] = React.useState(1);
 
     function previous() {
@@ -30,10 +26,7 @@ function MasterForm() {
                     </div>
                 </Col>
             </Row>
-            <Row>
-                <Col>Masterform</Col>
-            </Row>
-            <Steps currentStep={currentStep} previous={previous} next={next} />
+            <Steps currentStep={currentStep} previous={previous} next={next} initialValues={initialValues} energySuppliers={energySuppliers}/>
         </>
     );
 }

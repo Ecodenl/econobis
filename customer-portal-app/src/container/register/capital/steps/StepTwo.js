@@ -12,7 +12,7 @@ function StepTwo({ previous, next, initialValues, energySuppliers }) {
                 energySuppliers={energySuppliers}
                 handleEnergySupplierChange={() => {}}
             />
-            <Row className="justify-content-end justify-content-sm-end">
+            <Row className="justify-content-end">
                 <ButtonGroup aria-label="Steps">
                     <Button className={'w-button'} size="sm" onClick={previous}>
                         Terug

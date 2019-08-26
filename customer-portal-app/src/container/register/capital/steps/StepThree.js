@@ -40,7 +40,7 @@ function StepThree({ previous, next }) {
                     </label>
                 </div>
             </div>
-            <Row className="justify-content-end justify-content-sm-end">
+            <Row className="justify-content-end">
                 <ButtonGroup aria-label="Steps">
                     <Button className={'w-button'} size="sm" onClick={previous}>
                         Terug

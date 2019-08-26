@@ -3,15 +3,15 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import InputText from '../../../../components/form/InputText';
+import Col from 'react-bootstrap/Col';
 
 function StepOne({ next }) {
     const field = null;
 
     return (
         <div>
-            Stap één
-            <div className="w-row">
-                <div className="w-col w-col-6">
+            <Row>
+                <Col className={"col-sm col-sm-6"}>
                     <h6 className="heading-content">Minimale aantal participaties</h6>
                     <div className="text-block">1</div>
                     <h6 className="heading-content">Maximale aantal participaties</h6>
@@ -24,9 +24,9 @@ function StepOne({ next }) {
                     <InputText field={{...field, value: 4}} id="quantity_requested" />
                     <h6 className="heading-content">Te betalen bedrag</h6>
                     <div className="text-block">€ 2000,00</div>
-                </div>
-            </div>
-            <Row className="justify-content-end justify-content-sm-end">
+                </Col>
+            </Row>
+            <Row className="justify-content-end">
                 <ButtonGroup aria-label="Steps">
                     <Button className={'w-button'} size="sm" onClick={next}>
                         Ga naar gegevens

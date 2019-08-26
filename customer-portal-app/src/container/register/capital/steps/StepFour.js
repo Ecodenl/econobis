@@ -7,7 +7,7 @@ function StepFour({ previous }) {
     return (
         <div>
             Stap vier
-            <Row className="justify-content-end justify-content-sm-end">
+            <Row className="justify-content-end">
                 <ButtonGroup aria-label="Steps">
                     <Button className={'w-button'} size="sm" onClick={previous}>
                         Terug

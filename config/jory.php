@@ -126,7 +126,7 @@ return [
     */
 
     'registrars' => [
-//        \JosKolenberg\LaravelJory\Register\AutoRegistrar::class,
+        \JosKolenberg\LaravelJory\Register\AutoRegistrar::class,
     ],
 
     /*

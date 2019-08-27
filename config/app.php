@@ -216,7 +216,6 @@ return [
         \App\Providers\ObserverServiceProvider::class,
 
         Laravel\Passport\PassportServiceProvider::class,
-        \App\Providers\JoryServiceProvider::class,
 
         //custom packages for document templates
         Barryvdh\DomPDF\ServiceProvider::class,

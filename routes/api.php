@@ -21,7 +21,7 @@ Route::get('password/reset/{token}', [
 ]);
 
 Route::namespace('Api')
-    ->middleware('auth:api')
+    ->middleware(['auth:api', 'scopes:use-app'])
     ->group(function () {
 
         Route::get('/jobs', 'Job\JobController@getLastJobs');

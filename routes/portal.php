@@ -1,9 +1,8 @@
 <?php
 
-Route::middleware('auth:api')
+Route::middleware(['auth:api', 'scopes:use-portal'])
     ->group(function () {
         Route::get('/me', function(){
-            dump(config('auth'));
             return \Auth::user();
         });
     });

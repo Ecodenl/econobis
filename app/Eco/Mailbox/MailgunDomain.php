@@ -4,11 +4,10 @@ namespace App\Eco\Mailbox;
 
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
-use JosKolenberg\LaravelJory\Traits\JoryTrait;
 
 class MailgunDomain extends Model
 {
-    use JoryTrait, Encryptable;
+    use Encryptable;
 
     protected $guarded = ['id'];
 

@@ -9,13 +9,14 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class MailgunDomainController extends Controller
 {
 
-    public function jory(Request $request)
+    public function jory()
     {
-        return MailgunDomain::jory()->applyRequest($request);
+        return Jory::on(MailgunDomain::class);
     }
 
     public function store(RequestInput $input, Request $request)
@@ -30,7 +31,7 @@ class MailgunDomainController extends Controller
         $mailgunDomain->is_verified = (new MailgunHelper())->checkCredentials($mailgunDomain->domain, $mailgunDomain->secret);
         $mailgunDomain->save();
 
-        return MailgunDomain::jory()->onModel($mailgunDomain)->applyRequest($request);
+        return Jory::on($mailgunDomain);
     }
 
     public function update(RequestInput $input, MailgunDomain $mailgunDomain)

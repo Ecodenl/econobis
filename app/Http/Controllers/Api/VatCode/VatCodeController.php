@@ -7,13 +7,14 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class VatCodeController extends Controller
 {
 
-    public function jory(Request $request)
+    public function jory()
     {
-        return VatCode::jory()->applyRequest($request);
+        return Jory::on(VatCode::class);
     }
 
     public function store(RequestInput $input, Request $request)
@@ -30,7 +31,7 @@ class VatCodeController extends Controller
         $vatcode = new VatCode($data);
         $vatcode->save();
 
-        return VatCode::jory()->onModel($vatcode)->applyRequest($request);
+        return Jory::on($vatcode);
     }
 
     public function update(RequestInput $input, VatCode $vatCode)

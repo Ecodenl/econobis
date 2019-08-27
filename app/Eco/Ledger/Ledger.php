@@ -6,11 +6,10 @@ use App\Eco\Product\Product;
 use App\Eco\VatCode\VatCode;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use JosKolenberg\LaravelJory\Traits\JoryTrait;
 
 class Ledger extends Model
 {
-    use JoryTrait, SoftDeletes;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

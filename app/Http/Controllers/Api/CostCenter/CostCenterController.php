@@ -9,13 +9,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class CostCenterController extends Controller
 {
 
-    public function jory(Request $request)
+    public function jory()
     {
-        return CostCenter::jory()->applyRequest($request);
+        return Jory::on(CostCenter::class);
     }
 
     public function store(RequestInput $input, Request $request)
@@ -29,7 +30,7 @@ class CostCenterController extends Controller
         $costCenter = new CostCenter($data);
         $costCenter->save();
 
-        return CostCenter::jory()->onModel($costCenter)->applyRequest($request);
+        return Jory::on($costCenter);
     }
 
     public function update(RequestInput $input, CostCenter $costCenter)

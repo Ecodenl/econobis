@@ -9,13 +9,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class LedgerController extends Controller
 {
 
-    public function jory(Request $request)
+    public function jory()
     {
-        return Ledger::jory()->applyRequest($request);
+        return Jory::on(Ledger::class);
     }
 
     public function store(RequestInput $input, Request $request)
@@ -30,7 +31,7 @@ class LedgerController extends Controller
         $ledger = new Ledger($data);
         $ledger->save();
 
-        return Ledger::jory()->onModel($ledger)->applyRequest($request);
+        return Jory::on($ledger);
     }
 
     public function update(RequestInput $input, Ledger $ledger)

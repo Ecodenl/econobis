@@ -24,6 +24,9 @@ class ProjectValueCourseObserver
 
         foreach($projectValueCourse->project->participantsProject as $participant) {
             $participant->participations_definitive_worth = $participant->participations_definitive * $currentBookWorth;
+            if($projectValueCourse->project->projectType->code_ref == 'capital' || $projectValueCourse->project->projectType->code_ref == 'postalcode_link_capital') {
+                $participant->participations_capital_worth = $participant->calculator()->participationsCapitalWorth();
+            }
             $participant->save();
         }
     }

@@ -189,6 +189,9 @@ class ProjectController extends ApiController
             if($participationWorthChanged){
                 foreach ($project->participantsProject as $participantProject){
                     $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
+                    if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
+                        $participantProject->participations_capital_worth = $participantProject->calculator()->participationsCapitalWorth();
+                    }
                     $participantProject->save();
                 }
 

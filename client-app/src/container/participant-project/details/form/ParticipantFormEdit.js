@@ -139,6 +139,7 @@ class ParticipantFormEdit extends Component {
             project,
             participationsDefinitive,
             participationsDefinitiveWorth,
+            participationsCapitalWorth,
             amountDefinitive,
             powerKwhConsumption,
             participationsReturnsTotal,
@@ -218,7 +219,7 @@ class ParticipantFormEdit extends Component {
                         <ViewText
                             label={`Huidig saldo kapitaal rekening`}
                             id={'amountDefinitive'}
-                            value={moneyPresenter(amountDefinitive + participationsDefinitiveWorth)}
+                            value={moneyPresenter(participationsCapitalWorth)}
                             className={'form-group col-md-6'}
                         />
                     ) : null}

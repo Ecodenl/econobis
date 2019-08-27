@@ -47,6 +47,7 @@ class FullParticipantProject extends Resource
                 'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
                 'participationsDefinitive' => $this->participations_definitive,
                 'participationsDefinitiveWorth' => $this->participations_definitive_worth,
+                'participationsCapitalWorth' => $this->participations_capital_worth,
                 'participationsGranted' => $this->participations_granted,
                 'participationsOptioned' => $this->participations_optioned,
                 'participationsInteressed' => $this->participations_interessed,

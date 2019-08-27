@@ -21,6 +21,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\PaymentInvoice\PaymentInvoice;
+use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
@@ -775,9 +776,12 @@ class ParticipationProjectController extends ApiController
 
         // Calculate participation worth based on current book worth of project
         if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
-            $currentBookWorthOfProject = $project->currentBookWorth() * $participantMutation->quantity;
+            $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                ->where('date', '<=', $participantMutation->date_entry)
+                ->orderBy('date', 'desc')
+                ->value('book_worth');
+            $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
 
-            $participantMutation->participation_worth = $currentBookWorthOfProject;
             $participantMutation->save();
         }
     }
@@ -809,9 +813,11 @@ class ParticipationProjectController extends ApiController
 
         // Calculate participation worth based on current book worth of project
         if ($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-            $currentBookWorthOfProject = $participantMutation->participation->project->currentBookWorth() * $participantMutation->quantity;
-
-            $participantMutation->participation_worth = $currentBookWorthOfProject;
+            $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                ->where('date', '<=', $participantMutation->date_entry)
+                ->orderBy('date', 'desc')
+                ->value('book_worth');
+            $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
         }
 
         $participantMutation->save();

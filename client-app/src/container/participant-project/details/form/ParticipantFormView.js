@@ -15,6 +15,7 @@ const ParticipantFormView = props => {
         project,
         participationsDefinitive,
         participationsDefinitiveWorth,
+        participationsCapitalWorth,
         amountDefinitive,
         didAcceptAgreement,
         giftedByContact,
@@ -64,7 +65,7 @@ const ParticipantFormView = props => {
                 {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
                     <ViewText
                         label={`Huidig saldo kapitaal rekening`}
-                        value={moneyPresenter(amountDefinitive + participationsDefinitiveWorth)}
+                        value={moneyPresenter(participationsCapitalWorth)}
                     />
                 ) : null}
 

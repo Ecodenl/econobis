@@ -24,4 +24,8 @@ class CostCenterJoryResource extends JoryResource
         $this->field('updated_at')->filterable()->sortable();
         $this->field('deleted_at')->filterable()->sortable();
     }
+
+    protected function configureForPortal(): void
+    {
+    }
 }

@@ -15,11 +15,12 @@ class CreatePortalUsersTable extends Migration
     {
         Schema::create('portal_users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('email')->unique();
+            $table->string('password');
             $table->unsignedInteger('contact_id');
             $table->foreign('contact_id')
                 ->references('id')->on('contacts')
                 ->onDelete('restrict');
-            $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });

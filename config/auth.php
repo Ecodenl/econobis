@@ -1,6 +1,6 @@
 <?php
 
-use App\PortalUser;
+use App\Eco\Portal\PortalUser;
 
 return [
 

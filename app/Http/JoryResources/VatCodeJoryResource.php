@@ -28,4 +28,8 @@ class VatCodeJoryResource extends JoryResource
 
         // Relations
     }
+
+    protected function configureForPortal(): void
+    {
+    }
 }

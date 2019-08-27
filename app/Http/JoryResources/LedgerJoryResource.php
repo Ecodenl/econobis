@@ -28,4 +28,8 @@ class LedgerJoryResource extends JoryResource
         // Relations
         $this->relation('vatCode');
     }
+
+    protected function configureForPortal(): void
+    {
+    }
 }

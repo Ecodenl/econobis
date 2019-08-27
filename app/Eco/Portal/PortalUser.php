@@ -1,7 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Eco\Portal;
 
+use App\Eco;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -35,13 +36,5 @@ class PortalUser extends Authenticatable
     public function contact()
     {
         return $this->belongsTo(Eco\Contact\Contact::class);
-    }
-
-    public function findForPassport($username)
-    {
-        return $this->whereHas('contact.primaryEmailAddress', function ($query) use ($username) {
-            $query->where('primary', 1);
-            $query->where('email', $username);
-        })->first();
     }
 }

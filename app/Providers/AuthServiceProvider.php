@@ -74,7 +74,7 @@ use App\Eco\VatCode\VatCode;
 use App\Eco\VatCode\VatCodePolicy;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformPolicy;
-use App\PortalUser;
+use App\Eco\Portal\PortalUser;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;

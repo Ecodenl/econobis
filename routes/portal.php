@@ -1,11 +1,12 @@
 <?php
 
+use JosKolenberg\LaravelJory\Facades\Jory;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::middleware(['auth:api', 'scopes:use-portal'])
     ->group(function () {
         Route::get('/me', function(){
-            return \Auth::user();
+            return Jory::on(\Auth::user()->contact);
         });
 
         // Apart voor app en portal ivm toepassen aparte middleware

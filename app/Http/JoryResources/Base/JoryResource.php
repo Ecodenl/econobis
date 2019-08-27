@@ -8,6 +8,9 @@ use JosKolenberg\LaravelJory\JoryResource as Original;
 
 abstract class JoryResource extends Original
 {
+
+    abstract protected function configureForPortal(): void;
+
     public function getConfig(): Config
     {
         if (!$this->config) {
@@ -15,7 +18,7 @@ abstract class JoryResource extends Original
 
             if(Auth::isAppUser()){
                 $this->configure();
-            }elseif (Auth::isPortalUser() && method_exists($this, 'configureForPortal')){
+            }elseif (Auth::isPortalUser()){
                 $this->configureForPortal();
             }
         }

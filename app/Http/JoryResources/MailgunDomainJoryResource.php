@@ -26,4 +26,8 @@ class MailgunDomainJoryResource extends JoryResource
 
         // Relations
     }
+
+    protected function configureForPortal(): void
+    {
+    }
 }

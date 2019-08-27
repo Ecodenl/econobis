@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Eco\Invoice\Invoice;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
@@ -14,46 +13,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use ParticipantTransactions;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class conversionParticipationsToMutations extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'project:conversionParticipationsToMutations';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Maak mutatieregel aan voor aangekochte/verkochte participaties';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function doConversion($divideBy100 = false)
     {
-        parent::__construct();
-
-        Auth::setUser(User::find(1));
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $this->makeFirstDepositMutations();
+        $this->makeFirstDepositMutations($divideBy100);
         $this->makeWithDrawalMutations();
-
-        dd('klaar');
     }
 
     /**
@@ -61,9 +29,10 @@ class conversionParticipationsToMutations extends Command
      *
      * @return mixed
      */
-    public function makeFirstDepositMutations()
+
+    public function makeFirstDepositMutations($divideBy100)
     {
-        $participants = ParticipantProject::where('participations_granted', '>', 0)->where('participations_definitive', 0)->get();
+        $participants = ParticipantProject::where('conversion_processed', false)->get();
 
         foreach ($participants as $participant) {
             $projectType = $participant->project->projectType;
@@ -72,7 +41,8 @@ class conversionParticipationsToMutations extends Command
             /* STATUSSEN CONVERSIE  ---
             | Oud = Nieuw
             | 4 = 1(Interesse)
-            | 1 = 2(Optie/Inschrijving)
+            | 1 = 2(Optie/Inschrijving indien participations granted = 0)
+            | 1 = 3(Granted indien participations granted <>0)
             | 2 = 4(Definitief)
             | 5 = 4 (Beeindigd, nu Definitief, later verkoopmutatie? + datum beeindigd)
             | 3 = 4 (Overgedragen, nu Definitief, later verkoopmutatie? + datum beeindigd)
@@ -83,7 +53,12 @@ class conversionParticipationsToMutations extends Command
                     $statusId = 1;
                     break;
                 case 1:
-                    $statusId = 2;
+                    if($participant->participations_granted == 0)
+                    {
+                        $statusId = 2;
+                    }else{
+                        $statusId = 3;
+                    }
                     break;
                 case 2:
                 case 3:
@@ -102,27 +77,37 @@ class conversionParticipationsToMutations extends Command
 
             switch($statusId) {
                 case 1:
-                    if($projectType->code_ref == 'loan') {
+                    if($projectType->code_ref == 'loan' && $divideBy100) {
                         $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
                         $participantMutation->amount_interest = $participant->participations_requested / 100; // Loan is filled in cents
                     } else {
                         $participantMutation->quantity = $participant->participations_requested;
                         $participantMutation->quantity_interest = $participant->participations_requested;
                     }
+                    $participantMutation->date_interest = $participant->date_register;
                     break;
                 case 2:
-                    if($projectType->code_ref == 'loan') {
+                    if($projectType->code_ref == 'loan' && $divideBy100) {
                         $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
                         $participantMutation->amount_option = $participant->participations_requested / 100; // Loan is filled in cents
                     } else {
                         $participantMutation->quantity = $participant->participations_requested;
                         $participantMutation->quantity_option = $participant->participations_requested;
                     }
+                    $participantMutation->date_option = $participant->date_register;
                     break;
                 case 3:
+                    if($projectType->code_ref == 'loan' && $divideBy100) {
+                        $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
+                        $participantMutation->amount_granted = $participant->participations_granted / 100; // Loan is filled in cents
+                    } else {
+                        $participantMutation->quantity = $participant->participations_granted;
+                        $participantMutation->quantity_granted = $participant->participations_granted;
+                    }
+                    $participantMutation->date_granted = $participant->date_register;
+                    break;
                 case 4:
-                case 5:
-                    if($projectType->code_ref == 'loan') {
+                if($projectType->code_ref == 'loan' && $divideBy100) {
                         $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
                         $participantMutation->amount_final = $participant->participations_granted / 100; // Loan is filled in cents
                     } else {
@@ -156,7 +141,11 @@ class conversionParticipationsToMutations extends Command
 
                 // Herbereken de afhankelijke gegevens op het project
                 $participantMutation->participation->project->calculator()->run()->save();
+
             });
+            $participant->conversion_processed = true;
+            $participant->save();
+
         }
     }
 
@@ -167,7 +156,7 @@ class conversionParticipationsToMutations extends Command
      */
     public function makeWithDrawalMutations()
     {
-        $participants = ParticipantProject::where('participations_sold', '!=', 0)->where('participations_definitive', '!=', 0)->get();
+        $participants = ParticipantProject::where('conversion_processed', true)->where('participations_sold', '!=', 0)->where('participations_definitive', '!=', 0)->get();
 
         foreach ($participants as $participant) {
             $mutationType = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $participant->project->project_type_id)->first();

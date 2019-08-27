@@ -158,7 +158,7 @@ return [
 
     'routes' => [
 
-        'enabled' => true,
+        'enabled' => false,
 
         'path' => '/api/jory',
 

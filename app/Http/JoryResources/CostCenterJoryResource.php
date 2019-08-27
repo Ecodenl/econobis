@@ -2,8 +2,8 @@
 
 namespace App\Http\JoryResources;
 
-use JosKolenberg\LaravelJory\JoryResource;
 use \App\Eco\CostCenter\CostCenter;
+use App\Http\JoryResources\Base\JoryResource;
 
 class CostCenterJoryResource extends JoryResource
 {

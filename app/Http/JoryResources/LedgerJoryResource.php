@@ -2,8 +2,8 @@
 
 namespace App\Http\JoryResources;
 
-use JosKolenberg\LaravelJory\JoryResource;
 use \App\Eco\Ledger\Ledger;
+use App\Http\JoryResources\Base\JoryResource;
 
 class LedgerJoryResource extends JoryResource
 {

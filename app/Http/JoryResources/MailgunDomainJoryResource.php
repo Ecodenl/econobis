@@ -2,8 +2,8 @@
 
 namespace App\Http\JoryResources;
 
-use JosKolenberg\LaravelJory\JoryResource;
-use \App\Eco\Mailbox\MailgunDomain;
+use App\Eco\Mailbox\MailgunDomain;
+use App\Http\JoryResources\Base\JoryResource;
 
 class MailgunDomainJoryResource extends JoryResource
 {

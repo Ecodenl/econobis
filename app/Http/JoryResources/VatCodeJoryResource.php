@@ -2,8 +2,8 @@
 
 namespace App\Http\JoryResources;
 
-use JosKolenberg\LaravelJory\JoryResource;
 use \App\Eco\VatCode\VatCode;
+use App\Http\JoryResources\Base\JoryResource;
 
 class VatCodeJoryResource extends JoryResource
 {

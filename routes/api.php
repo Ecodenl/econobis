@@ -11,6 +11,8 @@
 |
 */
 
+use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
+
 Route::post('password/email', 'Api\User\UserController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', [
@@ -430,6 +432,13 @@ Route::namespace('Api')
         Route::post('cost-center', 'CostCenter\CostCenterController@store');
         Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
         Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
+
+        // Apart voor app en portal ivm toepassen aparte middleware
+        Route::get('jory', '\\'.JoryController::class.'@multiple');
+        Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');
+        Route::get('jory/{uri}/{id}', '\\'.JoryController::class.'@show');
+        Route::get('jory/{uri}', '\\'.JoryController::class.'@index');
+
     });
 
 Route::namespace('Api')

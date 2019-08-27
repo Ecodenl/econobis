@@ -57,10 +57,16 @@ class conversionProjects extends Command
             if($project->participation_worth > 0) {
                 if($project->projectType->code_ref != 'loan') {
                     $projectValueCourse = new ProjectValueCourse();
-
+                    if($project->date_entry){
+                        $date = Carbon::parse($project->date_entry);
+                    }elseif($project->date_start_registrations){
+                        $date = Carbon::parse($project->date_start_registrations);
+                    }else{
+                        $date = Carbon::now();
+                    }
                     $projectValueCourse->fill([
                         'project_id' => $project->id,
-                        'date' => Carbon::now(),
+                        'date' => $date,
                         'book_worth' => $project->participation_worth,
                         'active' => true,
                     ]);

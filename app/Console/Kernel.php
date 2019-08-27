@@ -3,7 +3,9 @@
 namespace App\Console;
 
 use App\Console\Commands\checkMailboxes;
-use App\Console\Commands\conversionParticipationsToMutations;
+use App\Console\Commands\conversionParticipationsToMutationsLoanDiv100;
+use App\Console\Commands\conversionParticipationsToMutationsDefault;
+use App\Console\Commands\conversionProjectRevenues;
 use App\Console\Commands\conversionProjects;
 use App\Console\Commands\conversionProjectRevenueDistribution;
 use App\Console\Commands\getAllEmail;
@@ -27,8 +29,10 @@ class Kernel extends ConsoleKernel
         processPaidInvoices::class,
         checkMailboxes::class,
         conversionProjects::class,
+        conversionProjectRevenues::class,
         conversionProjectRevenueDistribution::class,
-        conversionParticipationsToMutations::class,
+        conversionParticipationsToMutationsLoanDiv100::class,
+        conversionParticipationsToMutationsDefault::class,
     ];
 
     /**

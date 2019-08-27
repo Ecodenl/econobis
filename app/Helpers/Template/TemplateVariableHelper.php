@@ -542,7 +542,7 @@ class TemplateVariableHelper
                 return number_format($model->amount_definitive, 2, ',', '');
                 break;
             case 'saldo_kapitaal_rekening':
-                return number_format($model->amount_definitive + $model->participations_definitive_worth, 2, ',', '');
+                return number_format($model->participations_capital_worth, 2, ',', '');
                 break;
             case 'saldo_lening_rekening':
                 return number_format($model->amount_definitive, 2, ',', '');

@@ -21,6 +21,11 @@ class ParticipantProjectCalculator
     {
         return $this->participationsDefinitive() * $this->participantProject->project->currentBookWorth();
     }
+    public function participationsCapitalWorth()
+    {
+        $participationWorth = $this->participantProject->mutations()->where('status_id', 4)->sum('participation_worth');
+        return $participationWorth + $this->participantProject->amount_definitive;
+    }
     public function participationsGranted()
     {
         return $this->participantProject->mutations()->where('status_id', 3)->sum('quantity');
@@ -55,6 +60,7 @@ class ParticipantProjectCalculator
     {
         $this->participantProject->participations_definitive = $this->participationsDefinitive();
         $this->participantProject->participations_definitive_worth = $this->participationsDefinitiveWorth();
+        $this->participantProject->participations_capital_worth = $this->participationsCapitalWorth();
         $this->participantProject->participations_granted = $this->participationsGranted();
         $this->participantProject->participations_optioned = $this->participationsOptioned();
         $this->participantProject->participations_interessed = $this->participationsInteressed();

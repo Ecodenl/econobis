@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\checkMailboxes;
+use App\Console\Commands\conversionParticipationsToMutationsDeltaWind;
 use App\Console\Commands\conversionParticipationsToMutationsLoanDiv100;
 use App\Console\Commands\conversionParticipationsToMutationsDefault;
 use App\Console\Commands\conversionProjectRevenues;
@@ -31,6 +32,7 @@ class Kernel extends ConsoleKernel
         conversionProjects::class,
         conversionProjectRevenues::class,
         conversionProjectRevenueDistribution::class,
+        conversionParticipationsToMutationsDeltaWind::class,
         conversionParticipationsToMutationsLoanDiv100::class,
         conversionParticipationsToMutationsDefault::class,
     ];

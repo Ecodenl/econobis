@@ -35,7 +35,6 @@ class conversionParticipationsToMutations extends Command
         $participants = ParticipantProject::where('conversion_processed', false)->get();
 
         foreach ($participants as $participant) {
-            dd($participant);
             $projectType = $participant->project->projectType;
             $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first();
 

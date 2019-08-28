@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AuthAPI from '../api/auth/AuthAPI';
 
 const AuthContext = React.createContext();
 
@@ -7,13 +8,11 @@ const localStorageKey = '__customer-portal-econobis__';
 const AuthProvider = function(props) {
     const [isAuth, setAuth] = useState(checkIfAuth());
 
-    function login(redirect) {
-        setTimeout(() => {
-            setAuth(true);
-            const token = 'dummy-token';
-            window.localStorage.setItem(localStorageKey, token);
-            redirect();
-        }, 1000);
+    function login(payload, cbRedirect) {
+        setAuth(true);
+        const token = payload.access_token;
+        window.localStorage.setItem(localStorageKey, token);
+        cbRedirect();
     }
 
     function logout() {

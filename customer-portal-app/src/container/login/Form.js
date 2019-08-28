@@ -5,15 +5,16 @@ import * as Yup from 'yup';
 import ButtonText from '../../components/button/ButtonText';
 
 const validationSchema = Yup.object().shape({
-    email: Yup.string()
+    username: Yup.string()
         .email()
         .required('Verplicht'),
+    password: Yup.string().required('Verplicht'),
 });
 
 const LoginForm = function({ handleSubmit, login }) {
     return (
         <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ username: '', password: '' }}
             enableReinitialize={true}
             validationSchema={validationSchema}
             onSubmit={(values, actions) => {
@@ -24,11 +25,11 @@ const LoginForm = function({ handleSubmit, login }) {
                 return (
                     <Form>
                         <Field
-                            name="email"
+                            name="username"
                             render={({ field /* _form */ }) => (
                                 <InputText
                                     field={field}
-                                    id="email"
+                                    id="username"
                                     className={'text-input w-input'}
                                     placeholder={'email'}
                                 />
@@ -42,6 +43,7 @@ const LoginForm = function({ handleSubmit, login }) {
                                     id="password"
                                     className={'text-input w-input'}
                                     placeholder={'wachtwoord'}
+                                    type={'password'}
                                 />
                             )}
                         />

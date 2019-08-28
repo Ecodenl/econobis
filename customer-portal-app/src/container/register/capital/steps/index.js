@@ -9,7 +9,14 @@ function Steps({ currentStep, previous, next, initialValues, energySuppliers }) 
         case 1:
             return <StepOne next={next} />;
         case 2:
-            return <StepTwo previous={previous} next={next} initialValues={initialValues} energySuppliers={energySuppliers}/>;
+            return (
+                <StepTwo
+                    previous={previous}
+                    next={next}
+                    initialValues={initialValues}
+                    energySuppliers={energySuppliers}
+                />
+            );
         case 3:
             return <StepThree previous={previous} next={next} />;
         case 4:

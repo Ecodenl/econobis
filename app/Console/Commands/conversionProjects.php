@@ -59,6 +59,8 @@ class conversionProjects extends Command
                     $projectValueCourse = new ProjectValueCourse();
                     if($project->date_entry){
                         $date = Carbon::parse($project->date_entry);
+                    }elseif($project->date_start){
+                        $date = Carbon::parse($project->date_start);
                     }elseif($project->date_start_registrations){
                         $date = Carbon::parse($project->date_start_registrations);
                     }else{

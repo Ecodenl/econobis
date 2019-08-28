@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AccountInfoForm from './Form';
+import CustomerAPI from '../../api/customer/CustomerAPI';
 
 // Todo fetch from API
 const energySuppliers = [
@@ -15,10 +16,30 @@ const energySuppliers = [
 ];
 
 const AccountInfo = function() {
+    const [customerData, setCustomerData] = useState({});
+    const [isLoading, setLoading] = useState(true);
+
+    useEffect(() => {
+        function callFetchCustomerDetails() {
+            setLoading(true);
+            CustomerAPI.fetchCustomerDetails()
+                .then(payload => {
+                    setCustomerData(payload.data.data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setLoading(false);
+                });
+        }
+
+        callFetchCustomerDetails();
+    }, []);
+
     // TODO Fetch values from API
     const initialValues = {
-        number: 'C2019-1',
-        contactName: 'Rob Rollenberg',
+        number: customerData.number,
+        contactName: customerData.fullName,
         email: 'robennoortje@rollenberg.net',
         titleId: '1',
         firstName: 'Rob',
@@ -36,7 +57,7 @@ const AccountInfo = function() {
         countryId: '',
         iban: '',
         ibanName: '',
-        didAgreeAvg: true,
+        didAgreeAvg: Boolean(customerData.didAgreeAvg),
         energySupplierId: '1',
         esNumber: '123',
         memberSince: '01-04-2019',
@@ -56,7 +77,7 @@ const AccountInfo = function() {
             setFieldValue('clientSince', '');
         }
     }
-
+    console.log(customerData);
     return (
         <div className="content-section">
             <div className="content-container w-container">

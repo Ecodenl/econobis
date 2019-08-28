@@ -73,8 +73,8 @@ class SettingController
     protected function isWhiteListed($key): bool
     {
         return in_array($key, [
-            'portal_url',
-            'background_color',
+            'portalUrl',
+            'backgroundColor',
         ]);
     }
 

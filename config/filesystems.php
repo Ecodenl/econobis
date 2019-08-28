@@ -70,6 +70,11 @@ return [
             'visibility' => 'public',
         ],
 
+        'public_portal' => [
+            'driver' => 'local',
+            'root' => public_path('portal'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

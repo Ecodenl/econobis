@@ -80,7 +80,10 @@ const ParticipantsListFilter = props => {
         }, 100);
     };
 
-    const participantMutationStatusOptions = [...props.participantMutationStatuses, {id: 'isTerminated', name: 'Beëindigd'}];
+    const participantMutationStatusOptions = [
+        ...props.participantMutationStatuses,
+        { id: 'isTerminated', name: 'Beëindigd' },
+    ];
 
     return (
         <tr className="thead-filter">

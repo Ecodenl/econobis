@@ -219,7 +219,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues, energySuppliers,
                                 <Field
                                     name="ibanName"
                                     render={({ field }) => (
-                                        <InputText field={field} id="iban_name" placeholder={'Tenaamstelling IBAN'} />
+                                        <InputText field={field} id="iban_name" placeholder={'IBAN te name van'} />
                                     )}
                                 />
 
@@ -245,7 +245,7 @@ const AccountInfoForm = function({ handleSubmit, initialValues, energySuppliers,
                                 />
 
                                 <label htmlFor="energy_supplier_id" className="field-label">
-                                    Energie leverancier
+                                    Uw huidige energie leverancier
                                 </label>
                                 <Field
                                     name="energySupplierId"
@@ -292,15 +292,15 @@ const AccountInfoForm = function({ handleSubmit, initialValues, energySuppliers,
                                         </div>
                                         <div className="w-row">
                                             <div className="w-col w-col-6">
-                                                <h6 className="heading-content inline">Lid sinds</h6>
+                                                <h6 className="heading-content inline">Klant sinds</h6>
                                             </div>
                                             <div className="w-col w-col-6">
                                                 <Field
-                                                    name="memberSince"
+                                                    name="clientSince"
                                                     render={({ field }) => (
                                                         <InputText
                                                             field={field}
-                                                            id="member_since"
+                                                            id="client_since"
                                                             className={'text-input content _w-90 w-input'}
                                                         />
                                                     )}
@@ -335,23 +335,6 @@ const AccountInfoForm = function({ handleSubmit, initialValues, energySuppliers,
                                                         <InputText
                                                             field={field}
                                                             id="client_nr"
-                                                            className={'text-input content _w-90 w-input'}
-                                                        />
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="w-row">
-                                            <div className="w-col w-col-6">
-                                                <h6 className="heading-content inline">Klant sinds</h6>
-                                            </div>
-                                            <div className="w-col w-col-6">
-                                                <Field
-                                                    name="clientSince"
-                                                    render={({ field }) => (
-                                                        <InputText
-                                                            field={field}
-                                                            id="client_since"
                                                             className={'text-input content _w-90 w-input'}
                                                         />
                                                     )}

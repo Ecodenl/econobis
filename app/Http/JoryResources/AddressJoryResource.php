@@ -31,7 +31,9 @@ class AddressJoryResource extends JoryResource
     public function afterQueryBuild($query, $count = false): void
     {
         if(Auth::isPortalUser()){
-            $query->where('contact_id', Auth::id());
+            $query->whereHas('contact', function($query){
+                $query->whereAuthorizedForPortalUser();
+            });
         }
     }
 }

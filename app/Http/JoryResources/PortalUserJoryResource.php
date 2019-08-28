@@ -2,13 +2,13 @@
 
 namespace App\Http\JoryResources;
 
-use \App\Eco\PhoneNumber\PhoneNumber;
+use \App\Eco\Portal\PortalUser;
 use App\Http\JoryResources\Base\JoryResource;
 use Illuminate\Support\Facades\Auth;
 
-class PhoneNumberJoryResource extends JoryResource
+class PortalUserJoryResource extends JoryResource
 {
-    protected $modelClass = PhoneNumber::class;
+    protected $modelClass = PortalUser::class;
 
     protected function configureForApp(): void
     {
@@ -18,17 +18,13 @@ class PhoneNumberJoryResource extends JoryResource
     {
         // Fields
         $this->field('id')->filterable()->sortable();
-        $this->field('number')->filterable()->sortable();
-        $this->field('primary')->filterable()->sortable();
-        $this->field('type_id')->filterable()->sortable();
+        $this->field('email')->filterable()->sortable();
     }
 
     public function afterQueryBuild($query, $count = false): void
     {
         if(Auth::isPortalUser()){
-            $query->whereHas('contact', function($query){
-                $query->whereAuthorizedForPortalUser();
-            });
+            $query->where('contact_id', Auth::id());
         }
     }
 }

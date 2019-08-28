@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\JoryResources;
+
+use \App\Eco\Occupation\OccupationContact;
+use App\Http\JoryResources\Base\JoryResource;
+use Illuminate\Support\Facades\Auth;
+
+class OccupationContactJoryResource extends JoryResource
+{
+    protected $modelClass = OccupationContact::class;
+
+    protected function configureForApp(): void
+    {
+    }
+
+    protected function configureForPortal(): void
+    {
+        // Fields
+        $this->field('id')->filterable()->sortable();
+        $this->field('occupation_id')->filterable()->sortable();
+        $this->field('primary_contact_id')->filterable()->sortable();
+        $this->field('contact_id')->filterable()->sortable();
+        $this->field('start_date')->filterable()->sortable();
+        $this->field('end_date')->filterable()->sortable();
+        $this->field('primary')->filterable()->sortable();
+
+        // Relations
+        $this->relation('contact');
+        $this->relation('primary_contact');
+    }
+
+    public function afterQueryBuild($query, $count = false): void
+    {
+        if(Auth::isPortalUser()){
+            $query->where('primary_contact_id', Auth::id());
+        }
+    }
+}

@@ -33,12 +33,14 @@ class ContactJoryResource extends JoryResource
         $this->relation('person');
         $this->relation('phone_numbers');
         $this->relation('contact_energy_suppliers');
+        $this->relation('primaryOccupations');
+        $this->relation('portal_user');
     }
 
     public function afterQueryBuild($query, $count = false): void
     {
         if(Auth::isPortalUser()){
-            $query->where('id', Auth::id());
+            $query->whereAuthorizedForPortalUser();
         }
     }
 }

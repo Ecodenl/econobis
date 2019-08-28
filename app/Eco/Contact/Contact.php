@@ -21,6 +21,7 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\Portal\PortalUser;
 use App\Eco\ProductionProject\ProductionProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
@@ -29,6 +30,7 @@ use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -252,6 +254,11 @@ class Contact extends Model
         return $this->hasManyThrough(Invoice::class, Order::class)->orderBy('invoices.id', 'desc');
     }
 
+    public function portalUser()
+    {
+        return $this->hasOne(PortalUser::class);
+    }
+
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first
     public function getPrettyAddresses(){
@@ -352,5 +359,22 @@ class Contact extends Model
         $addressLines['country'] = $address->country ? $address->country->name : '';
 
         return $addressLines;
+    }
+
+    /**
+     * Scope voor filteren van contacten voor portal users.
+     *
+     * Een portal user mag alleen zijn eigen gegevens ophalen
+     * en de gegevens van de contacten waaraan hij via een
+     * occupation is gekoppeld.
+     */
+    public function scopeWhereAuthorizedForPortalUser($query)
+    {
+        $query->where(function ($query){
+            $query->where('id', Auth::id());
+            $query->orWhereHas('occupations', function($query){
+                $query->where('primary_contact_id', Auth::id());
+            });
+        });
     }
 }

@@ -104,6 +104,12 @@ return [
             'table' => 'password_resets',
             'expire' => 60,
         ],
+
+        'portal' => [
+            'provider' => 'portal',
+            'table' => 'portal_password_resets',
+            'expire' => 60,
+        ],
     ],
 
 ];

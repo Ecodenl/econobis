@@ -433,6 +433,10 @@ Route::namespace('Api')
         Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
         Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
 
+        Route::get('setting', 'Setting\SettingController@get');
+        Route::get('setting/multiple', 'Setting\SettingController@multiple');
+        Route::post('setting', 'Setting\SettingController@store');
+
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple');
         Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');

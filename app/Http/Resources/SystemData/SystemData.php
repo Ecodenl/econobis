@@ -41,9 +41,9 @@ use App\Eco\Industry\Industry;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Occupation\Occupation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectPayoutType;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
-use App\Eco\ParticipantTransaction\ParticipantTransactionType;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
@@ -51,10 +51,11 @@ use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
-use App\Eco\ProductionProject\ProductionProjectRevenueCategory;
-use App\Eco\ProductionProject\ProductionProjectRevenueType;
-use App\Eco\ProductionProject\ProductionProjectStatus;
-use App\Eco\ProductionProject\ProductionProjectType;
+use App\Eco\Project\ProjectRevenueCategory;
+use App\Eco\Project\ProjectRevenueDistributionType;
+use App\Eco\Project\ProjectRevenueType;
+use App\Eco\Project\ProjectStatus;
+use App\Eco\Project\ProjectType;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
@@ -65,13 +66,15 @@ use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Ledger\FullLedger;
+use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Industry\FullIndustry;
-use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
+use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
+use App\Http\Resources\ParticipantMutation\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Team\FullTeam;
@@ -153,9 +156,9 @@ class SystemData extends Resource
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
             'industries' => FullIndustry::collection(Industry::all()),
-            'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
+            'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
             'lastNamePrefixes' => FullLastNamePrefix::collection(LastNamePrefix::all()),
             'ledgers' => FullLedger::collection(Ledger::all()),
             'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
@@ -169,21 +172,22 @@ class SystemData extends Resource
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),
             'organisationTypes' => FullOrganisationType::collection(OrganisationType::all()),
-            'participantProductionProjectPayoutTypes' => GenericResource::collection(ParticipantProductionProjectPayoutType::all()),
-            'participantProductionProjectStatus' => GenericResource::collection(ParticipantProductionProjectStatus::all()),
-            'participantTransactionTypes' => GenericResource::collection(ParticipantTransactionType::all()),
+            'participantMutationStatuses' => FullParticipantMutationStatus::collection(ParticipantMutationStatus::all()),
+            'participantMutationTypes' => FullParticipantMutationType::collection(ParticipantMutationType::all()),
+            'participantProjectPayoutTypes' => GenericResource::collection(ParticipantProjectPayoutType::all()),
             'paymentInvoiceStatuses' => FullEnumWithIdAndName::collection(PaymentInvoiceStatus::collection()),
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
-            'productionProjectRevenueCategories' => GenericResource::collection(ProductionProjectRevenueCategory::all()),
-            'productionProjectRevenueTypes' => GenericResource::collection(ProductionProjectRevenueType::all()),
-            'productionProjectStatus' => GenericResource::collection(ProductionProjectStatus::all()),
-            'productionProjectTypes' => GenericResource::collection(ProductionProjectType::all()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),
             'products' => FullProduct::collection(Product::all()),
+            'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
+            'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
+            'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
+            'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
+            'projectTypes' => GenericResource::collection(ProjectType::all()),
             'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),

@@ -6,7 +6,6 @@ import 'react-select/dist/react-select.css';
 const InputReactSelect = props => {
     const {
         label,
-        className,
         size,
         id,
         name,

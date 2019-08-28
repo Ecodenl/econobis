@@ -35,6 +35,28 @@ class AddressObserver
                 $oldPrimaryAddress->primary = false;
                 $oldPrimaryAddress->save();
             }
+
         }
+
+        if($address->isDirty('street')
+            || $address->isDirty('number')
+            || $address->isDirty('postal_code')
+            || $address->isDirty('city'))
+        {
+            // Check if any project revenue distribution is present with status concept
+            // If so, then change address
+            $projectRevenueDistributions = $address->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
+
+            foreach($projectRevenueDistributions as $projectRevenueDistribution) {
+                $projectRevenueDistribution->address = $address->present()
+                    ->streetAndNumber();
+                $projectRevenueDistribution->postal_code = $address->postal_code;
+                $projectRevenueDistribution->city = $address->city;
+
+                $projectRevenueDistribution->save();
+            }
+
+        }
+
     }
 }

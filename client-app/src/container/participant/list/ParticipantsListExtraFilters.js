@@ -5,7 +5,7 @@ import axios from 'axios';
 import Modal from '../../../components/modal/Modal';
 import DataTableCustomFilter from '../../../components/dataTable/DataTableCustomFilter';
 import ButtonText from '../../../components/button/ButtonText';
-import ProductionProjectsAPI from '../../../api/production-project/ProductionProjectsAPI';
+import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 
 class ParticipantsListExtraFilters extends Component {
@@ -26,7 +26,7 @@ class ParticipantsListExtraFilters extends Component {
                     name: 'Nee',
                 },
             ],
-            productionProjects: [],
+            projects: [],
             contacts: [],
         };
 
@@ -40,10 +40,10 @@ class ParticipantsListExtraFilters extends Component {
     }
 
     componentDidMount() {
-        axios.all([ProductionProjectsAPI.peekProductionProjects(), ContactsAPI.getContactsPeek()]).then(
-            axios.spread((productionProjects, contacts) => {
+        axios.all([ProjectsAPI.peekProjects(), ContactsAPI.getContactsPeek()]).then(
+            axios.spread((projects, contacts) => {
                 this.setState({
-                    productionProjects,
+                    projects,
                     contacts,
                 });
             })
@@ -136,8 +136,12 @@ class ParticipantsListExtraFilters extends Component {
                 name: 'Postcode nummer',
                 type: 'number',
             },
-            currentParticipations: {
-                name: 'Huidig aantal participaties',
+            amountDefinitive: {
+                name: 'Huidig aantal lening',
+                type: 'number',
+            },
+            participationsDefinitive: {
+                name: 'Huidig aantal deelnames',
                 type: 'number',
             },
             dateRegister: {
@@ -149,18 +153,18 @@ class ParticipantsListExtraFilters extends Component {
                 type: 'date',
             },
             participationStatusId: {
-                name: 'Participaties status',
+                name: 'Deelnames status',
                 type: 'dropdown',
-                dropDownOptions: this.props.participantProductionProjectStatus,
+                dropDownOptions: this.props.participantMutationStatuses,
             },
             contactBirthday: {
                 name: 'Contact geboortedatum',
                 type: 'date',
             },
-            productionProjectId: {
-                name: 'Productieproject',
+            projectId: {
+                name: 'Project',
                 type: 'dropdownHas',
-                dropDownOptions: this.state.productionProjects,
+                dropDownOptions: this.state.projects,
             },
             dateContractSend: {
                 name: 'Datum contract verzonden',
@@ -181,7 +185,7 @@ class ParticipantsListExtraFilters extends Component {
                 optionName: 'fullName',
             },
             participationsSold: {
-                name: 'Participaties overgedragen',
+                name: 'Deelnames overgedragen',
                 type: 'number',
             },
             didAcceptAgreement: {
@@ -190,7 +194,7 @@ class ParticipantsListExtraFilters extends Component {
                 dropDownOptions: this.state.yesNoOptions,
             },
             participationsRequested: {
-                name: 'Participaties aangevraagd',
+                name: 'Deelnames aangevraagd',
                 type: 'number',
             },
         };
@@ -272,7 +276,7 @@ class ParticipantsListExtraFilters extends Component {
 }
 
 const mapStateToProps = state => ({
-    participantProductionProjectStatus: state.systemData.participantProductionProjectStatus,
+    participantMutationStatuses: state.systemData.participantMutationStatuses,
     contactStatuses: state.systemData.contactStatuses,
 });
 

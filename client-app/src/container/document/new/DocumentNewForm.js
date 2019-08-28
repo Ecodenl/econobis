@@ -10,7 +10,7 @@ import DocumentNewFormUpload from './upload/DocumentNewFormUpload';
 
 const DocumentNewForm = ({
     document,
-    productionProjects,
+    projects,
     participants,
     orders,
     contacts,
@@ -45,7 +45,7 @@ const DocumentNewForm = ({
                         contactGroups={contactGroups}
                         intakes={intakes}
                         opportunities={opportunities}
-                        productionProjects={productionProjects}
+                        projects={projects}
                         participants={participants}
                         orders={orders}
                         errors={errors}

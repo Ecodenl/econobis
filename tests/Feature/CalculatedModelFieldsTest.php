@@ -8,11 +8,11 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Product\PriceHistory;
 use App\Eco\Product\Product;
-use App\Eco\ProductionProject\ProductionProject;
-use App\Eco\ProductionProject\ProductionProjectRevenue;
+use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Helpers\Invoice\InvoiceHelper;
@@ -41,51 +41,32 @@ class CalculatedModelFieldsTest extends TestCase
 
     public function assertProductionProjectFields()
     {
-        $productionProject = ProductionProject::find(1);
-        $this->assertEquals(0, $productionProject->getIssuedParticipations());
-        $this->assertEquals(0, $productionProject->getIssuedParticipationsPercentage());
-        $this->assertEquals(0, $productionProject->getParticipationsInOption());
-        $this->assertEquals(0, $productionProject->getIssuableParticipations());
-        $this->assertEquals(0, $productionProject->getParticipationsWorthTotal());
 
-        $productionProject = ProductionProject::find(2);
-        $this->assertEquals(10, $productionProject->getIssuedParticipations());
-        $this->assertEquals(0, $productionProject->getIssuedParticipationsPercentage());
-        $this->assertEquals(4, $productionProject->getParticipationsInOption());
-        $this->assertEquals(-10, $productionProject->getIssuableParticipations());
-        $this->assertEquals(100, $productionProject->getParticipationsWorthTotal());
-
-        $productionProject = ProductionProject::find(3);
-        $this->assertEquals(10, $productionProject->getIssuedParticipations());
-        $this->assertEquals(10, $productionProject->getIssuedParticipationsPercentage());
-        $this->assertEquals(15, $productionProject->getParticipationsInOption());
-        $this->assertEquals(90, $productionProject->getIssuableParticipations());
-        $this->assertEquals(5000, $productionProject->getParticipationsWorthTotal());
     }
 
     public function assertParticipantProductionProjectFields()
     {
-        $participantProductionProject = ParticipantProductionProject::find(1);
+        $participantProductionProject = ParticipantProject::find(1);
         $this->assertEquals(0, $participantProductionProject->participations_worth_total);
         $this->assertEquals(0, $participantProductionProject->participations_current);
 
-        $participantProductionProject = ParticipantProductionProject::find(2);
+        $participantProductionProject = ParticipantProject::find(2);
         $this->assertEquals(100, $participantProductionProject->participations_worth_total);
         $this->assertEquals(10, $participantProductionProject->participations_current);
     }
 
     public function assertProductionProjectRevenueFields()
     {
-        $revenue = ProductionProjectRevenue::find(1);
+        $revenue = ProjectRevenue::find(1);
         $this->assertEquals(0, $revenue->kwh_result);
 
-        $revenue = ProductionProjectRevenue::find(2);
+        $revenue = ProjectRevenue::find(2);
         $this->assertEquals(-100, $revenue->kwh_result);
 
-        $revenue = ProductionProjectRevenue::find(3);
+        $revenue = ProjectRevenue::find(3);
         $this->assertEquals(100, $revenue->kwh_result);
 
-        $revenue = ProductionProjectRevenue::find(4);
+        $revenue = ProjectRevenue::find(4);
         $this->assertEquals(100, $revenue->kwh_result);
     }
 
@@ -157,21 +138,21 @@ class CalculatedModelFieldsTest extends TestCase
 
     public function insertProductionProjects(){
 
-        $productionProject = new ProductionProject();
+        $productionProject = new Project();
         $productionProject->name = 'Project 1';
         $productionProject->code = 'PJT 1';
         $productionProject->owned_by_id = 1;
         $productionProject->participation_worth = 0;
         $productionProject->save();
 
-        $productionProject = new ProductionProject();
+        $productionProject = new Project();
         $productionProject->name = 'Project 2';
         $productionProject->code = 'PJT 2';
         $productionProject->owned_by_id = 1;
         $productionProject->participation_worth = 10;
         $productionProject->save();
 
-        $productionProject = new ProductionProject();
+        $productionProject = new Project();
         $productionProject->name = 'Project 3';
         $productionProject->code = 'PJT 3';
         $productionProject->owned_by_id = 1;
@@ -224,7 +205,7 @@ class CalculatedModelFieldsTest extends TestCase
         //Project 1 leeg
 
         //Project 2
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 1;
         $participant->status_id = 1;
         $participant->production_project_id = 2;
@@ -232,7 +213,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->type_id = 1;
         $participant->save();
 
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 2;
         $participant->status_id = 2;
         $participant->production_project_id = 2;
@@ -241,7 +222,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->type_id = 1;
         $participant->save();
 
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 3;
         $participant->status_id = 1;
         $participant->production_project_id = 2;
@@ -251,7 +232,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->save();
 
         //Project 3
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 1;
         $participant->status_id = 1;
         $participant->production_project_id = 3;
@@ -259,7 +240,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->type_id = 1;
         $participant->save();
 
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 2;
         $participant->status_id = 1;
         $participant->production_project_id = 3;
@@ -268,7 +249,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->type_id = 1;
         $participant->save();
 
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 3;
         $participant->status_id = 2;
         $participant->production_project_id = 3;
@@ -276,7 +257,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->type_id = 1;
         $participant->save();
 
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 4;
         $participant->status_id = 2;
         $participant->production_project_id = 3;
@@ -285,7 +266,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->type_id = 1;
         $participant->save();
 
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 5;
         $participant->status_id = 3;
         $participant->production_project_id = 3;
@@ -293,7 +274,7 @@ class CalculatedModelFieldsTest extends TestCase
         $participant->type_id = 1;
         $participant->save();
 
-        $participant = new ParticipantProductionProject();
+        $participant = new ParticipantProject();
         $participant->contact_id = 6;
         $participant->status_id = 3;
         $participant->production_project_id = 3;
@@ -305,7 +286,7 @@ class CalculatedModelFieldsTest extends TestCase
 
     public function insertProductionProjectRevenues(){
 
-        $revenue = new ProductionProjectRevenue();
+        $revenue = new ProjectRevenue();
         $revenue->category_id = 2;
         $revenue->production_project_id = 2;
         $revenue->date_begin = new Carbon();
@@ -313,7 +294,7 @@ class CalculatedModelFieldsTest extends TestCase
         $revenue->date_entry = new Carbon();
         $revenue->save();
 
-        $revenue = new ProductionProjectRevenue();
+        $revenue = new ProjectRevenue();
         $revenue->category_id = 1;
         $revenue->production_project_id = 2;
         $revenue->kwh_start = 100;
@@ -322,7 +303,7 @@ class CalculatedModelFieldsTest extends TestCase
         $revenue->date_entry = new Carbon();
         $revenue->save();
 
-        $revenue = new ProductionProjectRevenue();
+        $revenue = new ProjectRevenue();
         $revenue->category_id = 2;
         $revenue->production_project_id = 2;
         $revenue->kwh_end = 100;
@@ -331,7 +312,7 @@ class CalculatedModelFieldsTest extends TestCase
         $revenue->date_entry = new Carbon();
         $revenue->save();
 
-        $revenue = new ProductionProjectRevenue();
+        $revenue = new ProjectRevenue();
         $revenue->category_id = 2;
         $revenue->production_project_id = 2;
         $revenue->kwh_start = 100;

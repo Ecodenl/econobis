@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
 class Participationslist extends Component {
     constructor(props) {
@@ -12,14 +13,14 @@ class Participationslist extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/productie-project/participant/${id}`);
+        hashHistory.push(`/project/deelnemer/${id}`);
     };
 
     render() {
         const { relatedParticipations } = this.props;
         return (
             <div>
-                {relatedParticipations == '' && <div>Geen participaties gevonden.</div>}
+                {relatedParticipations == '' && <div>Geen deelnames gevonden.</div>}
 
                 {relatedParticipations != '' && (
                     <table className="table harmonica-table">
@@ -31,7 +32,11 @@ class Participationslist extends Component {
                                             {moment(item.createdAt.date).format('L')}
                                         </td>
                                         <td className="col-xs-6 clickable">
-                                            {item.participationsCurrent} in {item.productionProject.name}{' '}
+                                            {item.projectTypeCodeRef === 'loan' ?
+                                                `${MoneyPresenter(item.amountDefinitive)} in ${item.projectName} `
+                                                :
+                                                `${item.participationsDefinitive} in ${item.projectName} `
+                                            }
                                         </td>
                                     </tr>
                                 );

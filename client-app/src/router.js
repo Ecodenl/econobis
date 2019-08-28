@@ -37,8 +37,8 @@ import EmailTemplatesListApp from './container/email-templates/list/EmailTemplat
 import EmailTemplateDetailsApp from './container/email-templates/details/EmailTemplateDetailsApp';
 import EmailTemplateNewApp from './container/email-templates/new/EmailTemplateNewApp';
 import EmailAnswerApp from './container/email/answer/EmailAnswerApp';
-import EnergySupplierReportNewApp from './container/production-project/details/revenue/energy-supplier-report/EnergySupplierReportNewApp';
-import EnergySupplierCSVNewApp from './container/production-project/details/revenue/energy-supplier-csv/EnergySupplierCSVNewApp';
+import EnergySupplierReportNewApp from './container/project/details/revenue/energy-supplier-report/EnergySupplierReportNewApp';
+import EnergySupplierExcelNewApp from './container/project/details/revenue/energy-supplier-excel/EnergySupplierExcelNewApp';
 import Forgot from './container/auth/Forgot';
 import HousingFileDetailsApp from './container/housing-file/details/HousingFileDetailsApp';
 import HousingFileNewApp from './container/housing-file/new/HousingFileNewApp';
@@ -65,19 +65,19 @@ import OpportunityNewApp from './container/opportunities/new/OpportunityNewApp';
 import OrderNewApp from './container/financial/order/new/OrderNewApp';
 import OrderDetailsApp from './container/financial/order/details/OrderDetailsApp';
 import InvoicePreviewApp from './container/financial/order/preview/InvoicePreviewApp';
-import ParticipantNewApp from './container/production-project/general/participant/new/ParticipantNewApp';
+import ParticipantNewApp from './container/participant-project/new/ParticipantNewApp';
 import ParticipantListApp from './container/participant/list/ParticipantsListApp';
-import ParticipantDetailsApp from './container/production-project/general/participant/details/ParticipantDetailsApp';
-import ParticipationTransferApp from './container/production-project/general/participant/details/transfer/ParticipationTransferApp';
+import ParticipantDetailsApp from './container/participant-project/details/ParticipantDetailsApp';
+import ParticipationTransferApp from './container/participant-project/details/transfer/ParticipationTransferApp';
 import PostalCodeLinkListApp from './container/postal-code-link/list/PostalCodeLinkListApp';
 import ProductsListApp from './container/product/list/ProductsListApp';
 import ProductNewApp from './container/product/new/ProductNewApp';
 import ProductDetailsApp from './container/product/details/ProductDetailsApp';
-import ProductionProjectsListApp from './container/production-project/list/ProductionProjectsListApp';
-import ProductionProjectDetailsApp from './container/production-project/details/ProductionProjectDetailsApp';
-import ProductionProjectGeneralApp from './container/production-project/general/ProductionProjectGeneralApp';
-import ProductionProjectNewApp from './container/production-project/new/ProductionProjectNewApp';
-import ProductionProjectRevenueNewApp from './container/production-project/details/revenue/new/RevenueNewApp';
+import ProjectsListApp from './container/project/list/ProjectsListApp';
+import ProjectDetailsApp from './container/project/details/ProjectDetailsApp';
+import ProjectGeneralApp from './container/project/general/ProjectGeneralApp';
+import ProjectNewApp from './container/project/new/ProjectNewApp';
+import ProjectRevenueNewApp from './container/project/details/revenue/new/RevenueNewApp';
 import PermissionHelper from './helpers/PermissionHelper';
 import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
 import IntakeNewApp from './container/intake/new/IntakeNewApp';
@@ -95,12 +95,12 @@ import TeamDetailsApp from './container/team/details/TeamDetailsApp';
 import UserDetailsApp from './container/users/details/UserDetailsApp';
 import UserNewApp from './container/users/new/UserNewApp';
 import UsersListApp from './container/users/list/UsersListApp';
-import RevenueDetailsApp from './container/production-project/details/revenue/details/RevenueDetailsApp';
+import RevenueDetailsApp from './container/project/details/revenue/details/RevenueDetailsApp';
 import FinancialApp from './container/financial/FinancialApp';
 import InvoiceSendApp from './container/financial/invoice/send/InvoiceSendApp';
 import OrderCreateApp from './container/financial/order/create/OrderCreateApp';
-import PaymentInvoiceCreateApp from './container/production-project/details/revenue/details/create/PaymentInvoiceCreateApp';
-import ParticipantReportCreateApp from './container/production-project/general/participant/create/ParticipantReportCreateApp';
+import PaymentInvoiceCreateApp from './container/project/details/revenue/details/create/PaymentInvoiceCreateApp';
+import ParticipantReportCreateApp from './container/participant-project/create/ParticipantReportCreateApp';
 import WebformsListApp from './container/webform/list/WebformsListApp';
 import WebformNewApp from './container/webform/new/WebformNewApp';
 import WebformDetailsApp from './container/webform/details/WebformDetailsApp';
@@ -134,7 +134,7 @@ const Routes = () => {
                     component={PermissionHelper(DashboardFinancialApp, 'manageFinancial')}
                 />
                 <Route
-                    path="dashboard/participaties"
+                    path="dashboard/deelnames"
                     component={PermissionHelper(DashboardParticipationsApp, 'manageParticipation')}
                 />
                 /* Administrations */
@@ -181,9 +181,9 @@ const Routes = () => {
                 <Route path="document/nieuw/:type/order/:orderId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/woningdossier/:housingFileId" component={DocumentNewApp} />
                 <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
-                <Route path="document/nieuw/:type/productie-project/:productionProjectId" component={DocumentNewApp} />
+                <Route path="document/nieuw/:type/project/:projectId" component={DocumentNewApp} />
                 <Route
-                    path="document/nieuw/:type/productie-project/:productionProjectId/participant/:participantId/contact/:contactId"
+                    path="document/nieuw/:type/project/:projectId/deelnemer/:participantId/contact/:contactId"
                     component={DocumentNewApp}
                 />
                 <Route path="document/:id" component={DocumentDetailsApp} />
@@ -276,34 +276,28 @@ const Routes = () => {
                 <Route path="producten" component={ProductsListApp} />
                 <Route path="product/nieuw" component={ProductNewApp} />
                 <Route path="product/:id" component={ProductDetailsApp} />
-                /* Production project */
-                <Route path="productie-project/nieuw" component={ProductionProjectNewApp} />
+                /* Project */
+                <Route path="project/nieuw" component={ProjectNewApp} />
+                <Route path="project/opbrengst/nieuw/:projectId/:categoryId" component={ProjectRevenueNewApp} />
                 <Route
-                    path="productie-project/opbrengst/nieuw/:productionProjectId"
-                    component={ProductionProjectRevenueNewApp}
-                />
-                <Route
-                    path="productie-project/opbrengst/:revenueId/energieleverancier-rapport"
+                    path="project/opbrengst/:revenueId/energieleverancier-rapport"
                     component={EnergySupplierReportNewApp}
                 />
                 <Route
-                    path="productie-project/opbrengst/:revenueId/energieleverancier-csv"
-                    component={EnergySupplierCSVNewApp}
+                    path="project/opbrengst/:revenueId/energieleverancier-excel"
+                    component={EnergySupplierExcelNewApp}
                 />
-                <Route path="productie-project/details/:id" component={ProductionProjectDetailsApp} />
-                <Route path="productie-project/opbrengst/:id" component={RevenueDetailsApp} />
-                <Route path="productie-project/opbrengst/:id/facturen" component={PaymentInvoiceCreateApp} />
-                <Route path="productie-project/preview-rapportage" component={ParticipantReportCreateApp} />
-                <Route path="productie-project/:id" component={ProductionProjectGeneralApp} />
-                <Route path="productie-projecten" component={ProductionProjectsListApp} />
-                <Route path="participanten" component={ParticipantListApp} />
-                <Route
-                    path="productie-project/participant/:participationId/overdragen"
-                    component={ParticipationTransferApp}
-                />
-                <Route path="productie-project/participant/nieuw/:productionProjectId" component={ParticipantNewApp} />
-                <Route path="productie-project/participant/nieuw/contact/:contactId" component={ParticipantNewApp} />
-                <Route path="productie-project/participant/:id" component={ParticipantDetailsApp} />
+                <Route path="project/details/:id" component={ProjectDetailsApp} />
+                <Route path="project/opbrengst/:id" component={RevenueDetailsApp} />
+                <Route path="project/opbrengst/:id/rapportage" component={PaymentInvoiceCreateApp} />
+                <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
+                <Route path="project/:id" component={ProjectGeneralApp} />
+                <Route path="projecten" component={ProjectsListApp} />
+                <Route path="deelnemers" component={ParticipantListApp} />
+                <Route path="project/deelnemer/:participationId/overdragen" component={ParticipationTransferApp} />
+                <Route path="project/deelnemer/nieuw/:projectId" component={ParticipantNewApp} />
+                <Route path="project/deelnemer/nieuw/contact/:contactId" component={ParticipantNewApp} />
+                <Route path="project/deelnemer/:id" component={ParticipantDetailsApp} />
                 /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:closed" component={TaskNewApp} />
@@ -313,7 +307,7 @@ const Routes = () => {
                 <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                 <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                 <Route
-                    path="taak/nieuw/contact/:contactId/productie-project/:productionProjectId/participant/:participantId"
+                    path="taak/nieuw/contact/:contactId/project/:projectId/deelnemer/:participantId"
                     component={TaskNewApp}
                 />
                 <Route path="taken" component={TasksListApp} />

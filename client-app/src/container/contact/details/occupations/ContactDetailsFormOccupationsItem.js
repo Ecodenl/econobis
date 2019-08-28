@@ -10,7 +10,6 @@ import ContactDetailsFormOccupationsEdit from './ContactDetailsFormOccupationsEd
 import ContactDetailsFormOccupationsDelete from './ContactDetailsFormOccupationsDelete';
 import moment from 'moment/moment';
 moment.locale('nl');
-import ContactsAPI from '../../../../api/contact/ContactsAPI';
 
 class ContactDetailsFormOccupationsItem extends Component {
     constructor(props) {
@@ -21,7 +20,6 @@ class ContactDetailsFormOccupationsItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            contacts: [],
             occupation: {
                 ...props.occupation,
                 primaryContactId: props.occupation.primaryContact.id,
@@ -33,9 +31,6 @@ class ContactDetailsFormOccupationsItem extends Component {
             errors: {
                 primaryContactIdError: false,
                 occupationIdError: false,
-            },
-            peekLoading: {
-                contacts: true,
             },
         };
 
@@ -56,18 +51,6 @@ class ContactDetailsFormOccupationsItem extends Component {
                 },
             });
         }
-    }
-
-    componentDidMount() {
-        ContactsAPI.getContactsPeek().then(payload => {
-            this.setState({
-                contacts: payload,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    contacts: false,
-                },
-            });
-        });
     }
 
     onLineEnter = () => {
@@ -218,8 +201,8 @@ class ContactDetailsFormOccupationsItem extends Component {
                         primaryContactIdError={this.state.errors.primaryContactIdError}
                         occupationIdError={this.state.errors.occupationIdError}
                         cancelEdit={this.cancelEdit}
-                        contacts={this.state.contacts}
-                        peekLoading={this.state.peekLoading}
+                        contacts={this.props.contacts}
+                        peekLoading={this.props.peekLoading}
                         handleReactSelectChange={this.handleReactSelectChange}
                         primaryOccupation={this.props.primaryOccupation}
                     />

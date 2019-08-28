@@ -44,7 +44,7 @@ class DeleteRevenueDistribution implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->revenueDistribution->delete();
+        $this->revenueDistribution->forceDelete();
 
         return $this->errorMessage;
     }
@@ -76,6 +76,9 @@ class DeleteRevenueDistribution implements DeleteInterface
      */
     public function deleteRelations()
     {
+        foreach ($this->revenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod){
+            $deliveredKwhPeriod->delete();
+        }
     }
 
     /** Model specific delete actions e.g. delete files from server

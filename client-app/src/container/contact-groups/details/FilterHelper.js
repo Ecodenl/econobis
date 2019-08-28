@@ -8,6 +8,8 @@ export default (type, field) => {
                     return 'Contact nummer';
                 case 'typeId':
                     return 'Type';
+                case 'payoutTypeId':
+                    return 'Uitkeren op';
                 case 'fullName':
                     return 'Naam';
                 case 'streetAndNumber':
@@ -26,8 +28,14 @@ export default (type, field) => {
                     return 'Naam';
                 case 'postalCodeNumber':
                     return 'Postcode nummer';
+                case 'currentObligations':
+                    return 'Aantal obligaties';
                 case 'currentParticipations':
                     return 'Aantal participaties';
+                case 'currentPostalcodeLinkCapital':
+                    return 'Aantal postcoderoos';
+                case 'currentLoan':
+                    return 'Bedrag lening';
                 case 'occupation':
                     return 'Verbinding';
                 case 'opportunity':
@@ -44,36 +52,46 @@ export default (type, field) => {
                     return 'Contact type';
                 case 'address':
                     return 'Adres';
-                case 'participationStatusId':
-                    return 'Participatie status';
                 case 'dateRegister':
-                    return 'Datum inschrijving';
+                    return 'Eerste ingangsdatum';
                 case 'energySupplierId':
                     return 'Energie leverancier';
-                case 'datePayed':
-                    return 'Datum betaald';
                 case 'contactBirthday':
                     return 'Contact geboortedatum';
-                case 'productionProjectId':
-                    return 'Productieproject';
+                case 'projectId':
+                    return 'Project';
                 case 'dateOfBirth':
                     return 'Geboortedatum';
                 case 'energySupplier':
                     return 'Energie leverancier';
                 case 'dateContractSend':
                     return 'Datum contract verzonden';
-                case 'dateContractRetour':
-                    return 'Datum contract retour';
                 case 'dateEnd':
                     return 'Einddatum';
                 case 'giftedByContactId':
                     return 'Geschonken door';
                 case 'participationsSold':
-                    return 'Participaties overgedragen';
+                    return 'Deelnames overgedragen';
                 case 'didAcceptAgreement':
                     return 'Akkoord reglement';
                 case 'participationsRequested':
-                    return 'Participaties aangevraagd';
+                    return 'Deelnames aangevraagd';
+                case 'participantMutationTypeId':
+                    return 'Deelname type (Mutaties)';
+                case 'participantMutationStatusId':
+                    return 'Deelname status (Mutaties)';
+                case 'participantMutationDateContractRetour':
+                    return 'Datum contract retour (Mutaties)';
+                case 'participantMutationDatePayment':
+                    return 'Betaaldatum (Mutaties)';
+                case 'obligationsDefinitive':
+                    return 'Huidig aantal obligaties';
+                case 'participationsDefinitive':
+                    return 'Huidig aantal participaties';
+                case 'postalcodeLinkCapitalDefinitive':
+                    return 'Huidig aantal postcoderoos';
+                case 'loanDefinitive':
+                    return 'Huidig bedrag obligaties';
             }
             break;
         case 'comperator':

@@ -5,7 +5,7 @@ namespace App\Eco\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProject;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -64,7 +64,7 @@ class ContactGroup extends Model
 
     public function participants()
     {
-        return $this->belongsToMany(ParticipantProductionProject::class, 'group_participant_pivot', 'contact_group_id', 'participant_id');
+        return $this->belongsToMany(ParticipantProject::class, 'group_participant_pivot', 'contact_group_id', 'participant_id');
     }
 
     public function responsibleUser()
@@ -149,8 +149,8 @@ class ContactGroup extends Model
                 new \App\Http\RequestQueries\Contact\Grid\ExtraFilter($request));
         }
         else if ($this->composed_of === 'participants') {
-            $requestQuery = new \App\Http\RequestQueries\ParticipantProductionProject\Grid\RequestQuery($request, new \App\Http\RequestQueries\ParticipantProductionProject\Grid\Filter($request), new \App\Http\RequestQueries\ParticipantProductionProject\Grid\Sort($request), new \App\Http\RequestQueries\ParticipantProductionProject\Grid\Joiner(),
-                new \App\Http\RequestQueries\ParticipantProductionProject\Grid\ExtraFilter($request));
+            $requestQuery = new \App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery($request, new \App\Http\RequestQueries\ParticipantProject\Grid\Filter($request), new \App\Http\RequestQueries\ParticipantProject\Grid\Sort($request), new \App\Http\RequestQueries\ParticipantProject\Grid\Joiner(),
+                new \App\Http\RequestQueries\ParticipantProject\Grid\ExtraFilter($request));
         }
 
         return $requestQuery;

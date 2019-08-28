@@ -10,7 +10,7 @@ const createMarkup = value => {
 const EmailTemplateFormView = props => {
     const {
         id,
-        productionProject,
+        project,
         participant,
         contact,
         contactGroup,
@@ -61,8 +61,8 @@ const EmailTemplateFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
-                    <ViewText label={'Productieproject'} value={productionProject && productionProject.name} />
-                    <ViewText label={'Participant productieproject'} value={participant && participant.name} />
+                    <ViewText label={'Project'} value={project && project.name} />
+                    <ViewText label={'Deelnemer project'} value={participant && participant.name} />
                 </div>
             </div>
 

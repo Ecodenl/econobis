@@ -22,17 +22,17 @@ class ParticipantsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {} } = this.props.participantsProductionProject;
+        const { data = [], meta = {} } = this.props.participantsProject;
 
         let loadingText = '';
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van participanten.';
+            loadingText = 'Fout bij het ophalen van deelnemers.';
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (data.length === 0) {
-            loadingText = 'Geen participanten gevonden!';
+            loadingText = 'Geen deelnemers gevonden!';
         } else {
             loading = false;
         }
@@ -42,33 +42,31 @@ class ParticipantsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <ParticipantsListHead
-                            refreshParticipantsProductionProjectData={() =>
-                                this.props.refreshParticipantsProductionProjectData()
-                            }
+                            refreshParticipantsProjectData={() => this.props.refreshParticipantsProjectData()}
                         />
                         <ParticipantsListFilter
                             onSubmitFilter={this.props.onSubmitFilter}
                             toggleCheckedAll={this.props.toggleCheckedAll}
                             showCheckboxList={this.props.showCheckboxList}
                             checkedAll={this.props.checkedAll}
-                            productionProjects={this.props.productionProjects}
+                            projects={this.props.projects}
                         />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={12}>{loadingText}</td>
+                                <td colSpan={11}>{loadingText}</td>
                             </tr>
                         ) : (
-                            data.map(participantProductionProject => {
+                            data.map(participantProject => {
                                 return (
                                     <ParticipantsListItem
-                                        key={participantProductionProject.id}
+                                        key={participantProject.id}
                                         showCheckboxList={this.props.showCheckboxList}
                                         checkedAll={this.props.checkedAll}
                                         toggleParticipantCheck={this.props.toggleParticipantCheck}
-                                        toggleParticipantCheckNoEmail={this.props.toggleParticipantCheckNoEmail}
-                                        {...participantProductionProject}
+                                        participantIds={this.props.participantIds}
+                                        {...participantProject}
                                     />
                                 );
                             })
@@ -79,7 +77,7 @@ class ParticipantsList extends Component {
                     <DataTablePagination
                         onPageChangeAction={this.props.handlePageClick}
                         totalRecords={meta.total}
-                        initialPage={this.props.participantsProductionProjectPagination.page}
+                        initialPage={this.props.participantsProjectPagination.page}
                     />
                 </div>
             </form>

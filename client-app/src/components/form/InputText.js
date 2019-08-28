@@ -74,10 +74,11 @@ InputText.defaultProps = {
     step: '',
     errorMessage: '',
     autoComplete: 'off',
+    onChangeAction: () => {},
 };
 
 InputText.propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     type: PropTypes.string,
     className: PropTypes.string,
     size: PropTypes.string,

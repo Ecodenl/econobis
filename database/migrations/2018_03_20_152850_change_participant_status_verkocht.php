@@ -1,6 +1,5 @@
 <?php
 
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use Illuminate\Database\Migrations\Migration;
 
 class ChangeParticipantStatusVerkocht extends Migration
@@ -12,9 +11,9 @@ class ChangeParticipantStatusVerkocht extends Migration
      */
     public function up()
     {
-        $status = ParticipantProductionProjectStatus::find(3);
-        $status->name = 'Overgedragen';
-        $status->save();
+        DB::table('participant_production_project_status')
+            ->where('id', 3)
+            ->update(['name' => 'Overgedragen']);
     }
 
     /**

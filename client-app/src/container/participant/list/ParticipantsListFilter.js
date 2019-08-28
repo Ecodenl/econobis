@@ -4,29 +4,23 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment';
 
 import {
-    clearFilterParticipantsProductionProject,
-    setFilterParticipantProductionProjectAddress,
-    setFilterParticipantProductionProjectCity,
-    setFilterParticipantProductionProjectContactType,
-    setFilterParticipantProductionProjectCurrentParticipations,
-    setFilterParticipantProductionProjectDateRegister,
-    setFilterParticipantProductionProjectEnergySupplierId,
-    setFilterParticipantProductionProjectId,
-    setFilterParticipantProductionProjectName,
-    setFilterParticipantProductionProjectParticipationStatusId,
-    setFilterParticipantProductionProjectPostalCode,
-    setFilterParticipantProductionProjectStatusId,
-    setFilterProductionProjectId,
-} from '../../../actions/participants-production-project/ParticipantsProductionProjectFiltersActions';
+    clearFilterParticipantsProject,
+    setFilterParticipantProjectAddress,
+    setFilterParticipantProjectCity,
+    setFilterParticipantProjectContactType,
+    setFilterParticipantProjectParticipationsDefinitive,
+    setFilterParticipantProjectDateRegister,
+    setFilterParticipantProjectEnergySupplierId,
+    setFilterParticipantProjectName,
+    setFilterParticipantMutationStatusId,
+    setFilterParticipantProjectPostalCode,
+    setFilterProjectId,
+} from '../../../actions/participants-project/ParticipantsProjectFiltersActions';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const ParticipantsListFilter = props => {
-    const onIdChange = e => {
-        props.setFilterParticipantProductionProjectId(e.target.value);
-    };
-
     const onContactTypeChange = e => {
-        props.setFilterParticipantProductionProjectContactType(e.target.value);
+        props.setFilterParticipantProjectContactType(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -34,35 +28,35 @@ const ParticipantsListFilter = props => {
     };
 
     const onNameChange = e => {
-        props.setFilterParticipantProductionProjectName(e.target.value);
+        props.setFilterParticipantProjectName(e.target.value);
     };
 
     const onAddressChange = e => {
-        props.setFilterParticipantProductionProjectAddress(e.target.value);
+        props.setFilterParticipantProjectAddress(e.target.value);
     };
 
     const onPostalCodeChange = e => {
-        props.setFilterParticipantProductionProjectPostalCode(e.target.value);
+        props.setFilterParticipantProjectPostalCode(e.target.value);
     };
 
     const onCityChange = e => {
-        props.setFilterParticipantProductionProjectCity(e.target.value);
+        props.setFilterParticipantProjectCity(e.target.value);
     };
 
-    const onProductionProjectIdChange = e => {
-        props.setFilterProductionProjectId(e.target.value);
+    const onProjectIdChange = e => {
+        props.setFilterProjectId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
         }, 100);
     };
 
-    const onCurrentParticipationsChange = e => {
-        props.setFilterParticipantProductionProjectCurrentParticipations(e.target.value);
+    const onParticipationsDefinitiveChange = e => {
+        props.setFilterParticipantProjectParticipationsDefinitive(e.target.value);
     };
 
-    const onParticipationStatusIdChange = e => {
-        props.setFilterParticipantProductionProjectParticipationStatusId(e.target.value);
+    const onParticipationMutationStatusIdChange = e => {
+        props.setFilterParticipantMutationStatusId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -71,14 +65,14 @@ const ParticipantsListFilter = props => {
 
     const onDateRegisterChange = selectedDay => {
         if (selectedDay === undefined) {
-            props.setFilterParticipantProductionProjectDateRegister('');
+            props.setFilterParticipantProjectDateRegister('');
         } else {
-            props.setFilterParticipantProductionProjectDateRegister(moment(selectedDay).format('Y-MM-DD'));
+            props.setFilterParticipantProjectDateRegister(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
     const onEnergySupplierIdChange = e => {
-        props.setFilterParticipantProductionProjectEnergySupplierId(e.target.value);
+        props.setFilterParticipantProjectEnergySupplierId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -94,132 +88,143 @@ const ParticipantsListFilter = props => {
                 {props.showCheckboxList && !props.checkedAll && (
                     <input type="checkbox" onChange={props.toggleCheckedAll} />
                 )}
-                {!props.showCheckboxList && (
+            </th>
+
+            <th>
+                {!props.showCheckboxList ? (
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.contactType.data}
+                        onChange={onContactTypeChange}
+                    >
+                        <option />
+                        {props.contactTypes.map(contactType => {
+                            return (
+                                <option key={contactType.id} value={contactType.id}>
+                                    {contactType.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                ) : null}
+            </th>
+
+            <th>
+                {!props.showCheckboxList ? (
                     <input
                         type="text"
                         className="form-control input-sm"
-                        value={props.filters.id.data}
-                        onChange={onIdChange}
+                        value={props.filters.name.data}
+                        onChange={onNameChange}
                     />
-                )}
+                ) : null}
+            </th>
+            <th>
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.address.data}
+                        onChange={onAddressChange}
+                    />
+                ) : null}
+            </th>
+            <th>
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.postalCode.data}
+                        onChange={onPostalCodeChange}
+                    />
+                ) : null}
+            </th>
+            <th>
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.city.data}
+                        onChange={onCityChange}
+                    />
+                ) : null}
             </th>
 
             <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.contactType.data}
-                    onChange={onContactTypeChange}
-                >
-                    <option />
-                    {props.contactTypes.map(contactType => {
-                        return (
-                            <option key={contactType.id} value={contactType.id}>
-                                {contactType.name}
-                            </option>
-                        );
-                    })}
-                </select>
+                {!props.showCheckboxList ? (
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.projectId.data}
+                        onChange={onProjectIdChange}
+                    >
+                        <option />
+                        {props.projects.map(project => {
+                            return (
+                                <option key={project.id} value={project.id}>
+                                    {project.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                ) : null}
             </th>
 
             <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.name.data}
-                    onChange={onNameChange}
+                {!props.showCheckboxList ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.participationsDefinitive.data}
+                        onChange={onParticipationsDefinitiveChange}
+                    />
+                ) : null}
+            </th>
+
+            <th>
+                {!props.showCheckboxList ? (
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.participantMutationStatusId.data}
+                        onChange={onParticipationMutationStatusIdChange}
+                    >
+                        <option />
+                        {props.participantMutationStatuses.map(participantMutationStatus => {
+                            return (
+                                <option key={participantMutationStatus.id} value={participantMutationStatus.id}>
+                                    {participantMutationStatus.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                ) : null}
+            </th>
+
+            {!props.showCheckboxList ? (
+                <DataTableFilterDate
+                    value={props.filters.dateRegister.data && props.filters.dateRegister.data}
+                    onChangeAction={onDateRegisterChange}
                 />
-            </th>
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.address.data}
-                    onChange={onAddressChange}
-                />
-            </th>
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.postalCode.data}
-                    onChange={onPostalCodeChange}
-                />
-            </th>
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.city.data}
-                    onChange={onCityChange}
-                />
-            </th>
+            ) : (
+                <th />
+            )}
 
             <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.productionProjectId.data}
-                    onChange={onProductionProjectIdChange}
-                >
-                    <option />
-                    {props.productionProjects.map(productionProject => {
-                        return (
-                            <option key={productionProject.id} value={productionProject.id}>
-                                {productionProject.name}
-                            </option>
-                        );
-                    })}
-                </select>
-            </th>
-
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.currentParticipations.data}
-                    onChange={onCurrentParticipationsChange}
-                />
-            </th>
-
-            <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.participationStatusId.data}
-                    onChange={onParticipationStatusIdChange}
-                >
-                    <option />
-                    {props.participantProductionProjectStatuses.map(participantProductionProjectStatus => {
-                        return (
-                            <option
-                                key={participantProductionProjectStatus.id}
-                                value={participantProductionProjectStatus.id}
-                            >
-                                {participantProductionProjectStatus.name}
-                            </option>
-                        );
-                    })}
-                </select>
-            </th>
-
-            <DataTableFilterDate
-                value={props.filters.dateRegister.data && props.filters.dateRegister.data}
-                onChangeAction={onDateRegisterChange}
-            />
-
-            <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.energySupplierId.data}
-                    onChange={onEnergySupplierIdChange}
-                >
-                    <option />
-                    {props.energySuppliers.map(energySupplier => {
-                        return (
-                            <option key={energySupplier.id} value={energySupplier.id}>
-                                {energySupplier.name}
-                            </option>
-                        );
-                    })}
-                </select>
+                {!props.showCheckboxList ? (
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.energySupplierId.data}
+                        onChange={onEnergySupplierIdChange}
+                    >
+                        <option />
+                        {props.energySuppliers.map(energySupplier => {
+                            return (
+                                <option key={energySupplier.id} value={energySupplier.id}>
+                                    {energySupplier.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                ) : null}
             </th>
 
             <th />
@@ -228,29 +233,27 @@ const ParticipantsListFilter = props => {
 };
 
 const mapStateToProps = state => ({
-    filters: state.participantsProductionProject.filters,
+    filters: state.participantsProject.filters,
     contactTypes: state.systemData.contactTypes,
     contactStatuses: state.systemData.contactStatuses,
-    participantProductionProjectStatuses: state.systemData.participantProductionProjectStatus,
+    participantMutationStatuses: state.systemData.participantMutationStatuses,
     energySuppliers: state.systemData.energySuppliers,
 });
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
-            clearFilterParticipantsProductionProject,
-            setFilterParticipantProductionProjectAddress,
-            setFilterParticipantProductionProjectCity,
-            setFilterParticipantProductionProjectContactType,
-            setFilterParticipantProductionProjectCurrentParticipations,
-            setFilterParticipantProductionProjectDateRegister,
-            setFilterParticipantProductionProjectEnergySupplierId,
-            setFilterParticipantProductionProjectId,
-            setFilterParticipantProductionProjectName,
-            setFilterParticipantProductionProjectParticipationStatusId,
-            setFilterParticipantProductionProjectPostalCode,
-            setFilterParticipantProductionProjectStatusId,
-            setFilterProductionProjectId,
+            clearFilterParticipantsProject,
+            setFilterParticipantProjectAddress,
+            setFilterParticipantProjectCity,
+            setFilterParticipantProjectContactType,
+            setFilterParticipantProjectParticipationsDefinitive,
+            setFilterParticipantProjectDateRegister,
+            setFilterParticipantProjectEnergySupplierId,
+            setFilterParticipantProjectName,
+            setFilterParticipantMutationStatusId,
+            setFilterParticipantProjectPostalCode,
+            setFilterProjectId,
         },
         dispatch
     );

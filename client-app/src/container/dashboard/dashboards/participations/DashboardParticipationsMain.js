@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import ProductionProjectsAPI from '../../../../api/production-project/ProductionProjectsAPI';
+import ProjectsAPI from '../../../../api/project/ProjectsAPI';
 import DashboardChartParticipantsPerProject from '../../diagrams/DashboardChartParticipantsPerProject';
 import DashboardChartContactsPerProject from '../../diagrams/DashboardChartContactsPerProject';
 import DashboardChartParticipationsPerProject from '../../diagrams/DashboardChartParticipationsPerProject';
@@ -12,44 +12,44 @@ class DashboardParticipationsMain extends Component {
         super(props);
 
         this.state = {
-            activeProductionProjectsIds: [],
+            activeProjectsIds: [],
         };
     }
 
     componentWillMount() {
-        ProductionProjectsAPI.getActive().then(payload => {
+        ProjectsAPI.getActive().then(payload => {
             this.setState({
-                activeProductionProjectsIds: payload,
+                activeProjectsIds: payload,
             });
         });
     }
 
     render() {
-        const { activeProductionProjectsIds } = this.state;
+        const { activeProjectsIds } = this.state;
 
         return (
             <div className="row">
-                {activeProductionProjectsIds.map(activeProductionProjectsId => {
+                {activeProjectsIds.map(activeProjectsId => {
                     return (
                         <div>
                             <div className="col-md-4">
                                 <Panel>
                                     <PanelBody>
-                                        <DashboardChartParticipantsPerProject id={activeProductionProjectsId} />
+                                        <DashboardChartParticipantsPerProject id={activeProjectsId} />
                                     </PanelBody>
                                 </Panel>
                             </div>
                             <div className="col-md-4">
                                 <Panel>
                                     <PanelBody>
-                                        <DashboardChartParticipationsPerProject id={activeProductionProjectsId} />
+                                        <DashboardChartParticipationsPerProject id={activeProjectsId} />
                                     </PanelBody>
                                 </Panel>
                             </div>
                             <div className="col-md-4">
                                 <Panel>
                                     <PanelBody>
-                                        <DashboardChartContactsPerProject id={activeProductionProjectsId} />
+                                        <DashboardChartContactsPerProject id={activeProjectsId} />
                                     </PanelBody>
                                 </Panel>
                             </div>

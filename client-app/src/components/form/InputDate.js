@@ -17,29 +17,69 @@ class InputDate extends Component {
 
     validateDate = event => {
         const date = moment(event.target.value, 'DD-MM-YYYY', true);
+        let errorDateFormat = false;
 
         if (!date.isValid() && event.target.value !== '') {
-            this.setState({
-                errorDateFormat: true,
-            });
-        } else {
-            this.setState({
-                errorDateFormat: false,
-            });
+            errorDateFormat = true;
         }
+
+        if (this.props.disabledBefore) {
+            if (date.isBefore(this.props.disabledBefore)) {
+                errorDateFormat = true;
+            }
+        }
+
+        if (this.props.disabledAfter) {
+            if (date.isAfter(this.props.disabledAfter)) {
+                errorDateFormat = true;
+            }
+        }
+
+        this.setState({ errorDateFormat });
     };
 
     onDateChange = date => {
         // Convert date in correct value for database
         const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
+        let errorDateFormat = false;
 
-        this.props.onChangeAction(formattedDate, this.props.name);
+        if (formattedDate && this.props.disabledBefore) {
+            if (moment(formattedDate).isBefore(this.props.disabledBefore)) {
+                errorDateFormat = true;
+            }
+        }
+
+        if (formattedDate && this.props.disabledAfter) {
+            if (moment(formattedDate).isAfter(this.props.disabledAfter)) {
+                errorDateFormat = true;
+            }
+        }
+
+        this.setState({ errorDateFormat });
+
+        !errorDateFormat && this.props.onChangeAction(formattedDate, this.props.name);
     };
 
     render() {
-        const { label, className, size, divSize, id, value, required, readOnly, name, error } = this.props;
+        const {
+            label,
+            className,
+            size,
+            divSize,
+            id,
+            value,
+            required,
+            readOnly,
+            name,
+            error,
+            disabledBefore,
+            disabledAfter,
+        } = this.props;
 
         const formattedDate = value ? moment(value).format('L') : '';
+        let disabledDays = {};
+        if (disabledBefore) disabledDays.before = new Date(disabledBefore);
+        if (disabledAfter) disabledDays.after = new Date(disabledAfter);
 
         return (
             <div className={`form-group ${divSize}`}>
@@ -60,6 +100,7 @@ class InputDate extends Component {
                             locale: 'nl',
                             firstDayOfWeek: 1,
                             localeUtils: MomentLocaleUtils,
+                            disabledDays: disabledDays,
                         }}
                         inputProps={{
                             className:
@@ -89,6 +130,8 @@ InputDate.defaultProps = {
     readOnly: false,
     value: null,
     error: false,
+    disabledBefore: null,
+    disabledAfter: null,
 };
 
 InputDate.propTypes = {
@@ -104,6 +147,8 @@ InputDate.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    disabledBefore: PropTypes.string,
+    disabledAfter: PropTypes.string,
 };
 
 export default InputDate;

@@ -17,7 +17,7 @@ const ParticipationHarmonica = ({
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span className="">
-                        PARTICIPATIES <span className="badge">{participationCount}</span>
+                        DEELNAMES <span className="badge">{participationCount}</span>
                     </span>
                 </div>
                 <div className="col-sm-2">

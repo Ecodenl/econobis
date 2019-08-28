@@ -2,7 +2,6 @@
 
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Organisation\Organisation;
-use App\Eco\ParticipantProductionProject\ParticipantProductionProjectStatus;
 use App\Eco\Person\Person;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

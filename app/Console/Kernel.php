@@ -3,6 +3,12 @@
 namespace App\Console;
 
 use App\Console\Commands\checkMailboxes;
+use App\Console\Commands\conversionParticipationsToMutationsDeltaWind;
+use App\Console\Commands\conversionParticipationsToMutationsLoanDiv100;
+use App\Console\Commands\conversionParticipationsToMutationsDefault;
+use App\Console\Commands\conversionProjectRevenues;
+use App\Console\Commands\conversionProjects;
+use App\Console\Commands\conversionProjectRevenueDistribution;
 use App\Console\Commands\getAllEmail;
 use App\Console\Commands\processPaidInvoices;
 use App\Console\Commands\setDaysLastReminderInvoice;
@@ -23,6 +29,12 @@ class Kernel extends ConsoleKernel
         setDaysToExpireInvoice::class,
         processPaidInvoices::class,
         checkMailboxes::class,
+        conversionProjects::class,
+        conversionProjectRevenues::class,
+        conversionProjectRevenueDistribution::class,
+        conversionParticipationsToMutationsDeltaWind::class,
+        conversionParticipationsToMutationsLoanDiv100::class,
+        conversionParticipationsToMutationsDefault::class,
     ];
 
     /**

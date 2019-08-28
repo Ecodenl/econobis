@@ -29,7 +29,7 @@ class Filter extends RequestFilter
 
     protected $joins = [
         'contact' => 'contact',
-        'payout' => 'production_product_revenue_distribution',
+        'payout' => 'product_revenue_distribution',
     ];
 
     protected $defaultTypes = [

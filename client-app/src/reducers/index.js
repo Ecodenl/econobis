@@ -37,16 +37,16 @@ import opportunityDetailsReducer from './opportunity/OpportunityDetailsReducer';
 import orderDetailsReducer from './order/OrderDetailsReducer';
 import ordersReducer from './order/OrdersReducer';
 import orderPreviewCreateReducer from './order/OrderPreviewCreateReducer';
-import participantProductionProjectDetailsReducer from './participant-production-project/ParticipantProductionProjectDetailsReducer';
-import participantsProductionProjectReducer from './participant-production-project/ParticipantsProductionProjectReducer';
+import participantProjectDetailsReducer from './participant-project/ParticipantProjectDetailsReducer';
+import participantsProjectReducer from './participant-project/ParticipantsProjectReducer';
 import PostalCodeLinkReducer from './postal-code-link/PostalCodeLinkReducer';
 import productDetailsReducer from './product/ProductDetailsReducer';
 import productsReducer from './product/ProductsReducer';
-import productionProjectsReducer from './production-project/ProductionProjectsReducer';
-import productionProjectDetailsReducer from './production-project/ProductionProjectDetailsReducer';
-import productionProjectRevenueDetailsReducer from './production-project/ProductionProjectRevenueDetailsReducer';
-import productionProjectRevenueReportPreviewReducer from './production-project/ProductionProjectRevenueReportPreviewReducer';
-import productionProjectParticipantReportPreviewReducer from './production-project/ProductionProjectParticipantReportPreviewReducer';
+import projectsReducer from './project/ProjectsReducer';
+import projectDetailsReducer from './project/ProjectDetailsReducer';
+import projectRevenueDetailsReducer from './project/ProjectRevenueDetailsReducer';
+import projectRevenueReportPreviewReducer from './project/ProjectRevenueReportPreviewReducer';
+import projectParticipantReportPreviewReducer from './project/ProjectParticipantReportPreviewReducer';
 import intakeDetailsReducer from './intake/IntakeDetailsReducer';
 import intakesReducer from './intake/IntakesReducer';
 import invoiceDetailsReducer from './invoice/InvoiceDetailsReducer';
@@ -122,20 +122,20 @@ const rootReducer = combineReducers({
     orderDetails: orderDetailsReducer,
     orderPreviewCreate: orderPreviewCreateReducer,
 
-    // Participant production project
-    participantsProductionProject: participantsProductionProjectReducer,
-    participantProductionProjectDetails: participantProductionProjectDetailsReducer,
+    // Participant project
+    participantsProject: participantsProjectReducer,
+    participantProjectDetails: participantProjectDetailsReducer,
     // Postal code links
     postalCodeLinks: PostalCodeLinkReducer,
     // Products
     products: productsReducer,
     productDetails: productDetailsReducer,
-    // Production project
-    productionProjects: productionProjectsReducer,
-    productionProjectDetails: productionProjectDetailsReducer,
-    productionProjectRevenue: productionProjectRevenueDetailsReducer,
-    productionProjectRevenueReportPreview: productionProjectRevenueReportPreviewReducer,
-    productionProjectParticipantReportPreview: productionProjectParticipantReportPreviewReducer,
+    // Project
+    projects: projectsReducer,
+    projectDetails: projectDetailsReducer,
+    projectRevenue: projectRevenueDetailsReducer,
+    projectRevenueReportPreview: projectRevenueReportPreviewReducer,
+    projectParticipantReportPreview: projectParticipantReportPreviewReducer,
     // Intake
     intakes: intakesReducer,
     intakeDetails: intakeDetailsReducer,

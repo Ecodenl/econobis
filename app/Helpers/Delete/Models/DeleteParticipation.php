@@ -58,8 +58,8 @@ class DeleteParticipation implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->participation->transactions()->count() > 0){
-            array_push($this->errorMessage, "Er is al een financiële transactie.");
+        if($this->participation->mutations()->count() > 0){
+            array_push($this->errorMessage, "Er is nog een mutatie.");
         }
 
         if($this->participation->status_id === 2){
@@ -71,7 +71,7 @@ class DeleteParticipation implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->participation->productionProjectRevenueDistributions as $revenueDistribution){
+        foreach ($this->participation->projectRevenueDistributions as $revenueDistribution){
             $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
             $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
         }

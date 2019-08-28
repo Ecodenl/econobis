@@ -20,9 +20,9 @@ export const organisationStreet = faker.address.streetName();
 export const organisationCity = faker.address.city();
 export const organisationNumber = faker.random.number();
 
-//production project
-export const productionProjectName = faker.company.catchPhrase();
-export const productionProjectCode = faker.lorem.word();
+//project
+export const projectName = faker.company.catchPhrase();
+export const projectCode = faker.lorem.word();
 
 //campaign
 export const campaignName = faker.lorem.sentence();

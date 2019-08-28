@@ -9,12 +9,7 @@ class MailgunDomainJoryResource extends JoryResource
 {
     protected $modelClass = MailgunDomain::class;
 
-    /**
-     * Configure the JoryResource.
-     *
-     * @return void
-     */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
         // Fields
         $this->field('id')->filterable()->sortable();
@@ -23,8 +18,6 @@ class MailgunDomainJoryResource extends JoryResource
         $this->field('is_verified')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
-
-        // Relations
     }
 
     protected function configureForPortal(): void

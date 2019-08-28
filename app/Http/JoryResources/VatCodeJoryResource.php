@@ -9,12 +9,7 @@ class VatCodeJoryResource extends JoryResource
 {
     protected $modelClass = VatCode::class;
 
-    /**
-     * Configure the JoryResource.
-     *
-     * @return void
-     */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
         // Fields
         $this->field('id')->filterable()->sortable();
@@ -25,8 +20,6 @@ class VatCodeJoryResource extends JoryResource
         $this->field('twinfield_ledger_code')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
-
-        // Relations
     }
 
     protected function configureForPortal(): void

@@ -9,12 +9,7 @@ class LedgerJoryResource extends JoryResource
 {
     protected $modelClass = Ledger::class;
 
-    /**
-     * Configure the JoryResource.
-     *
-     * @return void
-     */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
         // Fields
         $this->field('id')->filterable()->sortable();

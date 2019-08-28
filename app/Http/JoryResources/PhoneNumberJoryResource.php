@@ -10,12 +10,7 @@ class PhoneNumberJoryResource extends JoryResource
 {
     protected $modelClass = PhoneNumber::class;
 
-    /**
-     * Configure the JoryResource.
-     *
-     * @return void
-     */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
     }
 

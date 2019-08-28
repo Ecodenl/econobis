@@ -10,12 +10,7 @@ class EmailAddressJoryResource extends JoryResource
 {
     protected $modelClass = EmailAddress::class;
 
-    /**
-     * Configure the JoryResource.
-     *
-     * @return void
-     */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
     }
 

@@ -10,12 +10,7 @@ class ContactEnergySupplierJoryResource extends JoryResource
 {
     protected $modelClass = ContactEnergySupplier::class;
 
-    /**
-     * Configure the JoryResource.
-     *
-     * @return void
-     */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
     }
 

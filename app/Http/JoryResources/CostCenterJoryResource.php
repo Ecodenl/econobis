@@ -9,12 +9,7 @@ class CostCenterJoryResource extends JoryResource
 {
     protected $modelClass = CostCenter::class;
 
-    /**
-     * Configure the JoryResource.
-     *
-     * @return void
-     */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
         // Fields
         $this->field('id')->filterable()->sortable();

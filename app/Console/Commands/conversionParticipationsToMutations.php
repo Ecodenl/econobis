@@ -75,11 +75,17 @@ class conversionParticipationsToMutations extends Command
             $participantMutation->type_id = $mutationType->id;
             $participantMutation->status_id = $statusId;
 
+
             switch($statusId) {
                 case 1:
-                    if($projectType->code_ref == 'loan' && $divideBy100) {
-                        $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
-                        $participantMutation->amount_interest = $participant->participations_requested / 100; // Loan is filled in cents
+                    if($projectType->code_ref == 'loan') {
+                        if($divideBy100) {
+                            $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
+                            $participantMutation->amount_interest = $participant->participations_requested / 100; // Loan is filled in cents
+                        }else{
+                            $participantMutation->amount = $participant->participations_requested; // Loan is filled in cents
+                            $participantMutation->amount_interest = $participant->participations_requested; // Loan is filled in cents
+                        }
                     } else {
                         $participantMutation->quantity = $participant->participations_requested;
                         $participantMutation->quantity_interest = $participant->participations_requested;
@@ -87,9 +93,14 @@ class conversionParticipationsToMutations extends Command
                     $participantMutation->date_interest = $participant->date_register;
                     break;
                 case 2:
-                    if($projectType->code_ref == 'loan' && $divideBy100) {
-                        $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
-                        $participantMutation->amount_option = $participant->participations_requested / 100; // Loan is filled in cents
+                    if($projectType->code_ref == 'loan') {
+                        if($divideBy100) {
+                            $participantMutation->amount = $participant->participations_requested / 100; // Loan is filled in cents
+                            $participantMutation->amount_option = $participant->participations_requested / 100; // Loan is filled in cents
+                        }else{
+                            $participantMutation->amount = $participant->participations_requested; // Loan is filled in cents
+                            $participantMutation->amount_option = $participant->participations_requested; // Loan is filled in cents
+                        }
                     } else {
                         $participantMutation->quantity = $participant->participations_requested;
                         $participantMutation->quantity_option = $participant->participations_requested;
@@ -97,9 +108,14 @@ class conversionParticipationsToMutations extends Command
                     $participantMutation->date_option = $participant->date_register;
                     break;
                 case 3:
-                    if($projectType->code_ref == 'loan' && $divideBy100) {
-                        $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
-                        $participantMutation->amount_granted = $participant->participations_granted / 100; // Loan is filled in cents
+                    if($projectType->code_ref == 'loan') {
+                        if($divideBy100) {
+                            $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
+                            $participantMutation->amount_granted = $participant->participations_granted / 100; // Loan is filled in cents
+                        }else{
+                            $participantMutation->amount = $participant->participations_granted; // Loan is filled in cents
+                            $participantMutation->amount_granted = $participant->participations_granted; // Loan is filled in cents
+                        }
                     } else {
                         $participantMutation->quantity = $participant->participations_granted;
                         $participantMutation->quantity_granted = $participant->participations_granted;
@@ -107,9 +123,14 @@ class conversionParticipationsToMutations extends Command
                     $participantMutation->date_granted = $participant->date_register;
                     break;
                 case 4:
-                if($projectType->code_ref == 'loan' && $divideBy100) {
-                        $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
-                        $participantMutation->amount_final = $participant->participations_granted / 100; // Loan is filled in cents
+                    if($projectType->code_ref == 'loan') {
+                        if($divideBy100) {
+                            $participantMutation->amount = $participant->participations_granted / 100; // Loan is filled in cents
+                            $participantMutation->amount_final = $participant->participations_granted / 100; // Loan is filled in cents
+                        }else{
+                            $participantMutation->amount = $participant->participations_granted; // Loan is filled in cents
+                            $participantMutation->amount_final = $participant->participations_granted; // Loan is filled in cents
+                        }
                     } else {
                         $participantMutation->quantity = $participant->participations_granted;
                         $participantMutation->quantity_final = $participant->participations_granted;

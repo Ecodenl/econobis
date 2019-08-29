@@ -370,10 +370,12 @@ class Contact extends Model
      */
     public function scopeWhereAuthorizedForPortalUser($query)
     {
-        $query->where(function ($query){
-            $query->where('id', Auth::id());
-            $query->orWhereHas('occupations', function($query){
-                $query->where('primary_contact_id', Auth::id());
+        $portalUser = PortalUser::find(Auth::id());
+
+        $query->where(function ($query) use($portalUser) {
+            $query->where('id', $portalUser->contact_id);
+            $query->orWhereHas('occupations', function($query) use($portalUser){
+                $query->where('primary_contact_id', $portalUser->contact_id);
             });
         });
     }

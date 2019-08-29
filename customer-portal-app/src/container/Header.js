@@ -72,9 +72,6 @@ function Header({ location }) {
                                     <span className="bm-burger-bars bm-burger-bar-2" />
                                     <span className="bm-burger-bars bm-burger-bar-3" />
                                 </span>
-                                {/*<button style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; margin: 0px; padding: 0px; border: medium none; font-size: 0px; background: transparent none repeat scroll 0% 0%; cursor: pointer;">*/}
-                                {/*    Open Menu*/}
-                                {/*</button>*/}
                             </div>
                             <Menu
                                 right
@@ -100,28 +97,14 @@ function Header({ location }) {
                                                         Gegevens
                                                     </Link>
                                                     <Link
-                                                        to={'/gegevens-zakelijk'}
+                                                        to={null}
                                                         className={`nav-link w-nav-link w--nav-link-open ${
-                                                            location.pathname === '/gegevens-zakelijk'
-                                                                ? 'w--current'
-                                                                : ''
+                                                            location.pathname === '/' ? 'w--current' : ''
                                                         }`}
                                                         onClick={closeMenu}
                                                     >
-                                                        Gegevens zakelijk
+                                                        Deelnames
                                                     </Link>
-                                                    <Link
-                                                        to={'/mijn-interessegebieden'}
-                                                        className={`nav-link w-nav-link w--nav-link-open ${
-                                                            location.pathname === '/mijn-interessegebieden'
-                                                                ? 'w--current'
-                                                                : ''
-                                                        }`}
-                                                        onClick={closeMenu}
-                                                    >
-                                                        Mijn interessegebieden
-                                                    </Link>
-
                                                     <Link
                                                         to={'/inschrijven/kapitaal/project-x'}
                                                         className={`nav-link w-nav-link w--nav-link-open ${
@@ -131,7 +114,17 @@ function Header({ location }) {
                                                         }`}
                                                         onClick={closeMenu}
                                                     >
-                                                        Mijn inschrijving
+                                                        Inschrijven projecten
+                                                    </Link>
+
+                                                    <Link
+                                                        to={'/inschrijven/kapitaal/project-x'}
+                                                        className={`nav-link w-nav-link w--nav-link-open ${
+                                                            location.pathname === '/' ? 'w--current' : ''
+                                                        }`}
+                                                        onClick={closeMenu}
+                                                    >
+                                                        Inschrijvingen
                                                     </Link>
 
                                                     <a

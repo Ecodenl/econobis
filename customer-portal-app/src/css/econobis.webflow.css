@@ -266,17 +266,17 @@ h3 {
   background-color: #034b8c;
 }
 
-.nav-link {
-  margin-left: 40px;
-  color: #fff;
-  font-size: 32px;
-  text-shadow: none;
-}
+/*.nav-link {*/
+/*  margin-left: 20px;*/
+/*  color: #fff;*/
+/*  font-size: 16px;*/
+/*  text-shadow: none;*/
+/*}*/
 
-.nav-link.w--current {
-  border-left: 1px solid #fff;
-  color: #fff;
-}
+/*.nav-link.w--current {*/
+/*  border-left: 1px solid #fff;*/
+/*  color: #fff;*/
+/*}*/
 
 .heading.in-menu {
   margin-top: 100px;

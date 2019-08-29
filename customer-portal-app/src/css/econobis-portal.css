@@ -1,0 +1,232 @@
+/* ----------------- Start HAMBURGER MENU STYLING -----------------*/
+/* Position and sizing of burger button */
+.bm-burger-button {
+    position: absolute;
+    width: 24px;
+    height: 20px;
+    margin: 20px;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+/* Color/shape of burger icon bars */
+.bm-burger-bars {
+    position: absolute;
+    height: 3px;
+    left: 0px;
+    right: 0px;
+    opacity: 1;
+    background: white;
+    border-radius: 5px;
+}
+
+.bm-burger-bar-1 {
+    top: 0;
+}
+
+.bm-burger-bar-2 {
+    top: 40%;
+}
+
+.bm-burger-bar-3 {
+    top: 80%;
+}
+
+/* Color/shape of burger icon bars on hover*/
+.bm-burger-bars-hover {
+    background: rgba(255,255,255, 0.9);
+}
+
+/* Position and sizing of clickable cross button */
+.bm-cross-button {
+    height: 24px;
+    width: 24px;
+}
+
+/* Color/shape of close button cross */
+.bm-cross {
+    background: white;
+}
+
+/*
+Sidebar wrapper styles
+Note: Beware of modifying this element as it can break the animations - you should not need to touch it in most cases
+*/
+.bm-menu-wrap {
+    position: fixed;
+    height: 100%;
+}
+
+/* General sidebar styles */
+.bm-menu {
+    background-color: #034b8c;
+    padding: 0.5em 1.5em 0;
+    /*font-size: 1.15em;*/
+}
+
+/* Morph shape necessary with bubble or elastic */
+.bm-morph-shape {
+    fill: #373a47;
+}
+
+/* Wrapper for item list */
+.bm-item-list {
+    color: #b8b7ad;
+    padding: 0.8em;
+}
+
+/* Individual item */
+.bm-item {
+    display: inline-block;
+}
+
+
+.bm-overlay {
+    left: 0;
+    background: transparent !important;
+    z-index: 9999;
+}
+
+.nav-link {
+    color: #fff;
+    font-size: 1.15em;
+    text-shadow: none;
+}
+
+.nav-link.w--current {
+    border-left: 1px solid #fff;
+    color: #fff;
+}
+/* ----------------- End HAMBURGER MENU STYLING -----------------*/
+
+/* ----------------- Start ARROW STEPS STYLING -----------------*/
+/* Arrows CSS https://codepen.io/polinovskyi/pen/embZmw */
+
+.arrow-steps .step {
+    font-size: 14px;
+    text-align: center;
+    color: #666;
+    cursor: default;
+    margin: 0 3px;
+    padding: 10px 10px 10px 30px;
+    min-width: 180px;
+    float: left;
+    position: relative;
+    background-color: #d9e3f7;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.arrow-steps .step:after,
+.arrow-steps .step:before {
+    content: " ";
+    position: absolute;
+    top: 0;
+    right: -17px;
+    width: 0;
+    height: 0;
+    border-top: 19px solid transparent;
+    border-bottom: 21px solid transparent;
+    border-left: 17px solid #d9e3f7;
+    z-index: 2;
+    transition: border-color 0.2s ease;
+}
+
+.arrow-steps .step:before {
+    right: auto;
+    left: 0;
+    border-left: 17px solid #fff;
+    z-index: 0;
+}
+
+.arrow-steps .step:first-child:before {
+    border: none;
+}
+
+.arrow-steps .step:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.arrow-steps .step span {
+    position: relative;
+}
+
+.arrow-steps .step span:before {
+    opacity: 0;
+    content: "✔";
+    position: absolute;
+    top: -2px;
+    left: -20px;
+}
+
+.arrow-steps .step.done span:before {
+    opacity: 1;
+    -webkit-transition: opacity 0.3s ease 0.5s;
+    -moz-transition: opacity 0.3s ease 0.5s;
+    -ms-transition: opacity 0.3s ease 0.5s;
+    transition: opacity 0.3s ease 0.5s;
+}
+
+.arrow-steps .step.current {
+    color: #fff;
+    background-color: #034b8c;
+}
+
+.arrow-steps .step.current:after {
+    border-left: 17px solid #034b8c;
+}
+
+@media screen and (max-width: 991px) {
+    .arrow-steps .step {
+        font-size: 13px;
+        padding: 8px 8px 8px 24px;
+        min-width: 140px;
+    }
+
+    .arrow-steps .step:after,
+    .arrow-steps .step:before {
+        border-bottom: 17px solid transparent;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .arrow-steps .step {
+        font-size: 11px;
+        padding: 8px 8px 8px 18px;
+        min-width: 80px;
+    }
+
+    .arrow-steps .step:after,
+    .arrow-steps .step:before {
+        border-bottom: 17px solid transparent;
+    }
+}
+
+@media screen and (max-width: 479px) {
+    .arrow-steps .step {
+        font-size: 11px;
+        padding: 4px 2px;
+        margin: 0;
+        min-width: 60px;
+    }
+
+    .arrow-steps .step:after,
+    .arrow-steps .step:before {
+        border: 0;
+    }
+
+    .arrow-steps .step.current::after {
+        border: 0;
+    }
+
+    .arrow-steps .step:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+}
+/* ----------------- End ARROW STEPS STYLING -----------------*/
+

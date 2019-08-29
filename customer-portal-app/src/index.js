@@ -4,6 +4,7 @@ import './css/normalize.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/webflow.css';
 import './css/econobis.webflow.css';
+import './css/econobis-portal.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 

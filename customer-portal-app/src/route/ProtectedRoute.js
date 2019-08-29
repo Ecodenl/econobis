@@ -6,7 +6,7 @@ import Header from '../container/Header';
 const ProtectedRoute = ({ component: Component, ...rest }) => (
     <AuthConsumer>
         {({ isAuth }) => (
-            <div className="body-2">
+            <div className="body-2" id="body-2">
                 <Header />
                 <Route render={props => (isAuth ? <Component {...props} /> : <Redirect to="/login" />)} {...rest} />
             </div>

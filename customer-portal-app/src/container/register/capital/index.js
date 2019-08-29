@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import MasterForm from './MasterForm';
+import ProjectAPI from '../../../api/project/ProjectAPI';
 
 function RegisterCapital({ match }) {
     // TODO search for project name or maybe id
     const projectName = match.params.project;
+    //ProjectAPI.fetchProjects
+    const [projectData, setProjectData] = useState({});
+    const [isLoading, setLoading] = useState(true);
 
-    // TODO project example
+    useEffect(() => {
+        function callFetchProjectDetails() {
+            setLoading(true);
+            ProjectAPI.fetchProjects()
+                .then(payload => {
+                    setProjectData(payload.data.data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setLoading(false);
+                });
+        }
+
+        callFetchProjectDetails();
+    }, []);
+
     const project = {
         name: 'Zonneweide (voorbeeld)',
         minimumQuantity: 1,
@@ -66,7 +86,7 @@ function RegisterCapital({ match }) {
                     <h1 className="content-heading">
                         Schrijf je in voor project <strong>{project.name}</strong>
                     </h1>
-                    <MasterForm initialValues={initialValues} energySuppliers={energySuppliers}/>
+                    <MasterForm initialValues={initialValues} energySuppliers={energySuppliers} />
                 </Col>
             </Row>
         </Container>

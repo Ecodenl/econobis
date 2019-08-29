@@ -6,11 +6,11 @@ const AUTH_KEY = {
     grant_type: 'password',
 };
 
-const API_URL = window.__SERVER_DATA__.api_url;
+const BASE_URL = window.__SERVER_DATA__.base_url;
 
 export default {
     login: loginCredentials => {
-        const requestUrl = `${API_URL}/oauth/token`;
+        const requestUrl = `${BASE_URL}/oauth/token`;
         delete axios.defaults.headers.common['Authorization'];
 
         return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });

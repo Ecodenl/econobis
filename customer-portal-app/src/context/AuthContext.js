@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
-import AuthAPI from '../api/auth/AuthAPI';
+import moment from 'moment';
 
 const AuthContext = React.createContext();
 
-const localStorageKey = '__customer-portal-econobis__';
+const localStorageToken = '__customer-portal-econobis-token__';
+const localStorageLastActivity = '__customer-portal-econobis-last-activity__';
 
 const AuthProvider = function(props) {
     const [isAuth, setAuth] = useState(checkIfAuth());
 
     function login(payload, cbRedirect) {
-        setAuth(true);
         const token = payload.access_token;
-        window.localStorage.setItem(localStorageKey, token);
+        window.localStorage.setItem(localStorageToken, token);
+        localStorage.setItem(localStorageLastActivity, moment().format());
+        setAuth(true);
         cbRedirect();
     }
 
     function logout() {
-        window.localStorage.removeItem(localStorageKey);
+        window.localStorage.removeItem(localStorageToken);
+        window.localStorage.removeItem(localStorageLastActivity);
         setAuth(false);
     }
 
@@ -30,7 +33,7 @@ const AuthProvider = function(props) {
     }
 
     function getToken() {
-        return window.localStorage.getItem(localStorageKey);
+        return window.localStorage.getItem(localStorageToken);
     }
 
     return (

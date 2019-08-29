@@ -77,7 +77,7 @@ const AccountInfo = function() {
             setFieldValue('clientSince', '');
         }
     }
-    console.log(customerData);
+
     return (
         <div className="content-section">
             <div className="content-container w-container">

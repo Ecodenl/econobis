@@ -10,6 +10,10 @@ class EmailHelper
 {
     public function setConfigToDefaultMailbox()
     {
+        if(!$this->inProduction()){
+            return;
+        }
+
         $mailbox = Mailbox::getDefault();
 
         // Er is geen default mailbox, in dat geval vallen we terug op de configuratie in .env

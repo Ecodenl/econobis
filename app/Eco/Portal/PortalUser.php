@@ -3,6 +3,7 @@
 namespace App\Eco\Portal;
 
 use App\Eco;
+use App\Notifications\Portal\MailResetPasswordToken;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -36,5 +37,13 @@ class PortalUser extends Authenticatable
     public function contact()
     {
         return $this->belongsTo(Eco\Contact\Contact::class);
+    }
+
+    /**
+     * Send a password reset email to the user
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MailResetPasswordToken($token, $this->email));
     }
 }

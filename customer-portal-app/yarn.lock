@@ -7767,6 +7767,11 @@ react-spinners@^0.5.13:
     prop-types "^15.5.10"
     recompose "0.27.1 - 0.30.0"
 
+react-top-loading-bar@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-top-loading-bar/-/react-top-loading-bar-1.1.0.tgz#fd6409b4095581f3f46fc33826cb957c7f0c7d14"
+  integrity sha512-wdfLaZd8Zhu4DoDG4OS8yMNiGedAXKlfrzDVaExngpFzHMmnBYmPsZ0WAGFkNhcq1CPbwDwoZi64+zfHt7BO7Q==
+
 react-transition-group@^4.0.0:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.2.2.tgz#8b5252410180c27fd7eebf50b185256b41799b16"

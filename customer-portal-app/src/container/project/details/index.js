@@ -9,28 +9,42 @@ import Skeleton from 'react-loading-skeleton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
+import LoadingBarRef from 'react-top-loading-bar';
 
 function ProjectDetails({ match }) {
     const [project, setProject] = useState({});
     const [isLoading, setLoading] = useState(true);
+    let LoadingBar = LoadingBarRef;
+
+    function startFetch() {
+        LoadingBar.continuousStart();
+    }
+
+    function onFinishFetch() {
+        LoadingBar.complete();
+    }
 
     useEffect(() => {
         (function callFetchProject() {
             setLoading(true);
+            startFetch();
             ProjectAPI.fetchProject(match.params.id)
                 .then(payload => {
                     setProject(payload.data.data);
                     setLoading(false);
+                    onFinishFetch();
                 })
                 .catch(error => {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                     setLoading(false);
+                    onFinishFetch();
                 });
         })();
     }, [match]);
 
     return (
         <Container className={'content-section'}>
+            <LoadingBar onRef={ref => (LoadingBar = ref)} height={3} color="orangered" />
             <Row>
                 <Col>
                     <h1 className="content-heading">Inschrijven project</h1>

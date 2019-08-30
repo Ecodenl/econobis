@@ -6,35 +6,23 @@ import MasterForm from './MasterForm';
 import ProjectAPI from '../../../api/project/ProjectAPI';
 
 function RegisterCapital({ match }) {
-    // TODO search for project name or maybe id
-    const projectName = match.params.project;
-    //ProjectAPI.fetchProjects
-    const [projectData, setProjectData] = useState({});
+    const [project, setProject] = useState({});
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        function callFetchProjectDetails() {
+        (function callFetchProject() {
             setLoading(true);
-            ProjectAPI.fetchProjects()
+            ProjectAPI.fetchProject(match.params.id)
                 .then(payload => {
-                    setProjectData(payload.data.data);
+                    setProject(payload.data.data);
                     setLoading(false);
                 })
                 .catch(error => {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                     setLoading(false);
                 });
-        }
-
-        callFetchProjectDetails();
-    }, []);
-
-    const project = {
-        name: 'Zonneweide (voorbeeld)',
-        minimumQuantity: 1,
-        maximumQuantity: 5,
-        participationWorth: 200,
-    };
+        })();
+    }, [match]);
 
     // TODO Fetch values from API
     const initialValues = {

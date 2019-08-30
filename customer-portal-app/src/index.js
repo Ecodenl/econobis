@@ -7,6 +7,7 @@ import './css/econobis.webflow.css';
 import './css/econobis-portal.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import 'moment/locale/nl';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

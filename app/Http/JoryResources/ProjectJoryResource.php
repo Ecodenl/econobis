@@ -39,6 +39,7 @@ class ProjectJoryResource extends JoryResource
         $this->field('participations_granted')->filterable()->sortable();
         $this->field('participations_interessed')->filterable()->sortable();
         $this->field('participations_optioned')->filterable()->sortable();
+        $this->field('total_participations')->filterable()->sortable();
         $this->field('postal_code')->filterable()->sortable();
         $this->field('project_type_id')->filterable()->sortable();
 

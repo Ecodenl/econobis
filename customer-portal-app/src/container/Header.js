@@ -106,9 +106,9 @@ function Header({ location }) {
                                                         Deelnames
                                                     </Link>
                                                     <Link
-                                                        to={'/inschrijven/kapitaal/project-x'}
+                                                        to={'/inschrijven-projecten'}
                                                         className={`nav-link w-nav-link w--nav-link-open ${
-                                                            location.pathname === '/inschrijven/kapitaal/project-x'
+                                                            location.pathname === '/inschrijven-projecten'
                                                                 ? 'w--current'
                                                                 : ''
                                                         }`}

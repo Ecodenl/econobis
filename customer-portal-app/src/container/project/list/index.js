@@ -6,12 +6,11 @@ import ProjectAPI from '../../../api/project/ProjectAPI';
 import { Link } from 'react-router-dom';
 
 function ProjectList() {
-    //ProjectAPI.fetchProjects
     const [projectData, setProjectData] = useState({});
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        function callFetchProjectDetails() {
+        (function callFetchProjects() {
             setLoading(true);
             ProjectAPI.fetchProjects()
                 .then(payload => {
@@ -22,9 +21,7 @@ function ProjectList() {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                     setLoading(false);
                 });
-        }
-
-        callFetchProjectDetails();
+        })();
     }, []);
 
     return (

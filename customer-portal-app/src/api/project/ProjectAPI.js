@@ -6,4 +6,10 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+
+    fetchProject: function(id) {
+        const requestUrl = `/jory/project/${id}`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

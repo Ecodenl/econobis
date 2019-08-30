@@ -21,6 +21,8 @@ function Steps({ currentStep, previous, next, initialValues, energySuppliers }) 
             return <StepThree previous={previous} next={next} />;
         case 4:
             return <StepFour previous={previous} />;
+        default:
+            return;
     }
 }
 

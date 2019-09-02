@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import MasterForm from './MasterForm';
 import ProjectAPI from '../../../api/project/ProjectAPI';
+import LoadingView from '../../../components/general/LoadingView';
 
 function RegisterCapital({ match }) {
     const [project, setProject] = useState({});
@@ -69,14 +70,18 @@ function RegisterCapital({ match }) {
 
     return (
         <Container className={'content-section'}>
-            <Row>
-                <Col>
-                    <h1 className="content-heading">
-                        Schrijf je in voor project <strong>{project.name}</strong>
-                    </h1>
-                    <MasterForm initialValues={initialValues} energySuppliers={energySuppliers} />
-                </Col>
-            </Row>
+            {isLoading ? (
+                <LoadingView />
+            ) : (
+                <Row>
+                    <Col>
+                        <h1 className="content-heading">
+                            Schrijf je in voor project <strong>{project.name}</strong>
+                        </h1>
+                        <MasterForm initialValues={initialValues} energySuppliers={energySuppliers} />
+                    </Col>
+                </Row>
+            )}
         </Container>
     );
 }

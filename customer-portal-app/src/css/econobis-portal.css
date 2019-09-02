@@ -1,3 +1,15 @@
+:root {
+    --main-primary-color: #034b8c;
+    --button-primary-color: #3898EC;
+}
+
+/* ----------------- Start BUTTON STYLING -----------------*/
+.w-button {
+  background-color: var(--button-primary-color);
+  color: white;
+}
+/* ----------------- Start BUTTONSTYLING -----------------*/
+
 /* ----------------- Start HAMBURGER MENU STYLING -----------------*/
 /* Position and sizing of burger button */
 .bm-burger-button {
@@ -59,7 +71,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
 
 /* General sidebar styles */
 .bm-menu {
-    background-color: #034b8c;
+    background-color: var(--main-primary-color);
     padding: 0.5em 1.5em 0;
     /*font-size: 1.15em;*/
 }
@@ -173,11 +185,11 @@ Note: Beware of modifying this element as it can break the animations - you shou
 
 .arrow-steps .step.current {
     color: #fff;
-    background-color: #034b8c;
+    background-color: var(--main-primary-color);
 }
 
 .arrow-steps .step.current:after {
-    border-left: 17px solid #034b8c;
+    border-left: 17px solid var(--main-primary-color);
 }
 
 @media screen and (max-width: 991px) {

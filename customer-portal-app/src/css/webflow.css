@@ -84,20 +84,20 @@ html.w-mod-touch * {
 .w-hidden {
   display: none;
 }
-.w-button {
-  display: inline-block;
-  padding: 9px 15px;
-  background-color: #3898EC;
-  color: white;
-  border: 0;
-  line-height: inherit;
-  text-decoration: none;
-  cursor: pointer;
-  border-radius: 0;
-}
-input.w-button {
-  -webkit-appearance: button;
-}
+/*.w-button {*/
+/*  display: inline-block;*/
+/*  padding: 9px 15px;*/
+/*  background-color: #3898EC;*/
+/*  color: white;*/
+/*  border: 0;*/
+/*  line-height: inherit;*/
+/*  text-decoration: none;*/
+/*  cursor: pointer;*/
+/*  border-radius: 0;*/
+/*}*/
+/*input.w-button {*/
+/*  -webkit-appearance: button;*/
+/*}*/
 html[data-w-dynpage] [data-w-cloak] {
   color: transparent !important;
 }

@@ -5,6 +5,7 @@ import { AuthConsumer } from '../../context/AuthContext';
 import LogoImage from '../../images/logo.png';
 import LoginForm from './Form';
 import AuthAPI from '../../api/auth/AuthAPI';
+import Alert from 'react-bootstrap/Alert';
 
 export default props => {
     const [error, setError] = useState('');
@@ -42,7 +43,11 @@ export default props => {
                                     <div className="div-block">
                                         <img src={LogoImage} alt="" className="image" />
                                         <LoginForm handleSubmit={handleSubmit} login={login} />
-                                        {error}
+                                        {error ? (
+                                            <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                                {error}
+                                            </Alert>
+                                        ) : null}
                                         <a href="wachtwoord-vergeten.html" className="link">
                                             Wachtwoord vergeten?
                                         </a>

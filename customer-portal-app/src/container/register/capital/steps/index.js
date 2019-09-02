@@ -4,10 +4,10 @@ import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import StepFour from './StepFour';
 
-function Steps({ currentStep, previous, next, initialValues, energySuppliers }) {
+function Steps({ currentStep, previous, next, initialValues, energySuppliers, project }) {
     switch (currentStep) {
         case 1:
-            return <StepOne next={next} />;
+            return <StepOne next={next} project={project} />;
         case 2:
             return (
                 <StepTwo

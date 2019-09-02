@@ -78,7 +78,7 @@ function RegisterCapital({ match }) {
                         <h1 className="content-heading">
                             Schrijf je in voor project <strong>{project.name}</strong>
                         </h1>
-                        <MasterForm initialValues={initialValues} energySuppliers={energySuppliers} />
+                        <MasterForm initialValues={initialValues} energySuppliers={energySuppliers} project={project} />
                     </Col>
                 </Row>
             )}

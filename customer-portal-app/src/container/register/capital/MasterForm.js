@@ -3,7 +3,7 @@ import Steps from './steps';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function MasterForm({initialValues, energySuppliers}) {
+function MasterForm({ initialValues, energySuppliers, project }) {
     const [currentStep, setStep] = React.useState(1);
 
     function previous() {
@@ -16,7 +16,7 @@ function MasterForm({initialValues, energySuppliers}) {
 
     return (
         <>
-            <Row>
+            <Row className={'mb-4'}>
                 <Col>
                     <div className={'arrow-steps clearfix'}>
                         <div className={`step ${currentStep === 1 ? 'current' : ''}`}>1. Inschrijven</div>
@@ -26,7 +26,14 @@ function MasterForm({initialValues, energySuppliers}) {
                     </div>
                 </Col>
             </Row>
-            <Steps currentStep={currentStep} previous={previous} next={next} initialValues={initialValues} energySuppliers={energySuppliers}/>
+            <Steps
+                currentStep={currentStep}
+                previous={previous}
+                next={next}
+                initialValues={initialValues}
+                energySuppliers={energySuppliers}
+                project={project}
+            />
         </>
     );
 }

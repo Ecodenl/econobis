@@ -1,5 +1,6 @@
 :root {
     --main-primary-color: #034b8c;
+    --main-warning-color: #dc3545;
     --button-primary-color: #3898EC;
 }
 
@@ -42,6 +43,17 @@
 .text-block {
     padding-top: .375rem;
     padding-bottom: .375rem;
+}
+
+/* ----------------- Start INPUT STYLING -----------------*/
+.has-error {
+    border: 1px solid var(--main-warning-color) !important;
+    color: red !important;
+}
+
+.error-message {
+    color: var(--main-warning-color);
+    font-size: 11px;
 }
 
 /* ----------------- Start BUTTON STYLING -----------------*/

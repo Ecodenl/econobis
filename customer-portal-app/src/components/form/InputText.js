@@ -2,7 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const InputText = ({ field, type, className, id, readOnly, error, placeholder }) => {
-    return <input type={type} className={className} id={id} {...field} readOnly={readOnly} placeholder={placeholder} />;
+    return (
+        <>
+            <input
+                type={type}
+                className={`${className} ${Boolean(error) ? 'has-error' : ''} `}
+                id={id}
+                {...field}
+                readOnly={readOnly}
+                placeholder={placeholder}
+            />
+            {error ? <span className={'error-message text-danger'}>{error}</span> : null}
+        </>
+    );
 };
 
 InputText.defaultProps = {

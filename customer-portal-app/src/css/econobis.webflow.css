@@ -437,13 +437,13 @@ h3 {
   text-align: left;
 }
 
-.error-message {
-  border-left: 4px solid #ffae00;
-  background-color: #fff;
-  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);
-  color: #1d1d1d;
-  text-align: left;
-}
+/*.error-message {*/
+/*  border-left: 4px solid #ffae00;*/
+/*  background-color: #fff;*/
+/*  box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.1);*/
+/*  color: #1d1d1d;*/
+/*  text-align: left;*/
+/*}*/
 
 .white {
   color: #fff;

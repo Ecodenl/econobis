@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import MasterForm from './MasterForm';
 import ProjectAPI from '../../../api/project/ProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
+import ContactAPI from '../../../api/contact/ContactAPI';
 
 function RegisterCapital({ match }) {
     const [registerValues, setRegisterValues] = useState({
@@ -12,6 +13,7 @@ function RegisterCapital({ match }) {
         participationsInteressed: 0,
     });
     const [project, setProject] = useState({});
+    const [contact, setContact] = useState({});
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -21,6 +23,19 @@ function RegisterCapital({ match }) {
                 .then(payload => {
                     setProject(payload.data.data);
                     setRegisterValues({ ...registerValues, projectId: payload.data.data.id });
+                    setLoading(false);
+                })
+                .catch(error => {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setLoading(false);
+                });
+        })();
+
+        (function callFetchContact() {
+            setLoading(true);
+            ContactAPI.fetchContact(11)
+                .then(payload => {
+                    setContact(payload.data.data);
                     setLoading(false);
                 })
                 .catch(error => {

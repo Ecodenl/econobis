@@ -20,9 +20,38 @@ class ContactJoryResource extends JoryResource
         $this->field('id')->filterable()->sortable();
         $this->field('number')->filterable()->sortable();
         $this->field('full_name')->filterable()->sortable();
+        $this->field('first_name')->filterable()->sortable();
+        $this->field('last_name')->filterable()->sortable();
         $this->field('iban')->filterable()->sortable();
         $this->field('iban_attn')->filterable()->sortable();
         $this->field('did_agree_avg')->filterable()->sortable();
+
+//        'number',
+//        'fullName',
+//        'email',
+//        'titleId',
+//        'firstName',
+//        'lastNamePrefixId',
+//        'lastName',
+//        'emailAddress1',
+//        'emailAddress2',
+//        'telephoneNumber1',
+//        'telephoneNumber2',
+//        'street',
+//        'streetNumber',
+//        'streetAddition',
+//        'postalCode',
+//        'city',
+//        'countryId',
+//        'iban',
+//        'ibanName',
+//        'didAgreeAvg',
+//        'energySupplierId',
+//        'esNumber',
+//        'memberSince',
+//        'eanElectricity',
+//        'clientNr',
+//        'clientSince',
 
         // Custom attributes
         $this->field('address_lines')->hideByDefault();

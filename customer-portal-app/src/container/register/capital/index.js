@@ -7,6 +7,10 @@ import ProjectAPI from '../../../api/project/ProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
 
 function RegisterCapital({ match }) {
+    const [registerValues, setRegisterValues] = useState({
+        projectId: null,
+        participationsInteressed: 0,
+    });
     const [project, setProject] = useState({});
     const [isLoading, setLoading] = useState(true);
 
@@ -16,6 +20,7 @@ function RegisterCapital({ match }) {
             ProjectAPI.fetchProject(match.params.id)
                 .then(payload => {
                     setProject(payload.data.data);
+                    setRegisterValues({ ...registerValues, projectId: payload.data.data.id });
                     setLoading(false);
                 })
                 .catch(error => {
@@ -24,6 +29,10 @@ function RegisterCapital({ match }) {
                 });
         })();
     }, [match]);
+
+    function handleSubmitRegisterValues(values) {
+        setRegisterValues({ ...registerValues, ...values });
+    }
 
     // TODO Fetch values from API
     const initialValues = {
@@ -78,7 +87,13 @@ function RegisterCapital({ match }) {
                         <h1 className="content-heading">
                             Schrijf je in voor project <strong>{project.name}</strong>
                         </h1>
-                        <MasterForm initialValues={initialValues} energySuppliers={energySuppliers} project={project} />
+                        <MasterForm
+                            initialValues={initialValues}
+                            energySuppliers={energySuppliers}
+                            project={project}
+                            initialRegisterValues={registerValues}
+                            handleSubmitRegisterValues={handleSubmitRegisterValues}
+                        />
                     </Col>
                 </Row>
             )}

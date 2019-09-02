@@ -4,10 +4,26 @@ import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import StepFour from './StepFour';
 
-function Steps({ currentStep, previous, next, initialValues, energySuppliers, project }) {
+function Steps({
+    currentStep,
+    previous,
+    next,
+    initialValues,
+    energySuppliers,
+    project,
+    initialRegisterValues,
+    handleSubmitRegisterValues,
+}) {
     switch (currentStep) {
         case 1:
-            return <StepOne next={next} project={project} />;
+            return (
+                <StepOne
+                    next={next}
+                    project={project}
+                    initialRegisterValues={initialRegisterValues}
+                    handleSubmitRegisterValues={handleSubmitRegisterValues}
+                />
+            );
         case 2:
             return (
                 <StepTwo
@@ -18,7 +34,7 @@ function Steps({ currentStep, previous, next, initialValues, energySuppliers, pr
                 />
             );
         case 3:
-            return <StepThree previous={previous} next={next} />;
+            return <StepThree previous={previous} next={next} initialRegisterValues={initialRegisterValues} />;
         case 4:
             return <StepFour previous={previous} />;
         default:

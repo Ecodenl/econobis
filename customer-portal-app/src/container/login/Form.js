@@ -49,7 +49,7 @@ const LoginForm = function({ handleSubmit, login }) {
                         />
                         <ButtonText
                             buttonText={'Log in'}
-                            buttonClassName={'login-button w-button'}
+                            buttonClassName={'login-button'}
                             type={'submit'}
                             loading={isSubmitting}
                             loadingSpinnerColor={'#034b8c'}

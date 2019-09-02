@@ -3,12 +3,45 @@
     --button-primary-color: #3898EC;
 }
 
+/* ----------------- Start LOGIN STYLING -----------------*/
+.login-button {
+    width: 100%;
+    min-width: 240px;
+    border-radius: 7px;
+    background-color: #fff;
+    color: #034b8c;
+    font-weight: 600;
+    text-align: center;
+}
+
+.heading-login-white {
+    margin-top: 20px;
+    color: #fff;
+    text-align: center;
+}
+
+.login-text-white {
+    margin-bottom: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+/* ----------------- Start GENERAL STYLING -----------------*/
+.content-section {
+    padding-top: 80px;
+    padding-bottom: 60px;
+}
+
 /* ----------------- Start BUTTON STYLING -----------------*/
 .w-button {
   background-color: var(--button-primary-color);
   color: white;
 }
-/* ----------------- Start BUTTONSTYLING -----------------*/
+
+.save-btn {
+    background-color: #00d371;
+}
+
 
 /* ----------------- Start HAMBURGER MENU STYLING -----------------*/
 /* Position and sizing of burger button */

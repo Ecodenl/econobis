@@ -16,6 +16,12 @@ export default {
     fetchProject: function(id) {
         const requestUrl = `/jory/project/${id}`;
 
-        return axiosInstance.get(requestUrl);
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: ['id', 'name', 'minParticipations', 'maxParticipations', 'participationWorth'],
+                },
+            },
+        });
     },
 };

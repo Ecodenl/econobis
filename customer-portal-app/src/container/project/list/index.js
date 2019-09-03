@@ -51,7 +51,7 @@ function ProjectList() {
                             </thead>
                             <tbody>
                                 {projectData.map(project => (
-                                    <tr>
+                                    <tr key={project.id}>
                                         <td>
                                             <Link to={`/project/${project.id}`}>{project.name}</Link>
                                         </td>

@@ -23,6 +23,9 @@ class ContactEnergySupplierJoryResource extends JoryResource
         $this->field('member_since')->filterable()->sortable();
         $this->field('ean_electricity')->filterable()->sortable();
         $this->field('is_current_supplier')->filterable()->sortable();
+
+        // Relations
+        $this->relation('energy_supplier');
     }
 
     public function afterQueryBuild($query, $count = false): void

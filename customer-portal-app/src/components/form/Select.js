@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const Select = ({ field, className, id, options, optionLabel, error, emptyOption, placeholder }) => {
     return (
-        <select className={className} id={id} {...field} error={error}>
+        <select className={`select-field w-select ${className}`} id={id} {...field} error={error}>
             {emptyOption ? <option value="">{placeholder ? `-- ${placeholder} --` : ''}</option> : null}
             {options.map(option => {
                 return (
@@ -17,7 +17,7 @@ const Select = ({ field, className, id, options, optionLabel, error, emptyOption
 };
 
 Select.defaultProps = {
-    className: 'select-field w-select',
+    className: '',
     readOnly: false,
     required: '',
     error: false,

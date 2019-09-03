@@ -108,6 +108,7 @@ function RegisterCapital({ match }) {
                             project={project}
                             initialRegisterValues={registerValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
+                            initialContact={contact}
                         />
                     </Col>
                 </Row>

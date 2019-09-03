@@ -15,16 +15,31 @@ export default {
                         'firstName',
                         // 'lastNamePrefixId',
                         'lastName',
-                        // 'iban',
-                        // 'ibanName',
-                        // 'didAgreeAvg',
+                        'iban',
+                        'ibanAttn',
+                        'didAgreeAvg',
                         'addressLines',
                     ],
                     rlt: {
+                        person: {
+                            fld: [
+                                'id',
+                                'firstName',
+                                'lastName',
+                                'initials',
+                                'titleId',
+                                'lastNamePrefix',
+                                'dateOfBirth',
+                            ],
+                        },
                         emailAddresses: { fld: ['id', 'email', 'primary', 'typeId'] },
                         phoneNumbers: { fld: ['id', 'number', 'primary', 'typeId'] },
                         addresses: {
                             fld: ['id', 'street', 'number', 'addition', 'postalCode', 'city', 'countryId'],
+                            flt: {
+                                f: 'primary',
+                                d: true,
+                            },
                         },
                         contactEnergySuppliers: {
                             fld: [
@@ -32,10 +47,10 @@ export default {
                                 'energySupplierId',
                                 'esNumber',
                                 'eanElectricity',
-                                // 'clientNr',
                                 'memberSince',
                                 'isCurrentSupplier',
                             ],
+                            rlt: { energySupplier: [] },
                             flt: {
                                 f: 'isCurrentSupplier',
                                 d: true,

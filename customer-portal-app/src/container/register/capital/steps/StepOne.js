@@ -34,21 +34,21 @@ function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterVal
                 <>
                     <Row>
                         <Col xs={12} md={6}>
-                            <FormLabel>Minimale aantal participaties</FormLabel>
+                            <FormLabel className={'field-label'}>Minimale aantal participaties</FormLabel>
                             <TextBlock>{project.minParticipations}</TextBlock>
                         </Col>
                         <Col xs={12} md={6}>
-                            <FormLabel>Maximale aantal participaties</FormLabel>
+                            <FormLabel className={'field-label'}>Maximale aantal participaties</FormLabel>
                             <TextBlock>{project.maxParticipations}</TextBlock>
                         </Col>
 
                         <Col xs={12} md={6}>
-                            <FormLabel>Nominale waarde per participatie</FormLabel>
+                            <FormLabel className={'field-label'}>Nominale waarde per participatie</FormLabel>
                             <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
                         </Col>
                         <Col xs={12} md={6}>
                             <Form>
-                                <Form.Label>Gewenst aantal participaties</Form.Label>
+                                <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
                                 <Field
                                     name="participationsInteressed"
                                     render={({ field }) => (
@@ -62,7 +62,7 @@ function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterVal
                             </Form>
                         </Col>
                         <Col xs={12} md={6}>
-                            <FormLabel>Te betalen bedrag</FormLabel>
+                            <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
                             <TextBlock>
                                 {MoneyPresenter(values.participationsInteressed * project.participationWorth)}
                             </TextBlock>

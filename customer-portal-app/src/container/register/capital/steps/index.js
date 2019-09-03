@@ -13,6 +13,7 @@ function Steps({
     project,
     initialRegisterValues,
     handleSubmitRegisterValues,
+    initialContact,
 }) {
     switch (currentStep) {
         case 1:
@@ -31,6 +32,7 @@ function Steps({
                     next={next}
                     initialValues={initialValues}
                     energySuppliers={energySuppliers}
+                    initialContact={initialContact}
                 />
             );
         case 3:

@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/webflow.css';
 import './css/econobis.webflow.css';
 import './css/econobis-portal.css';
+import 'react-day-picker/lib/style.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'moment/locale/nl';

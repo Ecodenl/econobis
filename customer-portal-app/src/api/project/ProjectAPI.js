@@ -19,7 +19,18 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'name', 'minParticipations', 'maxParticipations', 'participationWorth'],
+                    fld: [
+                        'id',
+                        'name',
+                        'description',
+                        'dateStartRegistrations',
+                        'dateEndRegistrations',
+                        'dateEndRegistrations',
+                        'minParticipations',
+                        'maxParticipations',
+                        'totalParticipations',
+                        'participationWorth',
+                    ],
                 },
             },
         });

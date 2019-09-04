@@ -4,7 +4,7 @@
     --button-primary-color: #3898EC;
 }
 
-/* ----------------- Start LOGIN STYLING -----------------*/
+/* ----------------- LOGIN STYLING -----------------*/
 .login-button {
     width: 100%;
     min-width: 240px;
@@ -27,7 +27,7 @@
     text-align: center;
 }
 
-/* ----------------- Start GENERAL STYLING -----------------*/
+/* ----------------- GENERAL STYLING -----------------*/
 .content-section {
     padding-top: 80px;
     padding-bottom: 60px;
@@ -43,9 +43,22 @@
 .text-block {
     padding-top: .375rem;
     padding-bottom: .375rem;
+    min-height: 28px;
 }
 
-/* ----------------- Start INPUT STYLING -----------------*/
+.text-block.placeholder {
+    padding: 2px 12px;
+}
+
+.text-block > .placeholder-message {
+    color: #999;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
+    padding: 4px 3px;
+    min-height: 28px;
+}
+
+/* ----------------- INPUT STYLING -----------------*/
 .has-error {
     border: 1px solid var(--main-warning-color) !important;
     color: red !important;
@@ -56,7 +69,16 @@
     font-size: 11px;
 }
 
-/* ----------------- Start BUTTON STYLING -----------------*/
+/* ----------------- LABEL STYLING -----------------*/
+.field-label {
+    margin-top: 20px;
+    /*font-family: 'Droid Sans', sans-serif;*/
+    /*color: rgba(29, 29, 29, 0.5);*/
+    /*font-size: 12px;*/
+    /*text-shadow: none;*/
+}
+
+/* ----------------- BUTTON STYLING -----------------*/
 .w-button {
   background-color: var(--button-primary-color);
   color: white;
@@ -64,8 +86,14 @@
 
 .save-btn {
     background-color: #00d371;
+    border: #00ac5c ;
 }
 
+.save-btn:hover, .save-btn:active {
+    background-color: #00ac5c !important;
+    border: #00ac5c !important;
+    color: white;
+}
 
 /* ----------------- Start HAMBURGER MENU STYLING -----------------*/
 /* Position and sizing of burger button */
@@ -310,3 +338,35 @@ Note: Beware of modifying this element as it can break the animations - you shou
 }
 /* ----------------- End ARROW STEPS STYLING -----------------*/
 
+/* ----------------- End DAY PICKER STYLING -----------------*/
+.DayPickerInput-Overlay {
+    z-index: 99;
+    position: absolute;
+    left: 0;
+    z-index: 1;
+
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.DataTableDateFilter>.DayPickerInput>.DayPickerInput-OverlayWrapper {
+    position: absolute;
+}
+
+.DayPicker-overflow {
+    overflow: visible;
+}
+
+.DayPickerInput {
+    display: inline;
+}
+
+.DayPicker-Caption > div  {
+    font-size: 1.2em;
+}
+
+.DayPicker {
+    display: inline-block;
+    font-size: .9em;
+}
+/* ----------------- End DAY PICKER STYLING -----------------*/

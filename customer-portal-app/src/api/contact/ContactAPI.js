@@ -10,32 +10,40 @@ export default {
                     fld: [
                         'number',
                         'fullName',
-                        // 'email',
-                        // 'titleId',
                         'firstName',
-                        // 'lastNamePrefixId',
                         'lastName',
-                        // 'iban',
-                        // 'ibanName',
-                        // 'didAgreeAvg',
+                        'iban',
+                        'ibanAttn',
+                        'didAgreeAvg',
                         'addressLines',
                     ],
                     rlt: {
+                        person: {
+                            fld: [
+                                'id',
+                                'firstName',
+                                'lastName',
+                                'initials',
+                                'titleId',
+                                'lastNamePrefix',
+                                'dateOfBirth',
+                            ],
+                        },
                         emailAddresses: { fld: ['id', 'email', 'primary', 'typeId'] },
                         phoneNumbers: { fld: ['id', 'number', 'primary', 'typeId'] },
-                        addresses: {
+                        primaryAddress: {
                             fld: ['id', 'street', 'number', 'addition', 'postalCode', 'city', 'countryId'],
                         },
-                        contactEnergySuppliers: {
+                        primaryContactEnergySupplier: {
                             fld: [
                                 'id',
                                 'energySupplierId',
                                 'esNumber',
                                 'eanElectricity',
-                                // 'clientNr',
                                 'memberSince',
                                 'isCurrentSupplier',
                             ],
+                            rlt: { energySupplier: [] },
                             flt: {
                                 f: 'isCurrentSupplier',
                                 d: true,

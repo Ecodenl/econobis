@@ -21,6 +21,8 @@ class PersonJoryResource extends JoryResource
         $this->field('title_id')->filterable()->sortable();
         $this->field('last_name_prefix')->filterable()->sortable();
         $this->field('last_name')->filterable()->sortable();
+        $this->field('initials')->filterable()->sortable();
+        $this->field('date_of_birth')->filterable()->sortable();
     }
 
     public function afterQueryBuild($query, $count = false): void

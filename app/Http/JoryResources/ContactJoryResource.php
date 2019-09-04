@@ -26,42 +26,15 @@ class ContactJoryResource extends JoryResource
         $this->field('iban_attn')->filterable()->sortable();
         $this->field('did_agree_avg')->filterable()->sortable();
 
-//        'number',
-//        'fullName',
-//        'email',
-//        'titleId',
-//        'firstName',
-//        'lastNamePrefixId',
-//        'lastName',
-//        'emailAddress1',
-//        'emailAddress2',
-//        'telephoneNumber1',
-//        'telephoneNumber2',
-//        'street',
-//        'streetNumber',
-//        'streetAddition',
-//        'postalCode',
-//        'city',
-//        'countryId',
-//        'iban',
-//        'ibanName',
-//        'didAgreeAvg',
-//        'energySupplierId',
-//        'esNumber',
-//        'memberSince',
-//        'eanElectricity',
-//        'clientNr',
-//        'clientSince',
-
         // Custom attributes
         $this->field('address_lines')->hideByDefault();
 
         // Relations
-        $this->relation('addresses');
+        $this->relation('primaryAddress');
         $this->relation('email_addresses');
         $this->relation('person');
         $this->relation('phone_numbers');
-        $this->relation('contact_energy_suppliers');
+        $this->relation('primaryContactEnergySupplier');
         $this->relation('primaryOccupations');
         $this->relation('portal_user');
     }

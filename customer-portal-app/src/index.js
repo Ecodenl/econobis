@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './css/normalize.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-day-picker/lib/style.css';
 import './css/webflow.css';
 import './css/econobis.webflow.css';
 import './css/econobis-portal.css';

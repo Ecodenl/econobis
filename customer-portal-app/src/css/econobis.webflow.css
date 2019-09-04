@@ -385,13 +385,13 @@ h3 {
 /*  border-radius: 7px;*/
 /*}*/
 
-.field-label {
-  margin-top: 40px;
-  font-family: 'Droid Sans', sans-serif;
-  color: rgba(29, 29, 29, 0.5);
-  font-size: 12px;
-  text-shadow: none;
-}
+/*.field-label {*/
+/*  margin-top: 40px;*/
+/*  font-family: 'Droid Sans', sans-serif;*/
+/*  color: rgba(29, 29, 29, 0.5);*/
+/*  font-size: 12px;*/
+/*  text-shadow: none;*/
+/*}*/
 
 .current_es_wrapper {
   margin-right: 0px;

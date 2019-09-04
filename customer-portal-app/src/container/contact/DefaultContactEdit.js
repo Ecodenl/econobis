@@ -79,6 +79,7 @@ const DefaultContactEdit = function({ handleSubmit, initialContact, values, setF
                             onChangeAction={setFieldValue}
                             id="last_name"
                             placeholder={'Geboortedatum'}
+                            className={'text-input content _w-70 _w-70-mob w-input'}
                         />
                     )}
                 />

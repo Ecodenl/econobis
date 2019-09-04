@@ -338,3 +338,35 @@ Note: Beware of modifying this element as it can break the animations - you shou
 }
 /* ----------------- End ARROW STEPS STYLING -----------------*/
 
+/* ----------------- End DAY PICKER STYLING -----------------*/
+.DayPickerInput-Overlay {
+    z-index: 99;
+    position: absolute;
+    left: 0;
+    z-index: 1;
+
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.DataTableDateFilter>.DayPickerInput>.DayPickerInput-OverlayWrapper {
+    position: absolute;
+}
+
+.DayPicker-overflow {
+    overflow: visible;
+}
+
+.DayPickerInput {
+    display: inline;
+}
+
+.DayPicker-Caption > div  {
+    font-size: 1.2em;
+}
+
+.DayPicker {
+    display: inline-block;
+    font-size: .9em;
+}
+/* ----------------- End DAY PICKER STYLING -----------------*/

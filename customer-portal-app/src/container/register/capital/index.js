@@ -6,6 +6,7 @@ import MasterForm from './MasterForm';
 import ProjectAPI from '../../../api/project/ProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
 import ContactAPI from '../../../api/contact/ContactAPI';
+import rebaseContact from '../../../helpers/RebaseContact';
 
 function RegisterCapital({ match }) {
     const [registerValues, setRegisterValues] = useState({
@@ -23,7 +24,7 @@ function RegisterCapital({ match }) {
                 .then(payload => {
                     setProject(payload.data.data);
                     setRegisterValues({ ...registerValues, projectId: payload.data.data.id });
-                    setLoading(false);
+                    // setLoading(false);
                 })
                 .catch(error => {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -35,7 +36,9 @@ function RegisterCapital({ match }) {
             setLoading(true);
             ContactAPI.fetchContact(11)
                 .then(payload => {
-                    setContact(payload.data.data);
+                    const contactData = rebaseContact(payload.data.data);
+
+                    setContact(contactData);
                     setLoading(false);
                 })
                 .catch(error => {
@@ -49,48 +52,11 @@ function RegisterCapital({ match }) {
         setRegisterValues({ ...registerValues, ...values });
     }
 
-    // TODO Fetch values from API
-    const initialValues = {
-        number: 'C2019-1',
-        contactName: 'Rob Rollenberg',
-        email: 'robennoortje@rollenberg.net',
-        titleId: '1',
-        firstName: 'Rob',
-        lastNamePrefixId: '',
-        lastName: 'Rollenberg',
-        emailAddress1: '',
-        emailAddress2: '',
-        telephoneNumber1: '',
-        telephoneNumber2: '',
-        street: '',
-        streetNumber: '',
-        streetAddition: '',
-        postalCode: '',
-        city: '',
-        countryId: '',
-        iban: '',
-        ibanName: '',
-        didAgreeAvg: true,
-        energySupplierId: '1',
-        esNumber: '123',
-        memberSince: '01-04-2019',
-        eanElectricity: '871685900000546779',
-        clientNr: '169572',
-        clientSince: '01-04-2019',
-    };
+    function handleSubmitContactValues(values) {
+        // TODO Do Api request to update contact values
 
-    // Todo fetch from API
-    const energySuppliers = [
-        { id: 1, name: 'OM' },
-        { id: 2, name: 'Budget Energie' },
-        { id: 3, name: 'E.on' },
-        { id: 4, name: 'Eneco' },
-        { id: 5, name: 'Energiedirect' },
-        { id: 6, name: 'Engie' },
-        { id: 7, name: 'Essent' },
-        { id: 8, name: 'Greenchoice' },
-        { id: 9, name: 'Holland Wind' },
-    ];
+        setContact({ ...contact, ...values });
+    }
 
     return (
         <Container className={'content-section'}>
@@ -103,12 +69,11 @@ function RegisterCapital({ match }) {
                             Schrijf je in voor project <strong>{project.name}</strong>
                         </h1>
                         <MasterForm
-                            initialValues={initialValues}
-                            energySuppliers={energySuppliers}
                             project={project}
                             initialRegisterValues={registerValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                             initialContact={contact}
+                            handleSubmitContactValues={handleSubmitContactValues}
                         />
                     </Col>
                 </Row>

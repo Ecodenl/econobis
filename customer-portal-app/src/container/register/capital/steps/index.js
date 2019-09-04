@@ -8,12 +8,11 @@ function Steps({
     currentStep,
     previous,
     next,
-    initialValues,
-    energySuppliers,
     project,
     initialRegisterValues,
     handleSubmitRegisterValues,
     initialContact,
+    handleSubmitContactValues,
 }) {
     switch (currentStep) {
         case 1:
@@ -30,9 +29,8 @@ function Steps({
                 <StepTwo
                     previous={previous}
                     next={next}
-                    initialValues={initialValues}
-                    energySuppliers={energySuppliers}
                     initialContact={initialContact}
+                    handleSubmitContactValues={handleSubmitContactValues}
                 />
             );
         case 3:

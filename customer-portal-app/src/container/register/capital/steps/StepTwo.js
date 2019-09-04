@@ -3,19 +3,21 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FaUndo } from 'react-icons/fa';
-import DefaultContactView from '../../../account-info/DefaultContactView';
+import DefaultContactView from '../../../contact/DefaultContactView';
 import Col from 'react-bootstrap/Col';
-import DefaultContactEdit from '../../../account-info/DefaultContactEdit';
+import DefaultContactEdit from '../../../contact/DefaultContactEdit';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { ClipLoader } from 'react-spinners';
 
 const validationSchema = Yup.object().shape({
+    // TODO set correct values of validation
     // email: Yup.string()
     //     .email()
     //     .required('Verplicht'),
 });
 
-function StepTwo({ previous, next, initialValues, energySuppliers, initialContact }) {
+function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) {
     const [editForm, setEditForm] = useState(false);
 
     return (
@@ -27,8 +29,8 @@ function StepTwo({ previous, next, initialValues, energySuppliers, initialContac
                     validationSchema={validationSchema}
                     onSubmit={(values, actions) => {
                         actions.setSubmitting(true);
-                        console.log(values);
-                        // next();
+                        handleSubmitContactValues(values);
+                        next();
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
                         return (
@@ -37,7 +39,6 @@ function StepTwo({ previous, next, initialValues, energySuppliers, initialContac
                                     initialContact={initialContact}
                                     setFieldValue={setFieldValue}
                                     values={values}
-                                    energySuppliers={energySuppliers}
                                 />
                                 <Row>
                                     <Col>
@@ -54,8 +55,17 @@ function StepTwo({ previous, next, initialValues, energySuppliers, initialContac
                                             >
                                                 <FaUndo />
                                             </Button>
-                                            <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                                Opslaan en doorgaan
+                                            <Button
+                                                className={'w-button'}
+                                                size="sm"
+                                                onClick={handleSubmit}
+                                                disabled={isSubmitting}
+                                            >
+                                                {isSubmitting ? (
+                                                    <ClipLoader color={'white'} size={17} />
+                                                ) : (
+                                                    'Opslaan en doorgaan'
+                                                )}
                                             </Button>
                                         </ButtonGroup>
                                     </Col>

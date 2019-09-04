@@ -10,10 +10,7 @@ export default {
                     fld: [
                         'number',
                         'fullName',
-                        // 'email',
-                        // 'titleId',
                         'firstName',
-                        // 'lastNamePrefixId',
                         'lastName',
                         'iban',
                         'ibanAttn',
@@ -34,14 +31,10 @@ export default {
                         },
                         emailAddresses: { fld: ['id', 'email', 'primary', 'typeId'] },
                         phoneNumbers: { fld: ['id', 'number', 'primary', 'typeId'] },
-                        addresses: {
+                        primaryAddress: {
                             fld: ['id', 'street', 'number', 'addition', 'postalCode', 'city', 'countryId'],
-                            flt: {
-                                f: 'primary',
-                                d: true,
-                            },
                         },
-                        contactEnergySuppliers: {
+                        primaryContactEnergySupplier: {
                             fld: [
                                 'id',
                                 'energySupplierId',

@@ -4,14 +4,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 function MasterForm({
-    initialValues,
-    energySuppliers,
     project,
     initialRegisterValues,
     handleSubmitRegisterValues,
     initialContact,
+    handleSubmitContactValues,
 }) {
-    const [currentStep, setStep] = React.useState(1);
+    const [currentStep, setStep] = React.useState(2);
 
     function previous() {
         setStep(currentStep <= 2 ? 1 : currentStep - 1);
@@ -37,12 +36,11 @@ function MasterForm({
                 currentStep={currentStep}
                 previous={previous}
                 next={next}
-                initialValues={initialValues}
-                energySuppliers={energySuppliers}
                 project={project}
                 initialRegisterValues={initialRegisterValues}
                 handleSubmitRegisterValues={handleSubmitRegisterValues}
                 initialContact={initialContact}
+                handleSubmitContactValues={handleSubmitContactValues}
             />
         </>
     );

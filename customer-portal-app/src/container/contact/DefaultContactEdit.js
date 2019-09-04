@@ -1,7 +1,6 @@
 import React from 'react';
 import InputText from '../../components/form/InputText';
-import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
+import { Field } from 'formik';
 import Select from '../../components/form/Select';
 import Countries from '../../data/Countries';
 import Col from 'react-bootstrap/Col';
@@ -9,17 +8,9 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import Row from 'react-bootstrap/Row';
 import TextBlock from '../../components/general/TextBlock';
 import moment from 'moment';
+import InputDate from '../../components/form/InputDate';
 
-const DefaultContactEdit = function({
-    handleSubmit,
-    initialContact,
-    energySuppliers,
-    handleEnergySupplierChange,
-    values,
-    setFieldValue,
-}) {
-    const energySupplierCurrent = values.contactEnergySuppliers ? values.contactEnergySuppliers[0] : {};
-
+const DefaultContactEdit = function({ handleSubmit, initialContact, values, setFieldValue }) {
     return (
         <Row>
             <Col xs={12} md={6}>
@@ -80,28 +71,39 @@ const DefaultContactEdit = function({
                         />
                     )}
                 />
+                <Field
+                    name="person.dateOfBirth"
+                    render={({ field }) => (
+                        <InputDate
+                            {...field}
+                            onChangeAction={setFieldValue}
+                            id="last_name"
+                            placeholder={'Geboortedatum'}
+                        />
+                    )}
+                />
 
-                <FormLabel htmlFor="e-mail-address-1" className={'field-label'}>
+                <FormLabel htmlFor="email-correspondence" className={'field-label'}>
                     E-mailadres correspondentie
                 </FormLabel>
                 <Field
-                    name="emailAddress1"
-                    render={({ field }) => <InputText field={field} id="e-mail-address-1" placeholder={'E-mail'} />}
+                    name="emailCorrespondence.email"
+                    render={({ field }) => <InputText field={field} id="email-correspondence" placeholder={'E-mail'} />}
                 />
 
-                <label htmlFor="e-mail-address-2" className="field-label">
+                <FormLabel htmlFor="email-invoice" className="field-label">
                     E-mail adres 2
-                </label>
+                </FormLabel>
                 <Field
-                    name="emailAddress2"
-                    render={({ field }) => <InputText field={field} id="e-mail-address-2" placeholder={'E-mail'} />}
+                    name="emailInvoice.email"
+                    render={({ field }) => <InputText field={field} id="email-invoice" placeholder={'E-mail'} />}
                 />
 
                 <FormLabel htmlFor="telephone-number-1" className={'field-label'}>
                     Telefoonnummer 1
                 </FormLabel>
                 <Field
-                    name="telephoneNumber1"
+                    name="phoneNumberPrimary.number"
                     render={({ field }) => <InputText field={field} id="telephone-number-1" placeholder={'Nummer'} />}
                 />
 
@@ -109,19 +111,19 @@ const DefaultContactEdit = function({
                     Telefoonnummer 2
                 </FormLabel>
                 <Field
-                    name="telephoneNumber2"
+                    name="phoneNumberTwo.number"
                     render={({ field }) => <InputText field={field} id="telephone-number-2" placeholder={'Nummer'} />}
                 />
 
-                <label htmlFor="street" className="field-label">
+                <FormLabel htmlFor="street" className="field-label">
                     Adres
-                </label>
+                </FormLabel>
                 <Field
-                    name="addresses[0].street"
+                    name="primaryAddress.street"
                     render={({ field }) => <InputText field={field} id="street" placeholder={'Straat'} />}
                 />
                 <Field
-                    name="addresses[0].number"
+                    name="primaryAddress.number"
                     render={({ field }) => (
                         <InputText
                             field={field}
@@ -132,18 +134,18 @@ const DefaultContactEdit = function({
                     )}
                 />
                 <Field
-                    name="addresses[0].addition"
+                    name="primaryAddress.addition"
                     render={({ field }) => (
                         <InputText
                             field={field}
-                            id="street_addition"
+                            id="addition"
                             placeholder={'Toevoeging'}
                             className={'text-input content _w-70 w-input'}
                         />
                     )}
                 />
                 <Field
-                    name="addresses[0].postalCode"
+                    name="primaryAddress.postalCode"
                     render={({ field }) => (
                         <InputText
                             field={field}
@@ -154,7 +156,7 @@ const DefaultContactEdit = function({
                     )}
                 />
                 <Field
-                    name="addresses[0].city"
+                    name="primaryAddress.city"
                     render={({ field }) => (
                         <InputText
                             field={field}
@@ -165,7 +167,7 @@ const DefaultContactEdit = function({
                     )}
                 />
                 <Field
-                    name="addresses[0].countryId"
+                    name="primaryAddress.countryId"
                     render={({ field }) => (
                         <Select field={field} id="country_id" placeholder={'Selecteer uw land'} options={Countries} />
                     )}
@@ -173,9 +175,9 @@ const DefaultContactEdit = function({
             </Col>
 
             <Col xs={12} md={6}>
-                <label htmlFor="email-2" className="field-label">
+                <FormLabel htmlFor="iban" className="field-label">
                     Rekeningnummer
-                </label>
+                </FormLabel>
                 <Field
                     name="iban"
                     render={({ field }) => <InputText field={field} id="iban" placeholder={'Rekeningnummer (IBAN)'} />}
@@ -185,9 +187,9 @@ const DefaultContactEdit = function({
                     render={({ field }) => <InputText field={field} id="iban_name" placeholder={'IBAN te name van'} />}
                 />
 
-                <label htmlFor="did_agree_avg" className="field-label">
+                <FormLabel htmlFor="did_agree_avg" className={'field-label'}>
                     Akkoord privacy beleid
-                </label>
+                </FormLabel>
                 <Field
                     name="didAgreeAvg"
                     render={({ field }) => (
@@ -198,6 +200,7 @@ const DefaultContactEdit = function({
                                 id="did_agree_avg"
                                 checked={field.value}
                                 className="w-checkbox-input checkbox"
+                                disabled={field.value}
                             />
                             <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
                                 Akkoord
@@ -212,11 +215,11 @@ const DefaultContactEdit = function({
                 </Row>
 
                 <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
-                {energySupplierCurrent ? (
+                {values.primaryContactEnergySupplier ? (
                     <Row>
                         <div className="current_es_wrapper col-12">
                             <h3 id="current_es_id" className="h3">
-                                {energySupplierCurrent.energySupplier.name}
+                                {values.primaryContactEnergySupplier.energySupplier.name}
                             </h3>
                             <Row>
                                 <Col>
@@ -229,8 +232,8 @@ const DefaultContactEdit = function({
                                     <FormLabel>Klant sinds</FormLabel>
                                 </Col>
                                 <Col>
-                                    {energySupplierCurrent.memberSince
-                                        ? moment(energySupplierCurrent.memberSince).format('L')
+                                    {values.primaryContactEnergySupplier.memberSince
+                                        ? moment(values.primaryContactEnergySupplier.memberSince).format('L')
                                         : ''}
                                 </Col>
                             </Row>
@@ -238,13 +241,13 @@ const DefaultContactEdit = function({
                                 <Col>
                                     <FormLabel>EAN nummer electriciteit</FormLabel>
                                 </Col>
-                                <Col>{energySupplierCurrent.eanElectricity}</Col>
+                                <Col>{values.primaryContactEnergySupplier.eanElectricity}</Col>
                             </Row>
                             <Row>
                                 <Col>
                                     <FormLabel>Klant nummer</FormLabel>
                                 </Col>
-                                <Col>{energySupplierCurrent.esNumber}</Col>
+                                <Col>{values.primaryContactEnergySupplier.esNumber}</Col>
                             </Row>
                         </div>
                     </Row>

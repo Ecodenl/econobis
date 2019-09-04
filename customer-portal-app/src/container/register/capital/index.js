@@ -24,7 +24,7 @@ function RegisterCapital({ match }) {
                 .then(payload => {
                     setProject(payload.data.data);
                     setRegisterValues({ ...registerValues, projectId: payload.data.data.id });
-                    // setLoading(false);
+                    setLoading(false);
                 })
                 .catch(error => {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');

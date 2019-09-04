@@ -10,7 +10,7 @@ function MasterForm({
     initialContact,
     handleSubmitContactValues,
 }) {
-    const [currentStep, setStep] = React.useState(2);
+    const [currentStep, setStep] = React.useState(1);
 
     function previous() {
         setStep(currentStep <= 2 ? 1 : currentStep - 1);

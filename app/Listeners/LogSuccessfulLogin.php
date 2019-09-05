@@ -31,9 +31,16 @@ class LogSuccessfulLogin
     {
         $user = User::find($event->userId);
 
-        $user->visit_count = $user->visit_count + 1;
-        $user->last_visit = new Carbon();
+        /**
+         * Check of er een user is aangezien deze functie ook wordt
+         * aangeroepen bij het inloggen van een PortalUser, dan
+         * hoeft er geen visit count worden bijgehouden.
+         */
+        if($user){
+            $user->visit_count = $user->visit_count + 1;
+            $user->last_visit = new Carbon();
 
-        $user->save();
+            $user->save();
+        }
     }
 }

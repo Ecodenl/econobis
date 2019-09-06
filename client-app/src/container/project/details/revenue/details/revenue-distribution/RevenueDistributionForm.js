@@ -233,13 +233,13 @@ class RevenueDistributionForm extends Component {
         }
 
         if (this.state.distributionIds.length > 0 && !error) {
-                this.props.previewReport({
-                    templateId: this.state.templateId,
-                    emailTemplateId: this.state.emailTemplateId,
-                    subject: this.state.subject,
-                    distributionIds: this.state.distributionIds,
-                });
-                hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
+            this.props.previewReport({
+                templateId: this.state.templateId,
+                emailTemplateId: this.state.emailTemplateId,
+                subject: this.state.subject,
+                distributionIds: this.state.distributionIds,
+            });
+            hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,

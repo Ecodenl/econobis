@@ -32,11 +32,9 @@ class Participationslist extends Component {
                                             {moment(item.createdAt.date).format('L')}
                                         </td>
                                         <td className="col-xs-6 clickable">
-                                            {item.projectTypeCodeRef === 'loan' ?
-                                                `${MoneyPresenter(item.amountDefinitive)} in ${item.projectName} `
-                                                :
-                                                `${item.participationsDefinitive} in ${item.projectName} `
-                                            }
+                                            {item.projectTypeCodeRef === 'loan'
+                                                ? `${MoneyPresenter(item.amountDefinitive)} in ${item.projectName} `
+                                                : `${item.participationsDefinitive} in ${item.projectName} `}
                                         </td>
                                     </tr>
                                 );

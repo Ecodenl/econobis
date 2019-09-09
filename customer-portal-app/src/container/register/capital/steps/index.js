@@ -34,7 +34,14 @@ function Steps({
                 />
             );
         case 3:
-            return <StepThree previous={previous} next={next} initialRegisterValues={initialRegisterValues} />;
+            return (
+                <StepThree
+                    previous={previous}
+                    next={next}
+                    initialRegisterValues={initialRegisterValues}
+                    handleSubmitRegisterValues={handleSubmitRegisterValues}
+                />
+            );
         case 4:
             return <StepFour previous={previous} />;
         default:

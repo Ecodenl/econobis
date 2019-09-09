@@ -80,13 +80,13 @@
 
 /* ----------------- BUTTON STYLING -----------------*/
 .w-button {
-  background-color: var(--button-primary-color);
-  color: white;
+    background-color: var(--button-primary-color);
+    color: white;
 }
 
 .save-btn {
     background-color: #00d371;
-    border: #00ac5c ;
+    border: #00ac5c;
 }
 
 .save-btn:hover, .save-btn:active {
@@ -94,6 +94,32 @@
     border: #00ac5c !important;
     color: white;
 }
+
+/* ----------------- Start HEADING MENU STYLING -----------------*/
+.heading.in-menu {
+    margin-top: 100px;
+    padding-left: 20px;
+    font-family: 'Droid Sans', sans-serif;
+    color: hsla(0, 0%, 100%, 0.5);
+    text-align: left;
+    text-shadow: none;
+}
+
+.nav-link {
+    color: #fff;
+    font-size: 1.15em;
+}
+
+.nav-link:hover {
+    color: #fff;
+    text-shadow: none;
+}
+
+.nav-link.w--current {
+    border-left: 1px solid #fff;
+    color: #fff;
+}
+
 
 /* ----------------- Start HAMBURGER MENU STYLING -----------------*/
 /* Position and sizing of burger button */
@@ -131,7 +157,7 @@
 
 /* Color/shape of burger icon bars on hover*/
 .bm-burger-bars-hover {
-    background: rgba(255,255,255, 0.9);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 /* Position and sizing of clickable cross button */
@@ -177,23 +203,12 @@ Note: Beware of modifying this element as it can break the animations - you shou
     display: inline-block;
 }
 
-
 .bm-overlay {
     left: 0;
     background: transparent !important;
     z-index: 9999;
 }
 
-.nav-link {
-    color: #fff;
-    font-size: 1.15em;
-    text-shadow: none;
-}
-
-.nav-link.w--current {
-    border-left: 1px solid #fff;
-    color: #fff;
-}
 /* ----------------- End HAMBURGER MENU STYLING -----------------*/
 
 /* ----------------- Start ARROW STEPS STYLING -----------------*/
@@ -305,26 +320,6 @@ Note: Beware of modifying this element as it can break the animations - you shou
 }
 
 @media screen and (max-width: 576px) {
-    /*.arrow-steps .step {*/
-    /*    font-size: 11px;*/
-    /*    padding: 4px 2px;*/
-    /*    margin: 0;*/
-    /*    min-width: 60px;*/
-    /*}*/
-
-    /*.arrow-steps .step:after,*/
-    /*.arrow-steps .step:before {*/
-    /*    border: 0;*/
-    /*}*/
-
-    /*.arrow-steps .step.current::after {*/
-    /*    border: 0;*/
-    /*}*/
-
-    /*.arrow-steps .step:last-child {*/
-    /*    border-top-right-radius: 4px;*/
-    /*    border-bottom-right-radius: 4px;*/
-    /*}*/
     .arrow-steps .step {
         font-size: 10px;
         padding: 8px 8px 8px 18px;
@@ -336,6 +331,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
         border-bottom: 17px solid transparent;
     }
 }
+
 /* ----------------- End ARROW STEPS STYLING -----------------*/
 
 /* ----------------- End DAY PICKER STYLING -----------------*/
@@ -349,7 +345,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.DataTableDateFilter>.DayPickerInput>.DayPickerInput-OverlayWrapper {
+.DataTableDateFilter > .DayPickerInput > .DayPickerInput-OverlayWrapper {
     position: absolute;
 }
 
@@ -361,7 +357,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
     display: inline;
 }
 
-.DayPicker-Caption > div  {
+.DayPicker-Caption > div {
     font-size: 1.2em;
 }
 
@@ -369,4 +365,50 @@ Note: Beware of modifying this element as it can break the animations - you shou
     display: inline-block;
     font-size: .9em;
 }
+
 /* ----------------- End DAY PICKER STYLING -----------------*/
+
+/* ----------------- PROFILE PIC STYLING -----------------*/
+.profile-pic {
+    position: absolute;
+    left: 50%;
+    bottom: -60px;
+    width: 120px;
+    height: 120px;
+    border: 4px solid #fff;
+    background-color: rgba(3, 75, 140, 1);
+    /*background-image: url('../images/user.png');*/
+    background-position: 50% 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
+    -webkit-transform: translate(-50%, 0px);
+    -ms-transform: translate(-50%, 0px);
+    transform: translate(-50%, 0px);
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    text-align: center;
+    display: flex;
+    text-wrap: normal;
+}
+
+
+.profile-pic .profile-title {
+    color: white;
+    font-weight: bold;
+    width: 110px;
+    white-space: wrap;
+}
+
+.profile-pic .profile-sub-title {
+    font-size: 11px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+/* ----------------- LOGO STYLING -----------------*/
+header .header-logo {
+    max-width: 100px;
+    padding: 10px 0;
+}

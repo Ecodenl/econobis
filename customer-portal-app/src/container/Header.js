@@ -4,7 +4,9 @@ import { AuthConsumer } from '../context/AuthContext';
 import { Link, withRouter } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import { UserConsumer } from '../context/UserContext';
 import Col from 'react-bootstrap/Col';
+import Image from 'react-bootstrap/Image';
 
 function Header({ location }) {
     const [menuOpen, updateStateMenu] = useState(false);
@@ -59,19 +61,36 @@ function Header({ location }) {
     useOutsideAlerter(wrapperRef);
 
     return (
-        <>
-            <header>
-                <div className="header-deltaw">
-                    <div className="profile-pic corporate" />
-                    {/* Hambuger menu */}
-                    <Container>
-                        <Row className="justify-content-end">
-                            <div className="bm-burger-button" onClick={openMenu}>
-                                <span>
-                                    <span className="bm-burger-bars bm-burger-bar-1" />
-                                    <span className="bm-burger-bars bm-burger-bar-2" />
-                                    <span className="bm-burger-bars bm-burger-bar-3" />
-                                </span>
+        <header>
+            <div className="header-deltaw">
+                <div className="profile-pic">
+                    <UserConsumer>
+                        {({ user }) => (
+                            <span className="profile-title">
+                                <span className="profile-sub-title">In beheer:</span>
+                                <br />
+                                {user.fullName}
+                            </span>
+                        )}
+                    </UserConsumer>
+                </div>
+                {/* Hambuger menu */}
+                <Container>
+                    <Row>
+                        <Col xs={6}>
+                            <div className="header-logo">
+                                <Image src="images/logo.png" />
+                            </div>
+                        </Col>
+                        <Col xs={6}>
+                            <div className="d-flex justify-content-end">
+                                <div className="bm-burger-button" onClick={openMenu}>
+                                    <span>
+                                        <span className="bm-burger-bars bm-burger-bar-1" />
+                                        <span className="bm-burger-bars bm-burger-bar-2" />
+                                        <span className="bm-burger-bars bm-burger-bar-3" />
+                                    </span>
+                                </div>
                             </div>
                             <Menu
                                 right
@@ -140,81 +159,11 @@ function Header({ location }) {
                                     </AuthConsumer>
                                 </div>
                             </Menu>
-                        </Row>
-                    </Container>
-                </div>
-            </header>
-
-            {/*<AuthConsumer>*/}
-            {/*    {({ logout }) => {*/}
-            {/*        return (*/}
-            {/*            <React.Fragment>*/}
-            {/*                {showNav ? (*/}
-            {/*                    <div*/}
-            {/*                        className="w-nav-overlay"*/}
-            {/*                        data-wf-ignore=""*/}
-            {/*                        style={{ height: '100vh', display: 'block', maxWidth: '588px', top: 0 }}*/}
-            {/*                        ref={wrapperRef}*/}
-            {/*                    >*/}
-            {/*                        <nav*/}
-            {/*                            role="navigation"*/}
-            {/*                            className="nav-menu w-nav-menu w--nav-menu-open"*/}
-            {/*                            style={{*/}
-            {/*                                height: '100vh',*/}
-            {/*                            }}*/}
-            {/*                        >*/}
-            {/*                            <h6 className="heading in-menu">MENU</h6>*/}
-            {/*                            <Link*/}
-            {/*                                to={'/gegevens'}*/}
-            {/*                                className={`nav-link w-nav-link w--nav-link-open ${*/}
-            {/*                                    location.pathname === '/gegevens' ? 'w--current' : ''*/}
-            {/*                                }`}*/}
-            {/*                                onClick={() => toggleShowNav(!showNav)}*/}
-            {/*                            >*/}
-            {/*                                Gegevens*/}
-            {/*                            </Link>*/}
-            {/*                            <Link*/}
-            {/*                                to={'/gegevens-zakelijk'}*/}
-            {/*                                className={`nav-link w-nav-link w--nav-link-open ${*/}
-            {/*                                    location.pathname === '/gegevens-zakelijk' ? 'w--current' : ''*/}
-            {/*                                }`}*/}
-            {/*                                onClick={() => toggleShowNav(!showNav)}*/}
-            {/*                            >*/}
-            {/*                                Gegevens zakelijk*/}
-            {/*                            </Link>*/}
-            {/*                            <Link*/}
-            {/*                                to={'/mijn-interessegebieden'}*/}
-            {/*                                className={`nav-link w-nav-link w--nav-link-open ${*/}
-            {/*                                    location.pathname === '/mijn-interessegebieden' ? 'w--current' : ''*/}
-            {/*                                }`}*/}
-            {/*                                onClick={() => toggleShowNav(!showNav)}*/}
-            {/*                            >*/}
-            {/*                                Mijn interessegebieden*/}
-            {/*                            </Link>*/}
-
-            {/*                            <Link*/}
-            {/*                                to={'/inschrijven/kapitaal/project-x'}*/}
-            {/*                                className={`nav-link w-nav-link w--nav-link-open ${*/}
-            {/*                                    location.pathname === '/inschrijven/kapitaal/project-x'*/}
-            {/*                                        ? 'w--current'*/}
-            {/*                                        : ''*/}
-            {/*                                }`}*/}
-            {/*                                onClick={() => toggleShowNav(!showNav)}*/}
-            {/*                            >*/}
-            {/*                                Mijn inschrijving*/}
-            {/*                            </Link>*/}
-
-            {/*                            <a href="#" onClick={logout} className="nav-link w-nav-link w--nav-link-open ">*/}
-            {/*                                Log uit*/}
-            {/*                            </a>*/}
-            {/*                        </nav>*/}
-            {/*                    </div>*/}
-            {/*                ) : null}*/}
-            {/*            </React.Fragment>*/}
-            {/*        );*/}
-            {/*    }}*/}
-            {/*</AuthConsumer>*/}
-        </>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+        </header>
     );
 }
 

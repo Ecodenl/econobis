@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AccountInfoForm from './Form';
 import CustomerAPI from '../../api/customer/CustomerAPI';
+import { UserConsumer, UserProvider } from '../../context/UserContext';
 
 // Todo fetch from API
 const energySuppliers = [
@@ -15,25 +16,24 @@ const energySuppliers = [
     { id: 9, name: 'Holland Wind' },
 ];
 
-const AccountInfo = function() {
+const AccountInfo = function(props) {
     const [customerData, setCustomerData] = useState({});
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        function callFetchCustomerDetails() {
+        (function callFetchCustomerDetails() {
             setLoading(true);
             CustomerAPI.fetchCustomerDetails()
                 .then(payload => {
                     setCustomerData(payload.data.data);
+                    props.updateUser(payload.data.data);
                     setLoading(false);
                 })
                 .catch(error => {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                     setLoading(false);
                 });
-        }
-
-        callFetchCustomerDetails();
+        })();
     }, []);
 
     // TODO Fetch values from API
@@ -77,7 +77,6 @@ const AccountInfo = function() {
             setFieldValue('clientSince', '');
         }
     }
-
     return (
         <div className="content-section">
             <div className="content-container w-container">
@@ -92,5 +91,6 @@ const AccountInfo = function() {
         </div>
     );
 };
-
-export default AccountInfo;
+export default function AccountInfoWithContext(props) {
+    return <UserConsumer>{({ updateUser }) => <AccountInfo {...props} updateUser={updateUser} />}</UserConsumer>;
+}

@@ -12,7 +12,7 @@ export default function(contactData) {
     contactData.phoneNumberPrimary = phoneNumberPrimary ? phoneNumberPrimary : {};
 
     // Set first phone number which is not primary
-    const phoneNumberTwo = contactData.phoneNumbers.filter(phoneNumber => phoneNumber.primary)[0];
+    const phoneNumberTwo = contactData.phoneNumbers.filter(phoneNumber => !phoneNumber.primary)[0];
     contactData.phoneNumberTwo = phoneNumberTwo ? phoneNumberTwo : {};
 
     return contactData;

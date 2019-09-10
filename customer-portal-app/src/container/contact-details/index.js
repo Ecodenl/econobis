@@ -8,13 +8,13 @@ import LoadingView from '../../components/general/LoadingView';
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
     const [isLoading, setLoading] = useState(true);
-    const prevInControl = usePrevious(props.currentSelectedContact);
+    const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
 
     useEffect(() => {
-        // If there is an id and is not the same as previous id
-        // then call api
+        // Call Api if current selected contact id is filled
         if (props.currentSelectedContact.id) {
-            if (prevInControl.id != props.currentSelectedContact.id) {
+            // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
+            if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
                 (function callFetchContact() {
                     setLoading(true);
                     ContactAPI.fetchContact(props.currentSelectedContact.id)
@@ -62,8 +62,8 @@ const ContactDetails = function(props) {
 export default function ContactDetailsWithContext(props) {
     return (
         <PortalUserConsumer>
-            {({ updateUser, currentSelectedContact }) => (
-                <ContactDetails {...props} updateUser={updateUser} currentSelectedContact={currentSelectedContact} />
+            {({ currentSelectedContact }) => (
+                <ContactDetails {...props} currentSelectedContact={currentSelectedContact} />
             )}
         </PortalUserConsumer>
     );

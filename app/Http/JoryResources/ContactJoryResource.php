@@ -19,6 +19,7 @@ class ContactJoryResource extends JoryResource
         // Fields
         $this->field('id')->filterable()->sortable();
         $this->field('number')->filterable()->sortable();
+        $this->field('type_id')->filterable()->sortable();
         $this->field('full_name')->filterable()->sortable();
         $this->field('iban')->filterable()->sortable();
         $this->field('iban_attn')->filterable()->sortable();

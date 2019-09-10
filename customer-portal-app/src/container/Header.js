@@ -4,12 +4,11 @@ import { AuthConsumer } from '../context/AuthContext';
 import { Link, withRouter } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import { UserConsumer } from '../context/UserContext';
+import { PortalUserConsumer } from '../context/PortalUserContext';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import { FaUser } from 'react-icons/fa';
 import Dropdown from 'react-bootstrap/Dropdown';
-import Redirect from 'react-router-dom/es/Redirect';
 
 function Header({ location, history }) {
     const [menuOpen, updateStateMenu] = useState(false);
@@ -71,9 +70,11 @@ function Header({ location, history }) {
         <header>
             <div className="header-deltaw">
                 <div className="profile-pic">
-                    <UserConsumer>
-                        {({ inControlContact }) => <span className="profile-title">{inControlContact.fullName}</span>}
-                    </UserConsumer>
+                    <PortalUserConsumer>
+                        {({ currentSelectedContact }) => (
+                            <span className="profile-title">{currentSelectedContact.fullName}</span>
+                        )}
+                    </PortalUserConsumer>
                 </div>
 
                 <Container>
@@ -97,8 +98,8 @@ function Header({ location, history }) {
                                 <AuthConsumer>
                                     {({ logout }) => {
                                         return (
-                                            <UserConsumer>
-                                                {({ user, inControlContact, updateInControlContact }) => {
+                                            <PortalUserConsumer>
+                                                {({ user, currentSelectedContact, setCurrentContact }) => {
                                                     return (
                                                         <Dropdown alignRight>
                                                             <Dropdown.Toggle>
@@ -110,11 +111,13 @@ function Header({ location, history }) {
                                                                 <Dropdown.Header>Beheren van</Dropdown.Header>
                                                                 <Dropdown.Item
                                                                     onClick={() => {
-                                                                        updateInControlContact(user);
+                                                                        setCurrentContact(user);
                                                                         redirect('gegevens');
                                                                     }}
                                                                     active={
-                                                                        inControlContact.id === user.id ? true : false
+                                                                        currentSelectedContact.id === user.id
+                                                                            ? true
+                                                                            : false
                                                                     }
                                                                 >
                                                                     {user.fullName}
@@ -123,13 +126,11 @@ function Header({ location, history }) {
                                                                     ? user.primaryOccupations.map(occupation => (
                                                                           <Dropdown.Item
                                                                               onClick={() => {
-                                                                                  updateInControlContact(
-                                                                                      occupation.contact
-                                                                                  );
+                                                                                  setCurrentContact(occupation.contact);
                                                                                   redirect('gegevens');
                                                                               }}
                                                                               active={
-                                                                                  inControlContact.id ===
+                                                                                  currentSelectedContact.id ===
                                                                                   occupation.contact.id
                                                                                       ? true
                                                                                       : false
@@ -145,7 +146,7 @@ function Header({ location, history }) {
                                                         </Dropdown>
                                                     );
                                                 }}
-                                            </UserConsumer>
+                                            </PortalUserConsumer>
                                         );
                                     }}
                                 </AuthConsumer>

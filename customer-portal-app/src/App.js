@@ -3,10 +3,9 @@ import { HashRouter as Router, Switch } from 'react-router-dom';
 import ProtectedRoute from './route/ProtectedRoute';
 import PublicRoute from './route/PublicRoute';
 import { AuthProvider } from './context/AuthContext';
-import { UserProvider } from './context/UserContext';
+import { PortalUserProvider } from './context/PortalUserContext';
 import Login from './container/login';
-import AccountInfo from './container/account-info';
-import AccountInfoCorp from './container/account-info-corp';
+import ContactDetails from './container/contact-details';
 import MyAreasOfInterest from './container/my-areas-of-interest';
 import RegisterCapital from './container/register/capital';
 import ProjectList from './container/project/list';
@@ -16,18 +15,17 @@ function App() {
     return (
         <Router>
             <AuthProvider>
-                <UserProvider>
+                <PortalUserProvider>
                     <Switch>
-                        <ProtectedRoute exact path="/" component={AccountInfo} />
-                        <ProtectedRoute path="/gegevens" component={AccountInfo} />
-                        <ProtectedRoute path="/gegevens-zakelijk" component={AccountInfoCorp} />
+                        <ProtectedRoute exact path="/" component={ContactDetails} />
+                        <ProtectedRoute path="/gegevens" component={ContactDetails} />
                         <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
                         <ProtectedRoute path="/inschrijven/:id" component={RegisterCapital} />
                         <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                         <ProtectedRoute path="/project/:id" component={ProjectDetails} />
                         <PublicRoute path="/login" component={Login} />
                     </Switch>
-                </UserProvider>
+                </PortalUserProvider>
             </AuthProvider>
         </Router>
     );

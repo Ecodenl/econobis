@@ -7,8 +7,9 @@ import ProjectAPI from '../../../api/project/ProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import rebaseContact from '../../../helpers/RebaseContact';
+import { PortalUserConsumer } from '../../../context/PortalUserContext';
 
-function RegisterCapital({ match }) {
+function RegisterCapital({ match, currentSelectedContact }) {
     const [registerValues, setRegisterValues] = useState({
         projectId: null,
         participationsInteressed: 0,
@@ -32,21 +33,25 @@ function RegisterCapital({ match }) {
                 });
         })();
 
-        (function callFetchContact() {
-            setLoading(true);
-            ContactAPI.fetchContact(11)
-                .then(payload => {
-                    const contactData = rebaseContact(payload.data.data);
+        // If there is an id and is not the same as previous id
+        // then call api
+        if (currentSelectedContact.id) {
+            (function callFetchContact() {
+                setLoading(true);
+                ContactAPI.fetchContact(currentSelectedContact.id)
+                    .then(payload => {
+                        const contactData = rebaseContact(payload.data.data);
 
-                    setContact(contactData);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setLoading(false);
-                });
-        })();
-    }, [match]);
+                        setContact(contactData);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            })();
+        }
+    }, [match, currentSelectedContact]);
 
     function handleSubmitRegisterValues(values) {
         setRegisterValues({ ...registerValues, ...values });
@@ -82,4 +87,12 @@ function RegisterCapital({ match }) {
     );
 }
 
-export default RegisterCapital;
+export default function RegisterCapitalWithContext(props) {
+    return (
+        <PortalUserConsumer>
+            {({ currentSelectedContact }) => (
+                <RegisterCapital {...props} currentSelectedContact={currentSelectedContact} />
+            )}
+        </PortalUserConsumer>
+    );
+}

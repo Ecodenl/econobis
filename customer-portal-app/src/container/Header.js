@@ -7,8 +7,11 @@ import Row from 'react-bootstrap/Row';
 import { UserConsumer } from '../context/UserContext';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
+import { FaUser } from 'react-icons/fa';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Redirect from 'react-router-dom/es/Redirect';
 
-function Header({ location }) {
+function Header({ location, history }) {
     const [menuOpen, updateStateMenu] = useState(false);
 
     // This keeps your state in sync with the opening/closing of the menu
@@ -60,21 +63,19 @@ function Header({ location }) {
     const wrapperRef = useRef(null);
     useOutsideAlerter(wrapperRef);
 
+    function redirect(to) {
+        history.push(`/${to}`);
+    }
+
     return (
         <header>
             <div className="header-deltaw">
                 <div className="profile-pic">
                     <UserConsumer>
-                        {({ user }) => (
-                            <span className="profile-title">
-                                <span className="profile-sub-title">In beheer:</span>
-                                <br />
-                                {user.fullName}
-                            </span>
-                        )}
+                        {({ inControlContact }) => <span className="profile-title">{inControlContact.fullName}</span>}
                     </UserConsumer>
                 </div>
-                {/* Hambuger menu */}
+
                 <Container>
                     <Row>
                         <Col xs={6}>
@@ -84,6 +85,7 @@ function Header({ location }) {
                         </Col>
                         <Col xs={6}>
                             <div className="d-flex justify-content-end">
+                                {/* Hambuger menu */}
                                 <div className="bm-burger-button" onClick={openMenu}>
                                     <span>
                                         <span className="bm-burger-bars bm-burger-bar-1" />
@@ -91,78 +93,119 @@ function Header({ location }) {
                                         <span className="bm-burger-bars bm-burger-bar-3" />
                                     </span>
                                 </div>
+                                {/* User switch menu */}
+                                <AuthConsumer>
+                                    {({ logout }) => {
+                                        return (
+                                            <UserConsumer>
+                                                {({ user, inControlContact, updateInControlContact }) => {
+                                                    return (
+                                                        <Dropdown alignRight>
+                                                            <Dropdown.Toggle>
+                                                                <FaUser />
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu>
+                                                                <Dropdown.Header>Ingelogd als</Dropdown.Header>
+                                                                <Dropdown.Item disabled>{user.fullName}</Dropdown.Item>
+                                                                <Dropdown.Header>Beheren van</Dropdown.Header>
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        updateInControlContact(user);
+                                                                        redirect('gegevens');
+                                                                    }}
+                                                                    active={
+                                                                        inControlContact.id === user.id ? true : false
+                                                                    }
+                                                                >
+                                                                    {user.fullName}
+                                                                </Dropdown.Item>
+                                                                {user.primaryOccupations
+                                                                    ? user.primaryOccupations.map(occupation => (
+                                                                          <Dropdown.Item
+                                                                              onClick={() => {
+                                                                                  updateInControlContact(
+                                                                                      occupation.contact
+                                                                                  );
+                                                                                  redirect('gegevens');
+                                                                              }}
+                                                                              active={
+                                                                                  inControlContact.id ===
+                                                                                  occupation.contact.id
+                                                                                      ? true
+                                                                                      : false
+                                                                              }
+                                                                          >
+                                                                              {occupation.contact.fullName}
+                                                                          </Dropdown.Item>
+                                                                      ))
+                                                                    : null}
+                                                                <Dropdown.Divider />
+                                                                <Dropdown.Item onClick={logout}>Log uit</Dropdown.Item>
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                    );
+                                                }}
+                                            </UserConsumer>
+                                        );
+                                    }}
+                                </AuthConsumer>
                             </div>
-                            <Menu
-                                right
-                                width={'300px'}
-                                // noOverlay
-                                isOpen={menuOpen}
-                                onStateChange={state => handleStateChange(state)}
-                                customBurgerIcon={false}
-                            >
-                                <div className={'sidebar-menu'}>
-                                    <AuthConsumer>
-                                        {({ logout }) => {
-                                            return (
-                                                <React.Fragment>
-                                                    <h6 className="heading in-menu">MENU</h6>
-                                                    <Link
-                                                        to={'/gegevens'}
-                                                        className={`nav-link w-nav-link w--nav-link-open ${
-                                                            location.pathname === '/gegevens' ? 'w--current' : ''
-                                                        }`}
-                                                        onClick={closeMenu}
-                                                    >
-                                                        Gegevens
-                                                    </Link>
-                                                    <Link
-                                                        to={null}
-                                                        className={`nav-link w-nav-link w--nav-link-open ${
-                                                            location.pathname === '/' ? 'w--current' : ''
-                                                        }`}
-                                                        onClick={closeMenu}
-                                                    >
-                                                        Deelnames
-                                                    </Link>
-                                                    <Link
-                                                        to={'/inschrijven-projecten'}
-                                                        className={`nav-link w-nav-link w--nav-link-open ${
-                                                            location.pathname === '/inschrijven-projecten'
-                                                                ? 'w--current'
-                                                                : ''
-                                                        }`}
-                                                        onClick={closeMenu}
-                                                    >
-                                                        Inschrijven projecten
-                                                    </Link>
-
-                                                    <Link
-                                                        to={'/inschrijven/kapitaal/project-x'}
-                                                        className={`nav-link w-nav-link w--nav-link-open ${
-                                                            location.pathname === '/' ? 'w--current' : ''
-                                                        }`}
-                                                        onClick={closeMenu}
-                                                    >
-                                                        Inschrijvingen
-                                                    </Link>
-
-                                                    <a
-                                                        href="#"
-                                                        onClick={logout}
-                                                        className="nav-link w-nav-link w--nav-link-open"
-                                                    >
-                                                        Log uit
-                                                    </a>
-                                                </React.Fragment>
-                                            );
-                                        }}
-                                    </AuthConsumer>
-                                </div>
-                            </Menu>
                         </Col>
                     </Row>
                 </Container>
             </div>
+            {/* Sidebar menu */}
+            <Menu
+                right
+                width={'300px'}
+                // noOverlay
+                isOpen={menuOpen}
+                onStateChange={state => handleStateChange(state)}
+                customBurgerIcon={false}
+            >
+                <div className={'sidebar-menu'}>
+                    <React.Fragment>
+                        <h6 className="heading in-menu">MENU</h6>
+                        <Link
+                            to={'/gegevens'}
+                            className={`nav-link w-nav-link w--nav-link-open ${
+                                location.pathname === '/gegevens' ? 'w--current' : ''
+                            }`}
+                            onClick={closeMenu}
+                        >
+                            Gegevens
+                        </Link>
+                        <Link
+                            to={null}
+                            className={`nav-link w-nav-link w--nav-link-open ${
+                                location.pathname === '/' ? 'w--current' : ''
+                            }`}
+                            onClick={closeMenu}
+                        >
+                            Deelnames
+                        </Link>
+                        <Link
+                            to={'/inschrijven-projecten'}
+                            className={`nav-link w-nav-link w--nav-link-open ${
+                                location.pathname === '/inschrijven-projecten' ? 'w--current' : ''
+                            }`}
+                            onClick={closeMenu}
+                        >
+                            Inschrijven projecten
+                        </Link>
+
+                        <Link
+                            to={'/inschrijven/kapitaal/project-x'}
+                            className={`nav-link w-nav-link w--nav-link-open ${
+                                location.pathname === '/' ? 'w--current' : ''
+                            }`}
+                            onClick={closeMenu}
+                        >
+                            Inschrijvingen
+                        </Link>
+                    </React.Fragment>
+                </div>
+            </Menu>
         </header>
     );
 }

@@ -1,7 +1,9 @@
 :root {
     --main-primary-color: #034b8c;
+    --main-secondary-color: #3898EC;
     --main-warning-color: #dc3545;
     --button-primary-color: #3898EC;
+    --black-color: #252525;
 }
 
 /* ----------------- LOGIN STYLING -----------------*/
@@ -124,7 +126,7 @@
 /* ----------------- Start HAMBURGER MENU STYLING -----------------*/
 /* Position and sizing of burger button */
 .bm-burger-button {
-    position: absolute;
+    position: relative;
     width: 24px;
     height: 20px;
     margin: 20px;
@@ -204,10 +206,15 @@ Note: Beware of modifying this element as it can break the animations - you shou
 }
 
 .bm-overlay {
+    top: 0;
     left: 0;
     background: transparent !important;
     z-index: 9999;
 }
+.bm-menu-wrap {
+    top: 0;
+}
+
 
 /* ----------------- End HAMBURGER MENU STYLING -----------------*/
 
@@ -411,4 +418,43 @@ Note: Beware of modifying this element as it can break the animations - you shou
 header .header-logo {
     max-width: 100px;
     padding: 10px 0;
+}
+
+/* ----------------- DROPDOWN USER STYLING -----------------*/
+.dropdown-toggle {
+    margin-top: 10px;
+    background: transparent;
+    border: 0;
+}
+
+.dropdown-toggle:hover, .dropdown-toggle:active, .dropdown-toggle:hover {
+    background: transparent;
+    border: 0;
+}
+
+.btn-primary.dropdown-toggle {
+    background: transparent !important;
+    border: 0;
+}
+
+.btn-primary.dropdown-toggle:focus {
+    box-shadow: none !important;
+}
+
+.dropdown-menu {
+    font-size: 14px;
+}
+
+.dropdown-item > a {
+    color: var(--black-color);
+}
+
+.dropdown-item:hover {
+    text-decoration: none;
+    background: var(--main-primary-color);
+    color: white;
+}
+
+.dropdown-item.active {
+    background: var(--main-secondary-color);
 }

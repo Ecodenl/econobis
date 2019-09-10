@@ -7,9 +7,15 @@ const UserContext = createContext({
 
 const UserProvider = function(props) {
     const [user, setUser] = useState({});
+    const [inControlContact, setInControlContact] = useState({});
 
     function updateUser(user) {
         setUser(user);
+        updateInControlContact(user);
+    }
+
+    function updateInControlContact(contact) {
+        setInControlContact(contact);
     }
 
     return (
@@ -17,6 +23,8 @@ const UserProvider = function(props) {
             value={{
                 user: user,
                 updateUser: updateUser,
+                inControlContact: inControlContact,
+                updateInControlContact: updateInControlContact,
             }}
         >
             {props.children}

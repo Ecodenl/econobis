@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PortalUserConsumer } from '../../context/PortalUserContext';
-import DefaultContactView from '../contact/DefaultContactView';
 import ContactAPI from '../../api/contact/ContactAPI';
 import rebaseContact from '../../helpers/RebaseContact';
 import LoadingView from '../../components/general/LoadingView';
+import ContactDetailsPersonal from './Personal';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
@@ -41,6 +41,13 @@ const ContactDetails = function(props) {
         return ref.current;
     }
 
+    function handleSubmitContactValues(values, actions, switchToView) {
+        // TODO Do Api request to update contact values
+        setContact({ ...contact, ...values });
+        actions.setSubmitting(false);
+        switchToView();
+    }
+
     return (
         <div className="content-section">
             {isLoading ? (
@@ -50,7 +57,12 @@ const ContactDetails = function(props) {
                     <h1 className="content-heading">Contactgegevens</h1>
                     <div className="w-form" />
                     {/* If contact is person */}
-                    {contact.typeId === 'person' ? <DefaultContactView initialContact={contact} /> : null}
+                    {contact.typeId === 'person' ? (
+                        <ContactDetailsPersonal
+                            initialContact={contact}
+                            handleSubmitContactValues={handleSubmitContactValues}
+                        />
+                    ) : null}
                     {/* If contact is organisation */}
                     {contact.typeId === 'organisation' ? <div>{contact.fullName}</div> : null}
                 </div>

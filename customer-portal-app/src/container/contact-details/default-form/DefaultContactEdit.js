@@ -1,14 +1,14 @@
 import React from 'react';
-import InputText from '../../components/form/InputText';
+import InputText from '../../../components/form/InputText';
 import { Field } from 'formik';
-import Select from '../../components/form/Select';
-import Countries from '../../data/Countries';
+import Select from '../../../components/form/Select';
+import Countries from '../../../data/Countries';
 import Col from 'react-bootstrap/Col';
 import FormLabel from 'react-bootstrap/FormLabel';
 import Row from 'react-bootstrap/Row';
-import TextBlock from '../../components/general/TextBlock';
+import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
-import InputDate from '../../components/form/InputDate';
+import InputDate from '../../../components/form/InputDate';
 
 const DefaultContactEdit = function({ handleSubmit, initialContact, values, setFieldValue }) {
     return (

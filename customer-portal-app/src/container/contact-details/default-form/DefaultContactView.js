@@ -1,7 +1,7 @@
 import React from 'react';
 import Col from 'react-bootstrap/Col';
 import FormLabel from 'react-bootstrap/FormLabel';
-import TextBlock from '../../components/general/TextBlock';
+import TextBlock from '../../../components/general/TextBlock';
 import Row from 'react-bootstrap/Row';
 import moment from 'moment';
 
@@ -24,7 +24,7 @@ function DefaultContactView({ initialContact }) {
             <Col xs={12} md={6}>
                 <FormLabel className={'field-label'}>Naam</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Aanhef'}>
+                    <TextBlock className={'col-12 col-sm-6'} placeholder={'Aanhef'}>
                         {person.titleId}
                     </TextBlock>
                 </Row>
@@ -52,22 +52,30 @@ function DefaultContactView({ initialContact }) {
 
                 <FormLabel className={'field-label'}>E-mailadres correspondentie</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{emailCorrespondence.email}</TextBlock>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'E-mailadres'}>
+                        {emailCorrespondence.email}
+                    </TextBlock>
                 </Row>
 
                 <FormLabel className={'field-label'}>E-mailadres factuur</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{emailInvoice.email}</TextBlock>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'E-mailadres'}>
+                        {emailInvoice.email}
+                    </TextBlock>
                 </Row>
 
                 <FormLabel className={'field-label'}>Telefoonnummer 1</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-6'}>{phoneNumberPrimary.number}</TextBlock>
+                    <TextBlock className={'col-12 col-sm-6'} placeholder={'Telefoonnummer'}>
+                        {phoneNumberPrimary.number}
+                    </TextBlock>
                 </Row>
 
                 <FormLabel className={'field-label'}>Telefoonnummer 2</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-6'}>{phoneNumberTwo.number}</TextBlock>
+                    <TextBlock className={'col-12 col-sm-6'} placeholder={'Telefoonnummer'}>
+                        {phoneNumberTwo.number}
+                    </TextBlock>
                 </Row>
 
                 <FormLabel className={'field-label'}>Adres</FormLabel>
@@ -119,6 +127,7 @@ function DefaultContactView({ initialContact }) {
                             id="did_agree_avg"
                             checked={didAgreeAvg}
                             className="w-checkbox-input checkbox"
+                            disabled={true}
                         />
                         <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
                             Akkoord

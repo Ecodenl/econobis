@@ -59,25 +59,7 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        DB::transaction(function () use ($participantMutation) {
-            // Calculate participation worth based on current book worth of project
-            if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-               $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
-                    ->where('date', '<=', $participantMutation->date_entry)
-                    ->orderBy('date', 'desc')
-                    ->value('book_worth');
-
-                $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
-            }
-
-            $participantMutation->save();
-
-            // Herbereken de afhankelijke gegevens op het participantProject
-            $participantMutation->participation->calculator()->run()->save();
-
-            // Herbereken de afhankelijke gegevens op het project
-            $participantMutation->participation->project->calculator()->run()->save();
-        });
+        $this->recalculatParticipantMutation($participantMutation);
 
 
     }
@@ -115,25 +97,7 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        DB::transaction(function () use ($participantMutation) {
-            // Calculate participation worth based on current book worth of project
-            if($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
-                $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
-                    ->where('date', '<=', $participantMutation->date_entry)
-                    ->orderBy('date', 'desc')
-                    ->value('book_worth');
-
-                $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
-            }
-
-            $participantMutation->save();
-
-            // Herbereken de afhankelijke gegevens op het participantProject
-            $participantMutation->participation->calculator()->run()->save();
-
-            // Herbereken de afhankelijke gegevens op het project
-            $participantMutation->participation->project->calculator()->run()->save();
-        });
+        $this->recalculatParticipantMutation($participantMutation);
     }
 
     public function destroy(ParticipantMutation $participantMutation)
@@ -157,5 +121,33 @@ class ParticipantMutationController extends ApiController
             $participantProject->project->calculator()->run()->save();
         });
 
+    }
+
+    /**
+     * @param ParticipantMutation $participantMutation
+     */
+    public function recalculateParticipantMutation(ParticipantMutation $participantMutation): void
+    {
+        DB::transaction(function () use ($participantMutation) {
+            // Calculate participation worth based on current book worth of project
+            if ($participantMutation->status->code_ref === 'final'
+                && $participantMutation->participation->project->projectType->code_ref !== 'loan'
+            ) {
+                $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                    ->where('date', '<=', $participantMutation->date_entry)
+                    ->orderBy('date', 'desc')
+                    ->value('book_worth');
+
+                $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
+            }
+
+            $participantMutation->save();
+
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantMutation->participation->calculator()->run()->save();
+
+            // Herbereken de afhankelijke gegevens op het project
+            $participantMutation->participation->project->calculator()->run()->save();
+        });
     }
 }

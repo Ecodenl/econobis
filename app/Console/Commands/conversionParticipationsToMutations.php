@@ -75,7 +75,6 @@ class conversionParticipationsToMutations extends Command
             $participantMutation->type_id = $mutationType->id;
             $participantMutation->status_id = $statusId;
 
-
             switch($statusId) {
                 case 1:
                     if($projectType->code_ref == 'loan') {
@@ -90,7 +89,7 @@ class conversionParticipationsToMutations extends Command
                         $participantMutation->quantity = $participant->participations_requested;
                         $participantMutation->quantity_interest = $participant->participations_requested;
                     }
-                    $participantMutation->date_interest = $participant->date_register;
+                    $participantMutation->date_interest = $participant->date_register ? $participant->date_register : Carbon::parse($participant->created_at)->format('Y-m-d');
                     break;
                 case 2:
                     if($projectType->code_ref == 'loan') {
@@ -105,7 +104,7 @@ class conversionParticipationsToMutations extends Command
                         $participantMutation->quantity = $participant->participations_requested;
                         $participantMutation->quantity_option = $participant->participations_requested;
                     }
-                    $participantMutation->date_option = $participant->date_register;
+                    $participantMutation->date_option = $participant->date_register ? $participant->date_register : Carbon::parse($participant->created_at)->format('Y-m-d');;
                     break;
                 case 3:
                     if($projectType->code_ref == 'loan') {

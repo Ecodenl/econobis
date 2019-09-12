@@ -59,7 +59,7 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $this->recalculatParticipantMutation($participantMutation);
+        $this->recalculateParticipantMutation($participantMutation);
 
 
     }
@@ -97,7 +97,7 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $this->recalculatParticipantMutation($participantMutation);
+        $this->recalculateParticipantMutation($participantMutation);
     }
 
     public function destroy(ParticipantMutation $participantMutation)

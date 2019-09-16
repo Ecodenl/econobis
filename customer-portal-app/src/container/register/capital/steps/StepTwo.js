@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { FaUndo } from 'react-icons/fa';
-import DefaultContactView from '../../../contact-details/default-form-personal/DefaultContactView';
+import DefaultContactPersonalView from '../../../contact-details/default-form-personal/View';
 import Col from 'react-bootstrap/Col';
-import DefaultContactEdit from '../../../contact-details/default-form-personal/DefaultContactEdit';
+import DefaultContactPersonalEdit from '../../../contact-details/default-form-personal/Edit';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { ClipLoader } from 'react-spinners';
@@ -35,7 +34,7 @@ function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) 
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
                         return (
                             <Form>
-                                <DefaultContactEdit
+                                <DefaultContactPersonalEdit
                                     initialContact={initialContact}
                                     setFieldValue={setFieldValue}
                                     values={values}
@@ -47,7 +46,7 @@ function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) 
                                                 Terug
                                             </Button>
                                             <Button
-                                                variant={'outline-dark'}
+                                                className={'w-button'}
                                                 size="sm"
                                                 onClick={function() {
                                                     setEditForm(false);
@@ -79,7 +78,7 @@ function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) 
                 />
             ) : (
                 <>
-                    <DefaultContactView initialContact={initialContact} />
+                    <DefaultContactPersonalView initialContact={initialContact} />
                     <Row>
                         <Col>
                             <ButtonGroup aria-label="Steps" className="float-right">

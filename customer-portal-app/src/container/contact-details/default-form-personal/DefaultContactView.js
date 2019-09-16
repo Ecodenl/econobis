@@ -29,10 +29,10 @@ function DefaultContactView({ initialContact }) {
                     </TextBlock>
                 </Row>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-6'} placeholder={'Voornaam'}>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Voornaam'}>
                         {person.firstName}
                     </TextBlock>
-                    <TextBlock className={'col-12 col-sm-4 '} placeholder={'Initialen'}>
+                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Initialen'}>
                         {person.initials}
                     </TextBlock>
                 </Row>
@@ -45,7 +45,7 @@ function DefaultContactView({ initialContact }) {
                     </TextBlock>
                 </Row>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Geboortedatum'}>
+                    <TextBlock className={'col-12 col-sm-6 col-md-4'} placeholder={'Geboortedatum'}>
                         {person.dateOfBirth}
                     </TextBlock>
                 </Row>
@@ -80,7 +80,7 @@ function DefaultContactView({ initialContact }) {
 
                 <FormLabel className={'field-label'}>Adres</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Straat'}>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
                         {primaryAddress.street}
                     </TextBlock>
                 </Row>

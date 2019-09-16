@@ -3,9 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FaUndo } from 'react-icons/fa';
-import DefaultContactView from './default-form/DefaultContactView';
+import DefaultContactView from './default-form-personal/DefaultContactView';
 import Col from 'react-bootstrap/Col';
-import DefaultContactEdit from './default-form/DefaultContactEdit';
+import DefaultContactEdit from './default-form-personal/DefaultContactEdit';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { ClipLoader } from 'react-spinners';
@@ -43,13 +43,13 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                                     <Col>
                                         <ButtonGroup aria-label="Steps" className="float-right">
                                             <Button
-                                                className={'w-button'}
+                                                variant={'outline-dark'}
                                                 size="sm"
                                                 onClick={function() {
                                                     setEditForm(false);
                                                 }}
                                             >
-                                                <FaUndo />
+                                                Annuleren
                                             </Button>
                                             <Button
                                                 className={'w-button'}
@@ -57,7 +57,14 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                                                 onClick={handleSubmit}
                                                 disabled={isSubmitting}
                                             >
-                                                {isSubmitting ? <ClipLoader color={'white'} size={17} /> : 'Opslaan'}
+                                                {isSubmitting ? (
+                                                    <span>
+                                                        <ClipLoader color={'white'} size={14} />
+                                                        Bezig met opslaan
+                                                    </span>
+                                                ) : (
+                                                    'Opslaan'
+                                                )}
                                             </Button>
                                         </ButtonGroup>
                                     </Col>

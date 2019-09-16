@@ -4,7 +4,7 @@ import DayPickerInput from 'react-day-picker/DayPickerInput';
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
 import moment from 'moment';
 
-const InputDate = ({ className, id, value, required, readOnly, name, onChangeAction }) => {
+const InputDate = ({ className, id, value, required, readOnly, name, onChangeAction, error, placeholder }) => {
     const validateDate = event => {
         const date = moment(event.target.value, 'DD-MM-YYYY', true);
 
@@ -23,30 +23,34 @@ const InputDate = ({ className, id, value, required, readOnly, name, onChangeAct
     const formattedDate = value ? moment(value).format('L') : '';
 
     return (
-        <DayPickerInput
-            id={id}
-            value={formattedDate}
-            onDayChange={handleDayChange}
-            formatDate={formatDate}
-            parseDate={parseDate}
-            dayPickerProps={{
-                showWeekNumbers: true,
-                locale: 'nl',
-                firstDayOfWeek: 1,
-                localeUtils: MomentLocaleUtils,
-            }}
-            inputProps={{
-                className: `form-control input-sm ${className}`,
-                name: name,
-                onBlur: validateDate,
-                autoComplete: 'off',
-                readOnly: readOnly,
-                disabled: readOnly,
-            }}
-            required={required}
-            readOnly={readOnly}
-            placeholder={''}
-        />
+        <>
+            <DayPickerInput
+                id={id}
+                value={formattedDate}
+                onDayChange={handleDayChange}
+                formatDate={formatDate}
+                parseDate={parseDate}
+                dayPickerProps={{
+                    showWeekNumbers: true,
+                    locale: 'nl',
+                    firstDayOfWeek: 1,
+                    localeUtils: MomentLocaleUtils,
+                }}
+                inputProps={{
+                    className: `text-input content w-input ${className}`,
+                    name: name,
+                    onBlur: validateDate,
+                    autoComplete: 'off',
+                    readOnly: readOnly,
+                    disabled: readOnly,
+                    placeholder: placeholder,
+                }}
+                required={required}
+                readOnly={readOnly}
+                placeholder={''}
+            />
+            {error ? <span className={'error-message text-danger'}>{error}</span> : null}
+        </>
     );
 };
 
@@ -56,6 +60,7 @@ InputDate.defaultProps = {
     readOnly: false,
     value: null,
     error: false,
+    placeholder: '',
 };
 
 InputDate.propTypes = {
@@ -68,6 +73,7 @@ InputDate.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    placeholder: PropTypes.string,
 };
 
 export default InputDate;

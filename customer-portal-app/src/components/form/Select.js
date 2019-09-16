@@ -3,16 +3,19 @@ import PropTypes from 'prop-types';
 
 const Select = ({ field, className, id, options, optionLabel, error, emptyOption, placeholder }) => {
     return (
-        <select className={`select-field w-select ${className}`} id={id} {...field} error={error}>
-            {emptyOption ? <option value="">{placeholder ? `-- ${placeholder} --` : ''}</option> : null}
-            {options.map(option => {
-                return (
-                    <option key={option.id} value={option.id}>
-                        {option[optionLabel]}
-                    </option>
-                );
-            })}
-        </select>
+        <>
+            <select className={`select-field w-select content ${className}`} id={id} {...field} error={error}>
+                {emptyOption ? <option value="">{placeholder ? `-- ${placeholder} --` : ''}</option> : null}
+                {options.map(option => {
+                    return (
+                        <option key={option.id} value={option.id}>
+                            {option[optionLabel]}
+                        </option>
+                    );
+                })}
+            </select>
+            {error ? <span className={'error-message text-danger'}>{error}</span> : null}
+        </>
     );
 };
 

@@ -3,9 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { FaUndo } from 'react-icons/fa';
-import DefaultContactView from '../../../contact-details/default-form/DefaultContactView';
+import DefaultContactView from '../../../contact-details/default-form-personal/DefaultContactView';
 import Col from 'react-bootstrap/Col';
-import DefaultContactEdit from '../../../contact-details/default-form/DefaultContactEdit';
+import DefaultContactEdit from '../../../contact-details/default-form-personal/DefaultContactEdit';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { ClipLoader } from 'react-spinners';
@@ -47,13 +47,13 @@ function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) 
                                                 Terug
                                             </Button>
                                             <Button
-                                                className={'w-button'}
+                                                variant={'outline-dark'}
                                                 size="sm"
                                                 onClick={function() {
                                                     setEditForm(false);
                                                 }}
                                             >
-                                                <FaUndo />
+                                                Annuleren
                                             </Button>
                                             <Button
                                                 className={'w-button'}
@@ -62,7 +62,10 @@ function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) 
                                                 disabled={isSubmitting}
                                             >
                                                 {isSubmitting ? (
-                                                    <ClipLoader color={'white'} size={17} />
+                                                    <span>
+                                                        <ClipLoader color={'white'} size={14} />
+                                                        Bezig met opslaan
+                                                    </span>
                                                 ) : (
                                                     'Opslaan en doorgaan'
                                                 )}

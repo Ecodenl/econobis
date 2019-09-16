@@ -1,11 +1,11 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
-import { BeatLoader } from 'react-spinners';
+import { ClipLoader } from 'react-spinners';
 
 function Loading() {
     return (
         <Row className="justify-content-center align-content-center flex-wrap" style={{ height: '40vh' }}>
-            <BeatLoader color={'#d6d6d6'} size={14} />
+            <ClipLoader color={'#3898EC'} size={48} />
         </Row>
     );
 }

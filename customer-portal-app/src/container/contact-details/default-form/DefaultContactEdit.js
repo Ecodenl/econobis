@@ -3,6 +3,8 @@ import InputText from '../../../components/form/InputText';
 import { Field } from 'formik';
 import Select from '../../../components/form/Select';
 import Countries from '../../../data/Countries';
+import Titles from '../../../data/Titles';
+import LastNamePrefixes from '../../../data/LastNamePrefixes';
 import Col from 'react-bootstrap/Col';
 import FormLabel from 'react-bootstrap/FormLabel';
 import Row from 'react-bootstrap/Row';
@@ -23,15 +25,7 @@ const DefaultContactEdit = function({ handleSubmit, initialContact, values, setF
                             id="title_id"
                             placeholder={'Aanhef'}
                             className={'col-12 col-sm-8'}
-                            options={[
-                                { id: 1, name: 'Dhr' },
-                                { id: 2, name: 'Mevr' },
-                                { id: 3, name: 'De heer, Mevrouw' },
-                                { id: 4, name: 'Familie' },
-                                { id: 5, name: 'De heer of mevrouw' },
-                                { id: 6, name: 'De heren' },
-                                { id: 7, name: 'De dames' },
-                            ]}
+                            options={Titles}
                         />
                     )}
                 />
@@ -45,17 +39,7 @@ const DefaultContactEdit = function({ handleSubmit, initialContact, values, setF
                         <Select
                             field={field}
                             id="last_name_prefix_id"
-                            options={[
-                                { id: 1, name: 'van' },
-                                { id: 2, name: 'de' },
-                                { id: 3, name: 'van der' },
-                                { id: 4, name: 'van de' },
-                                { id: 5, name: 'van den' },
-                                { id: 6, name: 'den' },
-                                { id: 7, name: 'ten' },
-                                { id: 8, name: 'ter' },
-                                { id: 9, name: 'te' },
-                            ]}
+                            options={LastNamePrefixes}
                             className={'select-field w-select content _w-40 _w-40-mob'}
                         />
                     )}

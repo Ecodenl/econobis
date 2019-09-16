@@ -42,8 +42,16 @@ const ContactDetails = function(props) {
     }
 
     function handleSubmitContactValues(values, actions, switchToView) {
+        const updatedContact = { ...contact, ...values };
         // TODO Do Api request to update contact values
-        setContact({ ...contact, ...values });
+        ContactAPI.updateContact(updatedContact)
+            .then(payload => {
+                setContact(updatedContact);
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+            });
+
         actions.setSubmitting(false);
         switchToView();
     }

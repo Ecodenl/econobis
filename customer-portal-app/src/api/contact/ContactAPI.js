@@ -45,4 +45,10 @@ export default {
             },
         });
     },
+
+    updateContact: contact => {
+        const requestUrl = `/contact/${contact.id}`;
+
+        return axiosInstance.post(requestUrl, contact);
+    },
 };

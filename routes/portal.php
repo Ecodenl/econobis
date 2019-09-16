@@ -14,6 +14,8 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
             return Jory::on(\Auth::user()->contact);
         });
 
+        Route::post('/contact/{contact}', 'Contact\ContactController@update');
+
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
 

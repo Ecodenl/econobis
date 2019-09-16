@@ -125,6 +125,7 @@ function Header({ location, history }) {
                                                                 {user.primaryOccupations
                                                                     ? user.primaryOccupations.map(occupation => (
                                                                           <Dropdown.Item
+                                                                              key={occupation.id}
                                                                               onClick={() => {
                                                                                   setCurrentContact(occupation.contact);
                                                                                   redirect('gegevens');

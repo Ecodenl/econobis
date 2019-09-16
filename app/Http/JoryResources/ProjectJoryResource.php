@@ -61,11 +61,4 @@ class ProjectJoryResource extends JoryResource
 //        $this->relation('tasks');
 //        $this->relation('updated_by');
     }
-
-    public function afterQueryBuild($query, $count = false): void
-    {
-        if(Auth::isPortalUser()){
-            $query->whereAuthorizedForPortalUser();
-        }
-    }
 }

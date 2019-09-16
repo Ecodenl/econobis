@@ -143,18 +143,4 @@ class Project extends Model
 
         return $activeProjectValueCourse->book_worth;
     }
-
-    /**
-     * Scope voor filteren van projecten voor portal users.
-     *
-     * Een portal user mag alleen projecten ophalen, waarbij
-     * vandaag binnen de registratie start en eind datum ligt
-     */
-    public function scopeWhereAuthorizedForPortalUser($query)
-    {
-        $query->where(function ($query) {
-            $query->whereDate('date_start_registrations', '<=', Carbon::today());
-            $query->whereDate('date_end_registrations', '>=', Carbon::today());
-        });
-    }
 }

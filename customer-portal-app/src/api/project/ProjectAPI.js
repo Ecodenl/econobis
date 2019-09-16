@@ -1,4 +1,5 @@
 import axiosInstance from '../default-setup/AxiosInstance';
+import moment from 'moment';
 
 export default {
     fetchProjects: function() {
@@ -8,6 +9,12 @@ export default {
             params: {
                 jory: {
                     fld: ['id', 'name', 'dateStartRegistrations', 'dateEndRegistrations'],
+                    flt: {
+                        and: [
+                            { f: 'dateStartRegistrations', o: '<=', d: moment() },
+                            { f: 'dateEndRegistrations', o: '>=', d: moment() },
+                        ],
+                    },
                 },
             },
         });

@@ -19,7 +19,6 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
             value => value === true
         ),
     });
-    // todo controle op booleans allebei aangevinkt voordat je verder mag
 
     return (
         <div>
@@ -31,7 +30,7 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                 }}
                 initialValues={initialRegisterValues}
             >
-            {({ handleSubmit, handleChange, handleBlur, values, touched, isValid, errors }) => (
+                {({ handleSubmit, handleChange, handleBlur, values, touched, isValid, errors }) => (
                     <>
                         <Row>
                             <Col xs={12} md={10}>
@@ -57,11 +56,11 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                                             <span htmlFor="did_agree_terms" className="checkbox-label w-form-label">
                                                 Ik ga akkoord met de <a href="#">voorwaarden</a>
                                             </span>
-                                                {touched.didAgreeTerms && errors.didAgreeTerms ? (
-                                                    <div className={'error-message text-danger'}>
-                                                        {errors.didAgreeTerms}
-                                                    </div>
-                                                ) : null}
+                                            {touched.didAgreeTerms && errors.didAgreeTerms ? (
+                                                <div className={'error-message text-danger'}>
+                                                    {errors.didAgreeTerms}
+                                                </div>
+                                            ) : null}
                                         </label>
                                     )}
                                 />
@@ -84,11 +83,11 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                                                 Ik heb de <a href="#">projectinformatie</a> (inclusief de daarin
                                                 beschreven risico’s) behorende bij het project gelezen en begrepen
                                             </span>
-                                                {touched.didUnderstandInfo && errors.didUnderstandInfo ? (
-                                                    <div className={'error-message text-danger'}>
-                                                        {errors.didUnderstandInfo}
-                                                    </div>
-                                                ) : null}
+                                            {touched.didUnderstandInfo && errors.didUnderstandInfo ? (
+                                                <div className={'error-message text-danger'}>
+                                                    {errors.didUnderstandInfo}
+                                                </div>
+                                            ) : null}
                                         </label>
                                     )}
                                 />
@@ -107,7 +106,7 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                             </Col>
                         </Row>
                     </>
-            )}
+                )}
             </Formik>
         </div>
     );

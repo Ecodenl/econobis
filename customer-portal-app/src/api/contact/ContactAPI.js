@@ -51,4 +51,10 @@ export default {
 
         return axiosInstance.post(requestUrl, contact);
     },
+
+    previewDocument: (contactId, projectId) => {
+        const requestUrl = `/contact/${contactId}/${projectId}/preview-document`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

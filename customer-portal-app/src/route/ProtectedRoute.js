@@ -5,18 +5,20 @@ import Header from '../container/Header';
 import PortalUserAPI from '../api/portal-user/PortalUserAPI';
 import { PortalUserConsumer } from '../context/PortalUserContext';
 
-const ProtectedRoute = ({ component: Component, updateUser, ...rest }) => {
+const ProtectedRoute = ({ component: Component, updateUser, isAuth, ...rest }) => {
     useEffect(() => {
-        (function callFetchPortalUserDetails() {
-            PortalUserAPI.fetchPortalUserDetails()
-                .then(payload => {
-                    updateUser(payload.data.data);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                });
-        })();
-    }, []);
+        if (isAuth) {
+            (function callFetchPortalUserDetails() {
+                PortalUserAPI.fetchPortalUserDetails()
+                    .then(payload => {
+                        updateUser(payload.data.data);
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    });
+            })();
+        }
+    }, [isAuth]);
 
     return (
         <AuthConsumer>
@@ -32,8 +34,12 @@ const ProtectedRoute = ({ component: Component, updateUser, ...rest }) => {
 
 export default function ProtectedRouteWithContext(props) {
     return (
-        <PortalUserConsumer>
-            {({ updateUser }) => <ProtectedRoute {...props} updateUser={updateUser} />}
-        </PortalUserConsumer>
+        <AuthConsumer>
+            {({ isAuth }) => (
+                <PortalUserConsumer>
+                    {({ updateUser }) => <ProtectedRoute {...props} updateUser={updateUser} isAuth={isAuth} />}
+                </PortalUserConsumer>
+            )}
+        </AuthConsumer>
     );
 }

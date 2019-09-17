@@ -13,6 +13,8 @@ function RegisterCapital({ match, currentSelectedContact }) {
     const [registerValues, setRegisterValues] = useState({
         projectId: null,
         participationsInteressed: 0,
+        didAgreeTerms: false,
+        didUnderstandInfo: false,
     });
     const [project, setProject] = useState({});
     const [contact, setContact] = useState({});

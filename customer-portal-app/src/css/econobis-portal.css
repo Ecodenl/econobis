@@ -69,6 +69,7 @@
 .error-message {
     color: var(--main-warning-color);
     font-size: 11px;
+    font-weight: normal;
 }
 
 /* ----------------- LABEL STYLING -----------------*/

@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import LoadingView from '../../../../components/general/LoadingView';
 
 function StepFour({ previous, contactId, projectId }) {
-    const [contactDocument, setContactDocument] = useState({});
+    const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {

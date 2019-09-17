@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
+import Col from 'react-bootstrap/Col';
 
 function StepThree({ previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -13,23 +14,27 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
     // todo controle op booleans allebei aangevinkt voordat je verder mag
 
     return (
-        <Formik
-            validationSchema={validationSchema}
-            onSubmit={function(values, actions) {
-                handleSubmitRegisterValues(values);
-                next();
-            }}
-            initialValues={initialRegisterValues}
-        >
-            {({ handleSubmit, handleChange, handleBlur, values, touched, isValid, errors }) => (
-                <>
-                    <div>
-                        <div className="w-row">
-                            <div className="w-col w-col-6">
+        <div>
+            <Formik
+                validationSchema={validationSchema}
+                onSubmit={function(values, actions) {
+                    handleSubmitRegisterValues(values);
+                    next();
+                }}
+                initialValues={initialRegisterValues}
+            >
+                {({ handleSubmit, handleChange, handleBlur, values, touched, isValid, errors }) => (
+                    <>
+                        <Row>
+                            <Col xs={12} md={10}>
                                 <p>
                                     Om deel te kunnen nemen dien je akkoord te gaan met de algemene voorwaarden en dien
                                     je te bevestigen dat je de projectinformatie hebt gelezen en begrepen.
                                 </p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={10}>
                                 <Field
                                     name="didAgreeTerms"
                                     render={({ field }) => (
@@ -47,7 +52,10 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                                         </label>
                                     )}
                                 />
-
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={10}>
                                 <Field
                                     name="didUnderstandInfo"
                                     render={({ field }) => (
@@ -66,22 +74,24 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                                         </label>
                                     )}
                                 />
-                            </div>
-                        </div>
-                        <Row className="justify-content-end">
-                            <ButtonGroup aria-label="Steps">
-                                <Button className={'w-button'} size="sm" onClick={previous}>
-                                    Terug
-                                </Button>
-                                <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                    Ga naar inschrijfformulier
-                                </Button>
-                            </ButtonGroup>
+                            </Col>
                         </Row>
-                    </div>
-                </>
-            )}
-        </Formik>
+                        <Row>
+                            <Col xs={12} md={10}>
+                                <ButtonGroup aria-label="Steps" className="float-right">
+                                    <Button className={'w-button'} size="sm" onClick={previous}>
+                                        Terug
+                                    </Button>
+                                    <Button className={'w-button'} size="sm" onClick={handleSubmit}>
+                                        Ga naar inschrijfformulier
+                                    </Button>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </>
+                )}
+            </Formik>
+        </div>
     );
 }
 

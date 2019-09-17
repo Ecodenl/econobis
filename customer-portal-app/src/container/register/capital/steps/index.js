@@ -43,7 +43,13 @@ function Steps({
                 />
             );
         case 4:
-            return <StepFour previous={previous} />;
+            return (
+                <StepFour
+                    previous={previous}
+                    contactId={initialContact.id}
+                    projectId={initialRegisterValues.projectId}
+                />
+            );
         default:
             return;
     }

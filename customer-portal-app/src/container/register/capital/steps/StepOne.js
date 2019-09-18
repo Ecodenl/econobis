@@ -15,7 +15,7 @@ function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterVal
     const validationSchema = Yup.object({
         participationsInteressed: Yup.number()
             .typeError('Alleen nummers')
-            .min(1, 'Minimum van ${min} bereikt')
+            .min(1, 'Minimum van ${min} nodig')
             .max(project.maxParticipations, 'Maximum van ${max} bereikt')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),

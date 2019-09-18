@@ -1,8 +1,8 @@
 import React from 'react';
-import InputText from '../../components/form/InputText';
+import InputText from '../../../components/form/InputText';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import ButtonText from '../../components/button/ButtonText';
+import ButtonText from '../../../components/button/ButtonText';
 
 const validationSchema = Yup.object().shape({
     username: Yup.string()
@@ -21,13 +21,21 @@ const LoginForm = function({ handleSubmit, login }) {
                 actions.setSubmitting(true);
                 handleSubmit(values, actions, login);
             }}
-            render={({ isSubmitting }) => {
+            render={({ isSubmitting, errors, touched }) => {
                 return (
                     <Form>
                         <Field
                             name="username"
                             render={({ field }) => (
-                                <InputText field={field} id="username" className={''} placeholder={'email'} />
+                                <InputText
+                                    field={field}
+                                    id="username"
+                                    className={''}
+                                    placeholder={'email'}
+                                    errors={errors}
+                                    touched={touched}
+                                    showErrorMessage={false}
+                                />
                             )}
                         />
                         <Field
@@ -39,6 +47,9 @@ const LoginForm = function({ handleSubmit, login }) {
                                     className={''}
                                     placeholder={'wachtwoord'}
                                     type={'password'}
+                                    errors={errors}
+                                    touched={touched}
+                                    showErrorMessage={false}
                                 />
                             )}
                         />

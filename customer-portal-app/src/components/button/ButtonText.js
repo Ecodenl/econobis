@@ -1,17 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ClipLoader } from 'react-spinners';
+import Button from 'react-bootstrap/Button';
 
 const ButtonText = ({ buttonClassName, buttonText, onClickAction, type, loading, title, loadingSpinnerColor }) => (
-    <button
+    <Button
         type={type}
-        className={`btn btn-sm ${buttonClassName}`}
+        className={`${buttonClassName}`}
         onClick={onClickAction}
         disabled={loading}
         title={title}
+        size="sm"
     >
         {loading ? <ClipLoader color={loadingSpinnerColor} size={17} /> : <span>{buttonText}</span>}
-    </button>
+    </Button>
 );
 
 ButtonText.defaultProps = {

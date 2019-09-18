@@ -8,7 +8,7 @@
 
 /* ----------------- LOGIN STYLING -----------------*/
 .container-login {
-    background-color: #034b8c;
+    background-color: var(--main-primary-color);
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), url('../images/page-head5.jpg');
     background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), url('../images/page-head5.jpg');
     background-position: 0px 0px, 50% 50%;
@@ -23,9 +23,16 @@
     min-width: 240px;
     border-radius: 7px;
     background-color: white;
-    color: #034b8c;
+    color: var(--main-primary-color);
     font-weight: 600;
     text-align: center;
+}
+
+.login-button.btn-primary:hover, .login-button.btn-primary:active, .login-button.btn-primary:focus, .login-button.btn-primary:disabled {
+    background-color: white;
+    color: var(--main-primary-color);
+    outline: none;
+    opacity: 1;
 }
 
 .login-input {
@@ -55,7 +62,7 @@
 }
 
 .content-heading {
-    color: #034b8c;
+    color: var(--main-primary-color);
     font-size: 24px;
     font-weight: 400;
     text-shadow: none;

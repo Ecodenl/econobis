@@ -1,7 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const InputText = ({ field, type, className, id, readOnly, placeholder, showErrorMessage, errors, touched }) => {
+const InputText = ({
+    field,
+    type,
+    className,
+    id,
+    readOnly,
+    placeholder,
+    showErrorMessage,
+    errors,
+    touched,
+    classNameErrorMessage,
+}) => {
     return (
         <>
             <input
@@ -15,7 +26,7 @@ const InputText = ({ field, type, className, id, readOnly, placeholder, showErro
                 placeholder={placeholder}
             />
             {errors[field.name] && touched[field.name] && showErrorMessage ? (
-                <span className={'error-message text-danger'}>{errors[field.name]}</span>
+                <small className={`${classNameErrorMessage}`}>{errors[field.name]}</small>
             ) : null}
         </>
     );
@@ -27,6 +38,7 @@ InputText.defaultProps = {
     readOnly: false,
     placeholder: '',
     showErrorMessage: true,
+    classNameErrorMessage: 'text-danger',
     errors: {},
     touched: {},
 };
@@ -38,6 +50,7 @@ InputText.propTypes = {
     id: PropTypes.string,
     readOnly: PropTypes.bool,
     showErrorMessage: PropTypes.bool,
+    classNameErrorMessage: PropTypes.string,
     placeholder: PropTypes.string,
     errors: PropTypes.object,
     touched: PropTypes.object,

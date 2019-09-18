@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import { PortalUserProvider } from './context/PortalUserContext';
 import Login from './container/authorization/login';
 import Forgot from './container/authorization/forgot';
+import Reset from './container/authorization/reset';
 import ContactDetails from './container/contact-details';
 import MyAreasOfInterest from './container/my-areas-of-interest';
 import RegisterCapital from './container/register/capital';
@@ -26,6 +27,7 @@ function App() {
                         <ProtectedRoute path="/project/:id" component={ProjectDetails} />
                         <PublicRoute path="/login" component={Login} />
                         <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />
+                        <PublicRoute path="/wachtwoord-wijzigen/:token/:email" component={Reset} />
                     </Switch>
                 </PortalUserProvider>
             </AuthProvider>

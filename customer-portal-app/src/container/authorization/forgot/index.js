@@ -7,6 +7,7 @@ import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ButtonText from '../../../components/button/ButtonText';
 
 const Forgot = props => {
     const [showError, toggleError] = useState(false);

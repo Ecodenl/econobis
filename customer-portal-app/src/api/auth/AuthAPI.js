@@ -20,6 +20,13 @@ export default {
         const requestUrl = `${BASE_URL}/password/email`;
         delete axios.defaults.headers.common['Authorization'];
 
-        return axios.post(requestUrl, { ...AUTH_KEY, ...email });
+        return axios.post(requestUrl, email);
+    },
+
+    reset: payload => {
+        const requestUrl = `${BASE_URL}/password/reset`;
+        delete axios.defaults.headers.common['Authorization'];
+
+        return axios.post(requestUrl, payload);
     },
 };

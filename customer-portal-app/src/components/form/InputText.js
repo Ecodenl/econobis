@@ -18,7 +18,7 @@ const InputText = ({
             <input
                 type={type}
                 className={`text-input w-input ${className} ${
-                    Boolean(errors[field.name] && touched[field.name]) ? 'has-error' : ''
+                    Boolean(errors[field.name] && touched[field.name]) ? 'has-error mb-0' : ''
                 } `}
                 id={id}
                 {...field}

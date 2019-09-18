@@ -11,6 +11,7 @@ import { PortalUserConsumer } from '../../../context/PortalUserContext';
 
 function RegisterCapital({ match, currentSelectedContact }) {
     const [registerValues, setRegisterValues] = useState({
+        contactId: null,
         projectId: null,
         participationsInteressed: 0,
         didAgreeTerms: false,
@@ -26,7 +27,11 @@ function RegisterCapital({ match, currentSelectedContact }) {
             ProjectAPI.fetchProject(match.params.id)
                 .then(payload => {
                     setProject(payload.data.data);
-                    setRegisterValues({ ...registerValues, projectId: payload.data.data.id });
+                    setRegisterValues({
+                        ...registerValues,
+                        projectId: payload.data.data.id,
+                        contactId: currentSelectedContact.id,
+                    });
                     setLoading(false);
                 })
                 .catch(error => {

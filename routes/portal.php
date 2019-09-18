@@ -18,7 +18,7 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 
         Route::get('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
 
-        Route::post('/participation-project/{participationProject}', 'ParticipationProject\ParticipationProjectController@create');
+        Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
 
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');

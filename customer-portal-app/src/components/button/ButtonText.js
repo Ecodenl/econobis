@@ -3,12 +3,21 @@ import PropTypes from 'prop-types';
 import { ClipLoader } from 'react-spinners';
 import Button from 'react-bootstrap/Button';
 
-const ButtonText = ({ buttonClassName, buttonText, onClickAction, type, loading, title, loadingSpinnerColor }) => (
+const ButtonText = ({
+    buttonClassName,
+    buttonText,
+    onClickAction,
+    type,
+    loading,
+    title,
+    loadingSpinnerColor,
+    disabled,
+}) => (
     <Button
         type={type}
         className={`${buttonClassName}`}
         onClick={onClickAction}
-        disabled={loading}
+        disabled={loading || disabled}
         title={title}
         size="sm"
     >
@@ -22,6 +31,7 @@ ButtonText.defaultProps = {
     title: '',
     loading: false,
     loadingSpinnerColor: 'white',
+    disabled: false,
 };
 
 ButtonText.propTypes = {
@@ -32,6 +42,7 @@ ButtonText.propTypes = {
     title: PropTypes.string,
     loading: PropTypes.bool,
     loadingSpinnerColor: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 export default ButtonText;

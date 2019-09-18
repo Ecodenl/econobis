@@ -55,7 +55,7 @@ const LoginForm = function({ handleSubmit, login }) {
                         />
                         <ButtonText
                             buttonText={'Log in'}
-                            buttonClassName={'login-button'}
+                            buttonClassName={'authorization-button'}
                             type={'submit'}
                             loading={isSubmitting}
                             loadingSpinnerColor={'#034b8c'}

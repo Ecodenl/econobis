@@ -10,7 +10,7 @@ const validationSchema = Yup.object().shape({
         .required('Verplicht'),
 });
 
-const ForgotForm = ({ handleSubmit }) => (
+const ForgotForm = ({ handleSubmit, showSuccessMessage }) => (
     <Formik
         initialValues={{ email: '' }}
         enableReinitialize={true}
@@ -36,12 +36,13 @@ const ForgotForm = ({ handleSubmit }) => (
                     )}
                 />
                 <ButtonText
-                    buttonText={'Verzenden'}
-                    buttonClassName={'login-button'}
+                    buttonText={showSuccessMessage ? 'E-mail is verstuurd!' : 'Verstuur wachtwoord reset link'}
+                    buttonClassName={'authorization-button'}
                     size="sm"
                     type={'submit'}
                     loading={isSubmitting}
                     loadingSpinnerColor={'#034b8c'}
+                    disabled={showSuccessMessage}
                 />
             </Form>
         )}

@@ -40,11 +40,8 @@ export default props => {
             ) : (
                 <AuthConsumer>
                     {({ isAuth, login }) => (
-                        <Container fluid className="container-login">
-                            <Row
-                                className="justify-content-center align-content-center"
-                                style={{ minHeight: '100vh', height: '100vh' }}
-                            >
+                        <Container fluid className="authorization-container">
+                            <Row className="justify-content-center align-content-center full-height">
                                 <Col xs="12" sm="6" md="4" lg="3" xl="2">
                                     <img src={LogoImage} alt="" className="image" />
                                     <LoginForm handleSubmit={handleSubmit} login={login} />
@@ -54,7 +51,7 @@ export default props => {
                                         </Alert>
                                     ) : null}
                                     <Row className="justify-content-center">
-                                        <Link to={'/wachtwoord-vergeten'} className="login-link">
+                                        <Link to={'/wachtwoord-vergeten'} className="authorization-link">
                                             Wachtwoord vergeten?
                                         </Link>
                                     </Row>

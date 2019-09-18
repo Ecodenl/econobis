@@ -52,7 +52,7 @@ function StepFour({ previous, contactId, projectId }) {
                     }}
                     initialValues={{ didAgreeRegistration: false }}
                 >
-                    {({ handleSubmit, handleChange, handleBlur, values, touched, isValid, errors }) => (
+                    {({ handleSubmit, touched, errors }) => (
                         <div>
                             <Row>
                                 <Col xs={12} md={10}>
@@ -71,9 +71,9 @@ function StepFour({ previous, contactId, projectId }) {
                                                 <span htmlFor="did_agree_terms" className="checkbox-label w-form-label">
                                                     Ik ben akkoord met het inschrijfformulier
                                                 </span>
-                                                {touched.didAgreeRegistration && errors.didAgreeRegistration ? (
+                                                {touched[field.name] && errors[field.name] ? (
                                                     <div className={'error-message text-danger'}>
-                                                        {errors.didAgreeRegistration}
+                                                        {errors[field.name]}
                                                     </div>
                                                 ) : null}
                                             </label>

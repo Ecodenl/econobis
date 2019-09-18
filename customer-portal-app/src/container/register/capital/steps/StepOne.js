@@ -30,7 +30,7 @@ function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterVal
             }}
             initialValues={initialRegisterValues}
         >
-            {({ handleSubmit, handleChange, handleBlur, values, touched, isValid, errors }) => (
+            {({ handleSubmit, values, touched, errors }) => (
                 <>
                     <Row>
                         <Col xs={12} md={6}>
@@ -54,7 +54,7 @@ function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterVal
                                     render={({ field }) => (
                                         <InputText
                                             field={field}
-                                            error={errors.participationsInteressed}
+                                            error={touched[field.name] && errors[field.name]}
                                             id="participations_interessed"
                                         />
                                     )}

@@ -46,6 +46,9 @@
 }
 
 /* ----------------- GENERAL STYLING -----------------*/
+:focus {outline:none;}
+::-moz-focus-inner {border:0;}
+
 .content-section {
     padding-top: 80px;
     padding-bottom: 60px;

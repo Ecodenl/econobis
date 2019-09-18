@@ -54,7 +54,8 @@ function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterVal
                                     render={({ field }) => (
                                         <InputText
                                             field={field}
-                                            error={touched[field.name] && errors[field.name]}
+                                            errors={errors}
+                                            touched={touched}
                                             id="participations_interessed"
                                         />
                                     )}

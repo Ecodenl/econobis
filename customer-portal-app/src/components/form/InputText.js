@@ -1,18 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const InputText = ({ field, type, className, id, readOnly, error, placeholder }) => {
+const InputText = ({ field, type, className, id, readOnly, placeholder, showErrorMessage, errors, touched }) => {
     return (
         <>
             <input
                 type={type}
-                className={`text-input w-input ${className} ${Boolean(error) ? 'has-error' : ''} `}
+                className={`text-input w-input ${className} ${
+                    Boolean(errors[field.name] && touched[field.name]) ? 'has-error' : ''
+                } `}
                 id={id}
                 {...field}
                 readOnly={readOnly}
                 placeholder={placeholder}
             />
-            {error ? <span className={'error-message text-danger'}>{error}</span> : null}
+            {errors[field.name] && touched[field.name] && showErrorMessage ? (
+                <span className={'error-message text-danger'}>{errors[field.name]}</span>
+            ) : null}
         </>
     );
 };
@@ -21,8 +25,10 @@ InputText.defaultProps = {
     type: 'text',
     className: 'content',
     readOnly: false,
-    error: false,
     placeholder: '',
+    showErrorMessage: true,
+    errors: {},
+    touched: {},
 };
 
 InputText.propTypes = {
@@ -31,8 +37,10 @@ InputText.propTypes = {
     className: PropTypes.string,
     id: PropTypes.string,
     readOnly: PropTypes.bool,
-    error: PropTypes.bool,
+    showErrorMessage: PropTypes.bool,
     placeholder: PropTypes.string,
+    errors: PropTypes.object,
+    touched: PropTypes.object,
 };
 
 export default InputText;

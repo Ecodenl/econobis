@@ -40,8 +40,7 @@ class ContactController extends Controller
         }
         $documentBody .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
 
-        // todo occuptionContact nog toevoegen aan TemplateVariableHelper
-        //        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody,'occupationContact', $portalUserContact);
+        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody,'vertegenwoordigde', $portalUserContact);
         $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody,'contact', $contact);
         $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody,'project', $project);
         $documentBody = TemplateVariableHelper::stripRemainingVariableTags($documentBody);

@@ -108,6 +108,7 @@ function Header({ location, history }) {
                                                             <Dropdown.Menu>
                                                                 <Dropdown.Header>Ingelogd als</Dropdown.Header>
                                                                 <Dropdown.Item disabled>{user.fullName}</Dropdown.Item>
+                                                                <Dropdown.Divider />
                                                                 <Dropdown.Header>Beheren van</Dropdown.Header>
                                                                 <Dropdown.Item
                                                                     onClick={() => {

@@ -446,13 +446,22 @@ header .header-logo {
     font-size: 14px;
 }
 
+.dropdown-header {
+    color: var(--main-primary-color);
+    font-weight: bold;
+}
+
+.dropdown-item.disabled {
+    color: #999;
+}
+
 .dropdown-item > a {
     color: var(--black-color);
 }
 
 .dropdown-item:hover {
     text-decoration: none;
-    background: var(--main-primary-color);
+    background: var(--main-secondary-color);
     color: white;
 }
 

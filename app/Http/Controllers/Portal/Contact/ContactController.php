@@ -22,7 +22,7 @@ class ContactController extends Controller
 
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
-        //load template parts todo Deze moeten we nog uit instellingen halen!!!
+        //load template parts todo Deze moeten we nog uit settings.json halen!!!
         $documentTemplate = DocumentTemplate::find(6);
         $documentTemplate->load('footer', 'baseTemplate', 'header');
 

@@ -8,29 +8,38 @@ import Col from 'react-bootstrap/Col';
 import LoadingView from '../../../../components/general/LoadingView';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
+import ParticipantProjectAPI from '../../../../api/participant-project/ParticipantProjectAPI';
 
-function StepFour({ previous, contactId, projectId }) {
+function StepFour({ previous, registerValues }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        // If there is an id and is not the same as previous id
-        // then call api
-        if (contactId) {
-            (function callFetchContact() {
-                setLoading(true);
-                ContactAPI.previewDocument(contactId, projectId)
-                    .then(payload => {
-                        setContactDocument(payload.data);
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                        setLoading(false);
-                    });
-            })();
-        }
-    }, [contactId]);
+        (function callFetchContact() {
+            setLoading(true);
+            ContactAPI.previewDocument(registerValues.contactId, registerValues.projectId)
+                .then(payload => {
+                    setContactDocument(payload.data);
+                    setLoading(false);
+                })
+                .catch(error => {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setLoading(false);
+                });
+        })();
+    }, [registerValues]);
+
+    function handleSubmitRegisterValues(actions) {
+        ParticipantProjectAPI.createParticipantProject(registerValues)
+            .then(payload => {
+                console.log(payload);
+                actions.setSubmitting(false);
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                actions.setSubmitting(false);
+            });
+    }
 
     const validationSchema = Yup.object({
         didAgreeRegistration: Yup.bool().test(
@@ -48,7 +57,7 @@ function StepFour({ previous, contactId, projectId }) {
                 <Formik
                     validationSchema={validationSchema}
                     onSubmit={function(values, actions) {
-                        // TODO submit registerValues to backend
+                        handleSubmitRegisterValues(actions);
                     }}
                     initialValues={{ didAgreeRegistration: false }}
                 >

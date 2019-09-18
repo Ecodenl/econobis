@@ -48,20 +48,21 @@ h3 {
   font-weight: bold;
 }
 
-.body {
-  background-color: #034b8c;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), url('../images/page-head5.jpg');
-  background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), url('../images/page-head5.jpg');
-  background-position: 0px 0px, 50% 50%;
-  background-size: auto, cover;
-  font-family: Montserrat, sans-serif;
-  color: #333;
-}
+/*.body-login {*/
+/*  background-color: #034b8c;*/
+/*  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), url('../images/page-head5.jpg');*/
+/*  background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), url('../images/page-head5.jpg');*/
+/*  background-position: 0px 0px, 50% 50%;*/
+/*  background-size: auto, cover;*/
+/*  font-family: Montserrat, sans-serif;*/
+/*  color: #333;*/
+/*  min-height: 100vh;*/
+/*}*/
 
-.full-page-section {
-  position: relative;
-  min-height: 100vh;
-}
+/*.full-page-section {*/
+/*  position: relative;*/
+/*  min-height: 100vh;*/
+/*}*/
 
 .div-block {
   position: absolute;
@@ -165,13 +166,13 @@ h3 {
   margin-right: 10px;
 }
 
-.image {
-  display: block;
-  max-width: 80%;
-  margin-right: auto;
-  margin-bottom: 40px;
-  margin-left: auto;
-}
+/*.image {*/
+/*  display: block;*/
+/*  max-width: 80%;*/
+/*  margin-right: auto;*/
+/*  margin-bottom: 40px;*/
+/*  margin-left: auto;*/
+/*}*/
 
 .div-block-2 {
   position: absolute;

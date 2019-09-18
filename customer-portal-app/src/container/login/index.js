@@ -6,6 +6,9 @@ import LogoImage from '../../images/logo.png';
 import LoginForm from './Form';
 import AuthAPI from '../../api/auth/AuthAPI';
 import Alert from 'react-bootstrap/Alert';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 export default props => {
     const [error, setError] = useState('');
@@ -20,7 +23,6 @@ export default props => {
             })
             .catch(error => {
                 // If login fails show error and then set submitting back to false
-                // TODO Rob Error melding goed tonen
                 setError('Gebruikte logingegevens zijn onjuist');
                 actions.setSubmitting(false);
             });
@@ -37,24 +39,27 @@ export default props => {
             ) : (
                 <AuthConsumer>
                     {({ isAuth, login }) => (
-                        <div className="body full-page-section">
-                            <div className="div-block">
-                                <div className="div-block">
-                                    <div className="div-block">
-                                        <img src={LogoImage} alt="" className="image" />
-                                        <LoginForm handleSubmit={handleSubmit} login={login} />
-                                        {error ? (
-                                            <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                                {error}
-                                            </Alert>
-                                        ) : null}
-                                        <a href="wachtwoord-vergeten.html" className="link">
+                        <Container fluid className="container-login">
+                            <Row
+                                className="justify-content-center align-content-center"
+                                style={{ minHeight: '100vh', height: '100vh' }}
+                            >
+                                <Col xs="12" sm="6" md="4" lg="3" xl="2">
+                                    <img src={LogoImage} alt="" className="image" />
+                                    <LoginForm handleSubmit={handleSubmit} login={login} />
+                                    {error ? (
+                                        <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                            {error}
+                                        </Alert>
+                                    ) : null}
+                                    <Row className="justify-content-center">
+                                        <a href="wachtwoord-vergeten.html" className="login-link">
                                             Wachtwoord vergeten?
                                         </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Container>
                     )}
                 </AuthConsumer>
             )}

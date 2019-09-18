@@ -6,7 +6,7 @@ const InputText = ({ field, type, className, id, readOnly, error, placeholder })
         <>
             <input
                 type={type}
-                className={`text-input content w-input ${Boolean(error) ? 'has-error' : ''} `}
+                className={`text-input w-input ${className} ${Boolean(error) ? 'has-error' : ''} `}
                 id={id}
                 {...field}
                 readOnly={readOnly}
@@ -19,7 +19,7 @@ const InputText = ({ field, type, className, id, readOnly, error, placeholder })
 
 InputText.defaultProps = {
     type: 'text',
-    className: '',
+    className: 'content',
     readOnly: false,
     error: false,
     placeholder: '',

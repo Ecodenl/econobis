@@ -21,27 +21,22 @@ const LoginForm = function({ handleSubmit, login }) {
                 actions.setSubmitting(true);
                 handleSubmit(values, actions, login);
             }}
-            render={({ errors, touched, setFieldValue, isSubmitting }) => {
+            render={({ isSubmitting }) => {
                 return (
                     <Form>
                         <Field
                             name="username"
-                            render={({ field /* _form */ }) => (
-                                <InputText
-                                    field={field}
-                                    id="username"
-                                    className={'text-input w-input'}
-                                    placeholder={'email'}
-                                />
+                            render={({ field }) => (
+                                <InputText field={field} id="username" className={''} placeholder={'email'} />
                             )}
                         />
                         <Field
                             name="password"
-                            render={({ field /* _form */ }) => (
+                            render={({ field }) => (
                                 <InputText
                                     field={field}
                                     id="password"
-                                    className={'text-input w-input'}
+                                    className={''}
                                     placeholder={'wachtwoord'}
                                     type={'password'}
                                 />

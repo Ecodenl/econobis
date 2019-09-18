@@ -4,7 +4,8 @@ import ProtectedRoute from './route/ProtectedRoute';
 import PublicRoute from './route/PublicRoute';
 import { AuthProvider } from './context/AuthContext';
 import { PortalUserProvider } from './context/PortalUserContext';
-import Login from './container/login';
+import Login from './container/authorization/login';
+import Forgot from './container/authorization/forgot';
 import ContactDetails from './container/contact-details';
 import MyAreasOfInterest from './container/my-areas-of-interest';
 import RegisterCapital from './container/register/capital';
@@ -24,6 +25,7 @@ function App() {
                         <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                         <ProtectedRoute path="/project/:id" component={ProjectDetails} />
                         <PublicRoute path="/login" component={Login} />
+                        <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />
                     </Switch>
                 </PortalUserProvider>
             </AuthProvider>

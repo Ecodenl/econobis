@@ -15,4 +15,11 @@ export default {
 
         return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });
     },
+
+    forgot: email => {
+        const requestUrl = `${BASE_URL}/password/email`;
+        delete axios.defaults.headers.common['Authorization'];
+
+        return axios.post(requestUrl, { ...AUTH_KEY, ...email });
+    },
 };

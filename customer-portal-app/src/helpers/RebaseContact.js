@@ -4,7 +4,7 @@ export default function(contactData) {
     contactData.emailCorrespondence = emailCorrespondence ? emailCorrespondence : {};
 
     // Set invoice email address
-    const emailInvoice = contactData.emailAddresses.find(emailAddress => emailAddress.type === 'invoice');
+    const emailInvoice = contactData.emailAddresses.find(emailAddress => emailAddress.typeId === 'invoice');
     contactData.emailInvoice = emailInvoice ? emailInvoice : {};
 
     // Set primary phone number

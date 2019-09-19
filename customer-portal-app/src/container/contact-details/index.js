@@ -47,13 +47,13 @@ const ContactDetails = function(props) {
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
                 setContact(updatedContact);
+                actions.setSubmitting(false);
+                switchToView();
             })
             .catch(error => {
+                actions.setSubmitting(false);
                 alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
-
-        actions.setSubmitting(false);
-        switchToView();
     }
 
     return (

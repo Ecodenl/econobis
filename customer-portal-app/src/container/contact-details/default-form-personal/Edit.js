@@ -214,9 +214,9 @@ const DefaultContactEdit = function({ handleSubmit, initialContact, values, setF
                 <Row>
                     <Col xs={12} sm={8}>
                         <Field
-                            name="ibanName"
+                            name="ibanAttn"
                             render={({ field }) => (
-                                <InputText field={field} id="iban_name" placeholder={'IBAN te name van'} />
+                                <InputText field={field} id="iban_attn" placeholder={'IBAN te name van'} />
                             )}
                         />
                     </Col>

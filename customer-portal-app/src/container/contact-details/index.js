@@ -43,7 +43,6 @@ const ContactDetails = function(props) {
 
     function handleSubmitContactValues(values, actions, switchToView) {
         const updatedContact = { ...contact, ...values };
-        // TODO Do Api request to update contact values
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
                 setContact(updatedContact);

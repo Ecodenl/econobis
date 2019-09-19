@@ -64,10 +64,18 @@ function RegisterCapital({ match, currentSelectedContact }) {
         setRegisterValues({ ...registerValues, ...values });
     }
 
-    function handleSubmitContactValues(values) {
-        // TODO Do Api request to update contact values
-
-        setContact({ ...contact, ...values });
+    function handleSubmitContactValues(values, actions, switchToView) {
+        const updatedContact = { ...contact, ...values };
+        ContactAPI.updateContact(updatedContact)
+            .then(payload => {
+                setContact(updatedContact);
+                actions.setSubmitting(false);
+                switchToView();
+            })
+            .catch(error => {
+                actions.setSubmitting(false);
+                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+            });
     }
 
     return (

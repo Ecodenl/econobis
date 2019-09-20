@@ -3,6 +3,7 @@ import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import StepFour from './StepFour';
+import StepFive from './StepFive';
 
 function Steps({
     currentStep,
@@ -13,6 +14,7 @@ function Steps({
     handleSubmitRegisterValues,
     initialContact,
     handleSubmitContactValues,
+    setSucces,
 }) {
     switch (currentStep) {
         case 1:
@@ -43,7 +45,16 @@ function Steps({
                 />
             );
         case 4:
-            return <StepFour previous={previous} registerValues={initialRegisterValues} />;
+            return (
+                <StepFour
+                    previous={previous}
+                    next={next}
+                    registerValues={initialRegisterValues}
+                    setSucces={setSucces}
+                />
+            );
+        case 5:
+            return <StepFive />;
         default:
             return;
     }

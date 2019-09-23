@@ -99,13 +99,10 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row">
                         {dateSent ? (
-                            <ViewText
-                                label={'Factuur datum'}
-                                value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''}
-                            />
+                            <ViewText label={'Nota datum'} value={dateSent ? moment(dateSent).format('DD-MM-Y') : ''} />
                         ) : (
                             <ViewText
-                                label={'Geplande factuur datum'}
+                                label={'Geplande nota datum'}
                                 value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
                             />
                         )}

@@ -121,7 +121,7 @@ class InvoiceHelper
 
     public static function saveInvoiceStatus(Invoice $invoice)
     {
-        //Indien factuur definitief verwerkt wordt of verzonden, dan doen we hier geen statuswijziging.
+        //Indien nota definitief verwerkt wordt of verzonden, dan doen we hier geen statuswijziging.
         if($invoice->status_id !== 'in-progress'
             && $invoice->status_id !== 'is-sending'
             && $invoice->status_id !== 'error-making'
@@ -180,10 +180,10 @@ class InvoiceHelper
             return false;
         }
 
-        $subject = 'Factuur';
+        $subject = 'Nota';
         $htmlBody = 'Beste ' . $contactInfo['contactPerson'] . ',';
         $htmlBody .= '<p>&nbsp;</p>';
-        $htmlBody .= 'Hierbij uw factuur: ' . $invoice->number . '.';
+        $htmlBody .= 'Hierbij uw nota: ' . $invoice->number . '.';
         $htmlBody .= '<p>&nbsp;</p>';
         $htmlBody .= 'Met vriendelijke groet,';
         $htmlBody .= '<p></p>';
@@ -292,7 +292,7 @@ class InvoiceHelper
         if (!$emailTemplate) {
             $htmlBody = 'Beste ' . $contactInfo['contactPerson'] . ',';
             $htmlBody .= '<p>&nbsp;</p>';
-            $htmlBody .= 'Uw heeft nog een openstaand factuur: ' . $invoice->number . '.';
+            $htmlBody .= 'Uw heeft nog een openstaand nota: ' . $invoice->number . '.';
             $htmlBody .= '<p>&nbsp;</p>';
             $htmlBody .= 'Met vriendelijke groet,';
             $htmlBody .= '<p></p>';
@@ -369,9 +369,9 @@ class InvoiceHelper
             return $pdf->output();
         }
 
-        // indien geen preview, dan gaan nu definitief factuurnummer bepalen
+        // indien geen preview, dan gaan nu definitief notanummer bepalen
         $currentYear = Carbon::now()->year;
-        // Haal laatst uitgedeelde factuurnummer op (binnen factuurjaar)
+        // Haal laatst uitgedeelde notanummer op (binnen notajaar)
         $lastInvoice = Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '!=', 0)->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
 
         $newInvoiceNumber = 1;
@@ -382,7 +382,7 @@ class InvoiceHelper
 
         if(Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '=', $newInvoiceNumber)->whereYear('created_at', '=', $currentYear)->exists())
         {
-            Log::error("Voor factuur met ID " . $invoice->id . " kon geen nieuw factuurnummer bepaald worden.");
+            Log::error("Voor nota met ID " . $invoice->id . " kon geen nieuw notanummer bepaald worden.");
             self::invoicePdfIsNotCreated($invoice);
             return false;
         }else{
@@ -391,7 +391,7 @@ class InvoiceHelper
             $invoice->save();
         }
 
-        // nu we nieuw factuurnummer hebben kunnen we PDF maken
+        // nu we nieuw notanummer hebben kunnen we PDF maken
         $pdf = PDF::loadView('invoices.generic', [
             'invoice' => $invoice,
             'contactPerson' => $contactPerson,
@@ -447,21 +447,21 @@ class InvoiceHelper
 
     public static function invoiceInProgress(Invoice $invoice)
     {
-        //Factuur moet nog status to-send hebben en mag niet al voorkomen in tabel invoicesToSend
+        //Nota moet nog status to-send hebben en mag niet al voorkomen in tabel invoicesToSend
         if($invoice->status_id !== 'to-send')
         {
-            abort(404, "Factuur met ID " . $invoice->id . " heeft geen status Te verzenden");
+            abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden");
         }
         else
         {
             if($invoice->invoicesToSend)
             {
-                abort(404, "Factuur met ID " . $invoice->id . " is al aangevraagd om te verzenden");
+                abort(404, "Nota met ID " . $invoice->id . " is al aangevraagd om te verzenden");
             }
 
-            // We zetten factuur voorlopig in progress zolang we bezig met maken (en evt. verzenden) van deze factuur.
-            // We leggen ook al date-sent vast (deze wordt nl. gebruikt als factuurdatum op de factuur en hebben we
-            // dus nodig bij maken factuur (PDF).
+            // We zetten nota voorlopig in progress zolang we bezig met maken (en evt. verzenden) van deze nota.
+            // We leggen ook al date-sent vast (deze wordt nl. gebruikt als notadatum op de nota en hebben we
+            // dus nodig bij maken nota (PDF).
             $invoice->status_id = 'in-progress';
             $invoice->date_sent = Carbon::today();
             $invoice->save();
@@ -472,7 +472,7 @@ class InvoiceHelper
     }
     public static function invoiceIsSending(Invoice $invoice)
     {
-        //Factuur moet nog status in-progress hebben
+        //Nota moet nog status in-progress hebben
         if($invoice->status_id === 'in-progress')
         {
             $invoice->status_id = 'is-sending';
@@ -481,10 +481,10 @@ class InvoiceHelper
     }
     public static function invoiceSend(Invoice $invoice)
     {
-        //Factuur moet nog status is-sending hebben
+        //Nota moet nog status is-sending hebben
         if($invoice->status_id === 'is-sending')
         {
-            //Haal factuur uit tabel invoices-to-send
+            //Haal nota uit tabel invoices-to-send
             $invoice->invoicesToSend()->delete();
             //Status sent
             $invoice->status_id = 'sent';
@@ -499,10 +499,10 @@ class InvoiceHelper
     }
     public static function invoicePdfIsNotCreated(Invoice $invoice)
     {
-        //Factuur moet nog status in-progress hebben
+        //Nota moet nog status in-progress hebben
         if($invoice->status_id === 'in-progress')
         {
-            //Haal factuur weer uit tabel invoices-to-send
+            //Haal nota weer uit tabel invoices-to-send
             $invoice->invoicesToSend()->delete();
             //Status terug naar to-send
             $invoice->status_id = 'to-send';
@@ -512,7 +512,7 @@ class InvoiceHelper
     }
     public static function invoiceErrorSending(Invoice $invoice)
     {
-        //Factuur moet nog status is-sending hebben
+        //Nota moet nog status is-sending hebben
         if($invoice->status_id === 'is-sending')
         {
             //Status naar error-send

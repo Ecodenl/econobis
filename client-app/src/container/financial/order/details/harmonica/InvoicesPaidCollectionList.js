@@ -12,7 +12,7 @@ class InvoicesPaidCollectionPaidCollectionList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/factuur/${id}`);
+        hashHistory.push(`/nota/${id}`);
     };
 
     render() {

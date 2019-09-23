@@ -254,7 +254,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 readOnly={true}
                             />
                             <InputText
-                                label="Factuur wordt gemaild naar"
+                                label="Nota wordt gemaild naar"
                                 value={this.props.contactEmail}
                                 name={'contactEmail'}
                                 readOnly={true}
@@ -263,7 +263,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template factuur incasso'}
+                                label={'E-mail template nota incasso'}
                                 name={'emailTemplateIdCollection'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdCollection}
@@ -283,7 +283,7 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template factuur overboeken'}
+                                label={'E-mail template nota overboeken'}
                                 name={'emailTemplateIdTransfer'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdTransfer}
@@ -320,7 +320,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 multi={false}
                             />
                             <InputSelect
-                                label={'Factuur frequentie'}
+                                label={'Nota frequentie'}
                                 id="collectionFrequencyId"
                                 name={'collectionFrequencyId'}
                                 options={this.props.orderCollectionFrequencies}
@@ -404,7 +404,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputDate
-                                label="Volgende factuur datum"
+                                label="Volgende nota datum"
                                 value={dateNextInvoice}
                                 name={'dateNextInvoice'}
                                 onChangeAction={this.handleInputChangeInvoiceDate}

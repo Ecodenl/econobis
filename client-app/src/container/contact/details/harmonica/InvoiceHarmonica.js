@@ -12,7 +12,7 @@ const InvoiceHarmonica = ({ toggleShowList, showInvoicesList, invoiceCount }) =>
             <PanelBody>
                 <div className="col-sm-10" onClick={toggleShowList} role="button">
                     <span className="">
-                        FACTUREN <span className="badge">{invoiceCount}</span>
+                        NOTA'S <span className="badge">{invoiceCount}</span>
                     </span>
                 </div>
                 <div className="col-sm-2" />

@@ -24,7 +24,7 @@ class ButtonUnpaidInvoices extends Component {
             <div className={this.props.size}>
                 <div className="panel panel-default" id="dashboardbutton-5">
                     <div className="panel-body">
-                        <h4 className="text-center text-bold">NIET BETAALDE FACTUREN</h4>
+                        <h4 className="text-center text-bold">NIET BETAALDE NOTA'S</h4>
                         <h4 className="text-center text-bold">{this.state.amountUnpaidInvoices}</h4>
                     </div>
                 </div>

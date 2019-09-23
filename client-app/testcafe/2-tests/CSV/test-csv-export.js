@@ -25,7 +25,7 @@ test('Export orders', async t => {
 });
 
 test('Export invoices', async t => {
-    await t.useRole(superUser).navigateTo(constants.app_url + '#/financieel/1/facturen');
+    await t.useRole(superUser).navigateTo(constants.app_url + '#/financieel/1/notas');
 
     await t.click(general.export);
 });

@@ -23,7 +23,7 @@ class FinancialToolbar extends Component {
             .then(payload => {
                 this.setState({ syncingToInvoices: false });
                 this.props.setError(200, payload.data);
-                hashHistory.push(`/financieel/${this.props.administrationDetails.id}/facturen/geexporteerd`);
+                hashHistory.push(`/financieel/${this.props.administrationDetails.id}/notas/geexporteerd`);
             })
             .catch(error => {
                 this.setState({ syncingToInvoices: false });
@@ -61,9 +61,9 @@ class FinancialToolbar extends Component {
                                         <span>
                                             <span
                                                 className="glyphicon glyphicon-refresh"
-                                                title="Facturen naar Twinfield synchroniseren"
+                                                title="Nota's naar Twinfield synchroniseren"
                                             />
-                                            &nbsp;Facturen
+                                            &nbsp;Nota's
                                         </span>
                                     }
                                     onClickAction={this.syncInvoicesToTwinfield}

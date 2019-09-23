@@ -14,16 +14,16 @@ class PaymentInvoiceListSetNotPaid extends Component {
         event.preventDefault();
         PaymentInvoicesAPI.setNotPaid(this.props.invoiceId).then(payload => {
             this.props.closeModal();
-            hashHistory.push(`/financieel/${this.props.administrationId}/uitkering-facturen/niet-betaald`);
+            hashHistory.push(`/financieel/${this.props.administrationId}/uitkering-notas/niet-betaald`);
         });
     };
 
     render() {
         return (
-            <Modal closeModal={this.props.closeModal} confirmAction={this.confirmAction} title="Factuur niet betaald">
+            <Modal closeModal={this.props.closeModal} confirmAction={this.confirmAction} title="Nota niet betaald">
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u deze factuur als niet betaald markeren?</span>
+                        <span>Wilt u deze nota als niet betaald markeren?</span>
                     </div>
                 </div>
             </Modal>

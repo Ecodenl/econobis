@@ -24,12 +24,12 @@ class OrderCreateToolbar extends Component {
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
                         {this.props.amountOfOrders > 0 && (
-                            <ButtonText buttonText={'Maak facturen'} onClickAction={this.showCreate} />
+                            <ButtonText buttonText={"Maak nota's"} onClickAction={this.showCreate} />
                         )}
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">Facturen aanmaken({this.props.amountOfOrders})</h4>
+                    <h4 className="text-center">Nota's aanmaken({this.props.amountOfOrders})</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showCreate && (

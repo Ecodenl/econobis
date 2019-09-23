@@ -1,9 +1,17 @@
 import { Selector } from 'testcafe';
 
 export default class ModelDetailsOrder {
-    constructor () {
+    constructor() {
         //order products
-        this.newInvoiceProduct = Selector('span').withExactText('Factuurregels').parent().parent().child().nth(1).child().nth(0).child('span');
+        this.newInvoiceProduct = Selector('span')
+            .withExactText('Notaregels')
+            .parent()
+            .parent()
+            .child()
+            .nth(1)
+            .child()
+            .nth(0)
+            .child('span');
         this.newInvoiceProductExisting = Selector('a').withExactText('Bestaand product');
         this.newInvoiceProductNew = Selector('a').withExactText('Nieuw product');
         this.newInvoiceProductOneTime = Selector('a').withExactText('Nieuw eenmalig product');
@@ -15,6 +23,16 @@ export default class ModelDetailsOrder {
         this.price = Selector('input[name="price"]');
         this.variablePrice = Selector('input[name="variablePrice"]');
         this.dateStart = Selector('input[name="dateStart"]');
-        this.invoiceProductRows = Selector('span').withExactText('Factuurregels').parent().parent().parent().parent().child().nth(1).child().child().child();
+        this.invoiceProductRows = Selector('span')
+            .withExactText('Notaregels')
+            .parent()
+            .parent()
+            .parent()
+            .parent()
+            .child()
+            .nth(1)
+            .child()
+            .child()
+            .child();
     }
 }

@@ -52,12 +52,12 @@ class InvoiceListSend extends Component {
 
             if (!hasErrors) {
                 InvoiceDetailsAPI.sendAll([this.props.invoiceId], dateCollection).then(payload => {
-                    hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
                 });
             }
         } else {
             InvoiceDetailsAPI.sendAll([this.props.invoiceId], null).then(payload => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
             });
         }
     };
@@ -76,7 +76,7 @@ class InvoiceListSend extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur verzenden"
+                title="Nota verzenden"
                 buttonConfirmText={'Verzenden'}
             >
                 {this.props.paymentType === 'collection' && (
@@ -110,7 +110,7 @@ class InvoiceListSend extends Component {
                 )}
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u deze factuur verzenden?</span>
+                        <span>Wilt u deze nota verzenden?</span>
                     </div>
                 </div>
             </Modal>

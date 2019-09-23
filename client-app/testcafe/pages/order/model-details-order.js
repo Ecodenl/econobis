@@ -17,7 +17,7 @@ export default class ModelDetailsOrder {
         this.dateStart = Selector('input[name="dateStart"]');
         this.orderProductRows = Selector('span').withExactText('Orderregels').parent().parent().parent().parent().child().nth(1).child().child().child();
 
-        this.newInvoice = Selector('button').withExactText('Preview factuur');
+        this.newInvoice = Selector('button').withExactText('Preview nota');
         this.dateCollection = Selector('input[name="dateCollection"]');
     }
 }

@@ -226,7 +226,7 @@ class AdministrationController extends ApiController
             $this->storeLogo($logo, $administration);
         }
 
-        //Als er twinfield gebruikt gaat worden, dan contacten aanmaken van facturen vanaf 1-1-2019 (alleen doen in jaar 2019)
+        //Als er twinfield gebruikt gaat worden, dan contacten aanmaken van notas vanaf 1-1-2019 (alleen doen in jaar 2019)
         if($isUsesTwinfieldDirty && $administration->uses_twinfield && $administration->twinfield_is_valid)
         {
             if(Carbon::now()->year == 2019)

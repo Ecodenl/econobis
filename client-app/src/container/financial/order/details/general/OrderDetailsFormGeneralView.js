@@ -45,18 +45,18 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText label="Contact persoon" value={props.contactPerson} />
-                        <ViewText label="Factuur wordt gemaild naar" value={props.contactEmail} />
+                        <ViewText label="Nota wordt gemaild naar" value={props.contactEmail} />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'E-mail template factuur incasso'}
+                            label={'E-mail template nota incasso'}
                             value={emailTemplateCollection ? emailTemplateCollection.name : ''}
                         />
                         <ViewText label={'Betreft'} value={subject ? subject : ''} />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'E-mail template factuur overboeken'}
+                            label={'E-mail template nota overboeken'}
                             value={emailTemplateTransfer ? emailTemplateTransfer.name : ''}
                         />
                         <ViewText label={'Betaalwijze'} value={paymentType ? paymentType.name : ''} />
@@ -67,7 +67,7 @@ const OrderDetailsFormGeneralView = props => {
                             value={emailTemplateReminder ? emailTemplateReminder.name : ''}
                         />
                         <ViewText
-                            label={'Factuur frequentie'}
+                            label={'Nota frequentie'}
                             value={collectionFrequency ? collectionFrequency.name : ''}
                         />
                     </div>
@@ -110,7 +110,7 @@ const OrderDetailsFormGeneralView = props => {
                             value={dateRequested ? moment(dateRequested).format('DD-MM-Y') : ''}
                         />
                         <ViewText
-                            label={'Volgende factuur datum'}
+                            label={'Volgende nota datum'}
                             value={dateNextInvoice ? moment(dateNextInvoice).format('DD-MM-Y') : ''}
                         />
                     </div>

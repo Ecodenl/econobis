@@ -19,7 +19,7 @@ const InvoiceListDeleteItem = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder factuur: <strong> {props.number}? </strong>
+            Verwijder nota: <strong> {props.number}? </strong>
         </Modal>
     );
 };

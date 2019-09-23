@@ -51,7 +51,7 @@ class InvoiceListSetPaid extends Component {
         // If no errors send form
         if (!hasErrors) {
             InvoiceDetailsAPI.updateInvoice(invoice).then(payload => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/betaald`);
+                hashHistory.push(`/financieel/${this.props.administrationId}/notas/betaald`);
             });
         }
     };
@@ -61,10 +61,10 @@ class InvoiceListSetPaid extends Component {
 
         return (
             <Modal
-                buttonConfirmText="Factuur betalen"
+                buttonConfirmText="Nota betalen"
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur betalen"
+                title="Nota betalen"
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>

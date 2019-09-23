@@ -18,7 +18,7 @@ const InvoiceProductsFormList = props => {
                     return <InvoiceProductsFormItem key={invoiceProduct.id} invoiceProduct={invoiceProduct} />;
                 })
             ) : (
-                <div>Geen factuurregels bekend.</div>
+                <div>Geen notaregels bekend.</div>
             )}
         </div>
     );

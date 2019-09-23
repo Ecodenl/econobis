@@ -54,7 +54,7 @@ class DeleteRevenueDistribution implements DeleteInterface
     public function canDelete()
     {
         if($this->revenueDistribution->paymentInvoices()->count() > 0){
-            array_push($this->errorMessage, "Er is al een uitkerings factuur aangemaakt.");
+            array_push($this->errorMessage, "Er is al een uitkerings nota aangemaakt.");
         }
     }
 

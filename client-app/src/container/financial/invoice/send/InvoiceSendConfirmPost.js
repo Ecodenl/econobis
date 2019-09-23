@@ -55,13 +55,13 @@ class InvoiceSendConfirmPost extends Component {
                         InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
                             if (payload && payload.headers && payload.headers['x-filename']) {
                                 fileDownload(payload.data, payload.headers['x-filename']);
-                                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
                             } else {
-                                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
                             }
                         });
                     } else {
-                        hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                        hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
                     }
                 });
             }
@@ -76,13 +76,13 @@ class InvoiceSendConfirmPost extends Component {
                     InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
                         if (payload && payload.headers && payload.headers['x-filename']) {
                             fileDownload(payload.data, payload.headers['x-filename']);
-                            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
                         } else {
-                            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
                         }
                     });
                 } else {
-                    hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
                 }
             });
         }
@@ -102,7 +102,7 @@ class InvoiceSendConfirmPost extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur downloaden"
+                title="Nota downloaden"
                 buttonConfirmText={'Downloaden'}
                 loading={this.state.loading}
             >
@@ -122,7 +122,7 @@ class InvoiceSendConfirmPost extends Component {
 
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u alle facturen downloaden en doorzetten naar status verzonden?</span>
+                        <span>Wilt u alle nota's downloaden en doorzetten naar status verzonden?</span>
                     </div>
                 </div>
             </Modal>

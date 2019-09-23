@@ -29,7 +29,7 @@ const initialState = {
     showDeleteItem: false,
     showSelectOrdersToCreate: false,
     checkedAllCheckboxes: false,
-    previewOrderText: 'Selecteer preview facturen',
+    previewOrderText: "Selecteer preview nota's",
     deleteItem: {
         id: '',
         subject: '',
@@ -198,7 +198,7 @@ class OrdersList extends Component {
         let createOrderIds = [];
 
         this.setState({
-            previewOrderText: 'Preview facturen',
+            previewOrderText: "Preview nota's",
         });
 
         this.props.orders.data.map(order => order.checked === true && createOrderIds.push(order.id));

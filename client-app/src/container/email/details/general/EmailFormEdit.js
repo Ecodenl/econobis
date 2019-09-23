@@ -280,7 +280,7 @@ class EmailFormEdit extends Component {
 
                 <div className="row">
                     <InputSelect
-                        label={'Factuur'}
+                        label={'Nota'}
                         size={'col-sm-6'}
                         name={'invoiceId'}
                         options={this.state.invoices}

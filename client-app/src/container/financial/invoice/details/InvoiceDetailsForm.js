@@ -19,11 +19,11 @@ class InvoiceDetailsForm extends Component {
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van factuur.';
+            loadingText = 'Fout bij het ophalen van nota.';
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (isEmpty(this.props.invoiceDetails)) {
-            loadingText = 'Geen factuur gevonden!';
+            loadingText = 'Geen nota gevonden!';
         } else {
             loading = false;
         }

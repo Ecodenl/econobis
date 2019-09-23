@@ -124,7 +124,7 @@ class PaymentInvoicesList extends Component {
                         </div>
                     </div>
                     <div className="col-md-4">
-                        <h3 className="text-center table-title">Uitkering facturen</h3>
+                        <h3 className="text-center table-title">Uitkering nota's</h3>
                     </div>
                     <div className="col-md-4">
                         <div className="row">
@@ -156,7 +156,7 @@ class PaymentInvoicesList extends Component {
                         <DataTableBody>
                             {data.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6}>Geen uitkering facturen gevonden!</td>
+                                    <td colSpan={6}>Geen uitkering nota's gevonden!</td>
                                 </tr>
                             ) : (
                                 data.map(invoice => {

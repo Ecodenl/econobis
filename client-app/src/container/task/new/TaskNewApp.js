@@ -394,7 +394,7 @@ class TaskNewApp extends Component {
                             },
                         });
                         break;
-                    case 'factuur':
+                    case 'nota':
                         this.setState({
                             ...this.state,
                             task: {

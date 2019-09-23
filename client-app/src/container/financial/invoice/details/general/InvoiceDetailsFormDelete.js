@@ -20,7 +20,7 @@ const InvoiceDetailsFormDelete = props => {
             title="Verwijderen"
         >
             <p>
-                Verwijder factuur: <strong> {`${props.number}?`}</strong>
+                Verwijder nota: <strong> {`${props.number}?`}</strong>
             </p>
         </Modal>
     );

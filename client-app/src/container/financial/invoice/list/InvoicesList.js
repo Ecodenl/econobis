@@ -38,13 +38,13 @@ import InvoiceListDeleteItem from './InvoiceListDeleteItem';
 const initialState = {
     showSelectInvoicesToSend: false,
     checkedAllCheckboxes: false,
-    emailInvoicesText: 'Selecteer preview e-mail facturen',
+    emailInvoicesText: "Selecteer preview e-mail nota's",
     onlyEmailInvoices: false,
     onlyPostInvoices: false,
-    postInvoicesText: 'Selecteer preview post facturen',
+    postInvoicesText: "Selecteer preview post nota's",
     sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
     sendRemindersTextPost: 'Selecteer post herinneringen',
-    setInvoicesPaidText: 'Selecteer betaalde facturen',
+    setInvoicesPaidText: "Selecteer betaalde nota's",
     showSetInvoicesPaid: false,
     deleteItem: {
         id: '',
@@ -154,7 +154,7 @@ class InvoicesList extends Component {
 
             InvoicesAPI.getCSV({ filters, sorts, administrationId })
                 .then(payload => {
-                    fileDownload(payload.data, 'Facturen-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    fileDownload(payload.data, 'Notas-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -167,7 +167,7 @@ class InvoicesList extends Component {
         let sendInvoiceIds = [];
 
         this.setState({
-            emailInvoicesText: 'Preview e-mail facturen',
+            emailInvoicesText: "Preview e-mail nota's",
             onlyEmailInvoices: true,
         });
 
@@ -181,7 +181,7 @@ class InvoicesList extends Component {
         if (sendInvoiceIds.length > 0) {
             this.props.previewSend(sendInvoiceIds);
             hashHistory.push(
-                `/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden/email/${paymentType}`
+                `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         } else {
             this.setState({ showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend });
@@ -192,7 +192,7 @@ class InvoicesList extends Component {
         let sendInvoiceIds = [];
 
         this.setState({
-            postInvoicesText: 'Preview post facturen',
+            postInvoicesText: "Preview post nota's",
             onlyPostInvoices: true,
         });
 
@@ -206,7 +206,7 @@ class InvoicesList extends Component {
         if (sendInvoiceIds.length > 0) {
             this.props.previewSend(sendInvoiceIds);
             hashHistory.push(
-                `/financieel/${this.props.administrationId}/facturen/te-verzenden/verzenden/post/${paymentType}`
+                `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
             );
         } else {
             this.setState({ showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend });
@@ -274,12 +274,12 @@ class InvoicesList extends Component {
         if (setPaidInvoicesIds.length > 0) {
             this.setState({
                 showSetInvoicesPaid: true,
-                setInvoicesPaidText: 'Selecteer betaalde facturen',
+                setInvoicesPaidText: "Selecteer betaalde nota's",
             });
         } else {
             this.setState({
                 showSetInvoicesPaid: false,
-                setInvoicesPaidText: 'Zet facturen betaald',
+                setInvoicesPaidText: "Zet nota's betaald",
             });
         }
     };
@@ -358,11 +358,11 @@ class InvoicesList extends Component {
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van facturen.';
+            loadingText = "Fout bij het ophalen van nota's.";
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (data.length === 0) {
-            loadingText = 'Geen facturen gevonden!';
+            loadingText = "Geen nota's gevonden!";
         } else {
             loading = false;
         }
@@ -451,7 +451,7 @@ class InvoicesList extends Component {
                         </div>
                     </div>
                     <div className="col-md-4">
-                        <h3 className="text-center table-title">Facturen</h3>
+                        <h3 className="text-center table-title">Nota's</h3>
                     </div>
                     <div className="col-md-4">
                         <div className="row">

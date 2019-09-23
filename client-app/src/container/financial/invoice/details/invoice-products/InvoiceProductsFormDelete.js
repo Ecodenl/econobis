@@ -21,7 +21,7 @@ const InvoiceProductsFormDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Verwijder factuurregel?</p>
+            <p>Verwijder notaregel?</p>
         </Modal>
     );
 };

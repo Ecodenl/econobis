@@ -139,7 +139,7 @@
         </tr>
         <tr>
             <td>
-                {{--Eerst factuur adres, anders primair--}}
+                {{--Eerst nota adres, anders primair--}}
                 @if($contactPerson)
                     {{ $invoice->order->contact->addressLines['street'] }}
                 @else
@@ -209,7 +209,7 @@
     <table cellpadding=0 cellspacing=2>
         <tr>
             <td width="50%">
-                Factuurdatum: {{ $invoice->date_sent ? Carbon\Carbon::parse($invoice->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}
+                Notadatum: {{ $invoice->date_sent ? Carbon\Carbon::parse($invoice->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}
             </td>
             <td width="50%">
                 KvK {{ $invoice->administration->kvk_number }}
@@ -217,7 +217,7 @@
         </tr>
         <tr>
             <td>
-                Factuurnummer: {{ $invoice->number }}
+                Notanummer: {{ $invoice->number }}
             </td>
             <td>
                 @if($invoice->administration->btw_number)
@@ -360,15 +360,15 @@
         </div>
     @elseif($invoice->payment_type_id == 'transfer' && $invoice->total_price_incl_vat_and_reduction < 0)
         <br/><br/>
-        <div class="conclusion-text">Het bedrag zal aan u worden overgemaakt of verrekend worden met een openstaande factuur.</div>
+        <div class="conclusion-text">Het bedrag zal aan u worden overgemaakt of verrekend worden met een openstaande nota.</div>
     @else
         <br/><br/>
         <div class="conclusion-text">Betaling graag
             binnen {{ $invoice->administration->default_payment_term ? $invoice->administration->default_payment_term : 30 }}
-            dagen na factuurdatum op bankrekening {{ $invoice->administration->IBAN }}
+            dagen na notadatum op bankrekening {{ $invoice->administration->IBAN }}
             overmaken @if($invoice->administration->iban_attn)t.n.v.
             {{ $invoice->administration->iban_attn }}@endif onder vermelding van
-            contactnummer {{ $invoice->order->contact->number }} en factuurnummer {{ $invoice->number }}.
+            contactnummer {{ $invoice->order->contact->number }} en notanummer {{ $invoice->number }}.
         </div>
     @endif
 </div>

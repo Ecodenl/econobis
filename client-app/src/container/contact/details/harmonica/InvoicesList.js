@@ -5,12 +5,12 @@ import moment from 'moment';
 
 const InvoicesList = ({ relatedInvoices }) => {
     const openItem = id => {
-        hashHistory.push(`/factuur/${id}`);
+        hashHistory.push(`/nota/${id}`);
     };
 
     return (
         <div>
-            {relatedInvoices == '' && <div>Geen facturen gevonden.</div>}
+            {relatedInvoices == '' && <div>Geen nota's gevonden.</div>}
 
             {relatedInvoices != '' && (
                 <table className="table harmonica-table">

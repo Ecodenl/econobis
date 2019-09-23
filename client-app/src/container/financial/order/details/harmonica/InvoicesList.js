@@ -12,14 +12,14 @@ class InvoicesList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/factuur/${id}`);
+        hashHistory.push(`/nota/${id}`);
     };
 
     render() {
         const { relatedInvoices } = this.props;
         return (
             <div>
-                {relatedInvoices == '' && <div>Geen facturen gevonden.</div>}
+                {relatedInvoices == '' && <div>Geen nota's gevonden.</div>}
 
                 {relatedInvoices != '' && (
                     <table className="table harmonica-table">

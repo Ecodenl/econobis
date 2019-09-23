@@ -231,7 +231,7 @@ class InvoiceController extends ApiController
 
         $createdPdf = $merger->merge();
 
-        $name = 'Post-facturen-notificaties-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+        $name = 'Post-notas-notificaties-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
 
         header('Access-Control-Expose-Headers: X-Filename');
         header('X-Filename:' . $name);
@@ -252,7 +252,7 @@ class InvoiceController extends ApiController
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
-        // verwijder alle facturen waar twinfield gebruikt wordt en geen ledgercode bekend is
+        // verwijder alle notas waar twinfield gebruikt wordt en geen ledgercode bekend is
         $validatedInvoices = $invoices->reject(function ($invoice) {
             return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
         });
@@ -269,9 +269,9 @@ class InvoiceController extends ApiController
 
             if ($paymentTypeId === 'collection') {
                 if (empty($administration->sepa_creditor_id)) {
-                    abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+                    abort(412, "Voor incasso nota's is SEPA crediteur id verplicht.");
                 }
-                // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
+                // verwijder alle notas waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
                 $validatedInvoices = $validatedInvoices->reject(function ($invoice) {
                     return (empty($invoice->order->contact->iban));
                 });
@@ -297,7 +297,7 @@ class InvoiceController extends ApiController
                 }
 
                 foreach ($validatedInvoices as $invoice) {
-                    //alleen als factuur goed is aangemaakt, gaan we mailen
+                    //alleen als nota goed is aangemaakt, gaan we mailen
                     if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
 
                         InvoiceHelper::invoiceIsSending($invoice);
@@ -313,7 +313,7 @@ class InvoiceController extends ApiController
                 }
 
                 if ($paymentTypeId === 'collection') {
-                    // haal niet goed aangemaakte facturen uit list voor SEPA file
+                    // haal niet goed aangemaakte notas uit list voor SEPA file
                     $validatedInvoices = $validatedInvoices->reject(function ($invoice) {
                         return ($invoice->invoicesToSend()->exists()
                             && !$invoice->invoicesToSend()->first()->invoice_created);
@@ -335,7 +335,7 @@ class InvoiceController extends ApiController
         set_time_limit(0);
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
-        // verwijder alle facturen waar twinfield gebruikt wordt en geen ledgercode bekend is
+        // verwijder alle notas waar twinfield gebruikt wordt en geen ledgercode bekend is
         $validatedInvoices = $invoices->reject(function ($invoice) {
             return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
         });
@@ -413,7 +413,7 @@ class InvoiceController extends ApiController
             }
         }
 
-        $name = 'Post-facturen-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+        $name = 'Post-notas-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
 
         libxml_use_internal_errors(true);
         $pdfOutput = PDF::loadHTML($html);
@@ -484,7 +484,7 @@ class InvoiceController extends ApiController
     {
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
-        // verwijder alle facturen waar twinfield gebruikt wordt en geen ledgercode bekend is
+        // verwijder alle notas waar twinfield gebruikt wordt en geen ledgercode bekend is
         $validatedInvoices = $invoices->reject(function ($invoice) {
             return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
         });
@@ -504,9 +504,9 @@ class InvoiceController extends ApiController
 
                 if ($paymentTypeId === 'collection') {
                     if (empty($administration->sepa_creditor_id)) {
-                        abort(412, 'Voor incasso facturen is SEPA crediteur id verplicht.');
+                        abort(412, "Voor incasso nota's is SEPA crediteur id verplicht.");
                     }
-                    // verwijder alle facturen waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
+                    // verwijder alle notas waar geen IBAN bij order en geen IBAN bij contact te vinden is uit collectie.
                     $validatedInvoices = $validatedInvoices->reject(function ($invoice) {
                         return (empty($invoice->order->contact->iban));
                     });

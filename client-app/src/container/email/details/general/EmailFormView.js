@@ -104,9 +104,9 @@ const EmailFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Order'} value={order ? order.name : ''} link={order ? 'order/' + order.id : ''} />
                 <ViewText
-                    label={'Factuur'}
+                    label={'Nota'}
                     value={invoice ? invoice.name : ''}
-                    link={invoice ? 'factuur/' + invoice.id : ''}
+                    link={invoice ? 'nota/' + invoice.id : ''}
                 />
             </div>
 

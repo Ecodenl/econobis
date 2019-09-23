@@ -207,7 +207,7 @@ class SepaHelper
 
             // Remittance Information
             $xml .= "\n\t\t\t\t<RmtInf>";
-            $xml .= "\n\t\t\t\t\t<Ustrd>Factuurnummer " . $invoice->number . "</Ustrd>"; // Unstructured (voorkeur in NL)
+            $xml .= "\n\t\t\t\t\t<Ustrd>Notanummer " . $invoice->number . "</Ustrd>"; // Unstructured (voorkeur in NL)
             $xml .= "\n\t\t\t\t</RmtInf>";
             $xml .= "\n\t\t\t</DrctDbtTxInf>";
         }

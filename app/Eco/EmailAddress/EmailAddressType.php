@@ -27,7 +27,7 @@ class EmailAddressType extends EnumWithIdAndName
             new static(static::HOME, 'Privé'),
             new static(static::GENERAL, 'Algemeen'),
             new static(static::ADMINISTRATION, 'Administratie'),
-            new static(static::INVOICE, 'Factuur'),
+            new static(static::INVOICE, 'Nota'),
         ];
     }
 }

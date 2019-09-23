@@ -27,7 +27,7 @@ const InvoiceProductsFormEdit = props => {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label={'Factuurnummer'}
+                                label={'Notanummer'}
                                 name={'invoice'}
                                 value={props.invoiceDetails ? props.invoiceDetails.number : ''}
                                 readOnly={true}

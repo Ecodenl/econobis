@@ -12,10 +12,15 @@ import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import InputDate from '../../../components/form/InputDate';
 
-const DefaultContactEdit = function({ handleSubmit, initialContact, values, setFieldValue }) {
+const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, values, setFieldValue }) {
     return (
         <Row>
             <Col xs={12} md={6}>
+                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
+                </Row>
+
                 <FormLabel className={'field-label'}>Naam</FormLabel>
                 <Row>
                     <Col xs={12} sm={6}>
@@ -248,11 +253,6 @@ const DefaultContactEdit = function({ handleSubmit, initialContact, values, setF
                     </Col>
                 </Row>
 
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
-                </Row>
-
                 <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
                 {values.primaryContactEnergySupplier ? (
                     <Row>
@@ -300,4 +300,4 @@ const DefaultContactEdit = function({ handleSubmit, initialContact, values, setF
     );
 };
 
-export default DefaultContactEdit;
+export default DefaultContactPersonalEdit;

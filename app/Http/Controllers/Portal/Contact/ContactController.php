@@ -14,6 +14,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\Project\Project;
+use App\Eco\User\User;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Rules\EnumExists;
@@ -26,201 +27,71 @@ class ContactController extends ApiController
 {
     public function update(Contact $contactOrgineel, Request $request)
     {
-        if (!isset($request) || !isset($request->id) || !isset($request->typeId) ) {
+        if (!isset($request) || !isset($request->id) || !isset($request->typeId)) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+
         // todo wellicht met binnenkomend contactOrigineel checken of contact ondertussen gewijzigd is?
+
+        // ophalen contactgegevens portal user (vertegenwoordiger)
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, wellicht voor nu uit settings.json halen?!?
+        Auth::setUser(User::find(1));
 
         DB::transaction(function () use ($request) {
 
             $contact = Contact::find($request->id);
-            if($request->typeId == 'person') {
 
-                $contactData = $request->validate([
-                    'iban' => '',
-                    'ibanAttn' => '',
-                    'didAgreeAvg' => 'boolean',
-                ]);
+            $contactData = $request->validate([
+                'iban' => '',
+                'ibanAttn' => '',
+                'didAgreeAvg' => 'boolean',
+            ]);
 
-                $contact->fill($this->arrayKeysToSnakeCase($contactData));
-                $contact->save();
+            $contact->fill($this->arrayKeysToSnakeCase($contactData));
+            $contact->save();
 
-                $person = $contact->person;
-                $personData = $request->person;
-                if($person) {
-                    $lnp = $person->last_name_prefix;
-                    if(isset($personData['lastNamePrefixId']) && $personData['lastNamePrefixId']){
-                        if($personData['lastNamePrefixId'] === 'null') {
-                            $lnp = '';
-                        }
-                        else{
-                            $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];
-                        }
-                    }
-                    $personData['lastNamePrefix'] = $lnp;
+            // PERSON
+            if ($request->typeId == 'person') {
 
-                    unset($personData['lastNamePrefixId']);
-
-                    $person->fill($this->arrayKeysToSnakeCase($personData));
-                    $person->save();
-                }
-
-                if(isset($request['emailCorrespondence']) )
-                {
-                    $emailCorrespondenceData = $request['emailCorrespondence'];
-                    if(isset($emailCorrespondenceData['id']))
-                    {
-                        $emailCorrespondence = $contact->emailAddresses->find($emailCorrespondenceData['id']);
-                        if($emailCorrespondence) {
-                            $emailCorrespondence->fill($this->arrayKeysToSnakeCase($emailCorrespondenceData));
-                        }
-
-                    }else{
-                        $emailCorrespondenceData['typeId'] = EmailAddressType::ADMINISTRATION;
-                        $emailCorrespondenceData['primary'] = true;
-
-                        Validator::make($emailCorrespondenceData, [
-                            'typeId' => new EnumExists(EmailAddressType::class),
-                            'email' => '',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $emailCorrespondenceData = $this->sanitizeData($emailCorrespondenceData, [
-                            'typeId' => 'nullable',
-                            'primary' => 'boolean',
-                        ]);
-                        $emailCorrespondence = new EmailAddress($this->arrayKeysToSnakeCase($emailCorrespondenceData));
-                        $emailCorrespondence->contact_id = $contact->id;
-                    }
-                    $emailCorrespondence->save();
-                }
-
-                if(isset($request['emailInvoice']) )
-                {
-                    $emailInvoiceData = $request['emailInvoice'];
-                    if(isset($emailInvoiceData['id']))
-                    {
-                        $emailInvoice = $contact->emailAddresses->find($emailInvoiceData['id']);
-                        if($emailInvoice) {
-                            $emailInvoice->fill($this->arrayKeysToSnakeCase($emailInvoiceData));
-                        }
-
-                    }else{
-                        $emailInvoiceData['typeId'] = EmailAddressType::INVOICE;
-                        $emailInvoiceData['primary'] = false;
-
-                        Validator::make($emailInvoiceData, [
-                            'typeId' => new EnumExists(EmailAddressType::class),
-                            'email' => '',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $emailInvoiceData = $this->sanitizeData($emailInvoiceData, [
-                            'typeId' => 'nullable',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $emailInvoice = new EmailAddress($this->arrayKeysToSnakeCase($emailInvoiceData));
-                        $emailInvoice->contact_id = $contact->id;
-                    }
-                    $emailInvoice->save();
-                }
-
-                if(isset($request['phoneNumberPrimary']) )
-                {
-                    $phoneNumberPrimaryData = $request['phoneNumberPrimary'];
-                    if(isset($phoneNumberPrimaryData['id']))
-                    {
-                        $phoneNumberPrimary = $contact->phoneNumbers->find($phoneNumberPrimaryData['id']);
-                        if($phoneNumberPrimary) {
-                            $phoneNumberPrimary->fill($this->arrayKeysToSnakeCase($phoneNumberPrimaryData));
-                        }
-
-                    }else{
-                        $phoneNumberPrimaryData['typeId'] = PhoneNumberType::HOME;
-                        $phoneNumberPrimaryData['primary'] = true;
-
-                        Validator::make($phoneNumberPrimaryData, [
-                            'typeId' => new EnumExists(PhoneNumberType::class),
-                            'number' => '',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $phoneNumberPrimaryData = $this->sanitizeData($phoneNumberPrimaryData, [
-                            'typeId' => 'nullable',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $phoneNumberPrimary = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberPrimaryData));
-                        $phoneNumberPrimary->contact_id = $contact->id;
-                    }
-                    $phoneNumberPrimary->save();
-                }
-                if(isset($request['phoneNumberTwo']) )
-                {
-                    $phoneNumberTwoData = $request['phoneNumberTwo'];
-                    if(isset($phoneNumberTwoData['id']))
-                    {
-                        $phoneNumberTwo = $contact->phoneNumbers->find($phoneNumberTwoData['id']);
-                        if($phoneNumberTwo) {
-                            $phoneNumberTwo->fill($this->arrayKeysToSnakeCase($phoneNumberTwoData));
-                        }
-
-                    }else{
-                        $phoneNumberTwoData['typeId'] = PhoneNumberType::HOME;
-                        $phoneNumberTwoData['primary'] = false;
-
-                        Validator::make($phoneNumberTwoData, [
-                            'typeId' => new EnumExists(PhoneNumberType::class),
-                            'number' => '',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $phoneNumberTwoData = $this->sanitizeData($phoneNumberTwoData, [
-                            'typeId' => 'nullable',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $phoneNumberTwo = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberTwoData));
-                        $phoneNumberTwo->contact_id = $contact->id;
-                    }
-                    $phoneNumberTwo->save();
-                }
-
-                if(isset($request['primaryAddress']) )
-                {
-                    $primaryAddressData = $request['primaryAddress'];
-                    if(isset($primaryAddressData['id']))
-                    {
-                        $primaryAddress = $contact->addresses->find($primaryAddressData['id']);
-                        if($primaryAddress) {
-                            $primaryAddress->fill($this->arrayKeysToSnakeCase($primaryAddressData));
-                        }
-
-                    }else{
-                        $primaryAddressData['typeId'] = 'invoice';
-                        $primaryAddressData['primary'] = true;
-
-                        Validator::make($primaryAddressData, [
-                            'typeId' => new EnumExists(AddressType::class),
-                            'number' => '',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $primaryAddressData = $this->sanitizeData($primaryAddressData, [
-                            'typeId' => 'nullable',
-                            'primary' => 'boolean',
-                        ]);
-
-                        $primaryAddress = new Address($this->arrayKeysToSnakeCase($primaryAddressData));
-                        $primaryAddress->contact_id = $contact->id;
-                    }
-                    $primaryAddress->save();
+                $this->updatePerson($contact, $request);
+                $this->updateEmailCorrespondence($contact, $request);
+                $this->updateEmailInvoice($contact, $request);
+                $this->updatePhoneNumberPrimary($contact, $request);
+                $this->updatePhoneNumberTwo($contact, $request);
+                if (isset($request['primaryAddress'])) {
+                    $this->updateAddress($contact, $request['primaryAddress']);
                 }
 
             }
 
+            // ORGANISATION
+            if ($request->typeId == 'organisation') {
+
+                $this->updateOrganisation($contact, $request);
+                $this->updateEmailCorrespondence($contact, $request);
+                $this->updateEmailInvoice($contact, $request);
+                $this->updatePhoneNumberPrimary($contact, $request);
+                $this->updatePhoneNumberTwo($contact, $request);
+                if (isset($request['visitAddress'])) {
+                    $this->updateAddress($contact, $request['visitAddress']);
+                }
+                if (isset($request['postalAddress'])) {
+                    $this->updateAddress($contact, $request['postalAddress']);
+                }
+                if (isset($request['invoiceAddress'])) {
+                    $this->updateAddress($contact, $request['invoiceAddress']);
+                }
+            }
+
         });
+
+        // todo wellicht moeten we hier nog wat op verzinnen?!?
+        Auth::setUser($portalUser);
 
     }
 
@@ -237,20 +108,217 @@ class ContactController extends ApiController
 
         if ($documentTemplate->baseTemplate) {
             $documentBody .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
-                $documentTemplate->html_body, '','');
+                $documentTemplate->html_body, '', '');
         } else {
             $documentBody .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
                 '', '');
         }
         $documentBody .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
 
-        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody,'vertegenwoordigde', $portalUserContact);
-        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody,'contact', $contact);
-        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody,'project', $project);
+        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'vertegenwoordigde',
+            $portalUserContact);
+        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'contact', $contact);
+        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'project', $project);
         $documentBody = TemplateVariableHelper::stripRemainingVariableTags($documentBody);
 
         return $documentBody;
     }
 
+    protected function updatePerson($contact, Request $request)
+    {
+        $person = $contact->person;
+        $personData = $request->person;
+        if ($person) {
+            $lnp = $person->last_name_prefix;
+            if (isset($personData['lastNamePrefixId']) && $personData['lastNamePrefixId']) {
+                if ($personData['lastNamePrefixId'] === 'null') {
+                    $lnp = '';
+                } else {
+                    $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];
+                }
+            }
+            $personData['lastNamePrefix'] = $lnp;
+
+            unset($personData['lastNamePrefixId']);
+
+            $person->fill($this->arrayKeysToSnakeCase($personData));
+            $person->save();
+        }
+    }
+
+    protected function updateOrganisation($contact, Request $request)
+    {
+        $organisation = $contact->organisation;
+        $organisationData = $request->organisation;
+        if ($organisation) {
+
+            $organisation->fill($this->arrayKeysToSnakeCase($organisationData));
+            $organisation->save();
+        }
+    }
+
+    protected function updateEmailCorrespondence($contact, Request $request)
+    {
+
+        if (isset($request['emailCorrespondence'])) {
+            $emailCorrespondenceData = $request['emailCorrespondence'];
+            if (isset($emailCorrespondenceData['id'])) {
+                $emailCorrespondence = $contact->emailAddresses->find($emailCorrespondenceData['id']);
+                if ($emailCorrespondence) {
+                    $emailCorrespondence->fill($this->arrayKeysToSnakeCase($emailCorrespondenceData));
+                }
+
+            } else {
+                $emailCorrespondenceData['typeId'] = EmailAddressType::ADMINISTRATION;
+                $emailCorrespondenceData['primary'] = true;
+
+                Validator::make($emailCorrespondenceData, [
+                    'typeId' => new EnumExists(EmailAddressType::class),
+                    'email' => '',
+                    'primary' => 'boolean',
+                ]);
+
+                $emailCorrespondenceData = $this->sanitizeData($emailCorrespondenceData, [
+                    'typeId' => 'nullable',
+                    'primary' => 'boolean',
+                ]);
+                $emailCorrespondence = new EmailAddress($this->arrayKeysToSnakeCase($emailCorrespondenceData));
+                $emailCorrespondence->contact_id = $contact->id;
+            }
+            $emailCorrespondence->save();
+        }
+
+    }
+
+    protected function updateEmailInvoice($contact, Request $request)
+    {
+        if (isset($request['emailInvoice'])) {
+            $emailInvoiceData = $request['emailInvoice'];
+            if (isset($emailInvoiceData['id'])) {
+                $emailInvoice = $contact->emailAddresses->find($emailInvoiceData['id']);
+                if ($emailInvoice) {
+                    $emailInvoice->fill($this->arrayKeysToSnakeCase($emailInvoiceData));
+                }
+
+            } else {
+                $emailInvoiceData['typeId'] = EmailAddressType::INVOICE;
+                $emailInvoiceData['primary'] = false;
+
+                Validator::make($emailInvoiceData, [
+                    'typeId' => new EnumExists(EmailAddressType::class),
+                    'email' => '',
+                    'primary' => 'boolean',
+                ]);
+
+                $emailInvoiceData = $this->sanitizeData($emailInvoiceData, [
+                    'typeId' => 'nullable',
+                    'primary' => 'boolean',
+                ]);
+
+                $emailInvoice = new EmailAddress($this->arrayKeysToSnakeCase($emailInvoiceData));
+                $emailInvoice->contact_id = $contact->id;
+            }
+            $emailInvoice->save();
+        }
+
+    }
+
+    protected function updatePhoneNumberPrimary($contact, Request $request)
+    {
+        if (isset($request['phoneNumberPrimary'])) {
+            $phoneNumberPrimaryData = $request['phoneNumberPrimary'];
+            if (isset($phoneNumberPrimaryData['id'])) {
+                $phoneNumberPrimary = $contact->phoneNumbers->find($phoneNumberPrimaryData['id']);
+                if ($phoneNumberPrimary) {
+                    $phoneNumberPrimary->fill($this->arrayKeysToSnakeCase($phoneNumberPrimaryData));
+                }
+
+            } else {
+                $phoneNumberPrimaryData['typeId'] = PhoneNumberType::HOME;
+                $phoneNumberPrimaryData['primary'] = true;
+
+                Validator::make($phoneNumberPrimaryData, [
+                    'typeId' => new EnumExists(PhoneNumberType::class),
+                    'number' => '',
+                    'primary' => 'boolean',
+                ]);
+
+                $phoneNumberPrimaryData = $this->sanitizeData($phoneNumberPrimaryData, [
+                    'typeId' => 'nullable',
+                    'primary' => 'boolean',
+                ]);
+
+                $phoneNumberPrimary = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberPrimaryData));
+                $phoneNumberPrimary->contact_id = $contact->id;
+            }
+            $phoneNumberPrimary->save();
+        }
+
+    }
+
+    protected function updatePhoneNumberTwo($contact, Request $request)
+    {
+        if (isset($request['phoneNumberTwo'])) {
+            $phoneNumberTwoData = $request['phoneNumberTwo'];
+            if (isset($phoneNumberTwoData['id'])) {
+                $phoneNumberTwo = $contact->phoneNumbers->find($phoneNumberTwoData['id']);
+                if ($phoneNumberTwo) {
+                    $phoneNumberTwo->fill($this->arrayKeysToSnakeCase($phoneNumberTwoData));
+                }
+
+            } else {
+                $phoneNumberTwoData['typeId'] = PhoneNumberType::HOME;
+                $phoneNumberTwoData['primary'] = false;
+
+                Validator::make($phoneNumberTwoData, [
+                    'typeId' => new EnumExists(PhoneNumberType::class),
+                    'number' => '',
+                    'primary' => 'boolean',
+                ]);
+
+                $phoneNumberTwoData = $this->sanitizeData($phoneNumberTwoData, [
+                    'typeId' => 'nullable',
+                    'primary' => 'boolean',
+                ]);
+
+                $phoneNumberTwo = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberTwoData));
+                $phoneNumberTwo->contact_id = $contact->id;
+            }
+            $phoneNumberTwo->save();
+        }
+
+    }
+
+    protected function updateAddress($contact, $addressData)
+    {
+        if (isset($addressData['id']))
+        {
+            $primaryAddress
+                = $contact->addresses->find($addressData['id']);
+            if ($primaryAddress)
+            {
+                $primaryAddress->fill($this->arrayKeysToSnakeCase($addressData));
+            }
+
+        }else{
+            $addressData['typeId'] = 'invoice';
+            $addressData['primary'] = true;
+
+            Validator::make($addressData, [
+                'typeId' => new EnumExists(AddressType::class),
+                'number' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $addressData = $this->sanitizeData($addressData, [
+                'typeId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+
+            $primaryAddress = new Address($this->arrayKeysToSnakeCase($addressData));
+            $primaryAddress->contact_id = $contact->id;
+        }
+        $primaryAddress->save();
+    }
 
 }

@@ -4,6 +4,7 @@ import ContactAPI from '../../api/contact/ContactAPI';
 import rebaseContact from '../../helpers/RebaseContact';
 import LoadingView from '../../components/general/LoadingView';
 import ContactDetailsPersonal from './Personal';
+import ContactDetailsOrganisation from './Organisation';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
@@ -71,7 +72,12 @@ const ContactDetails = function(props) {
                         />
                     ) : null}
                     {/* If contact is organisation */}
-                    {contact.typeId === 'organisation' ? <div>{contact.fullName}</div> : null}
+                    {contact.typeId === 'organisation' ? (
+                        <ContactDetailsOrganisation
+                            initialContact={contact}
+                            handleSubmitContactValues={handleSubmitContactValues}
+                        />
+                    ) : null}
                 </div>
             )}
         </div>

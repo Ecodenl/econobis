@@ -20,10 +20,34 @@ export default {
                                 'dateOfBirth',
                             ],
                         },
+                        organisation: {
+                            fld: ['id', 'name', 'website', 'chamberOfCommerceNumber', 'vatNumber'],
+                        },
                         emailAddresses: { fld: ['id', 'email', 'primary', 'typeId'] },
                         phoneNumbers: { fld: ['id', 'number', 'primary', 'typeId'] },
-                        primaryAddress: {
-                            fld: ['id', 'street', 'number', 'addition', 'postalCode', 'city', 'countryId'],
+                        addresses: {
+                            fld: [
+                                'id',
+                                'street',
+                                'number',
+                                'addition',
+                                'postalCode',
+                                'city',
+                                'countryId',
+                                'primary',
+                                'typeId',
+                            ],
+                        },
+                        primaryOccupations: {
+                            fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
+                            rlt: {
+                                occupation: {
+                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation'],
+                                },
+                                contact: {
+                                    fld: ['id', 'fullName'],
+                                },
+                            },
                         },
                         primaryContactEnergySupplier: {
                             fld: [

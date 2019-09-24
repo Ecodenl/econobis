@@ -10,10 +10,45 @@ import * as Yup from 'yup';
 import { ClipLoader } from 'react-spinners';
 
 const validationSchema = Yup.object().shape({
-    // TODO set correct values for validation
-    // email: Yup.string()
-    //     .email()
-    //     .required('Verplicht'),
+    // TODO set more correct values for validation, only important fields are set now
+    person: Yup.object().shape({
+        lastName: Yup.string()
+            .trim()
+            .required('Verplicht'),
+    }),
+    emailCorrespondence: Yup.object().shape({
+        email: Yup.string()
+            .trim()
+            .email('Ongeldig e-mail adres')
+            .required('Verplicht'),
+    }),
+    emailInvoice: Yup.object().shape({
+        email: Yup.string()
+            .trim()
+            .email('Ongeldig e-mail adres'),
+    }),
+    phoneNumberPrimary: Yup.object().shape({
+        number: Yup.string()
+            .trim()
+            .required('Verplicht'),
+    }),
+    primaryAddress: Yup.object().shape({
+        street: Yup.string()
+            .trim()
+            .required('Verplicht'),
+        number: Yup.number()
+            .typeError('Alleen nummers')
+            .required('Verplicht'),
+        postalCode: Yup.string()
+            .trim()
+            .required('Verplicht'),
+        city: Yup.string()
+            .trim()
+            .required('Verplicht'),
+        countryId: Yup.string()
+            .trim()
+            .required('Verplicht'),
+    }),
 });
 
 function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
@@ -31,10 +66,13 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
+                        console.log(errors);
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit
                                     initialContact={initialContact}
+                                    touched={touched}
+                                    errors={errors}
                                     setFieldValue={setFieldValue}
                                     values={values}
                                 />

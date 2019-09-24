@@ -16,23 +16,25 @@ const ContactDetails = function(props) {
         if (props.currentSelectedContact.id) {
             // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
             if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
-                (function callFetchContact() {
-                    setLoading(true);
-                    ContactAPI.fetchContact(props.currentSelectedContact.id)
-                        .then(payload => {
-                            const contactData = rebaseContact(payload.data.data);
-
-                            setContact(contactData);
-                            setLoading(false);
-                        })
-                        .catch(error => {
-                            alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                            setLoading(false);
-                        });
-                })();
+                callFetchContact();
             }
         }
     }, [props.currentSelectedContact]);
+
+    function callFetchContact() {
+        setLoading(true);
+        ContactAPI.fetchContact(props.currentSelectedContact.id)
+            .then(payload => {
+                const contactData = rebaseContact(payload.data.data);
+
+                setContact(contactData);
+                setLoading(false);
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setLoading(false);
+            });
+    }
 
     function usePrevious(value) {
         const ref = useRef();
@@ -46,7 +48,7 @@ const ContactDetails = function(props) {
         const updatedContact = { ...contact, ...values };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
-                setContact(updatedContact);
+                callFetchContact();
                 actions.setSubmitting(false);
                 switchToView();
             })

@@ -28,8 +28,7 @@ function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) 
                     validationSchema={validationSchema}
                     onSubmit={(values, actions) => {
                         actions.setSubmitting(true);
-                        handleSubmitContactValues(values, actions, () => setEditForm(false));
-                        next();
+                        handleSubmitContactValues(values, actions, next);
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
                         return (

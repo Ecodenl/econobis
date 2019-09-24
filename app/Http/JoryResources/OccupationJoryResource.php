@@ -21,13 +21,4 @@ class OccupationJoryResource extends JoryResource
         $this->field('secondary_occupation')->filterable()->sortable();
     }
 
-//todo moet hier nog wat mee ?
-//    public function afterQueryBuild($query, $count = false): void
-//    {
-//        if(Auth::isPortalUser()){
-//            $query->whereHas('contact', function($query){
-//                $query->whereAuthorizedForPortalUser();
-//            });
-//        }
-//    }
 }

@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 
-const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, values }) {
+const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, touched, errors, values }) {
     return (
         <Row>
             <Col xs={12} md={6}>
@@ -23,7 +23,18 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={8}>
                         <Field
                             name="organisation.name"
-                            render={({ field }) => <InputText field={field} id="name" placeholder={'Naam'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.organisation &&
+                                        touched.organisation.name &&
+                                        (errors.organisation && errors.organisation.name)
+                                    }
+                                    id="name"
+                                    placeholder={'Naam'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -76,32 +87,6 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="did_agree_avg" className={'field-label'}>
-                    Akkoord privacy beleid
-                </FormLabel>
-                <Row>
-                    <Col xs={12} sm={8}>
-                        <Field
-                            name="didAgreeAvg"
-                            render={({ field }) => (
-                                <label className="w-checkbox checkbox-fld">
-                                    <input
-                                        type="checkbox"
-                                        {...field}
-                                        id="did_agree_avg"
-                                        checked={field.value}
-                                        className="w-checkbox-input checkbox"
-                                        disabled={initialContact.didAgreeAvg}
-                                    />
-                                    <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
-                                        Akkoord
-                                    </span>
-                                </label>
-                            )}
-                        />
-                    </Col>
-                </Row>
-
                 <FormLabel className={'field-label'}>Website</FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
@@ -146,7 +131,16 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="emailCorrespondence.email"
                             render={({ field }) => (
-                                <InputText field={field} id="email-correspondence" placeholder={'E-mail'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.emailCorrespondence &&
+                                        touched.emailCorrespondence.email &&
+                                        (errors.emailCorrespondence && errors.emailCorrespondence.email)
+                                    }
+                                    id="email-correspondence"
+                                    placeholder={'E-mail'}
+                                />
                             )}
                         />
                     </Col>
@@ -160,7 +154,16 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="emailInvoice.email"
                             render={({ field }) => (
-                                <InputText field={field} id="email-invoice" placeholder={'E-mail'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.emailInvoice &&
+                                        touched.emailInvoice.email &&
+                                        (errors.emailInvoice && errors.emailInvoice.email)
+                                    }
+                                    id="email-invoice"
+                                    placeholder={'E-mail'}
+                                />
                             )}
                         />
                     </Col>
@@ -174,7 +177,16 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="phoneNumberPrimary.number"
                             render={({ field }) => (
-                                <InputText field={field} id="telephone-number-1" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.phoneNumberPrimary &&
+                                        touched.phoneNumberPrimary.number &&
+                                        (errors.phoneNumberPrimary && errors.phoneNumberPrimary.number)
+                                    }
+                                    id="telephone-number-1"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -203,7 +215,18 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={12}>
                         <Field
                             name="visitAddress.street"
-                            render={({ field }) => <InputText field={field} id="street" placeholder={'Straat'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.visitAddress &&
+                                        touched.visitAddress.street &&
+                                        (errors.visitAddress && errors.visitAddress.street)
+                                    }
+                                    id="street"
+                                    placeholder={'Straat'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -213,7 +236,16 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="visitAddress.number"
                             render={({ field }) => (
-                                <InputText field={field} id="street_number" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.visitAddress &&
+                                        touched.visitAddress.number &&
+                                        (errors.visitAddress && errors.visitAddress.number)
+                                    }
+                                    id="street_number"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -229,14 +261,34 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="visitAddress.postalCode"
                             render={({ field }) => (
-                                <InputText field={field} id="postal_code" placeholder={'Postcode'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.visitAddress &&
+                                        touched.visitAddress.postalCode &&
+                                        (errors.visitAddress && errors.visitAddress.postalCode)
+                                    }
+                                    id="postal_code"
+                                    placeholder={'Postcode'}
+                                />
                             )}
                         />
                     </Col>
                     <Col xs={12} sm={8}>
                         <Field
                             name="visitAddress.city"
-                            render={({ field }) => <InputText field={field} id="city" placeholder={'Plaats'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.visitAddress &&
+                                        touched.visitAddress.city &&
+                                        (errors.visitAddress && errors.visitAddress.city)
+                                    }
+                                    id="city"
+                                    placeholder={'Plaats'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -247,6 +299,11 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <Select
                                     field={field}
+                                    error={
+                                        touched.visitAddress &&
+                                        touched.visitAddress.countryId &&
+                                        (errors.visitAddress && errors.visitAddress.countryId)
+                                    }
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}
@@ -263,7 +320,18 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={12}>
                         <Field
                             name="postalAddress.street"
-                            render={({ field }) => <InputText field={field} id="street" placeholder={'Straat'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.postalAddress &&
+                                        touched.postalAddress.street &&
+                                        (errors.postalAddress && errors.postalAddress.street)
+                                    }
+                                    id="street"
+                                    placeholder={'Straat'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -273,7 +341,16 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="postalAddress.number"
                             render={({ field }) => (
-                                <InputText field={field} id="street_number" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.postalAddress &&
+                                        touched.postalAddress.number &&
+                                        (errors.postalAddress && errors.postalAddress.number)
+                                    }
+                                    id="street_number"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -289,14 +366,34 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="postalAddress.postalCode"
                             render={({ field }) => (
-                                <InputText field={field} id="postal_code" placeholder={'Postcode'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.postalAddress &&
+                                        touched.postalAddress.postalCode &&
+                                        (errors.postalAddress && errors.postalAddress.postalCode)
+                                    }
+                                    id="postal_code"
+                                    placeholder={'Postcode'}
+                                />
                             )}
                         />
                     </Col>
                     <Col xs={12} sm={8}>
                         <Field
                             name="postalAddress.city"
-                            render={({ field }) => <InputText field={field} id="city" placeholder={'Plaats'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.postalAddress &&
+                                        touched.postalAddress.city &&
+                                        (errors.postalAddress && errors.postalAddress.city)
+                                    }
+                                    id="city"
+                                    placeholder={'Plaats'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -307,6 +404,11 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <Select
                                     field={field}
+                                    error={
+                                        touched.postalAddress &&
+                                        touched.postalAddress.countryId &&
+                                        (errors.postalAddress && errors.postalAddress.countryId)
+                                    }
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}
@@ -323,7 +425,18 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={12}>
                         <Field
                             name="invoiceAddress.street"
-                            render={({ field }) => <InputText field={field} id="street" placeholder={'Straat'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.invoiceAddress &&
+                                        touched.invoiceAddress.street &&
+                                        (errors.invoiceAddress && errors.invoiceAddress.street)
+                                    }
+                                    id="street"
+                                    placeholder={'Straat'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -333,7 +446,16 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="invoiceAddress.number"
                             render={({ field }) => (
-                                <InputText field={field} id="street_number" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.invoiceAddress &&
+                                        touched.invoiceAddress.number &&
+                                        (errors.invoiceAddress && errors.invoiceAddress.number)
+                                    }
+                                    id="street_number"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -349,14 +471,34 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="invoiceAddress.postalCode"
                             render={({ field }) => (
-                                <InputText field={field} id="postal_code" placeholder={'Postcode'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.invoiceAddress &&
+                                        touched.invoiceAddress.postalCode &&
+                                        (errors.invoiceAddress && errors.invoiceAddress.postalCode)
+                                    }
+                                    id="postal_code"
+                                    placeholder={'Postcode'}
+                                />
                             )}
                         />
                     </Col>
                     <Col xs={12} sm={8}>
                         <Field
                             name="invoiceAddress.city"
-                            render={({ field }) => <InputText field={field} id="city" placeholder={'Plaats'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.invoiceAddress &&
+                                        touched.invoiceAddress.city &&
+                                        (errors.invoiceAddress && errors.invoiceAddress.city)
+                                    }
+                                    id="city"
+                                    placeholder={'Plaats'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -367,6 +509,11 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <Select
                                     field={field}
+                                    error={
+                                        touched.invoiceAddress &&
+                                        touched.invoiceAddress.countryId &&
+                                        (errors.invoiceAddress && errors.visitAddress.countryId)
+                                    }
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}

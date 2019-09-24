@@ -8,12 +8,52 @@ import Col from 'react-bootstrap/Col';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { ClipLoader } from 'react-spinners';
+import DefaultContactPersonalEdit from './Personal';
 
 const validationSchema = Yup.object().shape({
-    // TODO set correct values for validation
-    // email: Yup.string()
-    //     .email()
-    //     .required('Verplicht'),
+    // TODO set more correct values for validation, only important fields are set now
+    organisation: Yup.object().shape({
+        name: Yup.string()
+            .trim()
+            .required('Verplicht'),
+    }),
+    emailCorrespondence: Yup.object().shape({
+        email: Yup.string()
+            .trim()
+            .email('Ongeldig e-mail adres')
+            .required('Verplicht'),
+    }),
+    emailInvoice: Yup.object().shape({
+        email: Yup.string()
+            .trim()
+            .email('Ongeldig e-mail adres'),
+    }),
+    phoneNumberPrimary: Yup.object().shape({
+        number: Yup.string()
+            .trim()
+            .required('Verplicht'),
+    }),
+    visitAddress: Yup.object().shape({
+        street: Yup.string()
+            .trim()
+            .required('Verplicht'),
+        number: Yup.number()
+            .typeError('Alleen nummers')
+            .required('Verplicht'),
+        postalCode: Yup.string()
+            .trim()
+            .required('Verplicht'),
+        city: Yup.string()
+            .trim()
+            .required('Verplicht'),
+        countryId: Yup.string().required('Verplicht'),
+    }),
+    postalAddress: Yup.object().shape({
+        number: Yup.number().typeError('Alleen nummers'),
+    }),
+    invoiceAddress: Yup.object().shape({
+        number: Yup.number().typeError('Alleen nummers'),
+    }),
 });
 
 function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues }) {
@@ -33,7 +73,12 @@ function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues 
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
                         return (
                             <Form>
-                                <DefaultContactOrganisationEdit initialContact={initialContact} values={values} />
+                                <DefaultContactOrganisationEdit
+                                    initialContact={initialContact}
+                                    touched={touched}
+                                    errors={errors}
+                                    values={values}
+                                />
                                 <Row>
                                     <Col>
                                         <ButtonGroup aria-label="Steps" className="float-right">

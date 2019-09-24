@@ -12,7 +12,7 @@ import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import InputDate from '../../../components/form/InputDate';
 
-const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, values, setFieldValue }) {
+const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touched, errors, values, setFieldValue }) {
     return (
         <Row>
             <Col xs={12} md={6}>
@@ -64,7 +64,16 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, valu
                         <Field
                             name="person.lastName"
                             render={({ field }) => (
-                                <InputText field={field} id="last_name" placeholder={'Achternaam'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.person &&
+                                        touched.person.lastName &&
+                                        (errors.person && errors.person.lastName)
+                                    }
+                                    id="last_name"
+                                    placeholder={'Achternaam'}
+                                />
                             )}
                         />
                     </Col>
@@ -93,21 +102,39 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, valu
                         <Field
                             name="emailCorrespondence.email"
                             render={({ field }) => (
-                                <InputText field={field} id="email-correspondence" placeholder={'E-mail'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.emailCorrespondence &&
+                                        touched.emailCorrespondence.email &&
+                                        (errors.emailCorrespondence && errors.emailCorrespondence.email)
+                                    }
+                                    id="email-correspondence"
+                                    placeholder={'E-mail'}
+                                />
                             )}
                         />
                     </Col>
                 </Row>
 
                 <FormLabel htmlFor="email-invoice" className="field-label">
-                    E-mail adres 2
+                    E-mailadres factuur
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12} md={8}>
                         <Field
                             name="emailInvoice.email"
                             render={({ field }) => (
-                                <InputText field={field} id="email-invoice" placeholder={'E-mail'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.emailInvoice &&
+                                        touched.emailInvoice.email &&
+                                        (errors.emailInvoice && errors.emailInvoice.email)
+                                    }
+                                    id="email-invoice"
+                                    placeholder={'E-mail'}
+                                />
                             )}
                         />
                     </Col>
@@ -121,7 +148,16 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, valu
                         <Field
                             name="phoneNumberPrimary.number"
                             render={({ field }) => (
-                                <InputText field={field} id="telephone-number-1" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.phoneNumberPrimary &&
+                                        touched.phoneNumberPrimary.number &&
+                                        (errors.phoneNumberPrimary && errors.phoneNumberPrimary.number)
+                                    }
+                                    id="telephone-number-1"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -148,7 +184,18 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, valu
                     <Col xs={12} sm={12}>
                         <Field
                             name="primaryAddress.street"
-                            render={({ field }) => <InputText field={field} id="street" placeholder={'Straat'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.primaryAddress &&
+                                        touched.primaryAddress.street &&
+                                        (errors.primaryAddress && errors.primaryAddress.street)
+                                    }
+                                    id="street"
+                                    placeholder={'Straat'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -158,7 +205,16 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, valu
                         <Field
                             name="primaryAddress.number"
                             render={({ field }) => (
-                                <InputText field={field} id="street_number" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.primaryAddress &&
+                                        touched.primaryAddress.number &&
+                                        (errors.primaryAddress && errors.primaryAddress.number)
+                                    }
+                                    id="street_number"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -174,14 +230,34 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, valu
                         <Field
                             name="primaryAddress.postalCode"
                             render={({ field }) => (
-                                <InputText field={field} id="postal_code" placeholder={'Postcode'} />
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.primaryAddress &&
+                                        touched.primaryAddress.postalCode &&
+                                        (errors.primaryAddress && errors.primaryAddress.postalCode)
+                                    }
+                                    id="postal_code"
+                                    placeholder={'Postcode'}
+                                />
                             )}
                         />
                     </Col>
                     <Col xs={12} sm={8}>
                         <Field
                             name="primaryAddress.city"
-                            render={({ field }) => <InputText field={field} id="city" placeholder={'Plaats'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    error={
+                                        touched.primaryAddress &&
+                                        touched.primaryAddress.city &&
+                                        (errors.primaryAddress && errors.primaryAddress.city)
+                                    }
+                                    id="city"
+                                    placeholder={'Plaats'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -192,6 +268,11 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, valu
                             render={({ field }) => (
                                 <Select
                                     field={field}
+                                    error={
+                                        touched.primaryAddress &&
+                                        touched.primaryAddress.countryId &&
+                                        (errors.primaryAddress && errors.primaryAddress.countryId)
+                                    }
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}

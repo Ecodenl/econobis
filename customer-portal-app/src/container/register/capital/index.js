@@ -65,13 +65,21 @@ function RegisterCapital({ match, currentSelectedContact }) {
         setRegisterValues({ ...registerValues, ...values });
     }
 
-    function handleSubmitContactValues(values, actions, switchToView) {
+    function handleSubmitContactValues(values, actions, nextStep) {
         const updatedContact = { ...contact, ...values };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
-                setContact(updatedContact);
-                actions.setSubmitting(false);
-                switchToView();
+                ContactAPI.fetchContact(currentSelectedContact.id)
+                    .then(payload => {
+                        const contactData = rebaseContact(payload.data.data);
+
+                        setContact(contactData);
+                        nextStep();
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
             })
             .catch(error => {
                 actions.setSubmitting(false);

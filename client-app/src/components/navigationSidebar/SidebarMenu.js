@@ -16,6 +16,7 @@ import { calendar } from 'react-icons-kit/icomoon/calendar';
 import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
+import { road } from 'react-icons-kit/icomoon/road';
 
 const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
@@ -388,6 +389,18 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     </NavText>
                 </Nav>
             </Nav>
+            {permissions.managePortalSettings && (
+                <Nav id="portalSettings">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={road} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="portal-settings">
+                            Portal instellingen
+                        </Link>
+                    </NavText>
+                </Nav>
+            )}
         </SideNav>
     </div>
 );

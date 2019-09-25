@@ -12,6 +12,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
+use App\Http\Controllers\Api\Setting\SettingController;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use DB;
@@ -42,15 +43,21 @@ class ParticipationProjectController extends Controller
         }
 
         // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
-        // todo wellicht moeten we hier nog wat op anders verzinnen, wellicht voor nu uit settings.json halen?!?
-        Auth::setUser(User::find(1));
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+        $settingController = new SettingController();
+        $responsibleUserId = $settingController->getSingleSetting("responsibleUserId");
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        Auth::setUser(User::find($responsibleUserId));
 //            $this->log('responsible_user_id : ' . $webform->responsible_user_id);
 
         DB::transaction(function () use ($contact, $project, $request) {
             $this->creatParticipantProject($contact, $project, $request);
         });
-        // Voor zekerheid hierna weer even Auth user herstellen
-        // todo wellicht moeten we hier nog wat op verzinnen?!?
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
         Auth::setUser($portalUser);
 
 

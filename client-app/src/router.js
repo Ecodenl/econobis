@@ -113,6 +113,7 @@ import LedgerDetailsApp from './container/ledger/details/LedgerDetailsApp';
 import CostCentersListApp from './container/cost-center/list/CostCentersListApp';
 import CostCenterNewApp from './container/cost-center/new/CostCenterNewApp';
 import CostCenterDetailsApp from './container/cost-center/details/CostCenterDetailsApp';
+import PortalSettingsApp from './container/portal-settings/PortalSettingsApp';
 
 const Routes = () => {
     return (
@@ -330,6 +331,8 @@ const Routes = () => {
                 <Route path="mailgun-domeinen" component={MailgunDomainsListApp} />
                 <Route path="mailgun-domein/nieuw" component={MailgunDomainNewApp} />
                 <Route path="mailgun-domein/:id" component={MailgunDomainDetailsApp} />
+                /* Portal settings */
+                <Route path="portal-settings" component={PortalSettingsApp} />
                 /* 404 route */
                 <Route path="*" component={NotFoundedPage} />
             </Route>

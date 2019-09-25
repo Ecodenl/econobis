@@ -17,11 +17,14 @@ use App\Eco\Project\Project;
 use App\Eco\User\User;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\Setting\SettingController;
 use App\Rules\EnumExists;
+use function Complex\multiply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Valuestore\Valuestore;
 
 class ContactController extends ApiController
 {
@@ -39,8 +42,15 @@ class ContactController extends ApiController
             abort(501, 'Er is helaas een fout opgetreden.');
         }
 
-        // todo wellicht moeten we hier nog wat op anders verzinnen, wellicht voor nu uit settings.json halen?!?
-        Auth::setUser(User::find(1));
+        // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+        $settingController = new SettingController();
+        $responsibleUserId = $settingController->getSingleSetting("responsibleUserId");
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        Auth::setUser(User::find($responsibleUserId));
 
         DB::transaction(function () use ($request) {
 
@@ -90,36 +100,44 @@ class ContactController extends ApiController
 
         });
 
-        // todo wellicht moeten we hier nog wat op verzinnen?!?
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
         Auth::setUser($portalUser);
 
     }
 
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
-        //load template parts todo Deze moeten we nog uit settings.json halen!!!
-        $documentTemplate = DocumentTemplate::find(6);
-        $documentTemplate->load('footer', 'baseTemplate', 'header');
+        $settingController = new SettingController();
+        $documentTemplateAgreementId = $settingController->getSingleSetting("documentTemplateAgreementId");
+        $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
+        if(!$documentTemplate)
+        {
+            $documentBody = '';
+        }else{
+            $documentTemplate->load('footer', 'baseTemplate', 'header');
 
-        $portalUser = Auth::user();
-        $portalUserContact = $portalUser ? $portalUser->contact : null;
+            $portalUser = Auth::user();
+            $portalUserContact = $portalUser ? $portalUser->contact : null;
 
-        $documentBody = $documentTemplate->header ? $documentTemplate->header->html_body : '';
+            $documentBody = $documentTemplate->header ? $documentTemplate->header->html_body : '';
 
-        if ($documentTemplate->baseTemplate) {
-            $documentBody .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
-                $documentTemplate->html_body, '', '');
-        } else {
-            $documentBody .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
-                '', '');
+            if ($documentTemplate->baseTemplate) {
+                $documentBody .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                    $documentTemplate->html_body, '', '');
+            } else {
+                $documentBody .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                    '', '');
+            }
+            $documentBody .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
+
+            $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'vertegenwoordigde',
+                $portalUserContact);
+            $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'contact', $contact);
+            $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'project', $project);
+            $documentBody = TemplateVariableHelper::stripRemainingVariableTags($documentBody);
+
         }
-        $documentBody .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
-
-        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'vertegenwoordigde',
-            $portalUserContact);
-        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'contact', $contact);
-        $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'project', $project);
-        $documentBody = TemplateVariableHelper::stripRemainingVariableTags($documentBody);
 
         return $documentBody;
     }

@@ -339,6 +339,21 @@ class RevenueFormEdit extends Component {
                     </div>
                 ) : null}
 
+                {category.codeRef === 'redemptionEuro' ? (
+                    <div className="row">
+                        {distributionTypeId === 'inPossessionOf' ? (
+                            <InputDate
+                                label={'Peildatum'}
+                                name={'dateReference'}
+                                value={dateReference}
+                                onChangeAction={this.handleInputChangeDate}
+                                required={'required'}
+                                error={this.state.errors.dateReference}
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
+
                 <div className="row">
                     <InputDate
                         label={'Begin periode'}
@@ -347,13 +362,16 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateBegin}
-                        disabledBefore={
-                            category.codeRef === 'revenueEuro'
-                                ? project.dateInterestBearing
-                                : category.codeRef === 'revenueKwh'
-                                ? project.dateInterestBearingKwh
-                                : ''
-                        }
+                        // disabledBefore={
+                        //     category.codeRef === 'revenueEuro'
+                        //         ? project.dateInterestBearing
+                        //         : category.codeRef === 'redemptionEuro'
+                        //         ? project.dateInterestBearingRedemption
+                        //         : category.codeRef === 'revenueKwh'
+                        //         ? project.dateInterestBearingKwh
+                        //         : ''
+                        // }
+                        disabledBefore={category.codeRef === 'revenueKwh' ? project.dateInterestBearingKwh : ''}
                     />
                     <InputDate
                         label={'Eind periode'}
@@ -391,63 +409,6 @@ class RevenueFormEdit extends Component {
                         />
                     ) : null}
                 </div>
-
-                {category.codeRef === 'revenueEuro' ? (
-                    <React.Fragment>
-                        <div className="row">
-                            <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Opbrengst euro</span>
-                            </div>
-                        </div>
-                        {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
-                            <React.Fragment>
-                                <div className="row">
-                                    <InputText
-                                        type={'number'}
-                                        label={'Uitkering %'}
-                                        name={'payPercentage'}
-                                        value={payPercentage}
-                                        onChangeAction={this.handleInputChange}
-                                    />
-                                    <InputText
-                                        label={
-                                            <React.Fragment>
-                                                Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                            </React.Fragment>
-                                        }
-                                        name={'keyAmountFirstPercentage'}
-                                        value={keyAmountFirstPercentage}
-                                        onChangeAction={this.handleInputChange}
-                                    />
-                                </div>
-                                {this.state.revenue.keyAmountFirstPercentage ? (
-                                    <div className="row">
-                                        <InputText
-                                            type={'number'}
-                                            label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
-                                            name={'payPercentageValidFromKeyAmount'}
-                                            value={payPercentageValidFromKeyAmount}
-                                            onChangeAction={this.handleInputChange}
-                                        />
-                                    </div>
-                                ) : null}
-                            </React.Fragment>
-                        ) : null}
-                        {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
-                            <React.Fragment>
-                                <div className="row">
-                                    <InputText
-                                        type={'number'}
-                                        label={'Resultaat'}
-                                        name={'revenue'}
-                                        value={revenue}
-                                        onChangeAction={this.handleInputChange}
-                                    />
-                                </div>
-                            </React.Fragment>
-                        ) : null}
-                    </React.Fragment>
-                ) : null}
 
                 {category.codeRef === 'revenueKwh' ? (
                     <React.Fragment>
@@ -544,6 +505,86 @@ class RevenueFormEdit extends Component {
                     </React.Fragment>
                 ) : null}
 
+                {category.codeRef === 'revenueEuro' ? (
+                    <React.Fragment>
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Opbrengst euro</span>
+                            </div>
+                        </div>
+                        {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                            <React.Fragment>
+                                <div className="row">
+                                    <InputText
+                                        type={'number'}
+                                        label={'Uitkering %'}
+                                        name={'payPercentage'}
+                                        value={payPercentage}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                    <InputText
+                                        label={
+                                            <React.Fragment>
+                                                Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                            </React.Fragment>
+                                        }
+                                        name={'keyAmountFirstPercentage'}
+                                        value={keyAmountFirstPercentage}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                </div>
+                                {this.state.revenue.keyAmountFirstPercentage ? (
+                                    <div className="row">
+                                        <InputText
+                                            type={'number'}
+                                            label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                            name={'payPercentageValidFromKeyAmount'}
+                                            value={payPercentageValidFromKeyAmount}
+                                            onChangeAction={this.handleInputChange}
+                                        />
+                                    </div>
+                                ) : null}
+                            </React.Fragment>
+                        ) : null}
+                        {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                            <React.Fragment>
+                                <div className="row">
+                                    <InputText
+                                        type={'number'}
+                                        label={'Resultaat'}
+                                        name={'revenue'}
+                                        value={revenue}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                </div>
+                            </React.Fragment>
+                        ) : null}
+                    </React.Fragment>
+                ) : null}
+
+                {category.codeRef === 'redemptionEuro' ? (
+                    <React.Fragment>
+                        <div className="row">
+                            <div className={'panel-part panel-heading'}>
+                                <span className={'h5 text-bold'}>Aflossing euro</span>
+                            </div>
+                        </div>
+                        {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                            <React.Fragment>
+                                <div className="row">
+                                    <InputText
+                                        type={'number'}
+                                        label={'Aflossing %'}
+                                        name={'payPercentage'}
+                                        value={payPercentage}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                </div>
+                            </React.Fragment>
+                        ) : null}
+                    </React.Fragment>
+                ) : null}
+
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText
@@ -569,8 +610,9 @@ class RevenueFormEdit extends Component {
                         title="Bevestigen"
                     >
                         <p>
-                            Als je deze datum invult, zal de opbrengst definitief worden gemaakt. Je kunt deze hierna
-                            niet meer aanpassen.
+                            {this.props.revenue.category.codeRef === 'redemptionEuro'
+                                ? 'Als je deze datum invult, zal de aflossing definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'
+                                : 'Als je deze datum invult, zal de opbrengst definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'}
                         </p>
                     </Modal>
                 )}

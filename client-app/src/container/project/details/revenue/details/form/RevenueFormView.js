@@ -160,6 +160,21 @@ const RevenueFormView = props => {
                     ) : null}
                 </React.Fragment>
             ) : null}
+
+            {category.codeRef === 'redemptionEuro' ? (
+                <React.Fragment>
+                    <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
+                        <span className={'h5 text-bold'}>Aflossing euro</span>
+                    </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
+                            <React.Fragment>
+                                <ViewText label={'Aflossing %'} value={payPercentage && payPercentage + '%'} />
+                            </React.Fragment>
+                        ) : null}
+                    </div>
+                </React.Fragment>
+            ) : null}
         </div>
     );
 };

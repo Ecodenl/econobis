@@ -38,6 +38,7 @@ class FullProject extends Resource
                 'dateEndRegistrations' => $this->date_end_registrations,
                 'dateEntry' => $this->date_entry,
                 'dateInterestBearing' => $this->date_interest_bearing,
+                'dateInterestBearingRedemption' => $this->date_interest_bearing_redemption,
                 'dateInterestBearingKwh' => $this->date_interest_bearing_kwh,
                 'kwhStartHighNextRevenue' => $this->kwh_start_high_next_revenue,
                 'kwhStartLowNextRevenue' => $this->kwh_start_low_next_revenue,

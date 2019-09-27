@@ -25,6 +25,8 @@ class ProjectRevenueObserver
             $project = $projectRevenue->project;
             if($projectRevenue->category->code_ref == 'revenueEuro') {
                 $project->date_interest_bearing = $projectRevenue->date_end->addDay();
+            }elseif($projectRevenue->category->code_ref == 'redemptionEuro') {
+                    $project->date_interest_bearing_redemption = $projectRevenue->date_end->addDay();
             }elseif($projectRevenue->category->code_ref == 'revenueKwh'){
                 $project->date_interest_bearing_kwh = $projectRevenue->date_end->addDay();
                 if($projectRevenue->kwh_end_high <> 0)

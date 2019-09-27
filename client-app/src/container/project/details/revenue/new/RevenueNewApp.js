@@ -78,10 +78,16 @@ class RevenueNewApp extends Component {
             );
 
             let revenue = this.state.revenue;
-            if (payload.projectType.codeRef !== 'loan') {
+
+            if (category.codeRef === 'redemptionEuro') {
+                const payoutTypeId = this.props.participantProjectPayoutTypes.find(
+                    participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
+                ).id;
+                revenue.payoutTypeId = payoutTypeId;
                 revenue.distributionTypeId = 'inPossessionOf';
-            }
-            if (payload.projectType.codeRef === 'obligation') {
+            } else if (payload.projectType.codeRef !== 'loan') {
+                revenue.distributionTypeId = 'inPossessionOf';
+            } else if (payload.projectType.codeRef === 'obligation') {
                 const payoutTypeId = this.props.participantProjectPayoutTypes.find(
                     participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
                 ).id;
@@ -92,6 +98,14 @@ class RevenueNewApp extends Component {
                 revenue.dateBegin = payload.dateInterestBearing;
                 revenue.dateEnd = payload.dateInterestBearing
                     ? moment(payload.dateInterestBearing)
+                          .endOf('year')
+                          .format('Y-MM-DD')
+                    : '';
+            }
+            if (category.codeRef === 'redemptionEuro') {
+                revenue.dateBegin = payload.dateInterestBearingRedemption;
+                revenue.dateEnd = payload.dateInterestBearingRedemption
+                    ? moment(payload.dateInterestBearingRedemption)
                           .endOf('year')
                           .format('Y-MM-DD')
                     : '';

@@ -51,6 +51,8 @@ class RevenueNewApp extends Component {
             },
             errorMessage: {
                 payoutTypeId: '',
+                dateBegin: '',
+                dateEnd: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
             },
@@ -225,11 +227,18 @@ class RevenueNewApp extends Component {
 
         if (!revenue.dateBegin) {
             errors.dateBegin = true;
+            errorMessage.dateBegin = 'Verplicht';
             hasErrors = true;
         }
 
         if (!revenue.dateEnd) {
             errors.dateEnd = true;
+            errorMessage.dateEnd = 'Verplicht';
+            hasErrors = true;
+        }
+        if (revenue.dateEnd < revenue.dateBegin) {
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Eind periode mag niet lager zijn dan Begin periode.';
             hasErrors = true;
         }
 

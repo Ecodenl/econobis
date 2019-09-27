@@ -84,6 +84,8 @@ class RevenueFormEdit extends Component {
             },
             errorMessage: {
                 payoutTypeId: '',
+                dateBegin: '',
+                dateEnd: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
             },
@@ -208,10 +210,17 @@ class RevenueFormEdit extends Component {
         }
         if (validator.isEmpty(revenue.dateBegin + '')) {
             errors.dateBegin = true;
+            errorMessage.dateBegin = 'Verplicht';
             hasErrors = true;
         }
         if (validator.isEmpty(revenue.dateEnd + '')) {
             errors.dateEnd = true;
+            errorMessage.dateEnd = 'Verplicht';
+            hasErrors = true;
+        }
+        if (revenue.dateEnd < revenue.dateBegin) {
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Eind periode mag niet lager zijn dan Begin periode.';
             hasErrors = true;
         }
 
@@ -362,16 +371,17 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateBegin}
-                        // disabledBefore={
-                        //     category.codeRef === 'revenueEuro'
-                        //         ? project.dateInterestBearing
-                        //         : category.codeRef === 'redemptionEuro'
-                        //         ? project.dateInterestBearingRedemption
-                        //         : category.codeRef === 'revenueKwh'
-                        //         ? project.dateInterestBearingKwh
-                        //         : ''
-                        // }
-                        disabledBefore={category.codeRef === 'revenueKwh' ? project.dateInterestBearingKwh : ''}
+                        errorMessage={this.state.errorMessage.dateBegin}
+                        disabledBefore={
+                            category.codeRef === 'revenueEuro' &&
+                            (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation')
+                                ? project.dateInterestBearing
+                                : category.codeRef === 'redemptionEuro'
+                                ? project.dateInterestBearingRedemption
+                                : category.codeRef === 'revenueKwh'
+                                ? project.dateInterestBearingKwh
+                                : ''
+                        }
                     />
                     <InputDate
                         label={'Eind periode'}
@@ -380,6 +390,7 @@ class RevenueFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.dateEnd}
+                        errorMessage={this.state.errorMessage.dateEnd}
                         disabledBefore={dateBegin}
                         disabledAfter={moment(dateBegin)
                             .endOf('year')

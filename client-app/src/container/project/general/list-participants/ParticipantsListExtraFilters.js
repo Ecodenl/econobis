@@ -147,7 +147,12 @@ class ParticipantsListExtraFilters extends Component {
                 optionName: 'fullName',
             },
             didAcceptAgreement: {
-                name: 'Akkoord reglement',
+                name: 'Akkoord voorwaarden',
+                type: 'dropdown',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            didUnderstandInfo: {
+                name: 'Projectinfo begrepen',
                 type: 'dropdown',
                 dropDownOptions: this.state.yesNoOptions,
             },

@@ -81,64 +81,67 @@ class ParticipantExcelHelper
         $headerData[55] = 'Huidige totale waarde';
         $headerData[56] = 'Contract retour';
         $headerData[57] = 'Geschonken door';
-        $headerData[58] = 'Akkoord regelement';
-        $headerData[59] = 'Jaarlijks verbruik';
-        $headerData[60] = 'Iban uitkeren';
-        $headerData[61] = 'Iban uitkeren t.n.v.';
-        $headerData[62] = 'Iban contact';
-        $headerData[63] = 'Iban contact t.n.v.';
-        $headerData[64] = 'Eerste ingangsdatum';
-        $headerData[65] = 'Uitkeren op';
-        $headerData[66] = 'Contactpersoon startdatum';
-        $headerData[67] = 'Contactpersoon einddatum';
-        $headerData[68] = 'Contactpersoon rol';
-        $headerData[69] = 'Contactpersoon aanspreektitel';
-        $headerData[70] = 'Contactpersoon naam';
-        $headerData[71] = 'Contactpersoon initialen';
-        $headerData[72] = 'Contactpersoon voornaam';
-        $headerData[73] = 'Contactpersoon tussenvoegsel';
-        $headerData[74] = 'Contactpersoon achternaam';
-        $headerData[75] = 'Contactpersoon geboortedatum';
-        $headerData[76] = 'Contactpersoon primair e-mailaddress';
-        $headerData[77] = 'Contactpersoon primair telefoonnummer';
-        $headerData[78] = 'Wettelijke vertegenwoordiger startdatum';
-        $headerData[79] = 'Wettelijke vertegenwoordiger einddatum';
-        $headerData[80] = 'Wettelijke vertegenwoordiger rol';
-        $headerData[81] = 'Wettelijke vertegenwoordiger aanspreektitel';
-        $headerData[82] = 'Wettelijke vertegenwoordiger naam';
-        $headerData[83] = 'Wettelijke vertegenwoordiger initialen';
-        $headerData[84] = 'Wettelijke vertegenwoordiger voornaam';
-        $headerData[85] = 'Wettelijke vertegenwoordiger tussenvoegsel';
-        $headerData[86] = 'Wettelijke vertegenwoordiger achternaam';
-        $headerData[87] = 'Wettelijke vertegenwoordiger geboortedatum';
-        $headerData[88] = 'Wettelijke vertegenwoordiger primair e-mailaddress';
-        $headerData[89] = 'Wettelijke vertegenwoordiger primair telefoonnummer';
+        $headerData[58] = 'Akkoord voorwaarden';
+        $headerData[59] = 'Datum akkoord';
+        $headerData[60] = 'Projectinfo begrepen';
+        $headerData[61] = 'Datum begrepen';
+        $headerData[62] = 'Jaarlijks verbruik';
+        $headerData[63] = 'Iban uitkeren';
+        $headerData[64] = 'Iban uitkeren t.n.v.';
+        $headerData[65] = 'Iban contact';
+        $headerData[66] = 'Iban contact t.n.v.';
+        $headerData[67] = 'Eerste ingangsdatum';
+        $headerData[68] = 'Uitkeren op';
+        $headerData[69] = 'Contactpersoon startdatum';
+        $headerData[70] = 'Contactpersoon einddatum';
+        $headerData[71] = 'Contactpersoon rol';
+        $headerData[72] = 'Contactpersoon aanspreektitel';
+        $headerData[73] = 'Contactpersoon naam';
+        $headerData[74] = 'Contactpersoon initialen';
+        $headerData[75] = 'Contactpersoon voornaam';
+        $headerData[76] = 'Contactpersoon tussenvoegsel';
+        $headerData[77] = 'Contactpersoon achternaam';
+        $headerData[78] = 'Contactpersoon geboortedatum';
+        $headerData[79] = 'Contactpersoon primair e-mailaddress';
+        $headerData[80] = 'Contactpersoon primair telefoonnummer';
+        $headerData[81] = 'Wettelijke vertegenwoordiger startdatum';
+        $headerData[82] = 'Wettelijke vertegenwoordiger einddatum';
+        $headerData[83] = 'Wettelijke vertegenwoordiger rol';
+        $headerData[84] = 'Wettelijke vertegenwoordiger aanspreektitel';
+        $headerData[85] = 'Wettelijke vertegenwoordiger naam';
+        $headerData[86] = 'Wettelijke vertegenwoordiger initialen';
+        $headerData[87] = 'Wettelijke vertegenwoordiger voornaam';
+        $headerData[88] = 'Wettelijke vertegenwoordiger tussenvoegsel';
+        $headerData[89] = 'Wettelijke vertegenwoordiger achternaam';
+        $headerData[90] = 'Wettelijke vertegenwoordiger geboortedatum';
+        $headerData[91] = 'Wettelijke vertegenwoordiger primair e-mailaddress';
+        $headerData[92] = 'Wettelijke vertegenwoordiger primair telefoonnummer';
 
-        $headerData[90] = 'Type mutatie';
-        $headerData[91] = 'Status';
-        $headerData[92] = 'Aantal interesse';
-        $headerData[93] = 'Bedrag interesse';
-        $headerData[94] = 'Datum interesse';
-        $headerData[95] = 'Datum log interesse';
-        $headerData[96] = 'Aantal ingeschreven';
-        $headerData[97] = 'Bedrag ingeschreven';
-        $headerData[98] = 'Datum ingeschreven';
-        $headerData[99] = 'Datum log ingeschreven';
-        $headerData[100] = 'Aantal toegekend';
-        $headerData[101] = 'Bedrag toegekend';
-        $headerData[102] = 'Datum toegekend';
-        $headerData[103] = 'Datum log toegekend';
-        $headerData[104] = 'Aantal definitief';
-        $headerData[105] = 'Bedrag definitief';
-        $headerData[106] = 'Ingangsdatum';
-        $headerData[107] = 'Log Ingangsdatum';
-        $headerData[108] = 'Opbrengst';
-        $headerData[109] = 'Betaaldatum';
-        $headerData[110] = 'Boekstuk';
-        $headerData[111] = 'Uitgekeerd op';
-        $headerData[112] = 'Opbrengst kWh';
-        $headerData[113] = 'kWh';
-        $headerData[114] = 'Indicatie teruggave EB';
+        $headerData[93] = 'Type mutatie';
+        $headerData[94] = 'Status';
+        $headerData[95] = 'Aantal interesse';
+        $headerData[96] = 'Bedrag interesse';
+        $headerData[97] = 'Datum interesse';
+        $headerData[98] = 'Datum log interesse';
+        $headerData[99] = 'Aantal ingeschreven';
+        $headerData[100] = 'Bedrag ingeschreven';
+        $headerData[101] = 'Datum ingeschreven';
+        $headerData[102] = 'Datum log ingeschreven';
+        $headerData[103] = 'Aantal toegekend';
+        $headerData[104] = 'Bedrag toegekend';
+        $headerData[105] = 'Datum toegekend';
+        $headerData[106] = 'Datum log toegekend';
+        $headerData[107] = 'Aantal definitief';
+        $headerData[108] = 'Bedrag definitief';
+        $headerData[109] = 'Ingangsdatum';
+        $headerData[110] = 'Log Ingangsdatum';
+        $headerData[111] = 'Opbrengst';
+        $headerData[112] = 'Betaaldatum';
+        $headerData[113] = 'Boekstuk';
+        $headerData[114] = 'Uitgekeerd op';
+        $headerData[115] = 'Opbrengst kWh';
+        $headerData[116] = 'kWh';
+        $headerData[117] = 'Indicatie teruggave EB';
 
         $completeData[] = $headerData;
 
@@ -241,11 +244,19 @@ class ParticipantExcelHelper
 
                 //reformat bools
                 $participant->did_accept_agreement = $participant->did_accept_agreement ? 'Ja' : 'Nee';
+                $participant->did_understand_info = $participant->did_understand_info ? 'Ja' : 'Nee';
                 // Reformat dates
                 $participant->date_contract_retour = $participant->date_contract_retour
                     ? Carbon::parse($participant->date_contract_retour)->format('d-m-Y') : '';
                 $participant->date_register = $participant->date_register
                     ? Carbon::parse($participant->date_register)
+                        ->format('d-m-Y') : '';
+
+                $participant->date_did_accept_agreement = $participant->date_did_accept_agreement
+                    ? Carbon::parse($participant->date_did_accept_agreement)
+                        ->format('d-m-Y') : '';
+                $participant->date_did_understand_info = $participant->date_did_understand_info
+                    ? Carbon::parse($participant->date_did_understand_info)
                         ->format('d-m-Y') : '';
 
                 $projectTypeCodeRef = $participant->project->projectType->code_ref;
@@ -308,7 +319,6 @@ class ParticipantExcelHelper
                 $rowData[48] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_electricity : '';
                 $rowData[49] = $participant->contact->primaryContactEnergySupplier ? $participant->contact->primaryContactEnergySupplier->ean_gas : '';
                 $rowData[50] = $projectCode;
-
                 $rowData[51] = $currentBalanceAccount;
                 $rowData[52] = $participant->participations_returns_total;
                 $rowData[53] = $participant->participations_definitive ;
@@ -317,62 +327,66 @@ class ParticipantExcelHelper
                 $rowData[56] = $participant->date_contract_retour;
                 $rowData[57] = $participant->giftedByContact ? $participant->giftedByContact->full_name : '';
                 $rowData[58] = $participant->did_accept_agreement;
-                $rowData[59] = $participant->power_kwh_consumption;
-                $rowData[60] = $participant->iban_payout;
-                $rowData[61] = $participant->iban_attn;
-                $rowData[62] = $participant->iban_contact;
-                $rowData[63] = $participant->iban_attn_contact;
-                $rowData[64] = $participant->date_register;
-                $rowData[65] = $participant->participantProjectPayoutType ? $participant->participantProjectPayoutType->name : '';
-                $rowData[66] = $participant->cpStartDate;
-                $rowData[67] = $participant->cpEndDate;
-                $rowData[68] = $participant->cpOccupation;
-                $rowData[69] = $participant->cpTitle;
-                $rowData[70] = $participant->cpFullName;
-                $rowData[71] = $participant->cpInitials;
-                $rowData[72] = $participant->cpFirstName;
-                $rowData[73] = $participant->cpLastNamePrefix;
-                $rowData[74] = $participant->cpLastName;
-                $rowData[75] = $participant->cpDateOfBirth;
-                $rowData[76] = $participant->cpPrimaryEmailAddress;
-                $rowData[77] = $participant->cpPrimaryPhonenumber;
-                $rowData[78] = $participant->lrcStartDate;
-                $rowData[79] = $participant->lrcEndDate;
-                $rowData[80] = $participant->lrcOccupation;
-                $rowData[81] = $participant->lrcTitle;
-                $rowData[82] = $participant->lrcFullName;
-                $rowData[83] = $participant->lrcInitials;
-                $rowData[84] = $participant->lrcFirstName;
-                $rowData[85] = $participant->lrcLastNamePrefix;
-                $rowData[86] = $participant->lrcLastName;
-                $rowData[87] = $participant->lrcDateOfBirth;
-                $rowData[88] = $participant->lrcPrimaryEmailAddress;
-                $rowData[89] = $participant->lrcPrimaryPhonenumber;
+                $rowData[59] = $participant->date_did_accept_agreement;
+                $rowData[60] = $participant->did_understand_info;
+                $rowData[61] = $participant->date_did_understand_info;
+                $rowData[62] = $participant->power_kwh_consumption;
+                $rowData[63] = $participant->iban_payout;
+                $rowData[64] = $participant->iban_attn;
+                $rowData[65] = $participant->iban_contact;
+                $rowData[66] = $participant->iban_attn_contact;
+                $rowData[67] = $participant->date_register;
+                $rowData[68] = $participant->participantProjectPayoutType ? $participant->participantProjectPayoutType->name : '';
+                $rowData[69] = $participant->cpStartDate;
+                $rowData[70] = $participant->cpEndDate;
+                $rowData[71] = $participant->cpOccupation;
+                $rowData[72] = $participant->cpTitle;
+                $rowData[73] = $participant->cpFullName;
+                $rowData[74] = $participant->cpInitials;
+                $rowData[75] = $participant->cpFirstName;
+                $rowData[76] = $participant->cpLastNamePrefix;
+                $rowData[77] = $participant->cpLastName;
+                $rowData[78] = $participant->cpDateOfBirth;
+                $rowData[79] = $participant->cpPrimaryEmailAddress;
+                $rowData[80] = $participant->cpPrimaryPhonenumber;
+                $rowData[81] = $participant->lrcStartDate;
+                $rowData[82] = $participant->lrcEndDate;
+                $rowData[83] = $participant->lrcOccupation;
+                $rowData[84] = $participant->lrcTitle;
+                $rowData[85] = $participant->lrcFullName;
+                $rowData[86] = $participant->lrcInitials;
+                $rowData[87] = $participant->lrcFirstName;
+                $rowData[88] = $participant->lrcLastNamePrefix;
+                $rowData[89] = $participant->lrcLastName;
+                $rowData[90] = $participant->lrcDateOfBirth;
+                $rowData[91] = $participant->lrcPrimaryEmailAddress;
+                $rowData[92] = $participant->lrcPrimaryPhonenumber;
 
-                $rowData[90] = "";
-                $rowData[91] = "";
-                $rowData[92] = $participant->participations_interessed;
-                $rowData[93] = $participant->amount_interessed;
+                $rowData[93] = "";
                 $rowData[94] = "";
-                $rowData[95] = "";
-                $rowData[96] = $participant->participations_optioned;
-                $rowData[97] = $participant->amount_optioned;
+                $rowData[95] = $participant->participations_interessed;
+                $rowData[96] = $participant->amount_interessed;
+                $rowData[97] = "";
                 $rowData[98] = "";
-                $rowData[99] = "";
-                $rowData[100] = $participant->participations_granted;
-                $rowData[101] = $participant->amount_granted;
+                $rowData[99] = $participant->participations_optioned;
+                $rowData[100] = $participant->amount_optioned;
+                $rowData[101] = "";
                 $rowData[102] = "";
-                $rowData[103] = "";
-                $rowData[104] = $participant->participations_definitive;
-                $rowData[105] = $participant->amount_definitive;
+                $rowData[103] = $participant->participations_granted;
+                $rowData[104] = $participant->amount_granted;
+                $rowData[105] = "";
                 $rowData[106] = "";
-                $rowData[107] = "";
-                $rowData[108] = "";
+                $rowData[107] = $participant->participations_definitive;
+                $rowData[108] = $participant->amount_definitive;
                 $rowData[109] = "";
                 $rowData[110] = "";
                 $rowData[111] = "";
                 $rowData[112] = "";
                 $rowData[113] = "";
+                $rowData[114] = "";
+                $rowData[115] = "";
+                $rowData[116] = "";
+                $rowData[117] = "";
 
                 foreach ($participant->mutations as $mutation) {
                     $rowData[1] = $mutation->id;
@@ -388,55 +402,55 @@ class ParticipantExcelHelper
                     $mutationStatusLogFinal    = $mutation->statusLog->where('to_status_id', 4)->first();
                     $logFinalDateTime = $mutationStatusLogFinal ? Carbon::parse($mutationStatusLogFinal->date_status)->format('d-m-Y H:i:s') : "";
 
-                    $rowData[90] = $mutationType ? $mutationType->name : '';
-                    $rowData[91] = $mutationStatus ? $mutationStatus->name : '';
+                    $rowData[93] = $mutationType ? $mutationType->name : '';
+                    $rowData[94] = $mutationStatus ? $mutationStatus->name : '';
 
                     if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' )
                     {
-                        $rowData[92] = $mutation->quantity_interest;
-                        $rowData[93] = $mutation->amount_interest;
-                        $rowData[94] = $mutation->date_interest ? Carbon::parse($mutation->date_interest)->format('d-m-Y') : "";
-                        $rowData[95] = $logInterestDateTime;
-                        $rowData[96] = $mutation->quantity_option;
-                        $rowData[97] = $mutation->amount_option;
-                        $rowData[98] = $mutation->date_option ? Carbon::parse($mutation->date_option)->format('d-m-Y') : "";
-                        $rowData[99] = $logOptionDateTime;
-                        $rowData[100] = $mutation->quantity_granted;
-                        $rowData[101] = $mutation->amount_granted;
-                        $rowData[102] = $mutation->date_granted ? Carbon::parse($mutation->date_granted)->format('d-m-Y') : "";
-                        $rowData[103] = $logGrantedDateTime;
-                        $rowData[104] = $mutation->quantity_final;
-                        $rowData[105] = $mutation->amount_final;
-                        $rowData[106] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
-                        $rowData[107] = $logFinalDateTime;
-                        $rowData[108] = "";
-                        $rowData[109] = "";
-                        $rowData[110] = "";
+                        $rowData[95] = $mutation->quantity_interest;
+                        $rowData[96] = $mutation->amount_interest;
+                        $rowData[97] = $mutation->date_interest ? Carbon::parse($mutation->date_interest)->format('d-m-Y') : "";
+                        $rowData[98] = $logInterestDateTime;
+                        $rowData[99] = $mutation->quantity_option;
+                        $rowData[100] = $mutation->amount_option;
+                        $rowData[101] = $mutation->date_option ? Carbon::parse($mutation->date_option)->format('d-m-Y') : "";
+                        $rowData[102] = $logOptionDateTime;
+                        $rowData[103] = $mutation->quantity_granted;
+                        $rowData[104] = $mutation->amount_granted;
+                        $rowData[105] = $mutation->date_granted ? Carbon::parse($mutation->date_granted)->format('d-m-Y') : "";
+                        $rowData[106] = $logGrantedDateTime;
+                        $rowData[107] = $mutation->quantity_final;
+                        $rowData[108] = $mutation->amount_final;
+                        $rowData[109] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
+                        $rowData[110] = $logFinalDateTime;
                         $rowData[111] = "";
                         $rowData[112] = "";
                         $rowData[113] = "";
                         $rowData[114] = "";
+                        $rowData[115] = "";
+                        $rowData[116] = "";
+                        $rowData[117] = "";
                     }
 
                     if($mutationType->code_ref === 'result')
                     {
-                        $rowData[108] = $mutation->returns;
-                        $rowData[109] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
-                        $rowData[110] = $mutation->entry;
-                        $rowData[111] = $mutation->paid_on;
-                        $rowData[112] = "";
-                        $rowData[113] = "";
-                        $rowData[114] = "";
+                        $rowData[111] = $mutation->returns;
+                        $rowData[112] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
+                        $rowData[113] = $mutation->entry;
+                        $rowData[114] = $mutation->paid_on;
+                        $rowData[115] = "";
+                        $rowData[116] = "";
+                        $rowData[117] = "";
                     }
                     if($mutationType->code_ref === 'energyTaxRefund')
                     {
-                        $rowData[108] = "";
-                        $rowData[109] = "";
-                        $rowData[110] = "";
                         $rowData[111] = "";
-                        $rowData[112] = $mutation->payout_kwh_price;
-                        $rowData[113] = $mutation->payout_kwh;
-                        $rowData[114] = $mutation->indication_of_restitution_energy_tax;
+                        $rowData[112] = "";
+                        $rowData[113] = "";
+                        $rowData[114] = "";
+                        $rowData[115] = $mutation->payout_kwh_price;
+                        $rowData[116] = $mutation->payout_kwh;
+                        $rowData[117] = $mutation->indication_of_restitution_energy_tax;
                     }
 
                     $completeData[] = $rowData;

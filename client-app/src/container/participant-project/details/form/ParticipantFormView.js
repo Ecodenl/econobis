@@ -18,6 +18,9 @@ const ParticipantFormView = props => {
         participationsCapitalWorth,
         amountDefinitive,
         didAcceptAgreement,
+        dateDidAcceptAgreement,
+        didUnderstandInfo,
+        dateDidUnderstandInfo,
         giftedByContact,
         ibanPayout,
         ibanPayoutAttn,
@@ -51,7 +54,18 @@ const ParticipantFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Akkoord reglement'} value={didAcceptAgreement ? 'Ja' : 'Nee'} />
+                <ViewText label={'Akkoord voorwaarden'} value={didAcceptAgreement ? 'Ja' : 'Nee'} />
+                <ViewText label={'Projectinfo begrepen'} value={didUnderstandInfo ? 'Ja' : 'Nee'} />
+            </div>
+            <div className="row">
+                <ViewText
+                    label={'Datum akkoord'}
+                    value={dateDidAcceptAgreement ? moment(dateDidAcceptAgreement.date).format('L') : ''}
+                />
+                <ViewText
+                    label={'Datum begrepen'}
+                    value={dateDidUnderstandInfo ? moment(dateDidUnderstandInfo.date).format('L') : ''}
+                />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Schenker'} value={giftedByContact ? giftedByContact.fullName : ''} />

@@ -15,11 +15,10 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
+use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Api\Setting\SettingController;
 use App\Rules\EnumExists;
-use function Complex\multiply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -44,8 +43,7 @@ class ContactController extends ApiController
 
         // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
         // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-        $settingController = new SettingController();
-        $responsibleUserId = $settingController->getSingleSetting("responsibleUserId");
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
@@ -108,8 +106,7 @@ class ContactController extends ApiController
 
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
-        $settingController = new SettingController();
-        $documentTemplateAgreementId = $settingController->getSingleSetting("documentTemplateAgreementId");
+        $documentTemplateAgreementId = PortalSettings::get('documentTemplateAgreementId');
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
         if(!$documentTemplate)
         {

@@ -108,15 +108,17 @@ const RevenueNew = props => {
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
                     error={props.errors.dateBegin}
-                    // disabledBefore={
-                    //     category.codeRef === 'revenueEuro'
-                    //         ? props.project.dateInterestBearing
-                    //         : category.codeRef === 'redemptionEuro'
-                    //         ? props.project.dateInterestBearingRedemption
-                    //         : category.codeRef === 'revenueKwh'
-                    //             ? props.project.dateInterestBearingKwh
-                    //             : ''
-                    disabledBefore={category.codeRef === 'revenueKwh' ? props.project.dateInterestBearingKwh : ''}
+                    errorMessage={props.errorMessage.dateBegin}
+                    disabledBefore={
+                        category.codeRef === 'revenueEuro' &&
+                        (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation')
+                            ? props.project.dateInterestBearing
+                            : category.codeRef === 'redemptionEuro'
+                            ? props.project.dateInterestBearingRedemption
+                            : category.codeRef === 'revenueKwh'
+                            ? props.project.dateInterestBearingKwh
+                            : ''
+                    }
                 />
                 <InputDate
                     label={'Eind periode'}
@@ -125,6 +127,7 @@ const RevenueNew = props => {
                     onChangeAction={props.handleInputChangeDate}
                     required={'required'}
                     error={props.errors.dateEnd}
+                    errorMessage={props.errorMessage.dateEnd}
                     disabledBefore={dateBegin}
                     disabledAfter={moment(dateBegin)
                         .endOf('year')

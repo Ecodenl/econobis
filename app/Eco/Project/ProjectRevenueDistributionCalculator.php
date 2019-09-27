@@ -132,11 +132,15 @@ class ProjectRevenueDistributionCalculator
                 $participationValue = $amount;
             }else{
                 $participation_worth = $this->projectRevenueDistribution->revenue->project->participation_worth;
-                $participationValue = $participation_worth * $amount;
+                $participationValue = $participation_worth;
             }
         }else{
             $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
-            $participationValue = $currentBookWorth * $amount;
+            if($this->projectTypeCodeRef === 'loan') {
+                $participationValue = $amount;
+            }else{
+                $participationValue = $currentBookWorth;
+            }
         }
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
@@ -154,6 +158,10 @@ class ProjectRevenueDistributionCalculator
             $payout = $payoutTillKeyAmount + $payoutAboveKeyAmount;
         } else {
             $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+        }
+
+        if($this->projectTypeCodeRef !== 'loan') {
+            $payout = floatval( number_format($payout, 2, '.', '') ) * $amount;
         }
 
         return number_format($payout, 2, '.', '');
@@ -180,18 +188,19 @@ class ProjectRevenueDistributionCalculator
 
             $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
 
-            if($this->projectTypeCodeRef === 'obligation' || $this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') {
-                $mutationValue = $currentBookWorth * $mutation->quantity;
-            }
-
             if($this->projectTypeCodeRef === 'loan') {
                 $mutationValue = $mutation->amount;
+            }else{
+                $mutationValue = $currentBookWorth;
             }
 
             if($dateEntry > $dateEnd) $mutationValue = 0;
             $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
-        }
 
+            if($this->projectTypeCodeRef !== 'loan') {
+                $payout = floatval( number_format($payout, 2, '.', '') ) * $mutation->quantity;
+            }
+        }
         return number_format($payout, 2, '.', '');
     }
 

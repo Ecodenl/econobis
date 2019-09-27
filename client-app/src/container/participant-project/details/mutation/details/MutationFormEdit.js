@@ -7,6 +7,7 @@ import MutationFormEditEnergyTaxRefund from './MutationFormEditEnergyTaxRefund';
 import MutationFormEditResult from './MutationFormEditResult';
 import MutationFormEditDeposit from './MutationFormEditDeposit';
 import MutationFormEditWithDrawal from './MutationFormEditWithDrawal';
+import MutationFormEditRedemption from './MutationFormEditRedemption';
 
 const MutationFormEdit = ({
     participantMutationFromState,
@@ -102,6 +103,12 @@ const MutationFormEdit = ({
                     ) : null}
                     {type.codeRef === 'result' ? (
                         <MutationFormEditResult
+                            participantMutationFromProps={participantMutationFromProps}
+                            cancelEdit={cancelEdit}
+                        />
+                    ) : null}
+                    {type.codeRef === 'redemption' ? (
+                        <MutationFormEditRedemption
                             participantMutationFromProps={participantMutationFromProps}
                             cancelEdit={cancelEdit}
                         />

@@ -255,6 +255,14 @@ class ProjectRevenueController extends ApiController
             }
         }
 
+        if($projectRevenue->category->code_ref == 'redemptionEuro'
+            && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
+            foreach($projectRevenue->distribution as $distribution) {
+                $distribution->calculator()->runRevenueEuro();
+                $distribution->save();
+            }
+        }
+
         if($projectRevenue->category->code_ref == 'revenueKwh') {
             foreach($projectRevenue->distribution as $distribution) {
                 $distribution->calculator()->runRevenueKwh();

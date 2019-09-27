@@ -127,10 +127,7 @@ class FinancialTree extends Component {
                                 <SvgIcon size={20} icon={fileText} style={{ color: '$brand-primary' }} />
                             </NavIcon>
                             <NavText>
-                                <Link
-                                    className="financial-tree-link-header"
-                                    to={`financieel/${this.props.id}/notas`}
-                                >
+                                <Link className="financial-tree-link-header" to={`financieel/${this.props.id}/notas`}>
                                     Alle nota's({this.props.administrationDetails.totalInvoices})
                                 </Link>
                             </NavText>

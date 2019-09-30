@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Portal\Contact;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Contact\Contact;
-use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
@@ -15,15 +14,14 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
+use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
-use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Valuestore\Valuestore;
 
 class ContactController extends ApiController
 {
@@ -106,37 +104,7 @@ class ContactController extends ApiController
 
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
-        $documentTemplateAgreementId = PortalSettings::get('documentTemplateAgreementId');
-        $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
-        if(!$documentTemplate)
-        {
-            $documentBody = '';
-        }else{
-            $documentTemplate->load('footer', 'baseTemplate', 'header');
-
-            $portalUser = Auth::user();
-            $portalUserContact = $portalUser ? $portalUser->contact : null;
-
-            $documentBody = $documentTemplate->header ? $documentTemplate->header->html_body : '';
-
-            if ($documentTemplate->baseTemplate) {
-                $documentBody .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
-                    $documentTemplate->html_body, '', '');
-            } else {
-                $documentBody .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
-                    '', '');
-            }
-            $documentBody .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
-
-            $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'vertegenwoordigde',
-                $portalUserContact);
-            $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'contact', $contact);
-            $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'project', $project);
-            $documentBody = TemplateVariableHelper::stripRemainingVariableTags($documentBody);
-
-        }
-
-        return $documentBody;
+        return DocumentHelper::getDocumentBody($contact, $project);
     }
 
     protected function updatePerson($contact, Request $request)

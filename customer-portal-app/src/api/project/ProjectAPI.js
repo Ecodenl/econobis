@@ -11,8 +11,8 @@ export default {
                     fld: ['id', 'name', 'dateStartRegistrations', 'dateEndRegistrations'],
                     flt: {
                         and: [
-                            { f: 'dateStartRegistrations', o: '<=', d: moment() },
-                            { f: 'dateEndRegistrations', o: '>=', d: moment() },
+                            { f: 'dateStartRegistrations', o: '<=', d: moment().format('YYYY-MM-DD') },
+                            { f: 'dateEndRegistrations', o: '>=', d: moment().format('YYYY-MM-DD') },
                         ],
                     },
                 },

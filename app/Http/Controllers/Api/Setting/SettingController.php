@@ -23,14 +23,6 @@ class SettingController
         ];
     }
 
-    public function getSingleSetting($key)
-    {
-        if(!$this->isWhiteListed($key)){
-            return null;
-        }
-        return $this->getStore()->get($key);
-    }
-
     public function multiple(Request $request)
     {
         $store = $this->getStore();
@@ -85,6 +77,7 @@ class SettingController
             'backgroundColor',
             'responsibleUserId',
             'documentTemplateAgreementId',
+            'emailTemplateAgreementId',
         ]);
     }
 

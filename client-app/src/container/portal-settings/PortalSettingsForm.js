@@ -1,53 +1,29 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { isEmpty } from 'lodash';
 
-// import { fetchPortalSettings } from '../../../actions/portal-settings/fetchPortalSettingsActions';
+import PortalSettingsFormGeneral from './general/PortalSettingsFormGeneral';
 
-class PortalSettingsForm extends Component {
-    constructor(props) {
-        super(props);
+const PortalSettingsForm = ({ portalSettings, hasError, isLoading, updateState, emailTemplates }) => {
+    let loadingText = '';
+    let loading = true;
+
+    if (hasError) {
+        loadingText = 'Fout bij het ophalen van portal instellingen.';
+    } else if (isLoading) {
+        loadingText = 'Gegevens aan het laden.';
+    } else if (isEmpty(portalSettings)) {
+        loadingText = 'Geen portal instellingen gevonden!';
+    } else {
+        loading = false;
     }
 
-    render() {
-        let loadingText = '';
-        let loading = true;
-
-        if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van portal instellingen.';
-        } else if (this.props.isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (isEmpty(this.props.portalSettings)) {
-            loadingText = 'Geen portal instellingen gevonden!';
-        } else {
-            loading = false;
-        }
-
-        return loading ? (
-            <div>{loadingText}</div>
-        ) : (
-            <div>
-                <h1>form</h1>
-            </div>
-        );
-    }
-}
-
-const mapStateToProps = state => {
-    return {
-        portalSettings: state.portalSettings,
-        isLoading: state.loadingData.isLoading,
-        hasError: state.loadingData.hasError,
-    };
+    return loading ? (
+        <div>{loadingText}</div>
+    ) : (
+        <div>
+            <PortalSettingsFormGeneral portalSettings={portalSettings} updateState={updateState} />
+        </div>
+    );
 };
 
-const mapDispatchToProps = dispatch => ({
-    fetchPortalSettings: () => {
-        dispatch(fetchPortalSettings);
-    },
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PortalSettingsForm);
+export default PortalSettingsForm;

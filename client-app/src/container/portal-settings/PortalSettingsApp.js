@@ -1,59 +1,75 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+
 import PortalSettingsForm from './PortalSettingsForm';
 import Panel from '../../components/panel/Panel';
 import PanelBody from '../../components/panel/PanelBody';
+import PortalSettingsToolbar from './PortalSettingsToolbar';
+import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 
 // import { fetchPortalSettings, clearPortalSettings } from '../../../actions/portal-settings/PortalSettingsActions';
 
 class PortalSettingsApp extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            portalSettings: {},
+            isLoading: false,
+            hasError: false,
+        };
     }
 
     componentDidMount() {
-        // this.props.fetchPortalSettings();
+        this.callFetchPortalSettings();
     }
 
-    componentWillUnmount() {
-        // this.props.clearPortalSettings();
-    }
+    callFetchPortalSettings = () => {
+        this.setState({ isLoading: true, hasError: false });
+        const keys =
+            '?keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId';
+        PortalSettingsAPI.fetchPortalSettings(keys)
+            .then(payload => {
+                this.setState({
+                    isLoading: false,
+                    portalSettings: {
+                        ...payload.data,
+                    },
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false, hasError: true });
+            });
+    };
 
-    // refreshPortalSettingsData = () => {
-    //     this.props.clearPortalSettings();
-    //     this.props.fetchPortalSettings();
-    // };
+    updateState = portalSettings => {
+        this.setState({ portalSettings });
+    };
 
     render() {
         return (
-            <Panel>
-                <PanelBody>
+            <div className="row">
+                <div className="col-md-9">
                     <div className="col-md-12 margin-10-top">
-                        <h1>Portal instellingen</h1>
-                        <PortalSettingsForm portalSettings={this.props.portalSettings} />
+                        <Panel>
+                            <PanelBody className={'panel-small'}>
+                                <PortalSettingsToolbar />
+                            </PanelBody>
+                        </Panel>
                     </div>
-                </PanelBody>
-            </Panel>
+
+                    <div className="col-md-12 margin-10-top">
+                        <PortalSettingsForm
+                            portalSettings={this.state.portalSettings}
+                            isLoading={this.state.isLoading}
+                            hasError={this.state.hasError}
+                            updateState={this.updateState}
+                        />
+                    </div>
+                </div>
+                <div className="col-md-3" />
+            </div>
         );
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        portalSettings: state.portalSettings,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    // fetchPortalSettings: () => {
-    //     dispatch(fetchPortalSettings());
-    // },
-    // clearPortalSettings: () => {
-    //     dispatch(clearPortalSettings());
-    // },
-});
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PortalSettingsApp);
+export default PortalSettingsApp;

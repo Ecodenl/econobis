@@ -25,7 +25,7 @@ class ParticipantProjectCalculator
     {
         if($this->participantProject->project->projectType->code_ref == 'capital' || $this->participantProject->project->projectType->code_ref == 'postalcode_link_capital') {
             $participationWorth = $this->participantProject->mutations()->where('status_id', 4)->sum('participation_worth');
-            $participationsCapitalWorth = $participationWorth + $this->participantProject->amount_definitive;
+            $participationsCapitalWorth = $participationWorth + $this->amountDefinitive();
         }else{
             $participationsCapitalWorth = null;
         }

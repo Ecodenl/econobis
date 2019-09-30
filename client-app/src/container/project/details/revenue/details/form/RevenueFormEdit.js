@@ -218,9 +218,16 @@ class RevenueFormEdit extends Component {
             errorMessage.dateEnd = 'Verplicht';
             hasErrors = true;
         }
-        if (revenue.dateEnd < revenue.dateBegin) {
+        if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
             errors.dateEnd = true;
-            errorMessage.dateEnd = 'Eind periode mag niet lager zijn dan Begin periode.';
+            errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
+            hasErrors = true;
+        }
+        if (!hasErrors && moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
             hasErrors = true;
         }
 

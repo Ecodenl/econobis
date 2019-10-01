@@ -9,6 +9,7 @@ import LoadingView from '../../../../components/general/LoadingView';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import ParticipantProjectAPI from '../../../../api/participant-project/ParticipantProjectAPI';
+import {ClipLoader} from "react-spinners";
 
 function StepFour({ previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
@@ -29,12 +30,13 @@ function StepFour({ previous, next, registerValues, setSucces }) {
         })();
     }, [registerValues]);
 
-    function handleSubmitRegisterValues(actions) {
+    function handleSubmitRegisterValues(actions, next) {
         ParticipantProjectAPI.createParticipantProject(registerValues)
             .then(payload => {
                 console.log(payload);
                 actions.setSubmitting(false);
                 setSucces(true);
+                next();
             })
             .catch(error => {
                 alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
@@ -58,12 +60,12 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                 <Formik
                     validationSchema={validationSchema}
                     onSubmit={function(values, actions) {
-                        handleSubmitRegisterValues(actions);
-                        next();
+                        handleSubmitRegisterValues(actions, next);
+
                     }}
                     initialValues={{ didAgreeRegistration: false }}
                 >
-                    {({ handleSubmit, touched, errors }) => (
+                    {({ handleSubmit, touched, errors, isSubmitting }) => (
                         <div>
                             <Row>
                                 <Col xs={12} md={10}>
@@ -98,8 +100,23 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                         <Button className={'w-button'} size="sm" onClick={previous}>
                                             Terug
                                         </Button>
-                                        <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                            Bevestigen inschrijving
+                                        {/*<Button className={'w-button'} size="sm" onClick={handleSubmit}>*/}
+                                            {/*Bevestigen inschrijving*/}
+                                        {/*</Button>*/}
+                                        <Button
+                                            className={'w-button'}
+                                            size="sm"
+                                            onClick={handleSubmit}
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? (
+                                                <span>
+                                                        <ClipLoader color={'white'} size={14} />
+                                                        Bezig met verwerken
+                                                    </span>
+                                            ) : (
+                                                'Bevestigen inschrijving'
+                                            )}
                                         </Button>
                                     </ButtonGroup>
                                 </Col>

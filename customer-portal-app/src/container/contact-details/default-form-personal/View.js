@@ -51,7 +51,7 @@ function DefaultContactPersonalView({ initialContact }) {
                 </Row>
                 <Row>
                     <TextBlock className={'col-12 col-sm-6 col-md-4'} placeholder={'Geboortedatum'}>
-                        {person.dateOfBirth}
+                        {moment(person.dateOfBirth).format('L')}
                     </TextBlock>
                 </Row>
 

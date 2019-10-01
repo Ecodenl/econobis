@@ -251,7 +251,6 @@ class ParticipantExcelHelper
                 $participant->date_register = $participant->date_register
                     ? Carbon::parse($participant->date_register)
                         ->format('d-m-Y') : '';
-
                 $participant->date_did_accept_agreement = $participant->date_did_accept_agreement
                     ? Carbon::parse($participant->date_did_accept_agreement)
                         ->format('d-m-Y') : '';

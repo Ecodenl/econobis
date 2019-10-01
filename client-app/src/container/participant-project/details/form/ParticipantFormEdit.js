@@ -202,12 +202,8 @@ class ParticipantFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                         />
                     ) : (
-                        <ViewText
-                            label={'Akkoord voorwaarden'}
-                            id={'didAcceptAgreement'}
-                            value={didAcceptAgreement ? 'Ja' : 'Nee'}
-                            className={'form-group col-md-6'}
-                        />
+
+                        <ViewText label={'Akkoord voorwaarden'} id={'didAcceptAgreement'} className={'form-group col-md-6'} value={didAcceptAgreement ? <span>Ja <em>({dateDidAcceptAgreement ? moment(dateDidAcceptAgreement.date).format('L') : ''})</em></span>  : 'Nee'} />
                     )}
                     {!didUnderstandInfo ? (
                         <InputToggle
@@ -218,27 +214,8 @@ class ParticipantFormEdit extends Component {
                             onChangeAction={this.handleInputChange}
                         />
                     ) : (
-                        <ViewText
-                            label={'Projectinfo begrepen'}
-                            id={'didUnderstandInfo'}
-                            value={didUnderstandInfo ? 'Ja' : 'Nee'}
-                            className={'form-group col-md-6'}
-                        />
+                        <ViewText label={'Projectinfo begrepen'} id={'didUnderstandInfo'} className={'form-group col-md-6'} value={didUnderstandInfo ? <span>Ja <em>({dateDidUnderstandInfo ? moment(dateDidUnderstandInfo.date).format('L') : ''})</em></span>  : 'Nee'} />
                     )}
-                </div>
-                <div className="row">
-                    <ViewText
-                        label={'Datum akkoord'}
-                        id={'dateDidAcceptAgreement'}
-                        value={dateDidAcceptAgreement ? moment(dateDidAcceptAgreement.date).format('L') : ''}
-                        className={'form-group col-md-6'}
-                    />
-                    <ViewText
-                        label={'Datum begrepen'}
-                        id={'dateDidUnderstandInfo'}
-                        value={dateDidUnderstandInfo ? moment(dateDidUnderstandInfo.date).format('L') : ''}
-                        className={'form-group col-md-6'}
-                    />
                 </div>
 
                 <div className="row">

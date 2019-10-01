@@ -11,6 +11,7 @@ namespace App\Eco\ParticipantProject;
 use App\Eco\Contact\Contact;
 use App\Eco\Project\ProjectType;
 use App\Http\Controllers\Api\Project\ProjectRevenueController;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ParticipantProjectObserver
@@ -82,11 +83,19 @@ class ParticipantProjectObserver
                 }
             }
         }
+
     }
 
     public function updating(ParticipantProject $participantProject)
     {
         $userId = Auth::id();
         $participantProject->updated_by_id = $userId;
+
+        if($participantProject->isDirty('did_accept_agreement') && $participantProject->did_accept_agreement ) {
+            $participantProject->date_did_accept_agreement = Carbon::now();
+        }
+        if($participantProject->isDirty('did_understand_info') && $participantProject->did_understand_info ) {
+            $participantProject->date_did_understand_info = Carbon::now();
+        }
     }
 }

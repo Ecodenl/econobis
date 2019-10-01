@@ -226,7 +226,9 @@ class ExternalWebformController extends Controller
                 'deelname_jaarlijks_verbruik' => 'power_kwh_consumption',
                 'deelname_uitkeren_op_id' => 'payout_type_id',
                 'deelname_akkoord_regelement' => 'did_accept_agreement',
+                'deelname_datum_akkoord_regelement' => 'date_did_accept_agreement',
                 'deelname_projectinformatie_begrepen' => 'did_understand_info',
+                'deelname_datum_projectinformatie_begrepen' => 'date_did_understand_info',
                 // ParticipantMutation
                 'deelname_mutatie_status_id' => 'participation_mutation_status_id',
                 'deelname_mutatie_aantal' => 'participation_mutation_quantity',
@@ -732,7 +734,9 @@ class ExternalWebformController extends Controller
                 'power_kwh_consumption' => $data['power_kwh_consumption'] == '' ? 0 : $data['power_kwh_consumption'],
                 'type_id' => $payoutTypeId,
                 'did_accept_agreement' => (bool)$data['did_accept_agreement'],
+                'date_did_accept_agreement' => Carbon::make($data['date_did_accept_agreement']),
                 'did_understand_info' => (bool)$data['did_understand_info'],
+                'date_did_understand_info' => Carbon::make($data['date_did_understand_info']),
             ]);
 
             $this->log('Participatie aangemaakt met id ' . $participation->id . '.');

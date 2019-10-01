@@ -10,6 +10,7 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
+use App\Helpers\Settings\PortalSettings;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -287,6 +288,15 @@ class TemplateVariableHelper
                 break;
             case 'iban_tnv':
                 return $model->iban_attn;
+                break;
+            case 'portal_registratie_link':
+                if($model->portal_registration_code)
+                {
+                    $link = 'https://' . PortalSettings::get("portalUrl") . '/activeer-registratie/' . $model->portal_registration_code . '/' . optional($model->primaryEmailAddress)->email;
+                }else{
+                    $link = '';
+                }
+                return $link;
                 break;
 
             default:

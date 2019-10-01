@@ -16,6 +16,13 @@ export default {
         return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });
     },
 
+    register: payload => {
+        const requestUrl = `${BASE_URL}/register`;
+        delete axios.defaults.headers.common['Authorization'];
+
+        return axios.post(requestUrl, payload);
+    },
+
     forgot: email => {
         const requestUrl = `${BASE_URL}/password/email`;
         delete axios.defaults.headers.common['Authorization'];

@@ -12,6 +12,7 @@ use App\Eco\Administration\Administration;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ContactObserver
 {
@@ -25,6 +26,7 @@ class ContactObserver
         $userId = Auth::id();
         $contact->created_by_id = $userId;
         $contact->updated_by_id = $userId;
+        $contact->portal_registration_code = Str::random(32);
     }
 
     public function created(Contact $contact)

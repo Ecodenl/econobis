@@ -294,10 +294,10 @@ class ProjectRevenueController extends ApiController
             $distribution->city = $primaryAddress->city;
         }
 
-        if($participant->participantProjectPayoutType){
-            $distribution->payout_type = $participant->participantProjectPayoutType->name;
-        }elseif($projectRevenue->participantProjectPayoutType){
+        if($projectRevenue->participantProjectPayoutType) {
             $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
+        }elseif($participant->participantProjectPayoutType){
+            $distribution->payout_type = $participant->participantProjectPayoutType->name;
         }else{
             $distribution->payout_type = '';
         }

@@ -5,7 +5,7 @@ import TextBlock from '../../../components/general/TextBlock';
 import Row from 'react-bootstrap/Row';
 import moment from 'moment';
 
-function DefaultContactView({ initialContact }) {
+function DefaultContactPersonalView({ initialContact }) {
     const {
         person = {},
         emailCorrespondence,
@@ -22,6 +22,11 @@ function DefaultContactView({ initialContact }) {
     return (
         <Row>
             <Col xs={12} md={6}>
+                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
+                </Row>
+
                 <FormLabel className={'field-label'}>Naam</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-6'} placeholder={'Aanhef'}>
@@ -135,11 +140,6 @@ function DefaultContactView({ initialContact }) {
                     </TextBlock>
                 </Row>
 
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
-                </Row>
-
                 <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
                 {primaryContactEnergySupplier ? (
                     <Row>
@@ -187,4 +187,4 @@ function DefaultContactView({ initialContact }) {
     );
 }
 
-export default DefaultContactView;
+export default DefaultContactPersonalView;

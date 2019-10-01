@@ -4,6 +4,7 @@ import ContactAPI from '../../api/contact/ContactAPI';
 import rebaseContact from '../../helpers/RebaseContact';
 import LoadingView from '../../components/general/LoadingView';
 import ContactDetailsPersonal from './Personal';
+import ContactDetailsOrganisation from './Organisation';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
@@ -15,23 +16,25 @@ const ContactDetails = function(props) {
         if (props.currentSelectedContact.id) {
             // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
             if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
-                (function callFetchContact() {
-                    setLoading(true);
-                    ContactAPI.fetchContact(props.currentSelectedContact.id)
-                        .then(payload => {
-                            const contactData = rebaseContact(payload.data.data);
-
-                            setContact(contactData);
-                            setLoading(false);
-                        })
-                        .catch(error => {
-                            alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                            setLoading(false);
-                        });
-                })();
+                callFetchContact();
             }
         }
     }, [props.currentSelectedContact]);
+
+    function callFetchContact() {
+        setLoading(true);
+        ContactAPI.fetchContact(props.currentSelectedContact.id)
+            .then(payload => {
+                const contactData = rebaseContact(payload.data.data);
+
+                setContact(contactData);
+                setLoading(false);
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setLoading(false);
+            });
+    }
 
     function usePrevious(value) {
         const ref = useRef();
@@ -43,17 +46,16 @@ const ContactDetails = function(props) {
 
     function handleSubmitContactValues(values, actions, switchToView) {
         const updatedContact = { ...contact, ...values };
-        // TODO Do Api request to update contact values
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
-                setContact(updatedContact);
+                callFetchContact();
+                actions.setSubmitting(false);
+                switchToView();
             })
             .catch(error => {
+                actions.setSubmitting(false);
                 alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
-
-        actions.setSubmitting(false);
-        switchToView();
     }
 
     return (
@@ -72,7 +74,12 @@ const ContactDetails = function(props) {
                         />
                     ) : null}
                     {/* If contact is organisation */}
-                    {contact.typeId === 'organisation' ? <div>{contact.fullName}</div> : null}
+                    {contact.typeId === 'organisation' ? (
+                        <ContactDetailsOrganisation
+                            initialContact={contact}
+                            handleSubmitContactValues={handleSubmitContactValues}
+                        />
+                    ) : null}
                 </div>
             )}
         </div>

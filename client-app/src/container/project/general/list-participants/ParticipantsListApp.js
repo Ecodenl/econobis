@@ -291,20 +291,34 @@ class ParticipantsListApp extends Component {
 
     getExcel = () => {
         this.props.blockUI();
-        setTimeout(() => {
+
+        const maxParticipants = 1000;
+        // const totalParticipants = this.props.participantsProject.meta.total;
+        const amountFiles = Math.ceil(this.props.participantsProject.meta.total / maxParticipants);
+        const splitsExcel = this.props.participantsProject.meta.total > maxParticipants;
+        var counter = 1;
+        for (var i = 1; i <= amountFiles; i++) {
+            var offset = i * maxParticipants - maxParticipants;
+            var pagination = { limit: maxParticipants, offset: offset };
             const filters = filterHelper(this.props.participantsProjectFilters);
             const extraFilters = this.state.extraFilters;
             const sorts = this.props.participantsProjectSorts;
-
-            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, true)
+            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, pagination, true)
                 .then(payload => {
-                    fileDownload(payload.data, 'Deelnemers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+                    if (splitsExcel) {
+                        var excelFileName = `Deelnemers-${moment().format(
+                            'YYYY-MM-DD HH:mm:ss'
+                        )} (${counter} van ${amountFiles}).xlsx`;
+                    }
+                    fileDownload(payload.data, excelFileName);
+                    counter = counter + 1;
                     this.props.unblockUI();
                 })
                 .catch(error => {
                     this.props.unblockUI();
                 });
-        }, 100);
+        }
     };
 
     saveAsGroup = () => {

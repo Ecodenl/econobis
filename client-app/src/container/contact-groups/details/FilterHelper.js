@@ -73,7 +73,9 @@ export default (type, field) => {
                 case 'participationsSold':
                     return 'Deelnames overgedragen';
                 case 'didAcceptAgreement':
-                    return 'Akkoord reglement';
+                    return 'Akkoord voorwaarden';
+                case 'didUnderstandInfo':
+                    return 'Projectinfo begrepen';
                 case 'participationsRequested':
                     return 'Deelnames aangevraagd';
                 case 'participantMutationTypeId':

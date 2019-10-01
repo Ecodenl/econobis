@@ -29,9 +29,10 @@ class ContactJoryResource extends JoryResource
         $this->field('address_lines')->hideByDefault();
 
         // Relations
-        $this->relation('primaryAddress');
+        $this->relation('addresses');
         $this->relation('email_addresses');
         $this->relation('person');
+        $this->relation('organisation');
         $this->relation('phone_numbers');
         $this->relation('primaryContactEnergySupplier');
         $this->relation('primaryOccupations');

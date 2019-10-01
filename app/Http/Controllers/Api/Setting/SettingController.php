@@ -75,6 +75,9 @@ class SettingController
         return in_array($key, [
             'portalUrl',
             'backgroundColor',
+            'responsibleUserId',
+            'documentTemplateAgreementId',
+            'emailTemplateAgreementId',
         ]);
     }
 

@@ -20,6 +20,7 @@ function RegisterCapital({ match, currentSelectedContact }) {
     const [project, setProject] = useState({});
     const [contact, setContact] = useState({});
     const [isLoading, setLoading] = useState(true);
+    const [isSucces, setSucces] = useState(false);
 
     useEffect(() => {
         (function callFetchProject() {
@@ -64,10 +65,26 @@ function RegisterCapital({ match, currentSelectedContact }) {
         setRegisterValues({ ...registerValues, ...values });
     }
 
-    function handleSubmitContactValues(values) {
-        // TODO Do Api request to update contact values
+    function handleSubmitContactValues(values, actions, nextStep) {
+        const updatedContact = { ...contact, ...values };
+        ContactAPI.updateContact(updatedContact)
+            .then(payload => {
+                ContactAPI.fetchContact(currentSelectedContact.id)
+                    .then(payload => {
+                        const contactData = rebaseContact(payload.data.data);
 
-        setContact({ ...contact, ...values });
+                        setContact(contactData);
+                        nextStep();
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            })
+            .catch(error => {
+                actions.setSubmitting(false);
+                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+            });
     }
 
     return (
@@ -77,15 +94,22 @@ function RegisterCapital({ match, currentSelectedContact }) {
             ) : (
                 <Row>
                     <Col>
-                        <h1 className="content-heading">
-                            Schrijf je in voor project <strong>{project.name}</strong>
-                        </h1>
+                        {isSucces ? (
+                            <h1 className="content-heading">
+                                Ingeschreven voor project <strong>{project.name}</strong>
+                            </h1>
+                        ) : (
+                            <h1 className="content-heading">
+                                Schrijf je in voor project <strong>{project.name}</strong>
+                            </h1>
+                        )}
                         <MasterForm
                             project={project}
                             initialRegisterValues={registerValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                             initialContact={contact}
                             handleSubmitContactValues={handleSubmitContactValues}
+                            setSucces={setSucces}
                         />
                     </Col>
                 </Row>

@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import DefaultContactPersonalView from './default-form-personal/View';
+import DefaultContactOrganisationEdit from './default-form-organisation/Edit';
+import DefaultContactOrganisationView from './default-form-organisation/View';
 import Col from 'react-bootstrap/Col';
-import DefaultContactPersonalEdit from './default-form-personal/Edit';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { ClipLoader } from 'react-spinners';
+import DefaultContactPersonalEdit from './Personal';
 
 const validationSchema = Yup.object().shape({
     // TODO set more correct values for validation, only important fields are set now
-    person: Yup.object().shape({
-        lastName: Yup.string()
+    organisation: Yup.object().shape({
+        name: Yup.string()
             .trim()
             .required('Verplicht'),
     }),
@@ -32,7 +33,7 @@ const validationSchema = Yup.object().shape({
             .trim()
             .required('Verplicht'),
     }),
-    primaryAddress: Yup.object().shape({
+    visitAddress: Yup.object().shape({
         street: Yup.string()
             .trim()
             .required('Verplicht'),
@@ -45,13 +46,17 @@ const validationSchema = Yup.object().shape({
         city: Yup.string()
             .trim()
             .required('Verplicht'),
-        countryId: Yup.string()
-            .trim()
-            .required('Verplicht'),
+        countryId: Yup.string().required('Verplicht'),
+    }),
+    postalAddress: Yup.object().shape({
+        number: Yup.number().typeError('Alleen nummers'),
+    }),
+    invoiceAddress: Yup.object().shape({
+        number: Yup.number().typeError('Alleen nummers'),
     }),
 });
 
-function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
+function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues }) {
     const [editForm, setEditForm] = useState(false);
 
     return (
@@ -66,14 +71,12 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
-                        console.log(errors);
                         return (
                             <Form>
-                                <DefaultContactPersonalEdit
+                                <DefaultContactOrganisationEdit
                                     initialContact={initialContact}
                                     touched={touched}
                                     errors={errors}
-                                    setFieldValue={setFieldValue}
                                     values={values}
                                 />
                                 <Row>
@@ -112,7 +115,7 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                 />
             ) : (
                 <>
-                    <DefaultContactPersonalView initialContact={initialContact} />
+                    <DefaultContactOrganisationView initialContact={initialContact} />
                     <Row>
                         <Col>
                             <ButtonGroup aria-label="Steps" className="float-right">
@@ -134,4 +137,4 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
     );
 }
 
-export default ContactDetailsPersonal;
+export default ContactDetailsOrganisation;

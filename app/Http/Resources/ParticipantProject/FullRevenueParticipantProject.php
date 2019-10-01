@@ -37,6 +37,7 @@ class FullRevenueParticipantProject extends Resource
                 'projectId' => $this->project_id,
                 'datePayed' => $this->date_payed,
                 'didAcceptAgreement' => $this->did_accept_agreement,
+                'didUnderstandInfo' => $this->did_understand_info,
                 'giftedByContactId' => $this->gifted_by_contact_id,
                 'giftedByContact' => FullContact::make($this->whenLoaded('giftedByContact')),
                 'ibanPayout' => $this->iban_payout,

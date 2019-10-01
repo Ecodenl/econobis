@@ -10,7 +10,7 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import ParticipantProjectAPI from '../../../../api/participant-project/ParticipantProjectAPI';
 
-function StepFour({ previous, registerValues }) {
+function StepFour({ previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
 
@@ -34,6 +34,7 @@ function StepFour({ previous, registerValues }) {
             .then(payload => {
                 console.log(payload);
                 actions.setSubmitting(false);
+                setSucces(true);
             })
             .catch(error => {
                 alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
@@ -58,6 +59,7 @@ function StepFour({ previous, registerValues }) {
                     validationSchema={validationSchema}
                     onSubmit={function(values, actions) {
                         handleSubmitRegisterValues(actions);
+                        next();
                     }}
                     initialValues={{ didAgreeRegistration: false }}
                 >

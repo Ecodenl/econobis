@@ -19,7 +19,7 @@ export default {
         });
     },
 
-    getExcel: (filters, extraFilters, sorts, fetchFromProject) => {
+    getExcel: (filters, extraFilters, sorts, pagination, fetchFromProject) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/excel`;
 
         return axiosInstance.get(requestUrl, {
@@ -27,6 +27,8 @@ export default {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
                 fetchFromProject: fetchFromProject,
             },
             responseType: 'blob',

@@ -150,7 +150,8 @@ class ParticipationProjectController extends ApiController
     public function excel(RequestQuery $requestQuery)
     {
         set_time_limit(0);
-        $participants = $requestQuery->getQueryNoPagination()->get();
+
+        $participants = $requestQuery->getQuery()->get();
 
         $participants->load([
             'contact.person.title',
@@ -283,6 +284,7 @@ class ParticipationProjectController extends ApiController
 
         $data = $requestInput
             ->boolean('didAcceptAgreement')->alias('did_accept_agreement')->next()
+            ->boolean('didUnderstandInfo')->alias('did_understand_info')->next()
             ->integer('giftedByContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('gifted_by_contact_id')->next()
             ->string('ibanPayout')->alias('iban_payout')->next()
             ->integer('legalRepContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('legal_rep_contact_id')->next()
@@ -762,7 +764,14 @@ class ParticipationProjectController extends ApiController
 
         $participantMutation->fill($mutationData);
 
-        $participantMutation->save();
+        // Calculate participation worth based on current book worth of project
+        if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
+            $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                ->where('date', '<=', $participantMutation->date_entry)
+                ->orderBy('date', 'desc')
+                ->value('book_worth');
+            $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
+        }
 
         DB::transaction(function () use ($participantMutation) {
             $participantMutation->save();
@@ -774,16 +783,6 @@ class ParticipationProjectController extends ApiController
             $participantMutation->participation->project->calculator()->run()->save();
         });
 
-        // Calculate participation worth based on current book worth of project
-        if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
-            $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
-                ->where('date', '<=', $participantMutation->date_entry)
-                ->orderBy('date', 'desc')
-                ->value('book_worth');
-            $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
-
-            $participantMutation->save();
-        }
     }
 
     /**

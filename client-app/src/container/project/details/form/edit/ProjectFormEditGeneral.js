@@ -145,7 +145,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                 />
 
-                {/*Als er al facturen zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
+                {/*Als er al nota's zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
                 {hasPaymentInvoices ? (
                     <InputText
                         label={'Administratie'}

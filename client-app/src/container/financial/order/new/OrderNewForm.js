@@ -320,7 +320,7 @@ class OrderNewForm extends Component {
                                 readOnly={true}
                             />
                             <InputText
-                                label="Factuur wordt gemaild naar"
+                                label="Nota wordt gemaild naar"
                                 value={this.state.contactEmail}
                                 name={'contactEmail'}
                                 readOnly={true}
@@ -329,7 +329,7 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template factuur incasso'}
+                                label={'E-mail template nota incasso'}
                                 name={'emailTemplateIdCollection'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdCollection}
@@ -349,7 +349,7 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template factuur overboeken'}
+                                label={'E-mail template nota overboeken'}
                                 name={'emailTemplateIdTransfer'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdTransfer}
@@ -387,7 +387,7 @@ class OrderNewForm extends Component {
                                 multi={false}
                             />
                             <InputSelect
-                                label={'Factuur frequentie'}
+                                label={'Nota frequentie'}
                                 id="collectionFrequencyId"
                                 name={'collectionFrequencyId'}
                                 options={this.props.orderCollectionFrequencies}
@@ -456,7 +456,7 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputDate
-                                label="Volgende factuur datum"
+                                label="Volgende nota datum"
                                 name="dateNextInvoice"
                                 value={dateNextInvoice}
                                 onChangeAction={this.handleInputChangeInvoiceDate}

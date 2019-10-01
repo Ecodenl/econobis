@@ -13,6 +13,7 @@ use App\Eco\Administration\Sepa;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\Project\ProjectRevenueCategory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -180,13 +181,41 @@ class SepaPaymentHelper
         foreach ($this->invoices as $invoice){
             $participantMutation = new ParticipantMutation();
             $participantMutation->participation_id = $invoice->revenueDistribution->participation_id;
-            $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $invoice->revenueDistribution->participation->project->project_type_id)->value('id');
-            $participantMutation->returns = $invoice->revenueDistribution->payout;
+
+            if ($invoice->revenueDistribution->revenue->category_id == (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
+                $mutationType = ParticipantMutationType::where('code_ref', 'redemption')
+                    ->where('project_type_id', $invoice->revenueDistribution->participation->project->project_type_id)
+                    ->value('id');
+                $status = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+                $amount = $invoice->revenueDistribution->payout * -1;
+                $amountFinal = $invoice->revenueDistribution->payout * -1;
+                $dateEntry = $invoice->revenueDistribution->date_payout;
+
+                $participantMutation->status_id = $status;
+                $participantMutation->amount = $amount;
+                $participantMutation->amount_final = $amountFinal;
+                $participantMutation->date_entry = $dateEntry;
+
+             }else{
+                $mutationType = ParticipantMutationType::where('code_ref', 'result')
+                    ->where('project_type_id', $invoice->revenueDistribution->participation->project->project_type_id)
+                    ->value('id');
+                $returns = $invoice->revenueDistribution->payout;
+                $participantMutation->returns = $returns;
+            }
+            $participantMutation->type_id = $mutationType;
             $participantMutation->payout_kwh = $invoice->revenueDistribution->payout_kwh;
             $participantMutation->paid_on = $invoice->revenueDistribution->participation->iban_payout ? $invoice->revenueDistribution->participation->iban_payout : $invoice->revenueDistribution->contact->iban;
             $participantMutation->entry = $invoice->number;
             $participantMutation->date_payment = $invoice->revenueDistribution->date_payout;
             $participantMutation->save();
+
+            // Recalculate dependent data in participantProject
+            $participantMutation->participation->calculator()->run()->save();
+
+            // Recalculate dependent data in project
+            $participantMutation->participation->project->calculator()->run()->save();
+
         }
     }
 

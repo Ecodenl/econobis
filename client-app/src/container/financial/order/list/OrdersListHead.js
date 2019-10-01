@@ -20,7 +20,7 @@ const OrdersListHead = props => {
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateNextInvoice'}
-                title={'Volgende factuur datum'}
+                title={'Volgende nota datum'}
                 width={'10%'}
                 setSorts={setSorts}
             />

@@ -54,7 +54,7 @@ class TwinfieldInvoiceHelper
         foreach ($this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get() as $invoiceToBeChecked)
         {
             if(!$invoiceToBeChecked->twinfield_number){
-                Log::error('Factuur ' . $invoiceToBeChecked->id . ' met nummer ' . $invoiceToBeChecked->number . ' heeft status geexporteerd maar heeft geen Twinfield nummer.');
+                Log::error('Nota ' . $invoiceToBeChecked->id . ' met nummer ' . $invoiceToBeChecked->number . ' heeft status geexporteerd maar heeft geen Twinfield nummer.');
             }
             else {
 
@@ -64,7 +64,7 @@ class TwinfieldInvoiceHelper
                     $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsSalesTransaction);
                 } catch (PhpTwinfieldException $e) {
                     Log::error($e->getMessage());
-                    return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen verkoopgegevens factuurnr. ' . $invoiceToBeChecked->number . '.';
+                    return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '.';
                 }
 
                 $getPaidData = false;
@@ -78,7 +78,7 @@ class TwinfieldInvoiceHelper
                     $matchStatus = ($row->getCells()[3]->getValue());
                     $matchNumber = ($row->getCells()[4]->getValue());
 
-                    //VRK is de verkoop factuur
+                    //VRK is de verkoop nota
                     if($dagBoek === 'VRK' && ($matchStatus=='matched' || !empty($matchNumber) ) )
                     {
                         $getPaidData = true;
@@ -93,14 +93,14 @@ class TwinfieldInvoiceHelper
                         $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsPaidInfo);
                     } catch (PhpTwinfieldException $e) {
                         Log::error($e->getMessage());
-                        return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen betaalgegevens factuurnr. ' . $invoiceToBeChecked->number . '.';
+                        return $e->getMessage() ? $e->getMessage() : 'Er is een fout opgetreden bij ophalen betaalgegevens notanr. ' . $invoiceToBeChecked->number . '.';
                     }
 //                dd($twinfieldInvoiceTransactions);
 
                     foreach($twinfieldInvoiceTransactions->getRows() as $row){
 
                         // [1] - Dagboek (alle)
-                        // [3] - Factuurbedrag
+                        // [3] - Notabedrag
                         // [4] - Openstaand bedrag
                         // [5] - Betaaldatum
                         // [6] - Twinfieldnumber
@@ -114,7 +114,7 @@ class TwinfieldInvoiceHelper
                         $twinfieldNumber = ($row->getCells()[6]->getValue());
                         $twinfieldMatchNumber = ($row->getCells()[7]->getValue());
 
-                        //VRK is de verkoop factuur, die slaan we nu over
+                        //VRK is de verkoop nota, die slaan we nu over
                         if($dagBoek !== 'VRK')
                         {
                             //-100 op debiteur is dus 100 betaald
@@ -131,8 +131,8 @@ class TwinfieldInvoiceHelper
                                 $invoicePayment->type_id = $dagBoek;
                                 $invoicePayment->date_paid = $dateInput;
                                 $invoicePayment->save();
-                                Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor factuur ' . $invoiceToBeChecked->number);
-                                array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor factuur ' . $invoiceToBeChecked->number . '.');
+                                Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor nota ' . $invoiceToBeChecked->number);
+                                array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.');
                             // anders bijwerken
                             }else{
                                 $invoicePayment = $invoicePaymentCheck->first();
@@ -141,8 +141,8 @@ class TwinfieldInvoiceHelper
                                     $data = ['amount'=>$amount, 'date_paid'=>$dateInput];
                                     $invoicePayment->fill($data);
                                     $invoicePayment->save();
-                                    Log::info('Betaling van ' . $amount . ' aangepast via twinfield voor factuur ' . $invoiceToBeChecked->number);
-                                    array_push($messages, 'Betaling van €' . $amount . ' aangepast via Twinfield voor factuur ' . $invoiceToBeChecked->number . '.');
+                                    Log::info('Betaling van ' . $amount . ' aangepast via twinfield voor nota ' . $invoiceToBeChecked->number);
+                                    array_push($messages, 'Betaling van €' . $amount . ' aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '.');
                                 }
                             }
                         }
@@ -180,10 +180,10 @@ class TwinfieldInvoiceHelper
             ->setAsk(true)
             ->setOperator(BrowseColumnOperator::EQUAL())
             ->setFrom("VRK");
-        // [2] - Factuurnr.
+        // [2] - Notanr.
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.invnumber')
-            ->setLabel('Factuurnr.')
+            ->setLabel('Notanr.')
             ->setVisible(true)
             ->setAsk(true)
             ->setOperator(BrowseColumnOperator::EQUAL())
@@ -226,15 +226,15 @@ class TwinfieldInvoiceHelper
             ->setVisible(true)
             ->setAsk(true)
             ->setOperator(BrowseColumnOperator::EQUAL());
-        // [2] - Factuurnr.
+        // [2] - Notanr.
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.invnumber')
-            ->setLabel('Factuurnr.')
+            ->setLabel('Notanr.')
             ->setVisible(true)
             ->setAsk(true)
             ->setOperator(BrowseColumnOperator::EQUAL())
             ->setFrom( $invoiceToBeChecked->number );
-        // [3] - Factuurbedrag in EUR
+        // [3] - Notabedrag in EUR
         $columns[] = (new BrowseColumn())
             ->setField('fin.trs.line.basevaluesigned')
             ->setLabel('Bedrag in administratie valuta')
@@ -390,7 +390,7 @@ class TwinfieldInvoiceHelper
 ////14 - 14
 //$columns[] = (new BrowseColumn())
 //    ->setField('fin.trs.line.invnumber')
-//    ->setLabel('Factuurnr.')
+//    ->setLabel('Notanr.')
 //    ->setVisible(true)
 //    ->setAsk(true)
 //    ->setOperator(BrowseColumnOperator::EQUAL());

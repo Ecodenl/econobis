@@ -51,6 +51,8 @@ class RevenueNewApp extends Component {
             },
             errorMessage: {
                 payoutTypeId: '',
+                dateBegin: '',
+                dateEnd: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
             },
@@ -78,10 +80,16 @@ class RevenueNewApp extends Component {
             );
 
             let revenue = this.state.revenue;
-            if (payload.projectType.codeRef !== 'loan') {
+
+            if (category.codeRef === 'redemptionEuro') {
+                const payoutTypeId = this.props.participantProjectPayoutTypes.find(
+                    participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
+                ).id;
+                revenue.payoutTypeId = payoutTypeId;
                 revenue.distributionTypeId = 'inPossessionOf';
-            }
-            if (payload.projectType.codeRef === 'obligation') {
+            } else if (payload.projectType.codeRef !== 'loan') {
+                revenue.distributionTypeId = 'inPossessionOf';
+            } else if (payload.projectType.codeRef === 'obligation') {
                 const payoutTypeId = this.props.participantProjectPayoutTypes.find(
                     participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
                 ).id;
@@ -92,6 +100,14 @@ class RevenueNewApp extends Component {
                 revenue.dateBegin = payload.dateInterestBearing;
                 revenue.dateEnd = payload.dateInterestBearing
                     ? moment(payload.dateInterestBearing)
+                          .endOf('year')
+                          .format('Y-MM-DD')
+                    : '';
+            }
+            if (category.codeRef === 'redemptionEuro') {
+                revenue.dateBegin = payload.dateInterestBearingRedemption;
+                revenue.dateEnd = payload.dateInterestBearingRedemption
+                    ? moment(payload.dateInterestBearingRedemption)
                           .endOf('year')
                           .format('Y-MM-DD')
                     : '';
@@ -211,11 +227,25 @@ class RevenueNewApp extends Component {
 
         if (!revenue.dateBegin) {
             errors.dateBegin = true;
+            errorMessage.dateBegin = 'Verplicht';
             hasErrors = true;
         }
 
         if (!revenue.dateEnd) {
             errors.dateEnd = true;
+            errorMessage.dateEnd = 'Verplicht';
+            hasErrors = true;
+        }
+        if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
+            hasErrors = true;
+        }
+        if (!hasErrors && moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
             hasErrors = true;
         }
 

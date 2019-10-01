@@ -16,8 +16,9 @@ class ProjectRevenueDistributionCalculator
 
     public function runRevenueEuro()
     {
-        // Revenue category REVENUE EURO
-        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id) {
+        // Revenue category REVENUE EURO of REDEMPTION EURO
+        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id
+        || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
             $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
             $this->projectRevenueDistribution->payout = $this->calculatePayout();
         }
@@ -94,13 +95,22 @@ class ProjectRevenueDistributionCalculator
 
     protected function calculatePayout()
     {
+        // --- Redemption (Aflossing) dan altijd In bezit op --- //
+        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
+            // Project type OBLIGATION of LOAN
+            if ($this->projectTypeCodeRef === 'obligation' || $this->projectTypeCodeRef === 'loan')
+            {
+                return $this->calculatePayoutInPossessionOf();
+            }
+        }
+
         // --- IN POSSESSION OF --- //
         if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
             // Project type OBLIGATION
-            if ($this->projectTypeCodeRef === 'obligation') return $this->calculatePayoutInPossessionOf();
-
-            // Project type CAPITAL and PCR
-//            if ($this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') return $this->calculateCapitalResult();
+            if ($this->projectTypeCodeRef === 'obligation' )
+            {
+                return $this->calculatePayoutInPossessionOf();
+            }
         }
 
         // --- HOW LONG IN POSSESSION --- //
@@ -117,8 +127,21 @@ class ProjectRevenueDistributionCalculator
     protected function calculatePayoutInPossessionOf()
     {
         $amount = $this->projectRevenueDistribution->participations_amount;
-        $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
-        $participationValue = $currentBookWorth * $amount;
+        if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
+            if($this->projectTypeCodeRef === 'loan') {
+                $participationValue = $amount;
+            }else{
+                $participation_worth = $this->projectRevenueDistribution->revenue->project->participation_worth;
+                $participationValue = $participation_worth;
+            }
+        }else{
+            $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
+            if($this->projectTypeCodeRef === 'loan') {
+                $participationValue = $amount;
+            }else{
+                $participationValue = $currentBookWorth;
+            }
+        }
 
         $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
         $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
@@ -135,6 +158,10 @@ class ProjectRevenueDistributionCalculator
             $payout = $payoutTillKeyAmount + $payoutAboveKeyAmount;
         } else {
             $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+        }
+
+        if($this->projectTypeCodeRef !== 'loan') {
+            $payout = floatval( number_format($payout, 2, '.', '') ) * $amount;
         }
 
         return number_format($payout, 2, '.', '');
@@ -161,18 +188,19 @@ class ProjectRevenueDistributionCalculator
 
             $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
 
-            if($this->projectTypeCodeRef === 'obligation' || $this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') {
-                $mutationValue = $currentBookWorth * $mutation->quantity;
-            }
-
             if($this->projectTypeCodeRef === 'loan') {
                 $mutationValue = $mutation->amount;
+            }else{
+                $mutationValue = $currentBookWorth;
             }
 
             if($dateEntry > $dateEnd) $mutationValue = 0;
             $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
-        }
 
+            if($this->projectTypeCodeRef !== 'loan') {
+                $payout = floatval( number_format($payout, 2, '.', '') ) * $mutation->quantity;
+            }
+        }
         return number_format($payout, 2, '.', '');
     }
 
@@ -242,7 +270,6 @@ class ProjectRevenueDistributionCalculator
 
         if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
             $dateReference = $this->projectRevenueDistribution->revenue->date_reference;
-
             $mutations->whereDate('date_entry', '<=', $dateReference);
         } else {
             $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
@@ -263,7 +290,6 @@ class ProjectRevenueDistributionCalculator
         foreach ($mutations->get() as $mutation) {
            $participationsCount += $mutation[$measureType] ;
         }
-
         return $participationsCount;
     }
 

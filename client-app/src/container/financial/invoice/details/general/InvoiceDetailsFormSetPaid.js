@@ -63,10 +63,10 @@ class InvoiceDetailsFormSetPaid extends Component {
 
         return (
             <Modal
-                buttonConfirmText="Factuur betalen"
+                buttonConfirmText="Nota betalen"
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur betalen"
+                title="Nota betalen"
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>

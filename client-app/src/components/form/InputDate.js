@@ -72,6 +72,7 @@ class InputDate extends Component {
             readOnly,
             name,
             error,
+            errorMessage,
             disabledBefore,
             disabledAfter,
         } = this.props;
@@ -117,6 +118,11 @@ class InputDate extends Component {
                         placeholder={''}
                     />
                 </div>
+                {error && (
+                    <div className="col-sm-offset-6 col-sm-6">
+                        <span className="has-error-message"> {errorMessage}</span>
+                    </div>
+                )}
             </div>
         );
     }
@@ -130,6 +136,7 @@ InputDate.defaultProps = {
     readOnly: false,
     value: null,
     error: false,
+    errorMessage: '',
     disabledBefore: null,
     disabledAfter: null,
 };
@@ -147,6 +154,7 @@ InputDate.propTypes = {
     required: PropTypes.string,
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
+    errorMessage: PropTypes.string,
     disabledBefore: PropTypes.string,
     disabledAfter: PropTypes.string,
 };

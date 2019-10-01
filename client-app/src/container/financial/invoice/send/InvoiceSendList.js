@@ -45,7 +45,7 @@ class InvoiceSendList extends Component {
                         ) : (
                             <Nav id="invoice">
                                 <NavText>
-                                    <Link className="send-invoices-list-link">Geen facturen beschikbaar.</Link>
+                                    <Link className="send-invoices-list-link">Geen nota's beschikbaar.</Link>
                                 </NavText>
                             </Nav>
                         )}

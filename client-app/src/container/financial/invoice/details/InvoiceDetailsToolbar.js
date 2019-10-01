@@ -59,14 +59,14 @@ class InvoiceToolbar extends Component {
         if (paymentType == 'incasso' && this.props.invoiceDetails.totalPriceInclVatAndReduction < 0) {
             this.props.setError(
                 405,
-                'Een factuur met een negatief bedrag kan geen incasso zijn. Wil je a.u.b. de betaalwijze van de order aanpassen in "Overboeken".'
+                'Een nota met een negatief bedrag kan geen incasso zijn. Wil je a.u.b. de betaalwijze van de order aanpassen in "Overboeken".'
             );
         } else {
             this.props.previewSend([this.props.invoiceDetails.id]);
             hashHistory.push(
                 `/financieel/${
                     this.props.invoiceDetails.order.administrationId
-                }/facturen/te-verzenden/verzenden/email/${paymentType}`
+                }/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         }
     };
@@ -77,7 +77,7 @@ class InvoiceToolbar extends Component {
         hashHistory.push(
             `/financieel/${
                 this.props.invoiceDetails.order.administrationId
-            }/facturen/te-verzenden/verzenden/post/${paymentType}`
+            }/notas/te-verzenden/verzenden/post/${paymentType}`
         );
     };
 
@@ -98,7 +98,7 @@ class InvoiceToolbar extends Component {
     };
 
     view = () => {
-        hashHistory.push(`/factuur/inzien/${this.props.invoiceDetails.id}`);
+        hashHistory.push(`/nota/inzien/${this.props.invoiceDetails.id}`);
     };
 
     render() {
@@ -143,7 +143,7 @@ class InvoiceToolbar extends Component {
                 {!this.props.isLoading && (
                     <div className="col-md-4">
                         <h4 className="text-center">
-                            Factuur:{' '}
+                            Nota:{' '}
                             {this.props.invoiceDetails.order ? this.props.invoiceDetails.order.contact.fullName : ''} /{' '}
                             {this.props.invoiceDetails.number}
                         </h4>

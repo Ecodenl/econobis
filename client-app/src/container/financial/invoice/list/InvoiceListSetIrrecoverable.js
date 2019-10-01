@@ -13,16 +13,16 @@ class InvoiceListSetIrrecoverable extends Component {
     confirmAction = event => {
         event.preventDefault();
         InvoiceDetailsAPI.setIrrecoverable(this.props.invoiceId).then(payload => {
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/oninbaar`);
+            hashHistory.push(`/financieel/${this.props.administrationId}/notas/oninbaar`);
         });
     };
 
     render() {
         return (
-            <Modal closeModal={this.props.closeModal} confirmAction={this.confirmAction} title="Factuur oninbaar">
+            <Modal closeModal={this.props.closeModal} confirmAction={this.confirmAction} title="Nota oninbaar">
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u deze factuur als oninbaar markeren?</span>
+                        <span>Wilt u deze nota als oninbaar markeren?</span>
                     </div>
                 </div>
             </Modal>

@@ -61,7 +61,7 @@ class DeleteAdministration implements DeleteInterface
     public function canDelete()
     {
         if($this->administration->paymentInvoices()->count() > 0){
-            array_push($this->errorMessage, "Er zijn al uitkeringsfacturen.");
+            array_push($this->errorMessage, "Er zijn al uitkerings nota's.");
         }
     }
 

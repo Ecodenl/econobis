@@ -23,8 +23,13 @@ class ParticipantProjectCalculator
     }
     public function participationsCapitalWorth()
     {
-        $participationWorth = $this->participantProject->mutations()->where('status_id', 4)->sum('participation_worth');
-        return $participationWorth + $this->participantProject->amount_definitive;
+        if($this->participantProject->project->projectType->code_ref == 'capital' || $this->participantProject->project->projectType->code_ref == 'postalcode_link_capital') {
+            $participationWorth = $this->participantProject->mutations()->where('status_id', 4)->sum('participation_worth');
+            $participationsCapitalWorth = $participationWorth + $this->amountDefinitive();
+        }else{
+            $participationsCapitalWorth = null;
+        }
+        return $participationsCapitalWorth;
     }
     public function participationsGranted()
     {

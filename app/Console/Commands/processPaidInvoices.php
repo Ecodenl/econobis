@@ -21,7 +21,7 @@ class processPaidInvoices extends Command
      *
      * @var string
      */
-    protected $description = 'Gaat in Twinfield kijken of facturen betaald zijn. Als is dit moeten ze in Econobis ook op betaald';
+    protected $description = "Gaat in Twinfield kijken of nota's betaald zijn. Als is dit moeten ze in Econobis ook op betaald";
 
     /**
      * Create a new command instance.
@@ -45,6 +45,6 @@ class processPaidInvoices extends Command
             $twinfieldInvoiceHelper->processPaidInvoices();
         }
 
-        Log::info('Betaalde Twinfield facturen in Econobis bijgewerkt.');
+        Log::info("Betaalde Twinfield nota's in Econobis bijgewerkt.");
     }
 }

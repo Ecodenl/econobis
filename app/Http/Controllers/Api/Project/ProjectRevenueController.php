@@ -240,7 +240,13 @@ class ProjectRevenueController extends ApiController
     )
     {
         $project = $projectRevenue->project;
-        $participants = $project->participantsProjectDefinitive;
+
+        if($projectRevenue->category->code_ref == 'revenueKwh')
+        {
+            $participants = $project->participantsProject;
+        }else{
+            $participants = $project->participantsProjectDefinitive;
+        }
 
         foreach ($participants as $participant) {
             $this->saveDistribution($projectRevenue, $participant);

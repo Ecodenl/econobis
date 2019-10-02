@@ -66,7 +66,7 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
-                        console.log(errors);
+                        // console.log(errors);
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit

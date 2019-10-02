@@ -54,7 +54,7 @@ class ProjectJoryResource extends JoryResource
 //        $this->relation('participants_project_definitive');
 //        $this->relation('project_revenues');
 //        $this->relation('project_status');
-//        $this->relation('project_type');
+        $this->relation('project_type');
 //        $this->relation('project_value_courses');
 //        $this->relation('requires_contact_groups');
 //        $this->relation('revision_history');

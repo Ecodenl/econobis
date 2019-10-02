@@ -9,7 +9,7 @@ import LoadingView from '../../../../components/general/LoadingView';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import ParticipantProjectAPI from '../../../../api/participant-project/ParticipantProjectAPI';
-import {ClipLoader} from "react-spinners";
+import { ClipLoader } from 'react-spinners';
 
 function StepFour({ previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
@@ -61,7 +61,6 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                     validationSchema={validationSchema}
                     onSubmit={function(values, actions) {
                         handleSubmitRegisterValues(actions, next);
-
                     }}
                     initialValues={{ didAgreeRegistration: false }}
                 >
@@ -101,7 +100,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                             Terug
                                         </Button>
                                         {/*<Button className={'w-button'} size="sm" onClick={handleSubmit}>*/}
-                                            {/*Bevestigen inschrijving*/}
+                                        {/*Bevestigen inschrijving*/}
                                         {/*</Button>*/}
                                         <Button
                                             className={'w-button'}
@@ -111,9 +110,9 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                         >
                                             {isSubmitting ? (
                                                 <span>
-                                                        <ClipLoader color={'white'} size={14} />
-                                                        Bezig met verwerken
-                                                    </span>
+                                                    <ClipLoader color={'white'} size={14} />
+                                                    Bezig met verwerken
+                                                </span>
                                             ) : (
                                                 'Bevestigen inschrijving'
                                             )}

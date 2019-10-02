@@ -198,7 +198,7 @@ function Header({ location, history }) {
                         </Link>
 
                         <Link
-                            to={'/gegevens'}
+                            to={'/inschrijvingen-projecten'}
                             className={`nav-link w-nav-link w--nav-link-open ${
                                 location.pathname === '/' ? 'w--current' : ''
                             }`}

@@ -70,6 +70,44 @@ export default {
         });
     },
 
+    fetchContactWithParticipants: function(id) {
+        const requestUrl = `/jory/contact/${id}`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: ['id', 'typeId', 'number', 'fullName', 'iban', 'ibanAttn', 'didAgreeAvg', 'addressLines'],
+                    rlt: {
+                        participations: {
+                            fld: [
+                                'id',
+                                'dateRegister',
+                                'didAcceptAgreement',
+                                'dateDidAcceptAgreement',
+                                'didUnderstandInfo',
+                                'dateDidUnderstandInfo',
+                                'participationsDefinitive',
+                                'participationsGranted',
+                                'participationsOptioned',
+                                'participationsInteressed',
+                                'amountDefinitive',
+                                'amountGranted',
+                                'amountOptioned',
+                                'amountInteressed',
+                            ],
+                            rlt: {
+                                project: {
+                                    fld: ['id', 'name'],
+                                    rlt: { projectType: { fld: ['id', 'codeRef'] } },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    },
+
     updateContact: contact => {
         const requestUrl = `/contact/${contact.id}`;
 

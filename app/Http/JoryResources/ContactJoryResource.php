@@ -37,6 +37,8 @@ class ContactJoryResource extends JoryResource
         $this->relation('primaryContactEnergySupplier');
         $this->relation('primaryOccupations');
         $this->relation('portal_user');
+
+        $this->relation('participations');
     }
 
     public function afterQueryBuild($query, $count = false): void

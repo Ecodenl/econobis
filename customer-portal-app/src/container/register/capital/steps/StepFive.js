@@ -22,7 +22,7 @@ function StepFive() {
             <Row>
                 <Col xs={12} md={10}>
                     <ButtonGroup className="float-right">
-                        <Link to={`/gegevens`}>
+                        <Link to={`/inschrijvingen-projecten`}>
                             <Button className={'w-button'} size="sm">
                                 Naar mijn inschrijvingen
                             </Button>

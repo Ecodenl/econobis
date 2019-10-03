@@ -65,12 +65,12 @@ class ParticipationProjectController extends Controller
 
         DB::transaction(function () use ($contact, $project, $request, $portalUser, $responsibleUserId) {
             $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
-            $this->createAndSendRegistrationDocument($contact, $project);
+            $this->createAndSendRegistrationDocument($contact, $project, $responsibleUserId);
         });
 
     }
 
-    protected function createAndSendRegistrationDocument($contact, $project)
+    protected function createAndSendRegistrationDocument($contact, $project, $responsibleUserId)
     {
         $documentBody = DocumentHelper::getDocumentBody($contact, $project);
 
@@ -82,6 +82,10 @@ class ParticipationProjectController extends Controller
         ])->output();
 
         $time = Carbon::now();
+        $portalUser = Auth::user();
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
+        Auth::setUser(User::find($responsibleUserId));
 
         $document = new Document();
         $document->document_type = 'internal';
@@ -113,13 +117,16 @@ class ParticipationProjectController extends Controller
         $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
         $document->save();
 
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
+        Auth::setUser($portalUser);
+
         $primaryEmailAddress = $contact->primaryEmailAddress;
 
         //send email
         if ($primaryEmailAddress) {
             $this->setMailConfigByDistribution($project);
 
-            $portalUser = Auth::user();
             $portalUserContact = $portalUser ? $portalUser->contact : null;
 
             $email = Mail::to($primaryEmailAddress->email);
@@ -200,6 +207,7 @@ class ParticipationProjectController extends Controller
 
     protected function createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId)
     {
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
         Auth::setUser(User::find($responsibleUserId));
 
         $today = Carbon::now();

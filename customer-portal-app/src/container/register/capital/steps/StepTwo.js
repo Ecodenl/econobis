@@ -7,16 +7,34 @@ import DefaultContactPersonalEdit from '../../../contact-details/default-form-pe
 import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaPersonal from '../../../../helpers/ValidationSchemaPersonal';
+import ValidationSchemaOrganisation from '../../../../helpers/ValidationSchemaOrganisation';
 
 function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) {
+    const typeContact = initialContact.typeId ? initialContact.typeId : null;
+
+    let validationSchemaBasic = null;
+    let validationSchemaAdditional = null;
+    switch (typeContact) {
+        case 'person':
+            validationSchemaBasic = ValidationSchemaPersonal.validationSchemaBasic;
+            validationSchemaAdditional = ValidationSchemaPersonal.validationSchemaAdditional;
+            break;
+        case 'organisation':
+            validationSchemaBasic = ValidationSchemaOrganisation.validationSchemaBasic;
+            validationSchemaAdditional = ValidationSchemaOrganisation.validationSchemaAdditional;
+            break;
+    }
+
+    const validationSchema = initialContact.isParticipant
+        ? validationSchemaBasic.concat(validationSchemaAdditional)
+        : validationSchemaBasic;
+
     return (
         <div>
             <Formik
                 initialValues={initialContact}
                 enableReinitialize={true}
-                validationSchema={ValidationSchemaPersonal.validationSchemaBasic.concat(
-                    ValidationSchemaPersonal.validationSchemaAdditional
-                )}
+                validationSchema={validationSchema}
                 onSubmit={(values, actions) => {
                     actions.setSubmitting(true);
                     handleSubmitContactValues(values, actions, next);

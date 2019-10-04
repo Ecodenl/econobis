@@ -54,7 +54,7 @@ class InvoiceListSetMultiplePaid extends Component {
         // If no errors send form
         if (!hasErrors) {
             InvoiceDetailsAPI.setInvoicesPaid(invoiceIds, invoice.datePaid).then(payload => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/betaald`);
+                hashHistory.push(`/financieel/${this.props.administrationId}/notas/betaald`);
             });
         }
     };
@@ -64,10 +64,10 @@ class InvoiceListSetMultiplePaid extends Component {
 
         return (
             <Modal
-                buttonConfirmText="Facturen betalen"
+                buttonConfirmText="Nota's betalen"
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Facturen betalen"
+                title="Nota's betalen"
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>

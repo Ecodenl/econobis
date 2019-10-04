@@ -497,7 +497,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template factuur incasso'}
+                                label={'E-mail template nota incasso'}
                                 name={'emailTemplateIdCollection'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdCollection}
@@ -516,7 +516,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template factuur overboeken'}
+                                label={'E-mail template nota overboeken'}
                                 name={'emailTemplateIdTransfer'}
                                 options={this.state.emailTemplates}
                                 value={emailTemplateIdTransfer}
@@ -572,7 +572,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={'Afzender van Rapportages en facturen is e-mail adres'}
+                                label={"Afzender van Rapportages en nota's is e-mail adres"}
                                 id="mailboxId"
                                 size={'col-sm-6'}
                                 name={'mailboxId'}

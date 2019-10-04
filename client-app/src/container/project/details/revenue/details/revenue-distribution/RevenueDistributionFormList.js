@@ -27,11 +27,25 @@ const RevenueDistributionFormList = props => {
                         <div className="col-sm-2">Teruggave energiebelasting</div>
                     </React.Fragment>
                 ) : (
+                    ''
+                )}
+                {props.projectRevenue.category.codeRef === 'revenueEuro' ? (
                     <React.Fragment>
                         <div className="col-sm-2">Uit te keren bedrag</div>
                         <div className="col-sm-1">Uitkeren op</div>
                         <div className="col-sm-2">Datum uitkering</div>
                     </React.Fragment>
+                ) : (
+                    ''
+                )}
+                {props.projectRevenue.category.codeRef === 'redemptionEuro' ? (
+                    <React.Fragment>
+                        <div className="col-sm-2">Af te lossen bedrag</div>
+                        <div className="col-sm-1">Aflossen op</div>
+                        <div className="col-sm-2">Datum aflossing</div>
+                    </React.Fragment>
+                ) : (
+                    ''
                 )}
                 <div className="col-sm-2">Status</div>
             </div>

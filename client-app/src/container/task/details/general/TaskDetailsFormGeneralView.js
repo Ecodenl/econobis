@@ -164,9 +164,9 @@ const TaskDetailsFormGeneralView = props => {
 
                         <div className="row">
                             <ViewText
-                                label={'Factuur'}
+                                label={'Nota'}
                                 value={invoice && invoice.name}
-                                link={invoice ? 'factuur/' + invoice.id : ''}
+                                link={invoice ? 'nota/' + invoice.id : ''}
                             />
                         </div>
                     </div>

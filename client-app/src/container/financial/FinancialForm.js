@@ -17,21 +17,21 @@ const FinancialForm = ({ administrationDetails, filter, type }) => (
                         </PanelBody>
                     </Panel>
                 )}
-                {type === 'facturen' && (
+                {type === 'notas' && (
                     <Panel>
                         <PanelBody>
                             <InvoicesList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}
-                {type === 'uitkering-facturen' && (
+                {type === 'uitkering-notas' && (
                     <Panel>
                         <PanelBody>
                             <PaymentInvoicesList administrationId={administrationDetails.id} filter={filter} />
                         </PanelBody>
                     </Panel>
                 )}
-                {type === undefined && <div>Selecteer orders of facturen.</div>}
+                {type === undefined && <div>Selecteer orders of nota's.</div>}
             </div>
         ) : (
             <Panel>

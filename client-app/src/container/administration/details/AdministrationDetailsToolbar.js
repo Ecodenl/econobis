@@ -56,9 +56,9 @@ class AdministrationToolbar extends Component {
                                         <span>
                                             <span
                                                 className="glyphicon glyphicon-refresh"
-                                                title="Facturen naar Twinfield synchroniseren"
+                                                title="Nota's naar Twinfield synchroniseren"
                                             />
-                                            &nbsp;Facturen
+                                            &nbsp;Nota's
                                         </span>
                                     }
                                     onClickAction={this.syncInvoicesToTwinfield}

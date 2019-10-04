@@ -293,7 +293,7 @@ class InvoiceProductsFormNewProductOneTime extends Component {
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Factuurregel</span>
+                                <span className={'h5 text-bold'}>Notaregel</span>
                             </div>
                         </div>
 

@@ -285,13 +285,16 @@ class RevenueDistributionForm extends Component {
         let succesMessageText = '';
         if (this.props.projectRevenue.category.codeRef === 'revenueKwh') {
             succesMessageText = `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in Verwerkt.
-                Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkering met de status "Definitief".`;
+                Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief".`;
+        } else if (this.props.projectRevenue.category.codeRef === 'redemptionEuro') {
+            succesMessageText = `De mutaties van aflossing bij de deelnemers zijn aangemaakt. De status van de aflossingen zijn veranderd van "Definitief" in Verwerkt.
+                Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een aflossing verdeling van de aflossingen met de status "Definitief".`;
         } else {
             succesMessageText =
                 `De mutaties van opbrengsten bij de deelnemers zijn aangemaakt. De status van de uitkeringen zijn veranderd van "Definitief" in Verwerkt.
                 Indien er sprake is van uitkeren op rekening, dan is er van de betreffende uitkeringen een Sepa betaalbestand aangemaakt. Deze kan je vinden bij de administratie "` +
                 administrationName +
-                `". Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkering met de status "Definitief."`;
+                `". Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief."`;
         }
 
         document.body.style.cursor = 'wait';
@@ -323,7 +326,11 @@ class RevenueDistributionForm extends Component {
                                         onClickAction={() => this.toggleShowCheckboxList('createReport')}
                                     />
                                     <ButtonText
-                                        buttonText={'Selecteer preview opbrengst verdeling'}
+                                        buttonText={
+                                            this.props.projectRevenue.category.codeRef === 'redemptionEuro'
+                                                ? 'Selecteer preview aflossing verdeling'
+                                                : 'Selecteer preview opbrengst verdeling'
+                                        }
                                         onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
                                         buttonClassName={'btn-primary'}
                                     />
@@ -390,7 +397,11 @@ class RevenueDistributionForm extends Component {
                                 <div className="row">
                                     <div className="col-md-12">
                                         <InputDate
-                                            label="Uitkeringsdatum"
+                                            label={
+                                                this.props.projectRevenue.category.codeRef === 'redemptionEuro'
+                                                    ? 'Aflossingsdatum'
+                                                    : 'Uitkeringsdatum'
+                                            }
                                             name="datePayout"
                                             value={this.state.datePayout}
                                             onChangeAction={this.handleInputChangeDate}
@@ -416,6 +427,9 @@ class RevenueDistributionForm extends Component {
                                                 buttonText={
                                                     this.props.projectRevenue.category.codeRef === 'revenueKwh'
                                                         ? 'Opbrengst verdelen'
+                                                        : this.props.projectRevenue.category.codeRef ===
+                                                          'redemptionEuro'
+                                                        ? 'Aflossing verdelen en Sepa bestand maken'
                                                         : 'Opbrengst verdelen en Sepa bestand maken'
                                                 }
                                                 onClickAction={this.checkDistributionRevenueInvoices}

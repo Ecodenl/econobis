@@ -240,7 +240,13 @@ class ProjectRevenueController extends ApiController
     )
     {
         $project = $projectRevenue->project;
-        $participants = $project->participantsProjectDefinitive;
+
+        if($projectRevenue->category->code_ref == 'revenueKwh')
+        {
+            $participants = $project->participantsProject;
+        }else{
+            $participants = $project->participantsProjectDefinitive;
+        }
 
         foreach ($participants as $participant) {
             $this->saveDistribution($projectRevenue, $participant);
@@ -251,6 +257,14 @@ class ProjectRevenueController extends ApiController
             && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
             foreach($projectRevenue->distribution as $distribution) {
                 $distribution->calculator()->runRevenueCapitalResult();
+                $distribution->save();
+            }
+        }
+
+        if($projectRevenue->category->code_ref == 'redemptionEuro'
+            && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
+            foreach($projectRevenue->distribution as $distribution) {
+                $distribution->calculator()->runRevenueEuro();
                 $distribution->save();
             }
         }
@@ -578,11 +592,11 @@ class ProjectRevenueController extends ApiController
                     $distribution->status = 'processed';
                     $distribution->save();
                 }else{
-                    // indien Opbrengst Euro, dan gaan we of facturen en sepa aanmaken of bijschrijven (afhankellijk van payout type)
+                    // indien Opbrengst Euro, dan gaan we of notas en sepa aanmaken of bijschrijven (afhankellijk van payout type)
                     if ($distribution->payout_type === 'Rekening')
                     {
                         $currentYear = Carbon::now()->year;
-                        // Haal laatst uitgedeelde uitkeringsfactuurnummer op (binnen aanmaakjaar)
+                        // Haal laatst uitgedeelde uitkeringsnotanummer op (binnen aanmaakjaar)
                         $lastPaymentInvoice = PaymentInvoice::where('administration_id',
                             $distribution->revenue->project->administration_id)->where('invoice_number', '!=', 0)
                             ->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
@@ -601,7 +615,7 @@ class ProjectRevenueController extends ApiController
                             // voor abort status weer even terug zetten naar confirmed (anders blijft ie op "in-progress" hangen).
                             $distribution->status = 'confirmed';
                             $distribution->save();
-                            abort(404, "Voor uitkeringsfactuur met administratie ID "
+                            abort(404, "Voor uitkeringsnota met administratie ID "
                                 . $distribution->revenue->project->administration_id . " en revenue distribution ID "
                                 . $distribution->id . " kon geen nieuw nummer bepaald worden.");
                         } else {

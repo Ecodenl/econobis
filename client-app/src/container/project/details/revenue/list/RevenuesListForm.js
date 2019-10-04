@@ -17,15 +17,18 @@ const RevenuesListForm = ({
     projectRevenueCategories,
 }) => {
     let disabled = false;
-    let disabledEuro = false;
-    let disabledKwh = false;
-    let titleEuro = 'Nieuwe opbrengst Euro verdeling maken';
-    let titleKwh = 'Nieuwe opbrengst Kwh verdeling maken';
+    let revenueDisabledEuro = false;
+    let revenueDisabledKwh = false;
+    let redemptionDisabledEuro = false;
+    let revenueTitleEuro = 'Nieuwe opbrengst Euro verdeling maken';
+    let revenueTitleKwh = 'Nieuwe opbrengst Kwh verdeling maken';
+    let redemptionTitleEuro = 'Nieuwe aflossing Euro verdeling maken';
 
     if (projectStatus.codeRef !== 'active') {
         disabled = true;
-        titleEuro = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
-        titleKwh = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
+        revenueTitleEuro = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
+        revenueTitleKwh = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
+        redemptionTitleEuro = 'Aflossing verdeling kan alleen bij status actief worden toegevoegd';
     }
 
     const revenueEuroCategoryId = projectRevenueCategories.find(
@@ -34,16 +37,24 @@ const RevenuesListForm = ({
     const revenueKwhCategoryId = projectRevenueCategories.find(
         projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwh'
     ).id;
+    const redemptionEuroCategoryId = projectRevenueCategories.find(
+        projectRevenueCategory => projectRevenueCategory.codeRef === 'redemptionEuro'
+    ).id;
 
     projectRevenues.map(projectRevenue => {
         if (projectRevenue.categoryId == revenueEuroCategoryId && projectRevenue.confirmed == 0) {
-            disabledEuro = true;
-            titleEuro = 'Lopende euro opbrengst verdeling al actief';
+            revenueDisabledEuro = true;
+            revenueTitleEuro = 'Lopende euro opbrengst verdeling al actief';
         }
 
         if (projectRevenue.categoryId == revenueKwhCategoryId && projectRevenue.confirmed == 0) {
-            disabledKwh = true;
-            titleKwh = 'Lopende kwh opbrengst is verdeling al actief';
+            revenueDisabledKwh = true;
+            revenueTitleKwh = 'Lopende kwh opbrengst is verdeling al actief';
+        }
+
+        if (projectRevenue.categoryId == redemptionEuroCategoryId && projectRevenue.confirmed == 0) {
+            redemptionDisabledEuro = true;
+            redemptionTitleEuro = 'Lopende euro aflossing verdeling al actief';
         }
     });
 
@@ -53,21 +64,35 @@ const RevenuesListForm = ({
                 <span className="h5 text-bold">Opbrengsten</span>
                 {permissions.manageFinancial && (
                     <React.Fragment>
+                        {projectType.codeRef === 'capital' ? (
+                            <ButtonIcon
+                                buttonClassName={'pull-right btn btn-link'}
+                                onClickAction={() =>
+                                    hashHistory.push(`/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`)
+                                }
+                                disabled={disabled || revenueDisabledEuro}
+                                title={revenueTitleEuro}
+                                iconName={'glyphicon-plus'}
+                            />
+                        ) : (
+                            ''
+                        )}
+
                         {projectType.codeRef === 'postalcode_link_capital' ? (
                             <div className="nav navbar-nav btn-group pull-right" role="group">
                                 <button className="btn btn-link" data-toggle="dropdown">
                                     <span className="glyphicon glyphicon-plus" />
                                 </button>
                                 <ul className="dropdown-menu">
-                                    <li className={disabled || disabledEuro ? 'disabled' : null}>
-                                        {disabled || disabledEuro ? (
-                                            <a role={'button'} title={titleEuro} onClick={() => {}}>
+                                    <li className={disabled || revenueDisabledEuro ? 'disabled' : null}>
+                                        {disabled || revenueDisabledEuro ? (
+                                            <a role={'button'} title={revenueTitleEuro} onClick={() => {}}>
                                                 Opbrengst Euro
                                             </a>
                                         ) : (
                                             <a
                                                 role={'button'}
-                                                title={titleEuro}
+                                                title={revenueTitleEuro}
                                                 onClick={() =>
                                                     hashHistory.push(
                                                         `/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`
@@ -78,15 +103,15 @@ const RevenuesListForm = ({
                                             </a>
                                         )}
                                     </li>
-                                    <li className={disabled || disabledKwh ? 'disabled' : null}>
-                                        {disabled || disabledKwh ? (
-                                            <a role={'button'} title={titleKwh} onClick={() => {}}>
+                                    <li className={disabled || revenueDisabledKwh ? 'disabled' : null}>
+                                        {disabled || revenueDisabledKwh ? (
+                                            <a role={'button'} title={revenueTitleKwh} onClick={() => {}}>
                                                 Opbrengst Kwh
                                             </a>
                                         ) : (
                                             <a
                                                 role={'button'}
-                                                title={titleKwh}
+                                                title={revenueTitleKwh}
                                                 onClick={() =>
                                                     hashHistory.push(
                                                         `/project/opbrengst/nieuw/${projectId}/${revenueKwhCategoryId}`
@@ -100,15 +125,57 @@ const RevenuesListForm = ({
                                 </ul>
                             </div>
                         ) : (
-                            <ButtonIcon
-                                buttonClassName={'pull-right btn btn-link'}
-                                onClickAction={() =>
-                                    hashHistory.push(`/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`)
-                                }
-                                disabled={disabled || disabledEuro}
-                                title={titleEuro}
-                                iconName={'glyphicon-plus'}
-                            />
+                            ''
+                        )}
+
+                        {projectType.codeRef === 'loan' || projectType.codeRef === 'obligation' ? (
+                            <div className="nav navbar-nav btn-group pull-right" role="group">
+                                <button className="btn btn-link" data-toggle="dropdown">
+                                    <span className="glyphicon glyphicon-plus" />
+                                </button>
+                                <ul className="dropdown-menu">
+                                    <li className={disabled || revenueDisabledEuro ? 'disabled' : null}>
+                                        {disabled || revenueDisabledEuro ? (
+                                            <a role={'button'} title={revenueTitleEuro} onClick={() => {}}>
+                                                Opbrengst Euro
+                                            </a>
+                                        ) : (
+                                            <a
+                                                role={'button'}
+                                                title={revenueTitleEuro}
+                                                onClick={() =>
+                                                    hashHistory.push(
+                                                        `/project/opbrengst/nieuw/${projectId}/${revenueEuroCategoryId}`
+                                                    )
+                                                }
+                                            >
+                                                Opbrengst Euro
+                                            </a>
+                                        )}
+                                    </li>
+                                    <li className={disabled || redemptionDisabledEuro ? 'disabled' : null}>
+                                        {disabled || redemptionDisabledEuro ? (
+                                            <a role={'button'} title={redemptionTitleEuro} onClick={() => {}}>
+                                                Aflossing Euro
+                                            </a>
+                                        ) : (
+                                            <a
+                                                role={'button'}
+                                                title={redemptionTitleEuro}
+                                                onClick={() =>
+                                                    hashHistory.push(
+                                                        `/project/opbrengst/nieuw/${projectId}/${redemptionEuroCategoryId}`
+                                                    )
+                                                }
+                                            >
+                                                Aflossing Euro
+                                            </a>
+                                        )}
+                                    </li>
+                                </ul>
+                            </div>
+                        ) : (
+                            ''
                         )}
                     </React.Fragment>
                 )}

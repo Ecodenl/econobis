@@ -217,18 +217,18 @@ const Routes = () => {
                 <Route path="financieel/:id/orders/aanmaken" component={OrderCreateApp} />
                 <Route path="financieel/:id/:type/:filter" component={FinancialApp} />
                 <Route
-                    path="financieel/:id/facturen/te-verzenden/verzenden/:type/:paymentType"
+                    path="financieel/:id/notas/te-verzenden/verzenden/:type/:paymentType"
                     component={InvoiceSendApp}
                 />
                 <Route
-                    path="financieel/:id/facturen/te-verzenden/verzenden/:type/:paymentType"
+                    path="financieel/:id/notas/te-verzenden/verzenden/:type/:paymentType"
                     component={InvoiceSendApp}
                 />
                 <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                 <Route path="order/:id" component={OrderDetailsApp} />
                 <Route path="order/inzien/:id" component={InvoicePreviewApp} />
-                <Route path="factuur/:id" component={InvoiceDetailsApp} />
-                <Route path="factuur/inzien/:id" component={InvoiceViewApp} />
+                <Route path="nota/:id" component={InvoiceDetailsApp} />
+                <Route path="nota/inzien/:id" component={InvoiceViewApp} />
                 /* Campagnes */
                 <Route path="campagne/nieuw" component={CampaignNewApp} />
                 <Route path="campagne/:id" component={CampaignDetailsApp} />

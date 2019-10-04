@@ -60,11 +60,11 @@ class InvoicesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/factuur/${id}`);
+        hashHistory.push(`/nota/${id}`);
     }
 
     viewItem(id) {
-        hashHistory.push(`/factuur/inzien/${id}`);
+        hashHistory.push(`/nota/inzien/${id}`);
     }
 
     showSetChecked = () => {
@@ -192,21 +192,21 @@ class InvoicesListItem extends Component {
                 </td>
                 <td>
                     {this.state.showActionButtons ? (
-                        <a role="button" onClick={() => this.openItem(id)} title="Open factuur">
+                        <a role="button" onClick={() => this.openItem(id)} title="Open nota">
                             <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
-                        <a role="button" onClick={() => this.viewItem(id)} title="Preview factuur">
+                        <a role="button" onClick={() => this.viewItem(id)} title="Preview nota">
                             <span className="glyphicon glyphicon-eye-open mybtn-success" />{' '}
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'to-send' ? (
-                        <a role="button" onClick={() => this.showSend()} title="Verstuur factuur">
+                        <a role="button" onClick={() => this.showSend()} title="Verstuur nota">
                             <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
                         </a>
                     ) : (

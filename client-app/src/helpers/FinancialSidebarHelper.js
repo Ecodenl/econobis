@@ -28,7 +28,7 @@ export default currentRouteParams => {
                 break;
             }
             break;
-        case 'facturen':
+        case 'notas':
             if (currentRouteParams.filter) {
                 activeParent = 'invoices';
                 switch (currentRouteParams.filter) {
@@ -62,7 +62,7 @@ export default currentRouteParams => {
                 break;
             }
             break;
-        case 'uitkering-facturen':
+        case 'uitkering-notas':
             if (currentRouteParams.filter) {
                 activeParent = 'payment-invoices';
                 switch (currentRouteParams.filter) {

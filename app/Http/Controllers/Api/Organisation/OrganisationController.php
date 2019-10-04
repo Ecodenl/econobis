@@ -120,7 +120,7 @@ class OrganisationController extends ApiController
         $organisation->save();
 
         // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
-        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren facturen
+        // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren notas
         if($contact->twinfieldNumbers())
         {
             $messages = [];

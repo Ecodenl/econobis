@@ -20,7 +20,7 @@ const InvoicesListHead = props => {
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateRequested'}
-                title={'(Geplande) factuur datum'}
+                title={'(Geplande) nota datum'}
                 width={'10%'}
                 setSorts={setSorts}
             />

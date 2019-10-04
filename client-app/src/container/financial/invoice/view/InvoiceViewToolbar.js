@@ -18,7 +18,7 @@ const InvoiceViewToolbar = props => {
                 </div>
             </div>
             <div className="col-md-4">
-                <h4 className="text-center">{'Factuur: ' + (document ? document.name : 'Preview')}</h4>
+                <h4 className="text-center">{'Nota: ' + (document ? document.name : 'Preview')}</h4>
             </div>
             <div className="col-md-4" />
         </div>

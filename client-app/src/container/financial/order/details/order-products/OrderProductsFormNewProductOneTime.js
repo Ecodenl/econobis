@@ -570,7 +570,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                         {durationId !== 'none' && (
                             <div className="row">
                                 <InputDate
-                                    label="1ste factuurperiode start op"
+                                    label="1ste notaperiode start op"
                                     name="datePeriodStartFirstInvoice"
                                     value={datePeriodStartFirstInvoice}
                                     onChangeAction={this.handleInputChangeDate}

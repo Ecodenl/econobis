@@ -44,7 +44,7 @@ class InvoiceProductsForm extends Component {
                 <PanelHeader>
                     <div className={'row'}>
                         <div className={'col-xs-10'}>
-                            <span className="h5 text-bold">Factuurregels</span>
+                            <span className="h5 text-bold">Notaregels</span>
                         </div>
                         {this.props.permissions.manageFinancial && this.props.invoice.statusId == 'to-send' && (
                             <div className={'col-xs-2'}>

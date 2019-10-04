@@ -75,7 +75,7 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
-                            label={'E-mail template factuur incasso'}
+                            label={'E-mail template nota incasso'}
                             value={emailTemplateCollection ? emailTemplateCollection.name : ''}
                         />
                         <ViewText label={'E-mail'} value={email ? email : ''} />
@@ -83,7 +83,7 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
-                            label={'E-mail template factuur overboeken'}
+                            label={'E-mail template nota overboeken'}
                             value={emailTemplateTransfer ? emailTemplateTransfer.name : ''}
                         />
                         <ViewText label={'RSIN nummer'} value={rsinNumber ? rsinNumber : ''} />
@@ -108,7 +108,7 @@ const AdministrationDetailsFormGeneralView = props => {
                         <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} />
                     </div>
                     <div className="row">
-                        <ViewText label={'Afzender van Rapportages en facturen is e-mail adres'} value={mailboxEmail} />
+                        <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
                         <ViewText label={'Logo'} value={logoName} />
                     </div>
 

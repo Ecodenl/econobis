@@ -61,7 +61,7 @@ class InvoiceSendConfirm extends Component {
                     }
                 });
 
-                hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
             }
         } else {
             InvoiceDetailsAPI.sendAll(this.props.invoiceIds, null).then(payload => {
@@ -70,7 +70,7 @@ class InvoiceSendConfirm extends Component {
                 }
             });
 
-            hashHistory.push(`/financieel/${this.props.administrationId}/facturen/verzonden`);
+            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
         }
     };
 
@@ -88,7 +88,7 @@ class InvoiceSendConfirm extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Factuur verzenden"
+                title="Nota verzenden"
                 buttonConfirmText={'Verzenden'}
                 loading={this.state.loading}
             >
@@ -122,7 +122,7 @@ class InvoiceSendConfirm extends Component {
                 )}
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u alle facturen verzenden?</span>
+                        <span>Wilt u alle nota's verzenden?</span>
                     </div>
                 </div>
             </Modal>

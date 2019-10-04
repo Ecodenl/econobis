@@ -28,32 +28,32 @@ class InvoiceSendToolbar extends Component {
                             this.props.type === 'email' &&
                             this.props.paymentType === 'incasso' && (
                                 <ButtonText
-                                    buttonText={'Facturen e-mailen en sepa bestand maken'}
+                                    buttonText={"Nota's e-mailen en sepa bestand maken"}
                                     onClickAction={this.showSend}
                                 />
                             )}
                         {this.props.amountOfInvoices > 0 &&
                             this.props.type === 'email' &&
                             this.props.paymentType === 'overboeken' && (
-                                <ButtonText buttonText={'Facturen e-mailen'} onClickAction={this.showSend} />
+                                <ButtonText buttonText={"Nota's e-mailen"} onClickAction={this.showSend} />
                             )}
                         {this.props.amountOfInvoices > 0 &&
                             this.props.type === 'post' &&
                             this.props.paymentType === 'incasso' && (
                                 <ButtonText
-                                    buttonText={'Facturen downloaden en sepa bestand maken'}
+                                    buttonText={"Nota's downloaden en sepa bestand maken"}
                                     onClickAction={this.showSend}
                                 />
                             )}
                         {this.props.amountOfInvoices > 0 &&
                             this.props.type === 'post' &&
                             this.props.paymentType === 'overboeken' && (
-                                <ButtonText buttonText={'Facturen downloaden'} onClickAction={this.showSend} />
+                                <ButtonText buttonText={"Nota's downloaden"} onClickAction={this.showSend} />
                             )}
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">Te verzenden facturen versturen({this.props.amountOfInvoices})</h4>
+                    <h4 className="text-center">Te verzenden nota's versturen({this.props.amountOfInvoices})</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showSend && this.props.type === 'email' && (

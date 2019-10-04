@@ -64,8 +64,8 @@ class TwinfieldSalesTransactionHelper
             $response = $this->createSalesTransation($invoice);
 
             if($response === true){
-                array_push($this->messages, 'Transactie factuur ' . $invoice->number . ' succesvol gesynchroniseerd.');
-                // Indien contact ingesteld op Incasso, maar factuur is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
+                array_push($this->messages, 'Transactie nota ' . $invoice->number . ' succesvol gesynchroniseerd.');
+                // Indien contact ingesteld op Incasso, maar nota is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
                 $contact = $invoice->order->contact;
                 if($contact->is_collect_mandate && $invoice->payment_type_id=='transfer')
                 {
@@ -75,12 +75,12 @@ class TwinfieldSalesTransactionHelper
             else{
                 //soms zitten in de error message van Twinfield // voor de melding.
                 $response = str_replace('//', '', $response);
-                array_push($this->messages, 'Synchronisatie transactie factuur ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
+                array_push($this->messages, 'Synchronisatie transactie nota ' . $invoice->number . ' gaf de volgende foutmelding: ' . $response);
             }
         }
 
         if(count($this->messages) == 0){
-            array_push($this->messages, 'Geen facturen om te synchroniseren gevonden.');
+            array_push($this->messages, "Geen nota's om te synchroniseren gevonden.");
         }
 
         return implode(';', $this->messages);
@@ -251,13 +251,13 @@ class TwinfieldSalesTransactionHelper
         try {
         $testConnector = new ChangPayStatusTransactionApiConnector($this->connection);
         $response = $testConnector->send($twinfieldSalesTransaction);
-        array_push($this->messages, 'Transactie factuur ' . $invoice->number . ' geblokkeerd voor betaalrun.');
+        array_push($this->messages, 'Transactie nota ' . $invoice->number . ' geblokkeerd voor betaalrun.');
         return true;
 
         return implode(';', $messages);
         } catch (PhpTwinfieldException $e) {
             Log::error($e->getMessage());
-            array_push($this->messages, 'Blokkeren voor betaalrun (factuur ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage());
+            array_push($this->messages, 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage());
         }
 
     }

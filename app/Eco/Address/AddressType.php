@@ -19,7 +19,7 @@ class AddressType extends EnumWithIdAndName
     {
         return [
             new static('deliver', 'Bezorg'),
-            new static('invoice', 'Factuur'),
+            new static('invoice', 'Nota'),
             new static('postal', 'Post'),
             new static('visit', 'Bezoek'),
         ];

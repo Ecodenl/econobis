@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 
 const InputText = ({
     field,
@@ -25,8 +26,8 @@ const InputText = ({
                 readOnly={readOnly}
                 placeholder={placeholder}
             />
-            {errors[field.name] && touched[field.name] && showErrorMessage ? (
-                <small className={`${classNameErrorMessage}`}>{errors[field.name]}</small>
+            {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (
+                <small className={`${classNameErrorMessage}`}>{get(errors, field.name, '')}</small>
             ) : null}
         </>
     );

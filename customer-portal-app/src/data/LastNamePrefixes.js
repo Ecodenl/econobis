@@ -1,4 +1,5 @@
 export default [
+    { id: 0, name: '' },
     { id: 1, name: 'van' },
     { id: 2, name: 'de' },
     { id: 3, name: 'van der' },

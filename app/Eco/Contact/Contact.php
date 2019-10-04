@@ -361,7 +361,11 @@ class Contact extends Model
         return $addressLines;
     }
 
-    /**
+    public function getIsParticipantAttribute()
+    {
+        return( $this->participations() && $this->participations()->count() > 0 );
+    }
+        /**
      * Scope voor filteren van contacten voor portal users.
      *
      * Een portal user mag alleen zijn eigen gegevens ophalen

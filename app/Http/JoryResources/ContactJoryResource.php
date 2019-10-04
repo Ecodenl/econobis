@@ -27,6 +27,7 @@ class ContactJoryResource extends JoryResource
 
         // Custom attributes
         $this->field('address_lines')->hideByDefault();
+        $this->field('is_participant')->filterable()->sortable();
 
         // Relations
         $this->relation('addresses');

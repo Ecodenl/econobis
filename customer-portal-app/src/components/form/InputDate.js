@@ -3,8 +3,23 @@ import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
 import moment from 'moment';
+import { get } from 'lodash';
 
-const InputDate = ({ className, id, value, required, readOnly, name, onChangeAction, error, placeholder }) => {
+const InputDate = ({
+    className,
+    id,
+    value,
+    required,
+    readOnly,
+    name,
+    onChangeAction,
+    error,
+    placeholder,
+    showErrorMessage,
+    errors,
+    touched,
+    classNameErrorMessage,
+}) => {
     const validateDate = event => {
         const date = moment(event.target.value, 'DD-MM-YYYY', true);
 
@@ -49,7 +64,9 @@ const InputDate = ({ className, id, value, required, readOnly, name, onChangeAct
                 readOnly={readOnly}
                 placeholder={''}
             />
-            {error ? <span className={'error-message text-danger'}>{error}</span> : null}
+            {get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (
+                <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
+            ) : null}
         </>
     );
 };

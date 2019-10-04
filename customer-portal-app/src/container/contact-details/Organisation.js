@@ -2,62 +2,21 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import DefaultContactOrganisationEdit from './default-form-organisation/Edit';
 import DefaultContactOrganisationView from './default-form-organisation/View';
+import DefaultContactOrganisationEdit from './default-form-organisation/Edit';
 import Col from 'react-bootstrap/Col';
 import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import { ClipLoader } from 'react-spinners';
-import DefaultContactPersonalEdit from './Personal';
-
-const validationSchema = Yup.object().shape({
-    // TODO set more correct values for validation, only important fields are set now
-    organisation: Yup.object().shape({
-        name: Yup.string()
-            .trim()
-            .required('Verplicht'),
-    }),
-    emailCorrespondence: Yup.object().shape({
-        email: Yup.string()
-            .trim()
-            .email('Ongeldig e-mail adres')
-            .required('Verplicht'),
-    }),
-    emailInvoice: Yup.object().shape({
-        email: Yup.string()
-            .trim()
-            .email('Ongeldig e-mail adres'),
-    }),
-    phoneNumberPrimary: Yup.object().shape({
-        number: Yup.string()
-            .trim()
-            .required('Verplicht'),
-    }),
-    visitAddress: Yup.object().shape({
-        street: Yup.string()
-            .trim()
-            .required('Verplicht'),
-        number: Yup.number()
-            .typeError('Alleen nummers')
-            .required('Verplicht'),
-        postalCode: Yup.string()
-            .trim()
-            .required('Verplicht'),
-        city: Yup.string()
-            .trim()
-            .required('Verplicht'),
-        countryId: Yup.string().required('Verplicht'),
-    }),
-    postalAddress: Yup.object().shape({
-        number: Yup.number().typeError('Alleen nummers'),
-    }),
-    invoiceAddress: Yup.object().shape({
-        number: Yup.number().typeError('Alleen nummers'),
-    }),
-});
+import ValidationSchemaOrganisation from './../../helpers/ValidationSchemaOrganisation';
 
 function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues }) {
     const [editForm, setEditForm] = useState(false);
+
+    const validationSchema = initialContact.isParticipant
+        ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
+              ValidationSchemaOrganisation.validationSchemaAdditional
+          )
+        : ValidationSchemaOrganisation.validationSchemaBasic;
 
     return (
         <div>
@@ -71,12 +30,14 @@ function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues 
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
+                        // console.log(errors);
                         return (
                             <Form>
                                 <DefaultContactOrganisationEdit
                                     initialContact={initialContact}
                                     touched={touched}
                                     errors={errors}
+                                    setFieldValue={setFieldValue}
                                     values={values}
                                 />
                                 <Row>

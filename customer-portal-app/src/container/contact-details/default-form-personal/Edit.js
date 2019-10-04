@@ -12,7 +12,7 @@ import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import InputDate from '../../../components/form/InputDate';
 
-const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touched, errors, values, setFieldValue }) {
+const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, errors, touched, values, setFieldValue }) {
     return (
         <Row>
             <Col xs={12} md={6}>
@@ -27,7 +27,14 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                         <Field
                             name="person.titleId"
                             render={({ field }) => (
-                                <Select field={field} id="title_id" placeholder={'Aanhef'} options={Titles} />
+                                <Select
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="title_id"
+                                    placeholder={'Aanhef'}
+                                    options={Titles}
+                                />
                             )}
                         />
                     </Col>
@@ -36,13 +43,29 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                     <Col xs={12} sm={8}>
                         <Field
                             name="person.firstName"
-                            render={({ field }) => <InputText field={field} id="first_name" placeholder={'Voornaam'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="first_name"
+                                    placeholder={'Voornaam'}
+                                />
+                            )}
                         />
                     </Col>
                     <Col xs={12} sm={4}>
                         <Field
                             name="person.initials"
-                            render={({ field }) => <InputText field={field} id="initials" placeholder={'Initialen'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="initials"
+                                    placeholder={'Initialen'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -53,6 +76,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <Select
                                     field={field}
+                                    errors={errors}
+                                    touched={touched}
                                     id="last_name_prefix_id"
                                     options={LastNamePrefixes}
                                     placeholder={'Tussenvoegsel'}
@@ -66,11 +91,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.person &&
-                                        touched.person.lastName &&
-                                        (errors.person && errors.person.lastName)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="last_name"
                                     placeholder={'Achternaam'}
                                 />
@@ -85,6 +107,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputDate
                                     {...field}
+                                    errors={errors}
+                                    touched={touched}
                                     onChangeAction={setFieldValue}
                                     id="last_name"
                                     placeholder={'Geboortedatum'}
@@ -104,11 +128,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.emailCorrespondence &&
-                                        touched.emailCorrespondence.email &&
-                                        (errors.emailCorrespondence && errors.emailCorrespondence.email)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="email-correspondence"
                                     placeholder={'E-mail'}
                                 />
@@ -127,11 +148,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.emailInvoice &&
-                                        touched.emailInvoice.email &&
-                                        (errors.emailInvoice && errors.emailInvoice.email)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="email-invoice"
                                     placeholder={'E-mail'}
                                 />
@@ -150,11 +168,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.phoneNumberPrimary &&
-                                        touched.phoneNumberPrimary.number &&
-                                        (errors.phoneNumberPrimary && errors.phoneNumberPrimary.number)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="telephone-number-1"
                                     placeholder={'Nummer'}
                                 />
@@ -187,11 +202,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.primaryAddress &&
-                                        touched.primaryAddress.street &&
-                                        (errors.primaryAddress && errors.primaryAddress.street)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street"
                                     placeholder={'Straat'}
                                 />
@@ -207,11 +219,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.primaryAddress &&
-                                        touched.primaryAddress.number &&
-                                        (errors.primaryAddress && errors.primaryAddress.number)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street_number"
                                     placeholder={'Nummer'}
                                 />
@@ -232,11 +241,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.primaryAddress &&
-                                        touched.primaryAddress.postalCode &&
-                                        (errors.primaryAddress && errors.primaryAddress.postalCode)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="postal_code"
                                     placeholder={'Postcode'}
                                 />
@@ -249,11 +255,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.primaryAddress &&
-                                        touched.primaryAddress.city &&
-                                        (errors.primaryAddress && errors.primaryAddress.city)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="city"
                                     placeholder={'Plaats'}
                                 />
@@ -268,11 +271,8 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                             render={({ field }) => (
                                 <Select
                                     field={field}
-                                    error={
-                                        touched.primaryAddress &&
-                                        touched.primaryAddress.countryId &&
-                                        (errors.primaryAddress && errors.primaryAddress.countryId)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}
@@ -292,7 +292,13 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, touc
                         <Field
                             name="iban"
                             render={({ field }) => (
-                                <InputText field={field} id="iban" placeholder={'Rekeningnummer (IBAN)'} />
+                                <InputText
+                                    errors={errors}
+                                    touched={touched}
+                                    field={field}
+                                    id="iban"
+                                    placeholder={'Rekeningnummer (IBAN)'}
+                                />
                             )}
                         />
                     </Col>

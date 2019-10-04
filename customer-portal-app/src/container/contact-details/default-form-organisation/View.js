@@ -247,7 +247,6 @@ function DefaultContactOrganisationView({ initialContact }) {
                         <Row>
                             <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>
                                 {primaryOccupation.contact.fullName}
-                                {primaryOccupation.primary ? '*' : ''}
                             </TextBlock>
                             <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>
                                 {primaryOccupation.occupation.primaryOccupation}
@@ -259,9 +258,6 @@ function DefaultContactOrganisationView({ initialContact }) {
                         <TextBlock className={'col-12 col-sm-8'} />
                     </Row>
                 )}
-                <p>
-                    <i>* Primair contact</i>
-                </p>
             </Col>
         </Row>
     );

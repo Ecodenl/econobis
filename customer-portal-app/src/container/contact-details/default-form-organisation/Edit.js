@@ -26,11 +26,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.organisation &&
-                                        touched.organisation.name &&
-                                        (errors.organisation && errors.organisation.name)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="name"
                                     placeholder={'Naam'}
                                 />
@@ -133,11 +130,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.emailCorrespondence &&
-                                        touched.emailCorrespondence.email &&
-                                        (errors.emailCorrespondence && errors.emailCorrespondence.email)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="email-correspondence"
                                     placeholder={'E-mail'}
                                 />
@@ -156,11 +150,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.emailInvoice &&
-                                        touched.emailInvoice.email &&
-                                        (errors.emailInvoice && errors.emailInvoice.email)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="email-invoice"
                                     placeholder={'E-mail'}
                                 />
@@ -179,11 +170,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.phoneNumberPrimary &&
-                                        touched.phoneNumberPrimary.number &&
-                                        (errors.phoneNumberPrimary && errors.phoneNumberPrimary.number)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="telephone-number-1"
                                     placeholder={'Nummer'}
                                 />
@@ -218,11 +206,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.visitAddress &&
-                                        touched.visitAddress.street &&
-                                        (errors.visitAddress && errors.visitAddress.street)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street"
                                     placeholder={'Straat'}
                                 />
@@ -238,11 +223,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.visitAddress &&
-                                        touched.visitAddress.number &&
-                                        (errors.visitAddress && errors.visitAddress.number)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street_number"
                                     placeholder={'Nummer'}
                                 />
@@ -263,11 +245,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.visitAddress &&
-                                        touched.visitAddress.postalCode &&
-                                        (errors.visitAddress && errors.visitAddress.postalCode)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="postal_code"
                                     placeholder={'Postcode'}
                                 />
@@ -280,11 +259,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.visitAddress &&
-                                        touched.visitAddress.city &&
-                                        (errors.visitAddress && errors.visitAddress.city)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="city"
                                     placeholder={'Plaats'}
                                 />
@@ -299,11 +275,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <Select
                                     field={field}
-                                    error={
-                                        touched.visitAddress &&
-                                        touched.visitAddress.countryId &&
-                                        (errors.visitAddress && errors.visitAddress.countryId)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}
@@ -323,11 +296,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.postalAddress &&
-                                        touched.postalAddress.street &&
-                                        (errors.postalAddress && errors.postalAddress.street)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street"
                                     placeholder={'Straat'}
                                 />
@@ -343,11 +313,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.postalAddress &&
-                                        touched.postalAddress.number &&
-                                        (errors.postalAddress && errors.postalAddress.number)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street_number"
                                     placeholder={'Nummer'}
                                 />
@@ -368,11 +335,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.postalAddress &&
-                                        touched.postalAddress.postalCode &&
-                                        (errors.postalAddress && errors.postalAddress.postalCode)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="postal_code"
                                     placeholder={'Postcode'}
                                 />
@@ -385,11 +349,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.postalAddress &&
-                                        touched.postalAddress.city &&
-                                        (errors.postalAddress && errors.postalAddress.city)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="city"
                                     placeholder={'Plaats'}
                                 />
@@ -404,11 +365,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <Select
                                     field={field}
-                                    error={
-                                        touched.postalAddress &&
-                                        touched.postalAddress.countryId &&
-                                        (errors.postalAddress && errors.postalAddress.countryId)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}
@@ -428,11 +386,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.invoiceAddress &&
-                                        touched.invoiceAddress.street &&
-                                        (errors.invoiceAddress && errors.invoiceAddress.street)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street"
                                     placeholder={'Straat'}
                                 />
@@ -448,11 +403,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.invoiceAddress &&
-                                        touched.invoiceAddress.number &&
-                                        (errors.invoiceAddress && errors.invoiceAddress.number)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="street_number"
                                     placeholder={'Nummer'}
                                 />
@@ -473,11 +425,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.invoiceAddress &&
-                                        touched.invoiceAddress.postalCode &&
-                                        (errors.invoiceAddress && errors.invoiceAddress.postalCode)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="postal_code"
                                     placeholder={'Postcode'}
                                 />
@@ -490,11 +439,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <InputText
                                     field={field}
-                                    error={
-                                        touched.invoiceAddress &&
-                                        touched.invoiceAddress.city &&
-                                        (errors.invoiceAddress && errors.invoiceAddress.city)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="city"
                                     placeholder={'Plaats'}
                                 />
@@ -509,11 +455,8 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                             render={({ field }) => (
                                 <Select
                                     field={field}
-                                    error={
-                                        touched.invoiceAddress &&
-                                        touched.invoiceAddress.countryId &&
-                                        (errors.invoiceAddress && errors.visitAddress.countryId)
-                                    }
+                                    errors={errors}
+                                    touched={touched}
                                     id="country_id"
                                     placeholder={'Selecteer uw land'}
                                     options={Countries}
@@ -571,7 +514,6 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Row>
                             <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>
                                 {primaryOccupation.contact.fullName}
-                                {primaryOccupation.primary ? '*' : ''}
                             </TextBlock>
                             <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>
                                 {primaryOccupation.occupation.primaryOccupation}
@@ -583,9 +525,6 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <TextBlock className={'col-12 col-sm-8'} />
                     </Row>
                 )}
-                <p>
-                    <i>* Primair contact</i>
-                </p>
             </Col>
         </Row>
     );

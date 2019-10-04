@@ -113,8 +113,8 @@ class ContactController extends ApiController
         $personData = $request->person;
         if ($person) {
             $lnp = $person->last_name_prefix;
-            if (isset($personData['lastNamePrefixId']) && $personData['lastNamePrefixId']) {
-                if ($personData['lastNamePrefixId'] === 'null') {
+            if (isset($personData['lastNamePrefixId']) ) {
+                if ($personData['lastNamePrefixId'] == 'null' || $personData['lastNamePrefixId'] == 0) {
                     $lnp = '';
                 } else {
                     $lnp = LastNamePrefix::where('id', $personData['lastNamePrefixId'])->pluck('name')[0];

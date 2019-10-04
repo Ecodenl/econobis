@@ -20,7 +20,12 @@ const Register = ({ location, match, login }) => {
     let { from } = location.state || { from: { pathname: '/gegevens' } };
 
     function handleSubmit(values, actions) {
-        AuthAPI.register({ registrationCode, email, password: values.password, password_confirmation: values.passwordConfirmation })
+        AuthAPI.register({
+            registrationCode,
+            email,
+            password: values.password,
+            password_confirmation: values.passwordConfirmation,
+        })
             .then(payload => {
                 toggleSuccessMessage(true);
                 AuthAPI.login({ username: email, password: values.password })

@@ -1,7 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 
-const Select = ({ field, className, id, options, optionLabel, error, emptyOption, placeholder }) => {
+const Select = ({
+    field,
+    className,
+    id,
+    options,
+    optionLabel,
+    error,
+    emptyOption,
+    placeholder,
+    showErrorMessage,
+    errors,
+    touched,
+    classNameErrorMessage,
+}) => {
     return (
         <>
             <select className={`select-field w-select content ${className}`} id={id} {...field} error={error}>
@@ -14,7 +28,9 @@ const Select = ({ field, className, id, options, optionLabel, error, emptyOption
                     );
                 })}
             </select>
-            {error ? <span className={'error-message text-danger'}>{error}</span> : null}
+            {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (
+                <small className={`${classNameErrorMessage}`}>{get(errors, field.name, '')}</small>
+            ) : null}
         </>
     );
 };

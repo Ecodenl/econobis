@@ -49,7 +49,7 @@ class RegisterController extends Controller
 
         DB::commit();
 
-        Passport::actingAs($portalUser);
+//        Passport::actingAs($portalUser);
 
         return Jory::on($contact);
     }

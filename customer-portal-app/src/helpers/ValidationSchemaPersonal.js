@@ -32,7 +32,9 @@ export default {
             city: Yup.string()
                 .trim()
                 .required('Verplicht'),
-            countryId: Yup.string().required('Verplicht'),
+            countryId: Yup.string()
+                .nullable()
+                .required('Verplicht'),
         }),
     }),
 

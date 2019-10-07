@@ -29,6 +29,9 @@ export default {
                                 'lastNamePrefix',
                                 'dateOfBirth',
                             ],
+                            rlt: {
+                                title: { fld: ['id', 'name'] },
+                            },
                         },
                         organisation: {
                             fld: ['id', 'name', 'website', 'chamberOfCommerceNumber', 'vatNumber'],

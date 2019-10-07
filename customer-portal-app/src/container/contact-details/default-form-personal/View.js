@@ -30,7 +30,7 @@ function DefaultContactPersonalView({ initialContact }) {
                 <FormLabel className={'field-label'}>Naam</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-6'} placeholder={'Aanhef'}>
-                        {person.titleId}
+                        {person.title ? person.title.name : ''}
                     </TextBlock>
                 </Row>
                 <Row>

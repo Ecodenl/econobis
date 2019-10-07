@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
@@ -13,18 +13,22 @@ const InputDate = ({
     readOnly,
     name,
     onChangeAction,
-    error,
     placeholder,
     showErrorMessage,
     errors,
     touched,
     classNameErrorMessage,
 }) => {
+    const [error, setError] = useState(false);
+
     const validateDate = event => {
         const date = moment(event.target.value, 'DD-MM-YYYY', true);
 
         if (date.isValid() && event.target.value !== '') {
+            setError(false);
             onChangeAction(name, moment(date).format('Y-MM-DD'));
+        } else {
+            setError(true);
         }
     };
 
@@ -64,9 +68,10 @@ const InputDate = ({
                 readOnly={readOnly}
                 placeholder={''}
             />
-            {get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (
-                <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
-            ) : null}
+            {/*{get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (*/}
+            {/*<small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>*/}
+            {/*) : null}*/}
+            {error ? <small className={`${classNameErrorMessage}`}>Verplicht of ongeldige datum</small> : null}
         </>
     );
 };
@@ -78,6 +83,10 @@ InputDate.defaultProps = {
     value: null,
     error: false,
     placeholder: '',
+    showErrorMessage: true,
+    classNameErrorMessage: 'text-danger',
+    errors: {},
+    touched: {},
 };
 
 InputDate.propTypes = {
@@ -91,6 +100,10 @@ InputDate.propTypes = {
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
     placeholder: PropTypes.string,
+    showErrorMessage: PropTypes.bool,
+    classNameErrorMessage: PropTypes.string,
+    errors: PropTypes.object,
+    touched: PropTypes.object,
 };
 
 export default InputDate;

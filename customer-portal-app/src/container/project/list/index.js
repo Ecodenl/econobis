@@ -17,15 +17,15 @@ function ProjectList(props) {
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
 
     useEffect(() => {
-        // Call Api if current selected contact id is filled
-        if (props.currentSelectedContact.id) {
-            // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
-            if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
-                callFetchContactProjects();
-            }
-        }
         (function callFetchProjects() {
             setLoading(true);
+            // Call Api if current selected contact id is filled
+            if (props.currentSelectedContact.id) {
+                // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
+                if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
+                    callFetchContactProjects();
+                }
+            }
             ProjectAPI.fetchProjects()
                 .then(payload => {
                     setProjectData(payload.data.data);
@@ -39,13 +39,11 @@ function ProjectList(props) {
     }, [props.currentSelectedContact]);
 
     function callFetchContactProjects() {
-        setLoading(true);
         ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
             .then(payload => {
                 let contactProjecten = [];
                 payload.data.data.participations.map(item => contactProjecten.push(item.project.id));
                 setContactProjectsArray(contactProjecten);
-                setLoading(false);
             })
             .catch(error => {
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');

@@ -8,7 +8,6 @@ const Select = ({
     id,
     options,
     optionLabel,
-    error,
     emptyOption,
     placeholder,
     showErrorMessage,
@@ -18,7 +17,13 @@ const Select = ({
 }) => {
     return (
         <>
-            <select className={`select-field w-select content ${className}`} id={id} {...field} error={error}>
+            <select
+                className={`select-field w-select content ${className} ${
+                    Boolean(errors[field.name] && touched[field.name]) ? 'has-error mb-0' : ''
+                } `}
+                id={id}
+                {...field}
+            >
                 {emptyOption ? <option value="">{placeholder ? `-- ${placeholder} --` : ''}</option> : null}
                 {options.map(option => {
                     return (
@@ -39,10 +44,13 @@ Select.defaultProps = {
     className: '',
     readOnly: false,
     required: '',
-    error: false,
     optionLabel: 'name',
     emptyOption: true,
     placeholder: '',
+    showErrorMessage: true,
+    classNameErrorMessage: 'text-danger',
+    errors: {},
+    touched: {},
 };
 
 Select.propTypes = {
@@ -51,9 +59,12 @@ Select.propTypes = {
     id: PropTypes.string,
     options: PropTypes.array.isRequired,
     optionLabel: PropTypes.string,
-    error: PropTypes.bool,
     emptyOption: PropTypes.bool,
     placeholder: PropTypes.string,
+    showErrorMessage: PropTypes.bool,
+    classNameErrorMessage: PropTypes.string,
+    errors: PropTypes.object,
+    touched: PropTypes.object,
 };
 
 export default Select;

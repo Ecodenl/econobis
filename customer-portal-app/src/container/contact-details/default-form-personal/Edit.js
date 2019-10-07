@@ -12,7 +12,7 @@ import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import InputDate from '../../../components/form/InputDate';
 
-const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, errors, touched, values, setFieldValue }) {
+const DefaultContactPersonalEdit = function({ handleeSubmit, initialContact, errors, touched, values, setFieldValue }) {
     return (
         <Row>
             <Col xs={12} md={6}>
@@ -186,7 +186,13 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, erro
                         <Field
                             name="phoneNumberTwo.number"
                             render={({ field }) => (
-                                <InputText field={field} id="telephone-number-2" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="telephone-number-2"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -230,7 +236,15 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, erro
                     <Col xs={12} sm={4}>
                         <Field
                             name="primaryAddress.addition"
-                            render={({ field }) => <InputText field={field} id="addition" placeholder={'Toevoeging'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="addition"
+                                    placeholder={'Toevoeging'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -293,9 +307,9 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, erro
                             name="iban"
                             render={({ field }) => (
                                 <InputText
+                                    field={field}
                                     errors={errors}
                                     touched={touched}
-                                    field={field}
                                     id="iban"
                                     placeholder={'Rekeningnummer (IBAN)'}
                                 />
@@ -308,7 +322,13 @@ const DefaultContactPersonalEdit = function({ handleSubmit, initialContact, erro
                         <Field
                             name="ibanAttn"
                             render={({ field }) => (
-                                <InputText field={field} id="iban_attn" placeholder={'IBAN te name van'} />
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="iban_attn"
+                                    placeholder={'IBAN te name van'}
+                                />
                             )}
                         />
                     </Col>

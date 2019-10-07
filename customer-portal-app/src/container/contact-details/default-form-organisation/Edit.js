@@ -42,7 +42,13 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="organisation.chamberOfCommerceNumber"
                             render={({ field }) => (
-                                <InputText field={field} id="chamber_of_commerce_number" placeholder={'KvK'} />
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="chamber_of_commerce_number"
+                                    placeholder={'KvK'}
+                                />
                             )}
                         />
                     </Col>
@@ -54,7 +60,13 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="organisation.vatNumber"
                             render={({ field }) => (
-                                <InputText field={field} id="vat_number" placeholder={'BTW nummer'} />
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="vat_number"
+                                    placeholder={'BTW nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -68,7 +80,13 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="iban"
                             render={({ field }) => (
-                                <InputText field={field} id="iban" placeholder={'Rekeningnummer (IBAN)'} />
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="iban"
+                                    placeholder={'Rekeningnummer (IBAN)'}
+                                />
                             )}
                         />
                     </Col>
@@ -78,7 +96,13 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="ibanAttn"
                             render={({ field }) => (
-                                <InputText field={field} id="iban_attn" placeholder={'IBAN te name van'} />
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="iban_attn"
+                                    placeholder={'IBAN te name van'}
+                                />
                             )}
                         />
                     </Col>
@@ -89,7 +113,15 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={8}>
                         <Field
                             name="organisation.website"
-                            render={({ field }) => <InputText field={field} id="website" placeholder={'Website'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="website"
+                                    placeholder={'Website'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -188,7 +220,13 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                         <Field
                             name="phoneNumberTwo.number"
                             render={({ field }) => (
-                                <InputText field={field} id="telephone-number-2" placeholder={'Nummer'} />
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="telephone-number-2"
+                                    placeholder={'Nummer'}
+                                />
                             )}
                         />
                     </Col>
@@ -234,7 +272,15 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={4}>
                         <Field
                             name="visitAddress.addition"
-                            render={({ field }) => <InputText field={field} id="addition" placeholder={'Toevoeging'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="addition"
+                                    placeholder={'Toevoeging'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -324,7 +370,15 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={4}>
                         <Field
                             name="postalAddress.addition"
-                            render={({ field }) => <InputText field={field} id="addition" placeholder={'Toevoeging'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="addition"
+                                    placeholder={'Toevoeging'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>
@@ -414,7 +468,15 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                     <Col xs={12} sm={4}>
                         <Field
                             name="invoiceAddress.addition"
-                            render={({ field }) => <InputText field={field} id="addition" placeholder={'Toevoeging'} />}
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="addition"
+                                    placeholder={'Toevoeging'}
+                                />
+                            )}
                         />
                     </Col>
                 </Row>

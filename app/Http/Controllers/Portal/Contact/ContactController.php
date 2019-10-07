@@ -122,6 +122,7 @@ class ContactController extends ApiController
             }
             $personData['lastNamePrefix'] = $lnp;
 
+            unset($personData['title']);
             unset($personData['lastNamePrefixId']);
 
             $person->fill($this->arrayKeysToSnakeCase($personData));

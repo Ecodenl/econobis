@@ -16,6 +16,7 @@ import ProjectFormDefaultLoan from '../../../form-default/ProjectFormDefaultLoan
 import ProjectFormDefaultObligation from '../../../form-default/ProjectFormDefaultObligation';
 import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultCapital';
 import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
+import ProjectFormViewLoan from '../view/ProjectFormView';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -124,6 +125,12 @@ class ProjectFormEdit extends Component {
         if (isNaN(project.amountOfLoanNeeded)) {
             project.amountOfLoanNeeded = project.amountOfLoanNeeded.replace(/,/g, '.');
         }
+        if (isNaN(project.minAmountLoan)) {
+            project.minAmountLoan = project.minAmountLoan.replace(/,/g, '.');
+        }
+        if (isNaN(project.maxAmountLoan)) {
+            project.maxAmountLoan = project.maxAmountLoan.replace(/,/g, '.');
+        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -166,6 +173,8 @@ class ProjectFormEdit extends Component {
             contactGroupIds,
             isMembershipRequired,
             amountOfLoanNeeded,
+            minAmountLoan,
+            maxAmountLoan,
             ean,
             eanManager,
             warrantyOrigin,
@@ -229,6 +238,8 @@ class ProjectFormEdit extends Component {
                 {projectType && projectType.codeRef === 'loan' ? (
                     <ProjectFormDefaultLoan
                         amountOfLoanNeeded={amountOfLoanNeeded}
+                        minAmountLoan={minAmountLoan}
+                        maxAmountLoan={maxAmountLoan}
                         amountDefinitive={amountDefinitive}
                         amountGranted={amountGranted}
                         amountOptioned={amountOptioned}

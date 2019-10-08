@@ -58,6 +58,8 @@ class ProjectNewApp extends Component {
                 postalcodeLink: '',
                 contactGroupIds: '',
                 amountOfLoanNeeded: null,
+                minAmountLoan: null,
+                maxAmountLoan: null,
                 amountDefinitive: null,
                 amountGranted: null,
                 amountOptioned: null,
@@ -235,6 +237,8 @@ class ProjectNewApp extends Component {
             postalcodeLink,
             contactGroupIds,
             amountOfLoanNeeded,
+            minAmountLoan,
+            maxAmountLoan,
             amountDefinitive,
             amountGranted,
             amountOptioned,
@@ -287,6 +291,8 @@ class ProjectNewApp extends Component {
                                     {projectType && projectType.codeRef === 'loan' ? (
                                         <ProjectFormDefaultLoan
                                             amountOfLoanNeeded={amountOfLoanNeeded}
+                                            minAmountLoan={minAmountLoan}
+                                            maxAmountLoan={maxAmountLoan}
                                             amountDefinitive={amountDefinitive}
                                             amountGranted={amountGranted}
                                             amountOptioned={amountOptioned}

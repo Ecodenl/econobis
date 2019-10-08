@@ -427,7 +427,14 @@ class TemplateVariableHelper
                 return $model->max_participations_youth;
                 break;
             case 'amount_of_loan_needed':
+            case 'bedrag_lening_nodig':
                 return $model->amount_of_loan_needed;
+                break;
+            case 'min_bedrag_lening':
+                return $model->min_amount_loan;
+                break;
+            case 'max_bedrag_lening':
+                return $model->max_amount_loan;
                 break;
             case 'aanwijzing_belastingdienst':
                 return $model->tax_referral;

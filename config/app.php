@@ -5,7 +5,7 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '3',
     'version_minor' => '1',
-    'version_fix' => '0',
+    'version_fix' => '1',
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -216,6 +216,7 @@ return [
         \App\Providers\ObserverServiceProvider::class,
 
         Laravel\Passport\PassportServiceProvider::class,
+//        \App\Providers\JoryServiceProvider::class,
 
         //custom packages for document templates
         Barryvdh\DomPDF\ServiceProvider::class,

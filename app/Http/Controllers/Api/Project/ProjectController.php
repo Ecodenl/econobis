@@ -105,6 +105,8 @@ class ProjectController extends ApiController
             ->boolean('isMembershipRequired')->alias('is_membership_required')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
+            ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()
+            ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->get();
 
         $project = new Project();
@@ -178,6 +180,8 @@ class ProjectController extends ApiController
             ->boolean('isMembershipRequired')->alias('is_membership_required')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
+            ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()
+            ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->get();
 
         $project->fill($data);

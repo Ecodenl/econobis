@@ -87,6 +87,8 @@ class FullProject extends Resource
                 'hasPaymentInvoices' => $this->getHasPaymentInvoices(),
                 'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
+                'minAmountLoan' => $this->min_amount_loan,
+                'maxAmountLoan' => $this->max_amount_loan,
                 'participationsDefinitive' => $this->participations_definitive,
                 'participationsGranted' => $this->participations_granted,
                 'participationsOptioned' => $this->participations_optioned,

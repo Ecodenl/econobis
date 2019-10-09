@@ -3,11 +3,11 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
-import DefaultContactPersonalEdit from '../../../contact-details/default-form-personal/Edit';
+import DefaultContactPersonalEdit from '../../contact-details/default-form-personal/Edit';
 import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
-import ValidationSchemaPersonal from '../../../../helpers/ValidationSchemaPersonal';
-import ValidationSchemaOrganisation from '../../../../helpers/ValidationSchemaOrganisation';
+import ValidationSchemaPersonal from '../../../helpers/ValidationSchemaPersonal';
+import ValidationSchemaOrganisation from '../../../helpers/ValidationSchemaOrganisation';
 
 function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) {
     const typeContact = initialContact.typeId ? initialContact.typeId : null;
@@ -25,9 +25,7 @@ function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) 
             break;
     }
 
-    const validationSchema = initialContact.isParticipant
-        ? validationSchemaBasic.concat(validationSchemaAdditional)
-        : validationSchemaBasic;
+    const validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
 
     return (
         <div>

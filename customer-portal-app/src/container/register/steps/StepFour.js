@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ContactAPI from '../../../../api/contact/ContactAPI';
-import ViewHtmlAsText from '../../../../components/general/ViewHtmlAsText';
+import ContactAPI from '../../../api/contact/ContactAPI';
+import ViewHtmlAsText from '../../../components/general/ViewHtmlAsText';
 import Col from 'react-bootstrap/Col';
-import LoadingView from '../../../../components/general/LoadingView';
+import LoadingView from '../../../components/general/LoadingView';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
-import ParticipantProjectAPI from '../../../../api/participant-project/ParticipantProjectAPI';
+import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import { ClipLoader } from 'react-spinners';
 
 function StepFour({ previous, next, registerValues, setSucces }) {

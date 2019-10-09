@@ -3,13 +3,14 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProjectAPI from '../../../api/project/ProjectAPI';
-import FormLabel from 'react-bootstrap/FormLabel';
-import moment from 'moment';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import LoadingView from '../../../components/general/LoadingView';
-import TextBlock from '../../../components/general/TextBlock';
+import LoanDetails from './LoanDetails';
+import ObligationDetails from './ObligationDetails';
+import CapitalDetails from './CapitalDetails';
+import PcrDetails from './PcrDetails';
 
 function ProjectDetails({ match }) {
     const [project, setProject] = useState({});
@@ -30,6 +31,21 @@ function ProjectDetails({ match }) {
         })();
     }, [match]);
 
+    function renderDetails() {
+        switch (project.projectType.codeRef) {
+            case 'loan':
+                return <LoanDetails project={project} />;
+            case 'obligation':
+                return <ObligationDetails project={project} />;
+            case 'capital':
+                return <CapitalDetails project={project} />;
+            case 'postalcode_link_capital':
+                return <PcrDetails project={project} />;
+            default:
+                return null;
+        }
+    }
+
     return (
         <Container className={'content-section'}>
             {isLoading ? (
@@ -41,46 +57,9 @@ function ProjectDetails({ match }) {
                             <h1 className="content-heading">Inschrijven project</h1>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Project</FormLabel>
-                            <TextBlock>{project.name}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Omschrijving project</FormLabel>
-                            <TextBlock>{project.description}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Nominale waarde per participatie</FormLabel>
-                            <TextBlock>{project.participationWorth}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Aantal participaties</FormLabel>
-                            <TextBlock>{project.totalParticipations}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Minimaal aantal participaties per contact</FormLabel>
-                            <TextBlock>{project.minParticipations}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Maximaal aantal participaties per contact</FormLabel>
-                            <TextBlock>{project.maxParticipations}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Start inschrijving</FormLabel>
-                            <TextBlock>
-                                {project.dateStartRegistrations
-                                    ? moment(project.dateStartRegistrations).format('LL')
-                                    : ''}
-                            </TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel>Eind inschrijving</FormLabel>
-                            <TextBlock>
-                                {project.dateEndRegistrations ? moment(project.dateEndRegistrations).format('LL') : ''}
-                            </TextBlock>
-                        </Col>
-                    </Row>
+
+                    {renderDetails()}
+
                     <Row className={'mt-5'}>
                         <Col>
                             <p>

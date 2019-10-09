@@ -34,11 +34,11 @@ function DefaultContactPersonalView({ initialContact }) {
                     </TextBlock>
                 </Row>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Voornaam'}>
-                        {person.firstName}
-                    </TextBlock>
                     <TextBlock className={'col-12 col-sm-4'} placeholder={'Initialen'}>
                         {person.initials}
+                    </TextBlock>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Voornaam'}>
+                        {person.firstName}
                     </TextBlock>
                 </Row>
                 <Row>

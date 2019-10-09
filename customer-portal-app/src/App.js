@@ -10,7 +10,7 @@ import Forgot from './container/authorization/forgot';
 import Reset from './container/authorization/reset';
 import ContactDetails from './container/contact-details';
 import MyAreasOfInterest from './container/my-areas-of-interest';
-import RegisterCapital from './container/register/capital';
+import RegisterCapital from './container/register';
 import ProjectList from './container/project/list';
 import ProjectDetails from './container/project/details';
 import RegistrationList from './container/registration/list';

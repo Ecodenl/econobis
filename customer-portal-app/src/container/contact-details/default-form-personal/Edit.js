@@ -40,20 +40,6 @@ const DefaultContactPersonalEdit = function({ handleeSubmit, initialContact, err
                     </Col>
                 </Row>
                 <Row>
-                    <Col xs={12} sm={8}>
-                        <Field
-                            name="person.firstName"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="first_name"
-                                    placeholder={'Voornaam'}
-                                />
-                            )}
-                        />
-                    </Col>
                     <Col xs={12} sm={4}>
                         <Field
                             name="person.initials"
@@ -64,6 +50,20 @@ const DefaultContactPersonalEdit = function({ handleeSubmit, initialContact, err
                                     touched={touched}
                                     id="initials"
                                     placeholder={'Initialen'}
+                                />
+                            )}
+                        />
+                    </Col>
+                    <Col xs={12} sm={8}>
+                        <Field
+                            name="person.firstName"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="first_name"
+                                    placeholder={'Voornaam'}
                                 />
                             )}
                         />

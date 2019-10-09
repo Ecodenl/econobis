@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import * as ibantools from "ibantools";
 
 export default {
     validationSchemaBasic: Yup.object().shape({
@@ -56,7 +57,13 @@ export default {
         iban: Yup.string()
             .trim()
             .nullable()
-            .required('Verplicht'),
+            .required('Verplicht')
+            .test(
+                'iban',
+                'Ongeldige IBAN !',
+                value => ibantools.isValidIBAN(value)
+            )
+        ,
         ibanAttn: Yup.string()
             .trim()
             .nullable()

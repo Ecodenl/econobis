@@ -4,14 +4,14 @@ import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import FormLabel from 'react-bootstrap/FormLabel';
-import MoneyPresenter from '../../../../helpers/MoneyPresenter';
-import TextBlock from '../../../../components/general/TextBlock';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
+import TextBlock from '../../../components/general/TextBlock';
 import Form from 'react-bootstrap/Form';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
-import InputText from '../../../../components/form/InputText';
+import InputText from '../../../components/form/InputText';
 
-function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepOnePcr({ next, project, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         participationsInteressed: Yup.number()
             .typeError('Alleen nummers')
@@ -85,4 +85,4 @@ function StepOne({ next, project, initialRegisterValues, handleSubmitRegisterVal
     );
 }
 
-export default StepOne;
+export default StepOnePcr;

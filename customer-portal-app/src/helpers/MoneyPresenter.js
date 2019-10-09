@@ -1,7 +1,9 @@
 export default amount => {
     if (!amount) amount = 0;
-
-    amount = parseFloat(amount);
+    // if (isNaN(amount)) {
+    //     amount = amount.replace(',', '.');
+    // }
+    amount = parseFloat(amount * 100) / 100;
 
     if (isNaN(amount)) return 'Ongeldig bedrag';
 

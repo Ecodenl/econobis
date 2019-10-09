@@ -52,7 +52,7 @@ function DefaultContactOrganisationView({ initialContact }) {
                     </TextBlock>
                 </Row>
 
-                <FormLabel className={'field-label'}>Rekeningnummer</FormLabel>
+                <FormLabel className={'field-label'}>IBAN gegevens</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Rekeningnummer (IBAN)'}>
                         {iban}

@@ -73,7 +73,7 @@ const DefaultContactOrganisationEdit = function({ handleSubmit, initialContact, 
                 </Row>
 
                 <FormLabel htmlFor="iban" className="field-label">
-                    Rekeningnummer
+                    IBAN gegevens
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>

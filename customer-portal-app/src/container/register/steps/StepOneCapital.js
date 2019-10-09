@@ -13,7 +13,7 @@ import InputText from '../../../components/form/InputText';
 
 function StepOneCapital({ next, project, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
-        participationsInteressed: Yup.number()
+        participationsOptioned: Yup.number()
             .typeError('Alleen nummers')
             .min(1, 'Minimum van ${min} nodig')
             .max(project.maxParticipations, 'Maximum van ${max} bereikt')
@@ -50,13 +50,13 @@ function StepOneCapital({ next, project, initialRegisterValues, handleSubmitRegi
                             <Form>
                                 <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
                                 <Field
-                                    name="participationsInteressed"
+                                    name="participationsOptioned"
                                     render={({ field }) => (
                                         <InputText
                                             field={field}
                                             errors={errors}
                                             touched={touched}
-                                            id="participations_interessed"
+                                            id="participations_optioned"
                                         />
                                     )}
                                 />
@@ -65,7 +65,7 @@ function StepOneCapital({ next, project, initialRegisterValues, handleSubmitRegi
                         <Col xs={12} md={6}>
                             <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
                             <TextBlock>
-                                {MoneyPresenter(values.participationsInteressed * project.participationWorth)}
+                                {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
                             </TextBlock>
                         </Col>
                     </Row>

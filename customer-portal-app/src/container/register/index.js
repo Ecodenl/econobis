@@ -16,8 +16,8 @@ function RegisterCapital({ match, currentSelectedContact }) {
     const [registerValues, setRegisterValues] = useState({
         contactId: null,
         projectId: null,
-        participationsInteressed: 0,
-        amountInteressed: 0,
+        participationsOptioned: 0,
+        amountOptioned: 0,
         didAgreeTerms: false,
         didUnderstandInfo: false,
     });

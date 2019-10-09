@@ -234,8 +234,8 @@ class ParticipationProjectController extends Controller
             'power_kwh_consumption' => $powerKwhConcumption,
         ]);
 
-        // vanuit portal standaard altijd status 'interest'
-        $status = ParticipantMutationStatus::where('code_ref', 'interest')->first();
+        // vanuit portal standaard altijd status 'option'
+        $status = ParticipantMutationStatus::where('code_ref', 'option')->first();
 
         $dateInterest = null;
         $amountInterest = 0;
@@ -249,16 +249,19 @@ class ParticipationProjectController extends Controller
         $dateFinal = null;
         $amountFinal = 0;
         $quantityFinal = 0;
-        $participationMutationDate = $today ?: null;
-        $participationMutationAmount = $request->amountInteressed ?: null;
-        $participationMutationQuantity = $request->participationsInteressed ?: null;
+        $participationMutationDate = null;
+        $participationMutationAmount = null;
+        $participationMutationQuantity = null;
 
 
         switch($status->code_ref){
-            case 'interest' :
-                $dateInterest = $participationMutationDate;
-                $amountInterest = $participationMutationAmount;
-                $quantityInterest = $participationMutationQuantity;
+            case 'option' :
+                $participationMutationDate = $today ?: null;
+                $participationMutationAmount = $request->amountOptioned ?: null;
+                $participationMutationQuantity = $request->participationsOptioned ?: null;
+                $dateOption = $participationMutationDate;
+                $amountOption = $participationMutationAmount;
+                $quantityOption = $participationMutationQuantity;
                 break;
         }
 

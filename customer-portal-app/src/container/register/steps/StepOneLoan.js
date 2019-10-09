@@ -13,15 +13,15 @@ import InputText from '../../../components/form/InputText';
 
 function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
-        amountInteressed: Yup.string()
+        amountOptioned: Yup.string()
             .required('Verplicht')
             .test(
-                'amountInteressed',
+                'amountOptioned',
                 'Minimum van ' + project.minAmountLoan + ' nodig',
                 value => value.replace(',', '.') > project.minAmountLoan
             )
             .test(
-                'amountInteressed',
+                'amountOptioned',
                 'Maximum van ' + project.maxAmountLoan + ' bereikt',
                 value => value.replace(',', '.') <= project.maxAmountLoan
             )
@@ -53,13 +53,13 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
                             <Form>
                                 <Form.Label className={'field-label'}>In te leggen bedrag</Form.Label>
                                 <Field
-                                    name="amountInteressed"
+                                    name="amountOptioned"
                                     render={({ field }) => (
                                         <InputText
                                             field={field}
                                             errors={errors}
                                             touched={touched}
-                                            id="amount_interessed"
+                                            id="amount_optioned"
                                         />
                                     )}
                                 />
@@ -67,7 +67,7 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
                         </Col>
                         <Col xs={12} md={6}>
                             <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
-                            <TextBlock>{MoneyPresenter(values.amountInteressed)}</TextBlock>
+                            <TextBlock>{MoneyPresenter(values.amountOptioned)}</TextBlock>
                         </Col>
                     </Row>
 

@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import * as ibantools from "ibantools";
+import * as ibantools from 'ibantools';
 
 export default {
     validationSchemaBasic: Yup.object().shape({
@@ -29,6 +29,7 @@ export default {
                 .required('Verplicht'),
             postalCode: Yup.string()
                 .trim()
+                .min(4, 'Minimum van ${min} postcode cijfers nodig')
                 .required('Verplicht'),
             city: Yup.string()
                 .trim()
@@ -58,12 +59,7 @@ export default {
             .trim()
             .nullable()
             .required('Verplicht')
-            .test(
-                'iban',
-                'Ongeldige IBAN !',
-                value => ibantools.isValidIBAN(value)
-            )
-        ,
+            .test('iban', 'Ongeldige IBAN !', value => ibantools.isValidIBAN(value)),
         ibanAttn: Yup.string()
             .trim()
             .nullable()

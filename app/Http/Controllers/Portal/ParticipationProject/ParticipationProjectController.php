@@ -221,7 +221,7 @@ class ParticipationProjectController extends Controller
                 $payoutTypeId = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
                 break;
         }
-        $powerKwhConcumption = ($request->powerKwhConsumption && $request->powerKwhConsumption!= '') ?: 0;
+        $powerKwhConsumption = ($request->powerKwhConsumption && $request->powerKwhConsumption!= '') ?: 0;
 
         $participation = ParticipantProject::create([
             'contact_id' => $contact->id,
@@ -231,7 +231,7 @@ class ParticipationProjectController extends Controller
             'date_did_accept_agreement' => $today,
             'did_understand_info' => (bool)$request->didUnderstandInfo,
             'date_did_understand_info'  => $today,
-            'power_kwh_consumption' => $powerKwhConcumption,
+            'power_kwh_consumption' => $powerKwhConsumption,
         ]);
 
         // vanuit portal standaard altijd status 'option'

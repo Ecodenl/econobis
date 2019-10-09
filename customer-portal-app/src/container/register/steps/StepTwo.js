@@ -8,24 +8,54 @@ import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaPersonal from '../../../helpers/ValidationSchemaPersonal';
 import ValidationSchemaOrganisation from '../../../helpers/ValidationSchemaOrganisation';
+import * as Yup from 'yup';
 
-function StepTwo({ previous, next, initialContact, handleSubmitContactValues }) {
+function StepTwo({ previous, next, project, initialContact, handleSubmitContactValues }) {
     const typeContact = initialContact.typeId ? initialContact.typeId : null;
+    const validationSchemaPcrPersonal = Yup.object().shape({
+        primaryAddress: Yup.object().shape({
+            postalCode: Yup.string().test(
+                'test-compare a few values',
+                'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
+                function(value) {
+                    return project.postalcodeLink.includes(value.substring(0, 4));
+                }
+            ),
+        }),
+    });
+    const validationSchemaPcrOrganisation = Yup.object().shape({
+        visitAddress: Yup.object().shape({
+            postalCode: Yup.string().test(
+                'test-compare a few values',
+                'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
+                function(value) {
+                    return project.postalcodeLink.includes(value.substring(0, 4));
+                }
+            ),
+        }),
+    });
 
+    let validationSchema = null;
     let validationSchemaBasic = null;
     let validationSchemaAdditional = null;
     switch (typeContact) {
         case 'person':
             validationSchemaBasic = ValidationSchemaPersonal.validationSchemaBasic;
             validationSchemaAdditional = ValidationSchemaPersonal.validationSchemaAdditional;
+            validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
+            if (project.projectType.codeRef === 'postalcode_link_capital') {
+                validationSchema = validationSchema.concat(validationSchemaPcrPersonal);
+            }
             break;
         case 'organisation':
             validationSchemaBasic = ValidationSchemaOrganisation.validationSchemaBasic;
             validationSchemaAdditional = ValidationSchemaOrganisation.validationSchemaAdditional;
+            validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
+            if (project.projectType.codeRef === 'postalcode_link_capital') {
+                validationSchema = validationSchema.concat(validationSchemaPcrOrganisation);
+            }
             break;
     }
-
-    const validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
 
     return (
         <div>

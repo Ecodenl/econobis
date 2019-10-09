@@ -54,6 +54,7 @@ function Steps({
                         <StepOnePcr
                             next={next}
                             project={project}
+                            initialContact={initialContact}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />
@@ -67,6 +68,7 @@ function Steps({
                 <StepTwo
                     previous={previous}
                     next={next}
+                    project={project}
                     initialContact={initialContact}
                     handleSubmitContactValues={handleSubmitContactValues}
                 />

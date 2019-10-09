@@ -10,7 +10,7 @@ import Forgot from './container/authorization/forgot';
 import Reset from './container/authorization/reset';
 import ContactDetails from './container/contact-details';
 import MyAreasOfInterest from './container/my-areas-of-interest';
-import RegisterCapital from './container/register';
+import RegisterProject from './container/register';
 import ProjectList from './container/project/list';
 import ProjectDetails from './container/project/details';
 import RegistrationList from './container/registration/list';
@@ -24,7 +24,7 @@ function App() {
                         <ProtectedRoute exact path="/" component={ContactDetails} />
                         <ProtectedRoute path="/gegevens" component={ContactDetails} />
                         <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
-                        <ProtectedRoute path="/inschrijven/:id" component={RegisterCapital} />
+                        <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
                         <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                         <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />
                         <ProtectedRoute path="/project/:id" component={ProjectDetails} />

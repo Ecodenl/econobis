@@ -12,11 +12,12 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import MasterForm from './MasterForm';
 
-function RegisterCapital({ match, currentSelectedContact }) {
+function RegisterProject({ match, currentSelectedContact }) {
     const [registerValues, setRegisterValues] = useState({
         contactId: null,
         projectId: null,
         participationsOptioned: 0,
+        powerKwhConsumption: 0,
         amountOptioned: 0,
         didAgreeTerms: false,
         didUnderstandInfo: false,
@@ -38,7 +39,7 @@ function RegisterCapital({ match, currentSelectedContact }) {
                         projectId: payload.data.data.id,
                         contactId: currentSelectedContact.id,
                     });
-                    setLoading(false);
+                    // setLoading(false);
                 })
                 .catch(error => {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -55,6 +56,10 @@ function RegisterCapital({ match, currentSelectedContact }) {
                     .then(payload => {
                         const contactData = rebaseContact(payload.data.data);
                         setContact(contactData);
+                        setRegisterValues({
+                            ...registerValues,
+                            pcrPostalCode: payload.data.data.primaryAddress.postalCode,
+                        });
                         callFetchContactProjects();
                         setLoading(false);
                     })
@@ -164,11 +169,11 @@ function RegisterCapital({ match, currentSelectedContact }) {
     );
 }
 
-export default function RegisterCapitalWithContext(props) {
+export default function RegisterProjectWithContext(props) {
     return (
         <PortalUserConsumer>
             {({ currentSelectedContact }) => (
-                <RegisterCapital {...props} currentSelectedContact={currentSelectedContact} />
+                <RegisterProject {...props} currentSelectedContact={currentSelectedContact} />
             )}
         </PortalUserConsumer>
     );

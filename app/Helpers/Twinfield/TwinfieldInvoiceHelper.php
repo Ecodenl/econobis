@@ -118,7 +118,7 @@ class TwinfieldInvoiceHelper
                         if($dagBoek !== 'VRK')
                         {
                             //-100 op debiteur is dus 100 betaald
-                            $amount = ($amountInvoice-$amountOpen) * -1;
+                            $amount = floatval(number_format(($amountInvoice-$amountOpen) * -1, 2, '.', ''));
                             $invoicePaymentCheck = InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('twinfield_number', $twinfieldNumber)->where('twinfield_match_number', $twinfieldMatchNumber);
                             // InvoicePayment bestaat nog niet, dan nieuw aanmaken
                             if(!$invoicePaymentCheck->exists())
@@ -136,16 +136,8 @@ class TwinfieldInvoiceHelper
                             // anders bijwerken
                             }else{
                                 $invoicePayment = $invoicePaymentCheck->first();
-                                $oldAmount = $invoicePayment->amount;
+                                $oldAmount = floatval(number_format($invoicePayment->amount, 2, '.', ''));
                                 $oldDateInput = $invoicePayment->date_paid;
-                                if($invoicePayment->amount != $amount )
-                                {
-                                    Log::info('Bedrag ongelijk nieuw: ' . $amount . ' Bedrag was ' . $oldAmount . '.' );
-                                }
-                                if($invoicePayment->date_paid != $dateInput )
-                                {
-                                    Log::info('Datum ongelijk nieuw: ' . $dateInput . ' Datum was: ' . $oldDateInput . '.' );
-                                }
                                 if($invoicePayment->amount != $amount || $invoicePayment->date_paid != $dateInput )
                                 {
                                     $data = ['amount'=>$amount, 'date_paid'=>$dateInput];

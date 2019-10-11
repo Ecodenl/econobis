@@ -2,9 +2,10 @@ import React from 'react';
 import Frame from 'react-frame-component';
 import PropTypes from 'prop-types';
 import Panel from '../panel/Panel';
+import ButtonText from '../button/ButtonText';
 
 const ViewHtmlAsText = props => {
-    const { label, className, id, value } = props;
+    const { label, className, id, value, switchToEdit } = props;
 
     const createMarkup = () => {
         return { __html: value };
@@ -14,6 +15,18 @@ const ViewHtmlAsText = props => {
         <div className={className}>
             <label htmlFor={id} className="col-sm-3">
                 {label}
+                {switchToEdit ? (
+                    <span>
+                        <br />
+                        <ButtonText
+                            buttonClassName={'btn-success btn-padding-small'}
+                            buttonText={'Wijzig'}
+                            onClickAction={switchToEdit}
+                        />
+                    </span>
+                ) : (
+                    ''
+                )}
             </label>
             <Panel className="col-sm-9">
                 <Frame>

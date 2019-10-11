@@ -136,15 +136,23 @@ class TwinfieldInvoiceHelper
                             // anders bijwerken
                             }else{
                                 $invoicePayment = $invoicePaymentCheck->first();
+                                $oldAmount = $invoicePayment->amount;
+                                $oldDateInput = $invoicePayment->date_paid;
+                                if($invoicePayment->amount != $amount )
+                                {
+                                    Log::info('Bedrag ongelijk nieuw: ' . $amount . ' Bedrag was ' . $oldAmount . '.' );
+                                }
+                                if($invoicePayment->date_paid != $dateInput )
+                                {
+                                    Log::info('Datum ongelijk nieuw: ' . $dateInput . ' Datum was: ' . $oldDateInput . '.' );
+                                }
                                 if($invoicePayment->amount != $amount || $invoicePayment->date_paid != $dateInput )
                                 {
-                                    $oldAmount = $invoicePayment->amount;
-                                    $oldDateInpunt = $invoicePayment->date_paid;
                                     $data = ['amount'=>$amount, 'date_paid'=>$dateInput];
                                     $invoicePayment->fill($data);
                                     $invoicePayment->save();
-                                    Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ') aangepast via twinfield voor factuur ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInpunt . ').' );
-                                    array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor factuur ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInpunt . ').');
+                                    Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ') aangepast via twinfield voor factuur ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInput . ').' );
+                                    array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor factuur ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').');
                                 }
                             }
                         }

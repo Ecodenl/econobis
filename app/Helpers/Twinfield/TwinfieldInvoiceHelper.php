@@ -138,11 +138,13 @@ class TwinfieldInvoiceHelper
                                 $invoicePayment = $invoicePaymentCheck->first();
                                 if($invoicePayment->amount <> $amount || $invoicePayment->date_paid <> $dateInput )
                                 {
+                                    $oldAmount = $invoicePayment->amount;
+                                    $oldDateInpunt = $invoicePayment->date_paid;
                                     $data = ['amount'=>$amount, 'date_paid'=>$dateInput];
                                     $invoicePayment->fill($data);
                                     $invoicePayment->save();
-                                    Log::info('Betaling van ' . $amount . ' aangepast via twinfield voor factuur ' . $invoiceToBeChecked->number);
-                                    array_push($messages, 'Betaling van €' . $amount . ' aangepast via Twinfield voor factuur ' . $invoiceToBeChecked->number . '.');
+                                    Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ') aangepast via twinfield voor factuur ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInpunt . ').' );
+                                    array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor factuur ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInpunt . ').');
                                 }
                             }
                         }

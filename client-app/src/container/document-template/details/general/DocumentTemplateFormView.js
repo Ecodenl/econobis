@@ -46,7 +46,7 @@ const DocumentTemplateFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewHtmlAsText label={'Tekst'} value={htmlBody} />
+                <ViewHtmlAsText label={'Tekst'} value={htmlBody} switchToEdit={props.switchToEdit} />
             </div>
 
             {documentTemplateType.id == 'general' && (

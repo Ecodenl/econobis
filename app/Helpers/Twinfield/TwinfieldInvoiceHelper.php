@@ -136,7 +136,7 @@ class TwinfieldInvoiceHelper
                             // anders bijwerken
                             }else{
                                 $invoicePayment = $invoicePaymentCheck->first();
-                                if($invoicePayment->amount <> $amount || $invoicePayment->date_paid <> $dateInput )
+                                if($invoicePayment->amount != $amount || $invoicePayment->date_paid != $dateInput )
                                 {
                                     $oldAmount = $invoicePayment->amount;
                                     $oldDateInpunt = $invoicePayment->date_paid;

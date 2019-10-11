@@ -138,7 +138,7 @@ class TwinfieldInvoiceHelper
                                 $invoicePayment = $invoicePaymentCheck->first();
                                 $oldAmount = floatval(number_format($invoicePayment->amount, 2, '.', ''));
                                 $oldDateInput = $invoicePayment->date_paid;
-                                if($invoicePayment->amount != $amount || $invoicePayment->date_paid != $dateInput )
+                                if($oldAmount != $amount || $oldDateInput != $dateInput )
                                 {
                                     $data = ['amount'=>$amount, 'date_paid'=>$dateInput];
                                     $invoicePayment->fill($data);

@@ -5,8 +5,8 @@ namespace App\Helpers\Excel;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class EnergySupplierExcelHelper
 {
@@ -160,6 +160,23 @@ class EnergySupplierExcelHelper
 
             ]);
 
+        // FIX EAN codes
+        // Kolommen metcellen die we expliciet instellen met "text" format.
+        $textColumns = [
+            'H'
+        ];
+        foreach ($textColumns as $textColumnLetter) {
+            foreach ($completeData as $key => $row) {
+                print_r($textColumnLetter . ($key + 1));
+                if ($key == 0) continue; // Header overslaan
+
+                $sheet->getStyle($textColumnLetter . ($key + 1))
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+            }
+        }
+        // EINDE FIX EAN codes
+
         return $spreadsheet;
     }
 
@@ -237,6 +254,23 @@ class EnergySupplierExcelHelper
 
             ]);
 
+        // FIX EAN codes
+        // Kolommen metcellen die we expliciet instellen met "text" format.
+        $textColumns = [
+            'E'
+        ];
+        foreach ($textColumns as $textColumnLetter) {
+            foreach ($completeData as $key => $row) {
+                print_r($textColumnLetter . ($key + 1));
+                if ($key == 0) continue; // Header overslaan
+
+                $sheet->getStyle($textColumnLetter . ($key + 1))
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+            }
+        }
+        // EINDE FIX EAN codes
+
         return $spreadsheet;
     }
 
@@ -308,6 +342,23 @@ class EnergySupplierExcelHelper
                 ],
 
             ]);
+
+        // FIX EAN codes
+        // Kolommen metcellen die we expliciet instellen met "text" format.
+        $textColumns = [
+            'H'
+        ];
+        foreach ($textColumns as $textColumnLetter) {
+            foreach ($completeData as $key => $row) {
+                print_r($textColumnLetter . ($key + 1));
+                if ($key == 0) continue; // Header overslaan
+
+                $sheet->getStyle($textColumnLetter . ($key + 1))
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+            }
+        }
+        // EINDE FIX EAN codes
 
         return $spreadsheet;
     }
@@ -398,6 +449,23 @@ class EnergySupplierExcelHelper
                 ],
 
             ]);
+
+        // FIX EAN codes
+        // Kolommen metcellen die we expliciet instellen met "text" format.
+        $textColumns = [
+            'L'
+        ];
+        foreach ($textColumns as $textColumnLetter) {
+            foreach ($completeData as $key => $row) {
+                print_r($textColumnLetter . ($key + 1));
+                if ($key == 0) continue; // Header overslaan
+
+                $sheet->getStyle($textColumnLetter . ($key + 1))
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+            }
+        }
+        // EINDE FIX EAN codes
 
         return $spreadsheet;
     }

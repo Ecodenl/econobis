@@ -8,6 +8,7 @@
 
 namespace App\Helpers\CSV;
 
+use League\Csv\Reader;
 use League\Csv\Writer;
 use SplTempFileObject;
 use Illuminate\Support\Arr;
@@ -40,6 +41,7 @@ class Export
     public function __construct(LeagueCsvWriter $writer = null)
     {
         $this->csv = $writer ?: Writer::createFromFileObject(new SplTempFileObject);
+        $this->csv->setOutputBOM(Reader::BOM_UTF8);
     }
 
     /**

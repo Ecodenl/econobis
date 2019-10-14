@@ -30,7 +30,14 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             .test('pcrPostalCode', 'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers', value =>
                 project.postalcodeLink.includes(value.substring(0, 4))
             ),
+        pcrNumberOfSolarPanels: Yup.number()
+            .typeError('Alleen nummers')
+            .positive('Getal moet groter zijn dan 0'),
     });
+
+    const pcrEstimatedGeneratedNumberOfKwh = 0;
+    const pcrInputGeneratedNumberOfKwh = 0;
+    const pcrAdviseMaxNumberOfParticipations = 0;
 
     return (
         <Formik
@@ -105,22 +112,41 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                     <Row>
                         <Col xs={12} md={10}>
                             <Field
-                                name="prcHasSolarPanels"
+                                name="pcrHasSolarPanels"
                                 render={({ field }) => (
                                     <label className="w-checkbox checkbox-fld">
                                         <input
                                             type="checkbox"
                                             {...field}
-                                            id="prc_has_solar_panels"
+                                            id="pcr_has_solar_panels"
                                             checked={field.value}
                                             className="w-checkbox-input checkbox"
                                         />
-                                        <span htmlFor="prc_has_solar_panels" className="checkbox-label w-form-label">
+                                        <span htmlFor="pcr_has_solar_panels" className="checkbox-label w-form-label">
                                             <strong>
                                                 Heb je al zonnepanelen op je eigen dak of doe je mee in een ander
                                                 project?
                                             </strong>
                                         </span>
+
+                                        {/*<Form.Check*/}
+                                            {/*type="radio"*/}
+                                            {/*checked={true}*/}
+                                            {/*{...field}*/}
+                                            {/*id="pcr_has_solar_panels_yes"*/}
+                                            {/*name="pcr_has_solar_panels_yes_no"*/}
+                                            {/*label={'Ja'}*/}
+                                            {/*className="w-radiobox-input radiobox"*/}
+                                        {/*/>*/}
+                                        {/*<Form.Check*/}
+                                            {/*type="radio"*/}
+                                            {/*checked={false}*/}
+                                            {/*{...field}*/}
+                                            {/*id="pcr_has_solar_panels_no"*/}
+                                            {/*name="pcr_has_solar_panels_yes_no"*/}
+                                            {/*label={'Nee'}*/}
+                                            {/*className="w-radiobox-input radiobox"*/}
+                                        {/*/>*/}
                                         {touched[field.name] && errors[field.name] ? (
                                             <div className={'error-message text-danger'}>{errors[field.name]}</div>
                                         ) : null}
@@ -128,33 +154,103 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                                 )}
                             />
                         </Col>
+                        <Col xs={12} md={6}>
+                            <Form>
+                                <Form.Label className={'field-label'}>
+                                    Hoeveel zonnepanelen wekken al stroom voor je op
+                                </Form.Label>
+                                <Field
+                                    name="pcrNumberOfSolarPanels"
+                                    render={({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="pcr_number_of_solar_panels"
+                                        />
+                                    )}
+                                />
+                            </Form>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <Form>
+                                <Form.Label className={'field-label'}>Wij schatten in dat je panelen jaarlijks opwekken</Form.Label>
+                                <TextBlock>{pcrEstimatedGeneratedNumberOfKwh}</TextBlock>
+                            </Form>
+                        </Col>
                     </Row>
 
                     <Row>
                         <Col xs={12} md={10}>
                             <Field
-                                name="prcEstimatedRevenueOk"
+                                name="pcrEstimatedRevenueOk"
                                 render={({ field }) => (
                                     <label className="w-checkbox checkbox-fld">
                                         <input
                                             type="checkbox"
                                             {...field}
-                                            id="prc_estimated_revenue_ok"
+                                            id="pcr_estimated_revenue_ok"
                                             checked={field.value}
                                             className="w-checkbox-input checkbox"
                                         />
                                         <span
-                                            htmlFor="prc_estimated_revenue_ok"
+                                            htmlFor="pcr_estimated_revenue_ok"
                                             className="checkbox-label w-form-label"
                                         >
                                             <strong>Klopt het geschatte opbrengst?</strong>
                                         </span>
+                                        {/*<Form.Check*/}
+                                        {/*type="radio"*/}
+                                        {/*checked={true}*/}
+                                        {/*{...field}*/}
+                                        {/*id="pcr_estimated_revenue_ok_yes"*/}
+                                        {/*name="pcr_estimated_revenue_ok_yes_no"*/}
+                                        {/*label={'Ja'}*/}
+                                        {/*className="w-radiobox-input radiobox"*/}
+                                        {/*/>*/}
+                                        {/*<Form.Check*/}
+                                        {/*type="radio"*/}
+                                        {/*checked={false}*/}
+                                        {/*{...field}*/}
+                                        {/*id="pcr_estimated_revenue_ok_no"*/}
+                                        {/*name="pcr_estimated_revenue_ok_yes_no"*/}
+                                        {/*label={'Nee'}*/}
+                                        {/*className="w-radiobox-input radiobox"*/}
+                                        {/*/>*/}
                                         {touched[field.name] && errors[field.name] ? (
                                             <div className={'error-message text-danger'}>{errors[field.name]}</div>
                                         ) : null}
                                     </label>
                                 )}
                             />
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <Form>
+                                <Form.Label className={'field-label'}>
+                                    Wat is de jaarlijkse opbrengst van jouw panelen
+                                </Form.Label>
+                                <Field
+                                    name="pcrInputGeneratedNumberOfKwh"
+                                    render={({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="pcr_input_generated_number_of_kwh"
+                                        />
+                                    )}
+                                />
+                            </Form>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <p>We adviseren tot 80% van je jaarlijks verbruik minus de jaarlijkse opbrengsten te dekken met participaties. In het veld hier direct onder is voor je uitgerekend hoeveel participaties dat zijn. Het is een advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je rendement.
+                            </p>
+                        </Col>
+                        <Col xs={12} md={6}>
+                            <Form>
+                                <Form.Label className={'field-label'}>Advies maximaal aantal participaties</Form.Label>
+                                <TextBlock>{pcrAdviseMaxNumberOfParticipations}</TextBlock>
+                            </Form>
                         </Col>
                     </Row>
 

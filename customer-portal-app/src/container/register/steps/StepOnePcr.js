@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -30,14 +30,9 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             .test('pcrPostalCode', 'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers', value =>
                 project.postalcodeLink.includes(value.substring(0, 4))
             ),
-        pcrNumberOfSolarPanels: Yup.number()
-            .typeError('Alleen nummers')
-            .positive('Getal moet groter zijn dan 0'),
+        pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
+        pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
     });
-
-    const pcrEstimatedGeneratedNumberOfKwh = 0;
-    const pcrInputGeneratedNumberOfKwh = 0;
-    const pcrAdviseMaxNumberOfParticipations = 0;
 
     return (
         <Formik
@@ -48,248 +43,302 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             }}
             initialValues={initialRegisterValues}
         >
-            {({ handleSubmit, values, touched, errors }) => (
-                <>
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Minimale aantal participaties</FormLabel>
-                            <TextBlock>{project.minParticipations}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Maximale aantal participaties</FormLabel>
-                            <TextBlock>{project.maxParticipations}</TextBlock>
-                        </Col>
+            {({ handleSubmit, values, touched, errors, setFieldValue }) => {
+                let pcrEstimatedGeneratedNumberOfKwh = values.pcrNumberOfSolarPanels
+                    ? values.pcrNumberOfSolarPanels * 250
+                    : 0;
 
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Nominale waarde per participatie</FormLabel>
-                            <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
-                        </Col>
-                    </Row>
+                let pcrPowerKwhConsumption80Procent = values.powerKwhConsumption ? values.powerKwhConsumption * 0.8 : 0;
 
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <Form>
-                                <Form.Label className={'field-label'}>Je postcode</Form.Label>
-                                <Field
-                                    name="pcrPostalCode"
-                                    render={({ field }) => (
-                                        <InputText
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="pcr_postal_code"
-                                        />
-                                    )}
-                                />
-                            </Form>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form>
-                                <Form.Label className={'field-label'}>Deelnemende postcodes</Form.Label>
-                                <TextBlock>{project.postalcodeLink}</TextBlock>
-                            </Form>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form>
+                let pcrGeneratedNumberOfKwh =
+                    values.pcrInputGeneratedNumberOfKwh && values.pcrInputGeneratedNumberOfKwh > 0
+                        ? values.pcrInputGeneratedNumberOfKwh
+                        : pcrEstimatedGeneratedNumberOfKwh
+                        ? pcrEstimatedGeneratedNumberOfKwh
+                        : 0;
+
+                let pcrAdviseMaxNumberOfParticipations =
+                    pcrPowerKwhConsumption80Procent - pcrGeneratedNumberOfKwh > 0
+                        ? Math.ceil((pcrPowerKwhConsumption80Procent - pcrGeneratedNumberOfKwh) / 250)
+                        : 0;
+
+                return (
+                    <>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Minimale aantal participaties</FormLabel>
+                                <TextBlock>{project.minParticipations}</TextBlock>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Maximale aantal participaties</FormLabel>
+                                <TextBlock>{project.maxParticipations}</TextBlock>
+                            </Col>
+
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Nominale waarde per participatie</FormLabel>
+                                <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form>
+                                    <Form.Label className={'field-label'}>Je postcode</Form.Label>
+                                    <Field
+                                        name="pcrPostalCode"
+                                        render={({ field }) => (
+                                            <InputText
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="pcr_postal_code"
+                                            />
+                                        )}
+                                    />
+                                </Form>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <Form>
+                                    <Form.Label className={'field-label'}>Deelnemende postcodes</Form.Label>
+                                    <TextBlock>{project.postalcodeLink}</TextBlock>
+                                </Form>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <Form>
+                                    <Form.Label className={'field-label'}>
+                                        Je (geschatte) jaarlijks verbruik (in kWh)
+                                    </Form.Label>
+                                    <Field
+                                        name="powerKwhConsumption"
+                                        render={({ field }) => (
+                                            <InputText
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="power_kwh_consumption"
+                                            />
+                                        )}
+                                    />
+                                </Form>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col xs={12} md={10}>
                                 <Form.Label className={'field-label'}>
-                                    Je (geschatte) jaarlijks verbruik (in kWh)
+                                    Heb je al zonnepanelen op je eigen dak of doe je mee in een ander project?
                                 </Form.Label>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col xs={12} md={10}>
                                 <Field
-                                    name="powerKwhConsumption"
+                                    name="pcrHasSolarPanels"
                                     render={({ field }) => (
-                                        <InputText
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="power_kwh_consumption"
-                                        />
+                                        <>
+                                            <div className="form-check form-check-inline">
+                                                <label className="radio-inline">
+                                                    <input
+                                                        type="radio"
+                                                        {...field}
+                                                        id="pcr_has_solar_panels_yes"
+                                                        checked={field.value === 'Y'}
+                                                        value={'Y'}
+                                                        onChange={() => setFieldValue('pcrHasSolarPanels', 'Y')}
+                                                    />
+                                                    &nbsp;Ja
+                                                </label>
+                                                &nbsp;&nbsp;
+                                                <label className="radio-inline">
+                                                    <input
+                                                        type="radio"
+                                                        {...field}
+                                                        id="pcr_has_solar_panels_no"
+                                                        checked={field.value === 'N'}
+                                                        value={'N'}
+                                                        onChange={() => {
+                                                            setFieldValue('pcrHasSolarPanels', 'N');
+                                                            setFieldValue('pcrNumberOfSolarPanels', 0);
+                                                        }}
+                                                    />
+                                                    &nbsp;Nee
+                                                </label>
+                                            </div>
+                                        </>
                                     )}
                                 />
-                            </Form>
-                        </Col>
-                    </Row>
+                            </Col>
+                        </Row>
 
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="pcrHasSolarPanels"
-                                render={({ field }) => (
-                                    <label className="w-checkbox checkbox-fld">
-                                        <input
-                                            type="checkbox"
-                                            {...field}
-                                            id="pcr_has_solar_panels"
-                                            checked={field.value}
-                                            className="w-checkbox-input checkbox"
+                        {values.pcrHasSolarPanels === 'Y' ? (
+                            <Row>
+                                <Col xs={12} md={6}>
+                                    <Form>
+                                        <Form.Label className={'field-label'}>
+                                            Hoeveel zonnepanelen wekken al stroom voor je op
+                                        </Form.Label>
+                                        <Field
+                                            name="pcrNumberOfSolarPanels"
+                                            render={({ field }) => (
+                                                <InputText
+                                                    field={field}
+                                                    errors={errors}
+                                                    touched={touched}
+                                                    id="pcr_number_of_solar_panels"
+                                                />
+                                            )}
                                         />
-                                        <span htmlFor="pcr_has_solar_panels" className="checkbox-label w-form-label">
-                                            <strong>
-                                                Heb je al zonnepanelen op je eigen dak of doe je mee in een ander
-                                                project?
-                                            </strong>
-                                        </span>
+                                    </Form>
+                                </Col>
+                            </Row>
+                        ) : (
+                            ''
+                        )}
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form>
+                                    <Form.Label className={'field-label'}>
+                                        Wij schatten in dat je panelen jaarlijks opwekken
+                                    </Form.Label>
+                                    <TextBlock id="pcr_input_estimated_generated_number_of_kwh">
+                                        {pcrEstimatedGeneratedNumberOfKwh} kWh
+                                    </TextBlock>
+                                </Form>
+                            </Col>
+                        </Row>
 
-                                        {/*<Form.Check*/}
-                                            {/*type="radio"*/}
-                                            {/*checked={true}*/}
-                                            {/*{...field}*/}
-                                            {/*id="pcr_has_solar_panels_yes"*/}
-                                            {/*name="pcr_has_solar_panels_yes_no"*/}
-                                            {/*label={'Ja'}*/}
-                                            {/*className="w-radiobox-input radiobox"*/}
-                                        {/*/>*/}
-                                        {/*<Form.Check*/}
-                                            {/*type="radio"*/}
-                                            {/*checked={false}*/}
-                                            {/*{...field}*/}
-                                            {/*id="pcr_has_solar_panels_no"*/}
-                                            {/*name="pcr_has_solar_panels_yes_no"*/}
-                                            {/*label={'Nee'}*/}
-                                            {/*className="w-radiobox-input radiobox"*/}
-                                        {/*/>*/}
-                                        {touched[field.name] && errors[field.name] ? (
-                                            <div className={'error-message text-danger'}>{errors[field.name]}</div>
-                                        ) : null}
-                                    </label>
-                                )}
-                            />
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form>
-                                <Form.Label className={'field-label'}>
-                                    Hoeveel zonnepanelen wekken al stroom voor je op
-                                </Form.Label>
+                        <Row>
+                            <Col xs={12} md={10}>
+                                <Form.Label className={'field-label'}>Klopt het geschatte opbrengst?</Form.Label>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col xs={12} md={10}>
                                 <Field
-                                    name="pcrNumberOfSolarPanels"
+                                    name="pcrEstimatedRevenueOk"
                                     render={({ field }) => (
-                                        <InputText
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="pcr_number_of_solar_panels"
-                                        />
+                                        <>
+                                            <div className="form-check form-check-inline">
+                                                <label className="radio-inline">
+                                                    <input
+                                                        type="radio"
+                                                        {...field}
+                                                        id="pcr_estimated_revenue_ok_yes"
+                                                        checked={field.value === 'Y'}
+                                                        value={'Y'}
+                                                        onChange={() => {
+                                                            setFieldValue('pcrEstimatedRevenueOk', 'Y');
+                                                            setFieldValue('pcrInputGeneratedNumberOfKwh', 0);
+                                                        }}
+                                                    />
+                                                    &nbsp;Ja
+                                                </label>
+                                                &nbsp;&nbsp;
+                                                <label className="radio-inline">
+                                                    <input
+                                                        type="radio"
+                                                        {...field}
+                                                        id="pcr_estimated_revenue_ok_no"
+                                                        checked={field.value === 'N'}
+                                                        value={'N'}
+                                                        onChange={() => setFieldValue('pcrEstimatedRevenueOk', 'N')}
+                                                    />
+                                                    &nbsp;Nee
+                                                </label>
+                                            </div>
+                                        </>
                                     )}
                                 />
-                            </Form>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form>
-                                <Form.Label className={'field-label'}>Wij schatten in dat je panelen jaarlijks opwekken</Form.Label>
-                                <TextBlock>{pcrEstimatedGeneratedNumberOfKwh}</TextBlock>
-                            </Form>
-                        </Col>
-                    </Row>
+                            </Col>
+                        </Row>
 
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="pcrEstimatedRevenueOk"
-                                render={({ field }) => (
-                                    <label className="w-checkbox checkbox-fld">
-                                        <input
-                                            type="checkbox"
-                                            {...field}
-                                            id="pcr_estimated_revenue_ok"
-                                            checked={field.value}
-                                            className="w-checkbox-input checkbox"
-                                        />
-                                        <span
-                                            htmlFor="pcr_estimated_revenue_ok"
-                                            className="checkbox-label w-form-label"
-                                        >
-                                            <strong>Klopt het geschatte opbrengst?</strong>
-                                        </span>
-                                        {/*<Form.Check*/}
-                                        {/*type="radio"*/}
-                                        {/*checked={true}*/}
-                                        {/*{...field}*/}
-                                        {/*id="pcr_estimated_revenue_ok_yes"*/}
-                                        {/*name="pcr_estimated_revenue_ok_yes_no"*/}
-                                        {/*label={'Ja'}*/}
-                                        {/*className="w-radiobox-input radiobox"*/}
-                                        {/*/>*/}
-                                        {/*<Form.Check*/}
-                                        {/*type="radio"*/}
-                                        {/*checked={false}*/}
-                                        {/*{...field}*/}
-                                        {/*id="pcr_estimated_revenue_ok_no"*/}
-                                        {/*name="pcr_estimated_revenue_ok_yes_no"*/}
-                                        {/*label={'Nee'}*/}
-                                        {/*className="w-radiobox-input radiobox"*/}
-                                        {/*/>*/}
-                                        {touched[field.name] && errors[field.name] ? (
-                                            <div className={'error-message text-danger'}>{errors[field.name]}</div>
-                                        ) : null}
-                                    </label>
-                                )}
-                            />
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form>
-                                <Form.Label className={'field-label'}>
-                                    Wat is de jaarlijkse opbrengst van jouw panelen
-                                </Form.Label>
-                                <Field
-                                    name="pcrInputGeneratedNumberOfKwh"
-                                    render={({ field }) => (
-                                        <InputText
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="pcr_input_generated_number_of_kwh"
-                                        />
-                                    )}
-                                />
-                            </Form>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <p>We adviseren tot 80% van je jaarlijks verbruik minus de jaarlijkse opbrengsten te dekken met participaties. In het veld hier direct onder is voor je uitgerekend hoeveel participaties dat zijn. Het is een advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je rendement.
-                            </p>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form>
-                                <Form.Label className={'field-label'}>Advies maximaal aantal participaties</Form.Label>
-                                <TextBlock>{pcrAdviseMaxNumberOfParticipations}</TextBlock>
-                            </Form>
-                        </Col>
-                    </Row>
+                        {values.pcrEstimatedRevenueOk === 'N' ? (
+                            <>
+                                <Row>
+                                    <Col xs={12} md={6}>
+                                        <Form>
+                                            <Form.Label className={'field-label'}>
+                                                Wat is de jaarlijkse opbrengst van jouw panelen (in kWh)
+                                            </Form.Label>
+                                            <Field
+                                                name="pcrInputGeneratedNumberOfKwh"
+                                                render={({ field }) => (
+                                                    <InputText
+                                                        field={field}
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        id="pcr_input_generated_number_of_kwh"
+                                                    />
+                                                )}
+                                            />
+                                        </Form>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={6}>
+                                        <p>
+                                            We adviseren tot 80% van je jaarlijks verbruik minus de jaarlijkse
+                                            opbrengsten te dekken met participaties. In het veld hier direct onder is
+                                            voor je uitgerekend hoeveel participaties dat zijn. Het is een advies, je
+                                            mag er ook meer kopen. Dit kan echter slecht zijn voor je rendement.
+                                        </p>
+                                    </Col>
+                                </Row>
+                            </>
+                        ) : (
+                            ''
+                        )}
 
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <Form>
-                                <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
-                                <Field
-                                    name="participationsOptioned"
-                                    render={({ field }) => (
-                                        <InputText
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="participations_optioned"
-                                        />
-                                    )}
-                                />
-                            </Form>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
-                            <TextBlock>
-                                {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
-                            </TextBlock>
-                        </Col>
-                    </Row>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form>
+                                    <Form.Label className={'field-label'}>
+                                        Advies maximaal aantal participaties
+                                    </Form.Label>
+                                    <TextBlock>{pcrAdviseMaxNumberOfParticipations}</TextBlock>
+                                </Form>
+                            </Col>
+                        </Row>
 
-                    <Row>
-                        <Col>
-                            <ButtonGroup aria-label="Steps" className="float-right">
-                                <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                    Ga naar gegevens
-                                </Button>
-                            </ButtonGroup>
-                        </Col>
-                    </Row>
-                </>
-            )}
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <Form>
+                                    <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
+                                    <Field
+                                        name="participationsOptioned"
+                                        render={({ field }) => (
+                                            <InputText
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="participations_optioned"
+                                            />
+                                        )}
+                                    />
+                                </Form>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
+                                <TextBlock>
+                                    {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
+                                </TextBlock>
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col>
+                                <ButtonGroup aria-label="Steps" className="float-right">
+                                    <Button className={'w-button'} size="sm" onClick={handleSubmit}>
+                                        Ga naar gegevens
+                                    </Button>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </>
+                );
+            }}
         </Formik>
     );
 }

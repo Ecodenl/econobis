@@ -21,6 +21,9 @@ function RegisterProject({ match, currentSelectedContact }) {
         amountOptioned: 0,
         didAgreeTerms: false,
         didUnderstandInfo: false,
+        pcrHasSolarPanels: 'N',
+        pcrInputGeneratedNumberOfKwh: 0,
+        pcrEstimatedRevenueOk: 'Y',
     });
     const [project, setProject] = useState({});
     const [contact, setContact] = useState({});

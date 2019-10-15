@@ -62,6 +62,12 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                         ? Math.ceil((pcrPowerKwhConsumption80Procent - pcrGeneratedNumberOfKwh) / 250)
                         : 0;
 
+                if (pcrAdviseMaxNumberOfParticipations < project.minParticipations) {
+                    pcrAdviseMaxNumberOfParticipations = project.minParticipations;
+                } else if (pcrAdviseMaxNumberOfParticipations > project.maxParticipations) {
+                    pcrAdviseMaxNumberOfParticipations = project.maxParticipations;
+                }
+
                 return (
                     <>
                         <Row>

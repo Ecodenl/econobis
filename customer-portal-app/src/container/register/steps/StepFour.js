@@ -14,7 +14,6 @@ import { ClipLoader } from 'react-spinners';
 function StepFour({ previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
-
     useEffect(() => {
         (function callFetchContact() {
             setLoading(true);
@@ -33,7 +32,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
     function handleSubmitRegisterValues(actions, next) {
         ParticipantProjectAPI.createParticipantProject(registerValues)
             .then(payload => {
-                console.log(payload);
+                // console.log(payload);
                 actions.setSubmitting(false);
                 setSucces(true);
                 next();

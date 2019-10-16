@@ -41,14 +41,22 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                 handleSubmitRegisterValues(values);
                 next();
             }}
-            initialValues={initialRegisterValues}
+            initialValues={{
+                ...initialRegisterValues,
+                pcrPostalCode: initialContact.primaryAddress ? initialContact.primaryAddress.postalCode : '',
+            }}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
+                const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
+                const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
+
                 let pcrEstimatedGeneratedNumberOfKwh = values.pcrNumberOfSolarPanels
-                    ? values.pcrNumberOfSolarPanels * 250
+                    ? values.pcrNumberOfSolarPanels * PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
                     : 0;
 
-                let pcrPowerKwhConsumption80Procent = values.powerKwhConsumption ? values.powerKwhConsumption * 0.8 : 0;
+                let pcrPowerKwhConsumptionCalculated = values.powerKwhConsumption
+                    ? values.powerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE
+                    : 0;
 
                 let pcrGeneratedNumberOfKwh =
                     values.pcrInputGeneratedNumberOfKwh && values.pcrInputGeneratedNumberOfKwh > 0
@@ -58,8 +66,11 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                         : 0;
 
                 let pcrAdviseMaxNumberOfParticipations =
-                    pcrPowerKwhConsumption80Procent - pcrGeneratedNumberOfKwh > 0
-                        ? Math.ceil((pcrPowerKwhConsumption80Procent - pcrGeneratedNumberOfKwh) / 250)
+                    pcrPowerKwhConsumptionCalculated - pcrGeneratedNumberOfKwh > 0
+                        ? Math.ceil(
+                              (pcrPowerKwhConsumptionCalculated - pcrGeneratedNumberOfKwh) /
+                                  PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
+                          )
                         : 0;
 
                 if (pcrAdviseMaxNumberOfParticipations < project.minParticipations) {

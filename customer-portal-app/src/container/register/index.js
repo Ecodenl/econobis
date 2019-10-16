@@ -59,10 +59,6 @@ function RegisterProject({ match, currentSelectedContact }) {
                     .then(payload => {
                         const contactData = rebaseContact(payload.data.data);
                         setContact(contactData);
-                        setRegisterValues({
-                            ...registerValues,
-                            pcrPostalCode: payload.data.data.primaryAddress.postalCode,
-                        });
                         callFetchContactProjects();
                         setLoading(false);
                     })
@@ -119,7 +115,6 @@ function RegisterProject({ match, currentSelectedContact }) {
                 alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
-
     return (
         <Container className={'content-section'}>
             {isLoading ? (

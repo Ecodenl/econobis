@@ -227,7 +227,7 @@ class ParticipationProjectController extends Controller
             'contact_id' => $contact->id,
             'project_id' => $project->id,
             'type_id' => $payoutTypeId,
-            'did_accept_agreement' => (bool)$request->didAgreeTerms,
+            'did_accept_agreement' => (bool)$request->didAcceptAgreement,
             'date_did_accept_agreement' => $today,
             'did_understand_info' => (bool)$request->didUnderstandInfo,
             'date_did_understand_info'  => $today,

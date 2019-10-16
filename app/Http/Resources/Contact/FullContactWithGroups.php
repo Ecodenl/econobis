@@ -44,6 +44,7 @@ class FullContactWithGroups extends Resource
             'memberUntil' => $this->member_until,
             'newsletter' => $this->newsletter,
             'didAgreeAvg' => $this->did_agree_avg,
+            'dateDidAgreeAvg' => $this->date_did_agree_avg,
             'addresses' => FullAddress::collection($this->whenLoaded('addresses')),
             'addressesNotSoftDeleted' => FullAddress::collection($this->whenLoaded('addressesNotSoftDeleted')),
             'primaryAddress' => FullAddress::make($this->whenLoaded('primaryAddress')),

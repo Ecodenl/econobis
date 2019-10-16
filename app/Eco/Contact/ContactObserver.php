@@ -52,6 +52,10 @@ class ContactObserver
     {
         $userId = Auth::id();
         $contact->updated_by_id = $userId;
+
+        if($contact->isDirty('did_agree_avg') && $contact->did_agree_avg ) {
+            $contact->date_did_agree_avg = Carbon::now();
+        }
     }
 
     public function saved(Contact $contact){

@@ -18,6 +18,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
         iban,
         ibanAttn,
         didAgreeAvg,
+        dateDidAgreeAvg,
         number,
         primaryContactEnergySupplier,
         primaryOccupations,
@@ -85,7 +86,12 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                             Ik ga akkoord met{' '}
                             <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
                                 privacy beleid
-                            </a>
+                            </a>{' '}
+                            {didAgreeAvg ? (
+                                <em>({dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('L') : ''})</em>
+                            ) : (
+                                ''
+                            )}
                         </span>
                     </TextBlock>
                 </Row>

@@ -13,6 +13,7 @@ const ContactDetailsFormOrganisationView = props => {
         createdAt,
         newsletter,
         didAgreeAvg,
+        dateDidAgreeAvg,
         isCollectMandate,
         collectMandateCode,
         collectMandateSignatureDate,
@@ -67,7 +68,19 @@ const ContactDetailsFormOrganisationView = props => {
             </div>
 
             <div className="row">
-                <ViewText className={'col-xs-12'} label="Akkoord privacybeleid" value={didAgreeAvg ? 'Ja' : 'Nee'} />
+                <ViewText
+                    label={'Akkoord privacybeleid'}
+                    className={'col-xs-12'}
+                    value={
+                        didAgreeAvg ? (
+                            <span>
+                                Ja <em>({dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('L') : ''})</em>
+                            </span>
+                        ) : (
+                            'Nee'
+                        )
+                    }
+                />
             </div>
 
             <div className="row">

@@ -41,6 +41,7 @@ class PersonController extends ApiController
                 'newsletter' => 'boolean',
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
+                'dateDidAgreeAvg' => 'date',
                 'initials' => '',
                 'firstName' => '',
                 'lastName' => '',
@@ -67,6 +68,8 @@ class PersonController extends ApiController
                 'newsletter' => $contactData['newsletter'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
+                'date_did_agree_avg' => $contactData['date_did_agree_avg'],
+
             ];
 
         $lnp = null;
@@ -219,6 +222,7 @@ class PersonController extends ApiController
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
             'didAgreeAvg' => 'boolean',
+            'dateDidAgreeAvg' => 'date',
             'isCollectMandate' => 'boolean',
             'collectMandateCode' => '',
             'collectMandateSignatureDate' => 'date',

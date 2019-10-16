@@ -56,6 +56,7 @@ class ContactController extends ApiController
                 'iban' => '',
                 'ibanAttn' => '',
                 'didAgreeAvg' => 'boolean',
+                'dateDidAgreeAvg' => 'date',
             ]);
 
             $contact->fill($this->arrayKeysToSnakeCase($contactData));

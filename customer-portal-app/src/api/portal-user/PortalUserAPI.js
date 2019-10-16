@@ -7,7 +7,16 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'number', 'fullName', 'iban', 'ibanAttn', 'didAgreeAvg', 'addressLines'],
+                    fld: [
+                        'id',
+                        'number',
+                        'fullName',
+                        'iban',
+                        'ibanAttn',
+                        'didAgreeAvg',
+                        'dateDidAgreeAvg',
+                        'addressLines',
+                    ],
                     rlt: {
                         primaryOccupations: {
                             fld: ['id', 'contactId'],

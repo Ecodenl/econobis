@@ -200,6 +200,7 @@ class ExternalWebformController extends Controller
                 'iban' => 'iban',
                 'iban_tnv' => 'iban_attn',
                 'akkoord_privacybeleid' => 'did_agree_avg',
+                'datum_akkoord_privacybeleid' => 'date_did_agree_avg',
                 'incasso_machtiging' => 'is_collect_mandate',
                 'incasso_machtigingskenmerk' => 'collect_mandate_code',
                 'incasso_ondertekening_datum' => 'collect_mandate_signature_date',
@@ -525,11 +526,12 @@ class ExternalWebformController extends Controller
                 'iban' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'did_agree_avg' => (bool)$data['did_agree_avg'],
+                'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
                 'is_collect_mandate' => (bool)$data['is_collect_mandate'],
-                'collect_mandate_code' => (bool)$data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
-                'collect_mandate_signature_date' => (bool)$data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
-                'collect_mandate_first_run_date' => (bool)$data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
-                'collect_mandate_collection_schema' => (bool)$data['is_collect_mandate'] ? 'core' : '',
+                'collect_mandate_code' => $data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
+                'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
+                'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
+                'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
             ]);
 
             $organisation = Organisation::create([
@@ -587,11 +589,12 @@ class ExternalWebformController extends Controller
             'iban' => $iban,
             'iban_attn' => $data['iban_attn'],
             'did_agree_avg' => (bool)$data['did_agree_avg'],
+            'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
             'is_collect_mandate' => (bool)$data['is_collect_mandate'],
-            'collect_mandate_code' => (bool)$data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
-            'collect_mandate_signature_date' => (bool)$data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
-            'collect_mandate_first_run_date' => (bool)$data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
-            'collect_mandate_collection_schema' => (bool)$data['is_collect_mandate'] ? 'core' : '',
+            'collect_mandate_code' => $data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
+            'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
+            'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
+            'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
         ]);
 
         $lastName = $data['last_name'];

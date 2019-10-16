@@ -21,7 +21,7 @@ function RegisterProject({ match, currentSelectedContact }) {
         participationsOptioned: 0,
         powerKwhConsumption: 0,
         amountOptioned: 0,
-        didAgreeTerms: false,
+        didAcceptAgreement: false,
         didUnderstandInfo: false,
         pcrHasSolarPanels: 'N',
         pcrInputGeneratedNumberOfKwh: 0,

@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 
 function StepThree({ portalSettings, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
-        didAgreeTerms: Yup.bool().test(
-            'didAgreeTerms',
+        didAcceptAgreement: Yup.bool().test(
+            'didAcceptAgreement',
             'Je dient akkoord te gaan met de voorwaarden!',
             value => value === true
         ),
@@ -43,17 +43,20 @@ function StepThree({ portalSettings, previous, next, initialRegisterValues, hand
                         <Row>
                             <Col xs={12} md={10}>
                                 <Field
-                                    name="didAgreeTerms"
+                                    name="didAcceptAgreement"
                                     render={({ field }) => (
                                         <label className="w-checkbox checkbox-fld">
                                             <input
                                                 type="checkbox"
                                                 {...field}
-                                                id="did_agree_terms"
+                                                id="did_accept_agreement"
                                                 checked={field.value}
                                                 className="w-checkbox-input checkbox"
                                             />
-                                            <span htmlFor="did_agree_terms" className="checkbox-label w-form-label">
+                                            <span
+                                                htmlFor="did_accept_agreement"
+                                                className="checkbox-label w-form-label"
+                                            >
                                                 Ik ga akkoord met de{' '}
                                                 <a href={portalSettings['linkAgreeTerms']} target="_blank">
                                                     voorwaarden

@@ -79,7 +79,10 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                                     checked={field.value}
                                                     className="w-checkbox-input checkbox"
                                                 />
-                                                <span htmlFor="did_agree_terms" className="checkbox-label w-form-label">
+                                                <span
+                                                    htmlFor="did_agree_registration"
+                                                    className="checkbox-label w-form-label"
+                                                >
                                                     Ik ben akkoord met het inschrijfformulier
                                                 </span>
                                                 {touched[field.name] && errors[field.name] ? (

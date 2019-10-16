@@ -217,6 +217,7 @@ class ContactCSVHelper
                 }
 
                 $contact->did_agree_avg = ($contact->did_agree_avg ? 'Ja' : 'Nee');
+                $contact->date_did_agree_avg = $this->formatDate($contact->date_did_agree_avg);
 
                 $contact->is_collect_mandate = ($contact->is_collect_mandate ? 'Ja' : 'Nee');
                 $contact->collect_mandate_code = $contact->collect_mandate_code;
@@ -243,6 +244,7 @@ class ContactCSVHelper
                 'iban' => 'IBAN',
                 'iban_attn' => 'IBAN tnv',
                 'did_agree_avg' => 'Akkoord privacybeleid',
+                'date_did_agree_avg' => 'Datum akkoord privacybeleid',
                 'is_collect_mandate' => 'Incasso',
                 'collect_mandate_code' => 'Machtingskenmerk',
                 'collect_mandate_signature_date' => 'Datum van ondertekening',

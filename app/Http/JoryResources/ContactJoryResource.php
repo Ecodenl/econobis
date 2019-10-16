@@ -24,6 +24,7 @@ class ContactJoryResource extends JoryResource
         $this->field('iban')->filterable()->sortable();
         $this->field('iban_attn')->filterable()->sortable();
         $this->field('did_agree_avg')->filterable()->sortable();
+        $this->field('date_did_agree_avg')->filterable()->sortable();
 
         // Custom attributes
         $this->field('address_lines')->hideByDefault();

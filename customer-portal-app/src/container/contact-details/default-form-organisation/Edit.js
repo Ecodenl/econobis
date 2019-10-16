@@ -148,7 +148,18 @@ const DefaultContactOrganisationEdit = function({ portalSettings, initialContact
                                         <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
                                             privacy beleid
                                         </a>
-                                    </span>
+                                    </span>{' '}
+                                    {values.didAgreeAvg ? (
+                                        <em>
+                                            (
+                                            {initialContact.dateDidAgreeAvg
+                                                ? moment(initialContact.dateDidAgreeAvg.date).format('L')
+                                                : moment().format('L')}
+                                            )
+                                        </em>
+                                    ) : (
+                                        ''
+                                    )}
                                 </label>
                             )}
                         />

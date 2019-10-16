@@ -362,7 +362,18 @@ const DefaultContactPersonalEdit = function({
                                         Ik ga akkoord met{' '}
                                         <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
                                             privacy beleid
-                                        </a>
+                                        </a>{' '}
+                                        {values.didAgreeAvg ? (
+                                            <em>
+                                                (
+                                                {initialContact.dateDidAgreeAvg
+                                                    ? moment(initialContact.dateDidAgreeAvg.date).format('L')
+                                                    : moment().format('L')}
+                                                )
+                                            </em>
+                                        ) : (
+                                            ''
+                                        )}
                                     </span>
                                 </label>
                             )}

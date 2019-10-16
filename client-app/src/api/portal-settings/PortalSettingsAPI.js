@@ -6,8 +6,7 @@ export default {
     fetchPortalSettings: keys => {
         const requestUrl = `${URL_PORTAL_SETTINGS}/multiple${keys}`;
 
-        return axiosInstance
-            .get(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 
     updatePortalSettings: portalSettings => {

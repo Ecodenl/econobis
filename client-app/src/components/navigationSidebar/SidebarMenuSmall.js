@@ -76,8 +76,6 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
                 <SvgIcon size={20} icon={road} />
             </div>
         )}
-
-
     </div>
 );
 

@@ -12,7 +12,14 @@ import TextBlock from '../../../components/general/TextBlock';
 import moment from 'moment';
 import InputDate from '../../../components/form/InputDate';
 
-const DefaultContactPersonalEdit = function({ handleeSubmit, initialContact, errors, touched, values, setFieldValue }) {
+const DefaultContactPersonalEdit = function({
+    portalSettings,
+    initialContact,
+    errors,
+    touched,
+    values,
+    setFieldValue,
+}) {
     return (
         <Row>
             <Col xs={12} md={6}>
@@ -352,7 +359,10 @@ const DefaultContactPersonalEdit = function({ handleeSubmit, initialContact, err
                                         disabled={initialContact.didAgreeAvg}
                                     />
                                     <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
-                                        Akkoord
+                                        Ik ga akkoord met{' '}
+                                        <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
+                                            privacy beleid
+                                        </a>
                                     </span>
                                 </label>
                             )}

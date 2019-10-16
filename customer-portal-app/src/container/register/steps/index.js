@@ -9,6 +9,7 @@ import StepFour from './StepFour';
 import StepFive from './StepFive';
 
 function Steps({
+    portalSettings,
     currentStep,
     previous,
     next,
@@ -66,6 +67,7 @@ function Steps({
         case 2:
             return (
                 <StepTwo
+                    portalSettings={portalSettings}
                     previous={previous}
                     next={next}
                     project={project}
@@ -76,6 +78,7 @@ function Steps({
         case 3:
             return (
                 <StepThree
+                    portalSettings={portalSettings}
                     previous={previous}
                     next={next}
                     initialRegisterValues={initialRegisterValues}

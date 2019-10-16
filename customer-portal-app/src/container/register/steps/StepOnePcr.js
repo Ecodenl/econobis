@@ -27,13 +27,21 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         pcrPostalCode: Yup.string()
             .min(4, 'Minimum van ${min} postcode cijfers nodig')
             .required('Verplicht')
-            .test('pcrPostalCode', 'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers', value =>
-                project.postalcodeLink.includes(value.substring(0, 4))
+            .test(
+                'pcrPostalCode',
+                'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
+                value => value && project.postalcodeLink.includes(value.substring(0, 4))
             ),
         pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
     });
 
+    let pcrPostalCode = '';
+    if (initialContact.typeId === 'organisation') {
+        pcrPostalCode = initialContact.visitAddress ? initialContact.visitAddress.postalCode : '';
+    } else {
+        pcrPostalCode = initialContact.primaryAddress ? initialContact.primaryAddress.postalCode : '';
+    }
     return (
         <Formik
             validationSchema={validationSchema}
@@ -43,7 +51,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             }}
             initialValues={{
                 ...initialRegisterValues,
-                pcrPostalCode: initialContact.primaryAddress ? initialContact.primaryAddress.postalCode : '',
+                pcrPostalCode,
             }}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {

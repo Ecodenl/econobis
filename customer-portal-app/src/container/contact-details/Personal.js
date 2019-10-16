@@ -9,7 +9,7 @@ import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaPersonal from './../../helpers/ValidationSchemaPersonal';
 
-function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
+function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitContactValues }) {
     const [editForm, setEditForm] = useState(false);
 
     const validationSchema = initialContact.isParticipant
@@ -32,6 +32,7 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit
+                                    portalSettings={portalSettings}
                                     initialContact={initialContact}
                                     touched={touched}
                                     errors={errors}
@@ -74,7 +75,7 @@ function ContactDetailsPersonal({ initialContact, handleSubmitContactValues }) {
                 />
             ) : (
                 <>
-                    <DefaultContactPersonalView initialContact={initialContact} />
+                    <DefaultContactPersonalView portalSettings={portalSettings} initialContact={initialContact} />
                     <Row>
                         <Col>
                             <ButtonGroup aria-label="Steps" className="float-right">

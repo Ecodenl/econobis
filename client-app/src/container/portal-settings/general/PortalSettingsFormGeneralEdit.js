@@ -31,6 +31,9 @@ class PortalSettingsFormGeneralEdit extends Component {
                 responsibleUserId: false,
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
+                linkPrivacyPolicy: false,
+                linkAgreeTerms: false,
+                linkUnderstandInfo: false,
             },
         };
 
@@ -83,6 +86,18 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.portalUrl = true;
             hasErrors = true;
         }
+        if (validator.isEmpty(portalSettings.linkPrivacyPolicy)) {
+            errors.linkPrivacyPolicy = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettings.linkAgreeTerms)) {
+            errors.linkAgreeTerms = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettings.linkUnderstandInfo)) {
+            errors.linkUnderstandInfo = true;
+            hasErrors = true;
+        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -106,6 +121,9 @@ class PortalSettingsFormGeneralEdit extends Component {
             responsibleUserId,
             documentTemplateAgreementId,
             emailTemplateAgreementId,
+            linkPrivacyPolicy,
+            linkAgreeTerms,
+            linkUnderstandInfo,
         } = this.state.portalSettings;
 
         return (
@@ -120,6 +138,36 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.portalUrl}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Privacy beleid link"
+                                name={'linkPrivacyPolicy'}
+                                value={linkPrivacyPolicy}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.linkPrivacyPolicy}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Voorwaarden link"
+                                name={'linkAgreeTerms'}
+                                value={linkAgreeTerms}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.linkAgreeTerms}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Projectinformatie link"
+                                name={'linkUnderstandInfo'}
+                                value={linkUnderstandInfo}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.linkUnderstandInfo}
                             />
                         </div>
 

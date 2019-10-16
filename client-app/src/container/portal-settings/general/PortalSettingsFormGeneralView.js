@@ -10,6 +10,9 @@ const PortalSettingsFormGeneralView = ({
     responsibleUserId,
     documentTemplateAgreementId,
     emailTemplateAgreementId,
+    linkPrivacyPolicy,
+    linkAgreeTerms,
+    linkUnderstandInfo,
     switchToEdit,
 }) => {
     return (
@@ -18,6 +21,15 @@ const PortalSettingsFormGeneralView = ({
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Portal Url'} value={portalUrl} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Privacy beleid link'} value={linkPrivacyPolicy} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Voorwaarden link'} value={linkAgreeTerms} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Projectinformatie link'} value={linkUnderstandInfo} />
                     </div>
                     <div className="row">
                         <ViewText label={'Achtergrondkleur'} value={backgroundColor} />

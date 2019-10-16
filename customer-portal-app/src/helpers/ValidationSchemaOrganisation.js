@@ -19,7 +19,7 @@ export default {
                 .trim()
                 .email('Ongeldig e-mail adres'),
         }),
-        visitAddress: Yup.object().shape({
+        postalAddress: Yup.object().shape({
             street: Yup.string()
                 .trim()
                 .required('Verplicht'),
@@ -34,7 +34,7 @@ export default {
                 .required('Verplicht'),
             countryId: Yup.string().required('Verplicht'),
         }),
-        postalAddress: Yup.object().shape({
+        visitAddress: Yup.object().shape({
             number: Yup.number().typeError('Alleen nummers'),
         }),
         invoiceAddress: Yup.object().shape({

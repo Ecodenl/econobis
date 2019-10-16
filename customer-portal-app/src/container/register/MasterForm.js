@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 function MasterForm({
+    portalSettings,
     project,
     initialRegisterValues,
     handleSubmitRegisterValues,
@@ -36,6 +37,7 @@ function MasterForm({
                 </Row>
             ) : null}
             <Steps
+                portalSettings={portalSettings}
                 currentStep={currentStep}
                 previous={previous}
                 next={next}

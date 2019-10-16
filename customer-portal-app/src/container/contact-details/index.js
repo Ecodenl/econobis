@@ -5,13 +5,25 @@ import rebaseContact from '../../helpers/RebaseContact';
 import LoadingView from '../../components/general/LoadingView';
 import ContactDetailsPersonal from './Personal';
 import ContactDetailsOrganisation from './Organisation';
+import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
+    const [portalSettings, setPortalSettings] = useState({});
     const [isLoading, setLoading] = useState(true);
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
 
     useEffect(() => {
+        const keys =
+            '?keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId&keys[]=linkPrivacyPolicy&keys[]=linkAgreeTerms&keys[]=linkUnderstandInfo';
+        PortalSettingsAPI.fetchPortalSettings(keys)
+            .then(payload => {
+                setPortalSettings({ ...payload.data });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false, hasError: true });
+            });
+
         // Call Api if current selected contact id is filled
         if (props.currentSelectedContact.id) {
             // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
@@ -69,6 +81,7 @@ const ContactDetails = function(props) {
                     {/* If contact is person */}
                     {contact.typeId === 'person' ? (
                         <ContactDetailsPersonal
+                            portalSettings={portalSettings}
                             initialContact={contact}
                             handleSubmitContactValues={handleSubmitContactValues}
                         />
@@ -76,6 +89,7 @@ const ContactDetails = function(props) {
                     {/* If contact is organisation */}
                     {contact.typeId === 'organisation' ? (
                         <ContactDetailsOrganisation
+                            portalSettings={portalSettings}
                             initialContact={contact}
                             handleSubmitContactValues={handleSubmitContactValues}
                         />

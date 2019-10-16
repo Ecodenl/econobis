@@ -11,12 +11,24 @@ import LoanDetails from './LoanDetails';
 import ObligationDetails from './ObligationDetails';
 import CapitalDetails from './CapitalDetails';
 import PcrDetails from './PcrDetails';
+import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 
 function ProjectDetails({ match }) {
+    const [portalSettings, setPortalSettings] = useState({});
     const [project, setProject] = useState({});
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
+        const keys =
+            '?keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId&keys[]=linkPrivacyPolicy&keys[]=linkAgreeTerms&keys[]=linkUnderstandInfo';
+        PortalSettingsAPI.fetchPortalSettings(keys)
+            .then(payload => {
+                setPortalSettings({ ...payload.data });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false, hasError: true });
+            });
+
         (function callFetchProject() {
             setLoading(true);
             ProjectAPI.fetchProject(match.params.id)
@@ -64,7 +76,7 @@ function ProjectDetails({ match }) {
                         <Col>
                             <p>
                                 Meer informatie over dit project vind je{' '}
-                                <a href={'#'} target={'blank'}>
+                                <a href={portalSettings['linkUnderstandInfo']} target="_blank">
                                     hier
                                 </a>
                             </p>

@@ -78,7 +78,9 @@ class SettingController
             'responsibleUserId',
             'documentTemplateAgreementId',
             'emailTemplateAgreementId',
-            'generatingCapacity1SolarPanel',
+            'linkPrivacyPolicy',
+            'linkAgreeTerms',
+            'linkUnderstandInfo',
         ]);
     }
 

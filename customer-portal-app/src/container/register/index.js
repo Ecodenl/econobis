@@ -11,11 +11,13 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import MasterForm from './MasterForm';
+import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const [registerValues, setRegisterValues] = useState({
         contactId: null,
         projectId: null,
+        // portalSettings: [],
         participationsOptioned: 0,
         powerKwhConsumption: 0,
         amountOptioned: 0,
@@ -27,6 +29,7 @@ function RegisterProject({ match, currentSelectedContact }) {
     });
     const [project, setProject] = useState({});
     const [contact, setContact] = useState({});
+    const [portalSettings, setPortalSettings] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isSucces, setSucces] = useState(false);
     const [isRegistered, setRegistered] = useState(false);
@@ -34,6 +37,17 @@ function RegisterProject({ match, currentSelectedContact }) {
     useEffect(() => {
         (function callFetchProject() {
             setLoading(true);
+
+            const keys =
+                '?keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId&keys[]=linkPrivacyPolicy&keys[]=linkAgreeTerms&keys[]=linkUnderstandInfo';
+            PortalSettingsAPI.fetchPortalSettings(keys)
+                .then(payload => {
+                    setPortalSettings({ ...payload.data });
+                })
+                .catch(error => {
+                    this.setState({ isLoading: false, hasError: true });
+                });
+
             ProjectAPI.fetchProject(match.params.id)
                 .then(payload => {
                     setProject(payload.data.data);
@@ -153,6 +167,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                             </h1>
                         )}
                         <MasterForm
+                            portalSettings={portalSettings}
                             project={project}
                             initialRegisterValues={registerValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}

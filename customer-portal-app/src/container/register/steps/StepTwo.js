@@ -9,8 +9,9 @@ import { ClipLoader } from 'react-spinners';
 import ValidationSchemaPersonal from '../../../helpers/ValidationSchemaPersonal';
 import ValidationSchemaOrganisation from '../../../helpers/ValidationSchemaOrganisation';
 import * as Yup from 'yup';
+import DefaultContactOrganisationEdit from '../../contact-details/default-form-organisation/Edit';
 
-function StepTwo({ previous, next, project, initialContact, handleSubmitContactValues }) {
+function StepTwo({ portalSettings, previous, next, project, initialContact, handleSubmitContactValues }) {
     const typeContact = initialContact.typeId ? initialContact.typeId : null;
     const validationSchemaPcrPersonal = Yup.object().shape({
         primaryAddress: Yup.object().shape({
@@ -70,13 +71,30 @@ function StepTwo({ previous, next, project, initialContact, handleSubmitContactV
                 render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
                     return (
                         <Form>
-                            <DefaultContactPersonalEdit
-                                initialContact={initialContact}
-                                setFieldValue={setFieldValue}
-                                values={values}
-                                touched={touched}
-                                errors={errors}
-                            />
+                            {/* If contact is person */}
+                            {initialContact.typeId === 'person' ? (
+                                <DefaultContactPersonalEdit
+                                    portalSettings={portalSettings}
+                                    initialContact={initialContact}
+                                    setFieldValue={setFieldValue}
+                                    values={values}
+                                    touched={touched}
+                                    errors={errors}
+                                />
+                            ) : null}
+
+                            {/* If contact is organisation */}
+                            {initialContact.typeId === 'organisation' ? (
+                                <DefaultContactOrganisationEdit
+                                    portalSettings={portalSettings}
+                                    initialContact={initialContact}
+                                    setFieldValue={setFieldValue}
+                                    values={values}
+                                    touched={touched}
+                                    errors={errors}
+                                />
+                            ) : null}
+
                             <Row>
                                 <Col>
                                     <ButtonGroup aria-label="Steps" className="float-right">

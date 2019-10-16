@@ -9,7 +9,7 @@ import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaOrganisation from './../../helpers/ValidationSchemaOrganisation';
 
-function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues }) {
+function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubmitContactValues }) {
     const [editForm, setEditForm] = useState(false);
 
     const validationSchema = initialContact.isParticipant
@@ -34,6 +34,7 @@ function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues 
                         return (
                             <Form>
                                 <DefaultContactOrganisationEdit
+                                    portalSettings={portalSettings}
                                     initialContact={initialContact}
                                     touched={touched}
                                     errors={errors}
@@ -76,7 +77,7 @@ function ContactDetailsOrganisation({ initialContact, handleSubmitContactValues 
                 />
             ) : (
                 <>
-                    <DefaultContactOrganisationView initialContact={initialContact} />
+                    <DefaultContactOrganisationView portalSettings={portalSettings} initialContact={initialContact} />
                     <Row>
                         <Col>
                             <ButtonGroup aria-label="Steps" className="float-right">

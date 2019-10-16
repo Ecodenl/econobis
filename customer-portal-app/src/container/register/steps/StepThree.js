@@ -6,7 +6,7 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import Col from 'react-bootstrap/Col';
 
-function StepThree({ previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepThree({ portalSettings, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         didAgreeTerms: Yup.bool().test(
             'didAgreeTerms',
@@ -54,7 +54,10 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                                                 className="w-checkbox-input checkbox"
                                             />
                                             <span htmlFor="did_agree_terms" className="checkbox-label w-form-label">
-                                                Ik ga akkoord met de <a href="#">voorwaarden</a>
+                                                Ik ga akkoord met de{' '}
+                                                <a href={portalSettings['linkAgreeTerms']} target="_blank">
+                                                    voorwaarden
+                                                </a>
                                             </span>
                                             {touched[field.name] && errors[field.name] ? (
                                                 <div className={'error-message text-danger'}>{errors[field.name]}</div>
@@ -78,8 +81,12 @@ function StepThree({ previous, next, initialRegisterValues, handleSubmitRegister
                                                 className="w-checkbox-input checkbox"
                                             />
                                             <span htmlFor="did_understand_info" className="checkbox-label w-form-label">
-                                                Ik heb de <a href="#">projectinformatie</a> (inclusief de daarin
-                                                beschreven risico’s) behorende bij het project gelezen en begrepen
+                                                Ik heb de{' '}
+                                                <a href={portalSettings['linkUnderstandInfo']} target="_blank">
+                                                    projectinformatie
+                                                </a>{' '}
+                                                (inclusief de daarin beschreven risico’s) behorende bij het project
+                                                gelezen en begrepen
                                             </span>
                                             {touched[field.name] && errors[field.name] ? (
                                                 <div className={'error-message text-danger'}>{errors[field.name]}</div>

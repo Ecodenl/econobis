@@ -5,6 +5,8 @@ import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
 const ProjectFormEditLoan = ({
     amountOfLoanNeeded,
+    minAmountLoan,
+    maxAmountLoan,
     amountDefinitive,
     amountGranted,
     amountOptioned,
@@ -32,7 +34,12 @@ const ProjectFormEditLoan = ({
             </div>
 
             <div className="row">
-                <div className={'form-group col-md-6'} />
+                <InputText
+                    label={'Min. bedrag lening'}
+                    name={'minAmountLoan'}
+                    value={minAmountLoan}
+                    onChangeAction={handleInputChange}
+                />
                 <ViewText
                     label={'Lening ingeschreven'}
                     value={MoneyPresenter(amountOptioned)}
@@ -41,7 +48,12 @@ const ProjectFormEditLoan = ({
             </div>
 
             <div className="row">
-                <div className={'form-group col-md-6'} />
+                <InputText
+                    label={'Max. bedrag lening'}
+                    name={'maxAmountLoan'}
+                    value={maxAmountLoan}
+                    onChangeAction={handleInputChange}
+                />
                 <ViewText
                     label={'Lening toegekend'}
                     value={MoneyPresenter(amountGranted)}

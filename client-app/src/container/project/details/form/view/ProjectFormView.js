@@ -43,6 +43,8 @@ const ProjectFormView = props => {
         postalcodeLink,
         requiresContactGroups,
         amountOfLoanNeeded,
+        minAmountLoan,
+        maxAmountLoan,
         valueCourses,
         participationsDefinitive,
         participationsGranted,
@@ -84,6 +86,8 @@ const ProjectFormView = props => {
             {projectType && projectType.codeRef === 'loan' ? (
                 <ProjectFormViewLoan
                     amountOfLoanNeeded={amountOfLoanNeeded}
+                    minAmountLoan={minAmountLoan}
+                    maxAmountLoan={maxAmountLoan}
                     amountDefinitive={amountDefinitive}
                     amountGranted={amountGranted}
                     amountOptioned={amountOptioned}

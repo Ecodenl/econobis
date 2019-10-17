@@ -131,7 +131,14 @@ class ParticipantFormEdit extends Component {
     };
 
     render() {
-        const { didAcceptAgreement, giftedByContactId, ibanPayout, ibanPayoutAttn, typeId } = this.state.participation;
+        const {
+            didAcceptAgreement,
+            giftedByContactId,
+            ibanPayout,
+            ibanPayoutAttn,
+            typeId,
+            powerKwhConsumption,
+        } = this.state.participation;
 
         const {
             contact,
@@ -141,7 +148,6 @@ class ParticipantFormEdit extends Component {
             participationsDefinitiveWorth,
             participationsCapitalWorth,
             amountDefinitive,
-            powerKwhConsumption,
             participationsReturnsTotal,
             participationsReturnsKwhTotal,
             participationsIndicationOfRestitutionEnergyTaxTotal,

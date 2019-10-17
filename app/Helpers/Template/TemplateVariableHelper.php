@@ -417,7 +417,14 @@ class TemplateVariableHelper
                 return $model->max_participations_youth;
                 break;
             case 'amount_of_loan_needed':
+            case 'bedrag_lening_nodig':
                 return $model->amount_of_loan_needed;
+                break;
+            case 'min_bedrag_lening':
+                return $model->min_amount_loan;
+                break;
+            case 'max_bedrag_lening':
+                return $model->max_amount_loan;
                 break;
             case 'aanwijzing_belastingdienst':
                 return $model->tax_referral;
@@ -909,8 +916,8 @@ class TemplateVariableHelper
             case 'teruggave':
                 $start = $model->kwh_start ? $model->kwh_start : 0;
                 $end = $model->kwh_end ? $model->kwh_end : 0;
-                $payoutKwh = $model->payout_kwh ? $model->revenue : 0;
-                return ($end - $start) * $payoutKwh;
+                $payoutKwh = $model->payout_kwh ? $model->payout_kwh : 0;
+                return number_format(($end - $start) * $payoutKwh, 2, ',', '');
                 break;
             case 'resultaat':
                 return $model->revenue;
@@ -977,7 +984,7 @@ class TemplateVariableHelper
                 return $model->delivered_total;
                 break;
             case 'teruggave_energiebelasting':
-                return $model->kwh_return;
+                return number_format($model->kwh_return, 2, ',', '');
                 break;
             case 'energieleverancier_ean_elektra':
                 return $model->energy_supplier_ean_electricity;

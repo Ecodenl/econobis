@@ -37,7 +37,7 @@ const EmailTemplateFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewHtmlAsText label={'Tekst'} value={htmlBody} />
+                <ViewHtmlAsText label={'Tekst'} value={htmlBody} switchToEdit={props.switchToEdit} />
             </div>
 
             <div className="row margin-10-top" onClick={props.switchToEdit}>

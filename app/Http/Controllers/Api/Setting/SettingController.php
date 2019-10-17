@@ -86,6 +86,7 @@ class SettingController
 
     protected function getStore(): Valuestore
     {
-        return Valuestore::make(database_path('settings.json'));
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
+        return Valuestore::make($filePath);
     }
 }

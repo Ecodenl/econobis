@@ -15,11 +15,18 @@ class PortalSettings
 {
     public static function make()
     {
-        return Valuestore::make(database_path('settings.json'));
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
+        return Valuestore::make($filePath);
     }
 
     public static function get(string $name)
     {
         return static::make()->get($name);
     }
+
+    public function multiple(Request $request)
+    {
+        return static::make()->multiple($request);
+    }
+
 }

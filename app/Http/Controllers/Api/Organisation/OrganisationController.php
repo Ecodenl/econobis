@@ -29,7 +29,6 @@ class OrganisationController extends ApiController
             'liabilityAmount' => 'numeric',
             'ownerId' => 'exists:users,id',
             'didAgreeAvg' => 'boolean',
-            'dateDidAgreeAvg' => 'date',
         ]);
 
         $organisationData = $request->validate([
@@ -78,7 +77,6 @@ class OrganisationController extends ApiController
             'liable' => 'boolean',
             'liabilityAmount' => 'numeric',
             'didAgreeAvg' => 'boolean',
-            'dateDidAgreeAvg' => 'date',
             'isCollectMandate' => 'boolean',
             'collectMandateCode' => '',
             'collectMandateSignatureDate' => 'date',

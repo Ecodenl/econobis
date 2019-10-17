@@ -629,7 +629,7 @@ class TemplateVariableHelper
                 $end = $model->kwh_end ? $model->kwh_end : 0;
                 $revenue = $model->revenue ? $model->revenue : 0;
 
-                return ($end - $start) * $revenue;
+                return number_format(($end - $start) * $revenue, 2, ',', '');
                 break;
             default:
                 return '';
@@ -661,7 +661,7 @@ class TemplateVariableHelper
                 return $model->delivered_total;
                 break;
             case 'teruggave_energiebelasting':
-                return $model->kwh_return;
+                return number_format($model->kwh_return, 2, ',', '');
                 break;
             case 'uitkeren_op':
                 return $model->payout_type;

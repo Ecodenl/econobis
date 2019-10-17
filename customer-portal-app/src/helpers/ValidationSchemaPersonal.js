@@ -48,7 +48,9 @@ export default {
             firstName: Yup.string()
                 .trim()
                 .required('Verplicht'),
-            dateOfBirth: Yup.date('Ongeldige datum').required('Verplicht'),
+            dateOfBirth: Yup.date()
+                .typeError('Verplicht of ongeldige datum')
+                .required('Verplicht'),
         }),
         phoneNumberPrimary: Yup.object().shape({
             number: Yup.string()

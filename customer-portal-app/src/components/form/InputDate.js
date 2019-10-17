@@ -19,19 +19,6 @@ const InputDate = ({
     touched,
     classNameErrorMessage,
 }) => {
-    const [error, setError] = useState(false);
-
-    const validateDate = event => {
-        const date = moment(event.target.value, 'DD-MM-YYYY', true);
-
-        if (date.isValid() && event.target.value !== '') {
-            setError(false);
-            onChangeAction(name, moment(date).format('Y-MM-DD'));
-        } else {
-            setError(true);
-        }
-    };
-
     const handleDayChange = date => {
         // Convert date in correct value for database
         const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
@@ -58,7 +45,6 @@ const InputDate = ({
                 inputProps={{
                     className: `text-input content w-input ${className}`,
                     name: name,
-                    onBlur: validateDate,
                     autoComplete: 'off',
                     readOnly: readOnly,
                     disabled: readOnly,
@@ -68,10 +54,9 @@ const InputDate = ({
                 readOnly={readOnly}
                 placeholder={''}
             />
-            {/*{get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (*/}
-            {/*<small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>*/}
-            {/*) : null}*/}
-            {error ? <small className={`${classNameErrorMessage}`}>Verplicht of ongeldige datum</small> : null}
+            {get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (
+                <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
+            ) : null}
         </>
     );
 };
@@ -81,7 +66,6 @@ InputDate.defaultProps = {
     required: '',
     readOnly: false,
     value: null,
-    error: false,
     placeholder: '',
     showErrorMessage: true,
     classNameErrorMessage: 'text-danger',
@@ -98,7 +82,6 @@ InputDate.propTypes = {
     onChangeAction: PropTypes.func,
     required: PropTypes.string,
     readOnly: PropTypes.bool,
-    error: PropTypes.bool,
     placeholder: PropTypes.string,
     showErrorMessage: PropTypes.bool,
     classNameErrorMessage: PropTypes.string,

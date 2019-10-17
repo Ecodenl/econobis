@@ -15,7 +15,11 @@ function StepOneObligation({ next, project, initialRegisterValues, handleSubmitR
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .typeError('Alleen nummers')
-            .min(1, 'Minimum van ${min} nodig')
+            .test(
+                'participationsOptioned',
+                'Minimum van ' + project.minParticipations + ' nodig',
+                value => value >= project.minParticipations
+            )
             .max(project.maxParticipations, 'Maximum van ${max} bereikt')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),
@@ -32,22 +36,22 @@ function StepOneObligation({ next, project, initialRegisterValues, handleSubmitR
         >
             {({ handleSubmit, values, touched, errors }) => (
                 <>
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Minimale aantal obligaties</FormLabel>
-                            <TextBlock>{project.minParticipations}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Maximale aantal obligaties</FormLabel>
-                            <TextBlock>{project.maxParticipations}</TextBlock>
-                        </Col>
+                    <Form>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Minimale aantal obligaties</FormLabel>
+                                <TextBlock>{project.minParticipations}</TextBlock>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Maximale aantal obligaties</FormLabel>
+                                <TextBlock>{project.maxParticipations}</TextBlock>
+                            </Col>
 
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Nominale waarde per obligatie</FormLabel>
-                            <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <Form>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Nominale waarde per obligatie</FormLabel>
+                                <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                            </Col>
+                            <Col xs={12} md={6}>
                                 <Form.Label className={'field-label'}>Gewenst aantal obligaties</Form.Label>
                                 <Field
                                     name="participationsOptioned"
@@ -60,25 +64,25 @@ function StepOneObligation({ next, project, initialRegisterValues, handleSubmitR
                                         />
                                     )}
                                 />
-                            </Form>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
-                            <TextBlock>
-                                {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
-                            </TextBlock>
-                        </Col>
-                    </Row>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
+                                <TextBlock>
+                                    {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
+                                </TextBlock>
+                            </Col>
+                        </Row>
 
-                    <Row>
-                        <Col>
-                            <ButtonGroup aria-label="Steps" className="float-right">
-                                <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                    Ga naar gegevens
-                                </Button>
-                            </ButtonGroup>
-                        </Col>
-                    </Row>
+                        <Row>
+                            <Col>
+                                <ButtonGroup aria-label="Steps" className="float-right">
+                                    <Button className={'w-button'} size="sm" onClick={handleSubmit}>
+                                        Ga naar gegevens
+                                    </Button>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </Form>
                 </>
             )}
         </Formik>

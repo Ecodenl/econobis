@@ -221,8 +221,7 @@ class ParticipationProjectController extends Controller
                 $payoutTypeId = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
                 break;
         }
-        $powerKwhConsumption = ($request->powerKwhConsumption && $request->powerKwhConsumption!= '') ?: 0;
-
+        $powerKwhConsumption = ($request->powerKwhConsumption && $request->powerKwhConsumption!= '') ? $request->powerKwhConsumption : 0;
         $participation = ParticipantProject::create([
             'contact_id' => $contact->id,
             'project_id' => $project->id,
@@ -238,17 +237,17 @@ class ParticipationProjectController extends Controller
         $status = ParticipantMutationStatus::where('code_ref', 'option')->first();
 
         $dateInterest = null;
-        $amountInterest = 0;
-        $quantityInterest = 0;
+        $amountInterest = null;
+        $quantityInterest = null;
         $dateOption = null;
-        $amountOption = 0;
-        $quantityOption = 0;
+        $amountOption = null;
+        $quantityOption = null;
         $dateGranted = null;
-        $amountGranted = 0;
-        $quantityGranted = 0;
+        $amountGranted = null;
+        $quantityGranted = null;
         $dateFinal = null;
-        $amountFinal = 0;
-        $quantityFinal = 0;
+        $amountFinal = null;
+        $quantityFinal = null;
         $participationMutationDate = null;
         $participationMutationAmount = null;
         $participationMutationQuantity = null;

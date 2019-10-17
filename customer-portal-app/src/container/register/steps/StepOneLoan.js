@@ -18,7 +18,7 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
             .test(
                 'amountOptioned',
                 'Minimum van ' + project.minAmountLoan + ' nodig',
-                value => value.replace(',', '.') > project.minAmountLoan
+                value => value.replace(',', '.') >= project.minAmountLoan
             )
             .test(
                 'amountOptioned',
@@ -39,18 +39,18 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
         >
             {({ handleSubmit, values, touched, errors }) => (
                 <>
-                    <Row>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Minimaal bedrag</FormLabel>
-                            <TextBlock>{project.minAmountLoan}</TextBlock>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Maximaal bedrag</FormLabel>
-                            <TextBlock>{project.maxAmountLoan}</TextBlock>
-                        </Col>
+                    <Form>
+                        <Row>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Minimaal bedrag</FormLabel>
+                                <TextBlock>{project.minAmountLoan}</TextBlock>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Maximaal bedrag</FormLabel>
+                                <TextBlock>{project.maxAmountLoan}</TextBlock>
+                            </Col>
 
-                        <Col xs={12} md={6}>
-                            <Form>
+                            <Col xs={12} md={6}>
                                 <Form.Label className={'field-label'}>In te leggen bedrag</Form.Label>
                                 <Field
                                     name="amountOptioned"
@@ -63,23 +63,23 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
                                         />
                                     )}
                                 />
-                            </Form>
-                        </Col>
-                        <Col xs={12} md={6}>
-                            <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
-                            <TextBlock>{MoneyPresenter(values.amountOptioned)}</TextBlock>
-                        </Col>
-                    </Row>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
+                                <TextBlock>{MoneyPresenter(values.amountOptioned)}</TextBlock>
+                            </Col>
+                        </Row>
 
-                    <Row>
-                        <Col>
-                            <ButtonGroup aria-label="Steps" className="float-right">
-                                <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                    Ga naar gegevens
-                                </Button>
-                            </ButtonGroup>
-                        </Col>
-                    </Row>
+                        <Row>
+                            <Col>
+                                <ButtonGroup aria-label="Steps" className="float-right">
+                                    <Button className={'w-button'} size="sm" onClick={handleSubmit}>
+                                        Ga naar gegevens
+                                    </Button>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </Form>
                 </>
             )}
         </Formik>

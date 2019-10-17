@@ -37,7 +37,7 @@ class ParticipantProjectCalculator
     }
     public function participationsOptioned()
     {
-        return $this->participantProject->mutations()->where('status_id', 3)->sum('quantity');
+        return $this->participantProject->mutations()->where('status_id', 2)->sum('quantity');
     }
     public function participationsInteressed()
     {

@@ -126,10 +126,10 @@ class MailFetcher
     {
         $emailData = $this->imap->getMail($mailId);
 
-        $textHtml = $emailData->textHtml;
-
-        if($textHtml === null){
-            $textHtml = $emailData->textPlain;
+        if ($emailData->textHtml) {
+            $textHtml = $emailData->textHtml;
+        } else {
+            $textHtml = nl2br($emailData->textPlain);
         }
 
         $textHtml = $textHtml?: '';

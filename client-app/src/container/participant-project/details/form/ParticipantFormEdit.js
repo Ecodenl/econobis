@@ -146,6 +146,7 @@ class ParticipantFormEdit extends Component {
             ibanPayout,
             ibanPayoutAttn,
             typeId,
+            powerKwhConsumption,
         } = this.state.participation;
 
         const {
@@ -156,7 +157,6 @@ class ParticipantFormEdit extends Component {
             participationsDefinitiveWorth,
             participationsCapitalWorth,
             amountDefinitive,
-            powerKwhConsumption,
             participationsReturnsTotal,
             participationsReturnsKwhTotal,
             participationsIndicationOfRestitutionEnergyTaxTotal,

@@ -118,7 +118,7 @@ class TwinfieldInvoiceHelper
                         if($dagBoek !== 'VRK')
                         {
                             //-100 op debiteur is dus 100 betaald
-                            $amount = ($amountInvoice-$amountOpen) * -1;
+                            $amount = floatval(number_format(($amountInvoice-$amountOpen) * -1, 2, '.', ''));
                             $invoicePaymentCheck = InvoicePayment::where('invoice_id', $invoiceToBeChecked->id)->where('twinfield_number', $twinfieldNumber)->where('twinfield_match_number', $twinfieldMatchNumber);
                             // InvoicePayment bestaat nog niet, dan nieuw aanmaken
                             if(!$invoicePaymentCheck->exists())
@@ -136,13 +136,15 @@ class TwinfieldInvoiceHelper
                             // anders bijwerken
                             }else{
                                 $invoicePayment = $invoicePaymentCheck->first();
-                                if($invoicePayment->amount <> $amount || $invoicePayment->date_paid <> $dateInput )
+                                $oldAmount = floatval(number_format($invoicePayment->amount, 2, '.', ''));
+                                $oldDateInput = $invoicePayment->date_paid;
+                                if($oldAmount != $amount || $oldDateInput != $dateInput )
                                 {
                                     $data = ['amount'=>$amount, 'date_paid'=>$dateInput];
                                     $invoicePayment->fill($data);
                                     $invoicePayment->save();
-                                    Log::info('Betaling van ' . $amount . ' aangepast via twinfield voor nota ' . $invoiceToBeChecked->number);
-                                    array_push($messages, 'Betaling van €' . $amount . ' aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '.');
+                                    Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ') aangepast via twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInput . ').' );
+                                    array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').');
                                 }
                             }
                         }

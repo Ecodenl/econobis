@@ -926,8 +926,8 @@ class TemplateVariableHelper
             case 'teruggave':
                 $start = $model->kwh_start ? $model->kwh_start : 0;
                 $end = $model->kwh_end ? $model->kwh_end : 0;
-                $payoutKwh = $model->payout_kwh ? $model->revenue : 0;
-                return ($end - $start) * $payoutKwh;
+                $payoutKwh = $model->payout_kwh ? $model->payout_kwh : 0;
+                return number_format(($end - $start) * $payoutKwh, 2, ',', '');
                 break;
             case 'resultaat':
                 return $model->revenue;
@@ -994,7 +994,7 @@ class TemplateVariableHelper
                 return $model->delivered_total;
                 break;
             case 'teruggave_energiebelasting':
-                return $model->kwh_return;
+                return number_format($model->kwh_return, 2, ',', '');
                 break;
             case 'energieleverancier_ean_elektra':
                 return $model->energy_supplier_ean_electricity;

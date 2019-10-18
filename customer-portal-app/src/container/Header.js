@@ -99,7 +99,12 @@ function Header({ location, history }) {
                                     {({ logout }) => {
                                         return (
                                             <PortalUserConsumer>
-                                                {({ user, currentSelectedContact, setCurrentContact }) => {
+                                                {({
+                                                    user,
+                                                    currentSelectedContact,
+                                                    setCurrentContact,
+                                                    resetCurrentUserToDefault,
+                                                }) => {
                                                     return (
                                                         <Dropdown alignRight>
                                                             <Dropdown.Toggle>
@@ -143,7 +148,14 @@ function Header({ location, history }) {
                                                                       ))
                                                                     : null}
                                                                 <Dropdown.Divider />
-                                                                <Dropdown.Item onClick={logout}>Log uit</Dropdown.Item>
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        logout();
+                                                                        resetCurrentUserToDefault();
+                                                                    }}
+                                                                >
+                                                                    Log uit
+                                                                </Dropdown.Item>
                                                             </Dropdown.Menu>
                                                         </Dropdown>
                                                     );

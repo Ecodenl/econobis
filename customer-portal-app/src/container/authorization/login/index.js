@@ -54,6 +54,9 @@ export default props => {
                                         <Link to={'/wachtwoord-vergeten'} className="authorization-link">
                                             Wachtwoord vergeten?
                                         </Link>
+                                        <Link to={'/nieuw-account'} className="authorization-link">
+                                            Nieuw bij "naam cooperatie"?
+                                        </Link>
                                     </Row>
                                 </Col>
                             </Row>

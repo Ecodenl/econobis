@@ -14,6 +14,7 @@ import RegisterProject from './container/register';
 import ProjectList from './container/project/list';
 import ProjectDetails from './container/project/details';
 import RegistrationList from './container/registration/list';
+import NewAccount from "./container/authorization/new-account";
 
 function App() {
     return (
@@ -32,6 +33,9 @@ function App() {
                         <PublicRoute path="/activeer-registratie/:registrationCode/:email" component={Register} />
                         <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />
                         <PublicRoute path="/wachtwoord-wijzigen/:token/:email" component={Reset} />
+                        <PublicRoute path="/nieuw-account" component={NewAccount} />
+
+
                     </Switch>
                 </PortalUserProvider>
             </AuthProvider>

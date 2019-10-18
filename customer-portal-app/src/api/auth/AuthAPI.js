@@ -9,6 +9,13 @@ const AUTH_KEY = {
 const BASE_URL = window.__SERVER_DATA__.base_url;
 
 export default {
+    newAccount: payload => {
+        const requestUrl = `${BASE_URL}/new-account`;
+        delete axios.defaults.headers.common['Authorization'];
+
+        return axios.post(requestUrl, payload);
+    },
+
     login: loginCredentials => {
         const requestUrl = `${BASE_URL}/oauth/token`;
         delete axios.defaults.headers.common['Authorization'];

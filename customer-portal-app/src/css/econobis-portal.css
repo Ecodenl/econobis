@@ -108,6 +108,11 @@
     height: 100vh;
 }
 
+.dropdown-link:hover, .dropdown-link:active {
+    color: white;
+    text-decoration: none;
+}
+
 /* ----------------- INPUT STYLING -----------------*/
 .has-error {
     border: 1px solid var(--main-warning-color) !important;

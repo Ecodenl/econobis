@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { slide as Menu } from 'react-burger-menu';
-import { AuthConsumer } from '../context/AuthContext';
+import { AuthConsumer } from '../../context/AuthContext';
 import { Link, withRouter } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import { PortalUserConsumer } from '../context/PortalUserContext';
+import { PortalUserConsumer } from '../../context/PortalUserContext';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import { FaUser } from 'react-icons/fa';
@@ -99,7 +99,12 @@ function Header({ location, history }) {
                                     {({ logout }) => {
                                         return (
                                             <PortalUserConsumer>
-                                                {({ user, currentSelectedContact, setCurrentContact }) => {
+                                                {({
+                                                    user,
+                                                    currentSelectedContact,
+                                                    setCurrentContact,
+                                                    resetCurrentUserToDefault,
+                                                }) => {
                                                     return (
                                                         <Dropdown alignRight>
                                                             <Dropdown.Toggle>
@@ -108,6 +113,14 @@ function Header({ location, history }) {
                                                             <Dropdown.Menu>
                                                                 <Dropdown.Header>Ingelogd als</Dropdown.Header>
                                                                 <Dropdown.Item disabled>{user.fullName}</Dropdown.Item>
+                                                                <Dropdown.Item>
+                                                                    <Link
+                                                                        to={'/wijzig-inloggegevens'}
+                                                                        class={'dropdown-link'}
+                                                                    >
+                                                                        Wijzig accountgegevens
+                                                                    </Link>
+                                                                </Dropdown.Item>
                                                                 <Dropdown.Divider />
                                                                 <Dropdown.Header>Beheren van</Dropdown.Header>
                                                                 <Dropdown.Item
@@ -143,7 +156,14 @@ function Header({ location, history }) {
                                                                       ))
                                                                     : null}
                                                                 <Dropdown.Divider />
-                                                                <Dropdown.Item onClick={logout}>Log uit</Dropdown.Item>
+                                                                <Dropdown.Item
+                                                                    onClick={() => {
+                                                                        logout();
+                                                                        resetCurrentUserToDefault();
+                                                                    }}
+                                                                >
+                                                                    Log uit
+                                                                </Dropdown.Item>
                                                             </Dropdown.Menu>
                                                         </Dropdown>
                                                     );

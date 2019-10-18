@@ -14,6 +14,11 @@ const PortalUserProvider = function(props) {
         setCurrentContact(user);
     }
 
+    function resetCurrentUserToDefault() {
+        setUser({});
+        setCurrentContact({});
+    }
+
     return (
         <PortalUserContext.Provider
             value={{
@@ -21,6 +26,7 @@ const PortalUserProvider = function(props) {
                 updateUser: updateUser,
                 currentSelectedContact,
                 setCurrentContact,
+                resetCurrentUserToDefault,
             }}
         >
             {props.children}

@@ -78,6 +78,7 @@ class SettingController
             'responsibleUserId',
             'documentTemplateAgreementId',
             'emailTemplateAgreementId',
+            'emailTemplateNewAccountId',
             'linkPrivacyPolicy',
             'linkAgreeTerms',
             'linkUnderstandInfo',

@@ -31,6 +31,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 responsibleUserId: false,
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
+                emailTemplateNewAccountId: false,
                 linkPrivacyPolicy: false,
                 linkAgreeTerms: false,
                 linkUnderstandInfo: false,
@@ -121,6 +122,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             responsibleUserId,
             documentTemplateAgreementId,
             emailTemplateAgreementId,
+            emailTemplateNewAccountId,
             linkPrivacyPolicy,
             linkAgreeTerms,
             linkUnderstandInfo,
@@ -201,12 +203,22 @@ class PortalSettingsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="E-mail template"
+                                label="E-mail template Inschrijvingsbevestiging"
                                 name={'emailTemplateAgreementId'}
                                 value={emailTemplateAgreementId}
                                 // options={this.state.emailTemplates}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailTemplateAgreementId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="E-mail template Nieuw account bevestiging"
+                                name={'emailTemplateNewAccountId'}
+                                value={emailTemplateNewAccountId}
+                                // options={this.state.emailTemplates}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.emailTemplateNewAccountId}
                             />
                         </div>
                     </PanelBody>

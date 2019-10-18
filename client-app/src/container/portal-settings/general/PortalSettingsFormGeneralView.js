@@ -10,6 +10,7 @@ const PortalSettingsFormGeneralView = ({
     responsibleUserId,
     documentTemplateAgreementId,
     emailTemplateAgreementId,
+    emailTemplateNewAccountId,
     linkPrivacyPolicy,
     linkAgreeTerms,
     linkUnderstandInfo,
@@ -41,10 +42,12 @@ const PortalSettingsFormGeneralView = ({
                         <ViewText label={'Document template'} value={documentTemplateAgreementId} />
                     </div>
                     <div className="row">
+                        <ViewText label={'Email template Inschrijvingsbevestiging'} value={emailTemplateAgreementId} />
+                    </div>
+                    <div className="row">
                         <ViewText
-                            label={'Email template'}
-                            value={emailTemplateAgreementId}
-                            // value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
+                            label={'Email template Nieuw account bevestiging'}
+                            value={emailTemplateNewAccountId}
                         />
                     </div>
                 </PanelBody>

@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Portal\Contact;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
@@ -63,7 +64,7 @@ class ContactController extends ApiController
             $contact->save();
 
             // PERSON
-            if ($request->typeId == 'person') {
+            if ($request->typeId == ContactType::PERSON) {
 
                 $this->updatePerson($contact, $request);
                 $this->updateEmailCorrespondence($contact, $request);
@@ -77,7 +78,7 @@ class ContactController extends ApiController
             }
 
             // ORGANISATION
-            if ($request->typeId == 'organisation') {
+            if ($request->typeId == ContactType::ORGANISATION) {
 
                 $this->updateOrganisation($contact, $request);
                 $this->updateEmailCorrespondence($contact, $request);

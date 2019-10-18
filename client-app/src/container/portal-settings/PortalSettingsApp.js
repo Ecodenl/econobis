@@ -26,7 +26,7 @@ class PortalSettingsApp extends Component {
     callFetchPortalSettings = () => {
         this.setState({ isLoading: true, hasError: false });
         const keys =
-            '?keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId&keys[]=linkPrivacyPolicy&keys[]=linkAgreeTerms&keys[]=linkUnderstandInfo';
+            '?keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId&keys[]=emailTemplateNewAccountId&keys[]=linkPrivacyPolicy&keys[]=linkAgreeTerms&keys[]=linkUnderstandInfo';
 
         PortalSettingsAPI.fetchPortalSettings(keys)
             .then(payload => {

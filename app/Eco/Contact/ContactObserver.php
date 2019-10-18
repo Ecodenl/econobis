@@ -26,7 +26,10 @@ class ContactObserver
         $userId = Auth::id();
         $contact->created_by_id = $userId;
         $contact->updated_by_id = $userId;
-        $contact->portal_registration_code = Str::random(32);
+        if($contact->type_id == ContactType::PERSON)
+        {
+            $contact->portal_registration_code = Str::random(32);
+        }
     }
 
     public function created(Contact $contact)

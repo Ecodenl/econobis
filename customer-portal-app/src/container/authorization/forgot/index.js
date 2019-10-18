@@ -7,7 +7,7 @@ import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ButtonText from '../../../components/button/ButtonText';
+import { Link } from 'react-router-dom';
 
 const Forgot = props => {
     const [showError, toggleError] = useState(false);
@@ -47,6 +47,9 @@ const Forgot = props => {
                             ) : null}
                         </Col>
                     </Row>
+                    <Link to={'/login'} className="authorization-link">
+                        Terug naar inloggen
+                    </Link>
                 </Col>
             </Row>
         </Container>

@@ -29,4 +29,8 @@ export default {
             },
         });
     },
+
+    fetchPortalUserEmail: function() {
+        return axiosInstance.get(`/portal-user-email`);
+    },
 };

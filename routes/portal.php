@@ -14,6 +14,10 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
             return Jory::on(\Auth::user()->contact);
         });
 
+        Route::get('/portal-user-email', function () {
+            return \Auth::user()->email;
+        });
+
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
 
         Route::get('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');

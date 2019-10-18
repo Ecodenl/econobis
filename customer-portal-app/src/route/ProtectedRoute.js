@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { AuthConsumer } from '../context/AuthContext';
-import Header from '../container/Header';
+import Header from '../components/layout/Header';
 import PortalUserAPI from '../api/portal-user/PortalUserAPI';
 import { PortalUserConsumer } from '../context/PortalUserContext';
 

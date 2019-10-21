@@ -55,7 +55,7 @@ export default props => {
                                             Wachtwoord vergeten?
                                         </Link>
                                         <Link to={'/nieuw-account'} className="authorization-link">
-                                            Nieuw bij "naam cooperatie"?
+                                            Nieuw bij {window.__SERVER_DATA__.cooperative_name}?
                                         </Link>
                                     </Row>
                                 </Col>

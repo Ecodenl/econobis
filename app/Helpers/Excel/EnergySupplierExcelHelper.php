@@ -417,7 +417,7 @@ class EnergySupplierExcelHelper
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->iban;
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                        ? "'" . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
                     $rowData[] = $deliveredKwhPeriod->participations_quantity;
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
@@ -435,19 +435,19 @@ class EnergySupplierExcelHelper
 
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
-        $textColumns = [
-            'L'
-        ];
-        foreach ($textColumns as $textColumnLetter) {
-            foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
-                if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
-                    ->getNumberFormat()
-                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
-            }
-        }
+//        $textColumns = [
+//            'L'
+//        ];
+//        foreach ($textColumns as $textColumnLetter) {
+//            foreach ($completeData as $key => $row) {
+//                print_r($textColumnLetter . ($key + 1));
+//                if ($key == 0) continue; // Header overslaan
+//
+//                $sheet->getStyle($textColumnLetter . ($key + 1))
+//                    ->getNumberFormat()
+//                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+//            }
+//        }
         // EINDE FIX EAN codes
 
         // Load all data in worksheet

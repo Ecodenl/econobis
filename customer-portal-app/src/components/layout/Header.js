@@ -136,22 +136,24 @@ function Header({ location, history }) {
                                                                 >
                                                                     {user.fullName}
                                                                 </Dropdown.Item>
-                                                                {user.primaryOccupations
-                                                                    ? user.primaryOccupations.map(occupation => (
+                                                                {user.occupations
+                                                                    ? user.occupations.map(occupation => (
                                                                           <Dropdown.Item
                                                                               key={occupation.id}
                                                                               onClick={() => {
-                                                                                  setCurrentContact(occupation.contact);
+                                                                                  setCurrentContact(
+                                                                                      occupation.primaryContact
+                                                                                  );
                                                                                   redirect('gegevens');
                                                                               }}
                                                                               active={
                                                                                   currentSelectedContact.id ===
-                                                                                  occupation.contact.id
+                                                                                  occupation.primaryContact.id
                                                                                       ? true
                                                                                       : false
                                                                               }
                                                                           >
-                                                                              {occupation.contact.fullName}
+                                                                              {occupation.primaryContact.fullName}
                                                                           </Dropdown.Item>
                                                                       ))
                                                                     : null}

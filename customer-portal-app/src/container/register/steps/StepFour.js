@@ -98,6 +98,14 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                 </Row>
                                 <Row>
                                     <Col xs={12} md={10}>
+                                        <p>
+                                            Wanneer je akkoord gaat met het inschrijfformulier en je de inschrijving
+                                            bevestigd, is je inschrijving definitief.
+                                        </p>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={10}>
                                         <ButtonGroup aria-label="Steps" className="float-right">
                                             <Button className={'w-button'} size="sm" onClick={previous}>
                                                 Terug

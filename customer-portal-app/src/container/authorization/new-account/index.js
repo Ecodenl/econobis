@@ -36,8 +36,8 @@ const NewAccount = props => {
                     <img src={LogoImage} alt="" className="image" />
                     {showSuccessMessage ? (
                         <div>
-                            <h3>Een E-mail is onderweg!</h3>
-                            <p>
+                            <h3 className={'text-light'}>Een E-mail is onderweg!</h3>
+                            <p className={'text-light'}>
                                 Binnen enkele minuten ontvang je een e-mail met een persoonlijke link. Via deze link kun
                                 je je account activeren.
                             </p>

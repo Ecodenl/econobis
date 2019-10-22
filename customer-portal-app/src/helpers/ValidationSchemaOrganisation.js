@@ -32,13 +32,19 @@ export default {
             city: Yup.string()
                 .trim()
                 .required('Verplicht'),
-            countryId: Yup.string().required('Verplicht'),
+            countryId: Yup.string()
+                .nullable()
+                .required('Verplicht'),
         }),
         visitAddress: Yup.object().shape({
-            number: Yup.number().typeError('Alleen nummers'),
+            number: Yup.number()
+                .nullable()
+                .typeError('Alleen nummers'),
         }),
         invoiceAddress: Yup.object().shape({
-            number: Yup.number().typeError('Alleen nummers'),
+            number: Yup.number()
+                .nullable()
+                .typeError('Alleen nummers'),
         }),
     }),
 

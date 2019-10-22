@@ -277,6 +277,9 @@ class ContactController extends ApiController
 
     protected function updateAddress($contact, $addressData)
     {
+        if($addressData['countryId'] == ''){
+            $addressData['countryId'] = null;
+        }
         if (isset($addressData['id']))
         {
             $primaryAddress

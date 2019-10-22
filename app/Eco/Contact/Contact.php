@@ -378,8 +378,12 @@ class Contact extends Model
 
         $query->where(function ($query) use($portalUser) {
             $query->where('id', $portalUser->contact_id);
-            $query->orWhereHas('occupations', function($query) use($portalUser){
-                $query->where('primary_contact_id', $portalUser->contact_id);
+//todo nog even goed checken of dit nu in alle gevallen goed gaat
+//            $query->orWhereHas('occupations', function($query) use($portalUser){
+//                $query->where('primary_contact_id', $portalUser->contact_id);
+//            });
+            $query->orWhereHas('primaryOccupations', function($query) use($portalUser){
+                $query->where('contact_id', $portalUser->contact_id);
             });
         });
     }

@@ -42,7 +42,7 @@ class MailResetPasswordToken extends Notification
         return (new MailMessage)
             ->subject("Wijzig je wachtwoord")
             ->line("Wil je je wachtwoord wijzigen? Klik dan op de knop Wijzig wachtwoord.")
-            ->action('Wijzig wachtwoord', url('/#/portal/wachtwoord-wijzigen', [$this->token, $this->email]))
+            ->action('Wijzig wachtwoord', url('/portal/#/wachtwoord-wijzigen', [$this->token, $this->email]))
             ->line('Als je je wachtwoord niet wilt wijzigen, dan hoef je geen actie te ondernemen.');
     }
 

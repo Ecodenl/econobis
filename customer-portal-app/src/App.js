@@ -15,6 +15,7 @@ import ProjectList from './container/project/list';
 import ProjectDetails from './container/project/details';
 import RegistrationList from './container/registration/list';
 import NewAccount from './container/authorization/new-account';
+import ChangeAccount from './container/authorization/change-account';
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
                         <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                         <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />
                         <ProtectedRoute path="/project/:id" component={ProjectDetails} />
+                        <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />
                         <PublicRoute path="/login" component={Login} />
                         <PublicRoute path="/activeer-registratie/:registrationCode/:email" component={Register} />
                         <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />

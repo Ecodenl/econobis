@@ -30,6 +30,9 @@ const InputDate = ({
 
     return (
         <>
+            {get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (
+                <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
+            ) : null}
             <DayPickerInput
                 id={id}
                 value={formattedDate}
@@ -43,7 +46,9 @@ const InputDate = ({
                     localeUtils: MomentLocaleUtils,
                 }}
                 inputProps={{
-                    className: `text-input content w-input ${className}`,
+                    className: `text-input content w-input ${className} ${
+                        Boolean(get(errors, name, '') && get(touched, name, '')) ? 'has-error mb-0' : ''
+                    } `,
                     name: name,
                     autoComplete: 'off',
                     readOnly: readOnly,
@@ -54,9 +59,6 @@ const InputDate = ({
                 readOnly={readOnly}
                 placeholder={''}
             />
-            {get(errors, name, '') && get(touched, name, '') && showErrorMessage ? (
-                <small className={`${classNameErrorMessage}`}>{get(errors, name, '')}</small>
-            ) : null}
         </>
     );
 };

@@ -31,7 +31,8 @@ const ForgotForm = ({ handleSubmit, showSuccessMessage }) => (
                             placeholder={'E-mailadres'}
                             errors={errors}
                             touched={touched}
-                            showErrorMessage={false}
+                            // todo check waarom dit erin stond ?!
+                            // showErrorMessage={false}
                         />
                     )}
                 />

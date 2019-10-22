@@ -17,9 +17,12 @@ const Select = ({
 }) => {
     return (
         <>
+            {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (
+                <small className={`${classNameErrorMessage}`}>{get(errors, field.name, '')}</small>
+            ) : null}
             <select
                 className={`select-field w-select content ${className} ${
-                    Boolean(errors[field.name] && touched[field.name]) ? 'has-error mb-0' : ''
+                    Boolean(get(errors, field.name, '') && get(touched, field.name, '')) ? 'has-error mb-0' : ''
                 } `}
                 id={id}
                 {...field}
@@ -33,9 +36,6 @@ const Select = ({
                     );
                 })}
             </select>
-            {get(errors, field.name, '') && get(touched, field.name, '') && showErrorMessage ? (
-                <small className={`${classNameErrorMessage}`}>{get(errors, field.name, '')}</small>
-            ) : null}
         </>
     );
 };

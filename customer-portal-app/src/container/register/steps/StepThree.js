@@ -36,8 +36,8 @@ function StepThree({ portalSettings, previous, next, initialRegisterValues, hand
                             <Row>
                                 <Col xs={12} md={10}>
                                     <p>
-                                        Om deel te kunnen nemen dien je akkoord te gaan met de algemene voorwaarden en
-                                        dien je te bevestigen dat je de projectinformatie hebt gelezen en begrepen.
+                                        Om deel te kunnen nemen dien je akkoord te gaan met de voorwaarden en dien je te
+                                        bevestigen dat je de projectinformatie hebt gelezen en begrepen.
                                     </p>
                                 </Col>
                             </Row>

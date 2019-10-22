@@ -23,7 +23,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             .max(project.maxParticipations, 'Maximum van ${max} bereikt')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),
-        powerKwhConsumption: Yup.number()
+        yearlyPowerKwhConsumption: Yup.number()
             .typeError('Alleen nummers')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),
@@ -39,6 +39,42 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
     });
 
+    const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
+    const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
+
+    function calculateEstimatedGeneratedNumberOfKwh(values) {
+        return values.pcrNumberOfSolarPanels
+            ? values.pcrNumberOfSolarPanels * PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
+            : 0;
+    }
+    function calculateGeneratedNumberOfKwh(values) {
+        return values.pcrInputGeneratedNumberOfKwh && values.pcrInputGeneratedNumberOfKwh > 0
+            ? values.pcrInputGeneratedNumberOfKwh
+            : calculateEstimatedGeneratedNumberOfKwh(values)
+            ? calculateEstimatedGeneratedNumberOfKwh(values)
+            : 0;
+    }
+    function calculatePowerKwhConsumption(values) {
+        let extraPowerKwhConsumption =
+            values.yearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values) > 0
+                ? values.yearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values)
+                : 0;
+        return extraPowerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE;
+    }
+    function calculateAdviseMaxNumberOfParticipations(values) {
+        let pcrAdviseMaxNumberOfParticipations =
+            calculatePowerKwhConsumption(values) > 0
+                ? Math.ceil(calculatePowerKwhConsumption(values) / PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL)
+                : 0;
+
+        if (pcrAdviseMaxNumberOfParticipations < project.minParticipations) {
+            pcrAdviseMaxNumberOfParticipations = project.minParticipations;
+        } else if (pcrAdviseMaxNumberOfParticipations > project.maxParticipations) {
+            pcrAdviseMaxNumberOfParticipations = project.maxParticipations;
+        }
+        return pcrAdviseMaxNumberOfParticipations;
+    }
+
     let pcrPostalCode = '';
     if (initialContact.typeId === 'organisation') {
         pcrPostalCode = initialContact.visitAddress ? initialContact.visitAddress.postalCode : '';
@@ -49,7 +85,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         <Formik
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                handleSubmitRegisterValues(values);
+                handleSubmitRegisterValues({ ...values, powerKwhConsumption: calculatePowerKwhConsumption(values) });
                 next();
             }}
             initialValues={{
@@ -58,37 +94,9 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             }}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
-                const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
-                const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
-
-                let pcrEstimatedGeneratedNumberOfKwh = values.pcrNumberOfSolarPanels
-                    ? values.pcrNumberOfSolarPanels * PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
-                    : 0;
-
-                let pcrPowerKwhConsumptionCalculated = values.powerKwhConsumption
-                    ? values.powerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE
-                    : 0;
-
-                let pcrGeneratedNumberOfKwh =
-                    values.pcrInputGeneratedNumberOfKwh && values.pcrInputGeneratedNumberOfKwh > 0
-                        ? values.pcrInputGeneratedNumberOfKwh
-                        : pcrEstimatedGeneratedNumberOfKwh
-                        ? pcrEstimatedGeneratedNumberOfKwh
-                        : 0;
-
-                let pcrAdviseMaxNumberOfParticipations =
-                    pcrPowerKwhConsumptionCalculated - pcrGeneratedNumberOfKwh > 0
-                        ? Math.ceil(
-                              (pcrPowerKwhConsumptionCalculated - pcrGeneratedNumberOfKwh) /
-                                  PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
-                          )
-                        : 0;
-
-                if (pcrAdviseMaxNumberOfParticipations < project.minParticipations) {
-                    pcrAdviseMaxNumberOfParticipations = project.minParticipations;
-                } else if (pcrAdviseMaxNumberOfParticipations > project.maxParticipations) {
-                    pcrAdviseMaxNumberOfParticipations = project.maxParticipations;
-                }
+                let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);
+                let powerKwhConsumption = calculatePowerKwhConsumption(values);
+                let pcrAdviseMaxNumberOfParticipations = calculateAdviseMaxNumberOfParticipations(values);
 
                 return (
                     <>
@@ -133,13 +141,13 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                                         Je (geschatte) jaarlijks verbruik (in kWh)
                                     </Form.Label>
                                     <Field
-                                        name="powerKwhConsumption"
+                                        name="yearlyPowerKwhConsumption"
                                         render={({ field }) => (
                                             <InputText
                                                 field={field}
                                                 errors={errors}
                                                 touched={touched}
-                                                id="power_kwh_consumption"
+                                                id="yearly_power_kwh_consumption"
                                             />
                                         )}
                                     />
@@ -293,22 +301,22 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                                             />
                                         </Col>
                                     </Row>
-                                    <Row>
-                                        <Col xs={12} md={6}>
-                                            <p>
-                                                We adviseren tot 80% van je jaarlijks verbruik minus de jaarlijkse
-                                                opbrengsten te dekken met participaties. In het veld hier direct onder
-                                                is voor je uitgerekend hoeveel participaties dat zijn. Het is een
-                                                advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je
-                                                rendement.
-                                            </p>
-                                        </Col>
-                                    </Row>
                                 </>
                             ) : (
                                 ''
                             )}
 
+                            <Row>
+                                <Col xs={12} md={6}>
+                                    <p>
+                                        We adviseren tot 80% van je jaarlijks verbruik minus de jaarlijkse opbrengsten
+                                        (in jouw geval {powerKwhConsumption} kWh) te dekken met participaties. In het
+                                        veld hier direct onder is voor je uitgerekend hoeveel participaties dat zijn.
+                                        Het is een advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je
+                                        rendement.
+                                    </p>
+                                </Col>
+                            </Row>
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Form.Label className={'field-label'}>

@@ -34,7 +34,7 @@ class OccupationContactJoryResource extends JoryResource
     public function afterQueryBuild($query, $count = false): void
     {
         if(Auth::isPortalUser()){
-            $query->where('primary_contact_id', Auth::user()->contact_id);
+            $query->where('contact_id', Auth::user()->contact_id);
         }
     }
 }

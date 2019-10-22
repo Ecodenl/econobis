@@ -151,41 +151,45 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
 
                 <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
                 {primaryContactEnergySupplier ? (
-                    <Row>
-                        <div className="current_es_wrapper col-12">
-                            <h3 id="current_es_id" className="h3">
-                                {primaryContactEnergySupplier.energySupplier.name}
-                            </h3>
-                            <Row>
-                                <Col>
-                                    <FormLabel>Nummer leverancier</FormLabel>
-                                </Col>
-                                <Col>-</Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <FormLabel>Klant sinds</FormLabel>
-                                </Col>
-                                <Col>
-                                    {primaryContactEnergySupplier.memberSince
-                                        ? moment(primaryContactEnergySupplier.memberSince).format('L')
-                                        : ''}
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <FormLabel>EAN nummer electriciteit</FormLabel>
-                                </Col>
-                                <Col>{primaryContactEnergySupplier.eanElectricity}</Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <FormLabel>Klant nummer</FormLabel>
-                                </Col>
-                                <Col>{primaryContactEnergySupplier.esNumber}</Col>
-                            </Row>
-                        </div>
-                    </Row>
+                    <>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
+                                {primaryContactEnergySupplier.energySupplier
+                                    ? primaryContactEnergySupplier.energySupplier.name
+                                    : ''}
+                            </TextBlock>
+                        </Row>
+
+                        <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
+                                {primaryContactEnergySupplier.esNumber}
+                            </TextBlock>
+                        </Row>
+
+                        <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
+                                {primaryContactEnergySupplier.memberSince
+                                    ? moment(primaryContactEnergySupplier.memberSince).format('L')
+                                    : ''}
+                            </TextBlock>
+                        </Row>
+
+                        <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
+                                {primaryContactEnergySupplier.eanElectricity}
+                            </TextBlock>
+                        </Row>
+
+                        <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
+                                {primaryContactEnergySupplier.eanGas}
+                            </TextBlock>
+                        </Row>
+                    </>
                 ) : (
                     <Row>
                         <TextBlock className={'col-12 col-sm-8'} />

@@ -10,6 +10,8 @@ use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
+use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
@@ -74,6 +76,7 @@ class ContactController extends ApiController
                 if (isset($request['primaryAddress'])) {
                     $this->updateAddress($contact, $request['primaryAddress']);
                 }
+                $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);
 
             }
 
@@ -94,6 +97,7 @@ class ContactController extends ApiController
                 if (isset($request['invoiceAddress'])) {
                     $this->updateAddress($contact, $request['invoiceAddress']);
                 }
+                $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);
             }
 
         });
@@ -309,5 +313,41 @@ class ContactController extends ApiController
         }
         $primaryAddress->save();
     }
+
+    protected function updateEnergySupplierToContact(Contact $contact, $primaryContactEnergySupplierData)
+    {
+        if (isset($primaryContactEnergySupplierData['id']))
+        {
+            $primaryContactEnergySupplier = $contact->contactEnergySuppliers->find($primaryContactEnergySupplierData['id']);
+            if ($primaryContactEnergySupplier)
+            {
+                unset($primaryContactEnergySupplierData['energySupplier']);
+                $primaryContactEnergySupplier->fill($this->arrayKeysToSnakeCase($primaryContactEnergySupplierData));
+            }
+        }else{
+            $primaryContactEnergySupplierData['is_current_supplier'] = true;
+            $primaryContactEnergySupplierData['contactEnergySupplyTypeId'] = 2;
+            if(isset($primaryContactEnergySupplierData['eanGas']) && trim($primaryContactEnergySupplierData['eanGas']) != '' )
+            {
+                $primaryContactEnergySupplierData['contactEnergySupplyTypeId'] = 3;
+            }
+
+            Validator::make($primaryContactEnergySupplierData, [
+                'contactEnergySupplyTypeId' => new EnumExists(ContactEnergySupplierType::class),
+                'isCurrentSupplier' => 'boolean',
+            ]);
+
+            $primaryContactEnergySupplierData = $this->sanitizeData($primaryContactEnergySupplierData, [
+                'contactEnergySupplyTypeId' => 'nullable',
+                'isCurrentSupplier' => 'boolean',
+            ]);
+
+            $primaryContactEnergySupplier = new ContactEnergySupplier($this->arrayKeysToSnakeCase($primaryContactEnergySupplierData));
+            $primaryContactEnergySupplier->contact_id = $contact->id;
+        }
+        $primaryContactEnergySupplier->save();
+
+    }
+
 
 }

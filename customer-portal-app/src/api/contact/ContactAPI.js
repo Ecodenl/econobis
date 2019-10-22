@@ -69,6 +69,7 @@ export default {
                                 'energySupplierId',
                                 'esNumber',
                                 'eanElectricity',
+                                'eanGas',
                                 'memberSince',
                                 'isCurrentSupplier',
                             ],

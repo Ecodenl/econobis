@@ -23,6 +23,17 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                 }
             ),
         }),
+        primaryContactEnergySupplier: Yup.object().shape({
+            energySupplierId: Yup.string()
+                .nullable()
+                .required('Verplicht'),
+            esNumber: Yup.string()
+                .trim()
+                .required('Verplicht'),
+            eanElectricity: Yup.string()
+                .trim()
+                .required('Verplicht'),
+        }),
     });
     const validationSchemaPcrOrganisation = Yup.object().shape({
         visitAddress: Yup.object().shape({
@@ -33,6 +44,17 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                     return project.postalcodeLink.includes(value.substring(0, 4));
                 }
             ),
+        }),
+        primaryContactEnergySupplier: Yup.object().shape({
+            energySupplierId: Yup.string()
+                .nullable()
+                .required('Verplicht'),
+            esNumber: Yup.string()
+                .trim()
+                .required('Verplicht'),
+            eanElectricity: Yup.string()
+                .trim()
+                .required('Verplicht'),
         }),
     });
 

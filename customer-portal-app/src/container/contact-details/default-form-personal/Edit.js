@@ -3,6 +3,7 @@ import InputText from '../../../components/form/InputText';
 import { Field } from 'formik';
 import Select from '../../../components/form/Select';
 import Countries from '../../../data/Countries';
+import EnergySuppliers from '../../../data/EnergySuppliers';
 import Titles from '../../../data/Titles';
 import LastNamePrefixes from '../../../data/LastNamePrefixes';
 import Col from 'react-bootstrap/Col';
@@ -381,47 +382,133 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
                 {values.primaryContactEnergySupplier ? (
-                    <Row>
-                        <div className="current_es_wrapper col-12">
-                            <h3 id="current_es_id" className="h3">
-                                {values.primaryContactEnergySupplier.energySupplier.name}
-                            </h3>
-                            <Row>
-                                <Col>
-                                    <FormLabel>Nummer leverancier</FormLabel>
-                                </Col>
-                                <Col>-</Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <FormLabel>Klant sinds</FormLabel>
-                                </Col>
-                                <Col>
-                                    {values.primaryContactEnergySupplier.memberSince
-                                        ? moment(values.primaryContactEnergySupplier.memberSince).format('L')
-                                        : ''}
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <FormLabel>EAN nummer electriciteit</FormLabel>
-                                </Col>
-                                <Col>{values.primaryContactEnergySupplier.eanElectricity}</Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <FormLabel>Klant nummer</FormLabel>
-                                </Col>
-                                <Col>{values.primaryContactEnergySupplier.esNumber}</Col>
-                            </Row>
-                        </div>
-                    </Row>
+                    <>
+                        <FormLabel htmlFor="current_es_id" className={'field-label'}>
+                            Energieleverancier
+                        </FormLabel>
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field
+                                    name="primaryContactEnergySupplier.energySupplierId"
+                                    render={({ field }) => (
+                                        <Select
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="energy_supplier_id"
+                                            placeholder={'Selecteer uw leverancier'}
+                                            options={EnergySuppliers}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+
+                        <FormLabel htmlFor="es_number" className={'field-label'}>
+                            Klant nummer bij leverancier
+                        </FormLabel>
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field
+                                    name="primaryContactEnergySupplier.esNumber"
+                                    render={({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="es_number"
+                                            placeholder={'Klant nummer bij leverancier'}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+
+                        <FormLabel htmlFor="memberSince" className={'field-label'}>
+                            Klant bij leverancier sinds
+                        </FormLabel>
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field
+                                    name="primaryContactEnergySupplier.memberSince"
+                                    render={({ field }) => (
+                                        <InputDate
+                                            {...field}
+                                            errors={errors}
+                                            touched={touched}
+                                            onChangeAction={setFieldValue}
+                                            id="member_since"
+                                            placeholder={'Klant sinds'}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+
+                        <FormLabel htmlFor="eanElectricity" className={'field-label'}>
+                            EAN nummer electriciteit
+                        </FormLabel>
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field
+                                    name="primaryContactEnergySupplier.eanElectricity"
+                                    render={({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="ean_electricity"
+                                            placeholder={'EAN nummer electriciteit'}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+
+                        <FormLabel htmlFor="eanGas" className={'field-label'}>
+                            EAN nummer gas
+                        </FormLabel>
+                        <Row>
+                            <Col xs={12} sm={12} md={8}>
+                                <Field
+                                    name="primaryContactEnergySupplier.eanGas"
+                                    render={({ field }) => (
+                                        <InputText
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="ean_gas"
+                                            placeholder={'EAN nummer electriciteit'}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+                    </>
                 ) : (
-                    <Row>
-                        <TextBlock className={'col-12 col-sm-8'} />
-                    </Row>
+                    <>
+                        <FormLabel htmlFor="current_es_id" className={'field-label'}>
+                            Energieleverancier
+                        </FormLabel>
+                        <Row>
+                            <Col xs={12} sm={8}>
+                                <Field
+                                    name="primaryContactEnergySupplier.energySupplierId"
+                                    render={({ field }) => (
+                                        <Select
+                                            field={field}
+                                            errors={errors}
+                                            touched={touched}
+                                            id="energy_supplier_id"
+                                            placeholder={'Selecteer uw leverancier'}
+                                            options={EnergySuppliers}
+                                        />
+                                    )}
+                                />
+                            </Col>
+                        </Row>
+                    </>
                 )}
             </Col>
         </Row>

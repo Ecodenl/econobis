@@ -143,23 +143,6 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Load all data in worksheet
-        $sheet->fromArray($completeData);
-
-        for ($col = 'A'; $col !== 'Z'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
-
-        $sheet->getStyle('A1:Z1')
-            ->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                ],
-
-            ]);
-
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
         $textColumns = [
@@ -176,6 +159,23 @@ class EnergySupplierExcelHelper
             }
         }
         // EINDE FIX EAN codes
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }
@@ -237,23 +237,6 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Load all data in worksheet
-        $sheet->fromArray($completeData);
-
-        for ($col = 'A'; $col !== 'Z'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
-
-        $sheet->getStyle('A1:Z1')
-            ->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                ],
-
-            ]);
-
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
         $textColumns = [
@@ -270,6 +253,23 @@ class EnergySupplierExcelHelper
             }
         }
         // EINDE FIX EAN codes
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }
@@ -326,23 +326,6 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Load all data in worksheet
-        $sheet->fromArray($completeData);
-
-        for ($col = 'A'; $col !== 'Z'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
-
-        $sheet->getStyle('A1:Z1')
-            ->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                ],
-
-            ]);
-
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
         $textColumns = [
@@ -359,6 +342,23 @@ class EnergySupplierExcelHelper
             }
         }
         // EINDE FIX EAN codes
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }
@@ -433,23 +433,6 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Load all data in worksheet
-        $sheet->fromArray($completeData);
-
-        for ($col = 'A'; $col !== 'Z'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
-
-        $sheet->getStyle('A1:Z1')
-            ->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                ],
-
-            ]);
-
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
         $textColumns = [
@@ -466,6 +449,23 @@ class EnergySupplierExcelHelper
             }
         }
         // EINDE FIX EAN codes
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }

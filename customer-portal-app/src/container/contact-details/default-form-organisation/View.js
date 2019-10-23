@@ -210,7 +210,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 {primaryContactEnergySupplier ? (
                     <>
                         <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
                                 {primaryContactEnergySupplier.energySupplier
                                     ? primaryContactEnergySupplier.energySupplier.name
                                     : ''}

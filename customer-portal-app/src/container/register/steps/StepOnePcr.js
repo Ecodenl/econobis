@@ -59,7 +59,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             values.yearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values) > 0
                 ? values.yearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values)
                 : 0;
-        return extraPowerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE;
+        return Math.ceil( extraPowerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE );
     }
     function calculateAdviseMaxNumberOfParticipations(values) {
         let pcrAdviseMaxNumberOfParticipations =

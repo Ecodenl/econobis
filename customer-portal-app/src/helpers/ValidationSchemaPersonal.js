@@ -24,8 +24,11 @@ export default {
             street: Yup.string()
                 .trim()
                 .required('Verplicht'),
-            number: Yup.number()
-                .typeError('Alleen nummers')
+            number: Yup.string()
+                .nullable()
+                .trim()
+                .test('number', 'Alleen nummers', (value) => {
+                    return Number.isInteger(+value) })
                 .required('Verplicht'),
             postalCode: Yup.string()
                 .trim()

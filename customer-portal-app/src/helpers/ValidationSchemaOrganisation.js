@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import * as ibantools from "ibantools";
 
 export default {
     validationSchemaBasic: Yup.object().shape({
@@ -23,8 +24,11 @@ export default {
             street: Yup.string()
                 .trim()
                 .required('Verplicht'),
-            number: Yup.number()
-                .typeError('Alleen nummers')
+            number: Yup.string()
+                .nullable()
+                .trim()
+                .test('number', 'Alleen nummers', (value) => {
+                    return Number.isInteger(+value) })
                 .required('Verplicht'),
             postalCode: Yup.string()
                 .trim()
@@ -37,14 +41,16 @@ export default {
                 .required('Verplicht'),
         }),
         visitAddress: Yup.object().shape({
-            number: Yup.number()
+            number: Yup.string()
                 .nullable()
-                .typeError('Alleen nummers'),
+                .test('number', 'Alleen nummers', (value) => {
+                    return Number.isInteger(+value) }),
         }),
         invoiceAddress: Yup.object().shape({
-            number: Yup.number()
+            number: Yup.string()
                 .nullable()
-                .typeError('Alleen nummers'),
+                .test('number', 'Alleen nummers', (value) => {
+                    return Number.isInteger(+value) }),
         }),
     }),
 

@@ -28,9 +28,11 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                 .nullable()
                 .required('Verplicht'),
             esNumber: Yup.string()
+                .nullable()
                 .trim()
                 .required('Verplicht'),
             eanElectricity: Yup.string()
+                .nullable()
                 .trim()
                 .required('Verplicht'),
         }),
@@ -50,9 +52,11 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                 .nullable()
                 .required('Verplicht'),
             esNumber: Yup.string()
+                .nullable()
                 .trim()
                 .required('Verplicht'),
             eanElectricity: Yup.string()
+                .nullable()
                 .trim()
                 .required('Verplicht'),
         }),

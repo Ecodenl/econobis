@@ -382,9 +382,9 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                {values.primaryContactEnergySupplier ? (
-                    <>
-                        <FormLabel htmlFor="current_es_id" className={'field-label'}>
+                {/*{values.primaryContactEnergySupplier ? (*/}
+                    {/*<>*/}
+                        <FormLabel htmlFor="energy_supplier_id" className={'field-label'}>
                             Energieleverancier
                         </FormLabel>
                         <Row>
@@ -425,7 +425,7 @@ const DefaultContactPersonalEdit = function({
                             </Col>
                         </Row>
 
-                        <FormLabel htmlFor="memberSince" className={'field-label'}>
+                        <FormLabel htmlFor="member_since" className={'field-label'}>
                             Klant bij leverancier sinds
                         </FormLabel>
                         <Row>
@@ -446,7 +446,7 @@ const DefaultContactPersonalEdit = function({
                             </Col>
                         </Row>
 
-                        <FormLabel htmlFor="eanElectricity" className={'field-label'}>
+                        <FormLabel htmlFor="ean_electricity" className={'field-label'}>
                             EAN nummer electriciteit
                         </FormLabel>
                         <Row>
@@ -466,7 +466,7 @@ const DefaultContactPersonalEdit = function({
                             </Col>
                         </Row>
 
-                        <FormLabel htmlFor="eanGas" className={'field-label'}>
+                        <FormLabel htmlFor="ean_gas" className={'field-label'}>
                             EAN nummer gas
                         </FormLabel>
                         <Row>
@@ -485,31 +485,31 @@ const DefaultContactPersonalEdit = function({
                                 />
                             </Col>
                         </Row>
-                    </>
-                ) : (
-                    <>
-                        <FormLabel htmlFor="current_es_id" className={'field-label'}>
-                            Energieleverancier
-                        </FormLabel>
-                        <Row>
-                            <Col xs={12} sm={8}>
-                                <Field
-                                    name="primaryContactEnergySupplier.energySupplierId"
-                                    render={({ field }) => (
-                                        <Select
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="energy_supplier_id"
-                                            placeholder={'Selecteer uw leverancier'}
-                                            options={EnergySuppliers}
-                                        />
-                                    )}
-                                />
-                            </Col>
-                        </Row>
-                    </>
-                )}
+                    {/*</>*/}
+                {/*) : (*/}
+                    {/*<>*/}
+                        {/*<FormLabel htmlFor="current_es_id" className={'field-label'}>*/}
+                            {/*Energieleverancier*/}
+                        {/*</FormLabel>*/}
+                        {/*<Row>*/}
+                            {/*<Col xs={12} sm={8}>*/}
+                                {/*<Field*/}
+                                    {/*name="primaryContactEnergySupplier.energySupplierId"*/}
+                                    {/*render={({ field }) => (*/}
+                                        {/*<Select*/}
+                                            {/*field={field}*/}
+                                            {/*errors={errors}*/}
+                                            {/*touched={touched}*/}
+                                            {/*id="energy_supplier_id"*/}
+                                            {/*placeholder={'Selecteer uw leverancier'}*/}
+                                            {/*options={EnergySuppliers}*/}
+                                        {/*/>*/}
+                                    {/*)}*/}
+                                {/*/>*/}
+                            {/*</Col>*/}
+                        {/*</Row>*/}
+                    {/*</>*/}
+                {/*)}*/}
             </Col>
         </Row>
     );

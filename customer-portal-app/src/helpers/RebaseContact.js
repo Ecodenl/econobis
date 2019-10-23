@@ -45,5 +45,10 @@ export default function(contactData) {
     const phoneNumberTwo = contactData.phoneNumbers.filter(phoneNumber => !phoneNumber.primary)[0];
     contactData.phoneNumberTwo = phoneNumberTwo ? { ...emptyPhoneNumber, ...phoneNumberTwo } : emptyPhoneNumber;
 
+    // Set primary contact energy supplier
+    let emptyPrimaryContactEnergySupplier = { energySupplierId: null, esNumber: '', eanElectricity: '', memberSince: '', eanGas: '' };
+    if( !contactData.primaryContactEnergySupplier ){
+        contactData.primaryContactEnergySupplier = emptyPrimaryContactEnergySupplier;
+    }
     return contactData;
 }

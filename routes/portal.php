@@ -19,6 +19,9 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
             return \Auth::user()->email;
         });
 
+        Route::post('/portal-user/change-email', 'PortalUser\PortalUserController@changeEmail');
+        Route::post('/portal-user/change-password', 'PortalUser\PortalUserController@changePassword');
+
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
 
         Route::get('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');

@@ -73,9 +73,10 @@ class NewAccountController extends Controller
         if(PortalUser::where('email', $request->input('email'))->count() !== 0){
             abort(404, 'E-mail bestaat al bij Portal gebruiker.');
         }
-        if(EmailAddress::where('email', $request->input('email'))->where('primary', true)->count() !== 0){
-            abort(404, 'E-mail bestaat als primary e-mail bij contacten.');
-        }
+        //todo zelfde primaire email bij meerder contacten is wel toegestaan toch ?
+//        if(EmailAddress::where('email', $request->input('email'))->where('primary', true)->count() !== 0){
+//            abort(404, 'E-mail bestaat als primary e-mail bij contacten.');
+//        }
     }
 
     protected function getDataFromRequest(Request $request)

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -6,8 +6,8 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
-import FormLabel from 'react-bootstrap/FormLabel';
-import TextBlock from '../../../components/general/TextBlock';
+import PortalUserAPI from '../../../api/portal-user/PortalUserAPI';
+import Alert from 'react-bootstrap/Alert';
 
 const validationSchema = Yup.object().shape({
     password: Yup.string()
@@ -21,18 +21,49 @@ const validationSchema = Yup.object().shape({
 });
 
 function ChangeAccountPassword() {
-    // function handleSubmitChangePassword
+    const [showSuccessMessage, toggleSuccessMessage] = useState(false);
+    const [showError, toggleError] = useState(false);
+
+    function handleSubmitChangePassword(values, actions) {
+        PortalUserAPI.changePassword(values)
+            .then(payload => {
+                actions.resetForm();
+                toggleError(false);
+                toggleSuccessMessage(true);
+                actions.setSubmitting(false);
+            })
+            .catch(error => {
+                actions.setSubmitting(false);
+                toggleError(true);
+                toggleSuccessMessage(false);
+            });
+    }
 
     return (
         <Formik
             initialValues={{ password: '', passwordConfirmation: '' }}
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                // handleSubmitChangePassword(values);
+                handleSubmitChangePassword(values, actions);
             }}
         >
-            {({ touched, errors, isSubmitting }) => (
-                <Form>
+            {({ touched, errors, isSubmitting, handleSubmit }) => (
+                <Form onSubmit={handleSubmit}>
+                    {showSuccessMessage ? (
+                        <Row>
+                            <Col xs={12}>
+                                <Alert className={'p-1 m-1 text-success'} variant={'success'}>
+                                    Wachtwoord is succesvol gewijzigd!
+                                </Alert>
+                            </Col>
+                        </Row>
+                    ) : null}
+                    {showError ? (
+                        <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                            Fout bij wijzigen wachtwoord!
+                        </Alert>
+                    ) : null}
+
                     <Row>
                         <Col xs={12} md={9}>
                             <Form.Label className={'field-label'}>Nieuw wachtwoord</Form.Label>

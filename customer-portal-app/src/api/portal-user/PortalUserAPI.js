@@ -37,4 +37,16 @@ export default {
     fetchPortalUserEmail: function() {
         return axiosInstance.get(`/portal-user-email`);
     },
+
+    changeEmail: values => {
+        const requestUrl = `/portal-user/change-email`;
+
+        return axiosInstance.post(requestUrl, values);
+    },
+
+    changePassword: values => {
+        const requestUrl = `/portal-user/change-password`;
+
+        return axiosInstance.post(requestUrl, values);
+    },
 };

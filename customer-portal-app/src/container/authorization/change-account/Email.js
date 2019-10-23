@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -8,6 +8,8 @@ import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
 import FormLabel from 'react-bootstrap/FormLabel';
 import TextBlock from '../../../components/general/TextBlock';
+import PortalUserAPI from '../../../api/portal-user/PortalUserAPI';
+import Alert from 'react-bootstrap/Alert';
 
 const validationSchema = Yup.object({
     email: Yup.string()
@@ -15,19 +17,63 @@ const validationSchema = Yup.object({
         .required('Verplicht'),
 });
 
-function ChangeAccountEmail({ portalUserEmail }) {
-    // function handleSubmitChangeEmail
+function ChangeAccountEmail() {
+    const [portalUserEmail, setPortalUserEmail] = useState('');
+    const [showSuccessMessage, toggleSuccessMessage] = useState(false);
+    const [showError, toggleError] = useState(false);
+
+    useEffect(() => {
+        (function callFetchUserEmail() {
+            PortalUserAPI.fetchPortalUserEmail()
+                .then(payload => {
+                    setPortalUserEmail(payload.data);
+                })
+                .catch(error => {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                });
+        })();
+    }, []);
+    function handleSubmitChangeEmail(values, actions) {
+        PortalUserAPI.changeEmail(values)
+            .then(payload => {
+                setPortalUserEmail(values.email);
+                actions.resetForm();
+                toggleError(false);
+                toggleSuccessMessage(true);
+                actions.setSubmitting(false);
+            })
+            .catch(error => {
+                actions.setSubmitting(false);
+                toggleError(true);
+                toggleSuccessMessage(false);
+            });
+    }
 
     return (
         <Formik
             initialValues={{ email: '', changePrimaryEmailAddress: false }}
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                // handleSubmitChangeEmail(values);
+                handleSubmitChangeEmail(values, actions);
             }}
         >
-            {({ touched, errors, isSubmitting }) => (
-                <Form>
+            {({ touched, errors, isSubmitting, handleSubmit }) => (
+                <Form onSubmit={handleSubmit}>
+                    {showSuccessMessage ? (
+                        <Row>
+                            <Col xs={12}>
+                                <Alert className={'p-1 m-1 text-success'} variant={'success'}>
+                                    Inlog e-mail is succesvol gewijzigd!
+                                </Alert>
+                            </Col>
+                        </Row>
+                    ) : null}
+                    {showError ? (
+                        <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                            Fout bij wijzigen inlog e-mail!
+                        </Alert>
+                    ) : null}
+
                     <Row>
                         <Col xs={12}>
                             <FormLabel className={'field-label'}>Huidig e-mailadres</FormLabel>

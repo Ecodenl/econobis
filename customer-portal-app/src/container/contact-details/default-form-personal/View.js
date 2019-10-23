@@ -63,7 +63,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                     </TextBlock>
                 </Row>
 
-                <FormLabel className={'field-label'}>E-mailadres factuur</FormLabel>
+                <FormLabel className={'field-label'}>E-mailadres nota</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'E-mailadres'}>
                         {emailInvoice.email}

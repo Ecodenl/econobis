@@ -103,7 +103,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                     </TextBlock>
                 </Row>
 
-                <FormLabel className={'field-label'}>E-mailadres factuur</FormLabel>
+                <FormLabel className={'field-label'}>E-mailadres nota</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'E-mailadres'}>
                         {emailInvoice.email}
@@ -179,7 +179,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {visitAddress.countryId}
                     </TextBlock>
                 </Row>
-                <FormLabel className={'field-label'}>Factuuradres</FormLabel>
+                <FormLabel className={'field-label'}>Nota adres</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
                         {invoiceAddress.street}

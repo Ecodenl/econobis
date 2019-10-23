@@ -147,7 +147,7 @@ const DefaultContactPersonalEdit = function({
                 </Row>
 
                 <FormLabel htmlFor="email-invoice" className="field-label">
-                    E-mailadres factuur
+                    E-mailadres nota
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={12} md={8}>

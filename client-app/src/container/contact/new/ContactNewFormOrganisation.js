@@ -31,7 +31,6 @@ class ContactNewFormOrganisation extends Component {
                 website: '',
                 iban: '',
                 ibanAttn: '',
-                newsletter: false,
                 ownerId: props.userId,
                 didAgreeAvg: false,
             },
@@ -108,7 +107,6 @@ class ContactNewFormOrganisation extends Component {
             chamberOfCommerceNumber,
             vatNumber,
             memberSince,
-            newsletter,
             website,
             iban,
             ibanAttn,
@@ -204,16 +202,6 @@ class ContactNewFormOrganisation extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-                <div className="row">
-                    <InputToggle
-                        label={'Nieuwsbrief'}
-                        name={'newsletter'}
-                        value={newsletter}
-                        className={'field-to-be-removed'}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
-
                 <div className="row">
                     <InputToggle
                         label={'Akkoord privacybeleid'}

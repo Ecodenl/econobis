@@ -24,7 +24,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
             iban,
             ibanAttn,
             createdAt,
-            newsletter,
             didAgreeAvg,
             dateDidAgreeAvg,
             isCollectMandate,
@@ -46,7 +45,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 website: organisation.website,
                 iban: iban,
                 ibanAttn: ibanAttn ? ibanAttn : '',
-                newsletter: newsletter,
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('Y-MM-DD') : '',
                 isCollectMandate,
@@ -174,7 +172,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
             chamberOfCommerceNumber,
             vatNumber,
             createdAt,
-            newsletter,
             didAgreeAvg,
             dateDidAgreeAvg,
             website,
@@ -270,17 +267,6 @@ class ContactDetailsFormOrganisationEdit extends Component {
                             divSize={'col-xs-12'}
                             name={'website'}
                             value={website}
-                            onChangeAction={this.handleInputChange}
-                        />
-                    </div>
-
-                    <div className="row">
-                        <InputToggle
-                            className={'field-to-be-removed'}
-                            label={'Nieuwsbrief'}
-                            divSize={'col-xs-12'}
-                            name={'newsletter'}
-                            value={newsletter}
                             onChangeAction={this.handleInputChange}
                         />
                     </div>

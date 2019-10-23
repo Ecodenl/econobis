@@ -26,6 +26,13 @@ export const updateOrganisation = contactDetails => {
     };
 };
 
+export const updatePortalUser = contactDetails => {
+    return {
+        type: 'UPDATE_PORTAL_USER',
+        contactDetails,
+    };
+};
+
 export const newAddress = address => {
     return {
         type: 'NEW_ADDRESS',

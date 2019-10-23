@@ -11,7 +11,6 @@ const ContactDetailsFormOrganisationView = props => {
         iban,
         ibanAttn,
         createdAt,
-        newsletter,
         didAgreeAvg,
         dateDidAgreeAvg,
         isCollectMandate,
@@ -57,14 +56,6 @@ const ContactDetailsFormOrganisationView = props => {
 
             <div className="row">
                 <ViewText className={'col-xs-12'} label="Website" value={organisation.website} />
-            </div>
-
-            <div className="row">
-                <ViewText
-                    className={'col-xs-12 field-to-be-removed'}
-                    label="Nieuwsbrief"
-                    value={newsletter ? 'Ja' : 'Nee'}
-                />
             </div>
 
             <div className="row">

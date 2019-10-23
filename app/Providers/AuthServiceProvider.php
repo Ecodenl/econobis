@@ -54,6 +54,7 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
+use App\Eco\Portal\PortalUserPolicy;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductPolicy;
 use App\Eco\Project\Project;
@@ -92,6 +93,7 @@ class AuthServiceProvider extends ServiceProvider
         Address::class => AddressPolicy::class,
         Contact::class => ContactPolicy::class,
         ContactNote::class => ContactNotePolicy::class,
+        PortalUser::class => PortalUserPolicy::class,
         EmailAddress::class => EmailAddressPolicy::class,
         Person::class => PersonPolicy::class,
         PhoneNumber::class => PhoneNumberPolicy::class,

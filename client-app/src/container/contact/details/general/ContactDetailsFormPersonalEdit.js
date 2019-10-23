@@ -19,7 +19,7 @@ class ContactDetailsFormPersonalEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { number, createdAt, person, newsletter, didAgreeAvg, dateDidAgreeAvg } = props.contactDetails;
+        const { number, createdAt, person, didAgreeAvg, dateDidAgreeAvg } = props.contactDetails;
 
         this.state = {
             lastNamePrefixes: props.lastNamePrefixes,
@@ -40,7 +40,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                 lastNamePrefix: person.lastNamePrefix ? person.lastNamePrefix : '',
                 lastName: person.lastName,
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
-                newsletter: newsletter,
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('Y-MM-DD') : '',
             },
@@ -157,7 +156,6 @@ class ContactDetailsFormPersonalEdit extends Component {
             lastNamePrefixId,
             lastName,
             dateOfBirth,
-            newsletter,
             didAgreeAvg,
             dateDidAgreeAvg,
             lastNamePrefix,
@@ -251,17 +249,6 @@ class ContactDetailsFormPersonalEdit extends Component {
                             name={'dateOfBirth'}
                             value={dateOfBirth}
                             onChangeAction={this.handleChangeDateOfBirth}
-                        />
-                    </div>
-
-                    <div className="row">
-                        <InputToggle
-                            label={'Nieuwsbrief'}
-                            divSize={'col-xs-12'}
-                            className={'field-to-be-removed'}
-                            name={'newsletter'}
-                            value={newsletter}
-                            onChangeAction={this.handleInputChange}
                         />
                     </div>
 

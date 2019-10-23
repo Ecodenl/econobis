@@ -41,7 +41,6 @@ class ContactNewFormPersonal extends Component {
                 memberSince: '',
                 memberUntil: '',
                 dateOfBirth: '',
-                newsletter: false,
                 ownerId: props.userId,
                 didAgreeAvg: false,
             },
@@ -324,7 +323,6 @@ class ContactNewFormPersonal extends Component {
             lastName,
             memberSince,
             dateOfBirth,
-            newsletter,
             ownerId,
             didAgreeAvg,
         } = this.state.person;
@@ -421,13 +419,6 @@ class ContactNewFormPersonal extends Component {
                 </div>
 
                 <div className="row">
-                    <InputToggle
-                        label={'Nieuwsbrief'}
-                        name={'newsletter'}
-                        value={newsletter}
-                        className={'field-to-be-removed'}
-                        onChangeAction={this.handleInputChange}
-                    />
                     <InputToggle
                         label={'Akkoord privacybeleid'}
                         name={'didAgreeAvg'}

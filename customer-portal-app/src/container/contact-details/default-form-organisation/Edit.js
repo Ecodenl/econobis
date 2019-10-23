@@ -551,29 +551,34 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                {values.primaryContactEnergySupplier ? (
-                    <>
-                        <FormLabel htmlFor="energy_supplier_id" className={'field-label'}>
-                            Energieleverancier
-                        </FormLabel>
-                        <Row>
-                            <Col xs={12} sm={12} md={8}>
-                                <Field
-                                    name="primaryContactEnergySupplier.energySupplierId"
-                                    render={({ field }) => (
-                                        <Select
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="energy_supplier_id"
-                                            placeholder={'Selecteer uw leverancier'}
-                                            options={EnergySuppliers}
-                                        />
-                                    )}
+                <FormLabel htmlFor="energy_supplier_id" className={'field-label'}>
+                    Energieleverancier
+                </FormLabel>
+                <Row>
+                    <Col xs={12} sm={12} md={8}>
+                        <Field
+                            name="primaryContactEnergySupplier.energySupplierId"
+                            render={({ field }) => (
+                                <Select
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="energy_supplier_id"
+                                    placeholder={'Selecteer uw leverancier'}
+                                    options={EnergySuppliers}
+                                    disabled={
+                                        initialContact.primaryContactEnergySupplier &&
+                                        initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                        initialContact.isParticipant
+                                    }
                                 />
-                            </Col>
-                        </Row>
+                            )}
+                        />
+                    </Col>
+                </Row>
 
+                {values.primaryContactEnergySupplier && values.primaryContactEnergySupplier.energySupplierId ? (
+                    <>
                         <FormLabel htmlFor="es_number" className={'field-label'}>
                             Klant nummer bij leverancier
                         </FormLabel>
@@ -588,6 +593,12 @@ const DefaultContactOrganisationEdit = function({
                                             touched={touched}
                                             id="es_number"
                                             placeholder={'Klant nummer bij leverancier'}
+                                            disabled={
+                                                initialContact.primaryContactEnergySupplier &&
+                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                                initialContact.primaryContactEnergySupplier.esNumber &&
+                                                initialContact.isParticipant
+                                            }
                                         />
                                     )}
                                 />
@@ -609,6 +620,11 @@ const DefaultContactOrganisationEdit = function({
                                             onChangeAction={setFieldValue}
                                             id="member_since"
                                             placeholder={'Klant sinds'}
+                                            readOnly={
+                                                initialContact.primaryContactEnergySupplier &&
+                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                                initialContact.primaryContactEnergySupplier.memberSince
+                                            }
                                         />
                                     )}
                                 />
@@ -629,6 +645,12 @@ const DefaultContactOrganisationEdit = function({
                                             touched={touched}
                                             id="ean_electricity"
                                             placeholder={'EAN nummer electriciteit'}
+                                            disabled={
+                                                initialContact.primaryContactEnergySupplier &&
+                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                                initialContact.primaryContactEnergySupplier.eanElectricity &&
+                                                initialContact.isParticipant
+                                            }
                                         />
                                     )}
                                 />
@@ -649,6 +671,11 @@ const DefaultContactOrganisationEdit = function({
                                             touched={touched}
                                             id="ean_gas"
                                             placeholder={'EAN nummer electriciteit'}
+                                            disabled={
+                                                initialContact.primaryContactEnergySupplier &&
+                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                                initialContact.primaryContactEnergySupplier.eanGas
+                                            }
                                         />
                                     )}
                                 />
@@ -656,47 +683,26 @@ const DefaultContactOrganisationEdit = function({
                         </Row>
                     </>
                 ) : (
-                    <>
-                        <FormLabel htmlFor="current_es_id" className={'field-label'}>
-                            Energieleverancier
-                        </FormLabel>
-                        <Row>
-                            <Col xs={12} sm={8}>
-                                <Field
-                                    name="primaryContactEnergySupplier.energySupplierId"
-                                    render={({ field }) => (
-                                        <Select
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="energy_supplier_id"
-                                            placeholder={'Selecteer uw leverancier'}
-                                            options={EnergySuppliers}
-                                        />
-                                    )}
-                                />
-                            </Col>
-                        </Row>
-                    </>
+                    ''
                 )}
 
-                <FormLabel className={'field-label'}>Contacten</FormLabel>
-                {values.primaryOccupations ? (
-                    values.primaryOccupations.map(primaryOccupation => (
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>
-                                {primaryOccupation.contact.fullName}
-                            </TextBlock>
-                            <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>
-                                {primaryOccupation.occupation.primaryOccupation}
-                            </TextBlock>
-                        </Row>
-                    ))
-                ) : (
-                    <Row>
-                        <TextBlock className={'col-12 col-sm-8'} />
-                    </Row>
-                )}
+                {/*<FormLabel className={'field-label'}>Contacten</FormLabel>*/}
+                {/*{values.primaryOccupations ? (*/}
+                {/*values.primaryOccupations.map(primaryOccupation => (*/}
+                {/*<Row>*/}
+                {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>*/}
+                {/*{primaryOccupation.contact.fullName}*/}
+                {/*</TextBlock>*/}
+                {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>*/}
+                {/*{primaryOccupation.occupation.primaryOccupation}*/}
+                {/*</TextBlock>*/}
+                {/*</Row>*/}
+                {/*))*/}
+                {/*) : (*/}
+                {/*<Row>*/}
+                {/*<TextBlock className={'col-12 col-sm-8'} />*/}
+                {/*</Row>*/}
+                {/*)}*/}
             </Col>
         </Row>
     );

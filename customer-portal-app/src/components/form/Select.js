@@ -14,6 +14,7 @@ const Select = ({
     errors,
     touched,
     classNameErrorMessage,
+    disabled,
 }) => {
     return (
         <>
@@ -26,6 +27,7 @@ const Select = ({
                 } `}
                 id={id}
                 {...field}
+                disabled={disabled}
             >
                 {emptyOption ? <option value="">{placeholder ? `-- ${placeholder} --` : ''}</option> : null}
                 {options.map(option => {

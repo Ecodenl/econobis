@@ -13,6 +13,7 @@ const InputText = ({
     errors,
     touched,
     classNameErrorMessage,
+    disabled,
 }) => {
     return (
         <>
@@ -28,6 +29,7 @@ const InputText = ({
                 {...field}
                 readOnly={readOnly}
                 placeholder={placeholder}
+                disabled={disabled}
             />
         </>
     );

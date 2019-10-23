@@ -150,16 +150,16 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 </Row>
 
                 <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
-                {primaryContactEnergySupplier ? (
-                    <>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                                {primaryContactEnergySupplier.energySupplier
-                                    ? primaryContactEnergySupplier.energySupplier.name
-                                    : ''}
-                            </TextBlock>
-                        </Row>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
+                        {primaryContactEnergySupplier.energySupplier
+                            ? primaryContactEnergySupplier.energySupplier.name
+                            : ''}
+                    </TextBlock>
+                </Row>
 
+                {primaryContactEnergySupplier && primaryContactEnergySupplier.energySupplierId ? (
+                    <>
                         <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
@@ -191,9 +191,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                         </Row>
                     </>
                 ) : (
-                    <Row>
-                        <TextBlock className={'col-12 col-sm-8'} />
-                    </Row>
+                    ''
                 )}
             </Col>
         </Row>

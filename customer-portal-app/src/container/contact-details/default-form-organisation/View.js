@@ -206,17 +206,18 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {invoiceAddress.countryId}
                     </TextBlock>
                 </Row>
-                <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
-                {primaryContactEnergySupplier ? (
-                    <>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
-                                {primaryContactEnergySupplier.energySupplier
-                                    ? primaryContactEnergySupplier.energySupplier.name
-                                    : ''}
-                            </TextBlock>
-                        </Row>
 
+                <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
+                        {primaryContactEnergySupplier.energySupplier
+                            ? primaryContactEnergySupplier.energySupplier.name
+                            : ''}
+                    </TextBlock>
+                </Row>
+
+                {primaryContactEnergySupplier && primaryContactEnergySupplier.energySupplierId ? (
+                    <>
                         <FormLabel className={'field-label'}>Klant nummer bij leverancier</FormLabel>
                         <Row>
                             <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant nummer'}>
@@ -248,27 +249,26 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         </Row>
                     </>
                 ) : (
-                    <Row>
-                        <TextBlock className={'col-12 col-sm-8'} />
-                    </Row>
+                    ''
                 )}
-                <FormLabel className={'field-label'}>Contacten</FormLabel>
-                {primaryOccupations ? (
-                    primaryOccupations.map(primaryOccupation => (
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>
-                                {primaryOccupation.contact.fullName}
-                            </TextBlock>
-                            <TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>
-                                {primaryOccupation.occupation.primaryOccupation}
-                            </TextBlock>
-                        </Row>
-                    ))
-                ) : (
-                    <Row>
-                        <TextBlock className={'col-12 col-sm-8'} />
-                    </Row>
-                )}
+
+                {/*<FormLabel className={'field-label'}>Contacten</FormLabel>*/}
+                {/*{primaryOccupations ? (*/}
+                {/*primaryOccupations.map(primaryOccupation => (*/}
+                {/*<Row>*/}
+                {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact naam'}>*/}
+                {/*{primaryOccupation.contact.fullName}*/}
+                {/*</TextBlock>*/}
+                {/*<TextBlock className={'col-12 col-sm-4'} placeholder={'Contact verbinding'}>*/}
+                {/*{primaryOccupation.occupation.primaryOccupation}*/}
+                {/*</TextBlock>*/}
+                {/*</Row>*/}
+                {/*))*/}
+                {/*) : (*/}
+                {/*<Row>*/}
+                {/*<TextBlock className={'col-12 col-sm-8'} />*/}
+                {/*</Row>*/}
+                {/*)}*/}
             </Col>
         </Row>
     );

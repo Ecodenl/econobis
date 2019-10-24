@@ -13,32 +13,38 @@ class AddManagePortalSettingsPermission extends Migration
      */
     public function up()
     {
-        //
+ //
 //        Permission::findByName('manage_portal_settings')->delete();
 
-        Permission::create([
-            'name' => 'manage_portal_settings',
-            'guard_name' => 'api',
-        ]);
-
-        $arrayRoles = [
-            'Key user' => ['manage_portal_settings'],
-        ];
-        foreach ($arrayRoles as $roleName => $permissions){
-            $role = Role::findByName($roleName);
-
-            $role->givePermissionTo($permissions);
-        }
-
-        //make roles
-        $roles = ['Beheerder Portal Settings' => ['manage_portal_settings']];
-
-        foreach($roles as $role => $permissions) {
-            $role =  Role::create([
-                'name' => $role,
+        if( !Permission::findByName('manage_portal_settings') )
+        {
+            Permission::create([
+                'name' => 'manage_portal_settings',
                 'guard_name' => 'api',
             ]);
-            $role->syncPermissions($permissions);
+        }
+
+//        $arrayRoles = [
+//            'Key user' => ['manage_portal_settings'],
+//        ];
+//        foreach ($arrayRoles as $roleName => $permissions){
+//            $role = Role::findByName($roleName);
+//
+//            $role->givePermissionTo($permissions);
+//        }
+
+        //make roles
+        $roles = ['Beheerder portal instellingen' => ['manage_portal_settings']];
+
+        foreach($roles as $role => $permissions) {
+
+            if( !Role::findByName('Beheerder portal instellingen') ) {
+                $role = Role::create([
+                    'name' => $role,
+                    'guard_name' => 'api',
+                ]);
+                $role->syncPermissions($permissions);
+            }
         }
 
     }

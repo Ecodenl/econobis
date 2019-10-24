@@ -118,7 +118,7 @@ function Header({ location, history }) {
                                                                         to={'/wijzig-inloggegevens'}
                                                                         class={'dropdown-link'}
                                                                     >
-                                                                        Wijzig accountgegevens
+                                                                        Wijzig inloggegevens
                                                                     </Link>
                                                                 </Dropdown.Item>
                                                                 <Dropdown.Divider />

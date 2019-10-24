@@ -34,30 +34,49 @@ class NewAccountController extends Controller
     public function createNewAccount(Request $request)
     {
         $this->validateEmail($request);
+        $url = config('services.google.re_captcha_server_side_url');
+        $data = [
+            'secret' => config('services.google.re_captcha_server_side_key'),
+            'response' => $request->reCaptchaToken
+        ];
 
-        // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
-        // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
-        if (!$responsibleUserId) {
-            abort(501, 'Er is helaas een fout opgetreden (5).');
-        }
-        $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
-        if (!$emailTemplateNewAccountId) {
-            abort(501, 'Er is helaas een fout opgetreden (6).');
-        }
+        $options = [
+          'http' => [
+              'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+              'method' => "POST",
+              'content' => http_build_query($data),
+          ]
+        ];
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $resultJson = json_decode($result);
 
-        DB::transaction(function () use ($request, $responsibleUserId, $emailTemplateNewAccountId) {
-
-        $data = $this->getDataFromRequest($request);
-        $contact = $this->addContact($data['contact']);
-            if($contact)
-            {
-                $this->sendNewAccountMail($contact, $responsibleUserId, $emailTemplateNewAccountId);
-            }else{
-                abort(501, 'Er is helaas een fout opgetreden (7).');
+        if($resultJson->success) {
+            // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
+            // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            if (!$responsibleUserId) {
+                abort(501, 'Er is helaas een fout opgetreden (5).');
+            }
+            $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
+            if (!$emailTemplateNewAccountId) {
+                abort(501, 'Er is helaas een fout opgetreden (6).');
             }
 
-        });
+            DB::transaction(function () use ($request, $responsibleUserId, $emailTemplateNewAccountId) {
+
+                $data = $this->getDataFromRequest($request);
+                $contact = $this->addContact($data['contact']);
+                if ($contact) {
+                    $this->sendNewAccountMail($contact, $responsibleUserId, $emailTemplateNewAccountId);
+                } else {
+                    abort(501, 'Er is helaas een fout opgetreden (7).');
+                }
+
+            });
+        } else {
+            abort(501, 'Er is helaas een fout opgetreden met de CAPTCHA verificatie.');
+        }
     }
 
     /**

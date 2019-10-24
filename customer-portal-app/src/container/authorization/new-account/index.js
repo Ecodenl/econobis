@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { GoogleReCaptcha, GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import LogoImage from '../../../images/logo.png';
 import AuthAPI from '../../../api/auth/AuthAPI';
 import Alert from 'react-bootstrap/Alert';
@@ -11,12 +11,18 @@ import NewAccountFormOrganisation from './NewAccountFormOrganisation';
 import { Link } from 'react-router-dom';
 
 const NewAccount = props => {
+    const { executeRecaptcha } = useGoogleReCaptcha();
     const [contactType, setContactType] = useState('person');
     const [showError, toggleError] = useState(false);
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
 
-    function handleSubmit(values, actions) {
-        AuthAPI.newAccount({ ...values, contactType: contactType })
+    async function handleSubmit(values, actions) {
+        if (!executeRecaptcha) {
+            return;
+        }
+        const reCaptchaToken = await executeRecaptcha('signup_page');
+
+        AuthAPI.newAccount({ ...values, contactType: contactType, reCaptchaToken })
             .then(payload => {
                 toggleError(false);
                 toggleSuccessMessage(true);
@@ -107,4 +113,14 @@ const NewAccount = props => {
     );
 };
 
-export default NewAccount;
+function NewAccountWithProvider() {
+    const RE_CAPTCHA_KEY = process.env.REACT_APP_RE_CAPTCHA_KEY;
+
+    return (
+        <GoogleReCaptchaProvider reCaptchaKey={RE_CAPTCHA_KEY} language={'nl'}>
+            <NewAccount />
+        </GoogleReCaptchaProvider>
+    );
+}
+
+export default NewAccountWithProvider;

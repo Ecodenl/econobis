@@ -4364,7 +4364,7 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
-hoist-non-react-statics@^2.3.1:
+hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.5:
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
 
@@ -4486,6 +4486,10 @@ http-signature@~1.2.0:
 https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
+
+ibantools@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/ibantools/-/ibantools-2.2.0.tgz#39f73a88b54f760975929ed21bb0be1161de9c5b"
 
 iconv-lite@0.4.23:
   version "0.4.23"
@@ -5668,7 +5672,7 @@ lodash.uniq@^4.5.0:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
-lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14:
+lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
 
@@ -7546,6 +7550,12 @@ react-fast-compare@^2.0.1:
 react-frame-component@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-4.1.1.tgz#ea8f7c518ef6b5ad72146dd1f648752369826894"
+
+react-google-recaptcha-v3@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-google-recaptcha-v3/-/react-google-recaptcha-v3-1.4.0.tgz#414d39b60a128e79f4e5d2939ba9456399472243"
+  dependencies:
+    hoist-non-react-statics "^2.5.5"
 
 react-icons@^3.7.0:
   version "3.7.0"

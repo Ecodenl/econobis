@@ -16,6 +16,7 @@
     "react-day-picker": "^7.3.2",
     "react-dom": "^16.8.6",
     "react-frame-component": "^4.1.1",
+    "react-google-recaptcha-v3": "^1.4.0",
     "react-icons": "^3.7.0",
     "react-router-dom": "5.0.1",
     "react-scripts": "3.0.1",

@@ -42,4 +42,9 @@ return [
         'verkoop_default_currency'     => 'EUR',
         'verkoop_grootboek_debiteuren' => '1300',
     ],
+
+    'google' => [
+        're_captcha_server_side_url' => env('RE_CAPTCHA_SERVER_SIDE_URL', 'https://www.google.com/recaptcha/api/siteverify'),
+        're_captcha_server_side_key' => env('RE_CAPTCHA_SERVER_SIDE_KEY'),
+    ],
 ];

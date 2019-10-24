@@ -62,7 +62,7 @@ class ContactDetailsFormPortalUserEdit extends Component {
         !hasErrors &&
             PortalUserAPI.updatePortalUser(portalUser)
                 .then(payload => {
-                    this.props.dispatch(ContactDetailsActions.updatePortalUser(payload.data.data));
+                    this.props.dispatch(ContactDetailsActions.updatePortalUser(portalUser));
                     this.props.switchToView();
                 })
                 .catch(error => {
@@ -130,7 +130,7 @@ class ContactDetailsFormPortalUserEdit extends Component {
 
 const mapStateToProps = state => {
     return {
-        portalUser: state.contactDetails.portalUser ? state.contactDetails.portalUser : '',
+        portalUser: state.contactDetails.portalUser,
         permissions: state.meDetails.permissions,
     };
 };

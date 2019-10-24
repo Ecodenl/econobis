@@ -19,7 +19,10 @@ export default function(state = {}, action) {
         case 'UPDATE_PORTAL_USER':
             return {
                 ...state,
-                ...action.contactDetails,
+                portalUser: {
+                    ...state.portalUser,
+                    ...action.portalUser,
+                },
             };
         case 'NEW_ADDRESS':
             return {

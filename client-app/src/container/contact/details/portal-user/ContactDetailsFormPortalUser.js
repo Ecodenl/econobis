@@ -55,14 +55,13 @@ class ContactDetailsFormPortalUser extends Component {
                     <span className="h5 text-bold">Portal gebruiker gegevens</span>
                 </PanelHeader>
                 <PanelBody>
-                    <p>**Under construction**</p>
-                    {/*{!props.portalUser ? <p>Niet geactiveerd</p> : null}*/}
-                    {/*{props.portalUser && this.state.showEdit ? (*/}
-                    {/*<ContactDetailsFormPortalUserView switchToEdit={this.switchToEdit} />*/}
-                    {/*) : null}*/}
-                    {/*{props.portalUser && !this.state.showEdit ? (*/}
-                    {/*<ContactDetailsFormPortalUserEdit switchToView={this.switchToView} />*/}
-                    {/*) : null}*/}
+                    {!this.props.portalUser ? (
+                        <p>Niet geactiveerd</p>
+                    ) : this.state.showEdit ? (
+                        <ContactDetailsFormPortalUserEdit switchToView={this.switchToView} />
+                    ) : (
+                        <ContactDetailsFormPortalUserView switchToEdit={this.switchToEdit} />
+                    )}
                 </PanelBody>
             </Panel>
         );

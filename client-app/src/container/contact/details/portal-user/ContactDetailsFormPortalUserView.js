@@ -16,7 +16,6 @@ const ContactDetailsFormPortalUserView = props => {
 
 const mapStateToProps = state => {
     return {
-        // portalUser: state.contactDetails.portalUser ? state.contactDetails.portalUser : '',
         portalUser: state.contactDetails.portalUser,
     };
 };

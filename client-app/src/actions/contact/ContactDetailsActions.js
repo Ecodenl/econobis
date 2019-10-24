@@ -26,10 +26,10 @@ export const updateOrganisation = contactDetails => {
     };
 };
 
-export const updatePortalUser = contactDetails => {
+export const updatePortalUser = portalUser => {
     return {
         type: 'UPDATE_PORTAL_USER',
-        contactDetails,
+        portalUser,
     };
 };
 

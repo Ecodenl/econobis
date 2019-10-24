@@ -8,6 +8,7 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
@@ -112,7 +113,10 @@ class ContactController extends ApiController
 
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
-        return DocumentHelper::getDocumentBody($contact, $project);
+        $documentTemplateAgreementId = PortalSettings::get('documentTemplateAgreementId');
+        $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
+
+        return DocumentHelper::getDocumentBody($contact, $project, $documentTemplate);
     }
 
     protected function updatePerson($contact, Request $request)

@@ -11,7 +11,6 @@ namespace App\Helpers\Document;
 use App\Eco\Contact\Contact;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Project\Project;
-use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,10 +22,8 @@ class DocumentHelper
      *
      * @return string
      */
-    public static function getDocumentBody(Contact $contact, Project $project)
+    public static function getDocumentBody(Contact $contact, Project $project, DocumentTemplate $documentTemplate)
     {
-        $documentTemplateAgreementId = PortalSettings::get('documentTemplateAgreementId');
-        $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
         if(!$documentTemplate)
         {
             $documentBody = '';

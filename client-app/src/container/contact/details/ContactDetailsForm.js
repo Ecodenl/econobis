@@ -15,6 +15,7 @@ import ContactDetailsCampaigns from './campaigns/ContactDetailsCampaigns';
 import ContactDetailsFormOccupations from './occupations/ContactDetailsFormOccupations';
 import ContactDetailsFormContactEnergySupplier from './contact-energy-suppliers/ContactDetailsFormContactEnergySupplier';
 import moment from 'moment/moment';
+import ContactDetailsFormPortalUser from './portal-user/ContactDetailsFormPortalUser';
 moment.locale('nl');
 
 class ContactDetailsForm extends Component {
@@ -60,6 +61,7 @@ class ContactDetailsForm extends Component {
                 {typeId == 'organisation' && <ContactDetailsCampaigns />}
                 <ContactDetailsFormOccupations />
                 {typeId == 'person' && <ContactDetailsFormOther />}
+                {typeId == 'person' && <ContactDetailsFormPortalUser />}
                 <ContactDetailsFormNote />
                 <ContactDetailsFormConclusion />
             </div>

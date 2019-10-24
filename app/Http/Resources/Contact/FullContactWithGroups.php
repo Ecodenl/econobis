@@ -16,6 +16,7 @@ use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\ParticipantProject\RelatedParticipantProjectToContact;
 use App\Http\Resources\Person\FullPerson;
 use App\Http\Resources\PhoneNumber\FullPhoneNumber;
+use App\Http\Resources\PortalUser\FullPortalUser;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -60,6 +61,7 @@ class FullContactWithGroups extends Resource
             'liabilityAmount' => $this->liability_amount,
             'ownerId' => $this->owner_id,
             'owner' => FullUser::make($this->whenLoaded('owner')),
+            'portalUser' => FullPortalUser::make($this->whenLoaded('portalUser')),
             'contactEnergySuppliers' => FullContactEnergySupplier::collection($this->whenLoaded('contactEnergySuppliers')),
             'primaryContactEnergySupplier' => FullContactEnergySupplier::make($this->whenLoaded('primaryContactEnergySupplier')),
             'primaryOccupations' => FullOccupationContact::collection($this->whenLoaded('primaryOccupations')),

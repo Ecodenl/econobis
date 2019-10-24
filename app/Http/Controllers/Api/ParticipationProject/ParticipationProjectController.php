@@ -580,8 +580,11 @@ class ParticipationProjectController extends ApiController
 
                 $document = new Document();
                 $document->document_type = 'internal';
-                $document->document_group = 'revenue';
+                $document->document_group = $documentTemplate->document_group;
                 $document->contact_id = $contact->id;
+                $document->project_id = $project->id;
+                $document->participation_project_id = $participant->id;
+                $document->template_id = $documentTemplate->id;
 
                 $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
 

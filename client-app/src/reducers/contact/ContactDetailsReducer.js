@@ -16,6 +16,11 @@ export default function(state = {}, action) {
                 ...state,
                 ...action.contactDetails,
             };
+        case 'UPDATE_PORTAL_USER':
+            return {
+                ...state,
+                ...action.contactDetails,
+            };
         case 'NEW_ADDRESS':
             return {
                 ...state,

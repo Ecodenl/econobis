@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Portal\ParticipationProject;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
@@ -64,15 +65,18 @@ class ParticipationProjectController extends Controller
         }
 
         DB::transaction(function () use ($contact, $project, $request, $portalUser, $responsibleUserId) {
-            $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
-            $this->createAndSendRegistrationDocument($contact, $project, $responsibleUserId);
+            $participation = $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
+            $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId);
         });
 
     }
 
-    protected function createAndSendRegistrationDocument($contact, $project, $responsibleUserId)
+    protected function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId)
     {
-        $documentBody = DocumentHelper::getDocumentBody($contact, $project);
+        $documentTemplateAgreementId = PortalSettings::get('documentTemplateAgreementId');
+        $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
+
+        $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate);
 
         $emailTemplateAgreementId = PortalSettings::get('emailTemplateAgreementId');
 
@@ -91,6 +95,9 @@ class ParticipationProjectController extends Controller
         $document->document_type = 'internal';
         $document->document_group = 'registration';
         $document->contact_id = $contact->id;
+        $document->project_id = $project->id;
+        $document->participation_project_id = $participation->id;
+        $document->template_id = $documentTemplate->id;
 
         $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
             . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
@@ -294,5 +301,6 @@ class ParticipationProjectController extends Controller
         // Voor zekerheid hierna weer even Auth user herstellen met portal user
         Auth::setUser($portalUser);
 
+        return $participation;
     }
 }

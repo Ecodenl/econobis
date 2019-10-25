@@ -19,10 +19,6 @@ class ConversionOccupationContactPersonOrganisation extends Migration
         //        contact = primaryContact (peron)
         $occupationContacts = OccupationContact::get();
         foreach ($occupationContacts as $occupationContact){
-            // link primaryContact = person and contact = orginastion is not allowed.
-            // in that case we switch the link:
-            //   primaryContact = contact (organisation)
-            //   contact = primaryContact (peron)
             $primaryContact = $occupationContact->primaryContact;
             $secondaryContact = $occupationContact->contact;
             $occupationId = $occupationContact->occupation_id;

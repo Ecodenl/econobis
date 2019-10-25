@@ -108,6 +108,11 @@ class ContactDetailsFormOccupationsNew extends Component {
             hasErrors = true;
         }
 
+        if (occupation.contactId === occupation.primaryContactId) {
+            errors.contactId = true;
+            hasErrors = true;
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form

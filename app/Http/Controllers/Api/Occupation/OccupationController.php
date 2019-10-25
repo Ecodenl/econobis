@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Occupation;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\Occupation\OccupationContact;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -26,10 +27,23 @@ class OccupationController extends ApiController
             ->boolean('primary')->next()
             ->get();
 
-        //an organisation can only have 1 contactperson.
-        if ($data['primary'] == true) {
+        // link primaryContact = person and contact = orginastion is not allowed.
+        // in that case we switch the link:
+        //   primaryContact = contact (organisation)
+        //   contact = primaryContact (peron)
+        $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
+        $secondaryContact = Contact::where('id', $data['contact_id'])->first();
+        $switchContact = false;
+        if ($primaryContact->type_id == ContactType::PERSON && $secondaryContact->type_id == ContactType::ORGANISATION) {
+            $data['primary_contact_id'] = $secondaryContact->id;
+            $data['contact_id'] = $primaryContact->id;
             $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
             $secondaryContact = Contact::where('id', $data['contact_id'])->first();
+            $switchContact = true;
+        }
+
+        // an organisation can only have 1 contactperson.
+        if ($data['primary'] == true) {
 
             if ($primaryContact->type_id == 'organisation') {
                 $organisationOccupations
@@ -65,7 +79,16 @@ class OccupationController extends ApiController
             Log::error('error adding occupation: ' . $e);
         }
 
-        return FullOccupationContact::collection(OccupationContact::where('primary_contact_id', $occupationContact->primary_contact_id)->orWhere('contact_id', $occupationContact->contact_id)->orderBy('created_at')->with('primaryContact', 'contact', 'occupation')->get());
+        if($switchContact)
+        {
+            $occupationContact = OccupationContact::where('primary_contact_id', $occupationContact->contact_id)->orWhere('contact_id', $occupationContact->primary_contact_id)->orderBy('created_at')->get();
+        }else{
+            $occupationContact = OccupationContact::where('primary_contact_id', $occupationContact->primary_contact_id)->orWhere('contact_id', $occupationContact->contact_id)->orderBy('created_at')->get();
+        }
+
+        $occupationContact->load('occupation', 'primaryContact', 'contact');
+
+        return FullOccupationContact::collection($occupationContact);
     }
 
     public function update(RequestInput $requestInput, OccupationContact $occupationContact)
@@ -80,12 +103,25 @@ class OccupationController extends ApiController
             ->boolean('primary')->next()
             ->get();
 
-        //an organisation can only have 1 contactperson.
-        if ($data['primary'] == true) {
+        // link primaryContact = person and contact = orginastion is not allowed.
+        // in that case we switch the link:
+        //   primaryContact = contact (organisation)
+        //   contact = primaryContact (peron)
+        $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
+        $secondaryContact = Contact::where('id', $data['contact_id'])->first();
+        $switchContact = false;
+        if ($primaryContact->type_id == ContactType::PERSON && $secondaryContact->type_id == ContactType::ORGANISATION) {
+            $data['primary_contact_id'] = $secondaryContact->id;
+            $data['contact_id'] = $primaryContact->id;
             $primaryContact = Contact::where('id', $data['primary_contact_id'])->first();
             $secondaryContact = Contact::where('id', $data['contact_id'])->first();
+            $switchContact = true;
+        }
 
-            if ($primaryContact->type_id == 'organisation') {
+        //an organisation can only have 1 contactperson.
+        if ($data['primary'] == true) {
+
+            if ($primaryContact->type_id == ContactType::ORGANISATION) {
                 $organisationOccupations
                     = OccupationContact::where('primary_contact_id',
                     $primaryContact->id)
@@ -97,7 +133,7 @@ class OccupationController extends ApiController
                 }
             }
 
-            if ($secondaryContact->type_id == 'organisation') {
+            if ($secondaryContact->type_id == ContactType::ORGANISATION) {
                 $organisationOccupations
                     = OccupationContact::where('primary_contact_id',
                     $secondaryContact->id)
@@ -113,7 +149,13 @@ class OccupationController extends ApiController
         $occupationContact->fill($data);
         $occupationContact->save();
 
-        $occupationContact = OccupationContact::where('primary_contact_id', $occupationContact->primary_contact_id)->orWhere('contact_id', $occupationContact->contact_id)->orderBy('created_at')->get();
+        if($switchContact)
+        {
+            $occupationContact = OccupationContact::where('primary_contact_id', $occupationContact->contact_id)->orWhere('contact_id', $occupationContact->primary_contact_id)->orderBy('created_at')->get();
+        }else{
+            $occupationContact = OccupationContact::where('primary_contact_id', $occupationContact->primary_contact_id)->orWhere('contact_id', $occupationContact->contact_id)->orderBy('created_at')->get();
+        }
+
         $occupationContact->load('occupation', 'primaryContact', 'contact');
 
         return FullOccupationContact::collection($occupationContact);

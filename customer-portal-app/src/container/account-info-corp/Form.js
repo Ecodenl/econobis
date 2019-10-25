@@ -83,7 +83,7 @@ const AccountInfoCorpForm = function({ handleSubmit, initialValues }) {
                                 />
 
                                 <label htmlFor="did_agree_avg" className="field-label">
-                                    Akkoord privacy beleid
+                                    Akkoord privacybeleid
                                 </label>
                                 <Field
                                     name="didAgreeAvg"

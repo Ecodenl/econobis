@@ -108,6 +108,9 @@ const DefaultContactPersonalEdit = function({
                         />
                     </Col>
                 </Row>
+                <FormLabel htmlFor="date_of_birth" className={'field-label'}>
+                    Geboortedatum
+                </FormLabel>
                 <Row>
                     <Col xs={12} sm={6}>
                         <Field
@@ -118,7 +121,7 @@ const DefaultContactPersonalEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     onChangeAction={setFieldValue}
-                                    id="last_name"
+                                    id="date_of_birth"
                                     placeholder={'Geboortedatum'}
                                 />
                             )}
@@ -343,7 +346,7 @@ const DefaultContactPersonalEdit = function({
                 </Row>
 
                 <FormLabel htmlFor="did_agree_avg" className={'field-label'}>
-                    Akkoord privacy beleid
+                    Akkoord privacybeleid
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
@@ -362,7 +365,7 @@ const DefaultContactPersonalEdit = function({
                                     <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
                                         Ik ga akkoord met{' '}
                                         <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
-                                            privacy beleid
+                                            privacybeleid
                                         </a>{' '}
                                         {values.didAgreeAvg ? (
                                             <em>

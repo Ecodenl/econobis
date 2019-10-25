@@ -54,6 +54,8 @@ export default props => {
                                         <Link to={'/wachtwoord-vergeten'} className="authorization-link">
                                             Wachtwoord vergeten?
                                         </Link>
+                                    </Row>
+                                    <Row className="justify-content-center">
                                         <Link to={'/nieuw-account'} className="authorization-link">
                                             Nieuw bij {window.__SERVER_DATA__.cooperative_name}?
                                         </Link>

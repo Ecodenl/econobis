@@ -11,7 +11,7 @@ function StepFive() {
             <Row>
                 <Col xs={12} md={10}>
                     <p>
-                        Bedankt voor je inschrijving! Je ontvangt van ons een e-mail met daarin alle gegevens van je
+                        Bedankt voor je inschrijving! Je ontvangt van ons een e-mail met daarin alle gegevens van je
                         inschrijving en informatie over de vervolgstappen die we nemen om jouw inschrijving definitief
                         te maken.
                     </p>

@@ -63,7 +63,12 @@ function ProjectList(props) {
         <Container className={'content-section'}>
             <Row>
                 <Col>
-                    <h1 className="content-heading">Overzicht projecten</h1>
+                    <h1 className="content-heading">Overzicht projecten waarop je kan inschrijven.</h1>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <p>Klik op het project voor meer details.</p>
                 </Col>
             </Row>
             <Row>

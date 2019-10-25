@@ -62,7 +62,7 @@ function RegistrationList(props) {
                             <thead>
                                 <tr>
                                     <th>Project</th>
-                                    <th>Aantal participaties</th>
+                                    <th>Aantal Deelname</th>
                                 </tr>
                             </thead>
                             <tbody>

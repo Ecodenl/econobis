@@ -136,7 +136,7 @@ const DefaultContactOrganisationEdit = function({
                 </Row>
 
                 <FormLabel htmlFor="did_agree_avg" className={'field-label'}>
-                    Akkoord privacy beleid
+                    Akkoord privacybeleid
                 </FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
@@ -155,7 +155,7 @@ const DefaultContactOrganisationEdit = function({
                                     <span htmlFor="did_agree_avg" className="checkbox-label w-form-label">
                                         Ik ga akkoord met{' '}
                                         <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
-                                            privacy beleid
+                                            privacybeleid
                                         </a>
                                     </span>{' '}
                                     {values.didAgreeAvg ? (

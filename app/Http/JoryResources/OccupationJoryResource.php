@@ -19,6 +19,7 @@ class OccupationJoryResource extends JoryResource
         $this->field('id')->filterable()->sortable();
         $this->field('primary_occupation')->filterable()->sortable();
         $this->field('secondary_occupation')->filterable()->sortable();
+        $this->field('occupation_for_portal')->filterable()->sortable();
     }
 
 }

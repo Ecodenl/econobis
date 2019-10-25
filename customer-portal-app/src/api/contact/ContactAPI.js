@@ -56,7 +56,7 @@ export default {
                             fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
                             rlt: {
                                 occupation: {
-                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation'],
+                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation', 'occupationForPortal'],
                                 },
                                 primaryContact: {
                                     fld: ['id', 'fullName'],

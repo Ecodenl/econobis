@@ -137,25 +137,29 @@ function Header({ location, history }) {
                                                                     {user.fullName}
                                                                 </Dropdown.Item>
                                                                 {user.occupations
-                                                                    ? user.occupations.map(occupation => (
-                                                                          <Dropdown.Item
-                                                                              key={occupation.id}
-                                                                              onClick={() => {
-                                                                                  setCurrentContact(
-                                                                                      occupation.primaryContact
-                                                                                  );
-                                                                                  redirect('gegevens');
-                                                                              }}
-                                                                              active={
-                                                                                  currentSelectedContact.id ===
-                                                                                  occupation.primaryContact.id
-                                                                                      ? true
-                                                                                      : false
-                                                                              }
-                                                                          >
-                                                                              {occupation.primaryContact.fullName}
-                                                                          </Dropdown.Item>
-                                                                      ))
+                                                                    ? user.occupations.map(
+                                                                          occupation => (
+                                                                              // occupation.primary ? (
+                                                                              <Dropdown.Item
+                                                                                  key={occupation.id}
+                                                                                  onClick={() => {
+                                                                                      setCurrentContact(
+                                                                                          occupation.primaryContact
+                                                                                      );
+                                                                                      redirect('gegevens');
+                                                                                  }}
+                                                                                  active={
+                                                                                      currentSelectedContact.id ===
+                                                                                      occupation.primaryContact.id
+                                                                                          ? true
+                                                                                          : false
+                                                                                  }
+                                                                              >
+                                                                                  {occupation.primaryContact.fullName}
+                                                                              </Dropdown.Item>
+                                                                          )
+                                                                          // ) : null
+                                                                      )
                                                                     : null}
                                                                 <Dropdown.Divider />
                                                                 <Dropdown.Item

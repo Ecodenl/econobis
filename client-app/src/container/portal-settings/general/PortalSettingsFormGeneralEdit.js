@@ -14,6 +14,7 @@ import InputText from '../../../components/form/InputText';
 import InputSelect from '../../../components/form/InputSelect';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
+import ViewText from './PortalSettingsFormGeneralView';
 
 class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
@@ -29,6 +30,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 portalUrl: false,
                 backgroundColor: false,
                 responsibleUserId: false,
+                checkContactTaskResponsibleUserId: false,
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
                 emailTemplateNewAccountId: false,
@@ -120,6 +122,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             portalUrl,
             backgroundColor,
             responsibleUserId,
+            checkContactTaskResponsibleUserId,
             documentTemplateAgreementId,
             emailTemplateAgreementId,
             emailTemplateNewAccountId,
@@ -189,6 +192,15 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={responsibleUserId}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.responsibleUserId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Verantwoordelijk gebruiker controle contact taak"
+                                name={'checkContactTaskResponsibleUserId'}
+                                value={checkContactTaskResponsibleUserId}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.checkContactTaskResponsibleUserId}
                             />
                         </div>
                         <div className="row">

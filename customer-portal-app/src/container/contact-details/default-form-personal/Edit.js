@@ -397,11 +397,11 @@ const DefaultContactPersonalEdit = function({
                                     id="energy_supplier_id"
                                     placeholder={'Selecteer uw leverancier'}
                                     options={EnergySuppliers}
-                                    disabled={
-                                        initialContact.primaryContactEnergySupplier &&
-                                        initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                        initialContact.isParticipant
-                                    }
+                                    // disabled={
+                                    //     initialContact.primaryContactEnergySupplier &&
+                                    //     initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                    //     initialContact.isParticipant
+                                    // }
                                 />
                             )}
                         />
@@ -424,12 +424,12 @@ const DefaultContactPersonalEdit = function({
                                             touched={touched}
                                             id="es_number"
                                             placeholder={'Klant nummer bij leverancier'}
-                                            disabled={
-                                                initialContact.primaryContactEnergySupplier &&
-                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                initialContact.primaryContactEnergySupplier.esNumber &&
-                                                initialContact.isParticipant
-                                            }
+                                            // disabled={
+                                            //     initialContact.primaryContactEnergySupplier &&
+                                            //     initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                            //     initialContact.primaryContactEnergySupplier.esNumber &&
+                                            //     initialContact.isParticipant
+                                            // }
                                         />
                                     )}
                                 />
@@ -451,11 +451,11 @@ const DefaultContactPersonalEdit = function({
                                             onChangeAction={setFieldValue}
                                             id="member_since"
                                             placeholder={'Klant sinds'}
-                                            readOnly={
-                                                initialContact.primaryContactEnergySupplier &&
-                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                initialContact.primaryContactEnergySupplier.memberSince
-                                            }
+                                            // readOnly={
+                                            //     initialContact.primaryContactEnergySupplier &&
+                                            //     initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                            //     initialContact.primaryContactEnergySupplier.memberSince
+                                            // }
                                         />
                                     )}
                                 />
@@ -476,12 +476,12 @@ const DefaultContactPersonalEdit = function({
                                             touched={touched}
                                             id="ean_electricity"
                                             placeholder={'EAN nummer electriciteit'}
-                                            disabled={
-                                                initialContact.primaryContactEnergySupplier &&
-                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                initialContact.primaryContactEnergySupplier.eanElectricity &&
-                                                initialContact.isParticipant
-                                            }
+                                            // disabled={
+                                            //     initialContact.primaryContactEnergySupplier &&
+                                            //     initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                            //     initialContact.primaryContactEnergySupplier.eanElectricity &&
+                                            //     initialContact.isParticipant
+                                            // }
                                         />
                                     )}
                                 />
@@ -502,11 +502,11 @@ const DefaultContactPersonalEdit = function({
                                             touched={touched}
                                             id="ean_gas"
                                             placeholder={'EAN nummer electriciteit'}
-                                            disabled={
-                                                initialContact.primaryContactEnergySupplier &&
-                                                initialContact.primaryContactEnergySupplier.energySupplierId &&
-                                                initialContact.primaryContactEnergySupplier.eanGas
-                                            }
+                                            // disabled={
+                                            //     initialContact.primaryContactEnergySupplier &&
+                                            //     initialContact.primaryContactEnergySupplier.energySupplierId &&
+                                            //     initialContact.primaryContactEnergySupplier.eanGas
+                                            // }
                                         />
                                     )}
                                 />

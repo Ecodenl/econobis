@@ -76,6 +76,7 @@ class SettingController
             'portalUrl',
             'backgroundColor',
             'responsibleUserId',
+            'checkContactTaskResponsibleUserId',
             'documentTemplateAgreementId',
             'emailTemplateAgreementId',
             'emailTemplateNewAccountId',

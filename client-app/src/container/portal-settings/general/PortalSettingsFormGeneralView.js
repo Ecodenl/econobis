@@ -8,6 +8,7 @@ const PortalSettingsFormGeneralView = ({
     portalUrl,
     backgroundColor,
     responsibleUserId,
+    checkContactTaskResponsibleUserId,
     documentTemplateAgreementId,
     emailTemplateAgreementId,
     emailTemplateNewAccountId,
@@ -37,6 +38,12 @@ const PortalSettingsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText label={'Portal log gebruiker'} value={responsibleUserId} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Verantwoordelijk gebruiker controle contact taak'}
+                            value={checkContactTaskResponsibleUserId}
+                        />
                     </div>
                     <div className="row">
                         <ViewText label={'Document template'} value={documentTemplateAgreementId} />

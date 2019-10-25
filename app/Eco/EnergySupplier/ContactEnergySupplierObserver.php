@@ -31,8 +31,10 @@ class ContactEnergySupplierObserver
             foreach($projectRevenueDistributions as $projectRevenueDistribution) {
                 if( $contactEnergySupplier->is_current_supplier == true){
                     $projectRevenueDistribution->energy_supplier_name = $contactEnergySupplier->energySupplier->name;
+                    $projectRevenueDistribution->es_id = $contactEnergySupplier->energySupplier->id;
                 }else{
                     $projectRevenueDistribution->energy_supplier_name = "";
+                    $projectRevenueDistribution->es_id = null;
                 }
 
                 $projectRevenueDistribution->save();

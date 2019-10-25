@@ -23,7 +23,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             .max(project.maxParticipations, 'Maximum van ${max} bereikt')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),
-        yearlyPowerKwhConsumption: Yup.number()
+        pcrYearlyPowerKwhConsumption: Yup.number()
             .typeError('Alleen nummers')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),
@@ -56,8 +56,8 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
     }
     function calculatePowerKwhConsumption(values) {
         let extraPowerKwhConsumption =
-            values.yearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values) > 0
-                ? values.yearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values)
+            values.pcrYearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values) > 0
+                ? values.pcrYearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values)
                 : 0;
         return Math.ceil(extraPowerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE);
     }
@@ -75,12 +75,6 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         return pcrAdviseMaxNumberOfParticipations;
     }
 
-    let pcrPostalCode = '';
-    if (initialContact.typeId === 'organisation') {
-        pcrPostalCode = initialContact.visitAddress ? initialContact.visitAddress.postalCode : '';
-    } else {
-        pcrPostalCode = initialContact.primaryAddress ? initialContact.primaryAddress.postalCode : '';
-    }
     return (
         <Formik
             validationSchema={validationSchema}
@@ -90,7 +84,6 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             }}
             initialValues={{
                 ...initialRegisterValues,
-                pcrPostalCode,
             }}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
@@ -141,13 +134,13 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                                         Je (geschatte) jaarlijks verbruik (in kWh)
                                     </Form.Label>
                                     <Field
-                                        name="yearlyPowerKwhConsumption"
+                                        name="pcrYearlyPowerKwhConsumption"
                                         render={({ field }) => (
                                             <InputText
                                                 field={field}
                                                 errors={errors}
                                                 touched={touched}
-                                                id="yearly_power_kwh_consumption"
+                                                id="pcr_yearly_power_kwh_consumption"
                                             />
                                         )}
                                     />

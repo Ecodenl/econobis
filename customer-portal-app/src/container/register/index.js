@@ -14,19 +14,26 @@ import MasterForm from './MasterForm';
 import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 
 function RegisterProject({ match, currentSelectedContact }) {
-    const [registerValues, setRegisterValues] = useState({
+    const initialRegisterValues = {
         contactId: null,
         projectId: null,
-        // portalSettings: [],
         participationsOptioned: 0,
         powerKwhConsumption: 0,
         amountOptioned: 0,
         didAcceptAgreement: false,
         didUnderstandInfo: false,
+    };
+
+    const initialPcrValues = {
+        pcrYearlyPowerKwhConsumption: 0,
+        pcrPostalCode: '',
         pcrHasSolarPanels: 'N',
         pcrInputGeneratedNumberOfKwh: 0,
         pcrEstimatedRevenueOk: 'Y',
-    });
+    };
+
+    const [registerValues, setRegisterValues] = useState(initialRegisterValues);
+
     const [project, setProject] = useState({});
     const [contact, setContact] = useState({});
     const [portalSettings, setPortalSettings] = useState({});
@@ -51,11 +58,6 @@ function RegisterProject({ match, currentSelectedContact }) {
             ProjectAPI.fetchProject(match.params.id)
                 .then(payload => {
                     setProject(payload.data.data);
-                    setRegisterValues({
-                        ...registerValues,
-                        projectId: payload.data.data.id,
-                        contactId: currentSelectedContact.id,
-                    });
                     // setLoading(false);
                 })
                 .catch(error => {
@@ -74,6 +76,34 @@ function RegisterProject({ match, currentSelectedContact }) {
                         const contactData = rebaseContact(payload.data.data);
                         setContact(contactData);
                         callFetchContactProjects();
+
+                        console.log(project.projectType.codeRef);
+                        if (
+                            project &&
+                            project.projectType &&
+                            project.projectType.codeRef === 'postalcode_link_capital'
+                        ) {
+                            let pcrPostalCode = '';
+                            if (contactData.typeId === 'organisation') {
+                                pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
+                            } else {
+                                pcrPostalCode = contactData.primaryAddress ? contactData.primaryAddress.postalCode : '';
+                            }
+                            setRegisterValues({
+                                ...registerValues,
+                                projectId: match.params.id,
+                                contactId: currentSelectedContact.id,
+                                ...initialPcrValues,
+                                pcrPostalCode,
+                            });
+                        } else {
+                            setRegisterValues({
+                                ...registerValues,
+                                projectId: match.params.id,
+                                contactId: currentSelectedContact.id,
+                            });
+                        }
+
                         setLoading(false);
                     })
                     .catch(error => {
@@ -107,6 +137,10 @@ function RegisterProject({ match, currentSelectedContact }) {
     function handleSubmitRegisterValues(values) {
         setRegisterValues({ ...registerValues, ...values });
     }
+
+    // function handleSubmitAdditionalPcrValues(values) {
+    //     setAdditionalPcrValues({ ...additionalPcrValues, ...values });
+    // }
 
     function handleSubmitContactValues(values, actions, nextStep) {
         const updatedContact = { ...contact, ...values };
@@ -171,6 +205,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                             project={project}
                             initialRegisterValues={registerValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
+                            // initialAdditionalPcrValues={additionalPcrValues}
+                            // handleSubmitAdditionalPcrValues={handleSubmitAdditionalPcrValues}
                             initialContact={contact}
                             handleSubmitContactValues={handleSubmitContactValues}
                             setSucces={setSucces}

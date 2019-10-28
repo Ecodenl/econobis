@@ -200,6 +200,8 @@ class EnergySupplierExcelHelper
         $headerData[] = 'Postcode';
         $headerData[] = 'KlantNummer';
         $headerData[] = 'EanCode';
+        $headerData[] = 'EanCode';
+        $headerData[] = 'EanCode';
         $headerData[] = 'OntvangstDatum';
         $headerData[] = 'BeginDatum';
         $headerData[] = 'EindDatum';
@@ -227,7 +229,11 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : ' ';
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
+                        ? '\'' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : ' ';
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
+                        ? "Ean:" . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
                     $rowData[] = $this->formatDate(new Carbon('now'));
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
@@ -264,7 +270,7 @@ class EnergySupplierExcelHelper
                 $spreadsheet->getActiveSheet()->getCell($cellCode)
                     ->setValueExplicit(
                         $cellValue,
-                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2
                     );
             }
         }

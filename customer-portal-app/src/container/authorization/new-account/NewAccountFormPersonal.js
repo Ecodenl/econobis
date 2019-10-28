@@ -138,15 +138,19 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                         </Col>
                     </Row>
 
-                    <ButtonText
-                        buttonText={'Account aanmaken'}
-                        buttonClassName={'authorization-button'}
-                        size="sm"
-                        type={'submit'}
-                        loading={isSubmitting}
-                        loadingSpinnerColor={'#034b8c'}
-                        disabled={showSuccessMessage}
-                    />
+                    <Row>
+                        <Col xs={12} md={10}>
+                            <ButtonText
+                                buttonText={'Account aanmaken'}
+                                buttonClassName={'authorization-button'}
+                                size="sm"
+                                type={'submit'}
+                                loading={isSubmitting}
+                                loadingSpinnerColor={'#034b8c'}
+                                disabled={showSuccessMessage}
+                            />
+                        </Col>
+                    </Row>
                 </>
             </Form>
         )}

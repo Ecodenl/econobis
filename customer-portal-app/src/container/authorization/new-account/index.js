@@ -15,12 +15,16 @@ const NewAccount = props => {
     const [contactType, setContactType] = useState('person');
     const [showError, toggleError] = useState(false);
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     async function handleSubmit(values, actions) {
+        // console.log('test 1');
         if (!executeRecaptcha) {
             return;
         }
+        // console.log('test 2');
         const reCaptchaToken = await executeRecaptcha('signup_page');
+        // console.log('test 3');
 
         AuthAPI.newAccount({ ...values, contactType: contactType, reCaptchaToken })
             .then(payload => {
@@ -29,8 +33,21 @@ const NewAccount = props => {
                 actions.setSubmitting(false);
             })
             .catch(error => {
-                // If login fails show error and then set submitting back to false
+                // If new account fails show error and then set submitting back to false
+                // console.log(error);
                 toggleError(true);
+                if (error.response && error.response.status === 404) {
+                    setErrorMessage(
+                        'Er bestaat al een account met het e-mailadres dat je hebt ingevuld. Je kunt met dit e-mailadres inloggen als bestaand contact. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres.'
+                    );
+                } else if (error.response && error.response.status === 405) {
+                    setErrorMessage(
+                        'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.'
+                    );
+                } else {
+                    setErrorMessage('Fout bij aanmaken nieuw account!');
+                }
+
                 actions.setSubmitting(false);
             });
     }
@@ -102,7 +119,7 @@ const NewAccount = props => {
 
                             {showError ? (
                                 <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                    Fout bij aanmaken nieuw account!
+                                    {errorMessage}
                                 </Alert>
                             ) : null}
                         </div>

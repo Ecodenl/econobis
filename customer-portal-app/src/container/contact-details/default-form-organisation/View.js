@@ -74,7 +74,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
 
                 <FormLabel className={'field-label'}>Akkoord privacybeleid</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>
+                    <div className={'col-12 col-sm-8'}>
                         <input
                             type="checkbox"
                             id="did_agree_avg"
@@ -93,7 +93,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                                 ''
                             )}
                         </span>
-                    </TextBlock>
+                    </div>
                 </Row>
 
                 <FormLabel className={'field-label'}>E-mailadres correspondentie</FormLabel>
@@ -149,8 +149,8 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 </Row>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
-                        {postalAddress.countryId}
-                    </TextBlock>
+                        {postalAddress.country ? postalAddress.country.name : ''}
+                    </TextBlock>{' '}
                 </Row>
                 <FormLabel className={'field-label'}>Bezoekadres</FormLabel>
                 <Row>
@@ -176,7 +176,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 </Row>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
-                        {visitAddress.countryId}
+                        {visitAddress.country ? visitAddress.country.name : ''}
                     </TextBlock>
                 </Row>
                 <FormLabel className={'field-label'}>Nota adres</FormLabel>
@@ -203,7 +203,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 </Row>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
-                        {invoiceAddress.countryId}
+                        {invoiceAddress.country ? invoiceAddress.country.name : ''}
                     </TextBlock>
                 </Row>
 

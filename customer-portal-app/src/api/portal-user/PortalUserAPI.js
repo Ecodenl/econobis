@@ -19,12 +19,12 @@ export default {
                     ],
                     rlt: {
                         occupations: {
-                            fld: ['id', 'occupationId', 'primaryContactId', 'contactId'],
+                            fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
                             rlt: {
                                 occupation: {
-                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation'],
+                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation', 'occupationForPortal'],
                                 },
-                                primaryContact: { fld: ['id', 'fullName'] },
+                                primaryContact: { fld: ['id', 'fullName', 'typeId'] },
                                 contact: { fld: ['id', 'fullName'] },
                             },
                         },

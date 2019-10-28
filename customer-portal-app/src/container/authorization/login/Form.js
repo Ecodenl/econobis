@@ -34,7 +34,7 @@ const LoginForm = function({ handleSubmit, login }) {
                                     placeholder={'email'}
                                     errors={errors}
                                     touched={touched}
-                                    showErrorMessage={false}
+                                    // showErrorMessage={false}
                                 />
                             )}
                         />
@@ -49,7 +49,7 @@ const LoginForm = function({ handleSubmit, login }) {
                                     type={'password'}
                                     errors={errors}
                                     touched={touched}
-                                    showErrorMessage={false}
+                                    // showErrorMessage={false}
                                 />
                             )}
                         />

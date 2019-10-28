@@ -90,12 +90,22 @@ class NewAccountController extends Controller
         $this->validate($request, ['email' => 'required|email']);
 
         if(PortalUser::where('email', $request->input('email'))->count() !== 0){
-            abort(404, 'E-mail bestaat al bij Portal gebruiker.');
+            abort(404, 'Er bestaat al een account met het e-mailadres dat je hebt ingevuld. Je kunt met dit e-mailadres inloggen als bestaand contact. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres.');
         }
-        //todo zelfde primaire email bij meerder contacten is wel toegestaan toch ?
-//        if(EmailAddress::where('email', $request->input('email'))->where('primary', true)->count() !== 0){
-//            abort(404, 'E-mail bestaat als primary e-mail bij contacten.');
-//        }
+
+        if(EmailAddress::where('email', $request->input('email'))
+                ->whereHas('contact', function($query) use($request){
+                    $query->whereHas('person', function($query) use($request){
+                        $query->where('first_name', $request->input('personFirstName'));})
+                    ;})
+                ->whereHas('contact', function($query) use($request){
+                    $query->whereHas('person', function($query) use($request){
+                        $query->where('last_name', $request->input('personLastName'));})
+                    ;})
+                ->where('primary', true)->count() !== 0)
+        {
+            abort(405, 'Er bestaat al een contact met het e-mailadres, voornaam en achternaam dat je hebt ingevuld. Wil je een nieuw account aanmaken? Gebruik dan alsjeblieft een ander e-mailadres, voornaam of achternaam.');
+        }
     }
 
     protected function getDataFromRequest(Request $request)

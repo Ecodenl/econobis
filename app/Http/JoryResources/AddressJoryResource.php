@@ -26,6 +26,9 @@ class AddressJoryResource extends JoryResource
         $this->field('primary')->filterable()->sortable();
         $this->field('street')->filterable()->sortable();
         $this->field('type_id')->filterable()->sortable();
+
+        // Relations
+        $this->relation('country');
     }
 
     public function afterQueryBuild($query, $count = false): void

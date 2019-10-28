@@ -303,6 +303,7 @@ class ContactController extends ApiController
 
     protected function updateAddress($contact, $addressData, $addressType)
     {
+        unset($addressData['country']);
         if($addressData['countryId'] == ''){
             $addressData['countryId'] = null;
         }
@@ -401,36 +402,36 @@ class ContactController extends ApiController
                 $primaryContactEnergySupplierNew->save();
 
 
-                //Make task not of changes
+                //Make task note of changes
                 $note = "Controleren wijziging energie leverancier gegevens:\n";
                 if($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->energy_supplier_id != $primaryContactEnergySupplierNew->energy_supplier_id){
                     $note = $note . "Oude leverancier: " . EnergySupplier::find($primaryContactEnergySupplierOld->energy_supplier_id)->name . "\n";
                 }
-                if( (!$primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierNew->energy_supplier_id != null) || $primaryContactEnergySupplierOld->energy_supplier_id != $primaryContactEnergySupplierNew->energy_supplier_id){
+                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->energy_supplier_id != null) || ($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->energy_supplier_id != $primaryContactEnergySupplierNew->energy_supplier_id)){
                     $note = $note . "Nieuwe leverancier:" . EnergySupplier::find($primaryContactEnergySupplierNew->energy_supplier_id)->name . "\n";
                 }
                 if($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->es_number != $primaryContactEnergySupplierNew->es_number){
                     $note = $note . "Oude klantnummer: " . $primaryContactEnergySupplierOld->es_number . "\n";
                 }
-                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->es_number != null) || $primaryContactEnergySupplierOld->es_number != $primaryContactEnergySupplierNew->es_number){
+                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->es_number != null) || ($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->es_number != $primaryContactEnergySupplierNew->es_number)){
                     $note = $note . "Nieuwe klantnummer:" . $primaryContactEnergySupplierNew->es_number . "\n";
                 }
                 if($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->member_since != $primaryContactEnergySupplierNew->member_since){
                     $note = $note . "Oude klant sinds: " . $primaryContactEnergySupplierOld->member_since . "\n";
                 }
-                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->member_since != null) || $primaryContactEnergySupplierOld->member_since != $primaryContactEnergySupplierNew->member_since){
+                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->member_since != null) || ($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->member_since != $primaryContactEnergySupplierNew->member_since)){
                     $note = $note . "Nieuwe klant sinds:" . $primaryContactEnergySupplierNew->member_since . "\n";
                 }
                 if($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_electricity != $primaryContactEnergySupplierNew->ean_electricity){
                     $note = $note . "Oude EAN electriciteit: " . $primaryContactEnergySupplierOld->ean_electricity . "\n";
                 }
-                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->ean_electricity != null) || $primaryContactEnergySupplierOld->ean_electricity != $primaryContactEnergySupplierNew->ean_electricity){
+                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->ean_electricity != null) || ($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_electricity != $primaryContactEnergySupplierNew->ean_electricity)){
                     $note = $note . "Nieuwe EAN electriciteit:" . $primaryContactEnergySupplierNew->ean_electricity . "\n";
                 }
                 if($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_gas != $primaryContactEnergySupplierNew->ean_electricity){
                     $note = $note . "Oude EAN gas: " . $primaryContactEnergySupplierOld->ean_gas . "\n";
                 }
-                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->ean_gas != null) || $primaryContactEnergySupplierOld->ean_gas != $primaryContactEnergySupplierNew->ean_gas){
+                if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->ean_gas != null) || ($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_gas != $primaryContactEnergySupplierNew->ean_gas)){
                     $note = $note . "Nieuwe EAN gas:" . $primaryContactEnergySupplierNew->ean_gas . "\n";
                 }
 

@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import MasterForm from './MasterForm';
 import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
+import axios from 'axios';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const initialRegisterValues = {
@@ -42,7 +43,61 @@ function RegisterProject({ match, currentSelectedContact }) {
     const [isRegistered, setRegistered] = useState(false);
 
     useEffect(() => {
-        (function callFetchProject() {
+        if (currentSelectedContact.id) {
+            (function fetchContactAndProject() {
+                setLoading(true);
+
+                axios
+                    .all([ProjectAPI.fetchProject(match.params.id), ContactAPI.fetchContact(currentSelectedContact.id)])
+                    .then(
+                        axios.spread((payloadProject, payloadContact) => {
+                            const contact = payloadContact.data.data;
+                            const project = payloadProject.data.data;
+                            // console.log(project);
+                            setProject(project);
+                            const contactData = rebaseContact(contact);
+                            setContact(contactData);
+                            callFetchContactProjects();
+
+                            if (
+                                project &&
+                                project.projectType &&
+                                project.projectType.codeRef === 'postalcode_link_capital'
+                            ) {
+                                let pcrPostalCode = '';
+                                if (contactData.typeId === 'organisation') {
+                                    pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
+                                } else {
+                                    pcrPostalCode = contactData.primaryAddress
+                                        ? contactData.primaryAddress.postalCode
+                                        : '';
+                                }
+                                setRegisterValues({
+                                    ...registerValues,
+                                    projectId: match.params.id,
+                                    contactId: currentSelectedContact.id,
+                                    ...initialPcrValues,
+                                    pcrPostalCode,
+                                });
+                            } else {
+                                setRegisterValues({
+                                    ...registerValues,
+                                    projectId: match.params.id,
+                                    contactId: currentSelectedContact.id,
+                                });
+                            }
+
+                            setLoading(false);
+                        })
+                    )
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            })();
+        }
+
+        (function callFetchPortalSettings() {
             setLoading(true);
 
             const keys =
@@ -54,64 +109,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                 .catch(error => {
                     this.setState({ isLoading: false, hasError: true });
                 });
-
-            ProjectAPI.fetchProject(match.params.id)
-                .then(payload => {
-                    setProject(payload.data.data);
-                    // setLoading(false);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setLoading(false);
-                });
         })();
-
-        // If there is an id and is not the same as previous id
-        // then call api
-        if (currentSelectedContact.id) {
-            (function callFetchContact() {
-                setLoading(true);
-                ContactAPI.fetchContact(currentSelectedContact.id)
-                    .then(payload => {
-                        const contactData = rebaseContact(payload.data.data);
-                        setContact(contactData);
-                        callFetchContactProjects();
-
-                        console.log(project.projectType.codeRef);
-                        if (
-                            project &&
-                            project.projectType &&
-                            project.projectType.codeRef === 'postalcode_link_capital'
-                        ) {
-                            let pcrPostalCode = '';
-                            if (contactData.typeId === 'organisation') {
-                                pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
-                            } else {
-                                pcrPostalCode = contactData.primaryAddress ? contactData.primaryAddress.postalCode : '';
-                            }
-                            setRegisterValues({
-                                ...registerValues,
-                                projectId: match.params.id,
-                                contactId: currentSelectedContact.id,
-                                ...initialPcrValues,
-                                pcrPostalCode,
-                            });
-                        } else {
-                            setRegisterValues({
-                                ...registerValues,
-                                projectId: match.params.id,
-                                contactId: currentSelectedContact.id,
-                            });
-                        }
-
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                        setLoading(false);
-                    });
-            })();
-        }
     }, [match, currentSelectedContact]);
 
     function callFetchContactProjects() {
@@ -137,10 +135,6 @@ function RegisterProject({ match, currentSelectedContact }) {
     function handleSubmitRegisterValues(values) {
         setRegisterValues({ ...registerValues, ...values });
     }
-
-    // function handleSubmitAdditionalPcrValues(values) {
-    //     setAdditionalPcrValues({ ...additionalPcrValues, ...values });
-    // }
 
     function handleSubmitContactValues(values, actions, nextStep) {
         const updatedContact = { ...contact, ...values };
@@ -172,7 +166,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                     <Row>
                         <Col>
                             <h1 className="content-heading">
-                                Je bent al ingeschreven voor project <strong>{project.name}</strong>
+                                <strong>{contact.fullName}</strong> is al ingeschreven voor project{' '}
+                                <strong>{project.name}</strong>
                             </h1>
                         </Col>
                     </Row>
@@ -181,7 +176,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                             <ButtonGroup className="float-right">
                                 <Link to={`/inschrijvingen-projecten`}>
                                     <Button className={'w-button'} size="sm">
-                                        Naar mijn inschrijvingen
+                                        Naar inschrijvingen
                                     </Button>
                                 </Link>
                             </ButtonGroup>
@@ -197,7 +192,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                             </h1>
                         ) : (
                             <h1 className="content-heading">
-                                Schrijf je in voor project <strong>{project.name}</strong>
+                                Schrijf <strong>{contact.fullName}</strong> in voor project{' '}
+                                <strong>{project.name}</strong>
                             </h1>
                         )}
                         <MasterForm

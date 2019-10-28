@@ -109,7 +109,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 </Row>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
-                        {primaryAddress.countryId}
+                        {primaryAddress.country ? primaryAddress.country.name : ''}
                     </TextBlock>
                 </Row>
             </Col>
@@ -128,7 +128,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
 
                 <FormLabel className={'field-label'}>Akkoord privacybeleid</FormLabel>
                 <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>
+                    <div className={'col-12 col-sm-8'}>
                         <input
                             type="checkbox"
                             id="did_agree_avg"
@@ -147,7 +147,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                                 ''
                             )}
                         </span>
-                    </TextBlock>
+                    </div>
                 </Row>
 
                 <FormLabel className={'field-label'}>Energieleverancier</FormLabel>

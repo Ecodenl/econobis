@@ -51,6 +51,9 @@ export default {
                                 'primary',
                                 'typeId',
                             ],
+                            rlt: {
+                                country: { fld: ['id', 'name'] },
+                            },
                         },
                         occupations: {
                             fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],

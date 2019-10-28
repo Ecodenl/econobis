@@ -150,7 +150,6 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)
@@ -258,8 +257,7 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
-                if ($key == 0) continue; // Header overslaan
+//                if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)
                     ->getNumberFormat()
@@ -270,7 +268,7 @@ class EnergySupplierExcelHelper
                 $spreadsheet->getActiveSheet()->getCell($cellCode)
                     ->setValueExplicit(
                         $cellValue,
-                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING2
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
                     );
             }
         }
@@ -355,7 +353,6 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)
@@ -470,7 +467,6 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)

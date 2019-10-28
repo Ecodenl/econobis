@@ -152,10 +152,18 @@ class EnergySupplierExcelHelper
             foreach ($completeData as $key => $row) {
                 print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
+                $cellCode = $textColumnLetter . ($key + 1);
+                $sheet->getStyle($cellCode)
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_TEXT );
+
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+
+                $spreadsheet->getActiveSheet()->getCell($cellCode)
+                    ->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                    );
             }
         }
         // EINDE FIX EAN codes
@@ -246,10 +254,18 @@ class EnergySupplierExcelHelper
             foreach ($completeData as $key => $row) {
                 print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
+                $cellCode = $textColumnLetter . ($key + 1);
+                $sheet->getStyle($cellCode)
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_TEXT );
+
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+
+                $spreadsheet->getActiveSheet()->getCell($cellCode)
+                    ->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                    );
             }
         }
         // EINDE FIX EAN codes
@@ -335,10 +351,18 @@ class EnergySupplierExcelHelper
             foreach ($completeData as $key => $row) {
                 print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
+                $cellCode = $textColumnLetter . ($key + 1);
+                $sheet->getStyle($cellCode)
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_TEXT );
+
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+
+                $spreadsheet->getActiveSheet()->getCell($cellCode)
+                    ->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                    );
             }
         }
         // EINDE FIX EAN codes
@@ -442,10 +466,18 @@ class EnergySupplierExcelHelper
             foreach ($completeData as $key => $row) {
                 print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
+                $cellCode = $textColumnLetter . ($key + 1);
+                $sheet->getStyle($cellCode)
                     ->getNumberFormat()
                     ->setFormatCode(NumberFormat::FORMAT_TEXT );
+
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+
+                $spreadsheet->getActiveSheet()->getCell($cellCode)
+                    ->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                    );
             }
         }
         // EINDE FIX EAN codes

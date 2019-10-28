@@ -5,6 +5,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 const PortalSettingsFormGeneralView = ({
+    portalName,
     portalWebsite,
     portalUrl,
     backgroundColor,
@@ -22,6 +23,9 @@ const PortalSettingsFormGeneralView = ({
         <div onClick={switchToEdit}>
             <Panel>
                 <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Cooperatie naam'} value={portalName} />
+                    </div>
                     <div className="row">
                         <ViewText label={'Cooperatie website'} value={portalWebsite} />
                     </div>

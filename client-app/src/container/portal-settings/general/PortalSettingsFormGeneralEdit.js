@@ -27,6 +27,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             documentTemplates: [],
             emailTemplates: [],
             errors: {
+                portalName: false,
                 portalWebsite: false,
                 portalUrl: false,
                 backgroundColor: false,
@@ -120,6 +121,7 @@ class PortalSettingsFormGeneralEdit extends Component {
 
     render() {
         const {
+            portalName,
             portalWebsite,
             portalUrl,
             backgroundColor,
@@ -137,6 +139,16 @@ class PortalSettingsFormGeneralEdit extends Component {
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
+                        <div className="row">
+                            <InputText
+                                label="Cooperatie naam"
+                                name={'portalName'}
+                                value={portalName}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.portalName}
+                            />
+                        </div>
                         <div className="row">
                             <InputText
                                 label="Cooperatie website"

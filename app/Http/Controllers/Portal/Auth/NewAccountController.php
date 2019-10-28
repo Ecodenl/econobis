@@ -251,6 +251,14 @@ class NewAccountController extends Controller
             $htmlBody = $emailTemplate->html_body;
         }
 
+        $portalName = PortalSettings::get('portalName');
+        $portalWebsite = PortalSettings::get('portalWebsite');
+        $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
+        $subject = str_replace('{portal_naam}', $portalName, $subject);
+        $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
+        $htmlBody = str_replace('{portal_naam}', $portalName, $htmlBody);
+        $htmlBody = str_replace('{portal_website}', $portalWebsite, $htmlBody);
+
 //        $user = Auth::user();
 //        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
 //            'ik', $user);
@@ -264,8 +272,6 @@ class NewAccountController extends Controller
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
-        $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

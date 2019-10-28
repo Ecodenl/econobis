@@ -112,8 +112,8 @@ class EnergySupplierExcelHelper
                             ? substr($distribution->postal_code, 5)
                             : '');
                     $rowData[] = $distribution->city;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+                        ? '"' . $distribution->contact->primaryContactEnergySupplier->ean_electricity . '"' : '';
                     $rowData[] = $distribution->contact->primaryEmailAddress
                         ? $distribution->contact->primaryEmailAddress->email : '';
                     $rowData[] = $distribution->contact->primaryphoneNumber
@@ -150,7 +150,6 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)
@@ -226,8 +225,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+                        ? '"' . $distribution->contact->primaryContactEnergySupplier->ean_electricity . '"' : '';
                     $rowData[] = $this->formatDate(new Carbon('now'));
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
@@ -252,7 +251,6 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)
@@ -327,8 +325,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->tax_referral;
                     $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+                        ? '"' . $distribution->contact->primaryContactEnergySupplier->ean_electricity . '"' : '';
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;
@@ -349,7 +347,6 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)
@@ -440,8 +437,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->iban;
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+                        ? '"' . $distribution->contact->primaryContactEnergySupplier->ean_electricity . '"' : '';
                     $rowData[] = $deliveredKwhPeriod->participations_quantity;
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
@@ -464,7 +461,6 @@ class EnergySupplierExcelHelper
         ];
         foreach ($textColumns as $textColumnLetter) {
             foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
                 $sheet->getStyle($cellCode)

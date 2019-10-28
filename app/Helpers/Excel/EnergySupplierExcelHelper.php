@@ -143,6 +143,31 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
+        // FIX EAN codes
+        // Kolommen metcellen die we expliciet instellen met "text" format.
+        $textColumns = [
+            'H'
+        ];
+        foreach ($textColumns as $textColumnLetter) {
+            foreach ($completeData as $key => $row) {
+                print_r($textColumnLetter . ($key + 1));
+                if ($key == 0) continue; // Header overslaan
+                $cellCode = $textColumnLetter . ($key + 1);
+                $sheet->getStyle($cellCode)
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+
+                $spreadsheet->getActiveSheet()->getCell($cellCode)
+                    ->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                    );
+            }
+        }
+        // EINDE FIX EAN codes
+
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
@@ -159,23 +184,6 @@ class EnergySupplierExcelHelper
                 ],
 
             ]);
-
-        // FIX EAN codes
-        // Kolommen metcellen die we expliciet instellen met "text" format.
-        $textColumns = [
-            'H'
-        ];
-        foreach ($textColumns as $textColumnLetter) {
-            foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
-                if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
-                    ->getNumberFormat()
-                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
-            }
-        }
-        // EINDE FIX EAN codes
 
         return $spreadsheet;
     }
@@ -237,23 +245,6 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Load all data in worksheet
-        $sheet->fromArray($completeData);
-
-        for ($col = 'A'; $col !== 'Z'; $col++) {
-            $spreadsheet->getActiveSheet()
-                ->getColumnDimension($col)
-                ->setAutoSize(true);
-        }
-
-        $sheet->getStyle('A1:Z1')
-            ->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                ],
-
-            ]);
-
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
         $textColumns = [
@@ -278,6 +269,23 @@ class EnergySupplierExcelHelper
             }
         }
         // EINDE FIX EAN codes
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'Z'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
 
         return $spreadsheet;
     }
@@ -334,6 +342,31 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
+        // FIX EAN codes
+        // Kolommen metcellen die we expliciet instellen met "text" format.
+        $textColumns = [
+            'H'
+        ];
+        foreach ($textColumns as $textColumnLetter) {
+            foreach ($completeData as $key => $row) {
+                print_r($textColumnLetter . ($key + 1));
+                if ($key == 0) continue; // Header overslaan
+                $cellCode = $textColumnLetter . ($key + 1);
+                $sheet->getStyle($cellCode)
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+
+                $spreadsheet->getActiveSheet()->getCell($cellCode)
+                    ->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                    );
+            }
+        }
+        // EINDE FIX EAN codes
+
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
@@ -350,23 +383,6 @@ class EnergySupplierExcelHelper
                 ],
 
             ]);
-
-        // FIX EAN codes
-        // Kolommen metcellen die we expliciet instellen met "text" format.
-        $textColumns = [
-            'H'
-        ];
-        foreach ($textColumns as $textColumnLetter) {
-            foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
-                if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
-                    ->getNumberFormat()
-                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
-            }
-        }
-        // EINDE FIX EAN codes
 
         return $spreadsheet;
     }
@@ -441,6 +457,31 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
+        // FIX EAN codes
+        // Kolommen metcellen die we expliciet instellen met "text" format.
+        $textColumns = [
+            'L'
+        ];
+        foreach ($textColumns as $textColumnLetter) {
+            foreach ($completeData as $key => $row) {
+                print_r($textColumnLetter . ($key + 1));
+                if ($key == 0) continue; // Header overslaan
+                $cellCode = $textColumnLetter . ($key + 1);
+                $sheet->getStyle($cellCode)
+                    ->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+
+                $spreadsheet->getActiveSheet()->getCell($cellCode)
+                    ->setValueExplicit(
+                        $cellValue,
+                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+                    );
+            }
+        }
+        // EINDE FIX EAN codes
+
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
@@ -457,23 +498,6 @@ class EnergySupplierExcelHelper
                 ],
 
             ]);
-
-        // FIX EAN codes
-        // Kolommen metcellen die we expliciet instellen met "text" format.
-        $textColumns = [
-            'L'
-        ];
-        foreach ($textColumns as $textColumnLetter) {
-            foreach ($completeData as $key => $row) {
-                print_r($textColumnLetter . ($key + 1));
-                if ($key == 0) continue; // Header overslaan
-
-                $sheet->getStyle($textColumnLetter . ($key + 1))
-                    ->getNumberFormat()
-                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
-            }
-        }
-        // EINDE FIX EAN codes
 
         return $spreadsheet;
     }

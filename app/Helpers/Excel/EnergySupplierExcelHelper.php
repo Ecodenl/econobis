@@ -248,6 +248,9 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
         $textColumns = [
@@ -277,9 +280,6 @@ class EnergySupplierExcelHelper
             }
         }
         // EINDE FIX EAN codes
-
-        // Load all data in worksheet
-        $sheet->fromArray($completeData);
 
         for ($col = 'A'; $col !== 'Z'; $col++) {
             $spreadsheet->getActiveSheet()

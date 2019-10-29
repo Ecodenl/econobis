@@ -15,6 +15,12 @@ export default {
 
         return axios.post(requestUrl, payload);
     },
+    newAccountSuccess: payload => {
+        const requestUrl = `${BASE_URL}/new-account-success`;
+        delete axios.defaults.headers.common['Authorization'];
+
+        return axios.post(requestUrl, payload);
+    },
 
     login: loginCredentials => {
         const requestUrl = `${BASE_URL}/oauth/token`;

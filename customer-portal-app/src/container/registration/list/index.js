@@ -48,7 +48,9 @@ function RegistrationList(props) {
         <Container className={'content-section'}>
             <Row>
                 <Col>
-                    <h1 className="content-heading">Inschrijvingen</h1>
+                    <h1 className="content-heading">
+                        Projecten waarop <strong>{contact.fullName}</strong> zich heeft ingeschreven.
+                    </h1>
                 </Col>
             </Row>
             <Row>
@@ -74,7 +76,7 @@ function RegistrationList(props) {
                                                 <>
                                                     {participation.amountInteressed != 0 ? (
                                                         <span>
-                                                            {MoneyPresenter(participation.amountInteressed)}{' '}
+                                                            Lening {MoneyPresenter(participation.amountInteressed)}{' '}
                                                             <em>(Interesse)</em>
                                                         </span>
                                                     ) : (
@@ -82,7 +84,7 @@ function RegistrationList(props) {
                                                     )}
                                                     {participation.amountOptioned != 0 ? (
                                                         <span>
-                                                            {MoneyPresenter(participation.amountOptioned)}{' '}
+                                                            Lening {MoneyPresenter(participation.amountOptioned)}{' '}
                                                             <em>(Ingeschreven)</em>
                                                         </span>
                                                     ) : (
@@ -90,7 +92,7 @@ function RegistrationList(props) {
                                                     )}
                                                     {participation.amountGranted != 0 ? (
                                                         <span>
-                                                            {MoneyPresenter(participation.amountGranted)}{' '}
+                                                            Lening {MoneyPresenter(participation.amountGranted)}{' '}
                                                             <em>(Toegewezen)</em>
                                                         </span>
                                                     ) : (
@@ -98,7 +100,7 @@ function RegistrationList(props) {
                                                     )}
                                                     {participation.amountDefinitive != 0 ? (
                                                         <span>
-                                                            {MoneyPresenter(participation.amountDefinitive)}{' '}
+                                                            Lening {MoneyPresenter(participation.amountDefinitive)}{' '}
                                                             <em>(Definitief)</em>
                                                         </span>
                                                     ) : (
@@ -106,39 +108,125 @@ function RegistrationList(props) {
                                                     )}
                                                 </>
                                             ) : (
+                                                ''
+                                            )}
+
+                                            {participation.project.projectType.codeRef == 'obligation' ? (
                                                 <>
                                                     {participation.participationsInteressed != 0 ? (
                                                         <span>
-                                                            {participation.participationsInteressed}{' '}
-                                                            <em>(Interesse)</em>
+                                                            {participation.participationsInteressed}
+                                                            {' obligaties '} <em> (Interesse)</em>
                                                         </span>
                                                     ) : (
                                                         ''
                                                     )}
                                                     {participation.participationsOptioned != 0 ? (
                                                         <span>
-                                                            {participation.participationsOptioned}{' '}
-                                                            <em>(Ingeschreven)</em>
+                                                            {participation.participationsOptioned}
+                                                            {' obligaties '} <em>(Ingeschreven)</em>
                                                         </span>
                                                     ) : (
                                                         ''
                                                     )}
                                                     {participation.participationsGranted != 0 ? (
                                                         <span>
-                                                            {participation.participationsGranted} <em>(Toegewezen)</em>
+                                                            {participation.participationsGranted}
+                                                            {' obligaties '} <em>(Toegewezen)</em>
                                                         </span>
                                                     ) : (
                                                         ''
                                                     )}
                                                     {participation.participationsDefinitive != 0 ? (
                                                         <span>
-                                                            {participation.participationsDefinitive}{' '}
+                                                            {participation.participationsDefinitive}
+                                                            {' obligaties '}
                                                             <em>(Definitief)</em>
                                                         </span>
                                                     ) : (
                                                         ''
                                                     )}
                                                 </>
+                                            ) : (
+                                                ''
+                                            )}
+
+                                            {participation.project.projectType.codeRef == 'capital' ? (
+                                                <>
+                                                    {participation.participationsInteressed != 0 ? (
+                                                        <span>
+                                                            {participation.participationsInteressed}
+                                                            {' participaties '} <em>(Interesse)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                    {participation.participationsOptioned != 0 ? (
+                                                        <span>
+                                                            {participation.participationsOptioned}
+                                                            {' participaties '} <em>(Ingeschreven)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                    {participation.participationsGranted != 0 ? (
+                                                        <span>
+                                                            {participation.participationsGranted}
+                                                            {' participaties '} <em>(Toegewezen)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                    {participation.participationsDefinitive != 0 ? (
+                                                        <span>
+                                                            {participation.participationsDefinitive}
+                                                            {' participaties '} <em>(Definitief)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                </>
+                                            ) : (
+                                                ''
+                                            )}
+
+                                            {participation.project.projectType.codeRef == 'postalcodeLink' ? (
+                                                <>
+                                                    {participation.participationsInteressed != 0 ? (
+                                                        <span>
+                                                            {participation.participationsInteressed}
+                                                            {' participaties '} <em>(Interesse)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                    {participation.participationsOptioned != 0 ? (
+                                                        <span>
+                                                            {participation.participationsOptioned}
+                                                            {' participaties '} <em>(Ingeschreven)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                    {participation.participationsGranted != 0 ? (
+                                                        <span>
+                                                            {participation.participationsGranted}
+                                                            {' participaties '} <em>(Toegewezen)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                    {participation.participationsDefinitive != 0 ? (
+                                                        <span>
+                                                            {participation.participationsDefinitive}
+                                                            {' participaties '} <em>(Definitief)</em>
+                                                        </span>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                </>
+                                            ) : (
+                                                ''
                                             )}
                                         </td>
                                     </tr>

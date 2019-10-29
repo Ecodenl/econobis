@@ -13,6 +13,8 @@ function LoanDetails({ project }) {
                 <Col xs={12} md={6}>
                     <FormLabel>Project</FormLabel>
                     <TextBlock>{project.name}</TextBlock>
+                    <FormLabel>Lening nodig</FormLabel>
+                    <TextBlock>{MoneyPresenter(project.amountOfLoanNeeded)}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
                     <FormLabel>Omschrijving project</FormLabel>

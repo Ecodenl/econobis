@@ -15,6 +15,7 @@ import ProjectList from './container/project/list';
 import ProjectDetails from './container/project/details';
 import RegistrationList from './container/registration/list';
 import NewAccount from './container/authorization/new-account';
+import NewAccountSuccess from './container/authorization/new-account/NewAccountSuccess';
 import ChangeAccount from './container/authorization/change-account';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                         <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />
                         <PublicRoute path="/wachtwoord-wijzigen/:token/:email" component={Reset} />
                         <PublicRoute path="/nieuw-account" component={NewAccount} />
+                        <PublicRoute path="/nieuw-account-succes" component={NewAccountSuccess} />
                     </Switch>
                 </PortalUserProvider>
             </AuthProvider>

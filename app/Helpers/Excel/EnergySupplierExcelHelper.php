@@ -5,7 +5,9 @@ namespace App\Helpers\Excel;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Project\ProjectRevenue;
 use Carbon\Carbon;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class EnergySupplierExcelHelper
@@ -225,8 +227,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = str_replace(' ', '', $distribution->postal_code);
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+//                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+//                        ? '"' . $distribution->contact->primaryContactEnergySupplier->ean_electricity . '"' : '';
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
-                        ? '"' . $distribution->contact->primaryContactEnergySupplier->ean_electricity . '"' : '';
+                        ? $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
                     $rowData[] = $this->formatDate(new Carbon('now'));
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
@@ -253,17 +257,23 @@ class EnergySupplierExcelHelper
             foreach ($completeData as $key => $row) {
                 if ($key == 0) continue; // Header overslaan
                 $cellCode = $textColumnLetter . ($key + 1);
-                $sheet->getStyle($cellCode)
-                    ->getNumberFormat()
-                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+//                $sheet->getStyle($cellCode)
+//                    ->getNumberFormat()
+//                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
+//
+//                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+//
+//                $spreadsheet->getActiveSheet()->getCell($cellCode)
+//                    ->setValueExplicit(
+//                        $cellValue,
+//                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
+//                    );
 
-                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
+                $cell = $spreadsheet->getActiveSheet()->getCell($cellCode);
+                $cell->setDataType(DataType::TYPE_STRING);
+                $sheet->getStyle($cellCode)->getNumberFormat()->setFormatCode('#');
+                $sheet->getStyle($cellCode)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
-                $spreadsheet->getActiveSheet()->getCell($cellCode)
-                    ->setValueExplicit(
-                        $cellValue,
-                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
-                    );
             }
         }
         // EINDE FIX EAN codes

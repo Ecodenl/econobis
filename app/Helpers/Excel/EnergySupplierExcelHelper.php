@@ -272,8 +272,9 @@ class EnergySupplierExcelHelper
 //                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
 //                    );
 
+                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
                 $cell = $spreadsheet->getActiveSheet()->getCell($cellCode);
-                $cell->setDataType(DataType::TYPE_STRING);
+                $cell->setValueExplicit( $cellValue,\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
                 $sheet->getStyle($cellCode)->getNumberFormat()->setFormatCode('#');
                 $sheet->getStyle($cellCode)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 

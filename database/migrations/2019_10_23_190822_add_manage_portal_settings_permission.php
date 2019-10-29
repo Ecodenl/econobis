@@ -14,9 +14,9 @@ class AddManagePortalSettingsPermission extends Migration
     public function up()
     {
  //
-//        Permission::findByName('manage_portal_settings')->delete();
-
-        if( !Permission::findByName('manage_portal_settings') )
+        try{
+            Permission::findByName('manage_portal_settings');
+        }catch(\Spatie\Permission\Exceptions\PermissionDoesNotExist $e)
         {
             Permission::create([
                 'name' => 'manage_portal_settings',
@@ -24,21 +24,15 @@ class AddManagePortalSettingsPermission extends Migration
             ]);
         }
 
-//        $arrayRoles = [
-//            'Key user' => ['manage_portal_settings'],
-//        ];
-//        foreach ($arrayRoles as $roleName => $permissions){
-//            $role = Role::findByName($roleName);
-//
-//            $role->givePermissionTo($permissions);
-//        }
-
         //make roles
         $roles = ['Beheerder portal instellingen' => ['manage_portal_settings']];
 
         foreach($roles as $role => $permissions) {
 
-            if( !Role::findByName('Beheerder portal instellingen') ) {
+            try{
+                Role::findByName('Beheerder portal instellingen');
+            }catch(\Spatie\Permission\Exceptions\RoleDoesNotExist $e)
+            {
                 $role = Role::create([
                     'name' => $role,
                     'guard_name' => 'api',

@@ -40,131 +40,113 @@ const NewAccountFormOrganisation = ({ handleSubmit, showSuccessMessage }) => (
         render={({ isSubmitting, errors, touched }) => (
             <Form>
                 <>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <p className={'text-light'}>Account aanmaken voor je organisatie</p>
-                        </Col>
+                    <Row className="justify-content-center">
+                        <p className={'text-light'}>Account aanmaken voor je organisatie</p>
                     </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="email"
-                                render={({ field }) => (
-                                    <InputText
-                                        field={field}
-                                        id="email"
-                                        className={''}
-                                        placeholder={'E-mailadres'}
-                                        errors={errors}
-                                        touched={touched}
-                                    />
-                                )}
-                            />
-                        </Col>
+                    <Row className="justify-content-center">
+                        <Field
+                            name="email"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    id="email"
+                                    className={''}
+                                    placeholder={'E-mailadres'}
+                                    errors={errors}
+                                    touched={touched}
+                                />
+                            )}
+                        />
                     </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="organisationName"
-                                render={({ field }) => (
-                                    <InputText
-                                        field={field}
-                                        id="name"
-                                        className={''}
-                                        placeholder={'Naam Organisatie'}
-                                        errors={errors}
-                                        touched={touched}
-                                    />
-                                )}
-                            />
-                        </Col>
+                    <Row className="justify-content-center">
+                        <Field
+                            name="organisationName"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    id="name"
+                                    className={''}
+                                    placeholder={'Naam Organisatie'}
+                                    errors={errors}
+                                    touched={touched}
+                                />
+                            )}
+                        />
                     </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <p className={'text-light'}>Gegevens contactpersoon</p>
-                        </Col>
+                    <Row className="justify-content-center">
+                        <p className={'text-light'}>Gegevens contactpersoon</p>
                     </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="personTitleId"
-                                render={({ field }) => (
-                                    <Select
-                                        field={field}
-                                        errors={errors}
-                                        touched={touched}
-                                        id="title_id"
-                                        className={''}
-                                        placeholder={'Aanhef'}
-                                        options={Titles}
-                                    />
-                                )}
-                            />
-                        </Col>
+                    <Row className="justify-content-center">
+                        <Field
+                            name="personTitleId"
+                            render={({ field }) => (
+                                <Select
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="title_id"
+                                    className={'select-field-transparent'}
+                                    placeholder={'Aanhef'}
+                                    options={Titles}
+                                />
+                            )}
+                        />
                     </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="personFirstName"
-                                render={({ field }) => (
-                                    <InputText
-                                        field={field}
-                                        errors={errors}
-                                        touched={touched}
-                                        id="first_name"
-                                        className={''}
-                                        placeholder={'Voornaam'}
-                                    />
-                                )}
-                            />
-                        </Col>
+                    <Row className="justify-content-center">
+                        <Field
+                            name="personFirstName"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="first_name"
+                                    className={''}
+                                    placeholder={'Voornaam'}
+                                />
+                            )}
+                        />
                     </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="personLastNamePrefixId"
-                                render={({ field }) => (
-                                    <Select
-                                        field={field}
-                                        errors={errors}
-                                        touched={touched}
-                                        id="last_name_prefix_id"
-                                        options={LastNamePrefixes}
-                                        className={''}
-                                        placeholder={'Tussenvoegsel'}
-                                    />
-                                )}
-                            />
-                        </Col>
-                        <Col xs={12} md={10}>
-                            <Field
-                                name="personLastName"
-                                render={({ field }) => (
-                                    <InputText
-                                        field={field}
-                                        errors={errors}
-                                        touched={touched}
-                                        id="last_name"
-                                        className={''}
-                                        placeholder={'Achternaam'}
-                                    />
-                                )}
-                            />
-                        </Col>
+                    <Row className="justify-content-center">
+                        <Field
+                            name="personLastNamePrefixId"
+                            render={({ field }) => (
+                                <Select
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="last_name_prefix_id"
+                                    options={LastNamePrefixes}
+                                    className={'select-field-transparent'}
+                                    placeholder={'Tussenvoegsel'}
+                                />
+                            )}
+                        />
+                        <Field
+                            name="personLastName"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="last_name"
+                                    className={''}
+                                    placeholder={'Achternaam'}
+                                />
+                            )}
+                        />
                     </Row>
 
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <ButtonText
-                                buttonText={'Account aanmaken'}
-                                buttonClassName={'authorization-button'}
-                                size="sm"
-                                type={'submit'}
-                                loading={isSubmitting}
-                                loadingSpinnerColor={'#034b8c'}
-                                disabled={showSuccessMessage}
-                            />
-                        </Col>
+                    <Row className="justify-content-center">
+                        <ButtonText
+                            buttonText={'Account aanmaken'}
+                            buttonClassName={'authorization-button'}
+                            size="sm"
+                            type={'submit'}
+                            loading={isSubmitting}
+                            loadingSpinnerColor={'#034b8c'}
+                            disabled={showSuccessMessage}
+                        />
                     </Row>
                 </>
             </Form>

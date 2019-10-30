@@ -558,9 +558,18 @@ header .header-logo {
     text-align: left;
 }
 
+.select-field-transparent {
+    background-color: transparent !important;
+    border: 1px solid #fff !important;
+    border-radius: 7px !important;
+    text-align: center;
+    color: white;
+}
+
 .select-field {
     border: 1px none #000;
 }
+
 
 .w-input[disabled],
 .w-select[disabled],

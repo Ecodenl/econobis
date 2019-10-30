@@ -65,37 +65,39 @@ const NewAccount = props => {
                         redirect()
                     ) : (
                         <div>
-                            <h3 className={'text-light'}>Nieuw account</h3>
-                            <p className={'text-light'}>Maak binnen 2 minuten een account aan.</p>
+                            <Row className="justify-content-center">
+                                <h3 className={'text-light'}>Nieuw account</h3>
+                            </Row>
+                            <Row className="justify-content-center">
+                                <p className={'text-light'}>Maak binnen 2 minuten een account aan.</p>
+                            </Row>
                             <br />
-                            <Row>
-                                <Col xs={12} md={10}>
-                                    <div className="form-check form-check-inline">
-                                        <label className="radio-inline">
-                                            <input
-                                                type="radio"
-                                                id="personal"
-                                                checked={contactType === 'person'}
-                                                value={'person'}
-                                                onChange={() => setContactType('person')}
-                                            />
-                                            &nbsp;voor jezelf
-                                        </label>
-                                        &nbsp;&nbsp;
-                                        <label className="radio-inline">
-                                            <input
-                                                type="radio"
-                                                id="organisation"
-                                                checked={contactType === 'organisation'}
-                                                value={'organisation'}
-                                                onChange={() => {
-                                                    setContactType('organisation');
-                                                }}
-                                            />
-                                            &nbsp;voor je organisatie
-                                        </label>
-                                    </div>
-                                </Col>
+                            <Row className="justify-content-center">
+                                <div className="form-check form-check-inline">
+                                    <label className="radio-inline">
+                                        <input
+                                            type="radio"
+                                            id="personal"
+                                            checked={contactType === 'person'}
+                                            value={'person'}
+                                            onChange={() => setContactType('person')}
+                                        />
+                                        &nbsp;voor jezelf
+                                    </label>
+                                    &nbsp;&nbsp;
+                                    <label className="radio-inline">
+                                        <input
+                                            type="radio"
+                                            id="organisation"
+                                            checked={contactType === 'organisation'}
+                                            value={'organisation'}
+                                            onChange={() => {
+                                                setContactType('organisation');
+                                            }}
+                                        />
+                                        &nbsp;voor je organisatie
+                                    </label>
+                                </div>
                             </Row>
                             <br />
 
@@ -114,11 +116,9 @@ const NewAccount = props => {
 
                             {showError ? (
                                 <Row>
-                                    <Col xs={12} md={10}>
-                                        <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                            {errorMessage}
-                                        </Alert>
-                                    </Col>
+                                    <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                        {errorMessage}
+                                    </Alert>
                                 </Row>
                             ) : null}
                         </div>

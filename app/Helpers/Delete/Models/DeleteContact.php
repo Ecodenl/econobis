@@ -75,6 +75,11 @@ class DeleteContact implements DeleteInterface
         if($this->contact->occupations()->count() > 0){
             array_push($this->errorMessage, "Er is nog een verbinding aanwezig.");
         }
+
+        if($this->contact->portalUser->count() > 0){
+            array_push($this->errorMessage, "Er is nog een portal gebruiker aanwezig.");
+        }
+
     }
 
     /** Deletes models recursive

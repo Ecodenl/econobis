@@ -568,6 +568,9 @@ header .header-logo {
     text-align: center;
     color: white;
 }
+.select-field-transparent option {
+    color: black;
+}
 
 .select-field {
     border: 1px none #000;

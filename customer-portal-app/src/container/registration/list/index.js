@@ -190,7 +190,7 @@ function RegistrationList(props) {
                                                 ''
                                             )}
 
-                                            {participation.project.projectType.codeRef == 'postalcodeLink' ? (
+                                            {participation.project.projectType.codeRef == 'postalcode_link_capital' ? (
                                                 <>
                                                     {participation.participationsInteressed != 0 ? (
                                                         <span>

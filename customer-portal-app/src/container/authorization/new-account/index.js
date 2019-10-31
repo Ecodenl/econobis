@@ -59,8 +59,14 @@ const NewAccount = props => {
     return (
         <Container fluid className="authorization-container text-light">
             <Row className="justify-content-center align-content-center full-height">
+                {/*<Col xs="12" sm="10" md="8" lg="6" xl="4">*/}
                 <Col xs="12" sm="10" md="8" lg="6" xl="4">
-                    <img src={LogoImage} alt="" className="image" />
+                    <div>
+                        <Row className="justify-content-center">
+                            <img src={LogoImage} alt="" className="image logo-container" />
+                        </Row>
+                    </div>
+
                     {showSuccessMessage ? (
                         redirect()
                     ) : (

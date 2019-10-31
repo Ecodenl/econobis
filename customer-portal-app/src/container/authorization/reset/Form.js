@@ -28,63 +28,59 @@ const ResetForm = ({ handleSubmit, email }) => (
         }}
         render={({ isSubmitting, errors, touched }) => (
             <Form>
-                <div className="mb-3">
+                <Row className="justify-content-center">
                     <p className={'text-white'}>
                         Stel een nieuw wachtwoord in voor <strong>{email}</strong>. Daarna ben je direct ingelogd.
                     </p>
-                </div>
-                <Row>
-                    <Col>
-                        <Field
-                            name="password"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    id="password"
-                                    className={field.value ? 'numeric-password' : ''}
-                                    placeholder={'Nieuw wachtwoord'}
-                                    errors={errors}
-                                    touched={touched}
-                                    classNameErrorMessage={'text-white'}
-                                />
-                            )}
-                        />
-                    </Col>
                 </Row>
-                <Row>
-                    <Col className="mt-2">
-                        <Field
-                            name="passwordConfirmation"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    id="passwordConfirmation"
-                                    className={field.value ? 'numeric-password' : ''}
-                                    placeholder={'Herhaal nieuw wachtwoord'}
-                                    errors={errors}
-                                    touched={touched}
-                                    classNameErrorMessage={'text-white text-white mb-3'}
-                                />
-                            )}
-                        />
-                    </Col>
+                <Row className="justify-content-center">
+                    <Field
+                        name="password"
+                        render={({ field }) => (
+                            <InputText
+                                field={field}
+                                id="password"
+                                className={field.value ? 'numeric-password' : ''}
+                                placeholder={'Nieuw wachtwoord'}
+                                errors={errors}
+                                touched={touched}
+                                classNameErrorMessage={'text-white'}
+                            />
+                        )}
+                    />
                 </Row>
-                <Row>
-                    <Col className="my-3">
-                        <small className={'text-white'}>
-                            Het wachtwoord moet minimaal 10 karakters lang zijn en moet minimaal 1 cijfer en 1
-                            hoofdletter bevatten.
-                        </small>
-                    </Col>
+                <Row className="justify-content-center">
+                    <Field
+                        name="passwordConfirmation"
+                        render={({ field }) => (
+                            <InputText
+                                field={field}
+                                id="passwordConfirmation"
+                                className={field.value ? 'numeric-password' : ''}
+                                placeholder={'Herhaal nieuw wachtwoord'}
+                                errors={errors}
+                                touched={touched}
+                                classNameErrorMessage={'text-white text-white mb-3'}
+                            />
+                        )}
+                    />
                 </Row>
-                <ButtonText
-                    buttonText={'Verzenden'}
-                    buttonClassName={'authorization-button'}
-                    size="sm"
-                    type={'submit'}
-                    loading={isSubmitting}
-                    loadingSpinnerColor={'#034b8c'}
-                />
+                <Row className="justify-content-center">
+                    <small className={'text-white'}>
+                        Het wachtwoord moet minimaal 10 karakters lang zijn en moet minimaal 1 cijfer en 1 hoofdletter
+                        bevatten.
+                    </small>
+                </Row>
+                <Row className="justify-content-center">
+                    <ButtonText
+                        buttonText={'Verzenden'}
+                        buttonClassName={'authorization-button'}
+                        size="sm"
+                        type={'submit'}
+                        loading={isSubmitting}
+                        loadingSpinnerColor={'#034b8c'}
+                    />
+                </Row>
             </Form>
         )}
     />

@@ -56,21 +56,29 @@ const Reset = ({ location, match, login }) => {
                 <Container fluid className="authorization-container">
                     <Row className="justify-content-center align-content-center full-height">
                         <Col xs="12" sm="8" md="6" lg="4" xl="2">
-                            <img src={LogoImage} alt="" className="image" />
+                            <img src={LogoImage} alt="" className="image logo-container" />
                             {showSuccessMessage ? (
                                 <>
-                                    <h3 className={'text-white'}>Je wachtwoord is ingesteld</h3>
-                                    <p className={'text-white'}>Je bent nu ingelogd</p>
-                                    <ButtonText
-                                        buttonText={'Ga verder'}
-                                        onClickAction={toggleRedirect}
-                                        buttonClassName={'authorization-button'}
-                                        size="sm"
-                                    />
+                                    <Row className="justify-content-center">
+                                        <h3 className={'text-white'}>Je wachtwoord is ingesteld</h3>
+                                    </Row>
+                                    <Row className="justify-content-center">
+                                        <p className={'text-white'}>Je bent nu ingelogd</p>
+                                    </Row>
+                                    <Row className="justify-content-center">
+                                        <ButtonText
+                                            buttonText={'Ga verder'}
+                                            onClickAction={toggleRedirect}
+                                            buttonClassName={'authorization-button'}
+                                            size="sm"
+                                        />
+                                    </Row>
                                 </>
                             ) : (
                                 <>
-                                    <h3 className={'text-white'}>Wachtwoord wijzigen</h3>
+                                    <Row className="justify-content-center">
+                                        <h3 className={'text-white'}>Wachtwoord wijzigen</h3>
+                                    </Row>
                                     <ResetForm handleSubmit={handleSubmit} email={email} />
                                 </>
                             )}

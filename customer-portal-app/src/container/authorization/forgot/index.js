@@ -34,22 +34,31 @@ const Forgot = props => {
         <Container fluid className="authorization-container">
             <Row className="justify-content-center align-content-center full-height">
                 <Col xs="12" sm="10" md="8" lg="6" xl="4">
-                    <img src={LogoImage} alt="" className="image" />
+                    <img src={LogoImage} alt="" className="image logo-container" />
                     {showSuccessMessage ? (
                         <div>
-                            <h3 className={'text-light'}>Een E-mail is onderweg!</h3>
-                            <p className={'text-light'}>
-                                Als het e-mailadres bij ons bekend is, dan ontvang je binnen enkele minuten een e-mail
-                                met een persoonlijke link. Via deze link kun je een nieuw wachtwoord instellen.
-                            </p>
+                            <Row className={'justify-content-center '}>
+                                <h3 className={'text-light'}>Een E-mail is onderweg!</h3>
+                            </Row>
+                            <Row className={'justify-content-center '}>
+                                <p className={'text-light'}>
+                                    Als het e-mailadres bij ons bekend is, dan ontvang je binnen enkele minuten een
+                                    e-mail met een persoonlijke link. Via deze link kun je een nieuw wachtwoord
+                                    instellen.
+                                </p>
+                            </Row>
                         </div>
                     ) : (
                         <div>
-                            <h3 className={'text-light'}>Wachtwoord vergeten</h3>
-                            <p className={'text-light'}>
-                                Vul het e-mailadres in waarmee je inlogt en die bij ons bekend is. Je ontvangt van ons
-                                een e-mail waarmee je een nieuw wachtwoord kunt instellen.
-                            </p>
+                            <Row className={'justify-content-center '}>
+                                <h3 className={'text-light'}>Wachtwoord vergeten</h3>
+                            </Row>
+                            <Row className={'justify-content-center '}>
+                                <p className={'text-light'}>
+                                    Vul het e-mailadres in waarmee je inlogt en die bij ons bekend is. Je ontvangt van
+                                    ons een e-mail waarmee je een nieuw wachtwoord kunt instellen.
+                                </p>
+                            </Row>
                             <Row className={'justify-content-center '}>
                                 <Col xs={12} md={6}>
                                     <ForgotForm handleSubmit={handleSubmit} showSuccessMessage={showSuccessMessage} />
@@ -62,9 +71,11 @@ const Forgot = props => {
                             </Row>
                         </div>
                     )}
-                    <Link to={'/login'} className="authorization-link">
-                        Terug naar inloggen
-                    </Link>
+                    <Row className={'justify-content-center '}>
+                        <Link to={'/login'} className="authorization-link">
+                            Terug naar inloggen
+                        </Link>
+                    </Row>
                 </Col>
             </Row>
         </Container>

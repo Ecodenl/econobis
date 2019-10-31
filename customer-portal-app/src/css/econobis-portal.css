@@ -473,6 +473,9 @@ header .header-logo {
     max-width: 100px;
     padding: 10px 0;
 }
+.logo-container {
+    max-width: 200px;
+}
 
 /* ----------------- DROPDOWN USER STYLING -----------------*/
 .dropdown-toggle {

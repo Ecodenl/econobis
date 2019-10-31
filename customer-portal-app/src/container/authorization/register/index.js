@@ -61,7 +61,7 @@ const Register = ({ location, match, login }) => {
                 <Container fluid className="authorization-container">
                     <Row className="justify-content-center align-content-center full-height">
                         <Col xs="12" sm="8" md="6" lg="4" xl="2">
-                            <img src={LogoImage} alt="" className="image" />
+                            <img src={LogoImage} alt="" className="image logo-container" />
                             {showSuccessMessage ? (
                                 <>
                                     <h3 className={'text-white'}>Je account is geactiveerd</h3>

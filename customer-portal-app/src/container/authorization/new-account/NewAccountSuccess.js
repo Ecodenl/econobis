@@ -10,7 +10,7 @@ const NewAccountSuccess = () => {
         <Container fluid className="authorization-container text-light">
             <Row className="justify-content-center align-content-center full-height">
                 <Col xs="12" sm="10" md="8" lg="6" xl="4">
-                    <img src={LogoImage} alt="" className="image" />
+                    <img src={LogoImage} alt="" className="image logo-container" />
                     <div>
                         <h3 className={'text-light'}>Een E-mail is onderweg!</h3>
                         <p className={'text-light'}>

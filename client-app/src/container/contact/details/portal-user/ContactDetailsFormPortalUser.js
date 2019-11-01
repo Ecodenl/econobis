@@ -6,16 +6,34 @@ import ContactDetailsFormPortalUserView from './ContactDetailsFormPortalUserView
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
+import ContactDetailsFormOccupationsView from "../occupations/ContactDetailsFormOccupationsItem";
+import ContactDetailsFormPortalUserDelete from "./ContactDetailsFormPortalUserDelete";
 
 class ContactDetailsFormPortalUser extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showActionButtons: false,
+            highlightLine: '',
             showEdit: false,
-            activeDiv: '',
+            showDelete: false,
         };
     }
+
+   onLineEnter = () => {
+        this.setState({
+            showActionButtons: true,
+            highlightLine: 'highlight-line',
+        });
+    };
+
+    onLineLeave = () => {
+        this.setState({
+            showActionButtons: false,
+            highlightLine: '',
+        });
+    };
 
     switchToEdit = () => {
         this.setState({
@@ -26,31 +44,16 @@ class ContactDetailsFormPortalUser extends Component {
     switchToView = () => {
         this.setState({
             showEdit: false,
-            activeDiv: '',
         });
     };
 
-    onDivEnter() {
-        this.setState({
-            activeDiv: 'panel-grey',
-        });
-    }
-
-    onDivLeave() {
-        if (!this.state.showEdit) {
-            this.setState({
-                activeDiv: '',
-            });
-        }
-    }
+    toggleDelete = () => {
+        this.setState({ showDelete: !this.state.showDelete });
+    };
 
     render() {
         return (
-            <Panel
-                className={this.state.activeDiv}
-                onMouseEnter={() => this.onDivEnter()}
-                onMouseLeave={() => this.onDivLeave()}
-            >
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Portal gebruiker gegevens</span>
                 </PanelHeader>
@@ -60,7 +63,20 @@ class ContactDetailsFormPortalUser extends Component {
                     ) : this.state.showEdit ? (
                         <ContactDetailsFormPortalUserEdit switchToView={this.switchToView} />
                     ) : (
-                        <ContactDetailsFormPortalUserView switchToEdit={this.switchToEdit} />
+                        <ContactDetailsFormPortalUserView
+                            highlightLine={this.state.highlightLine}
+                            showActionButtons={this.state.showActionButtons}
+                            onLineEnter={this.onLineEnter}
+                            onLineLeave={this.onLineLeave}
+                            switchToEdit={this.switchToEdit}
+                            toggleDelete={this.toggleDelete}  />
+                    )}
+                    {this.state.showDelete && (
+                        <ContactDetailsFormPortalUserDelete
+                            closeDeleteItemModal={this.toggleDelete}
+                            deletePortalUser={this.deletePortalUser}
+                            portalUser={this.state.portalUser}
+                        />
                     )}
                 </PanelBody>
             </Panel>

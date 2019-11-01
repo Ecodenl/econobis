@@ -28,6 +28,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplates: [],
             errors: {
                 portalName: false,
+                cooperativeName: false,
                 portalWebsite: false,
                 portalUrl: false,
                 backgroundColor: false,
@@ -124,6 +125,7 @@ class PortalSettingsFormGeneralEdit extends Component {
     render() {
         const {
             portalName,
+            cooperativeName,
             portalWebsite,
             portalUrl,
             backgroundColor,
@@ -145,12 +147,22 @@ class PortalSettingsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="Cooperatie naam"
+                                label="Mijn cooperatie naam"
                                 name={'portalName'}
                                 value={portalName}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.portalName}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Cooperatie naam"
+                                name={'cooperativeName'}
+                                value={cooperativeName}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.cooperativeName}
                             />
                         </div>
                         <div className="row">
@@ -203,7 +215,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 error={this.state.errors.linkUnderstandInfo}
                             />
                         </div>
-
                         <div className="row">
                             <InputText
                                 label="Achtergrondkleur"

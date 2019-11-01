@@ -258,19 +258,17 @@ class NewAccountController extends Controller
         }
 
         $portalName = PortalSettings::get('portalName');
-        $portalWebsite = PortalSettings::get('portalWebsite');
-        $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
         $subject = str_replace('{portal_naam}', $portalName, $subject);
+        $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
         $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
-        $htmlBody = str_replace('{portal_naam}', $portalName, $htmlBody);
-        $htmlBody = str_replace('{portal_website}', $portalWebsite, $htmlBody);
 
 //        $user = Auth::user();
 //        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
 //            'ik', $user);
 
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
-            'contact', $contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'portal' );
+        $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody,'cooperatie' );
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 

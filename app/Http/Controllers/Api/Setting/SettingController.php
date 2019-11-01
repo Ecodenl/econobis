@@ -74,6 +74,7 @@ class SettingController
     {
         return in_array($key, [
             'portalName',
+            'cooperativeName',
             'portalWebsite',
             'portalUrl',
             'backgroundColor',

@@ -563,6 +563,8 @@ class ParticipationProjectController extends ApiController
                 $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'deelname', $participant);
                 $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'mutaties', $participant->mutations);
                 $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'ik', $user);
+                $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'portal' );
+                $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml,'cooperatie' );
                 $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml,'administratie', $project->administration);
 
                 $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
@@ -624,6 +626,8 @@ class ParticipationProjectController extends ApiController
 
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact' ,$contact);
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables,'cooperatie' );
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'project', $project);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'deelname', $participant);

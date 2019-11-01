@@ -1184,6 +1184,56 @@ class TemplateVariableHelper
         }
     }
 
+    static public function replaceTemplatePortalVariables($html_body, $var_prefix){
+        $regex = "/{" . $var_prefix . "_(\S*?)}/";
+        if (preg_match_all($regex, $html_body, $m)) {
+            foreach ($m[1] as $i => $var_name) {
+                $html_body = str_replace($m[0][$i], TemplateVariableHelper::getPortalVar($var_name), $html_body);
+            }
+        }
+        return $html_body;
+    }
+
+    public static function getPortalVar($varname){
+        $portalName = PortalSettings::get('portalName');
+
+        switch ($varname) {
+            case 'naam':
+                return $portalName;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    static public function replaceTemplateCooperativeVariables($html_body, $var_prefix){
+        $regex = "/{" . $var_prefix . "_(\S*?)}/";
+        if (preg_match_all($regex, $html_body, $m)) {
+            foreach ($m[1] as $i => $var_name) {
+                $html_body = str_replace($m[0][$i], TemplateVariableHelper::getCooperativeVar($var_name), $html_body);
+            }
+        }
+        return $html_body;
+    }
+
+    public static function getCooperativeVar($varname){
+        $cooperativeName = PortalSettings::get('cooperativeName');
+        $cooperativeWebsite = PortalSettings::get('portalWebsite');
+
+        switch ($varname) {
+            case 'naam':
+                print_r("hallo c");
+                return $cooperativeName;
+                break;
+            case 'website':
+                return $cooperativeWebsite;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
     static public function replaceTemplateTagVariable($base_html, $template_html, $free_text_1, $free_text_2){
 
         $template_html = TemplateVariableHelper::replaceTemplateFreeTextVariables($template_html, $free_text_1, $free_text_2);

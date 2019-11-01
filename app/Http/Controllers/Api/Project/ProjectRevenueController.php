@@ -739,6 +739,8 @@ class ProjectRevenueController extends ApiController
 
                     $revenueHtml
                         = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'contact', $contact);
+                    $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'portal' );
+                    $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml,'cooperatie' );
 
                     //wettelijk vertegenwoordiger
                     if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {

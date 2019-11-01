@@ -153,6 +153,8 @@ class ParticipationProjectController extends Controller
 
             $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $contact);
+            $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
+            $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables,'cooperatie' );
 
             //wettelijk vertegenwoordiger
             if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {

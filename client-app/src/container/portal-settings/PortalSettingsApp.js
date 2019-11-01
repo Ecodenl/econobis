@@ -27,6 +27,7 @@ class PortalSettingsApp extends Component {
         this.setState({ isLoading: true, hasError: false });
         const keys =
             '?keys[]=portalName' +
+            '&keys[]=cooperativeName' +
             '&keys[]=portalWebsite' +
             '&keys[]=portalUrl' +
             '&keys[]=backgroundColor' +

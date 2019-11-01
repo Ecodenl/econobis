@@ -6,6 +6,9 @@ import LoadingView from '../../components/general/LoadingView';
 import ContactDetailsPersonal from './Personal';
 import ContactDetailsOrganisation from './Organisation';
 import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
+import Button from "react-bootstrap/Button";
+import {Link} from "react-router-dom";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
@@ -76,6 +79,20 @@ const ContactDetails = function(props) {
                 <LoadingView />
             ) : (
                 <div className="content-container w-container">
+                    <ButtonGroup aria-label="Steps" className="float-left">
+                        <Link to={`/inschrijven-projecten`}>
+                            <Button className={'w-button'} size="sm">
+                                Inschrijven projecten
+                            </Button>
+                        </Link>
+                        &nbsp;
+                        <Link to={`/inschrijvingen-projecten`}>
+                            <Button className={'w-button'} size="sm">
+                                Inschrijvingen
+                            </Button>
+                        </Link>
+                    </ButtonGroup>
+                    <p>&nbsp;</p>
                     <h1 className="content-heading">Contactgegevens</h1>
                     <div className="w-form" />
                     {/* If contact is person */}

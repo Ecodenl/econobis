@@ -6,8 +6,8 @@ import ContactDetailsFormPortalUserView from './ContactDetailsFormPortalUserView
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
-import ContactDetailsFormOccupationsView from "../occupations/ContactDetailsFormOccupationsItem";
-import ContactDetailsFormPortalUserDelete from "./ContactDetailsFormPortalUserDelete";
+import ContactDetailsFormOccupationsView from '../occupations/ContactDetailsFormOccupationsItem';
+import ContactDetailsFormPortalUserDelete from './ContactDetailsFormPortalUserDelete';
 
 class ContactDetailsFormPortalUser extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class ContactDetailsFormPortalUser extends Component {
         };
     }
 
-   onLineEnter = () => {
+    onLineEnter = () => {
         this.setState({
             showActionButtons: true,
             highlightLine: 'highlight-line',
@@ -69,15 +69,17 @@ class ContactDetailsFormPortalUser extends Component {
                             onLineEnter={this.onLineEnter}
                             onLineLeave={this.onLineLeave}
                             switchToEdit={this.switchToEdit}
-                            toggleDelete={this.toggleDelete}  />
-                    )}
-                    {this.state.showDelete && (
-                        <ContactDetailsFormPortalUserDelete
-                            closeDeleteItemModal={this.toggleDelete}
-                            deletePortalUser={this.deletePortalUser}
-                            portalUser={this.state.portalUser}
+                            toggleDelete={this.toggleDelete}
                         />
                     )}
+                    {/* todo deletePortalUser bestaat nog niet*/}
+                    {/*{this.state.showDelete && (*/}
+                    {/*<ContactDetailsFormPortalUserDelete*/}
+                    {/*closeDeleteItemModal={this.toggleDelete}*/}
+                    {/*deletePortalUser={this.deletePortalUser}*/}
+                    {/*portalUser={this.state.portalUser}*/}
+                    {/*/>*/}
+                    {/*)}*/}
                 </PanelBody>
             </Panel>
         );

@@ -436,12 +436,13 @@ class ContactController extends ApiController
                 }
 
                 $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
+                $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
 
                 $newTask = new Task();
                 $newTask->note = $note;
                 $newTask->type_id = 15;
                 $newTask->contact_id = $contact->id;
-                $newTask->responsible_user_id = $checkContactTaskResponsibleUserId;
+                $newTask->responsible_user_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : $checkContactTaskResponsibleUserId;
                 $newTask->responsible_team_id = null;
                 $newTask->date_planned_start = Carbon::today();
 

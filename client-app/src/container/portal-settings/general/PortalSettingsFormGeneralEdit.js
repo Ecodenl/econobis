@@ -33,6 +33,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                 backgroundColor: false,
                 responsibleUserId: false,
                 checkContactTaskResponsibleUserId: false,
+                checkContactTaskResponsibleTeamId: false,
+                contactResponsibleOwnerUserId: false,
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
                 emailTemplateNewAccountId: false,
@@ -127,6 +129,8 @@ class PortalSettingsFormGeneralEdit extends Component {
             backgroundColor,
             responsibleUserId,
             checkContactTaskResponsibleUserId,
+            checkContactTaskResponsibleTeamId,
+            contactResponsibleOwnerUserId,
             documentTemplateAgreementId,
             emailTemplateAgreementId,
             emailTemplateNewAccountId,
@@ -220,11 +224,29 @@ class PortalSettingsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Verantwoordelijk gebruiker controle contact taak"
+                                label="Verantwoordelijke gebruiker eigenaar contact"
+                                name={'contactResponsibleOwnerUserId'}
+                                value={contactResponsibleOwnerUserId}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.contactResponsibleOwnerUserId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Verantwoordelijke gebruiker controle contact taak"
                                 name={'checkContactTaskResponsibleUserId'}
                                 value={checkContactTaskResponsibleUserId}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.checkContactTaskResponsibleUserId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Verantwoordelijk team controle contact taak"
+                                name={'checkContactTaskResponsibleTeamId'}
+                                value={checkContactTaskResponsibleTeamId}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.checkContactTaskResponsibleTeamId}
                             />
                         </div>
                         <div className="row">

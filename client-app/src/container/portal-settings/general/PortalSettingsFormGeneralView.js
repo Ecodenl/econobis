@@ -14,12 +14,8 @@ const PortalSettingsFormGeneralView = ({
     checkContactTaskResponsibleUserId,
     checkContactTaskResponsibleTeamId,
     contactResponsibleOwnerUserId,
-    documentTemplateAgreementId,
-    emailTemplateAgreementId,
     emailTemplateNewAccountId,
     linkPrivacyPolicy,
-    linkAgreeTerms,
-    linkUnderstandInfo,
     switchToEdit,
 }) => {
     return (
@@ -40,12 +36,6 @@ const PortalSettingsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText label={'Privacy beleid link'} value={linkPrivacyPolicy} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Voorwaarden link'} value={linkAgreeTerms} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Projectinformatie link'} value={linkUnderstandInfo} />
                     </div>
                     <div className="row">
                         <ViewText label={'Achtergrondkleur'} value={backgroundColor} />
@@ -70,12 +60,6 @@ const PortalSettingsFormGeneralView = ({
                             label={'Verantwoordelijk team controle contact taak'}
                             value={checkContactTaskResponsibleTeamId}
                         />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Document template'} value={documentTemplateAgreementId} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Email template Inschrijvingsbevestiging'} value={emailTemplateAgreementId} />
                     </div>
                     <div className="row">
                         <ViewText

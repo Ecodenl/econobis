@@ -107,6 +107,10 @@ class ProjectController extends ApiController
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
             ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
+            ->integer('documentTemplateAgreementId')->validate('required|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
+            ->integer('emailTemplateAgreementId')->validate('required|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
+            ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->get();
 
         $project = new Project();
@@ -182,6 +186,10 @@ class ProjectController extends ApiController
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
             ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
+            ->integer('documentTemplateAgreementId')->validate('required|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
+            ->integer('emailTemplateAgreementId')->validate('required|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
+            ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->get();
 
         $project->fill($data);

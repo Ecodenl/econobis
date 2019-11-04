@@ -97,6 +97,10 @@ class FullProject extends Resource
                 'amountGranted' => $this->amount_granted,
                 'amountOptioned' => $this->amount_optioned,
                 'amountInteressed' => $this->amount_interessed,
+                'documentTemplateAgreementId' => $this->document_template_agreement_id,
+                'emailTemplateAgreementId' => $this->email_template_agreement_id,
+                'linkAgreeTerms' => $this->link_agree_terms,
+                'linkUnderstandInfo' => $this->link_understand_info,
             ];
     }
 }

@@ -20,7 +20,7 @@ function ProjectDetails({ match }) {
 
     useEffect(() => {
         const keys =
-            '?keys[]=portalName&keys[]=portalWebsite&keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=checkContactTaskResponsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId&keys[]=linkPrivacyPolicy&keys[]=linkAgreeTerms&keys[]=linkUnderstandInfo';
+            '?keys[]=portalName&keys[]=portalWebsite&keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=checkContactTaskResponsibleUserId&keys[]=linkPrivacyPolicy';
         PortalSettingsAPI.fetchPortalSettings(keys)
             .then(payload => {
                 setPortalSettings({ ...payload.data });
@@ -76,7 +76,7 @@ function ProjectDetails({ match }) {
                         <Col>
                             <p>
                                 Meer informatie over dit project vind je{' '}
-                                <a href={portalSettings['linkUnderstandInfo']} target="_blank">
+                                <a href={`${project.linkUnderstandInfo`} target="_blank">
                                     hier
                                 </a>
                             </p>

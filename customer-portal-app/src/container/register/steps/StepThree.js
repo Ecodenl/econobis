@@ -59,7 +59,7 @@ function StepThree({ portalSettings, previous, next, initialRegisterValues, hand
                                                     className="checkbox-label w-form-label"
                                                 >
                                                     Ik ga akkoord met de{' '}
-                                                    <a href={portalSettings['linkAgreeTerms']} target="_blank">
+                                                    <a href={project.linkAgreeTerms} target="_blank">
                                                         voorwaarden
                                                     </a>
                                                 </span>
@@ -91,7 +91,7 @@ function StepThree({ portalSettings, previous, next, initialRegisterValues, hand
                                                     className="checkbox-label w-form-label"
                                                 >
                                                     Ik heb de{' '}
-                                                    <a href={portalSettings['linkUnderstandInfo']} target="_blank">
+                                                    <a href={project.linkUnderstandInfo}" target="_blank">
                                                         projectinformatie
                                                     </a>{' '}
                                                     (inclusief de daarin beschreven risico’s) behorende bij het project

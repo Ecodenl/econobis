@@ -82,12 +82,8 @@ class SettingController
             'contactResponsibleOwnerUserId',
             'checkContactTaskResponsibleUserId',
             'checkContactTaskResponsibleTeamId',
-            'documentTemplateAgreementId',
-            'emailTemplateAgreementId',
             'emailTemplateNewAccountId',
             'linkPrivacyPolicy',
-            'linkAgreeTerms',
-            'linkUnderstandInfo',
         ]);
     }
 

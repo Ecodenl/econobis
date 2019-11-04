@@ -73,12 +73,12 @@ class ParticipationProjectController extends Controller
 
     protected function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId)
     {
-        $documentTemplateAgreementId = PortalSettings::get('documentTemplateAgreementId');
+        $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
 
         $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate);
 
-        $emailTemplateAgreementId = PortalSettings::get('emailTemplateAgreementId');
+        $emailTemplateAgreementId = $project ? $project->email_template_agreement_id : 0;
 
         $emailTemplate = EmailTemplate::find($emailTemplateAgreementId);
         $pdf = PDF::loadView('documents.generic', [

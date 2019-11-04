@@ -101,7 +101,7 @@ function RegisterProject({ match, currentSelectedContact }) {
             setLoading(true);
 
             const keys =
-                '?keys[]=portalName&keys[]=portalWebsite&keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=checkContactTaskResponsibleUserId&keys[]=documentTemplateAgreementId&keys[]=emailTemplateAgreementId&keys[]=linkPrivacyPolicy&keys[]=linkAgreeTerms&keys[]=linkUnderstandInfo';
+                '?keys[]=portalName&keys[]=portalWebsite&keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=checkContactTaskResponsibleUserId&keys[]=linkPrivacyPolicy';
             PortalSettingsAPI.fetchPortalSettings(keys)
                 .then(payload => {
                     setPortalSettings({ ...payload.data });

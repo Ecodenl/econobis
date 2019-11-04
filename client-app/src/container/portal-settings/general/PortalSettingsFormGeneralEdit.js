@@ -36,12 +36,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                 checkContactTaskResponsibleUserId: false,
                 checkContactTaskResponsibleTeamId: false,
                 contactResponsibleOwnerUserId: false,
-                documentTemplateAgreementId: false,
-                emailTemplateAgreementId: false,
                 emailTemplateNewAccountId: false,
                 linkPrivacyPolicy: false,
-                linkAgreeTerms: false,
-                linkUnderstandInfo: false,
             },
         };
 
@@ -98,14 +94,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(portalSettings.linkAgreeTerms)) {
-            errors.linkAgreeTerms = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.linkUnderstandInfo)) {
-            errors.linkUnderstandInfo = true;
-            hasErrors = true;
-        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -133,12 +121,8 @@ class PortalSettingsFormGeneralEdit extends Component {
             checkContactTaskResponsibleUserId,
             checkContactTaskResponsibleTeamId,
             contactResponsibleOwnerUserId,
-            documentTemplateAgreementId,
-            emailTemplateAgreementId,
             emailTemplateNewAccountId,
             linkPrivacyPolicy,
-            linkAgreeTerms,
-            linkUnderstandInfo,
         } = this.state.portalSettings;
 
         return (
@@ -197,26 +181,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Voorwaarden link"
-                                name={'linkAgreeTerms'}
-                                value={linkAgreeTerms}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.linkAgreeTerms}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Projectinformatie link"
-                                name={'linkUnderstandInfo'}
-                                value={linkUnderstandInfo}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.linkUnderstandInfo}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
                                 label="Achtergrondkleur"
                                 name={'backgroundColor'}
                                 value={backgroundColor}
@@ -258,26 +222,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={checkContactTaskResponsibleTeamId}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.checkContactTaskResponsibleTeamId}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Document template"
-                                name={'documentTemplateAgreementId'}
-                                value={documentTemplateAgreementId}
-                                // options={this.state.documentTemplates}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.documentTemplateAgreementId}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="E-mail template Inschrijvingsbevestiging"
-                                name={'emailTemplateAgreementId'}
-                                value={emailTemplateAgreementId}
-                                // options={this.state.emailTemplates}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.emailTemplateAgreementId}
                             />
                         </div>
                         <div className="row">

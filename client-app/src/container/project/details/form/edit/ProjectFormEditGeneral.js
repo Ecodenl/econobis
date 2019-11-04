@@ -37,6 +37,10 @@ const ProjectFormEditGeneral = ({
     contactGroups,
     errors,
     amountOfParticipants,
+    documentTemplateAgreementId,
+    emailTemplateAgreementId,
+    linkAgreeTerms,
+    linkUnderstandInfo,
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
@@ -215,6 +219,49 @@ const ProjectFormEditGeneral = ({
                     name={'dateEntry'}
                     value={dateEntry}
                     onChangeAction={handleInputChangeDate}
+                />
+            </div>
+
+            <h4>Contacten portal instellingen</h4>
+
+            <div className="row">
+                <InputText
+                    label="Document template"
+                    name={'documentTemplateAgreementId'}
+                    value={documentTemplateAgreementId}
+                    // options={this.state.documentTemplates}
+                    onChangeAction={handleInputChange}
+                    error={errors.documentTemplateAgreementId}
+                />
+            </div>
+            <div className="row">
+                <InputText
+                    label="E-mail template Inschrijvingsbevestiging"
+                    name={'emailTemplateAgreementId'}
+                    value={emailTemplateAgreementId}
+                    // options={this.state.emailTemplates}
+                    onChangeAction={handleInputChange}
+                    error={errors.emailTemplateAgreementId}
+                />
+            </div>
+            <div className="row">
+                <InputText
+                    label="Voorwaarden link"
+                    name={'linkAgreeTerms'}
+                    value={linkAgreeTerms}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.linkAgreeTerms}
+                />
+            </div>
+            <div className="row">
+                <InputText
+                    label="Projectinformatie link"
+                    name={'linkUnderstandInfo'}
+                    value={linkUnderstandInfo}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.linkUnderstandInfo}
                 />
             </div>
         </React.Fragment>

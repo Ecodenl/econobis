@@ -125,7 +125,7 @@ export default {
                             ],
                             rlt: {
                                 project: {
-                                    fld: ['id', 'name'],
+                                    fld: ['id', 'name', 'dateEnd'],
                                     rlt: { projectType: { fld: ['id', 'codeRef'] } },
                                 },
                             },

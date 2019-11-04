@@ -1223,7 +1223,6 @@ class TemplateVariableHelper
 
         switch ($varname) {
             case 'naam':
-                print_r("hallo c");
                 return $cooperativeName;
                 break;
             case 'website':

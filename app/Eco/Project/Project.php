@@ -7,7 +7,9 @@ use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Email\Email;
+use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Measure\Measure;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantProject\ParticipantProject;
@@ -99,6 +101,14 @@ class Project extends Model
 
     public function requiresContactGroups(){
         return $this->belongsToMany(ContactGroup::class, 'contact_group_participation', 'project_id', 'group_id');
+    }
+
+    public function documentTemplateAgreement(){
+        return $this->belongsTo(DocumentTemplate::class, 'document_template_agreement_id');
+    }
+
+    public function emailTemplateAgreement(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_agreement_id');
     }
 
     public function getCurrentParticipations(){

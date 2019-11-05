@@ -6,6 +6,7 @@ import InputDate from '../../../../../components/form/InputDate';
 import InputToggle from '../../../../../components/form/InputToggle';
 import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
 import ViewText from '../../../../../components/form/ViewText';
+import InputReactSelect from "../../../../../components/form/InputReactSelect";
 
 const ProjectFormEditGeneral = ({
     name,
@@ -30,6 +31,7 @@ const ProjectFormEditGeneral = ({
     handleInputChange,
     handleInputChangeDate,
     handleContactGroupIds,
+    handleReactSelectChange,
     projectStatuses,
     administrations,
     hasPaymentInvoices,
@@ -38,9 +40,12 @@ const ProjectFormEditGeneral = ({
     errors,
     amountOfParticipants,
     documentTemplateAgreementId,
+    documentTemplates,
     emailTemplateAgreementId,
+    emailTemplates,
     linkAgreeTerms,
     linkUnderstandInfo,
+
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
@@ -226,31 +231,10 @@ const ProjectFormEditGeneral = ({
 
             <div className="row">
                 <InputText
-                    label="Document template"
-                    name={'documentTemplateAgreementId'}
-                    value={documentTemplateAgreementId}
-                    // options={this.state.documentTemplates}
-                    onChangeAction={handleInputChange}
-                    error={errors.documentTemplateAgreementId}
-                />
-            </div>
-            <div className="row">
-                <InputText
-                    label="E-mail template Inschrijvingsbevestiging"
-                    name={'emailTemplateAgreementId'}
-                    value={emailTemplateAgreementId}
-                    // options={this.state.emailTemplates}
-                    onChangeAction={handleInputChange}
-                    error={errors.emailTemplateAgreementId}
-                />
-            </div>
-            <div className="row">
-                <InputText
                     label="Voorwaarden link"
                     name={'linkAgreeTerms'}
                     value={linkAgreeTerms}
                     onChangeAction={handleInputChange}
-                    required={'required'}
                     error={errors.linkAgreeTerms}
                 />
             </div>
@@ -260,10 +244,34 @@ const ProjectFormEditGeneral = ({
                     name={'linkUnderstandInfo'}
                     value={linkUnderstandInfo}
                     onChangeAction={handleInputChange}
-                    required={'required'}
                     error={errors.linkUnderstandInfo}
                 />
             </div>
+            <div className="row">
+                <InputReactSelect
+                    label="Document template inschrijfbevestiging"
+                    name={'documentTemplateAgreementId'}
+                    options={documentTemplates}
+                    value={documentTemplateAgreementId}
+                    onChangeAction={handleReactSelectChange}
+                    // isLoading={peekLoading.documentTemplates}
+                    multi={false}
+                    error={errors.documentTemplateAgreementId}
+                />
+            </div>
+            <div className="row">
+                <InputReactSelect
+                    label="E-mail template inschrijfbevestiging"
+                    name={'emailTemplateAgreementId'}
+                    options={emailTemplates}
+                    value={emailTemplateAgreementId}
+                    onChangeAction={handleReactSelectChange}
+                    // isLoading={peekLoading.emailTemplates}
+                    multi={false}
+                    error={errors.emailTemplateAgreementId}
+                />
+            </div>
+
         </React.Fragment>
     );
 };

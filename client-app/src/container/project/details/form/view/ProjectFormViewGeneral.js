@@ -25,8 +25,8 @@ const ProjectFormViewGeneral = ({
     administrations,
     hasPaymentInvoices,
     requiresContactGroups,
-    documentTemplateAgreementId,
-    emailTemplateAgreementId,
+    documentTemplateAgreement,
+    emailTemplateAgreement,
     linkAgreeTerms,
     linkUnderstandInfo,
 }) => (
@@ -110,11 +110,18 @@ const ProjectFormViewGeneral = ({
             <ViewText label={'Projectinformatie link'} value={linkUnderstandInfo} />
         </div>
         <div className="row">
-            <ViewText label={'Document template inschrijfformulier'} value={documentTemplateAgreementId} />
+            <ViewText
+                label={'Document template inschrijfbevestiging'}
+                value={documentTemplateAgreement ? documentTemplateAgreement.name : ''}
+            />
         </div>
         <div className="row">
-            <ViewText label={'Email template Inschrijfbevestiging'} value={emailTemplateAgreementId} />
+            <ViewText
+                label={'Email template inschrijfbevestiging'}
+                value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
+            />
         </div>
+
     </React.Fragment>
 );
 

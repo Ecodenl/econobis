@@ -16,7 +16,8 @@ import ProjectFormDefaultLoan from '../../../form-default/ProjectFormDefaultLoan
 import ProjectFormDefaultObligation from '../../../form-default/ProjectFormDefaultObligation';
 import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultCapital';
 import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
-import ProjectFormViewLoan from '../view/ProjectFormView';
+import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
+import DocumentTemplateAPI from "../../../../../api/document-template/DocumentTemplateAPI";
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -24,6 +25,8 @@ class ProjectFormEdit extends Component {
 
         this.state = {
             contactGroups: [],
+            emailTemplates: [],
+            documentTemplates: [],
             project: {
                 ...props.project,
                 isMembershipRequired: Boolean(props.project.isMembershipRequired),
@@ -42,11 +45,29 @@ class ProjectFormEdit extends Component {
             },
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     componentDidMount() {
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
+        });
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
+            this.setState({ emailTemplates: payload });
+        });
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
+            let documentTemplates = [];
+
+            payload.forEach(function(documentTemplate) {
+                if (documentTemplate.group == 'registration' ) {
+                    documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
+                }
+            });
+
+            this.setState({
+                documentTemplates: documentTemplates,
+            });
+
         });
     }
 
@@ -74,6 +95,15 @@ class ProjectFormEdit extends Component {
         });
     }
 
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            project: {
+                ...this.state.project,
+                [name]: selectedOption,
+            },
+        });
+    }
     handleSubmit = event => {
         event.preventDefault();
 
@@ -188,6 +218,12 @@ class ProjectFormEdit extends Component {
             minParticipations,
             isParticipationTransferable,
             postalcodeLink,
+            documentTemplateAgreementId,
+            documentTemplates,
+            emailTemplateAgreementId,
+            emailTemplates,
+            linkAgreeTerms,
+            linkUnderstandInfo,
         } = this.state.project;
         const {
             participationsDefinitive,
@@ -230,9 +266,16 @@ class ProjectFormEdit extends Component {
                     handleInputChange={this.handleInputChange}
                     handleInputChangeDate={this.handleInputChangeDate}
                     handleContactGroupIds={this.handleContactGroupIds}
+                    handleReactSelectChange={this.handleReactSelectChange}
                     errors={this.state.errors}
                     contactGroups={this.state.contactGroups}
                     amountOfParticipants={amountOfParticipants}
+                    documentTemplateAgreementId={documentTemplateAgreementId}
+                    documentTemplates={this.state.documentTemplates}
+                    emailTemplateAgreementId={emailTemplateAgreementId}
+                    emailTemplates={this.state.emailTemplates}
+                    linkAgreeTerms={linkAgreeTerms}
+                    linkUnderstandInfo={linkUnderstandInfo}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (

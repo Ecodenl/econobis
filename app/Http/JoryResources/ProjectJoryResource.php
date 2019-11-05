@@ -46,6 +46,8 @@ class ProjectJoryResource extends JoryResource
         $this->field('postal_code')->filterable()->sortable();
         $this->field('project_type_id')->filterable()->sortable();
         $this->field('postalcode_link')->filterable()->sortable();
+        $this->field('link_agree_terms')->filterable()->sortable();
+        $this->field('link_understand_info')->filterable()->sortable();
 
         // Relations
 //        $this->relation('administration');

@@ -125,7 +125,7 @@ export default {
                             ],
                             rlt: {
                                 project: {
-                                    fld: ['id', 'name', 'dateEnd'],
+                                    fld: ['id', 'name', 'dateEnd', 'linkUnderstandInfo',],
                                     rlt: { projectType: { fld: ['id', 'codeRef'] } },
                                 },
                             },
@@ -142,9 +142,9 @@ export default {
         return axiosInstance.post(requestUrl, contact);
     },
 
-    previewDocument: (contactId, projectId) => {
-        const requestUrl = `/contact/${contactId}/${projectId}/preview-document`;
+    previewDocument: (registerValues) => {
+        const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/preview-document`;
 
-        return axiosInstance.get(requestUrl);
+        return axiosInstance.post(requestUrl, registerValues);
     },
 };

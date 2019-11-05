@@ -66,17 +66,22 @@ class ParticipationProjectController extends Controller
 
         DB::transaction(function () use ($contact, $project, $request, $portalUser, $responsibleUserId) {
             $participation = $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
-            $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId);
+            $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request);
         });
 
     }
 
-    protected function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId)
+    protected function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request)
     {
         $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
 
-        $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate);
+        if(!$documentTemplate)
+        {
+            $documentBody = '';
+        }else{
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, $request);
+        }
 
         $emailTemplateAgreementId = $project ? $project->email_template_agreement_id : 0;
 

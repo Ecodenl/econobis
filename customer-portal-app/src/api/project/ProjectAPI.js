@@ -41,6 +41,8 @@ export default {
                         'minAmountLoan',
                         'maxAmountLoan',
                         'postalcodeLink',
+                        'linkAgreeTerms',
+                        'linkUnderstandInfo',
                     ],
                     rlt: { projectType: { fld: ['id', 'codeRef'] } },
                 },

@@ -17,7 +17,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
     useEffect(() => {
         (function callFetchContact() {
             setLoading(true);
-            ContactAPI.previewDocument(registerValues.contactId, registerValues.projectId)
+            ContactAPI.previewDocument(registerValues)
                 .then(payload => {
                     setContactDocument(payload.data);
                     setLoading(false);

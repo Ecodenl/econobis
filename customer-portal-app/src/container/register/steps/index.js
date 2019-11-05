@@ -78,7 +78,7 @@ function Steps({
         case 3:
             return (
                 <StepThree
-                    portalSettings={portalSettings}
+                    project={project}
                     previous={previous}
                     next={next}
                     initialRegisterValues={initialRegisterValues}

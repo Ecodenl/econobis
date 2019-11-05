@@ -6,7 +6,7 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Col from 'react-bootstrap/Col';
 
-function StepThree({ portalSettings, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepThree({ project, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         didAcceptAgreement: Yup.bool().test(
             'didAcceptAgreement',
@@ -91,7 +91,7 @@ function StepThree({ portalSettings, previous, next, initialRegisterValues, hand
                                                     className="checkbox-label w-form-label"
                                                 >
                                                     Ik heb de{' '}
-                                                    <a href={project.linkUnderstandInfo}" target="_blank">
+                                                    <a href={`${project.linkUnderstandInfo}`} target="_blank">
                                                         projectinformatie
                                                     </a>{' '}
                                                     (inclusief de daarin beschreven risico’s) behorende bij het project

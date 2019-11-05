@@ -12,6 +12,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Project\Project;
 use App\Helpers\Template\TemplateVariableHelper;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DocumentHelper
@@ -22,12 +23,8 @@ class DocumentHelper
      *
      * @return string
      */
-    public static function getDocumentBody(Contact $contact, Project $project, DocumentTemplate $documentTemplate)
+    public static function getDocumentBody(Contact $contact, Project $project, DocumentTemplate $documentTemplate, Request $request)
     {
-        if(!$documentTemplate)
-        {
-            $documentBody = '';
-        }else{
             $documentTemplate->load('footer', 'baseTemplate', 'header');
 
             $portalUser = Auth::user();
@@ -48,7 +45,6 @@ class DocumentHelper
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'contact', $contact);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'project', $project);
             $documentBody = TemplateVariableHelper::stripRemainingVariableTags($documentBody);
-        }
 
         return $documentBody;
     }

@@ -54,8 +54,11 @@ const ProjectFormView = props => {
         amountGranted,
         amountOptioned,
         amountInteressed,
+        documentTemplateAgreement,
+        emailTemplateAgreement,
+        linkAgreeTerms,
+        linkUnderstandInfo,
     } = props.project;
-
     return (
         <section
             onClick={
@@ -81,6 +84,10 @@ const ProjectFormView = props => {
                 dateProduction={dateProduction}
                 isMembershipRequired={isMembershipRequired}
                 requiresContactGroups={requiresContactGroups}
+                documentTemplateAgreement={documentTemplateAgreement}
+                emailTemplateAgreement={emailTemplateAgreement}
+                linkAgreeTerms={linkAgreeTerms}
+                linkUnderstandInfo={linkUnderstandInfo}
             />
 
             {projectType && projectType.codeRef === 'loan' ? (

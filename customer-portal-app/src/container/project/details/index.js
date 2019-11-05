@@ -76,7 +76,7 @@ function ProjectDetails({ match }) {
                         <Col>
                             <p>
                                 Meer informatie over dit project vind je{' '}
-                                <a href={`${project.linkUnderstandInfo`} target="_blank">
+                                <a href={`${project.linkUnderstandInfo}`} target="_blank">
                                     hier
                                 </a>
                             </p>

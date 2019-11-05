@@ -4,6 +4,8 @@ namespace App\Http\Resources\Project;
 
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Document\FullDocument;
+use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
+use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Task\GridTask;
@@ -98,7 +100,9 @@ class FullProject extends Resource
                 'amountOptioned' => $this->amount_optioned,
                 'amountInteressed' => $this->amount_interessed,
                 'documentTemplateAgreementId' => $this->document_template_agreement_id,
+                'documentTemplateAgreement' => FullDocumentTemplate::make($this->whenLoaded('documentTemplateAgreement')),
                 'emailTemplateAgreementId' => $this->email_template_agreement_id,
+                'emailTemplateAgreement' => FullEmailTemplate::make($this->whenLoaded('emailTemplateAgreement')),
                 'linkAgreeTerms' => $this->link_agree_terms,
                 'linkUnderstandInfo' => $this->link_understand_info,
             ];

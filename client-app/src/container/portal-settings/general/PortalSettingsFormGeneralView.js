@@ -23,49 +23,47 @@ const PortalSettingsFormGeneralView = ({
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Mijn cooperatie naam'} value={portalName} />
+                        <ViewText label={'Contacten portal URL'} value={portalUrl} />
                     </div>
+                    {/*<div className="row">*/}
+                        {/*<ViewText label={'Achtergrondkleur'} value={backgroundColor} />*/}
+                    {/*</div>*/}
                     <div className="row">
-                        <ViewText label={'Cooperatie naam'} value={cooperativeName} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Cooperatie website'} value={portalWebsite} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Portal Url'} value={portalUrl} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Privacy beleid link'} value={linkPrivacyPolicy} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Achtergrondkleur'} value={backgroundColor} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Portal log gebruiker'} value={responsibleUserId} />
+                        <ViewText label={'Verantwoordelijke portal'} value={responsibleUserId} />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Verantwoordelijke gebruiker eigenaar contact'}
+                            label={'Eigenaar nieuwe contacten'}
                             value={contactResponsibleOwnerUserId}
                         />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Verantwoordelijke gebruiker controle contact taak'}
+                            label={'Verantwoordelijk uitvoeren taak (gebruiker)'}
                             value={checkContactTaskResponsibleUserId}
                         />
-                    </div>
-                    <div className="row">
                         <ViewText
-                            label={'Verantwoordelijk team controle contact taak'}
+                            label={'of Verantwoordelijk uitvoeren taak (team)'}
                             value={checkContactTaskResponsibleTeamId}
                         />
                     </div>
                     <div className="row">
+                        <ViewText label={'Privacybeleid link'} value={linkPrivacyPolicy} />
+                    </div>
+                    <div className="row">
                         <ViewText
-                            label={'Email template Nieuw account bevestiging'}
+                            label={'Email template Nieuwe account activeren'}
                             value={emailTemplateNewAccountId}
                         />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Coöperatie portal naam'} value={portalName} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Coöperatie naam'} value={cooperativeName} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Coöperatie website'} value={portalWebsite} />
                     </div>
                 </PanelBody>
             </Panel>

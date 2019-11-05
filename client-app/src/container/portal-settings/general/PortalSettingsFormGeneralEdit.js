@@ -131,37 +131,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="Mijn cooperatie naam"
-                                name={'portalName'}
-                                value={portalName}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.portalName}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Cooperatie naam"
-                                name={'cooperativeName'}
-                                value={cooperativeName}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.cooperativeName}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Cooperatie website"
-                                name={'portalWebsite'}
-                                value={portalWebsite}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.portalWebsite}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Portal URL"
+                                label="Contacten portal URL"
                                 name={'portalUrl'}
                                 value={portalUrl}
                                 onChangeAction={this.handleInputChange}
@@ -169,9 +139,52 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 error={this.state.errors.portalUrl}
                             />
                         </div>
+                        {/*<div className="row">*/}
+                            {/*<InputText*/}
+                                {/*label="Achtergrondkleur"*/}
+                                {/*name={'backgroundColor'}*/}
+                                {/*value={backgroundColor}*/}
+                                {/*onChangeAction={this.handleInputChange}*/}
+                                {/*error={this.state.errors.backgroundColor}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
                         <div className="row">
                             <InputText
-                                label="Privacy beleid link"
+                                label="Verantwoordelijke portal"
+                                name={'responsibleUserId'}
+                                value={responsibleUserId}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.responsibleUserId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Eigenaar nieuwe contacten"
+                                name={'contactResponsibleOwnerUserId'}
+                                value={contactResponsibleOwnerUserId}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.contactResponsibleOwnerUserId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Verantwoordelijk uitvoeren taak (gebruiker)"
+                                name={'checkContactTaskResponsibleUserId'}
+                                value={checkContactTaskResponsibleUserId}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.checkContactTaskResponsibleUserId}
+                            />
+                            <InputText
+                                label="of Verantwoordelijk uitvoeren taak (team)"
+                                name={'checkContactTaskResponsibleTeamId'}
+                                value={checkContactTaskResponsibleTeamId}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.checkContactTaskResponsibleTeamId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Privacybeleid link"
                                 name={'linkPrivacyPolicy'}
                                 value={linkPrivacyPolicy}
                                 onChangeAction={this.handleInputChange}
@@ -181,57 +194,42 @@ class PortalSettingsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Achtergrondkleur"
-                                name={'backgroundColor'}
-                                value={backgroundColor}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.backgroundColor}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Portal log gebruiker"
-                                name={'responsibleUserId'}
-                                value={responsibleUserId}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.responsibleUserId}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Verantwoordelijke gebruiker eigenaar contact"
-                                name={'contactResponsibleOwnerUserId'}
-                                value={contactResponsibleOwnerUserId}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.contactResponsibleOwnerUserId}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Verantwoordelijke gebruiker controle contact taak"
-                                name={'checkContactTaskResponsibleUserId'}
-                                value={checkContactTaskResponsibleUserId}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.checkContactTaskResponsibleUserId}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Verantwoordelijk team controle contact taak"
-                                name={'checkContactTaskResponsibleTeamId'}
-                                value={checkContactTaskResponsibleTeamId}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.checkContactTaskResponsibleTeamId}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="E-mail template Nieuw account bevestiging"
+                                label="E-mail template Nieuwe account activeren"
                                 name={'emailTemplateNewAccountId'}
                                 value={emailTemplateNewAccountId}
                                 // options={this.state.emailTemplates}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailTemplateNewAccountId}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Coöperatie portal naam"
+                                name={'portalName'}
+                                value={portalName}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.portalName}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Coöperatie naam"
+                                name={'cooperativeName'}
+                                value={cooperativeName}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.cooperativeName}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Coöperatie website"
+                                name={'portalWebsite'}
+                                value={portalWebsite}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.portalWebsite}
                             />
                         </div>
                     </PanelBody>

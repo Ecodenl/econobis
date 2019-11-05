@@ -39,13 +39,15 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
     });
     const validationSchemaPcrOrganisation = Yup.object().shape({
         visitAddress: Yup.object().shape({
-            postalCode: Yup.string().test(
-                'test-compare a few values',
-                'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
-                function(value) {
-                    return project.postalcodeLink.includes(value.substring(0, 4));
-                }
-            ),
+            postalCode: Yup.string()
+                .test(
+                    'test-compare a few values',
+                    'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
+                    function(value) {
+                        return project.postalcodeLink.includes(value.substring(0, 4));
+                    }
+                )
+                .required('Verplicht'),
         }),
         primaryContactEnergySupplier: Yup.object().shape({
             energySupplierId: Yup.string()

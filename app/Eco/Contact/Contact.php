@@ -363,13 +363,13 @@ class Contact extends Model
 
     public function getIsParticipantAttribute()
     {
-        return( $this->participations() && $this->participations()->count() > 0 );
+        return( $this->participations && $this->participations->count() > 0 );
     }
 
     public function getIsParticipantPcrProjectAttribute()
     {
-        $participations = $this->participations();
-        foreach ($participations as $participation) {
+        foreach($this->participations as $participation)
+        {
             if($participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital' ){
                 return true;
             }

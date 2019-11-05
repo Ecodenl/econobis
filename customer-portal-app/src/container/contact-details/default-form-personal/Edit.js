@@ -270,6 +270,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="postal_code"
                                     placeholder={'Postcode'}
+                                    disabled={initialContact.isParticipantPcrProject}
                                 />
                             )}
                         />

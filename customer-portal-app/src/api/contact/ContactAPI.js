@@ -18,6 +18,7 @@ export default {
                         'dateDidAgreeAvg',
                         'addressLines',
                         'isParticipant',
+                        'isParticipantPcrProject',
                     ],
                     rlt: {
                         person: {

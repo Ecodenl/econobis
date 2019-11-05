@@ -140,13 +140,13 @@ class PortalSettingsFormGeneralEdit extends Component {
                             />
                         </div>
                         {/*<div className="row">*/}
-                            {/*<InputText*/}
-                                {/*label="Achtergrondkleur"*/}
-                                {/*name={'backgroundColor'}*/}
-                                {/*value={backgroundColor}*/}
-                                {/*onChangeAction={this.handleInputChange}*/}
-                                {/*error={this.state.errors.backgroundColor}*/}
-                            {/*/>*/}
+                        {/*<InputText*/}
+                        {/*label="Achtergrondkleur"*/}
+                        {/*name={'backgroundColor'}*/}
+                        {/*value={backgroundColor}*/}
+                        {/*onChangeAction={this.handleInputChange}*/}
+                        {/*error={this.state.errors.backgroundColor}*/}
+                        {/*/>*/}
                         {/*</div>*/}
                         <div className="row">
                             <InputText

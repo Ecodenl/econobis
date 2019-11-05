@@ -35,7 +35,8 @@ class PortalSettingsApp extends Component {
             '&keys[]=checkContactTaskResponsibleUserId' +
             '&keys[]=checkContactTaskResponsibleTeamId' +
             '&keys[]=contactResponsibleOwnerUserId' +
-            '&keys[]=emailTemplateNewAccountId';
+            '&keys[]=emailTemplateNewAccountId' +
+            '&keys[]=linkPrivacyPolicy';
         PortalSettingsAPI.fetchPortalSettings(keys)
             .then(payload => {
                 this.setState({

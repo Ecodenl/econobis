@@ -26,16 +26,13 @@ const PortalSettingsFormGeneralView = ({
                         <ViewText label={'Contacten portal URL'} value={portalUrl} />
                     </div>
                     {/*<div className="row">*/}
-                        {/*<ViewText label={'Achtergrondkleur'} value={backgroundColor} />*/}
+                    {/*<ViewText label={'Achtergrondkleur'} value={backgroundColor} />*/}
                     {/*</div>*/}
                     <div className="row">
                         <ViewText label={'Verantwoordelijke portal'} value={responsibleUserId} />
                     </div>
                     <div className="row">
-                        <ViewText
-                            label={'Eigenaar nieuwe contacten'}
-                            value={contactResponsibleOwnerUserId}
-                        />
+                        <ViewText label={'Eigenaar nieuwe contacten'} value={contactResponsibleOwnerUserId} />
                     </div>
                     <div className="row">
                         <ViewText
@@ -51,10 +48,7 @@ const PortalSettingsFormGeneralView = ({
                         <ViewText label={'Privacybeleid link'} value={linkPrivacyPolicy} />
                     </div>
                     <div className="row">
-                        <ViewText
-                            label={'Email template Nieuwe account activeren'}
-                            value={emailTemplateNewAccountId}
-                        />
+                        <ViewText label={'Email template Nieuwe account activeren'} value={emailTemplateNewAccountId} />
                     </div>
                     <div className="row">
                         <ViewText label={'Coöperatie portal naam'} value={portalName} />

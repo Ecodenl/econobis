@@ -16,8 +16,8 @@ import ProjectFormDefaultLoan from '../../../form-default/ProjectFormDefaultLoan
 import ProjectFormDefaultObligation from '../../../form-default/ProjectFormDefaultObligation';
 import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultCapital';
 import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
-import EmailTemplateAPI from "../../../../../api/email-template/EmailTemplateAPI";
-import DocumentTemplateAPI from "../../../../../api/document-template/DocumentTemplateAPI";
+import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
+import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -59,7 +59,7 @@ class ProjectFormEdit extends Component {
             let documentTemplates = [];
 
             payload.forEach(function(documentTemplate) {
-                if (documentTemplate.group == 'registration' ) {
+                if (documentTemplate.group == 'registration') {
                     documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
                 }
             });
@@ -67,7 +67,6 @@ class ProjectFormEdit extends Component {
             this.setState({
                 documentTemplates: documentTemplates,
             });
-
         });
     }
 
@@ -94,7 +93,6 @@ class ProjectFormEdit extends Component {
             },
         });
     }
-
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({

@@ -121,7 +121,6 @@ const ProjectFormViewGeneral = ({
                 value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
             />
         </div>
-
     </React.Fragment>
 );
 

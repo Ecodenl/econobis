@@ -6,7 +6,7 @@ import InputDate from '../../../../../components/form/InputDate';
 import InputToggle from '../../../../../components/form/InputToggle';
 import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
 import ViewText from '../../../../../components/form/ViewText';
-import InputReactSelect from "../../../../../components/form/InputReactSelect";
+import InputReactSelect from '../../../../../components/form/InputReactSelect';
 
 const ProjectFormEditGeneral = ({
     name,
@@ -45,7 +45,6 @@ const ProjectFormEditGeneral = ({
     emailTemplates,
     linkAgreeTerms,
     linkUnderstandInfo,
-
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
@@ -271,7 +270,6 @@ const ProjectFormEditGeneral = ({
                     error={errors.emailTemplateAgreementId}
                 />
             </div>
-
         </React.Fragment>
     );
 };

@@ -434,7 +434,7 @@ class ContactController extends ApiController
                 if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->ean_electricity != null) || ($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_electricity != $primaryContactEnergySupplierNew->ean_electricity)){
                     $note = $note . "Nieuwe EAN electriciteit:" . $primaryContactEnergySupplierNew->ean_electricity . "\n";
                 }
-                if($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_gas != $primaryContactEnergySupplierNew->ean_electricity){
+                if($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_gas != $primaryContactEnergySupplierNew->ean_gas){
                     $note = $note . "Oude EAN gas: " . $primaryContactEnergySupplierOld->ean_gas . "\n";
                 }
                 if( ($primaryContactEnergySupplierOld == null && $primaryContactEnergySupplierNew->ean_gas != null) || ($primaryContactEnergySupplierOld != null && $primaryContactEnergySupplierOld->ean_gas != $primaryContactEnergySupplierNew->ean_gas)){
@@ -448,8 +448,8 @@ class ContactController extends ApiController
                 $newTask->note = $note;
                 $newTask->type_id = 15;
                 $newTask->contact_id = $contact->id;
-                $newTask->responsible_user_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : $checkContactTaskResponsibleUserId;
-                $newTask->responsible_team_id = null;
+                $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId : null;
+                $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : null;
                 $newTask->date_planned_start = Carbon::today();
 
                 $newTask->save();

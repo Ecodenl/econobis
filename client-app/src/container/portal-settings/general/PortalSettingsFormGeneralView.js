@@ -10,11 +10,12 @@ const PortalSettingsFormGeneralView = ({
     portalWebsite,
     portalUrl,
     backgroundColor,
-    responsibleUserId,
-    checkContactTaskResponsibleUserId,
-    checkContactTaskResponsibleTeamId,
-    contactResponsibleOwnerUserId,
-    emailTemplateNewAccountId,
+    responsibleUser,
+    checkContactTaskResponsibleUser,
+    checkContactTaskResponsibleTeam,
+    checkContactTaskResponsible,
+    contactResponsibleOwnerUser,
+    emailTemplateNewAccount,
     linkPrivacyPolicy,
     switchToEdit,
 }) => {
@@ -29,26 +30,37 @@ const PortalSettingsFormGeneralView = ({
                     {/*<ViewText label={'Achtergrondkleur'} value={backgroundColor} />*/}
                     {/*</div>*/}
                     <div className="row">
-                        <ViewText label={'Verantwoordelijke portal'} value={responsibleUserId} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Eigenaar nieuwe contacten'} value={contactResponsibleOwnerUserId} />
-                    </div>
-                    <div className="row">
                         <ViewText
-                            label={'Verantwoordelijk uitvoeren taak (gebruiker)'}
-                            value={checkContactTaskResponsibleUserId}
+                            label={'Verantwoordelijke portal'}
+                            value={responsibleUser ? responsibleUser.fullName : ''}
                         />
+                    </div>
+                    <div className="row">
                         <ViewText
-                            label={'of Verantwoordelijk uitvoeren taak (team)'}
-                            value={checkContactTaskResponsibleTeamId}
+                            label={'Eigenaar nieuwe contacten'}
+                            value={contactResponsibleOwnerUser ? contactResponsibleOwnerUser.fullName : ''}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Verantwoordelijke uitvoeren taak'}
+                            value={
+                                checkContactTaskResponsibleUser
+                                    ? checkContactTaskResponsibleUser.fullName
+                                    : checkContactTaskResponsibleTeam
+                                    ? checkContactTaskResponsibleTeam.name
+                                    : ''
+                            }
                         />
                     </div>
                     <div className="row">
                         <ViewText label={'Privacybeleid link'} value={linkPrivacyPolicy} />
                     </div>
                     <div className="row">
-                        <ViewText label={'Email template Nieuwe account activeren'} value={emailTemplateNewAccountId} />
+                        <ViewText
+                            label={'Email template Nieuwe account activeren'}
+                            value={emailTemplateNewAccount ? emailTemplateNewAccount.name : ''}
+                        />
                     </div>
                     <div className="row">
                         <ViewText label={'Coöperatie portal naam'} value={portalName} />

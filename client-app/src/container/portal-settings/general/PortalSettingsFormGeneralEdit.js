@@ -11,10 +11,8 @@ import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 import { bindActionCreators } from 'redux';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputText from '../../../components/form/InputText';
-import InputSelect from '../../../components/form/InputSelect';
-import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
-import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
-import ViewText from './PortalSettingsFormGeneralView';
+import InputSelectGroup from '../../../components/form/InputSelectGroup';
+import InputReactSelect from '../../../components/form/InputReactSelect';
 
 class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
@@ -24,8 +22,9 @@ class PortalSettingsFormGeneralEdit extends Component {
             portalSettings: {
                 ...props.portalSettings,
             },
-            documentTemplates: [],
-            emailTemplates: [],
+            emailTemplates: {
+                ...props.emailTemplates,
+            },
             errors: {
                 portalName: false,
                 cooperativeName: false,
@@ -35,39 +34,30 @@ class PortalSettingsFormGeneralEdit extends Component {
                 responsibleUserId: false,
                 checkContactTaskResponsibleUserId: false,
                 checkContactTaskResponsibleTeamId: false,
+                checkContactTaskResponsible: false,
                 contactResponsibleOwnerUserId: false,
                 emailTemplateNewAccountId: false,
                 linkPrivacyPolicy: false,
             },
         };
 
-        // DocumentTemplateAPI.fetchDocumentTemplates().then(payload => {
-        //     this.setState({
-        //         documentTemplates: payload,
-        //     });
-        // });
-        // EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
-        //     this.setState({
-        //         emailTemplates: payload,
-        //     });
-        // });
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            portalSettings: {
+                ...this.state.portalSettings,
+                [name]: selectedOption,
+            },
+        });
+    }
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState({
-            ...this.state,
-            portalSettings: {
-                ...this.state.portalSettings,
-                [name]: value,
-            },
-        });
-    };
-
-    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             portalSettings: {
@@ -95,6 +85,27 @@ class PortalSettingsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty(portalSettings.checkContactTaskResponsible)) {
+            errors.checkContactTaskResponsible = true;
+            hasErrors = true;
+        }
+
+        if (portalSettings.checkContactTaskResponsible.search('user') >= 0) {
+            portalSettings.checkContactTaskResponsibleUserId = portalSettings.checkContactTaskResponsible.replace(
+                'user',
+                ''
+            );
+            portalSettings.checkContactTaskResponsibleTeamId = '';
+        }
+
+        if (portalSettings.checkContactTaskResponsible.search('team') >= 0) {
+            portalSettings.checkContactTaskResponsibleUserId = '';
+            portalSettings.checkContactTaskResponsibleTeamId = portalSettings.checkContactTaskResponsible.replace(
+                'team',
+                ''
+            );
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -118,8 +129,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             portalUrl,
             backgroundColor,
             responsibleUserId,
-            checkContactTaskResponsibleUserId,
-            checkContactTaskResponsibleTeamId,
+            checkContactTaskResponsible,
             contactResponsibleOwnerUserId,
             emailTemplateNewAccountId,
             linkPrivacyPolicy,
@@ -132,6 +142,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Contacten portal URL"
+                                divSize={'col-sm-8'}
                                 name={'portalUrl'}
                                 value={portalUrl}
                                 onChangeAction={this.handleInputChange}
@@ -149,42 +160,57 @@ class PortalSettingsFormGeneralEdit extends Component {
                         {/*/>*/}
                         {/*</div>*/}
                         <div className="row">
-                            <InputText
+                            <InputReactSelect
                                 label="Verantwoordelijke portal"
+                                divSize={'col-sm-8'}
                                 name={'responsibleUserId'}
                                 value={responsibleUserId}
-                                onChangeAction={this.handleInputChange}
+                                options={this.props.users}
+                                optionName={'fullName'}
+                                onChangeAction={this.handleReactSelectChange}
                                 error={this.state.errors.responsibleUserId}
+                                multi={false}
                             />
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputReactSelect
                                 label="Eigenaar nieuwe contacten"
+                                divSize={'col-sm-8'}
                                 name={'contactResponsibleOwnerUserId'}
                                 value={contactResponsibleOwnerUserId}
-                                onChangeAction={this.handleInputChange}
+                                options={this.props.users}
+                                optionName={'fullName'}
+                                onChangeAction={this.handleReactSelectChange}
                                 error={this.state.errors.contactResponsibleOwnerUserId}
+                                multi={false}
                             />
                         </div>
+
                         <div className="row">
-                            <InputText
-                                label="Verantwoordelijk uitvoeren taak (gebruiker)"
-                                name={'checkContactTaskResponsibleUserId'}
-                                value={checkContactTaskResponsibleUserId}
+                            <InputSelectGroup
+                                label={'Verantwoordelijke uitvoeren taak'}
+                                divSize={'col-sm-8'}
+                                name={'checkContactTaskResponsible'}
+                                optionsInGroups={[
+                                    {
+                                        name: 'user',
+                                        label: 'Gebruikers',
+                                        options: this.props.users,
+                                        optionName: 'fullName',
+                                    },
+                                    { name: 'team', label: 'Teams', options: this.props.teams },
+                                ]}
+                                value={checkContactTaskResponsible}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.checkContactTaskResponsibleUserId}
-                            />
-                            <InputText
-                                label="of Verantwoordelijk uitvoeren taak (team)"
-                                name={'checkContactTaskResponsibleTeamId'}
-                                value={checkContactTaskResponsibleTeamId}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.checkContactTaskResponsibleTeamId}
+                                required={'required'}
+                                error={this.state.errors.checkContactTaskResponsible}
                             />
                         </div>
+
                         <div className="row">
                             <InputText
                                 label="Privacybeleid link"
+                                divSize={'col-sm-8'}
                                 name={'linkPrivacyPolicy'}
                                 value={linkPrivacyPolicy}
                                 onChangeAction={this.handleInputChange}
@@ -193,18 +219,21 @@ class PortalSettingsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputReactSelect
                                 label="E-mail template Nieuwe account activeren"
+                                divSize={'col-sm-8'}
                                 name={'emailTemplateNewAccountId'}
                                 value={emailTemplateNewAccountId}
-                                // options={this.state.emailTemplates}
-                                onChangeAction={this.handleInputChange}
+                                options={this.props.emailTemplates}
+                                onChangeAction={this.handleReactSelectChange}
                                 error={this.state.errors.emailTemplateNewAccountId}
+                                multi={false}
                             />
                         </div>
                         <div className="row">
                             <InputText
                                 label="Coöperatie portal naam"
+                                divSize={'col-sm-8'}
                                 name={'portalName'}
                                 value={portalName}
                                 onChangeAction={this.handleInputChange}
@@ -215,6 +244,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Coöperatie naam"
+                                divSize={'col-sm-8'}
                                 name={'cooperativeName'}
                                 value={cooperativeName}
                                 onChangeAction={this.handleInputChange}
@@ -225,6 +255,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Coöperatie website"
+                                divSize={'col-sm-8'}
                                 name={'portalWebsite'}
                                 value={portalWebsite}
                                 onChangeAction={this.handleInputChange}

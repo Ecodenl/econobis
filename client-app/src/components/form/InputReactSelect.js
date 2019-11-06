@@ -6,6 +6,7 @@ import 'react-select/dist/react-select.css';
 const InputReactSelect = props => {
     const {
         label,
+        divSize,
         size,
         id,
         name,
@@ -25,7 +26,7 @@ const InputReactSelect = props => {
     };
 
     return (
-        <div className="form-group col-sm-6">
+        <div className={`form-group ${divSize}`}>
             <label htmlFor={id} className={`col-sm-6 ${required}`}>
                 {label}
             </label>
@@ -54,6 +55,7 @@ const InputReactSelect = props => {
 InputReactSelect.defaultProps = {
     className: '',
     size: 'col-sm-6',
+    divSize: 'col-sm-6',
     optionId: 'id',
     optionName: 'name',
     readOnly: false,
@@ -68,6 +70,7 @@ InputReactSelect.propTypes = {
     label: PropTypes.string.isRequired,
     className: PropTypes.string,
     size: PropTypes.string,
+    divSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,

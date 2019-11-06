@@ -6,6 +6,7 @@ const InputSelectGroup = props => {
         label,
         className,
         size,
+        divSize,
         id,
         name,
         value,
@@ -18,11 +19,11 @@ const InputSelectGroup = props => {
     } = props;
 
     return (
-        <div className={`form-group ${size}`}>
+        <div className={`form-group ${divSize}`}>
             <label htmlFor={id} className={`col-sm-6 ${required}`}>
                 {label}
             </label>
-            <div className={'col-sm-6'}>
+            <div className={`${size}`}>
                 <select
                     className={`form-control input-sm ${className}` + (error && ' has-error')}
                     id={id}
@@ -56,6 +57,7 @@ const InputSelectGroup = props => {
 InputSelectGroup.defaultProps = {
     className: '',
     size: 'col-sm-6',
+    divSize: 'col-sm-6',
     readOnly: false,
     required: '',
     error: false,
@@ -66,6 +68,7 @@ InputSelectGroup.propTypes = {
     label: PropTypes.string.isRequired,
     className: PropTypes.string,
     size: PropTypes.string,
+    divSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     optionsInGroups: PropTypes.array,

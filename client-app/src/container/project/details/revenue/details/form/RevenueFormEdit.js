@@ -223,7 +223,11 @@ class RevenueFormEdit extends Component {
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
             hasErrors = true;
         }
-        if (!hasErrors && moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()) {
+        if (
+            !hasErrors &&
+            this.props.revenue.category.codeRef !== 'revenueKwh' &&
+            moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
+        ) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
             errors.dateEnd = true;
@@ -399,9 +403,16 @@ class RevenueFormEdit extends Component {
                         error={this.state.errors.dateEnd}
                         errorMessage={this.state.errorMessage.dateEnd}
                         disabledBefore={dateBegin}
-                        disabledAfter={moment(dateBegin)
-                            .endOf('year')
-                            .format('Y-MM-DD')}
+                        disabledAfter={
+                            category.codeRef === 'revenueKwh'
+                                ? moment(dateBegin)
+                                      .add(1, 'year')
+                                      .add(6, 'month')
+                                      .format('Y-MM-DD')
+                                : moment(dateBegin)
+                                      .endOf('year')
+                                      .format('Y-MM-DD')
+                        }
                     />
                 </div>
 

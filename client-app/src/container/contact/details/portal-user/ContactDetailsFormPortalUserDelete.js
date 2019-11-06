@@ -16,9 +16,7 @@ const ContactDetailsFormPortalUserDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-                <p>
-                    Verwijder portal gebruiker
-                </p>
+            <p>Verwijder portal gebruiker</p>
         </Modal>
     );
 };

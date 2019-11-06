@@ -11,7 +11,7 @@ const ContactDetailsFormPortalUserView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div>
-                <div onClick={props.switchToEdit}className="col-sm-11">
+                <div onClick={props.switchToEdit} className="col-sm-11">
                     <ViewText label="Inlog emailadres" value={email} />
                 </div>
                 <div className="col-sm-1">
@@ -31,9 +31,7 @@ const ContactDetailsFormPortalUserView = props => {
                     )}
                 </div>
             </div>
-
         </div>
-
     );
 };
 

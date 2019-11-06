@@ -220,13 +220,13 @@ function Header({ location, history }) {
                         </Link>
                         {/* later */}
                         {/*<Link*/}
-                            {/*to={'/deelname-projecten'}*/}
-                            {/*className={`nav-link w-nav-link w--nav-link-open ${*/}
-                                {/*location.pathname === '/' ? 'w--current' : ''*/}
-                            {/*}`}*/}
-                            {/*onClick={closeMenu}*/}
+                        {/*to={'/deelname-projecten'}*/}
+                        {/*className={`nav-link w-nav-link w--nav-link-open ${*/}
+                        {/*location.pathname === '/' ? 'w--current' : ''*/}
+                        {/*}`}*/}
+                        {/*onClick={closeMenu}*/}
                         {/*>*/}
-                            {/*Deelnames*/}
+                        {/*Deelnames*/}
                         {/*</Link>*/}
                         <Link
                             to={'/inschrijven-projecten'}

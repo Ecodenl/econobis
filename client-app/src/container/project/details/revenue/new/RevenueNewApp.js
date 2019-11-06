@@ -215,6 +215,9 @@ class RevenueNewApp extends Component {
         event.preventDefault();
 
         const { revenue } = this.state;
+        const category = this.props.projectRevenueCategories.find(
+            projectRevenueCategorie => projectRevenueCategorie.id == revenue.categoryId
+        );
 
         let errors = {};
         let errorMessage = {};
@@ -241,7 +244,11 @@ class RevenueNewApp extends Component {
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
             hasErrors = true;
         }
-        if (!hasErrors && moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()) {
+        if (
+            !hasErrors &&
+            category.codeRef !== 'revenueKwh' &&
+            moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
+        ) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
             errors.dateEnd = true;
@@ -256,9 +263,6 @@ class RevenueNewApp extends Component {
             }
         }
 
-        const category = this.props.projectRevenueCategories.find(
-            projectRevenueCategorie => projectRevenueCategorie.id == revenue.categoryId
-        );
         if (category.codeRef === 'revenueKwh') {
             if (revenue.kwhEndHigh < revenue.kwhStartHigh) {
                 errors.kwhEndHigh = true;

@@ -129,9 +129,16 @@ const RevenueNew = props => {
                     error={props.errors.dateEnd}
                     errorMessage={props.errorMessage.dateEnd}
                     disabledBefore={dateBegin}
-                    disabledAfter={moment(dateBegin)
-                        .endOf('year')
-                        .format('Y-MM-DD')}
+                    disabledAfter={
+                        category.codeRef === 'revenueKwh'
+                            ? moment(dateBegin)
+                                  .add(1, 'year')
+                                  .add(6, 'month')
+                                  .format('Y-MM-DD')
+                            : moment(dateBegin)
+                                  .endOf('year')
+                                  .format('Y-MM-DD')
+                    }
                 />
             </div>
 

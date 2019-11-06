@@ -364,7 +364,7 @@ class ProjectRevenueController extends ApiController
             $nextMutation = $mutations->get(++$index);
 
             if($nextMutation) {
-                $dateEnd = $nextMutation->date_entry;
+                $dateEnd = $nextMutation->date_entry->subDay();
             }
 
             $dateEntry = $mutation->date_entry;

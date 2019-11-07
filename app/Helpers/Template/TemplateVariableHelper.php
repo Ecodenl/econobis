@@ -1195,9 +1195,13 @@ class TemplateVariableHelper
     }
 
     public static function getPortalVar($varname){
+        $portalUrl = PortalSettings::get('portalUrl');
         $portalName = PortalSettings::get('portalName');
 
         switch ($varname) {
+            case 'contacten_portal_url':
+                return $portalUrl;
+                break;
             case 'naam':
                 return $portalName;
                 break;
@@ -1218,10 +1222,14 @@ class TemplateVariableHelper
     }
 
     public static function getCooperativeVar($varname){
+        $cooperativePortalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
         $cooperativeWebsite = PortalSettings::get('portalWebsite');
 
         switch ($varname) {
+            case 'portal_naam':
+                return $cooperativePortalName;
+                break;
             case 'naam':
                 return $cooperativeName;
                 break;

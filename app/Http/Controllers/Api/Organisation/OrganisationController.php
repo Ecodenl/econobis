@@ -22,7 +22,6 @@ class OrganisationController extends ApiController
         $this->authorize('create', Organisation::class);
 
         $contactData = $request->validate([
-            'newsletter' => 'boolean',
             'iban' => '',
             'ibanAttn' => '',
             'liable' => 'boolean',
@@ -43,7 +42,6 @@ class OrganisationController extends ApiController
 
         $contactData = $this->sanitizeData($contactData, [
             'ownerId' => 'nullable',
-            'newsletter' => 'boolean',
             'liable' => 'boolean',
         ]);
         $contact = new Contact($this->arrayKeysToSnakeCase($contactData));
@@ -71,7 +69,6 @@ class OrganisationController extends ApiController
         $this->authorize('update', $organisation);
 
         $contactData = $request->validate([
-            'newsletter' => 'boolean',
             'iban' => '',
             'ibanAttn' => '',
             'liable' => 'boolean',
@@ -96,7 +93,6 @@ class OrganisationController extends ApiController
 
         $contactData = $this->sanitizeData($contactData, [
             'ownerId' => 'nullable',
-            'newsletter' => 'boolean',
             'liable' => 'boolean',
             'isCollectMandate' => 'boolean',
             'collectMandateSignatureDate' => 'nullable',

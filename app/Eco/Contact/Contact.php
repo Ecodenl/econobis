@@ -42,7 +42,6 @@ class Contact extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'newsletter' => 'boolean',
         'liable' => 'boolean',
     ];
 

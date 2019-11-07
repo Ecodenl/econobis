@@ -43,7 +43,6 @@ class FullContactWithGroups extends Resource
             'fullName' => $this->full_name,
             'memberSince' => $this->member_since,
             'memberUntil' => $this->member_until,
-            'newsletter' => $this->newsletter,
             'didAgreeAvg' => $this->did_agree_avg,
             'dateDidAgreeAvg' => $this->date_did_agree_avg,
             'addresses' => FullAddress::collection($this->whenLoaded('addresses')),

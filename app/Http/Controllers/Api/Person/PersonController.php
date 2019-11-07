@@ -38,7 +38,6 @@ class PersonController extends ApiController
 
         Validator::make($request['person'],
             [
-                'newsletter' => 'boolean',
                 'ownerId' => 'exists:users,id',
                 'didAgreeAvg' => 'boolean',
                 'initials' => '',
@@ -51,7 +50,6 @@ class PersonController extends ApiController
 
         $contactData = $this->sanitizeData($request['person'], [
             'statusId' => 'nullable',
-            'newsletter' => 'boolean',
             'ownerId' => 'nullable',
             'liable' => 'boolean',
             'lastNamePrefixId' => 'nullable',
@@ -64,7 +62,6 @@ class PersonController extends ApiController
 
         $contactArray =
             [
-                'newsletter' => $contactData['newsletter'],
                 'owner_id' => $contactData['owner_id'],
                 'did_agree_avg' => $contactData['did_agree_avg'],
             ];
@@ -212,7 +209,6 @@ class PersonController extends ApiController
         $contactData = $request->validate([
             'memberSince' => 'date',
             'memberUntil' => 'date',
-            'newsletter' => 'boolean',
             'iban' => '',
             'ibanAttn' => '',
             'liable' => 'boolean',
@@ -249,7 +245,6 @@ class PersonController extends ApiController
             'ownerId' => 'nullable',
             'memberSince' => 'nullable',
             'memberUntil' => 'nullable',
-            'newsletter' => 'boolean',
             'liable' => 'boolean',
             'isCollectMandate' => 'boolean',
             'collectMandateSignatureDate' => 'nullable',

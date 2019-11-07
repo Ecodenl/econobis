@@ -303,7 +303,7 @@ class TemplateVariableHelper
             case 'portal_registratie_link':
                 if($model->portal_registration_code)
                 {
-                    $link = 'https://' . PortalSettings::get("portalUrl") . '/activeer-registratie/' . $model->portal_registration_code . '/' . optional($model->primaryEmailAddress)->email;
+                    $link = 'https://' . PortalSettings::get("portalUrl") . '/#/activeer-registratie/' . $model->portal_registration_code . '/' . optional($model->primaryEmailAddress)->email;
                 }else{
                     $link = '';
                 }

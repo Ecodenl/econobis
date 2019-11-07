@@ -1,16 +1,17 @@
 :root {
     --main-primary-color: #034b8c;
+    --main-primary-rgba: rgba(3, 75, 140, 0.9); /* is rgb waarde van #hex waarde */
     --main-secondary-color: #3898EC;
-    --main-warning-color: #dc3545;
     --button-primary-color: #3898EC;
+    --main-warning-color: #dc3545;
     --black-color: #252525;
 }
 
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
     background-color: var(--main-primary-color);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), url('../images/page-head5.jpg');
-    background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), url('../images/page-head5.jpg');
+    background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('../images/page-head5.jpg');
+    background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('../images/page-head5.jpg');
     background-position: 0px 0px, 50% 50%;
     background-size: auto, cover;
     font-family: Montserrat, sans-serif;
@@ -111,6 +112,17 @@
 .dropdown-link:hover, .dropdown-link:active {
     color: white;
     text-decoration: none;
+}
+
+/* ----------------- HEADER STYLING -----------------*/
+.header-deltaw {
+    position: relative;
+    height: 128px;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('../images/page-head5.jpg');
+    background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('../images/page-head5.jpg');
+    background-position: 0px 0px, 50% 50%;
+    background-size: auto, cover;
+    background-repeat: repeat, no-repeat;
 }
 
 /* ----------------- INPUT STYLING -----------------*/
@@ -437,7 +449,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
     width: 120px;
     height: 120px;
     border: 4px solid white;
-    background-color: rgba(3, 75, 140, 1);
+    background-color: var(--main-primary-rgba);
     /*background-image: url('../images/user.png');*/
     background-position: 50% 50%;
     background-size: contain;
@@ -459,7 +471,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
     color: white;
     font-weight: bold;
     width: 110px;
-    white-space: wrap;
+    white-space: nowrap;
 }
 
 .profile-pic .profile-sub-title {
@@ -539,6 +551,11 @@ header .header-logo {
     vertical-align: middle;
     background-color: white;
     border: 1px solid #cccccc;
+}
+.w-input:focus,
+.w-select:focus {
+    border-color: var(--main-secondary-color);
+    outline: 0;
 }
 
 .text-input {

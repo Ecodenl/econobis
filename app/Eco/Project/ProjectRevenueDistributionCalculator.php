@@ -63,7 +63,8 @@ class ProjectRevenueDistributionCalculator
             // Return total delivered kwh for per distribution
         $this->projectRevenueDistribution->delivered_total = $totalDeliveredKwh;
         $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
-        $this->projectRevenueDistribution->participations_amount = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first()->participations_quantity;
+        $lastDeliveredKwhPeriod = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first();
+        $this->projectRevenueDistribution->participations_amount = $lastDeliveredKwhPeriod ? $lastDeliveredKwhPeriod->participations_quantity : 0;
 
         return $this->projectRevenueDistribution;
     }

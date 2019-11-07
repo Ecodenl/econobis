@@ -740,6 +740,7 @@ class ProjectRevenueController extends ApiController
                     $revenueHtml
                         = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'contact', $contact);
                     $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'portal' );
+                    $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'contacten_portal' );
                     $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml,'cooperatie' );
 
                     //wettelijk vertegenwoordiger

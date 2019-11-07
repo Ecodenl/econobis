@@ -258,7 +258,9 @@ class NewAccountController extends Controller
         }
 
         $portalName = PortalSettings::get('portalName');
-        $subject = str_replace('{portal_naam}', $portalName, $subject);
+        $cooperativeName = PortalSettings::get('cooperativeName');
+        $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
+        $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
         $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
         $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
 
@@ -268,6 +270,7 @@ class NewAccountController extends Controller
 
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $contact);
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'portal' );
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'contacten_portal' );
         $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody,'cooperatie' );
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);

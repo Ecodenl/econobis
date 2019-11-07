@@ -1199,7 +1199,7 @@ class TemplateVariableHelper
         $portalName = PortalSettings::get('portalName');
 
         switch ($varname) {
-            case 'contacten_portal_url':
+            case 'url':
                 return $portalUrl;
                 break;
             case 'naam':

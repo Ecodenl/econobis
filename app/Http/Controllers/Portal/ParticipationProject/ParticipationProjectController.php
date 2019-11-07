@@ -145,6 +145,11 @@ class ParticipationProjectController extends Controller
             if($emailTemplate && !empty($emailTemplate->subject) )
             {
                 $subject = $emailTemplate->subject;
+                $portalName = PortalSettings::get('portalName');
+                $cooperativeName = PortalSettings::get('cooperativeName');
+                $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
+                $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
+                $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
             }else{
                 $subject = 'Bevestiging inschrijving';
             }
@@ -159,6 +164,7 @@ class ParticipationProjectController extends Controller
             $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $contact);
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
+            $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'contacten_portal' );
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables,'cooperatie' );
 
             //wettelijk vertegenwoordiger

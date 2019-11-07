@@ -10,6 +10,7 @@ namespace App\Eco\Person;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
+use Illuminate\Support\Str;
 
 class PersonObserver
 {
@@ -28,6 +29,7 @@ class PersonObserver
         if($person->isDirty('contact_id')){
             $contact = $person->contact;
             $contact->type_id = ContactType::PERSON;
+            $contact->portal_registration_code = Str::random(32);
             $contact->save();
 
             if($person->getOriginal('contact_id')){

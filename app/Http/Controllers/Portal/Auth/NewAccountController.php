@@ -69,16 +69,17 @@ class NewAccountController extends Controller
 
             DB::transaction(function () use ($request, $responsibleUserId, $emailTemplateNewAccountId) {
 
-
                 $data = $this->getDataFromRequest($request);
                 $contact = $this->addContact($data['contact']);
                 if ($contact) {
+                    $contact = Contact::find($contact->id);
                     $this->sendNewAccountMail($contact, $responsibleUserId, $emailTemplateNewAccountId);
                 } else {
                     abort(501, 'Er is helaas een fout opgetreden (7).');
                 }
-
             });
+
+
         } else {
             abort(501, 'Er is helaas een fout opgetreden met de CAPTCHA verificatie.');
         }

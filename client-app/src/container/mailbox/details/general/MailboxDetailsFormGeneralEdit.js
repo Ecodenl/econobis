@@ -157,6 +157,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
             mailgunDomainId,
             primary,
             isActive,
+            linkContactFromEmailToAddress,
         } = this.state.mailbox;
 
         return (
@@ -215,6 +216,14 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
                                 disabled={!isActive || primary}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={<span>Koppel contact op email <u>aan</u> adres<br/><small style={{color: '#ccc', fontWeight: 'normal'}}>Koppeling contact standaard op email <u>afzender</u> adres</small></span>}
+                                name={'linkContactFromEmailToAddress'}
+                                value={linkContactFromEmailToAddress}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                     </PanelBody>

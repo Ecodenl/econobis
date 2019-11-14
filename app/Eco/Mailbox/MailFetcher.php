@@ -201,8 +201,13 @@ class MailFetcher
             }
         }
 
-        //Get emailaddresses with this email
-        $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
+        // Link contact from email to address
+        if($email->mailbox->link_contact_from_email_to_address) {
+            $emailAddressesIds = EmailAddress::where('email', $email->to)->pluck('contact_id')->toArray();
+        // Link contact from email from address
+        } else {
+            $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
+        }
 
         //If contact has twice same emailaddress
         $uniqueEmailAddressesIds = array_unique($emailAddressesIds);

@@ -59,12 +59,15 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             values.pcrYearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values) > 0
                 ? values.pcrYearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values)
                 : 0;
-        return Math.ceil(extraPowerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE);
+        return extraPowerKwhConsumption;
     }
     function calculateAdviseMaxNumberOfParticipations(values) {
         let pcrAdviseMaxNumberOfParticipations =
             calculatePowerKwhConsumption(values) > 0
-                ? Math.ceil(calculatePowerKwhConsumption(values) / PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL)
+                ? Math.ceil(
+                      (calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE) /
+                          PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
+                  )
                 : 0;
 
         if (pcrAdviseMaxNumberOfParticipations < project.minParticipations) {

@@ -50,6 +50,7 @@ Route::namespace('Api')
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
         Route::get('/intake/peek', 'Intake\IntakeController@peek');
+        Route::get('/intake/excel', 'Intake\IntakeController@excel');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
         Route::get('/intake/{intake}', 'Intake\IntakeController@show');

@@ -488,6 +488,10 @@ header .header-logo {
 .logo-container {
     max-width: 200px;
 }
+.logo-container-small {
+    max-width: 150px;
+    margin-bottom: 10px;
+}
 
 /* ----------------- DROPDOWN USER STYLING -----------------*/
 .dropdown-toggle {

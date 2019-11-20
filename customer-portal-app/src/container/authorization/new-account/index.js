@@ -60,17 +60,13 @@ const NewAccount = props => {
         <Container fluid className="authorization-container text-light">
             <Row className="justify-content-center align-content-center full-height">
                 {/*<Col xs="12" sm="10" md="8" lg="6" xl="4">*/}
-                <Col xs="12" sm="10" md="8" lg="6" xl="4">
-                    <div>
-                        <Row className="justify-content-center">
-                            <img src={LogoImage} alt="" className="image logo-container" />
-                        </Row>
-                    </div>
+                <Col xs="12" sm="6" md="4" lg="4" xl="4">
+                    <img src={LogoImage} alt="" className="image logo-container-small" />
 
                     {showSuccessMessage ? (
                         redirect()
                     ) : (
-                        <div>
+                        <>
                             <Row className="justify-content-center">
                                 <h3 className={'text-light'}>Nieuw account</h3>
                             </Row>
@@ -79,31 +75,29 @@ const NewAccount = props => {
                             </Row>
                             <br />
                             <Row className="justify-content-center">
-                                <div className="form-check form-check-inline">
-                                    <label className="radio-inline">
-                                        <input
-                                            type="radio"
-                                            id="personal"
-                                            checked={contactType === 'person'}
-                                            value={'person'}
-                                            onChange={() => setContactType('person')}
-                                        />
-                                        &nbsp;voor jezelf
-                                    </label>
-                                    &nbsp;&nbsp;
-                                    <label className="radio-inline">
-                                        <input
-                                            type="radio"
-                                            id="organisation"
-                                            checked={contactType === 'organisation'}
-                                            value={'organisation'}
-                                            onChange={() => {
-                                                setContactType('organisation');
-                                            }}
-                                        />
-                                        &nbsp;voor je organisatie
-                                    </label>
-                                </div>
+                                <label className="radio-inline">
+                                    <input
+                                        type="radio"
+                                        id="personal"
+                                        checked={contactType === 'person'}
+                                        value={'person'}
+                                        onChange={() => setContactType('person')}
+                                    />
+                                    &nbsp;voor jezelf
+                                </label>
+                                &nbsp;&nbsp;
+                                <label className="radio-inline">
+                                    <input
+                                        type="radio"
+                                        id="organisation"
+                                        checked={contactType === 'organisation'}
+                                        value={'organisation'}
+                                        onChange={() => {
+                                            setContactType('organisation');
+                                        }}
+                                    />
+                                    &nbsp;voor je organisatie
+                                </label>
                             </Row>
                             <br />
 
@@ -127,7 +121,7 @@ const NewAccount = props => {
                                     </Alert>
                                 </Row>
                             ) : null}
-                        </div>
+                        </>
                     )}
                 </Col>
             </Row>

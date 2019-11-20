@@ -372,7 +372,7 @@ const DefaultContactPersonalEdit = function({
                                             <em>
                                                 (
                                                 {initialContact.dateDidAgreeAvg
-                                                    ? moment(initialContact.dateDidAgreeAvg.date).format('L')
+                                                    ? moment(initialContact.dateDidAgreeAvg).format('L')
                                                     : moment().format('L')}
                                                 )
                                             </em>

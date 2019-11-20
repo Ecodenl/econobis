@@ -87,11 +87,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                             <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
                                 privacybeleid
                             </a>{' '}
-                            {didAgreeAvg ? (
-                                <em>({dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('L') : ''})</em>
-                            ) : (
-                                ''
-                            )}
+                            {didAgreeAvg ? <em>({dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('L') : ''})</em> : ''}
                         </span>
                     </div>
                 </Row>

@@ -292,7 +292,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                                             <em>
                                                 (
                                                 {dateDidAgreeAvg
-                                                    ? moment(dateDidAgreeAvg.date).format('L')
+                                                    ? moment(dateDidAgreeAvg).format('L')
                                                     : moment().format('L')}
                                                 )
                                             </em>

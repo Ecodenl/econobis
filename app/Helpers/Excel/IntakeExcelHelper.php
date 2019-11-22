@@ -8,6 +8,7 @@
 
 namespace App\Helpers\Excel;
 
+use App\Eco\Opportunity\Opportunity;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -32,7 +33,6 @@ class IntakeExcelHelper
 
         $headerData = [];
 
-        $headerData[] = '#';
         $headerData[] = 'Contact';
         $headerData[] = 'Persoon titel';
         $headerData[] = 'Persoon initialen';
@@ -52,6 +52,11 @@ class IntakeExcelHelper
         $headerData[] = 'Laatste update door';
         $headerData[] = 'Gemaakt op';
         $headerData[] = 'Gemaakt door';
+        $headerData[] = 'Interesse maatregel';
+        $headerData[] = 'Gerelateerde kans';
+        $headerData[] = 'Kans status';
+        $headerData[] = 'Kans datum uitvoering gepland';
+        $headerData[] = 'Kans datum evaluatie akkoord';
 
         $completeData[] = $headerData;
 
@@ -62,6 +67,7 @@ class IntakeExcelHelper
                 'campaign',
                 'status',
                 'sources',
+                'opportunities',
                 'createdBy',
                 'updatedBy',
             ]);
@@ -76,6 +82,8 @@ class IntakeExcelHelper
                     $intake->sources_string = implode($sources, ', ');
                 }
 
+                $address = $intake->address;
+
                 // person/organisation fields
                 if ($intake->contact->type_id === 'person') {
                     $intake->title = $intake->contact->person->title;
@@ -84,34 +92,54 @@ class IntakeExcelHelper
                     $intake->last_name_prefix = $intake->contact->person->last_name_prefix;
                     $intake->last_name = $intake->contact->person->last_name;
                 }
-
                 $rowData = [];
-                $rowData[] = $intake->number;
-                $rowData[] = $intake->contact ? $intake->contact->full_name : '';
-                $rowData[] = $intake->title ? $intake->title->name : '';
-                $rowData[] = $intake->initials;
-                $rowData[] = $intake->first_name;
-                $rowData[] = $intake->last_name_prefix;
-                $rowData[] = $intake->last_name;
-                $rowData[] = $intake->street;
-                $rowData[] = $intake->street_number;
-                $rowData[] = $intake->addition;
-                $rowData[] = $intake->postal_code;
-                $rowData[] = $intake->city;
-                $rowData[] = $intake->country;
-                $rowData[] = $intake->sources_string;
-                $rowData[] = $intake->campaign ? $intake->campaign->name : '';
-                $rowData[] = $intake->status ? $intake->status->name : '';
-                $rowData[] = $this->formatDate($intake->updatedAtDate);
-                $rowData[] = $intake->updatedBy->present()->fullName();
-                $rowData[] = $this->formatDate($intake->created_at_date);
-                $rowData[] = $intake->createdBy->present()->fullName();
+                $rowData[0] = $intake->contact ? $intake->contact->full_name : '';
+                $rowData[1] = $intake->title ? $intake->title->name : '';
+                $rowData[2] = $intake->initials;
+                $rowData[3] = $intake->first_name;
+                $rowData[4] = $intake->last_name_prefix;
+                $rowData[5] = $intake->last_name;
+                $rowData[6] = ($address ? $address->street : '');
+                $rowData[7] = ($address ? $address->number : '');
+                $rowData[8] = ($address ? $address->addition : '');
+                $rowData[9] = ($address ? $address->postal_code : '');
+                $rowData[10] = ($address ? $address->city : '');
+                $rowData[11] = (($address && $address->country) ? $address->country->name : '');
+                $rowData[12] = $intake->sources_string;
+                $rowData[13] = $intake->campaign ? $intake->campaign->name : '';
+                $rowData[14] = $intake->status ? $intake->status->name : '';
+                $rowData[15] = $this->formatDate($intake->updated_at);
+                $rowData[16] = $intake->updatedBy->present()->fullName();
+                $rowData[17] = $this->formatDate($intake->created_at);
+                $rowData[18] = $intake->createdBy->present()->fullName();
 
                 $completeData[] = $rowData;
 
+                // measuresRequested
+                foreach ($intake->measuresRequested as $measure) {
+                    $rowData = [];
+
+                    $x = 0;
+                    while($x <= 18) {
+                        $rowData[$x] = '';
+                        $x++;
+                    }
+
+                    $rowData[19] = $measure->name;
+
+                    // opportunity
+                    $opportunity = Opportunity::where('intake_id', $intake->id)->where('measure_category_id',$measure->id)->first();
+                    if($opportunity){
+                        $rowData[20] = $opportunity->number;
+                        $rowData[21] = $opportunity->status ? $opportunity->status->name : '';
+                        $rowData[22] = $this->formatDate($opportunity->desired_date);
+                        $rowData[23] = $this->formatDate($opportunity->evaluation_agreed_date);
+                    }
+
+                    $completeData[] = $rowData;
+
+                }
             }
-
-
         }
 
         $spreadsheet = new Spreadsheet();

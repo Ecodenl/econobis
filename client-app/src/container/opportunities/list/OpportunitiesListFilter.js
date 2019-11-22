@@ -7,24 +7,33 @@ import 'react-day-picker/lib/style.css';
 import {
     setFilterOpportunityAmountOfQuotationRequests,
     setFilterOpportunityCampaign,
-    setFilterOpportunityCreatedAt,
+    setFilterOpportunityCreatedAtStart,
+    setFilterOpportunityCreatedAtEnd,
     setFilterOpportunityMeasureCategory,
     setFilterOpportunityName,
     setFilterOpportunityNumber,
     setFilterOpportunityStatusId,
 } from '../../../actions/opportunity/OpportunitiesFiltersActions';
-import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
+import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
 
 const OpportunitiesListFilter = props => {
     const onNumberChange = e => {
         props.setFilterOpportunityNumber(e.target.value);
     };
 
-    const onCreatedAtChange = selectedDay => {
+    const onCreatedAtStartChange = selectedDay => {
         if (selectedDay === undefined) {
-            props.setFilterOpportunityCreatedAt('');
+            props.setFilterOpportunityCreatedAtStart('');
         } else {
-            props.setFilterOpportunityCreatedAt(moment(selectedDay).format('Y-MM-DD'));
+            props.setFilterOpportunityCreatedAtStart(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+
+    const onCreatedAtEndChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterOpportunityCreatedAtEnd('');
+        } else {
+            props.setFilterOpportunityCreatedAtEnd(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -69,9 +78,11 @@ const OpportunitiesListFilter = props => {
                 </th>
             )}
 
-            <DataTableFilterDate
-                value={props.filters.createdAt.data && props.filters.createdAt.data}
-                onChangeAction={onCreatedAtChange}
+            <DataTableFilterDateStartEnd
+                startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
+                endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
+                onChangeActionStart={onCreatedAtStartChange}
+                onChangeActionEnd={onCreatedAtEndChange}
             />
 
             <th>
@@ -140,7 +151,8 @@ const mapDispatchToProps = dispatch => {
         {
             setFilterOpportunityAmountOfQuotationRequests,
             setFilterOpportunityCampaign,
-            setFilterOpportunityCreatedAt,
+            setFilterOpportunityCreatedAtStart,
+            setFilterOpportunityCreatedAtEnd,
             setFilterOpportunityMeasureCategory,
             setFilterOpportunityName,
             setFilterOpportunityNumber,

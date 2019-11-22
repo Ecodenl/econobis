@@ -1,6 +1,10 @@
 const filtersReducerDefaultState = {
-    createdAt: {
-        field: 'createdAt',
+    createdAtStart: {
+        field: 'createdAtStart',
+        data: '',
+    },
+    createdAtEnd: {
+        field: 'createdAtEnd',
         data: '',
     },
     fullName: {
@@ -23,12 +27,20 @@ const filtersReducerDefaultState = {
 
 export default (state = filtersReducerDefaultState, action) => {
     switch (action.type) {
-        case 'SET_FILTER_INTAKE_DATE':
+        case 'SET_FILTER_INTAKE_DATE_START':
             return {
                 ...state,
-                createdAt: {
-                    ...state.createdAt,
-                    data: action.createdAt,
+                createdAtStart: {
+                    ...state.createdAtStart,
+                    data: action.createdAtStart,
+                },
+            };
+        case 'SET_FILTER_INTAKE_DATE_END':
+            return {
+                ...state,
+                createdAtEnd: {
+                    ...state.createdAtEnd,
+                    data: action.createdAtEnd,
                 },
             };
         case 'SET_FILTER_INTAKE_FULL_NAME':

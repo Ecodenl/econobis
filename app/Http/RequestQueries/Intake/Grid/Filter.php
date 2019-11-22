@@ -10,11 +10,13 @@ namespace App\Http\RequestQueries\Intake\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
+use Carbon\Carbon;
 
 class Filter extends RequestFilter
 {
     protected $fields = [
-        'createdAt',
+        'createdAtStart',
+        'createdAtEnd',
         'fullName',
         'address',
         'measureRequestedId',
@@ -22,7 +24,6 @@ class Filter extends RequestFilter
     ];
 
     protected $mapping = [
-        'createdAt' => 'intakes.created_at',
         'fullName' => 'contacts.full_name',
         'statusId' => 'intakes.intake_status_id',
         'measureRequestedId' => 'intake_measure_requested.measure_category_id',
@@ -41,6 +42,16 @@ class Filter extends RequestFilter
         'statusId' => 'eq',
     ];
 
+    protected function applyCreatedAtStartFilter($query, $type, $data)
+    {
+        $query->where('created_at', '>=', Carbon::parse($data)->startOfDay());
+        return false;
+    }
+    protected function applyCreatedAtEndFilter($query, $type, $data)
+    {
+        $query->where('created_at', '<=', Carbon::parse($data)->endOfDay());
+        return false;
+    }
     protected function applyAddressFilter($query, $type, $data)
     {
         // Elke term moet in een van de naam velden voor komen.

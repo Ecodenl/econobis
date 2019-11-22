@@ -2,19 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
+import 'react-day-picker/lib/style.css';
 
 import {
     setFilterQuotationRequestStatus,
     clearFilterQuotationRequests,
     setQuotationRequestAddressFilter,
     setQuotationRequestContactFilter,
-    setQuotationRequestCreatedAtFilter,
+    setQuotationRequestCreatedAtStartFilter,
+    setQuotationRequestCreatedAtEndFilter,
     setQuotationRequestDateRecordedFilter,
     setQuotationRequestDateReleasedFilter,
     setQuotationRequestDateValidFilter,
     setQuotationRequestMeasureFilter,
     setQuotationRequestOrganisationFilter,
 } from '../../../actions/quotation-request/QuotationRequestsFiltersActions';
+import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
 const QuotationRequestsListFilter = props => {
@@ -34,11 +37,18 @@ const QuotationRequestsListFilter = props => {
         props.setQuotationRequestContactFilter(e.target.value);
     };
 
-    const onQuotationRequestCreatedAtChange = selectedDay => {
+    const onQuotationRequestCreatedAtStartChange = selectedDay => {
         if (selectedDay === undefined) {
-            props.setQuotationRequestCreatedAtFilter('');
+            props.setQuotationRequestCreatedAtStartFilter('');
         } else {
-            props.setQuotationRequestCreatedAtFilter(moment(selectedDay).format('Y-MM-DD'));
+            props.setQuotationRequestCreatedAtStartFilter(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+    const onQuotationRequestCreatedAtEndChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setQuotationRequestCreatedAtEndFilter('');
+        } else {
+            props.setQuotationRequestCreatedAtEndFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -109,9 +119,11 @@ const QuotationRequestsListFilter = props => {
                 />
             </th>
 
-            <DataTableFilterDate
-                value={props.filters.createdAt.data && props.filters.createdAt.data}
-                onChangeAction={onQuotationRequestCreatedAtChange}
+            <DataTableFilterDateStartEnd
+                startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
+                endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
+                onChangeActionStart={onQuotationRequestCreatedAtStartChange}
+                onChangeActionEnd={onQuotationRequestCreatedAtEndChange}
             />
             <DataTableFilterDate
                 value={props.filters.dateRecorded.data && props.filters.dateRecorded.data}
@@ -157,7 +169,8 @@ const mapDispatchToProps = dispatch => {
             clearFilterQuotationRequests,
             setQuotationRequestAddressFilter,
             setQuotationRequestContactFilter,
-            setQuotationRequestCreatedAtFilter,
+            setQuotationRequestCreatedAtStartFilter,
+            setQuotationRequestCreatedAtEndFilter,
             setQuotationRequestDateRecordedFilter,
             setQuotationRequestDateReleasedFilter,
             setQuotationRequestDateValidFilter,

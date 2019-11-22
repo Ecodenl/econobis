@@ -3,8 +3,12 @@ const filtersReducerDefaultState = {
         field: 'number',
         data: '',
     },
-    createdAt: {
-        field: 'createdAt',
+    createdAtStart: {
+        field: 'createdAtStart',
+        data: '',
+    },
+    createdAtEnd: {
+        field: 'createdAtEnd',
         data: '',
     },
     name: {
@@ -39,12 +43,20 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.number,
                 },
             };
-        case 'SET_FILTER_OPPORTUNITY_CREATED_AT':
+        case 'SET_FILTER_OPPORTUNITY_CREATED_AT_START':
             return {
                 ...state,
-                createdAt: {
-                    ...state.createdAt,
-                    data: action.createdAt,
+                createdAtStart: {
+                    ...state.createdAtStart,
+                    data: action.createdAtStart,
+                },
+            };
+        case 'SET_FILTER_OPPORTUNITY_CREATED_AT_END':
+            return {
+                ...state,
+                createdAtEnd: {
+                    ...state.createdAtEnd,
+                    data: action.createdAtEnd,
                 },
             };
         case 'SET_FILTER_OPPORTUNITY_NAME':

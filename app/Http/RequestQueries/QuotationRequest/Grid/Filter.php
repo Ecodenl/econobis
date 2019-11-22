@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\QuotationRequest\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
+use Carbon\Carbon;
 
 class Filter extends RequestFilter
 {
@@ -18,7 +19,8 @@ class Filter extends RequestFilter
         'contact',
         'address',
         'measure',
-        'createdAt',
+        'createdAtStart',
+        'createdAtEnd',
         'dateRecorded',
         'statusId',
         'dateReleased',
@@ -29,7 +31,6 @@ class Filter extends RequestFilter
         'organisation' => 'organisations.name',
         'contact' => 'contacts.full_name',
         'measure' => 'measure_categories.name',
-        'createdAt' => 'quotation_requests.created_at',
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',
         'dateReleased' => 'quotation_requests.date_released',
@@ -48,6 +49,16 @@ class Filter extends RequestFilter
         'statusId' => 'eq',
     ];
 
+    protected function applyCreatedAtStartFilter($query, $type, $data)
+    {
+        $query->where('created_at', '>=', Carbon::parse($data)->startOfDay());
+        return false;
+    }
+    protected function applyCreatedAtEndFilter($query, $type, $data)
+    {
+        $query->where('created_at', '<=', Carbon::parse($data)->endOfDay());
+        return false;
+    }
     protected function applyAddressFilter($query, $type, $data)
     {
         // Elke term moet in een van de naam velden voor komen.

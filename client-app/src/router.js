@@ -113,6 +113,8 @@ import LedgerDetailsApp from './container/ledger/details/LedgerDetailsApp';
 import CostCentersListApp from './container/cost-center/list/CostCentersListApp';
 import CostCenterNewApp from './container/cost-center/new/CostCenterNewApp';
 import CostCenterDetailsApp from './container/cost-center/details/CostCenterDetailsApp';
+import TaskTypesListApp from './container/task-type/list/TaskTypesListApp';
+import TaskTypeDetailsApp from './container/task-type/details/TaskTypeDetailsApp';
 
 const Routes = () => {
     return (
@@ -330,6 +332,9 @@ const Routes = () => {
                 <Route path="mailgun-domeinen" component={MailgunDomainsListApp} />
                 <Route path="mailgun-domein/nieuw" component={MailgunDomainNewApp} />
                 <Route path="mailgun-domein/:id" component={MailgunDomainDetailsApp} />
+                /* Taak types */
+                <Route path="taak-types" component={TaskTypesListApp} />
+                <Route path="taak-type/:id" component={TaskTypeDetailsApp} />
                 /* 404 route */
                 <Route path="*" component={NotFoundedPage} />
             </Route>

@@ -64,6 +64,8 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestPolicy;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPolicy;
+use App\Eco\Task\TaskType;
+use App\Eco\Task\TaskTypePolicy;
 use App\Eco\Team\Team;
 use App\Eco\Team\TeamPolicy;
 use App\Eco\User\User;
@@ -122,6 +124,7 @@ class AuthServiceProvider extends ServiceProvider
         VatCode::class => VatCodePolicy::class,
         Ledger::class => LedgerPolicy::class,
         CostCenter::class => CostCenterPolicy::class,
+        TaskType::class => TaskTypePolicy::class,
     ];
 
     /**

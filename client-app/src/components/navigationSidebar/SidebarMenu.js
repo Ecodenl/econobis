@@ -350,6 +350,16 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </Link>
                     </NavText>
                 </Nav>
+                {permissions.manageFinancial && (
+                    <Nav id="taak-types">
+                        <NavText>
+                            <Link className="sidebar-link" to="taak-types">
+                                Taak types
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
+
                 {permissions.viewMailbox && (
                     <Nav id="mailboxes">
                         <NavText>

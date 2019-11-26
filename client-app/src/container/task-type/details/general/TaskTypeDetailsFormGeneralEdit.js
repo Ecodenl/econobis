@@ -94,6 +94,10 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                 errors.emailTemplateIdWfCompletedTask = true;
                 hasErrors = true;
             }
+            if (!taskType.numberOfDaysToSendEmailCompletedTask) {
+                errors.numberOfDaysToSendEmailCompletedTask = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({ ...this.state, errors: errors });

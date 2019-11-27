@@ -16,7 +16,7 @@ class TaskTypeController extends Controller
         return TaskType::jory()->applyRequest($request);
     }
 
-    public function update(RequestInput $input, TaskType $taskType)
+    public function update(RequestInput $input, TaskType $taskType, Request $request)
     {
         $this->authorize('update', TaskType::class);
         $data = $input->boolean('usesWfCompletedTask')->alias('uses_wf_completed_task')->next()
@@ -29,7 +29,7 @@ class TaskTypeController extends Controller
         $taskType->fill($data);
         $taskType->save();
 
-        return GenericResource::make($taskType);
+        return TaskType::jory()->onModel($taskType)->applyRequest($request);
     }
 
 }

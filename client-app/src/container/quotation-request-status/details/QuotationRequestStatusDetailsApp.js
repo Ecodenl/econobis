@@ -1,33 +1,33 @@
 import React, { Component } from 'react';
 
-import TaskTypeDetailsToolbar from './TaskTypeDetailsToolbar';
-import TaskTypeDetailsForm from './TaskTypeDetailsForm';
+import QuotationRequestStatusDetailsToolbar from './QuotationRequestStatusDetailsToolbar';
+import QuotationRequestStatusDetailsForm from './QuotationRequestStatusDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import TaskTypeDetailsAPI from '../../../api/task-type/TaskTypeDetailsAPI';
+import QuotationRequestStatusDetailsAPI from '../../../api/quotation-request-status/QuotationRequestStatusDetailsAPI';
 
-class TaskTypeDetailsApp extends Component {
+class QuotationRequestStatusDetailsApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            taskType: {},
+            quotationRequestStatus: {},
             isLoading: false,
             hasError: false,
         };
     }
 
     componentDidMount() {
-        this.callFetchTaskTypeDetails();
+        this.callFetchQuotationRequestStatusDetails();
     }
 
-    callFetchTaskTypeDetails = () => {
+    callFetchQuotationRequestStatusDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        TaskTypeDetailsAPI.fetchTaskTypeDetails(this.props.params.id)
+        QuotationRequestStatusDetailsAPI.fetchQuotationRequestStatusDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
                     isLoading: false,
-                    taskType: {
+                    quotationRequestStatus: {
                         ...payload.data.data,
                     },
                 });
@@ -37,8 +37,8 @@ class TaskTypeDetailsApp extends Component {
             });
     };
 
-    updateState = taskType => {
-        this.setState({ taskType });
+    updateState = quotationRequestStatus => {
+        this.setState({ quotationRequestStatus });
     };
 
     render() {
@@ -48,14 +48,16 @@ class TaskTypeDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-small'}>
-                                <TaskTypeDetailsToolbar name={this.state.taskType.name || ''} />
+                                <QuotationRequestStatusDetailsToolbar
+                                    name={this.state.quotationRequestStatus.name || ''}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <TaskTypeDetailsForm
-                            taskType={this.state.taskType}
+                        <QuotationRequestStatusDetailsForm
+                            quotationRequestStatus={this.state.quotationRequestStatus}
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
                             updateState={this.updateState}
@@ -68,4 +70,4 @@ class TaskTypeDetailsApp extends Component {
     }
 }
 
-export default TaskTypeDetailsApp;
+export default QuotationRequestStatusDetailsApp;

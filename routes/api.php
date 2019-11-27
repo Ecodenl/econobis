@@ -439,6 +439,10 @@ Route::namespace('Api')
 
         Route::get('task-type/jory', 'Task\TaskTypeController@jory');
         Route::post('task-type/{taskType}', 'Task\TaskTypeController@update');
+        Route::get('quotation-request-status/jory', 'QuotationRequest\QuotationRequestStatusController@jory');
+        Route::post('quotation-request-status/{quotationRequestStatus}', 'QuotationRequest\QuotationRequestStatusController@update');
+        Route::get('opportunity-status/jory', 'Opportunity\OpportunityStatusController@jory');
+        Route::post('opportunity-status/{opportunityStatus}', 'Opportunity\OpportunityStatusController@update');
 
         // Jory routes voor ophalen data
         Route::get( 'jory', '\\'.JoryController::class.'@multiple');

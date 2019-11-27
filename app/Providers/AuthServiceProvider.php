@@ -28,6 +28,8 @@ use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasurePolicy;
 use App\Eco\Opportunity\OpportunityPolicy;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityStatus;
+use App\Eco\Opportunity\OpportunityStatusPolicy;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderPolicy;
 use App\Eco\Organisation\Organisation;
@@ -62,6 +64,8 @@ use App\Eco\Project\ProjectValueCourse;
 use App\Eco\Project\ProjectValueCoursePolicy;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestPolicy;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
+use App\Eco\QuotationRequest\QuotationRequestStatusPolicy;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPolicy;
 use App\Eco\Task\TaskType;
@@ -125,6 +129,8 @@ class AuthServiceProvider extends ServiceProvider
         Ledger::class => LedgerPolicy::class,
         CostCenter::class => CostCenterPolicy::class,
         TaskType::class => TaskTypePolicy::class,
+        QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
+        OpportunityStatus::class => OpportunityStatusPolicy::class,
     ];
 
     /**

@@ -7,7 +7,7 @@ import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import TaskTypeDetailsAPI from '../../../../api/task-type/TaskTypeDetailsAPI';
+import OpportunityStatusDetailsAPI from '../../../../api/opportunity-status/OpportunityStatusDetailsAPI';
 import { bindActionCreators } from 'redux';
 import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputToggle from '../../../../components/form/InputToggle';
@@ -16,21 +16,19 @@ import ViewText from '../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import validator from 'validator';
 
-class TaskTypeDetailsFormGeneralEdit extends Component {
+class OpportunityStatusDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             emailTemplates: [],
-            taskType: {
-                ...props.taskType,
+            opportunityStatus: {
+                ...props.opportunityStatus,
             },
             errors: {
-                usesWfCompletedTask: false,
-                emailTemplateIdWfCompletedTask: false,
-                numberOfDaysToSendEmailCompletedTask: false,
-                usesWfExpiredTask: false,
-                emailTemplateIdWfExpiredTask: false,
+                usesWf: false,
+                emailTemplateIdWf: false,
+                numberOfDaysToSendEmail: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -46,8 +44,8 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
 
         this.setState({
             ...this.state,
-            taskType: {
-                ...this.state.taskType,
+            opportunityStatus: {
+                ...this.state.opportunityStatus,
                 [name]: value,
             },
         });
@@ -56,8 +54,8 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
     handleReactSelectChange(selectedOption, name) {
         this.setState({
             ...this.state,
-            taskType: {
-                ...this.state.taskType,
+            opportunityStatus: {
+                ...this.state.opportunityStatus,
                 [name]: selectedOption,
             },
         });
@@ -78,25 +76,19 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { taskType } = this.state;
+        const { opportunityStatus } = this.state;
 
         // Validation
         let errors = {};
         let hasErrors = false;
 
-        if (taskType.usesWfExpiredTask == true) {
-            if (!taskType.emailTemplateIdWfExpiredTask) {
-                errors.emailTemplateIdWfExpiredTask = true;
+        if (opportunityStatus.usesWf == true) {
+            if (!opportunityStatus.emailTemplateIdWf) {
+                errors.emailTemplateIdWf = true;
                 hasErrors = true;
             }
-        }
-        if (taskType.usesWfCompletedTask == true) {
-            if (!taskType.emailTemplateIdWfCompletedTask) {
-                errors.emailTemplateIdWfCompletedTask = true;
-                hasErrors = true;
-            }
-            if (validator.isEmpty(taskType.numberOfDaysToSendEmailCompletedTask.toString())) {
-                errors.numberOfDaysToSendEmailCompletedTask = true;
+            if (validator.isEmpty(opportunityStatus.numberOfDaysToSendEmail.toString())) {
+                errors.numberOfDaysToSendEmail = true;
                 hasErrors = true;
             }
         }
@@ -105,7 +97,7 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            TaskTypeDetailsAPI.updateTaskType(taskType)
+            OpportunityStatusDetailsAPI.updateOpportunityStatus(opportunityStatus)
                 .then(payload => {
                     this.props.updateState(payload.data.data);
                     this.props.fetchSystemData();
@@ -117,14 +109,7 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const {
-            name,
-            usesWfCompletedTask,
-            emailTemplateIdWfCompletedTask,
-            numberOfDaysToSendEmailCompletedTask,
-            usesWfExpiredTask,
-            emailTemplateIdWfExpiredTask,
-        } = this.state.taskType;
+        const { name, usesWf, emailTemplateIdWf, numberOfDaysToSendEmail } = this.state.opportunityStatus;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -135,66 +120,39 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputToggle
-                                label={'Gebruikt workflow verlopen taak'}
-                                name={'usesWfExpiredTask'}
-                                value={usesWfExpiredTask}
+                                label={'Gebruikt workflow email bij deze status'}
+                                name={'usesWf'}
+                                value={usesWf}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
 
-                        {usesWfExpiredTask == true && (
+                        {usesWf == true && (
                             <React.Fragment>
                                 <div className="row">
                                     <InputReactSelect
-                                        label={'Template email verlopen taak'}
-                                        name={'emailTemplateIdWfExpiredTask'}
+                                        label={'Template email bij deze status'}
+                                        name={'emailTemplateIdWf'}
                                         options={this.state.emailTemplates}
-                                        value={emailTemplateIdWfExpiredTask}
+                                        value={emailTemplateIdWf}
                                         onChangeAction={this.handleReactSelectChange}
                                         isLoading={this.state.peekLoading.emailTemplates}
                                         multi={false}
                                         required={'required'}
-                                        error={this.state.errors.emailTemplateIdWfExpiredTask}
-                                    />
-                                </div>
-                            </React.Fragment>
-                        )}
-
-                        <div className="row">
-                            <InputToggle
-                                label={'Gebruikt workflow afgehandelde taak'}
-                                name={'usesWfCompletedTask'}
-                                value={usesWfCompletedTask}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        {usesWfCompletedTask == true && (
-                            <React.Fragment>
-                                <div className="row">
-                                    <InputReactSelect
-                                        label={'Template email afgehandelde taak'}
-                                        name={'emailTemplateIdWfCompletedTask'}
-                                        options={this.state.emailTemplates}
-                                        value={emailTemplateIdWfCompletedTask}
-                                        onChangeAction={this.handleReactSelectChange}
-                                        isLoading={this.state.peekLoading.emailTemplates}
-                                        multi={false}
-                                        required={'required'}
-                                        error={this.state.errors.emailTemplateIdWfCompletedTask}
+                                        error={this.state.errors.emailTemplateIdWf}
                                     />
                                 </div>
                                 <div className="row">
                                     <InputText
-                                        label={'Aantal dagen email na afgehandelde taak'}
+                                        label={'Aantal dagen email na deze status'}
                                         type={'number'}
                                         min={'0'}
-                                        id={'numberOfDaysToSendEmailCompletedTask'}
-                                        name={'numberOfDaysToSendEmailCompletedTask'}
-                                        value={numberOfDaysToSendEmailCompletedTask}
+                                        id={'numberOfDaysToSendEmail'}
+                                        name={'numberOfDaysToSendEmail'}
+                                        value={numberOfDaysToSendEmail}
                                         onChangeAction={this.handleInputChange}
                                         required={'required'}
-                                        error={this.state.errors.numberOfDaysToSendEmailCompletedTask}
+                                        error={this.state.errors.numberOfDaysToSendEmail}
                                     />
                                 </div>
                             </React.Fragment>
@@ -222,4 +180,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, d
 export default connect(
     null,
     mapDispatchToProps
-)(TaskTypeDetailsFormGeneralEdit);
+)(OpportunityStatusDetailsFormGeneralEdit);

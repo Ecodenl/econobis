@@ -1,33 +1,33 @@
 import React, { Component } from 'react';
 
-import TaskTypeDetailsToolbar from './TaskTypeDetailsToolbar';
-import TaskTypeDetailsForm from './TaskTypeDetailsForm';
+import OpportunityStatusDetailsToolbar from './OpportunityStatusDetailsToolbar';
+import OpportunityStatusDetailsForm from './OpportunityStatusDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import TaskTypeDetailsAPI from '../../../api/task-type/TaskTypeDetailsAPI';
+import OpportunityStatusDetailsAPI from '../../../api/opportunity-status/OpportunityStatusDetailsAPI';
 
-class TaskTypeDetailsApp extends Component {
+class OpportunityStatusDetailsApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            taskType: {},
+            opportunityStatus: {},
             isLoading: false,
             hasError: false,
         };
     }
 
     componentDidMount() {
-        this.callFetchTaskTypeDetails();
+        this.callFetchOpportunityStatusDetails();
     }
 
-    callFetchTaskTypeDetails = () => {
+    callFetchOpportunityStatusDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        TaskTypeDetailsAPI.fetchTaskTypeDetails(this.props.params.id)
+        OpportunityStatusDetailsAPI.fetchOpportunityStatusDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
                     isLoading: false,
-                    taskType: {
+                    opportunityStatus: {
                         ...payload.data.data,
                     },
                 });
@@ -37,8 +37,8 @@ class TaskTypeDetailsApp extends Component {
             });
     };
 
-    updateState = taskType => {
-        this.setState({ taskType });
+    updateState = opportunityStatus => {
+        this.setState({ opportunityStatus });
     };
 
     render() {
@@ -48,14 +48,14 @@ class TaskTypeDetailsApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-small'}>
-                                <TaskTypeDetailsToolbar name={this.state.taskType.name || ''} />
+                                <OpportunityStatusDetailsToolbar name={this.state.opportunityStatus.name || ''} />
                             </PanelBody>
                         </Panel>
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <TaskTypeDetailsForm
-                            taskType={this.state.taskType}
+                        <OpportunityStatusDetailsForm
+                            opportunityStatus={this.state.opportunityStatus}
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
                             updateState={this.updateState}
@@ -68,4 +68,4 @@ class TaskTypeDetailsApp extends Component {
     }
 }
 
-export default TaskTypeDetailsApp;
+export default OpportunityStatusDetailsApp;

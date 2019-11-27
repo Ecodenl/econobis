@@ -8,11 +8,11 @@ const TaskTypeDetailsForm = ({ taskType, hasError, isLoading, updateState }) => 
     let loading = true;
 
     if (hasError) {
-        loadingText = 'Fout bij het ophalen van Taak type.';
+        loadingText = 'Fout bij het ophalen van taak type.';
     } else if (isLoading) {
         loadingText = 'Gegevens aan het laden.';
     } else if (isEmpty(taskType)) {
-        loadingText = 'Geen Taak type gevonden!';
+        loadingText = 'Geen taak type gevonden!';
     } else {
         loading = false;
     }

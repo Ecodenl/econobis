@@ -13,6 +13,8 @@ use App\Console\Commands\getAllEmail;
 use App\Console\Commands\processPaidInvoices;
 use App\Console\Commands\processWorkflowEmailCompleteTask;
 use App\Console\Commands\processWorkflowEmailExpiredTask;
+use App\Console\Commands\processWorkflowEmailOpportunityStatus;
+use App\Console\Commands\processWorkflowEmailQuotationRequestStatus;
 use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use Illuminate\Console\Scheduling\Schedule;
@@ -33,6 +35,8 @@ class Kernel extends ConsoleKernel
         checkMailboxes::class,
         processWorkflowEmailCompleteTask::class,
         processWorkflowEmailExpiredTask::class,
+        processWorkflowEmailOpportunityStatus::class,
+        processWorkflowEmailQuotationRequestStatus::class,
         conversionProjects::class,
         conversionProjectRevenues::class,
         conversionProjectRevenueDistribution::class,
@@ -55,7 +59,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('invoice:setDaysToExpire')->dailyAt('00:10');
         $schedule->command('invoice:processPaidInvoices')->dailyAt('03:00');
         $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('04:00');
-        $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('04:10');
+        $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('04:05');
+        $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->dailyAt('04:10');
+        $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->dailyAt('04:15');
     }
 
     /**

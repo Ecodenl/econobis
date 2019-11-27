@@ -43,7 +43,7 @@ class processWorkflowEmailExpiredTask extends Command
     {
         $tasksToProcess = Task::where('finished', false)
             ->whereNull('date_sent_wf_expired_task')
-            ->where('date_planned_finish','<', Carbon::now()->startOfDay())
+            ->where('date_planned_finish','<', Carbon::now()->startOfDay()->toDateString())
             ->whereHas('type', function($query){
                 $query->where('uses_wf_expired_task', true);
             })

@@ -14,6 +14,7 @@ import InputToggle from '../../../../components/form/InputToggle';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import ViewText from '../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import validator from 'validator';
 
 class TaskTypeDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -94,7 +95,7 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                 errors.emailTemplateIdWfCompletedTask = true;
                 hasErrors = true;
             }
-            if (!taskType.numberOfDaysToSendEmailCompletedTask) {
+            if (validator.isEmpty(taskType.numberOfDaysToSendEmailCompletedTask.toString())) {
                 errors.numberOfDaysToSendEmailCompletedTask = true;
                 hasErrors = true;
             }

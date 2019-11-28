@@ -236,7 +236,15 @@ class MailboxNewForm extends Component {
                         </div>
                         <div className="row">
                             <InputToggle
-                                label={<span>Koppel contact op email <u>aan</u> adres<br/><small style={{color: '#ccc', fontWeight: 'normal'}}>Koppeling contact standaard op email <u>afzender</u> adres</small></span>}
+                                label={
+                                    <span>
+                                        Koppel contact op email <u>aan</u> adres
+                                        <br />
+                                        <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                            Koppeling contact standaard op email <u>afzender</u> adres
+                                        </small>
+                                    </span>
+                                }
                                 name={'linkContactFromEmailToAddress'}
                                 value={linkContactFromEmailToAddress}
                                 onChangeAction={this.handleInputChange}

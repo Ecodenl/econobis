@@ -43,7 +43,18 @@ const MailboxDetailsFormGeneralView = props => {
                         <ViewText label={'Primair (verzend wachtwoord mails)'} value={primary ? 'Ja' : 'Nee'} />
                     </div>
                     <div className="row">
-                        <ViewText label={<span>Koppel contact op email <u>aan</u> adres<br/><small style={{color: '#ccc', fontWeight: 'normal'}}>Koppeling contact standaard op email <u>afzender</u> adres</small></span>} value={linkContactFromEmailToAddress ? 'Ja' : 'Nee'} />
+                        <ViewText
+                            label={
+                                <span>
+                                    Koppel contact op email <u>aan</u> adres
+                                    <br />
+                                    <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                        Koppeling contact standaard op email <u>afzender</u> adres
+                                    </small>
+                                </span>
+                            }
+                            value={linkContactFromEmailToAddress ? 'Ja' : 'Nee'}
+                        />
                     </div>
                 </PanelBody>
 

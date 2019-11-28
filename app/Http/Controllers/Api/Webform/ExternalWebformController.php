@@ -21,6 +21,7 @@ use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
+use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\OccupationContact;
@@ -250,6 +251,7 @@ class ExternalWebformController extends Controller
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_interesse_ids' => 'measure_categorie_ids',
+                'intake_aanmeldingsbron_ids' => 'source_ids',
                 'intake_status_id' => 'status_id',
                 'intake_opmerkingen_bewoner' => 'note',
             ],
@@ -259,6 +261,10 @@ class ExternalWebformController extends Controller
         foreach (TaskProperty::all() as $taskProperty) {
             $mapping['task']['taak_' . $taskProperty->code] = $taskProperty->code;
         }
+        $mapping['task']['taak_type_id'] = 'type_id';
+        $mapping['task']['taak_einddatum'] = 'date_planned_finish';
+        $mapping['task']['taak_afgehandeld'] = 'finished';
+
         $mapping['task']['taak_opmerkingen'] = 'note';
 
         $data = [];
@@ -670,6 +676,7 @@ class ExternalWebformController extends Controller
 
             $reasons = IntakeReason::whereIn('id', explode(',', $data['reason_ids']))->get();
             $measureCategories = MeasureCategory::whereIn('id', explode(',', $data['measure_categorie_ids']))->get();
+            $sources = IntakeSource::whereIn('id', explode(',', $data['source_ids']))->get();
 
             $intake = Intake::make([
                 'contact_id' => $address->contact->id,
@@ -684,6 +691,9 @@ class ExternalWebformController extends Controller
             $intake->reasons()->sync($reasons->pluck('id'));
             $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
 
+            $intake->sources()->sync($reasons->pluck('id'));
+            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $reasons->implode('name', ', '));
+
             $intake->measuresRequested()->sync($measureCategories->pluck('id'));
             $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
 
@@ -696,9 +706,9 @@ class ExternalWebformController extends Controller
     protected function addParticipationToContact(Contact $contact, array $data, Webform $webform )
     {
         if ($data['project_id']) {
-            $this->log('Er is een productieproject meegegeven, participatie aanmaken.');
+            $this->log('Er is een project meegegeven, participatie aanmaken.');
             $project = Project::find($data['project_id']);
-            if (!$project) $this->error('Er is een ongeldige waarde voor productieproject meegegeven.');
+            if (!$project) $this->error('Er is een ongeldige waarde voor project meegegeven.');
 
             // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
@@ -814,7 +824,7 @@ class ExternalWebformController extends Controller
 
             return $participation;
         } else {
-            $this->log('Er is geen productieproject meegegeven, geen participatie aanmaken.');
+            $this->log('Er is geen project meegegeven, geen participatie aanmaken.');
         }
     }
 
@@ -845,6 +855,30 @@ class ExternalWebformController extends Controller
 
     protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProject $participation = null, Order $order = null)
     {
+        // Default date planned finish
+        $datePlannedFinish = null;
+        // When date planned finish filled in
+        if($data['date_planned_finish'])
+        {
+            // Default requested date planned finish
+            $datePlannedFinish = Carbon::make($data['date_planned_finish']);
+            // Only dates in future allowed. If not, then change date planned finish to tomorrow.
+            if($datePlannedFinish < Carbon::tomorrow())
+            {
+                $datePlannedFinish = Carbon::tomorrow();
+                $this->log('Gewijzigd naar datum morgen: ' . $datePlannedFinish);
+            }
+            $this->log('Dagcode van de week: ' . $datePlannedFinish->dayOfWeekIso );
+            // If date planned finish in weekend, then change date to first monday after date planned finish.
+            if($datePlannedFinish->dayOfWeekIso > 5 )
+            {
+                $monday = $datePlannedFinish->startOfWeek();
+                $datePlannedFinish = $monday->addWeek(1);
+                $this->log('Gewijzigd naar datum eerst volgende maandag: ' . $datePlannedFinish);
+            }
+
+        }
+
         // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
         $note = "Webformulier " . $webform->name . ".\n\n";
         if($data['note']) $note .= $data['note'] . "\n\n";
@@ -852,11 +886,12 @@ class ExternalWebformController extends Controller
 
         $task = Task::create([
             'note' => $note,
-            'type_id' => 6,
+            'type_id' => $data['type_id'] ?: 6,
             'contact_id' => $contact->id,
             'contact_group_id' => $this->contactGroup ? $this->contactGroup->id : null,
-            'finished' => false,
+            'finished' => $data['finished'] ? (bool)$data['finished'] : false,
             'date_planned_start' => (new Carbon())->startOfDay(),
+            'date_planned_finish' => $datePlannedFinish,
             'responsible_user_id' => $webform->responsible_user_id,
             'responsible_team_id' => $webform->responsible_team_id,
             'intake_id' => $intake ? $intake->id : null,
@@ -864,6 +899,13 @@ class ExternalWebformController extends Controller
             'participation_project_id' => $participation ? $participation->id : null,
             'order_id' => $order ? $order->id : null,
         ]);
+
+        if($task->finished){
+            $task->date_finished = Carbon::today();
+            $finished_by_user = User::find($webform->responsible_user_id);
+            $task->finished_by_id = $finished_by_user ? $finished_by_user->id : null;
+            $task->save();
+        }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');
 

@@ -49,7 +49,8 @@ class TaskWorkflowHelper
         }
 
         $mail = Mail::to($this->contact->primaryEmailAddress);
-        return $this->mailWorkflow($emailTemplate, $mail);
+        $this->mailWorkflow($emailTemplate, $mail);
+        return true;
     }
 
     public function processWorkflowEmailExpiredTask(){

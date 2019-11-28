@@ -24,6 +24,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             organisation,
             dateRecorded,
             status,
+            datePlannedToSendWfEmailStatus,
             dateReleased,
             dateValid,
             quotationText,
@@ -43,6 +44,10 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 organisationId: organisation.id,
                 dateRecorded: dateRecorded ? dateRecorded : '',
                 statusId: status.id,
+                statusUsesWf: status ? status.usesWf : false,
+                datePlannedToSendWfEmailStatus: datePlannedToSendWfEmailStatus
+                    ? moment(datePlannedToSendWfEmailStatus).format('L')
+                    : '',
                 dateReleased: dateReleased ? dateReleased : '',
                 dateValid: dateValid ? dateValid : '',
                 quotationText: quotationText ? quotationText : '',
@@ -118,6 +123,8 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             organisationId,
             dateRecorded,
             statusId,
+            statusUsesWf,
+            datePlannedToSendWfEmailStatus,
             dateReleased,
             dateValid,
             quotationText,
@@ -191,6 +198,20 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         required={'required'}
                         error={this.state.errors.status}
                     />
+                    {statusUsesWf ? (
+                        <InputText
+                            label={'Datum workflow email'}
+                            name={'datePlannedToSendWfEmailStatus'}
+                            value={datePlannedToSendWfEmailStatus}
+                            onChange={() => {}}
+                            readOnly={true}
+                        />
+                    ) : (
+                        ''
+                    )}
+                </div>
+
+                <div className="row">
                     <InputDate
                         label="Offerte uitgebracht"
                         size={'col-sm-6'}
@@ -198,9 +219,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={dateReleased}
                         onChangeAction={this.handleInputChangeDate}
                     />
-                </div>
-
-                <div className="row">
                     <InputDate
                         label="Offerte geldig tot"
                         size={'col-sm-6'}

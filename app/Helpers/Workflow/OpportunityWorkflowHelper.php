@@ -63,6 +63,7 @@ class OpportunityWorkflowHelper
             $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->opportunity);
         }
 
 //todo toevoegen custom-portal branch

@@ -343,6 +343,67 @@ class TemplateVariableHelper
 
     public static function getOpportunityVar($model, $varname){
         switch ($varname) {
+            case 'contact_naam':
+                return optional($model->intake)->contact->full_name;
+                break;
+            case 'contact_adres':
+                return optional(optional($model->intake)->contact->primaryAddress)->street . ' ' . optional(optional($model->intake)->contact->primaryAddress)->number . optional($model->intake->contact->primaryAddress)->addition;
+                break;
+            case 'contact_plaats':
+                return optional(optional($model->intake)->contact->primaryAddress)->city;
+                break;
+            case 'contact_postcode':
+                return optional(optional($model->intake)->contact->primaryAddress)->postal_code;
+                break;
+            case 'contact_email':
+                return optional(optional($model->intake)->contact->primaryEmailAddress)->email;
+                break;
+            case 'maatregel_categorie':
+                return optional($model->measureCategory)->name;
+                break;
+            case 'maatregel_specifiek':
+                return implode(', ', $model->measures->pluck('name' )->toArray() ) ;
+                break;
+            case 'toelichting':
+            case 'maatregel_toelichting':
+                return $model->quotation_text;
+                break;
+            case 'uitvoering_gepland':
+                return $model->desired_date ? Carbon::parse($model->desired_date)->format('d/m/Y') : null;
+                break;
+            case 'status':
+                return $model->status ? $model->status->name : '';
+                break;
+            case 'datum_evaluatie':
+                return $model->evaluation_agreed_date ? Carbon::parse($model->evaluation_agreed_date)->format('d/m/Y') : null;
+                break;
+//            case 'akkoord':
+//                break;
+            case 'evaluatie_uitgevoerd':
+                return optional($model->opportunityEvaluation)->is_realised ? 'Ja' : 'Nee';
+                break;
+            case 'evaluatie_tevreden':
+                return optional($model->opportunityEvaluation)->is_statisfied ? 'Ja' : 'Nee';
+                break;
+            case 'evaluatie_aanbevelen':
+                return optional($model->opportunityEvaluation)->would_recommend_organisation ? 'Ja' : 'Nee';
+                break;
+            case 'evaluatie_opmerking':
+                return optional($model->opportunityEvaluation)->note;
+                break;
+//            case 'offerteverzoek_bedrijf':
+//                break;
+//            case 'offerteverzoek_contactpersoon':
+//                break;
+//            case 'offerteverzoek_status':
+//                break;
+//            case 'offerteverzoek_uitgebracht':
+//                break;
+//            case 'offerteverzoek_geldig_tot':
+//                break;
+//            case 'offerteverzoek_gemaakt_op':
+//                break;
+
             default:
                 return '';
                 break;
@@ -1057,9 +1118,12 @@ class TemplateVariableHelper
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryPhoneNumber)->number;
                 break;
             case 'maatregel':
+            case 'maatregel_categorie':
                 return optional(optional($model->opportunity)->measureCategory)->name;
                 break;
             case 'tekst':
+            case 'toelichting':
+            case 'maatregel_toelichting':
                 return $model->quotation_text;
                 break;
             case 'gemaakt_op':

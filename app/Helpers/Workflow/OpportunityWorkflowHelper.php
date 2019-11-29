@@ -63,7 +63,17 @@ class OpportunityWorkflowHelper
             $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
+        }
+        if($this->opportunity) {
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->opportunity);
+            if($this->opportunity->intake) {
+                $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake',
+                    $this->opportunity->intake);
+                if($this->opportunity->intake->campaign) {
+                    $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'campagne',
+                        $this->opportunity->intake->campaign);
+                }
+            }
         }
 
 //todo toevoegen custom-portal branch

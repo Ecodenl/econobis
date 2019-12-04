@@ -505,7 +505,7 @@ const DefaultContactPersonalEdit = function({
                                             errors={errors}
                                             touched={touched}
                                             id="ean_gas"
-                                            placeholder={'EAN nummer electriciteit'}
+                                            placeholder={'EAN nummer gas'}
                                             // disabled={
                                             //     initialContact.primaryContactEnergySupplier &&
                                             //     initialContact.primaryContactEnergySupplier.energySupplierId &&

@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /public/portal-test
+/public/portal-lokaal
 /storage/*.key
 /storage/fonts/*
 /vendor

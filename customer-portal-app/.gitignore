@@ -11,6 +11,7 @@
 # production
 /build
 /portal
+/portal-lokaal
 
 # misc
 .DS_Store

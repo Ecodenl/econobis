@@ -91,7 +91,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
                 let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);
-                let powerKwhConsumption = calculatePowerKwhConsumption(values);
+                let powerKwhConsumption = calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE;
                 let pcrAdviseMaxNumberOfParticipations = calculateAdviseMaxNumberOfParticipations(values);
 
                 return (

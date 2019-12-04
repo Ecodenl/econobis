@@ -241,6 +241,8 @@ class ParticipationProjectController extends Controller
                 $payoutTypeId = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
                 break;
         }
+        // We save yearly power kWh consumption minus the yearly power kWh revenues: powerKwhConsumption
+        // In requestfield pcrYearlyPowerKwhConsumption you find value with only yearly power kWh consumption
         $powerKwhConsumption = ($request->powerKwhConsumption && $request->powerKwhConsumption!= '') ? $request->powerKwhConsumption : 0;
         $participation = ParticipantProject::create([
             'contact_id' => $contact->id,

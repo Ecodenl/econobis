@@ -18,6 +18,7 @@ import {
     deleteEmailAddressSaga,
     deleteContactNoteSaga,
     deleteContactEnergySupplierSaga,
+    deletePortalUserSaga,
 } from './contact/ContactDetailsSaga';
 import { fetchContactGroupDetailsSaga } from './contact-group/ContactGroupDetailsSaga';
 import {
@@ -137,6 +138,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_ADDRESS', deleteAddressSaga);
     yield takeLatest('DELETE_PHONE_NUMBER', deletePhoneNumberSaga);
     yield takeLatest('DELETE_EMAIL_ADDRESS', deleteEmailAddressSaga);
+    yield takeLatest('DELETE_PORTAL_USER', deletePortalUserSaga);
     yield takeLatest('DELETE_CONTACT_NOTE', deleteContactNoteSaga);
     yield takeLatest('DELETE_CONTACT_ENERGY_SUPPLIER', deleteContactEnergySupplierSaga);
     // Contact group

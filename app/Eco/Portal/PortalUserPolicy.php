@@ -18,5 +18,9 @@ class PortalUserPolicy
     {
         return $user->can('update', $portalUser->contact);
     }
+    public function delete(User $user, PortalUser $portalUser)
+    {
+        return $user->can('update', $portalUser->contact);
+    }
 
 }

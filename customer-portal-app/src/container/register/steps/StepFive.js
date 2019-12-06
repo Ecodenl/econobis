@@ -15,7 +15,7 @@ function StepFive() {
                         inschrijving en informatie over de vervolgstappen die we nemen om jouw inschrijving definitief
                         te maken.
                     </p>
-                    <p>Onder de menuknop “Inschrijvingen” vind je je inschrijving terug.</p>
+                    <p>Onder de menuknop “Huidige deelnames” vind je je inschrijving terug.</p>
                     <p>Wil je je inschrijving aanpassen? Neem dan contact met ons op.</p>
                 </Col>
             </Row>
@@ -24,7 +24,7 @@ function StepFive() {
                     <ButtonGroup className="float-right">
                         <Link to={`/inschrijvingen-projecten`}>
                             <Button className={'w-button'} size="sm">
-                                Naar mijn inschrijvingen
+                                Naar mijn huidige deelnames
                             </Button>
                         </Link>
                     </ButtonGroup>

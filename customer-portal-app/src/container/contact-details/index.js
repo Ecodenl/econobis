@@ -88,7 +88,7 @@ const ContactDetails = function(props) {
                         &nbsp;
                         <Link to={`/inschrijvingen-projecten`}>
                             <Button className={'w-button'} size="sm">
-                                Inschrijvingen
+                                Huidige deelnames
                             </Button>
                         </Link>
                     </ButtonGroup>

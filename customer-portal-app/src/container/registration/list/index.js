@@ -50,7 +50,7 @@ function RegistrationList(props) {
             <Row>
                 <Col>
                     <h1 className="content-heading">
-                        Projecten waarop <strong>{contact.fullName}</strong> zich heeft ingeschreven.
+                        De projecten waarin <strong>{contact.fullName}</strong> deelneemt.
                     </h1>
                 </Col>
             </Row>

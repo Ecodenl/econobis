@@ -408,8 +408,9 @@ class TemplateVariableHelper
             case 'ean_levering':
                 return $model->ean_supply;
                 break;
+            case 'nominale_waarde':
             case 'participatie_waarde':
-                return $model->participation_worth;
+                return number_format($model->participation_worth, 2, ',', '');
                 break;
             case 'opgesteld_vermogen':
                 return $model->power_kw_available;

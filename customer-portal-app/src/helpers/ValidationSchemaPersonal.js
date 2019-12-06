@@ -4,6 +4,11 @@ import * as ibantools from 'ibantools';
 export default {
     validationSchemaBasic: Yup.object().shape({
         // TODO set more correct values for validation, only important fields are set now
+        didAgreeAvg: Yup.bool().test(
+            'didAgreeAvg',
+            'Je dient akkoord te gaan met privacybeleid!',
+            value => value === true
+        ),
         person: Yup.object().shape({
             lastName: Yup.string()
                 .trim()

@@ -145,7 +145,11 @@
     /*font-size: 12px;*/
     /*text-shadow: none;*/
 }
-
+label.required:after {
+    content: " *";
+    color: red;
+    font-size: 18px;
+}
 /* ----------------- BUTTON STYLING -----------------*/
 .w-button {
     background-color: var(--button-primary-color);

@@ -4,11 +4,9 @@ namespace App\Eco\Opportunity;
 
 use App\Eco\EmailTemplate\EmailTemplate;
 use Illuminate\Database\Eloquent\Model;
-use JosKolenberg\LaravelJory\Traits\JoryTrait;
 
 class OpportunityStatus extends Model
 {
-    use JoryTrait;
 
     protected $table = 'opportunity_status';
 

@@ -4,11 +4,9 @@ namespace App\Eco\Task;
 
 use App\Eco\EmailTemplate\EmailTemplate;
 use Illuminate\Database\Eloquent\Model;
-use JosKolenberg\LaravelJory\Traits\JoryTrait;
 
 class TaskType extends Model
 {
-    use JoryTrait;
 
     protected $guarded = ['id'];
 

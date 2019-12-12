@@ -4,11 +4,9 @@ namespace App\Eco\QuotationRequest;
 
 use App\Eco\EmailTemplate\EmailTemplate;
 use Illuminate\Database\Eloquent\Model;
-use JosKolenberg\LaravelJory\Traits\JoryTrait;
 
 class QuotationRequestStatus extends Model
 {
-    use JoryTrait;
 
     protected $table = 'quotation_request_status';
 

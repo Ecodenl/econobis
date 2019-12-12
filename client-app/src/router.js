@@ -114,6 +114,12 @@ import CostCentersListApp from './container/cost-center/list/CostCentersListApp'
 import CostCenterNewApp from './container/cost-center/new/CostCenterNewApp';
 import CostCenterDetailsApp from './container/cost-center/details/CostCenterDetailsApp';
 import PortalSettingsApp from './container/portal-settings/PortalSettingsApp';
+import TaskTypesListApp from './container/task-type/list/TaskTypesListApp';
+import TaskTypeDetailsApp from './container/task-type/details/TaskTypeDetailsApp';
+import QuotationRequestStatusListApp from './container/quotation-request-status/list/QuotationRequestStatusListApp';
+import QuotationRequestStatusDetailsApp from './container/quotation-request-status/details/QuotationRequestStatusDetailsApp';
+import OpportunityStatusListApp from './container/opportunity-status/list/OpportunityStatusListApp';
+import OpportunityStatusDetailsApp from './container/opportunity-status/details/OpportunityStatusDetailsApp';
 
 const Routes = () => {
     return (
@@ -333,6 +339,13 @@ const Routes = () => {
                 <Route path="mailgun-domein/:id" component={MailgunDomainDetailsApp} />
                 /* Portal settings */
                 <Route path="portal-settings" component={PortalSettingsApp} />
+                /* Taak types */
+                <Route path="taak-types" component={TaskTypesListApp} />
+                <Route path="taak-type/:id" component={TaskTypeDetailsApp} />
+                <Route path="offerte-verzoek-statussen" component={QuotationRequestStatusListApp} />
+                <Route path="offerte-verzoek-status/:id" component={QuotationRequestStatusDetailsApp} />
+                <Route path="kans-statussen" component={OpportunityStatusListApp} />
+                <Route path="kans-status/:id" component={OpportunityStatusDetailsApp} />
                 /* 404 route */
                 <Route path="*" component={NotFoundedPage} />
             </Route>

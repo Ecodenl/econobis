@@ -8,6 +8,7 @@
 
 namespace App\Eco\QuotationRequest;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class QuotationRequestObserver
@@ -24,6 +25,16 @@ class QuotationRequestObserver
     {
         $userId = Auth::id();
         $quotationRequest->updated_by_id = $userId;
+    }
+
+    public function saving(QuotationRequest $quotationRequest)
+    {
+        if ($quotationRequest->isDirty('status_id'))
+        {
+            $days = $quotationRequest->status->uses_wf ? $quotationRequest->status->number_of_days_to_send_email : 0;
+            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+            $quotationRequest->date_planned_to_send_wf_email_status = $mailDate;
+        }
     }
 
 }

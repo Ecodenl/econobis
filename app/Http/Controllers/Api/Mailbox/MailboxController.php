@@ -61,6 +61,7 @@ class MailboxController extends Controller
             ->string('outgoingServerType')->whenMissing('smtp')->onEmpty('smtp')->alias('outgoing_server_type')->next()
             ->boolean('isActive')->alias('is_active')->next()
             ->boolean('primary')->next()
+            ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->get();
 
         $mailbox = new Mailbox($data);
@@ -106,6 +107,7 @@ class MailboxController extends Controller
             ->string('outgoingServerType')->alias('outgoing_server_type')->next()
             ->boolean('isActive')->alias('is_active')->next()
             ->boolean('primary')->next()
+            ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->get();
 
         $mailbox->login_tries = 0;

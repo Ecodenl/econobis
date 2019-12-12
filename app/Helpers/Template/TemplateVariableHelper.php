@@ -133,7 +133,7 @@ class TemplateVariableHelper
                 return TemplateVariableHelper::getProjectRevenueDistributionVar($model, $varname);
                 break;
             case 'Campaign':
-                return '';
+                return TemplateVariableHelper::getCampaignVar($model, $varname);
                 break;
             case 'HousingFile':
                 return '';
@@ -353,6 +353,67 @@ class TemplateVariableHelper
 
     public static function getOpportunityVar($model, $varname){
         switch ($varname) {
+            case 'contact_naam':
+                return optional($model->intake)->contact->full_name;
+                break;
+            case 'contact_adres':
+                return optional(optional($model->intake)->contact->primaryAddress)->street . ' ' . optional(optional($model->intake)->contact->primaryAddress)->number . optional($model->intake->contact->primaryAddress)->addition;
+                break;
+            case 'contact_plaats':
+                return optional(optional($model->intake)->contact->primaryAddress)->city;
+                break;
+            case 'contact_postcode':
+                return optional(optional($model->intake)->contact->primaryAddress)->postal_code;
+                break;
+            case 'contact_email':
+                return optional(optional($model->intake)->contact->primaryEmailAddress)->email;
+                break;
+            case 'maatregel_categorie':
+                return optional($model->measureCategory)->name;
+                break;
+            case 'maatregel_specifiek':
+                return implode(', ', $model->measures->pluck('name' )->toArray() ) ;
+                break;
+            case 'toelichting':
+            case 'maatregel_toelichting':
+                return $model->quotation_text;
+                break;
+            case 'uitvoering_gepland':
+                return $model->desired_date ? Carbon::parse($model->desired_date)->format('d/m/Y') : null;
+                break;
+            case 'status':
+                return $model->status ? $model->status->name : '';
+                break;
+            case 'datum_evaluatie':
+                return $model->evaluation_agreed_date ? Carbon::parse($model->evaluation_agreed_date)->format('d/m/Y') : null;
+                break;
+//            case 'akkoord':
+//                break;
+            case 'evaluatie_uitgevoerd':
+                return optional($model->opportunityEvaluation)->is_realised ? 'Ja' : 'Nee';
+                break;
+            case 'evaluatie_tevreden':
+                return optional($model->opportunityEvaluation)->is_statisfied ? 'Ja' : 'Nee';
+                break;
+            case 'evaluatie_aanbevelen':
+                return optional($model->opportunityEvaluation)->would_recommend_organisation ? 'Ja' : 'Nee';
+                break;
+            case 'evaluatie_opmerking':
+                return optional($model->opportunityEvaluation)->note;
+                break;
+//            case 'offerteverzoek_bedrijf':
+//                break;
+//            case 'offerteverzoek_contactpersoon':
+//                break;
+//            case 'offerteverzoek_status':
+//                break;
+//            case 'offerteverzoek_uitgebracht':
+//                break;
+//            case 'offerteverzoek_geldig_tot':
+//                break;
+//            case 'offerteverzoek_gemaakt_op':
+//                break;
+
             default:
                 return '';
                 break;
@@ -361,6 +422,27 @@ class TemplateVariableHelper
 
     public static function getIntakeVar($model, $varname){
         switch ($varname) {
+            case 'contact_naam':
+                return $model->contact->full_name;
+                break;
+            case 'contact_adres':
+                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . optional($model->contact->primaryAddress)->addition;
+                break;
+            case 'contact_plaats':
+                return optional($model->contact->primaryAddress)->city;
+                break;
+            case 'contact_postcode':
+                return optional($model->contact->primaryAddress)->postal_code;
+                break;
+            case 'contact_email':
+                return optional($model->contact->primaryEmailAddress)->email;
+                break;
+            case 'interesses':
+                return implode(', ', $model->measuresRequested->pluck('name' )->toArray() ) ;
+                break;
+            case 'gemaakt_op':
+                return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
+                break;
             default:
                 return '';
                 break;
@@ -1012,6 +1094,29 @@ class TemplateVariableHelper
         }
     }
 
+    public static function getCampaignVar($model, $varname){
+        switch ($varname) {
+            case 'naam':
+                return $model->name;
+                break;
+            case 'begindatum':
+                return $model->start_date ? Carbon::parse($model->start_date)->format('d/m/Y') : null;
+                break;
+            case 'einddatum':
+                return $model->end_date ? Carbon::parse($model->end_date)->format('d/m/Y') : null;
+                break;
+            case 'omschrijving':
+                return $model->description;
+                break;
+            case 'aangeboden_maatregelen':
+                return $model->name;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
     public static function getQuotationRequestVar($model, $varname){
         switch ($varname) {
             case 'organisatie_naam':
@@ -1050,27 +1155,47 @@ class TemplateVariableHelper
                 }
                 break;
             case 'contact_naam':
+            case 'verzoek_voor_naam':
                 return optional(optional($model->opportunity)->intake)->contact->full_name;
                 break;
             case 'contact_adres':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . optional($model->organisation->contact->primaryAddress)->addition;
-                break;
-            case 'contact_woonplaats':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city;
+            case 'verzoek_voor_adres':
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition;
                 break;
             case 'contact_postcode':
+            case 'verzoek_voor_postcode':
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->postal_code;
                 break;
+            case 'contact_plaats':
+            case 'contact_woonplaats':
+            case 'verzoek_voor_plaats':
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city;
+                break;
             case 'contact_email':
+            case 'verzoek_voor_email':
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryEmailAddress)->email;
                 break;
             case 'contact_telefoonnummer':
+            case 'verzoek_voor_telefoon':
                 return optional(optional(optional($model->opportunity)->intake)->contact->primaryPhoneNumber)->number;
                 break;
+            case 'datum_opname':
+                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d/m/Y') : null;
+                break;
+            case 'uitgebracht':
+                return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;
+                break;
+            case 'geldig_tot':
+                return $model->date_valid ? Carbon::parse($model->date_valid)->format('d/m/Y') : null;
+                break;
             case 'maatregel':
+            case 'maatregel_categorie':
                 return optional(optional($model->opportunity)->measureCategory)->name;
                 break;
+            case 'offertetekst':
             case 'tekst':
+            case 'toelichting':
+            case 'maatregel_toelichting':
                 return $model->quotation_text;
                 break;
             case 'gemaakt_op':
@@ -1084,7 +1209,6 @@ class TemplateVariableHelper
                 break;
         }
     }
-
 
     public static function getOrderVar($model, $varname){
         switch ($varname) {

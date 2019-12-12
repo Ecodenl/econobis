@@ -36,4 +36,15 @@ class OpportunityObserver
         $userId = Auth::id();
         $opportunity->updated_by_id = $userId;
     }
+
+    public function saving(Opportunity $opportunity)
+    {
+        if ($opportunity->isDirty('status_id'))
+        {
+            $days = $opportunity->status->uses_wf ? $opportunity->status->number_of_days_to_send_email : 0;
+            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+            $opportunity->date_planned_to_send_wf_email_status = $mailDate;
+        }
+    }
+
 }

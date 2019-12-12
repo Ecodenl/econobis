@@ -38,12 +38,20 @@ use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasurePolicy;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityPolicy;
+use App\Eco\Opportunity\OpportunityStatus;
+use App\Eco\Opportunity\OpportunityStatusPolicy;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderPolicy;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationPolicy;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressPolicy;
+use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactPolicy;
+use App\Eco\ContactNote\ContactNote;
+use App\Eco\ContactNote\ContactNotePolicy;
+use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\EmailAddress\EmailAddressPolicy;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationPolicy;
 use App\Eco\ParticipantProject\ObligationNumber;
@@ -54,7 +62,10 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
+use App\Eco\Portal\PortalUser;
 use App\Eco\Portal\PortalUserPolicy;
+use App\Eco\Intake\Intake;
+use App\Eco\Intake\IntakePolicy;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductPolicy;
 use App\Eco\Project\Project;
@@ -65,18 +76,24 @@ use App\Eco\Project\ProjectValueCourse;
 use App\Eco\Project\ProjectValueCoursePolicy;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestPolicy;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
+use App\Eco\QuotationRequest\QuotationRequestStatusPolicy;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPolicy;
+use App\Eco\Task\TaskType;
+use App\Eco\Task\TaskTypePolicy;
 use App\Eco\Team\Team;
 use App\Eco\Team\TeamPolicy;
 use App\Eco\User\User;
 use App\Eco\User\UserPolicy;
+use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\ContactGroup\ContactGroupPolicy;
 use App\Eco\VatCode\VatCode;
 use App\Eco\VatCode\VatCodePolicy;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformPolicy;
-use App\Eco\Portal\PortalUser;
 use Illuminate\Auth\RequestGuard;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\Passport;
@@ -126,6 +143,9 @@ class AuthServiceProvider extends ServiceProvider
         VatCode::class => VatCodePolicy::class,
         Ledger::class => LedgerPolicy::class,
         CostCenter::class => CostCenterPolicy::class,
+        TaskType::class => TaskTypePolicy::class,
+        QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
+        OpportunityStatus::class => OpportunityStatusPolicy::class,
     ];
 
     /**

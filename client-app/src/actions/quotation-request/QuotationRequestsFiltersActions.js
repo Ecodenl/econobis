@@ -18,9 +18,14 @@ export const setQuotationRequestMeasureFilter = measure => ({
     measure,
 });
 
-export const setQuotationRequestCreatedAtFilter = createdAt => ({
-    type: 'SET_FILTER_QUOTATION_REQUEST_CREATED_AT',
-    createdAt,
+export const setQuotationRequestCreatedAtStartFilter = createdAtStart => ({
+    type: 'SET_FILTER_QUOTATION_REQUEST_CREATED_AT_START',
+    createdAtStart,
+});
+
+export const setQuotationRequestCreatedAtEndFilter = createdAtEnd => ({
+    type: 'SET_FILTER_QUOTATION_REQUEST_CREATED_AT_END',
+    createdAtEnd,
 });
 
 export const setQuotationRequestDateRecordedFilter = dateRecorded => ({

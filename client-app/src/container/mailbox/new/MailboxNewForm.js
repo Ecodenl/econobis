@@ -37,6 +37,7 @@ class MailboxNewForm extends Component {
                 mailgunDomainId: '',
                 primary: false,
                 isActive: true,
+                linkContactFromEmailToAddress: false,
             },
             errors: {
                 name: false,
@@ -174,6 +175,7 @@ class MailboxNewForm extends Component {
             mailgunDomainId,
             primary,
             isActive,
+            linkContactFromEmailToAddress,
         } = this.state.mailbox;
 
         return (
@@ -230,6 +232,22 @@ class MailboxNewForm extends Component {
                                 value={primary}
                                 onChangeAction={this.handleInputChange}
                                 disabled={!isActive}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={
+                                    <span>
+                                        Koppel contact op email <u>aan</u> adres
+                                        <br />
+                                        <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                            Koppeling contact standaard op email <u>afzender</u> adres
+                                        </small>
+                                    </span>
+                                }
+                                name={'linkContactFromEmailToAddress'}
+                                value={linkContactFromEmailToAddress}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                     </PanelBody>

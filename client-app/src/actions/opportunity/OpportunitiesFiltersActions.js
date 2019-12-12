@@ -3,9 +3,14 @@ export const setFilterOpportunityNumber = number => ({
     number,
 });
 
-export const setFilterOpportunityCreatedAt = createdAt => ({
-    type: 'SET_FILTER_OPPORTUNITY_CREATED_AT',
-    createdAt,
+export const setFilterOpportunityCreatedAtStart = createdAtStart => ({
+    type: 'SET_FILTER_OPPORTUNITY_CREATED_AT_START',
+    createdAtStart,
+});
+
+export const setFilterOpportunityCreatedAtEnd = createdAtEnd => ({
+    type: 'SET_FILTER_OPPORTUNITY_CREATED_AT_END',
+    createdAtEnd,
 });
 
 export const setFilterOpportunityName = name => ({

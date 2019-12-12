@@ -351,6 +351,34 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </Link>
                     </NavText>
                 </Nav>
+                {permissions.manageFinancial && (
+                    <Nav id="taak-types">
+                        <NavText>
+                            <Link className="sidebar-link" to="taak-types">
+                                Taak types
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
+                {permissions.manageFinancial && (
+                    <Nav id="offerte-verzoek-statussen">
+                        <NavText>
+                            <Link className="sidebar-link" to="offerte-verzoek-statussen">
+                                Offerte verzoek statussen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
+                {permissions.manageFinancial && (
+                    <Nav id="kans-statussen">
+                        <NavText>
+                            <Link className="sidebar-link" to="kans-statussen">
+                                Kans statussen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
+
                 {permissions.viewMailbox && (
                     <Nav id="mailboxes">
                         <NavText>

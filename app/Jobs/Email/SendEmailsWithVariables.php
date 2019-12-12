@@ -142,9 +142,23 @@ class SendEmailsWithVariables implements ShouldQueue
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'contacten_portal' );
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables,'cooperatie' );
+                //todo dit moet nog getest worden, maar zie nog niet wanneer je een email hebt met deze relaties voordat er gemaild wordt ?!
+                //todo ik zie alleen mogelijkheid tot maken van deze relaties nadat er gemaild is
                 if ($email->quotationRequest) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
                 }
+                if($email->opportunity) {
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'kans', $email->opportunity);
+                    if($email->opportunity->intake) {
+                        $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake',
+                            $email->opportunity->intake);
+                        if($email->opportunity->intake->campaign) {
+                            $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'campagne',
+                                $email->opportunity->intake->campaign);
+                        }
+                    }
+                }
+
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
                 try {
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));

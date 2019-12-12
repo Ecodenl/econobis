@@ -10,6 +10,10 @@ import IntakesListToolbar from './IntakesListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import fileDownload from 'js-file-download';
+import IntakesAPI from '../../../api/intake/IntakesAPI';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
+import moment from 'moment/moment';
 
 class IntakesListApp extends Component {
     constructor(props) {
@@ -21,6 +25,7 @@ class IntakesListApp extends Component {
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.getExcel = this.getExcel.bind(this);
     }
 
     componentDidMount() {
@@ -30,6 +35,23 @@ class IntakesListApp extends Component {
     componentWillUnmount() {
         this.props.clearIntakes();
     }
+
+    getExcel = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.intakesFilters);
+            const sorts = this.props.intakesSorts;
+
+            IntakesAPI.getExcel({ filters, sorts })
+                .then(payload => {
+                    fileDownload(payload.data, 'Intakes-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
 
     fetchIntakesData = () => {
         setTimeout(() => {
@@ -91,6 +113,7 @@ class IntakesListApp extends Component {
                         <IntakesListToolbar
                             toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
                             resetIntakeFilters={() => this.resetIntakeFilters()}
+                            getExcel={this.getExcel}
                         />
                     </div>
 
@@ -123,7 +146,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchIntakes, clearIntakes, setIntakesPagination, clearFilterIntakes, setCheckedIntakeAll },
+        {
+            fetchIntakes,
+            clearIntakes,
+            setIntakesPagination,
+            clearFilterIntakes,
+            setCheckedIntakeAll,
+            blockUI,
+            unblockUI,
+        },
         dispatch
     );
 };

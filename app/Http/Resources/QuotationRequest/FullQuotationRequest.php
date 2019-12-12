@@ -38,6 +38,7 @@ class FullQuotationRequest extends Resource
                 'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
                 'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
                 'status' => GenericResource::make($this->whenLoaded('status')),
+                'datePlannedToSendWfEmailStatus' => $this->date_planned_to_send_wf_email_status,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'createdAt' => $this->created_at,

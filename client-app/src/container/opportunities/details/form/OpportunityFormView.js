@@ -7,6 +7,7 @@ import ViewText from '../../../../components/form/ViewText';
 const OpportunityFormView = props => {
     const {
         status,
+        datePlannedToSendWfEmailStatus,
         quotationText,
         evaluationAgreedDate,
         desiredDate,
@@ -34,7 +35,17 @@ const OpportunityFormView = props => {
                     label={'Maatregel - specifiek'}
                     value={measures && measures.map(measure => measure.name).join(', ')}
                 />
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Status'} value={status && status.name} />
+                {status && status.usesWf ? (
+                    <ViewText
+                        label={'Datum workflow email'}
+                        value={datePlannedToSendWfEmailStatus ? moment(datePlannedToSendWfEmailStatus).format('L') : ''}
+                    />
+                ) : (
+                    ''
+                )}
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

@@ -25,6 +25,7 @@ class Mailbox extends Model
         'is_active' => 'boolean',
         'primary' => 'boolean',
         'valid' => 'boolean',
+        'link_contact_from_email_to_address' => 'boolean',
     ];
 
     public function users()

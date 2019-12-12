@@ -11,12 +11,14 @@ namespace App\Http\RequestQueries\Opportunity\Grid;
 
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\RequestQuery\RequestFilter;
+use Carbon\Carbon;
 
 class Filter extends RequestFilter
 {
     protected $fields = [
         'number',
-        'createdAt',
+        'createdAtStart',
+        'createdAtEnd',
         'name',
         'measureCategory',
         'campaign',
@@ -26,7 +28,6 @@ class Filter extends RequestFilter
 
     protected $mapping = [
         'number' => 'opportunities.number',
-        'createdAt' => 'opportunities.created_at',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
         'campaign' => 'campaigns.name',
@@ -44,6 +45,16 @@ class Filter extends RequestFilter
         'statusId' => 'eq',
     ];
 
+    protected function applyCreatedAtStartFilter($query, $type, $data)
+    {
+        $query->where('created_at', '>=', Carbon::parse($data)->startOfDay());
+        return false;
+    }
+    protected function applyCreatedAtEndFilter($query, $type, $data)
+    {
+        $query->where('created_at', '<=', Carbon::parse($data)->endOfDay());
+        return false;
+    }
     protected function applyAmountOfQuotationRequestsFilter($query, $type, $data)
     {
         $query->has('quotationRequests', '=', $data);

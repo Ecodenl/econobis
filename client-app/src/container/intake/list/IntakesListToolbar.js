@@ -38,6 +38,7 @@ class IntakesListToolbar extends Component {
                             </ul>
                         </div>
                         <ButtonIcon iconName={'glyphicon-ok'} onClickAction={this.props.toggleShowCheckboxList} />
+                        <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.props.getExcel} />
                     </div>
                 </div>
                 <div className="col-md-4">

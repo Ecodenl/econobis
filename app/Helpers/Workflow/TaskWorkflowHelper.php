@@ -20,8 +20,7 @@ class TaskWorkflowHelper
         $this->contact = $task->contact;
         $this->responsibleUser = $task->responsibleUser;
         $this->responsibleTeam = $task->responsibleTeam;
-//todo toevoegen custom-portal branch
-//        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::get('cooperativeName');
 
     }
 
@@ -90,13 +89,11 @@ class TaskWorkflowHelper
 
     public function mailWorkflow($emailTemplate, $mail)
     {
-//todo toevoegen custom-portal branch
-//            $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
-        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
+//        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
+        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
         $htmlBody = $emailTemplate->html_body;
 
-//todo toevoegen custom-portal branch
-//        $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
+        $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
         if($this->responsibleUser){
             $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'ik', $this->responsibleUser);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'ik', $this->responsibleUser);

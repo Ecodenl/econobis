@@ -8,4 +8,14 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+    fetchCooperativeName: () => {
+        const requestUrl = `${URL_PORTAL_SETTINGS}/cooperative-name`;
+
+        return axiosInstance.get(requestUrl);
+    },
+    fetchShowNewAtCooperativeLink: () => {
+        const requestUrl = `${URL_PORTAL_SETTINGS}/show-new-at-cooperative-link`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

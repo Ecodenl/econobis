@@ -9,7 +9,6 @@ const PortalSettingsFormGeneralView = ({
     cooperativeName,
     portalWebsite,
     portalUrl,
-    backgroundColor,
     responsibleUser,
     checkContactTaskResponsibleUser,
     checkContactTaskResponsibleTeam,
@@ -17,6 +16,7 @@ const PortalSettingsFormGeneralView = ({
     contactResponsibleOwnerUser,
     emailTemplateNewAccount,
     linkPrivacyPolicy,
+    showNewAtCooperativeLink,
     switchToEdit,
 }) => {
     return (
@@ -26,9 +26,6 @@ const PortalSettingsFormGeneralView = ({
                     <div className="row">
                         <ViewText label={'Contacten portal URL'} value={portalUrl} />
                     </div>
-                    {/*<div className="row">*/}
-                    {/*<ViewText label={'Achtergrondkleur'} value={backgroundColor} />*/}
-                    {/*</div>*/}
                     <div className="row">
                         <ViewText
                             label={'Verantwoordelijke portal'}
@@ -51,6 +48,12 @@ const PortalSettingsFormGeneralView = ({
                                     ? checkContactTaskResponsibleTeam.name
                                     : ''
                             }
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Nieuw bij, aanmelden mogelijk'}
+                            value={showNewAtCooperativeLink ? 'Ja' : 'Nee'}
                         />
                     </div>
                     <div className="row">

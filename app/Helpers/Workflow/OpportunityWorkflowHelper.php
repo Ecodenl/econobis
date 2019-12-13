@@ -17,8 +17,7 @@ class OpportunityWorkflowHelper
         $this->opportunity = $opportunity;
         $this->opportunity_status = $opportunity->status;
         $this->contact = $opportunity->intake->contact;
-//todo toevoegen custom-portal branch
-//        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::get('cooperativeName');
 
     }
 
@@ -52,13 +51,11 @@ class OpportunityWorkflowHelper
 
     public function mailWorkflow($emailTemplate, $mail)
     {
-//todo toevoegen custom-portal branch
-//            $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
-        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
+//        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
+        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
         $htmlBody = $emailTemplate->html_body;
 
-//todo toevoegen custom-portal branch
-//        $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
+        $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
         if($this->contact) {
             $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);

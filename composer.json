@@ -19,7 +19,7 @@
         "laravel/passport": "^3.0",
         "laravel/tinker": "~1.0",
         "particle/validator": "^2.3",
-        "php-imap/php-imap": "^3.0",
+        "php-imap/php-imap": "3.0.6",
         "php-twinfield/twinfield": "^2.0",
         "phpoffice/phpspreadsheet": "^1.7",
         "spatie/laravel-permission": "^2.7",

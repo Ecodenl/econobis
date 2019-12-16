@@ -4,6 +4,9 @@ use App\Http\Controllers\Api\Setting\SettingController;
 use JosKolenberg\LaravelJory\Facades\Jory;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
+Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
+Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
+
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::post('register', 'Auth\RegisterController@register');

@@ -50,7 +50,7 @@ function RegistrationList(props) {
             <Row>
                 <Col>
                     <h1 className="content-heading">
-                        Projecten waarop <strong>{contact.fullName}</strong> zich heeft ingeschreven.
+                        De projecten waarin <strong>{contact.fullName}</strong> deelneemt.
                     </h1>
                 </Col>
             </Row>
@@ -102,7 +102,7 @@ function RegistrationList(props) {
                                                             {participation.amountGranted != 0 ? (
                                                                 <span>
                                                                     Lening {MoneyPresenter(participation.amountGranted)}{' '}
-                                                                    <em>(Toegewezen)</em>
+                                                                    <em>(Toegekend)</em>
                                                                 </span>
                                                             ) : (
                                                                 ''
@@ -142,7 +142,7 @@ function RegistrationList(props) {
                                                             {participation.participationsGranted != 0 ? (
                                                                 <span>
                                                                     {participation.participationsGranted}
-                                                                    {' obligaties '} <em>(Toegewezen)</em>
+                                                                    {' obligaties '} <em>(Toegekend)</em>
                                                                 </span>
                                                             ) : (
                                                                 ''
@@ -182,7 +182,7 @@ function RegistrationList(props) {
                                                             {participation.participationsGranted != 0 ? (
                                                                 <span>
                                                                     {participation.participationsGranted}
-                                                                    {' participaties '} <em>(Toegewezen)</em>
+                                                                    {' participaties '} <em>(Toegekend)</em>
                                                                 </span>
                                                             ) : (
                                                                 ''
@@ -222,7 +222,7 @@ function RegistrationList(props) {
                                                             {participation.participationsGranted != 0 ? (
                                                                 <span>
                                                                     {participation.participationsGranted}
-                                                                    {' participaties '} <em>(Toegewezen)</em>
+                                                                    {' participaties '} <em>(Toegekend)</em>
                                                                 </span>
                                                             ) : (
                                                                 ''

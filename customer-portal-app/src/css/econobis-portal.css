@@ -145,7 +145,11 @@
     /*font-size: 12px;*/
     /*text-shadow: none;*/
 }
-
+label.required:after {
+    content: " *";
+    color: red;
+    font-size: 18px;
+}
 /* ----------------- BUTTON STYLING -----------------*/
 .w-button {
     background-color: var(--button-primary-color);
@@ -487,6 +491,10 @@ header .header-logo {
 }
 .logo-container {
     max-width: 200px;
+}
+.logo-container-small {
+    max-width: 150px;
+    margin-bottom: 10px;
 }
 
 /* ----------------- DROPDOWN USER STYLING -----------------*/

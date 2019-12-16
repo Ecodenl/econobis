@@ -210,6 +210,15 @@ function Header({ location, history }) {
                     <React.Fragment>
                         <h6 className="heading in-menu">MENU</h6>
                         <Link
+                            to={'/inschrijvingen-projecten'}
+                            className={`nav-link w-nav-link w--nav-link-open ${
+                                location.pathname === '/' ? 'w--current' : ''
+                            }`}
+                            onClick={closeMenu}
+                        >
+                            Huidige deelnames
+                        </Link>
+                        <Link
                             to={'/gegevens'}
                             className={`nav-link w-nav-link w--nav-link-open ${
                                 location.pathname === '/gegevens' ? 'w--current' : ''
@@ -236,16 +245,6 @@ function Header({ location, history }) {
                             onClick={closeMenu}
                         >
                             Inschrijven projecten
-                        </Link>
-
-                        <Link
-                            to={'/inschrijvingen-projecten'}
-                            className={`nav-link w-nav-link w--nav-link-open ${
-                                location.pathname === '/' ? 'w--current' : ''
-                            }`}
-                            onClick={closeMenu}
-                        >
-                            Inschrijvingen
                         </Link>
                     </React.Fragment>
                 </div>

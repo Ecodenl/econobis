@@ -5,6 +5,7 @@ import PhoneNumberAPI from '../../api/contact/PhoneNumberAPI';
 import EmailAddressAPI from '../../api/contact/EmailAddressAPI';
 import ContactNoteAPI from '../../api/contact/ContactNoteAPI';
 import ContactEnergySupplierAPI from '../../api/contact/ContactEnergySupplierAPI';
+import PortalUserAPI from '../../api/contact/PortalUserAPI';
 
 export function* fetchContactDetailsSaga({ payload }) {
     try {
@@ -43,6 +44,15 @@ export function* deleteEmailAddressSaga({ id }) {
         yield put({ type: 'DELETE_EMAIL_ADDRESS_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_EMAIL_ADDRESS_ERROR', error });
+    }
+}
+
+export function* deletePortalUserSaga({ id }) {
+    try {
+        yield call(PortalUserAPI.deletePortalUser, id);
+        yield put({ type: 'DELETE_PORTAL_USER_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_PORTAL_USER_ERROR', error });
     }
 }
 

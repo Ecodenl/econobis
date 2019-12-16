@@ -13,7 +13,9 @@ use App\Eco\Email\Email;
 use App\Eco\Intake\Intake;
 use App\Eco\Contact\Contact;
 use App\Eco\Measure\MeasureCategory;
+use App\Helpers\CSV\IntakeCSVHelper;
 use App\Helpers\Delete\Models\DeleteIntake;
+use App\Helpers\Excel\IntakeExcelHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -86,6 +88,16 @@ class IntakeController extends ApiController
         $intake->relatedEmailsSent = $this->getRelatedEmails($intake->id, 'sent');
 
         return FullIntake::make($intake);
+    }
+
+    public function excel(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $intakes = $requestQuery->getQueryNoPagination()->get();
+
+        $intakeExcelHelper = new IntakeExcelHelper($intakes);
+
+        return $intakeExcelHelper->downloadExcel();
     }
 
     public function store(Request $request)

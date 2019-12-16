@@ -10,6 +10,7 @@ import Form from 'react-bootstrap/Form';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
+import { getIn } from 'formik';
 
 function StepOnePcr({ next, project, initialContact, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -38,6 +39,17 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
     });
+    // const requiredFields = {
+    //     participationsOptioned: true,
+    //     pcrYearlyPowerKwhConsumption: true,
+    //     pcrPostalCode: true,
+    // };
+    //
+    // // console.log(requiredFields);
+    // const test1 = requiredFields.pcrYearlyPowerKwhConsumption ? requiredFields.pcrYearlyPowerKwhConsumption : false;
+    // console.log('test 1: ' + test1);
+    // const test2 = requiredFields.pcrHasSolarPanels ? requiredFields.pcrHasSolarPanels : false;
+    // console.log('test 2: ' + test2);
 
     const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
     const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
@@ -59,12 +71,15 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
             values.pcrYearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values) > 0
                 ? values.pcrYearlyPowerKwhConsumption - calculateGeneratedNumberOfKwh(values)
                 : 0;
-        return Math.ceil(extraPowerKwhConsumption * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE);
+        return extraPowerKwhConsumption;
     }
     function calculateAdviseMaxNumberOfParticipations(values) {
         let pcrAdviseMaxNumberOfParticipations =
             calculatePowerKwhConsumption(values) > 0
-                ? Math.ceil(calculatePowerKwhConsumption(values) / PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL)
+                ? Math.ceil(
+                      (calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE) /
+                          PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL
+                  )
                 : 0;
 
         if (pcrAdviseMaxNumberOfParticipations < project.minParticipations) {
@@ -88,9 +103,8 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
                 let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);
-                let powerKwhConsumption = calculatePowerKwhConsumption(values);
+                let powerKwhConsumption = calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE;
                 let pcrAdviseMaxNumberOfParticipations = calculateAdviseMaxNumberOfParticipations(values);
-
                 return (
                     <>
                         <Form>
@@ -112,7 +126,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Form.Label className={'field-label'}>Je postcode</Form.Label>
+                                    <Form.Label className={'field-label required'}>Je postcode</Form.Label>
                                     <Field
                                         name="pcrPostalCode"
                                         render={({ field }) => (
@@ -130,7 +144,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                                     <TextBlock>{project.postalcodeLink}</TextBlock>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Form.Label className={'field-label'}>
+                                    <Form.Label className={'field-label required'}>
                                         Je (geschatte) jaarlijks verbruik (in kWh)
                                     </Form.Label>
                                     <Field
@@ -321,7 +335,9 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
+                                    <Form.Label className={'field-label required'}>
+                                        Gewenst aantal participaties
+                                    </Form.Label>
                                     <Field
                                         name="participationsOptioned"
                                         render={({ field }) => (

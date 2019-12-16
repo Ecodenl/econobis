@@ -2,22 +2,33 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
+import 'react-day-picker/lib/style.css';
 
 import {
-    setIntakeDateFilter,
+    setIntakeStartDateFilter,
+    setIntakeEndDateFilter,
     setFilterFullName,
     setFilterIntakeAddress,
     setFilterMeasureRequested,
     setFilterIntakeStatus,
 } from '../../../actions/intake/IntakesFiltersActions';
-import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
+import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
 
 const IntakesListFilter = props => {
-    const onIntakeDateChange = selectedDay => {
+    const onIntakeStartDateChange = selectedDay => {
         if (selectedDay === undefined) {
-            props.setIntakeDateFilter('');
+            props.setIntakeStartDateFilter('');
         } else {
-            props.setIntakeDateFilter(moment(selectedDay).format('Y-MM-DD'));
+            props.setIntakeStartDateFilter(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+    const onIntakeEndDateChange = selectedDay => {
+        if (selectedDay === undefined) {
+            console.log('a');
+            props.setIntakeEndDateFilter('');
+        } else {
+            console.log('b');
+            props.setIntakeEndDateFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -56,9 +67,11 @@ const IntakesListFilter = props => {
                     <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
                 </td>
             )}
-            <DataTableFilterDate
-                value={props.filters.createdAt.data && props.filters.createdAt.data}
-                onChangeAction={onIntakeDateChange}
+            <DataTableFilterDateStartEnd
+                startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
+                endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
+                onChangeActionStart={onIntakeStartDateChange}
+                onChangeActionEnd={onIntakeEndDateChange}
             />
 
             <th>
@@ -121,7 +134,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
-            setIntakeDateFilter,
+            setIntakeStartDateFilter,
+            setIntakeEndDateFilter,
             setFilterFullName,
             setFilterIntakeAddress,
             setFilterMeasureRequested,

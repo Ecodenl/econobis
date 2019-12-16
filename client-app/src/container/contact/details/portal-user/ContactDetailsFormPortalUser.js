@@ -6,7 +6,6 @@ import ContactDetailsFormPortalUserView from './ContactDetailsFormPortalUserView
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
-import ContactDetailsFormOccupationsView from '../occupations/ContactDetailsFormOccupationsItem';
 import ContactDetailsFormPortalUserDelete from './ContactDetailsFormPortalUserDelete';
 
 class ContactDetailsFormPortalUser extends Component {
@@ -72,14 +71,9 @@ class ContactDetailsFormPortalUser extends Component {
                             toggleDelete={this.toggleDelete}
                         />
                     )}
-                    {/* todo deletePortalUser bestaat nog niet*/}
-                    {/*{this.state.showDelete && (*/}
-                    {/*<ContactDetailsFormPortalUserDelete*/}
-                    {/*closeDeleteItemModal={this.toggleDelete}*/}
-                    {/*deletePortalUser={this.deletePortalUser}*/}
-                    {/*portalUser={this.state.portalUser}*/}
-                    {/*/>*/}
-                    {/*)}*/}
+                    {this.state.showDelete && (
+                        <ContactDetailsFormPortalUserDelete closeDeleteItemModal={this.toggleDelete} />
+                    )}
                 </PanelBody>
             </Panel>
         );

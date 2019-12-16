@@ -22,6 +22,7 @@ const MailboxDetailsFormGeneralView = props => {
         mailgunDomain,
         isActive,
         primary,
+        linkContactFromEmailToAddress,
     } = props.mailboxDetails;
     const usesMailgun = outgoingServerType === 'mailgun' ? true : false;
 
@@ -40,6 +41,20 @@ const MailboxDetailsFormGeneralView = props => {
                     <div className="row">
                         <ViewText label="Actief" value={isActive ? 'Ja' : 'Nee'} />
                         <ViewText label={'Primair (verzend wachtwoord mails)'} value={primary ? 'Ja' : 'Nee'} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={
+                                <span>
+                                    Koppel contact op email <u>aan</u> adres
+                                    <br />
+                                    <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                        Koppeling contact standaard op email <u>afzender</u> adres
+                                    </small>
+                                </span>
+                            }
+                            value={linkContactFromEmailToAddress ? 'Ja' : 'Nee'}
+                        />
                     </div>
                 </PanelBody>
 

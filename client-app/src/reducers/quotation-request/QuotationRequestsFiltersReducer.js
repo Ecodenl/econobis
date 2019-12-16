@@ -15,8 +15,12 @@ const filtersReducerDefaultState = {
         field: 'measure',
         data: '',
     },
-    createdAt: {
-        field: 'createdAt',
+    createdAtStart: {
+        field: 'createdAtStart',
+        data: '',
+    },
+    createdAtEnd: {
+        field: 'createdAtEnd',
         data: '',
     },
     dateRecorded: {
@@ -71,12 +75,20 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.measure,
                 },
             };
-        case 'SET_FILTER_QUOTATION_REQUEST_CREATED_AT':
+        case 'SET_FILTER_QUOTATION_REQUEST_CREATED_AT_START':
             return {
                 ...state,
-                createdAt: {
-                    ...state.createdAt,
-                    data: action.createdAt,
+                createdAtStart: {
+                    ...state.createdAtStart,
+                    data: action.createdAtStart,
+                },
+            };
+        case 'SET_FILTER_QUOTATION_REQUEST_CREATED_AT_END':
+            return {
+                ...state,
+                createdAtEnd: {
+                    ...state.createdAtEnd,
+                    data: action.createdAtEnd,
                 },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_DATE_RECORDED':

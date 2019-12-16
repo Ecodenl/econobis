@@ -104,6 +104,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                 <DefaultContactPersonalEdit
                                     portalSettings={portalSettings}
                                     initialContact={initialContact}
+                                    projectTypeCodeRef={project.projectType.codeRef}
                                     setFieldValue={setFieldValue}
                                     values={values}
                                     touched={touched}
@@ -116,6 +117,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                 <DefaultContactOrganisationEdit
                                     portalSettings={portalSettings}
                                     initialContact={initialContact}
+                                    projectTypeCodeRef={project.projectType.codeRef}
                                     setFieldValue={setFieldValue}
                                     values={values}
                                     touched={touched}

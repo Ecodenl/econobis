@@ -10,6 +10,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
         organisation,
         dateRecorded,
         status,
+        datePlannedToSendWfEmailStatus,
         dateReleased,
         dateValid,
         quotationText,
@@ -24,6 +25,10 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     value={organisation && organisation.name}
                     link={organisation ? 'contact/' + organisation.contact.id : ''}
                 />
+                <ViewText label={'Verzoek voor'} value={opportunity.intake && opportunity.intake.contact.fullName} />
+            </div>
+
+            <div className="row">
                 <ViewText
                     label={'Organisatie contactpersoon'}
                     value={
@@ -38,24 +43,32 @@ const QuotationRequestDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Verzoek voor'} value={opportunity.intake && opportunity.intake.contact.fullName} />
                 <ViewText label={'Adres voor'} value={opportunity.intake && opportunity.intake.fullAddress} />
-            </div>
-
-            <div className="row">
                 <ViewText
                     label={'Maatregel categorie'}
                     value={opportunity.measureCategory && opportunity.measureCategory.name}
                 />
+            </div>
+
+            <div className="row">
                 <ViewText
                     label={'Maatregelen specifiek'}
                     value={opportunity.measures && opportunity.measures.map(measure => measure.name).join(', ')}
                 />
+                <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
             </div>
 
             <div className="row">
-                <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
                 <ViewText label={'Offerte status'} value={status && status.name} />
+                {status && status.usesWf ? (
+                    <ViewText
+                        label={'Datum workflow email'}
+                        value={datePlannedToSendWfEmailStatus ? moment(datePlannedToSendWfEmailStatus).format('L') : ''}
+                    />
+                ) : (
+                    ''
+                )}
+                ;
             </div>
 
             <div className="row">

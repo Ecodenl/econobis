@@ -13,6 +13,7 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputText from '../../../components/form/InputText';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputReactSelect from '../../../components/form/InputReactSelect';
+import InputToggle from '../../../components/form/InputToggle';
 
 class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 contactResponsibleOwnerUserId: false,
                 emailTemplateNewAccountId: false,
                 linkPrivacyPolicy: false,
+                showNewAtCooperativeLink: false,
             },
         };
 
@@ -127,12 +129,12 @@ class PortalSettingsFormGeneralEdit extends Component {
             cooperativeName,
             portalWebsite,
             portalUrl,
-            backgroundColor,
             responsibleUserId,
             checkContactTaskResponsible,
             contactResponsibleOwnerUserId,
             emailTemplateNewAccountId,
             linkPrivacyPolicy,
+            showNewAtCooperativeLink,
         } = this.state.portalSettings;
 
         return (
@@ -204,6 +206,16 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.checkContactTaskResponsible}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label="Nieuw bij, aanmelden mogelijk"
+                                divSize={'col-sm-8'}
+                                name={'showNewAtCooperativeLink'}
+                                value={showNewAtCooperativeLink}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
 

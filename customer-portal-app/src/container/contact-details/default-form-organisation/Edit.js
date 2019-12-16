@@ -14,6 +14,7 @@ import InputDate from '../../../components/form/InputDate';
 const DefaultContactOrganisationEdit = function({
     portalSettings,
     initialContact,
+    projectTypeCodeRef,
     errors,
     touched,
     values,
@@ -27,7 +28,7 @@ const DefaultContactOrganisationEdit = function({
                     <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
                 </Row>
 
-                <FormLabel className={'field-label'}>Naam</FormLabel>
+                <FormLabel className={'field-label required'}>Naam</FormLabel>
                 <Row>
                     <Col xs={12} sm={8}>
                         <Field
@@ -81,7 +82,10 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="iban" className="field-label">
+                <FormLabel
+                    htmlFor="iban"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     IBAN gegevens
                 </FormLabel>
                 <Row>
@@ -135,7 +139,7 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="did_agree_avg" className={'field-label'}>
+                <FormLabel htmlFor="did_agree_avg" className={'field-label required'}>
                     Akkoord privacybeleid
                 </FormLabel>
                 <Row>
@@ -156,26 +160,29 @@ const DefaultContactOrganisationEdit = function({
                                         Ik ga akkoord met{' '}
                                         <a href={portalSettings['linkPrivacyPolicy']} target="_blank">
                                             privacybeleid
-                                        </a>
-                                    </span>{' '}
-                                    {values.didAgreeAvg ? (
-                                        <em>
-                                            (
-                                            {initialContact.dateDidAgreeAvg
-                                                ? moment(initialContact.dateDidAgreeAvg.date).format('L')
-                                                : moment().format('L')}
-                                            )
-                                        </em>
-                                    ) : (
-                                        ''
-                                    )}
+                                        </a>{' '}
+                                        {values.didAgreeAvg ? (
+                                            <em>
+                                                (
+                                                {initialContact.dateDidAgreeAvg
+                                                    ? moment(initialContact.dateDidAgreeAvg).format('L')
+                                                    : moment().format('L')}
+                                                )
+                                            </em>
+                                        ) : (
+                                            ''
+                                        )}
+                                    </span>
+                                    {touched[field.name] && errors[field.name] ? (
+                                        <div className={'error-message text-danger'}>{errors[field.name]}</div>
+                                    ) : null}
                                 </label>
                             )}
                         />
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="email-correspondence" className={'field-label'}>
+                <FormLabel htmlFor="email-correspondence" className={'field-label required'}>
                     E-mailadres correspondentie
                 </FormLabel>
                 <Row>
@@ -215,7 +222,10 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="telephone-number-1" className={'field-label'}>
+                <FormLabel
+                    htmlFor="telephone-number-1"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     Telefoonnummer 1
                 </FormLabel>
                 <Row>
@@ -257,7 +267,7 @@ const DefaultContactOrganisationEdit = function({
             </Col>
 
             <Col xs={12} md={6}>
-                <FormLabel htmlFor="street" className="field-label">
+                <FormLabel htmlFor="street" className="field-label required">
                     Postadres
                 </FormLabel>
                 <Row>
@@ -355,7 +365,12 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="street" className="field-label">
+                <FormLabel
+                    htmlFor="street"
+                    className={
+                        projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
+                    }
+                >
                     Bezoekadres
                 </FormLabel>
                 <Row>
@@ -552,7 +567,12 @@ const DefaultContactOrganisationEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="energy_supplier_id" className={'field-label'}>
+                <FormLabel
+                    htmlFor="energy_supplier_id"
+                    className={
+                        projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
+                    }
+                >
                     Energieleverancier
                 </FormLabel>
                 <Row>
@@ -580,7 +600,14 @@ const DefaultContactOrganisationEdit = function({
 
                 {values.primaryContactEnergySupplier && values.primaryContactEnergySupplier.energySupplierId ? (
                     <>
-                        <FormLabel htmlFor="es_number" className={'field-label'}>
+                        <FormLabel
+                            htmlFor="es_number"
+                            className={
+                                projectTypeCodeRef === 'postalcode_link_capital'
+                                    ? 'field-label required'
+                                    : 'field-label'
+                            }
+                        >
                             Klant nummer bij leverancier
                         </FormLabel>
                         <Row>
@@ -632,7 +659,14 @@ const DefaultContactOrganisationEdit = function({
                             </Col>
                         </Row>
 
-                        <FormLabel htmlFor="ean_electricity" className={'field-label'}>
+                        <FormLabel
+                            htmlFor="ean_electricity"
+                            className={
+                                projectTypeCodeRef === 'postalcode_link_capital'
+                                    ? 'field-label required'
+                                    : 'field-label'
+                            }
+                        >
                             EAN nummer electriciteit
                         </FormLabel>
                         <Row>
@@ -671,7 +705,7 @@ const DefaultContactOrganisationEdit = function({
                                             errors={errors}
                                             touched={touched}
                                             id="ean_gas"
-                                            placeholder={'EAN nummer electriciteit'}
+                                            placeholder={'EAN nummer gas'}
                                             // disabled={
                                             //     initialContact.primaryContactEnergySupplier &&
                                             //     initialContact.primaryContactEnergySupplier.energySupplierId &&

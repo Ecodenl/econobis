@@ -45,6 +45,7 @@ class FullMailbox extends Resource
             'outgoingServerType' => $this->outgoing_server_type,
             'isActive' => $this->is_active,
             'primary' => $this->primary,
+            'linkContactFromEmailToAddress' => $this->link_contact_from_email_to_address,
         ];
     }
 }

@@ -14,18 +14,33 @@ import { fetchOpportunity } from '../../../../actions/opportunity/OpportunityDet
 import InputTextArea from '../../../../components/form/InputTextarea';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
+import moment from 'moment';
+import ViewText from './OpportunityFormView';
+moment.locale('nl');
 
 class OpportunityFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, measures, desiredDate, evaluationAgreedDate, quotationText, status } = props.opportunity;
+        const {
+            id,
+            measures,
+            desiredDate,
+            evaluationAgreedDate,
+            quotationText,
+            status,
+            datePlannedToSendWfEmailStatus,
+        } = props.opportunity;
 
         this.state = {
             opportunity: {
                 id,
                 measureIds: measures && measures.map(measure => measure.id).join(','),
                 statusId: status ? status.id : '',
+                statusUsesWf: status ? status.usesWf : false,
+                datePlannedToSendWfEmailStatus: datePlannedToSendWfEmailStatus
+                    ? moment(datePlannedToSendWfEmailStatus).format('L')
+                    : '',
                 quotationText: quotationText,
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
                 desiredDate: desiredDate ? desiredDate : '',
@@ -106,7 +121,15 @@ class OpportunityFormEdit extends Component {
     };
 
     render() {
-        const { statusId, quotationText, desiredDate, evaluationAgreedDate, measureIds } = this.state.opportunity;
+        const {
+            statusId,
+            statusUsesWf,
+            datePlannedToSendWfEmailStatus,
+            quotationText,
+            desiredDate,
+            evaluationAgreedDate,
+            measureIds,
+        } = this.state.opportunity;
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
 
@@ -140,7 +163,9 @@ class OpportunityFormEdit extends Component {
                         options={measuresMatchToCategory}
                         onChangeAction={this.handleMeasureIds}
                     />
+                </div>
 
+                <div className="row">
                     <InputSelect
                         label={'Status'}
                         size={'col-sm-6'}
@@ -151,6 +176,17 @@ class OpportunityFormEdit extends Component {
                         required={'required'}
                         error={this.state.errors.statusId}
                     />
+                    {statusUsesWf ? (
+                        <InputText
+                            label={'Datum workflow email'}
+                            name={'datePlannedToSendWfEmailStatus'}
+                            value={datePlannedToSendWfEmailStatus}
+                            onChange={() => {}}
+                            readOnly={true}
+                        />
+                    ) : (
+                        ''
+                    )}
                 </div>
 
                 <div className="row">

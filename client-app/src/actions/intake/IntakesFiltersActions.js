@@ -1,6 +1,10 @@
-export const setIntakeDateFilter = createdAt => ({
-    type: 'SET_FILTER_INTAKE_DATE',
-    createdAt,
+export const setIntakeStartDateFilter = createdAtStart => ({
+    type: 'SET_FILTER_INTAKE_DATE_START',
+    createdAtStart,
+});
+export const setIntakeEndDateFilter = createdAtEnd => ({
+    type: 'SET_FILTER_INTAKE_DATE_END',
+    createdAtEnd,
 });
 
 export const setFilterFullName = fullName => ({

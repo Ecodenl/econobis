@@ -16,6 +16,7 @@ import InputDate from '../../../components/form/InputDate';
 const DefaultContactPersonalEdit = function({
     portalSettings,
     initialContact,
+    projectTypeCodeRef,
     errors,
     touched,
     values,
@@ -29,7 +30,7 @@ const DefaultContactPersonalEdit = function({
                     <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
                 </Row>
 
-                <FormLabel className={'field-label'}>Naam</FormLabel>
+                <FormLabel className={'field-label required'}>Naam</FormLabel>
                 <Row>
                     <Col xs={12} sm={6}>
                         <Field
@@ -108,7 +109,10 @@ const DefaultContactPersonalEdit = function({
                         />
                     </Col>
                 </Row>
-                <FormLabel htmlFor="date_of_birth" className={'field-label'}>
+                <FormLabel
+                    htmlFor="date_of_birth"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     Geboortedatum
                 </FormLabel>
                 <Row>
@@ -129,7 +133,7 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="email-correspondence" className={'field-label'}>
+                <FormLabel htmlFor="email-correspondence" className={'field-label required'}>
                     E-mailadres correspondentie
                 </FormLabel>
                 <Row>
@@ -169,7 +173,10 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="telephone-number-1" className={'field-label'}>
+                <FormLabel
+                    htmlFor="telephone-number-1"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     Telefoonnummer 1
                 </FormLabel>
                 <Row>
@@ -209,7 +216,7 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="street" className="field-label">
+                <FormLabel htmlFor="street" className="field-label required">
                     Adres
                 </FormLabel>
                 <Row>
@@ -310,7 +317,10 @@ const DefaultContactPersonalEdit = function({
             </Col>
 
             <Col xs={12} md={6}>
-                <FormLabel htmlFor="iban" className="field-label">
+                <FormLabel
+                    htmlFor="iban"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     IBAN gegevens
                 </FormLabel>
                 <Row>
@@ -346,7 +356,7 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="did_agree_avg" className={'field-label'}>
+                <FormLabel htmlFor="did_agree_avg" className={'field-label required'}>
                     Akkoord privacybeleid
                 </FormLabel>
                 <Row>
@@ -372,7 +382,7 @@ const DefaultContactPersonalEdit = function({
                                             <em>
                                                 (
                                                 {initialContact.dateDidAgreeAvg
-                                                    ? moment(initialContact.dateDidAgreeAvg.date).format('L')
+                                                    ? moment(initialContact.dateDidAgreeAvg).format('L')
                                                     : moment().format('L')}
                                                 )
                                             </em>
@@ -380,13 +390,21 @@ const DefaultContactPersonalEdit = function({
                                             ''
                                         )}
                                     </span>
+                                    {touched[field.name] && errors[field.name] ? (
+                                        <div className={'error-message text-danger'}>{errors[field.name]}</div>
+                                    ) : null}
                                 </label>
                             )}
                         />
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="energy_supplier_id" className={'field-label'}>
+                <FormLabel
+                    htmlFor="energy_supplier_id"
+                    className={
+                        projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
+                    }
+                >
                     Energieleverancier
                 </FormLabel>
                 <Row>
@@ -414,7 +432,14 @@ const DefaultContactPersonalEdit = function({
 
                 {values.primaryContactEnergySupplier && values.primaryContactEnergySupplier.energySupplierId ? (
                     <>
-                        <FormLabel htmlFor="es_number" className={'field-label'}>
+                        <FormLabel
+                            htmlFor="es_number"
+                            className={
+                                projectTypeCodeRef === 'postalcode_link_capital'
+                                    ? 'field-label required'
+                                    : 'field-label'
+                            }
+                        >
                             Klant nummer bij leverancier
                         </FormLabel>
                         <Row>
@@ -466,7 +491,14 @@ const DefaultContactPersonalEdit = function({
                             </Col>
                         </Row>
 
-                        <FormLabel htmlFor="ean_electricity" className={'field-label'}>
+                        <FormLabel
+                            htmlFor="ean_electricity"
+                            className={
+                                projectTypeCodeRef === 'postalcode_link_capital'
+                                    ? 'field-label required'
+                                    : 'field-label'
+                            }
+                        >
                             EAN nummer electriciteit
                         </FormLabel>
                         <Row>
@@ -505,7 +537,7 @@ const DefaultContactPersonalEdit = function({
                                             errors={errors}
                                             touched={touched}
                                             id="ean_gas"
-                                            placeholder={'EAN nummer electriciteit'}
+                                            placeholder={'EAN nummer gas'}
                                             // disabled={
                                             //     initialContact.primaryContactEnergySupplier &&
                                             //     initialContact.primaryContactEnergySupplier.energySupplierId &&

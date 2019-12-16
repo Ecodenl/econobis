@@ -38,6 +38,8 @@ use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasurePolicy;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityPolicy;
+use App\Eco\Opportunity\OpportunityStatus;
+use App\Eco\Opportunity\OpportunityStatusPolicy;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderPolicy;
 use App\Eco\Organisation\Organisation;
@@ -54,6 +56,7 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
+use App\Eco\Portal\PortalUser;
 use App\Eco\Portal\PortalUserPolicy;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductPolicy;
@@ -65,8 +68,12 @@ use App\Eco\Project\ProjectValueCourse;
 use App\Eco\Project\ProjectValueCoursePolicy;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestPolicy;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
+use App\Eco\QuotationRequest\QuotationRequestStatusPolicy;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPolicy;
+use App\Eco\Task\TaskType;
+use App\Eco\Task\TaskTypePolicy;
 use App\Eco\Team\Team;
 use App\Eco\Team\TeamPolicy;
 use App\Eco\User\User;
@@ -75,7 +82,6 @@ use App\Eco\VatCode\VatCode;
 use App\Eco\VatCode\VatCodePolicy;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformPolicy;
-use App\Eco\Portal\PortalUser;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
@@ -126,6 +132,9 @@ class AuthServiceProvider extends ServiceProvider
         VatCode::class => VatCodePolicy::class,
         Ledger::class => LedgerPolicy::class,
         CostCenter::class => CostCenterPolicy::class,
+        TaskType::class => TaskTypePolicy::class,
+        QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
+        OpportunityStatus::class => OpportunityStatusPolicy::class,
     ];
 
     /**

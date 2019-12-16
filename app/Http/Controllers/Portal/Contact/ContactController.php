@@ -202,28 +202,37 @@ class ContactController extends ApiController
             if (isset($emailInvoiceData['id'])) {
                 $emailInvoice = $contact->emailAddresses->find($emailInvoiceData['id']);
                 if ($emailInvoice) {
-                    $emailInvoice->fill($this->arrayKeysToSnakeCase($emailInvoiceData));
+
+                    if(empty($emailInvoiceData['email']) )
+                    {
+                        $emailInvoice->delete();
+                    }else{
+                        $emailInvoice->fill($this->arrayKeysToSnakeCase($emailInvoiceData));
+                        $emailInvoice->save();
+                    }
                 }
 
             } else {
-                $emailInvoiceData['typeId'] = EmailAddressType::INVOICE;
-                $emailInvoiceData['primary'] = false;
+                if ( isset($emailInvoiceData['email']) && !empty($emailInvoiceData['email']) ) {
+                    $emailInvoiceData['typeId'] = EmailAddressType::INVOICE;
+                    $emailInvoiceData['primary'] = false;
 
-                Validator::make($emailInvoiceData, [
-                    'typeId' => new EnumExists(EmailAddressType::class),
-                    'email' => '',
-                    'primary' => 'boolean',
-                ]);
+                    Validator::make($emailInvoiceData, [
+                        'typeId' => new EnumExists(EmailAddressType::class),
+                        'email' => '',
+                        'primary' => 'boolean',
+                    ]);
 
-                $emailInvoiceData = $this->sanitizeData($emailInvoiceData, [
-                    'typeId' => 'nullable',
-                    'primary' => 'boolean',
-                ]);
+                    $emailInvoiceData = $this->sanitizeData($emailInvoiceData, [
+                        'typeId' => 'nullable',
+                        'primary' => 'boolean',
+                    ]);
 
-                $emailInvoice = new EmailAddress($this->arrayKeysToSnakeCase($emailInvoiceData));
-                $emailInvoice->contact_id = $contact->id;
+                    $emailInvoice = new EmailAddress($this->arrayKeysToSnakeCase($emailInvoiceData));
+                    $emailInvoice->contact_id = $contact->id;
+                    $emailInvoice->save();
+                }
             }
-            $emailInvoice->save();
         }
 
     }

@@ -142,7 +142,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                                 privacybeleid
                             </a>{' '}
                             {didAgreeAvg ? (
-                                <em>({dateDidAgreeAvg ? ' ' + moment(dateDidAgreeAvg.date).format('L') : ''})</em>
+                                <em>({dateDidAgreeAvg ? ' ' + moment(dateDidAgreeAvg).format('L') : ''})</em>
                             ) : (
                                 ''
                             )}

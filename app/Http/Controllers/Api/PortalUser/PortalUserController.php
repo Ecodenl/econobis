@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\PortalUser;
 use App\Eco\Portal\PortalUser;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PortalUserController extends ApiController
 {
@@ -30,6 +31,21 @@ class PortalUserController extends ApiController
 
         if(PortalUser::where('email', $request->input('email'))->where('id', '!=', $portalUser->id)->count() !== 0){
             abort(404, 'E-mail bestaat al bij een andere Portal gebruiker.');
+        }
+    }
+
+    public function destroy(PortalUser $portalUser)
+    {
+        $contact =  $portalUser->contact;
+        if($contact)
+        {
+            $this->authorize('delete', $portalUser);
+            $portalUser->delete();
+
+            $contact->portal_registration_code = Str::random(32);
+            $contact->save();
+        }else{
+            abort(404, 'Geen contact bekend.');
         }
     }
 

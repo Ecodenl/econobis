@@ -176,7 +176,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                             <ButtonGroup className="float-right">
                                 <Link to={`/inschrijvingen-projecten`}>
                                     <Button className={'w-button'} size="sm">
-                                        Naar inschrijvingen
+                                        Naar huidige deelnames
                                     </Button>
                                 </Link>
                             </ButtonGroup>

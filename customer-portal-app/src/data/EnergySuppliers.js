@@ -11,7 +11,7 @@ export default [
     { id: 10, name: 'Main energie' },
     { id: 11, name: 'N.E.M.' },
     { id: 12, name: 'NL Energie' },
-    { id: 13, name: 'Vattenvall' },
+    { id: 13, name: 'Vattenfall' },
     { id: 14, name: 'Oxxio' },
     { id: 15, name: 'Pure energy' },
     { id: 16, name: 'Qurrent' },

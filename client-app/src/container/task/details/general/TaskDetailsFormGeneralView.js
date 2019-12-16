@@ -25,6 +25,8 @@ const TaskDetailsFormGeneralView = props => {
         startTimePlanned,
         endTimePlanned,
         dateFinished,
+        dateSentWfCompletedTask,
+        dateSentWfExpiredTask,
         responsibleUser,
         responsibleTeam,
         finishedBy,
@@ -90,6 +92,25 @@ const TaskDetailsFormGeneralView = props => {
                         value={finishedBy && finishedBy.fullName}
                         link={finishedBy ? 'gebruiker/' + finishedBy.id : ''}
                     />
+                </div>
+
+                <div className="row">
+                    {type && type.usesWfCompletedTask ? (
+                        <ViewText
+                            label={'Email taak afgehandeld verzonden'}
+                            value={dateSentWfCompletedTask ? moment(dateSentWfCompletedTask).format('L HH:mm') : ''}
+                        />
+                    ) : (
+                        ''
+                    )}
+                    {type && type.usesWfExpiredTask ? (
+                        <ViewText
+                            label={'Email taak verlopen verzonden'}
+                            value={dateSentWfExpiredTask ? moment(dateSentWfExpiredTask).format('L HH:mm') : ''}
+                        />
+                    ) : (
+                        ''
+                    )}
                 </div>
 
                 <div className="row margin-20-top">

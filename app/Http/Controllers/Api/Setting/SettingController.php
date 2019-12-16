@@ -84,6 +84,7 @@ class SettingController
             'checkContactTaskResponsibleTeamId',
             'emailTemplateNewAccountId',
             'linkPrivacyPolicy',
+            'showNewAtCooperativeLink',
         ]);
     }
 

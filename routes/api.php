@@ -1,5 +1,7 @@
 <?php
 
+use JosKolenberg\LaravelJory\Routes\JoryController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -10,8 +12,6 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::post('password/email', 'Api\User\UserController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
@@ -50,6 +50,7 @@ Route::namespace('Api')
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
         Route::get('/intake/peek', 'Intake\IntakeController@peek');
+        Route::get('/intake/excel', 'Intake\IntakeController@excel');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
         Route::get('/intake/{intake}', 'Intake\IntakeController@show');
@@ -115,6 +116,7 @@ Route::namespace('Api')
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
         Route::post('/contact-portal-user/{portalUser}', 'PortalUser\PortalUserController@update');
+        Route::post('/contact-portal-user/{portalUser}/delete', 'PortalUser\PortalUserController@destroy');
 
         Route::post('/contact-energy-supplier', 'ContactEnergySupplier\ContactEnergySupplierController@store');
         Route::post('/contact-energy-supplier/{contactEnergySupplier}', 'ContactEnergySupplier\ContactEnergySupplierController@update');
@@ -436,6 +438,13 @@ Route::namespace('Api')
         Route::post('cost-center', 'CostCenter\CostCenterController@store');
         Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
         Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
+
+        Route::get('task-type/jory', 'Task\TaskTypeController@jory');
+        Route::post('task-type/{taskType}', 'Task\TaskTypeController@update');
+        Route::get('quotation-request-status/jory', 'QuotationRequest\QuotationRequestStatusController@jory');
+        Route::post('quotation-request-status/{quotationRequestStatus}', 'QuotationRequest\QuotationRequestStatusController@update');
+        Route::get('opportunity-status/jory', 'Opportunity\OpportunityStatusController@jory');
+        Route::post('opportunity-status/{opportunityStatus}', 'Opportunity\OpportunityStatusController@update');
 
         Route::get('setting', 'Setting\SettingController@get');
         Route::get('setting/multiple', 'Setting\SettingController@multiple');

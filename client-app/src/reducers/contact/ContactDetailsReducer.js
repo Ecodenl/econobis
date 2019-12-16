@@ -24,6 +24,11 @@ export default function(state = {}, action) {
                     ...action.portalUser,
                 },
             };
+        case 'DELETE_PORTAL_USER_SUCCESS':
+            return {
+                ...state,
+                portalUser: null,
+            };
         case 'NEW_ADDRESS':
             return {
                 ...state,

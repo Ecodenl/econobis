@@ -42,7 +42,7 @@ class DocumentHelper
             $documentBody .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
 
             $participationsOptioned =  $request['participationsOptioned'] ? $request['participationsOptioned'] : 0;
-            $amountOptioned =  $request['amountOptioned'] ? $request['amountOptioned'] : 0;
+            $amountOptioned =  $request['amountOptioned'] ? number_format($request['amountOptioned'], 2, ',', '') : 0;
             $documentBody = str_replace('{deelname_aantal_ingeschreven}', $participationsOptioned, $documentBody);
             $documentBody = str_replace('{deelname_bedrag_ingeschreven}', $amountOptioned, $documentBody);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'vertegenwoordigde', $portalUserContact);

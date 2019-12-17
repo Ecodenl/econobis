@@ -162,7 +162,7 @@ class ParticipationProjectController extends Controller
                 . $emailTemplateBody . '</html>';
 
             $participationsOptioned =  $request['participationsOptioned'] ? $request['participationsOptioned'] : 0;
-            $amountOptioned =  $request['amountOptioned'] ? $request['amountOptioned'] : 0;
+            $amountOptioned =  $request['amountOptioned'] ? number_format($request['amountOptioned'], 2, ',', '') : 0;
 
             $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
             $htmlBodyWithContactVariables = str_replace('{deelname_aantal_ingeschreven}', $participationsOptioned, $htmlBodyWithContactVariables);

@@ -498,6 +498,7 @@ class TemplateVariableHelper
                 return $model->power_kw_available;
                 break;
             case 'total_participations':
+            case 'totaal_aantal_participaties_nodig':
                 return $model->total_participations;
                 break;
             case 'max_participaties':

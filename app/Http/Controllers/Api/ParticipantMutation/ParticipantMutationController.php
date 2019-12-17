@@ -130,7 +130,8 @@ class ParticipantMutationController extends ApiController
     {
         DB::transaction(function () use ($participantMutation) {
             // Calculate participation worth based on current book worth of project
-            if ($participantMutation->status->code_ref === 'final'
+            if ($participantMutation->status
+                && $participantMutation->status->code_ref === 'final'
                 && $participantMutation->participation->project->projectType->code_ref !== 'loan'
             ) {
                 $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)

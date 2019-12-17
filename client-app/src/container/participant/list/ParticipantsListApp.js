@@ -389,7 +389,7 @@ class ParticipantsListApp extends Component {
                             <PanelBody>
                                 <div className="row">
                                     <div className="col-md-12">
-                                        <ViewText label="Documentgroep" value={'Opbrengst'} />
+                                        <ViewText label="Documentgroep" value={'Deelname / Opbrengst'} />
                                         <InputSelect
                                             label="Document template"
                                             name={'templateId'}

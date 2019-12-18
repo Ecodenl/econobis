@@ -9,6 +9,10 @@ const PortalSettingsFormGeneralView = ({
     cooperativeName,
     portalWebsite,
     portalUrl,
+    backgroundColor,
+    backgroundImageColor,
+    backgroundSecondaryColor,
+    buttonColor,
     responsibleUser,
     checkContactTaskResponsibleUser,
     checkContactTaskResponsibleTeam,
@@ -26,6 +30,24 @@ const PortalSettingsFormGeneralView = ({
                     <div className="row">
                         <ViewText label={'Contacten portal URL'} value={portalUrl} />
                     </div>
+                    <div className="row">
+                        <ViewText label={'Logo'} value={'logo.png'} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Achtergrond kleur'} value={backgroundColor} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Achtergrond afbeelding kleur'} value={backgroundImageColor} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Tweede achtergrond kleur'} value={backgroundSecondaryColor} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Buttonknop kleur'} value={buttonColor} />
+                    </div>
+
+                    <hr />
+
                     <div className="row">
                         <ViewText
                             label={'Verantwoordelijke portal'}

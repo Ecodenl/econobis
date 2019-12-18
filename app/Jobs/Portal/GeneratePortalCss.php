@@ -42,6 +42,6 @@ class GeneratePortalCss implements ShouldQueue
 
     protected function getStore(): Valuestore
     {
-        return Valuestore::make(database_path('settings.json'));
+        return Valuestore::make(storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
     }
 }

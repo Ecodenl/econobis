@@ -4,7 +4,9 @@
 namespace App\Http\Controllers\Api\Setting;
 
 
+use App\Jobs\Portal\GeneratePortalCss;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Valuestore\Valuestore;
 
 class SettingController
@@ -44,6 +46,21 @@ class SettingController
         $keyValues = $this->getWhitelistedKeyValues($request);
 
         $store->put($keyValues);
+
+        GeneratePortalCss::dispatch();
+
+        //get attachments
+        $logo = $request->file('attachment')
+            ? $request->file('attachment') : false;
+
+        if($logo){
+            //store logo
+            if (!$logo->isValid()) {
+                abort('422', 'Error uploading file');
+            }
+//            $logo->storeAs('public_portal' . DIRECTORY_SEPARATOR . 'images',  'logozzz.png');
+            Storage::disk('public_portal')->put(DIRECTORY_SEPARATOR . 'images', $logo);
+        }
     }
 
     protected function getWhitelistedKeyValues(Request $request): array
@@ -78,6 +95,9 @@ class SettingController
             'portalWebsite',
             'portalUrl',
             'backgroundColor',
+            'backgroundImageColor',
+            'backgroundSecondaryColor',
+            'buttonColor',
             'responsibleUserId',
             'contactResponsibleOwnerUserId',
             'checkContactTaskResponsibleUserId',

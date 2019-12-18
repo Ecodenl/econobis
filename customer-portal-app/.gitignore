@@ -11,6 +11,8 @@
 # production
 /build
 /portal
+/public/portal.css
+/public/images/logo.png
 
 # misc
 .DS_Store

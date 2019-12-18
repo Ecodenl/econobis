@@ -26,6 +26,7 @@ class Email extends Model
 
     protected $casts = [
         'date_sent' => 'datetime',
+        'date_closed' => 'datetime',
         'to' => 'array',
         'cc' => 'array',
         'bcc' => 'array',

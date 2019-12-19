@@ -135,6 +135,8 @@ class InvoicesListItem extends Component {
             iban,
             subStatus,
             usesTwinfield,
+            invoiceInTwinfield,
+            twinfieldNumber,
         } = this.props;
 
         const inProgressRowClass =
@@ -212,7 +214,7 @@ class InvoicesListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {!usesTwinfield &&
+                    {!invoiceInTwinfield &&
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">

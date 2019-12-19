@@ -617,6 +617,15 @@ class TemplateVariableHelper
             case 'contact_iban_tnv':
                 return $model->contact->iban_attn;
                 break;
+            case 'contact_energieleverancier':
+                return optional(optional(optional($model->contact)->primaryContactEnergySupplier)->energySupplier)->name;
+                break;
+            case 'contact_energieleverancier_klantnummer':
+                return optional(optional($model->contact)->primaryContactEnergySupplier)->es_number;
+                break;
+            case 'contact_energieleverancier_ean_elektra':
+                return optional(optional($model->contact)->primaryContactEnergySupplier)->ean_electricity;
+                break;
             case 'statussen':
                 return implode(', ', array_map(function ($status) {
                     return $status->name;

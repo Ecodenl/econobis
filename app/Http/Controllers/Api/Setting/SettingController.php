@@ -58,8 +58,7 @@ class SettingController
             if (!$logo->isValid()) {
                 abort('422', 'Error uploading file');
             }
-//            $logo->storeAs('public_portal' . DIRECTORY_SEPARATOR . 'images',  'logozzz.png');
-            Storage::disk('public_portal')->put(DIRECTORY_SEPARATOR . 'images', $logo);
+            Storage::disk('public_portal')->putFileAs('images', $request->file('attachment'), 'logozzzz.png' );;
         }
     }
 

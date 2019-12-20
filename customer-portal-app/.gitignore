@@ -8,11 +8,15 @@
 # testing
 /coverage
 
-# production
-/build
+# production portal
 /portal
-/public/portal.css
+/build/images/logo.png
+/build/js/server-data.js
+/build/portal.css
 /public/images/logo.png
+/public/js/server-data.js
+/public/portal.css
+/server-data
 
 # misc
 .DS_Store
@@ -20,8 +24,6 @@
 .env.development.local
 .env.test.local
 .env.production.local
-/server-data
-server-data.js
 
 npm-debug.log*
 yarn-debug.log*

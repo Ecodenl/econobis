@@ -41,7 +41,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 lastName: person.lastName,
                 dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
                 didAgreeAvg: didAgreeAvg,
-                dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('Y-MM-DD') : '',
+                dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
             },
             errors: {
                 name: false,

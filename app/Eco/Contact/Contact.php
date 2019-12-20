@@ -43,7 +43,6 @@ class Contact extends Model
 
     protected $casts = [
         'liable' => 'boolean',
-        'date_did_agree_avg' => 'datetime',
     ];
 
     protected $dates = [

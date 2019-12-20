@@ -109,9 +109,9 @@ class IntakeExcelHelper
                 $rowData[13] = $intake->campaign ? $intake->campaign->name : '';
                 $rowData[14] = $intake->status ? $intake->status->name : '';
                 $rowData[15] = $this->formatDate($intake->updated_at);
-                $rowData[16] = $intake->updatedBy->present()->fullName();
+                $rowData[16] = $intake->updatedBy ? $intake->updatedBy->present()->fullName() : '';
                 $rowData[17] = $this->formatDate($intake->created_at);
-                $rowData[18] = $intake->createdBy->present()->fullName();
+                $rowData[18] = $intake->createdBy ? $intake->createdBy->present()->fullName() : '' ;
 
                 $completeData[] = $rowData;
 

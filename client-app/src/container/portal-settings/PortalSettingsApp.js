@@ -31,6 +31,9 @@ class PortalSettingsApp extends Component {
             '&keys[]=portalWebsite' +
             '&keys[]=portalUrl' +
             '&keys[]=backgroundColor' +
+            '&keys[]=backgroundImageColor' +
+            '&keys[]=backgroundSecondaryColor' +
+            '&keys[]=buttonColor' +
             '&keys[]=responsibleUserId' +
             '&keys[]=checkContactTaskResponsibleUserId' +
             '&keys[]=checkContactTaskResponsibleTeamId' +

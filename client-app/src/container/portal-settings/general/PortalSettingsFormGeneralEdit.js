@@ -28,7 +28,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 ...props.emailTemplates,
             },
             attachment: '',
-            logoName: 'logo.png',
+            filename: 'logo.png',
             newLogo: false,
             errors: {
                 portalName: false,
@@ -165,8 +165,8 @@ class PortalSettingsFormGeneralEdit extends Component {
     render() {
         const {
             portalName,
-            logoName,
             attachment,
+            filename,
             cooperativeName,
             portalWebsite,
             portalUrl,
@@ -181,6 +181,8 @@ class PortalSettingsFormGeneralEdit extends Component {
             linkPrivacyPolicy,
             showNewAtCooperativeLink,
         } = this.state.portalSettings;
+
+        // console.log('File: ' + filename);
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -201,7 +203,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                             <InputText
                                 label="Contacten portal Logo"
                                 divSize={'col-sm-8'}
-                                value={attachment ? attachment.name : logoName}
+                                value={attachment ? attachment.name : filename}
                                 onClickAction={this.toggleNewLogo}
                                 onChangeaction={() => {}}
                             />

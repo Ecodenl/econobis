@@ -20,7 +20,12 @@ function ProjectDetails({ match }) {
 
     useEffect(() => {
         const keys =
-            '?keys[]=portalName&keys[]=portalWebsite&keys[]=portalUrl&keys[]=backgroundColor&keys[]=responsibleUserId&keys[]=checkContactTaskResponsibleUserId&keys[]=linkPrivacyPolicy';
+            '?keys[]=portalName' +
+            '&keys[]=portalWebsite' +
+            '&keys[]=portalUrl' +
+            '&keys[]=responsibleUserId' +
+            '&keys[]=checkContactTaskResponsibleUserId' +
+            '&keys[]=linkPrivacyPolicy';
         PortalSettingsAPI.fetchPortalSettings(keys)
             .then(payload => {
                 setPortalSettings({ ...payload.data });

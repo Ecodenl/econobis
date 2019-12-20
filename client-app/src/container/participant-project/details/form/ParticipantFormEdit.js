@@ -211,11 +211,7 @@ class ParticipantFormEdit extends Component {
                                     <span>
                                         Ja{' '}
                                         <em>
-                                            (
-                                            {dateDidAcceptAgreement
-                                                ? moment(dateDidAcceptAgreement.date).format('L')
-                                                : ''}
-                                            )
+                                            ({dateDidAcceptAgreement ? moment(dateDidAcceptAgreement).format('L') : ''})
                                         </em>
                                     </span>
                                 ) : (
@@ -242,11 +238,7 @@ class ParticipantFormEdit extends Component {
                                     <span>
                                         Ja{' '}
                                         <em>
-                                            (
-                                            {dateDidUnderstandInfo
-                                                ? moment(dateDidUnderstandInfo.date).format('L')
-                                                : ''}
-                                            )
+                                            ({dateDidUnderstandInfo ? moment(dateDidUnderstandInfo).format('L') : ''})
                                         </em>
                                     </span>
                                 ) : (

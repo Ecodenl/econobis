@@ -31,8 +31,6 @@ class ParticipantProject extends Model
     ];
 
     protected $dates = [
-        'date_did_accept_agreement',
-        'date_did_understand_info',
     ];
 
     protected $encryptable = [

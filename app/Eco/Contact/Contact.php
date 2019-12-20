@@ -43,12 +43,12 @@ class Contact extends Model
 
     protected $casts = [
         'liable' => 'boolean',
+        'date_did_agree_avg' => 'datetime',
     ];
 
     protected $dates = [
         'member_since',
         'member_until',
-        'date_did_agree_avg',
     ];
 
     protected $encryptable = [

@@ -48,7 +48,6 @@ class Contact extends Model
     protected $dates = [
         'member_since',
         'member_until',
-        'date_did_agree_avg',
     ];
 
     protected $encryptable = [

@@ -27,7 +27,7 @@ class InvoicePaymentsForm extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Betalingen</span>
-                    {!this.props.usesTwinfield && this.props.permissions.manageFinancial && (
+                    {!this.props.invoiceInTwinfield && this.props.permissions.manageFinancial && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <span className="glyphicon glyphicon-plus" />
                         </a>
@@ -49,7 +49,7 @@ class InvoicePaymentsForm extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        usesTwinfield: state.invoiceDetails.usesTwinfield,
+        invoiceInTwinfield: state.invoiceDetails.invoiceInTwinfield,
     };
 };
 

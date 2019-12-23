@@ -116,10 +116,11 @@ class InvoiceToolbar extends Component {
                             this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend' && (
                                 <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSendPost} />
                             )}
-                        {(this.props.invoiceDetails.statusId === 'sent' ||
-                            this.props.invoiceDetails.statusId === 'exported') && (
-                            <ButtonIcon iconName={'glyphicon-euro'} onClickAction={this.showSetPaid} />
-                        )}
+                        {!this.props.invoiceDetails.invoiceInTwinfield &&
+                            (this.props.invoiceDetails.statusId === 'sent' ||
+                                this.props.invoiceDetails.statusId === 'exported') && (
+                                <ButtonIcon iconName={'glyphicon-euro'} onClickAction={this.showSetPaid} />
+                            )}
                         {(this.props.invoiceDetails.statusId === 'sent' ||
                             this.props.invoiceDetails.statusId === 'exported') &&
                             !this.props.invoiceDetails.dateExhortation && (

@@ -56,7 +56,7 @@ const ContactDetailsFormPersonalView = props => {
                     value={
                         didAgreeAvg ? (
                             <span>
-                                Ja <em>({dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('L') : ''})</em>
+                                Ja <em>({dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('L') : ''})</em>
                             </span>
                         ) : (
                             'Nee'

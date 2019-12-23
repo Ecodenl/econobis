@@ -138,7 +138,7 @@ class InvoicePaymentsFormItem extends Component {
                     toggleDelete={this.toggleDelete}
                     payment={this.state.payment}
                 />
-                {!this.props.usesTwinfield && this.state.showEdit && this.props.permissions.manageFinancial && (
+                {!this.props.invoiceInTwinfield && this.state.showEdit && this.props.permissions.manageFinancial && (
                     <InvoicePaymentsFormEdit
                         errors={this.state.errors}
                         payment={this.state.payment}
@@ -148,7 +148,7 @@ class InvoicePaymentsFormItem extends Component {
                         cancelEdit={this.cancelEdit}
                     />
                 )}
-                {!this.props.usesTwinfield && this.state.showDelete && this.props.permissions.manageFinancial && (
+                {!this.props.invoiceInTwinfield && this.state.showDelete && this.props.permissions.manageFinancial && (
                     <InvoicePaymentsFormDelete
                         closeDeleteItemModal={this.toggleDelete}
                         id={this.state.payment.id}
@@ -163,7 +163,7 @@ class InvoicePaymentsFormItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        usesTwinfield: state.invoiceDetails.usesTwinfield,
+        invoiceInTwinfield: state.invoiceDetails.invoiceInTwinfield,
     };
 };
 

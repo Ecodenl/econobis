@@ -59,10 +59,7 @@ const ParticipantFormView = props => {
                     value={
                         didAcceptAgreement ? (
                             <span>
-                                Ja{' '}
-                                <em>
-                                    ({dateDidAcceptAgreement ? moment(dateDidAcceptAgreement.date).format('L') : ''})
-                                </em>
+                                Ja <em>({dateDidAcceptAgreement ? moment(dateDidAcceptAgreement).format('L') : ''})</em>
                             </span>
                         ) : (
                             'Nee'
@@ -74,8 +71,7 @@ const ParticipantFormView = props => {
                     value={
                         didUnderstandInfo ? (
                             <span>
-                                Ja{' '}
-                                <em>({dateDidUnderstandInfo ? moment(dateDidUnderstandInfo.date).format('L') : ''})</em>
+                                Ja <em>({dateDidUnderstandInfo ? moment(dateDidUnderstandInfo).format('L') : ''})</em>
                             </span>
                         ) : (
                             'Nee'

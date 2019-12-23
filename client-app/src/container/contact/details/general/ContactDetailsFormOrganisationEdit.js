@@ -46,7 +46,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 iban: iban,
                 ibanAttn: ibanAttn ? ibanAttn : '',
                 didAgreeAvg: didAgreeAvg,
-                dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg.date).format('Y-MM-DD') : '',
+                dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
                 isCollectMandate,
                 collectMandateCode: collectMandateCode ? collectMandateCode : '',
                 collectMandateSignatureDate: collectMandateSignatureDate

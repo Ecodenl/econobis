@@ -1,6 +1,6 @@
 <?php
 
-use JosKolenberg\LaravelJory\Routes\JoryController;
+use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 /*
 |--------------------------------------------------------------------------

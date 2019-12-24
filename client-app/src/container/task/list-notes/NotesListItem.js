@@ -48,7 +48,7 @@ class NotesListItem extends Component {
                 <td>{typeName}</td>
                 <td>{noteSummary}</td>
                 <td>{contactFullName}</td>
-                <td>{datePlannedStart && moment(datePlannedStart.date).format('L')}</td>
+                <td>{datePlannedStart && moment(datePlannedStart).format('L')}</td>
                 <td>{responsibleName}</td>
                 <td>
                     {this.state.showActionButtons ? (

@@ -56,24 +56,18 @@ const RevenueFormView = props => {
                         />
                     ) : null}
                     {distributionType && distributionType.id === 'inPossessionOf' ? (
-                        <ViewText
-                            label={'Peildatum'}
-                            value={dateReference ? moment(dateReference.date).format('L') : ''}
-                        />
+                        <ViewText label={'Peildatum'} value={dateReference ? moment(dateReference).format('L') : ''} />
                     ) : null}
                 </div>
             ) : null}
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Begin periode'} value={dateBegin ? moment(dateBegin.date).format('L') : ''} />
-                <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd.date).format('L') : ''} />
+                <ViewText label={'Begin periode'} value={dateBegin ? moment(dateBegin).format('L') : ''} />
+                <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={'Datum definitief'}
-                    value={dateConfirmed ? moment(dateConfirmed.date).format('L') : ''}
-                />
+                <ViewText label={'Datum definitief'} value={dateConfirmed ? moment(dateConfirmed).format('L') : ''} />
                 {category.codeRef === 'revenueEuro' &&
                 (project.projectType.codeRef === 'capital' ||
                     project.projectType.codeRef === 'postalcode_link_capital') ? (

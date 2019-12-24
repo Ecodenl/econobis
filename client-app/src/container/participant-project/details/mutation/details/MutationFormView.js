@@ -55,10 +55,8 @@ const MutationFormView = ({
             <StyledContainer onClick={openEdit}>
                 <StyledColumn columnWidth={'100px'}>{type.name}</StyledColumn>
                 <StyledColumn columnWidth={'80px'}>{status && status.name}</StyledColumn>
-                <StyledColumn columnWidth={'100px'}>
-                    {datePayment ? moment(datePayment.date).format('L') : ''}
-                </StyledColumn>
-                <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry.date).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
+                <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'120px'}>{type.description}</StyledColumn>
                 {projectTypeCodeRef === 'loan' ? <StyledColumn>{amount && moneyPresenter(amount)}</StyledColumn> : null}
                 {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (

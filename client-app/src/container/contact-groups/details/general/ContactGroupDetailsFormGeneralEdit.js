@@ -34,8 +34,8 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             oldName: props.contactGroupDetails.name ? props.contactGroupDetails.name : '',
             contactGroup: {
                 ...props.contactGroupDetails,
-                dateStarted: dateStarted ? moment(dateStarted.date).format('Y-MM-DD') : '',
-                dateFinished: dateFinished ? moment(dateFinished.date).format('Y-MM-DD') : '',
+                dateStarted: dateStarted ? moment(dateStarted).format('Y-MM-DD') : '',
+                dateFinished: dateFinished ? moment(dateFinished).format('Y-MM-DD') : '',
                 responsibleUserId: responsibleUserId ? responsibleUserId : '',
                 showPortal: showPortal ? showPortal : false,
                 editPortal: editPortal ? editPortal : false,

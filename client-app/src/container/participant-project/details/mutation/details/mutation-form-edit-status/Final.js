@@ -37,7 +37,7 @@ const MutationFormEditStatusFinal = ({
                 className={'col-sm-6 form-group'}
                 value={
                     participantMutationFromProps.dateInterest &&
-                    moment(participantMutationFromProps.dateInterest.date).format('L')
+                    moment(participantMutationFromProps.dateInterest).format('L')
                 }
             />
         </div>
@@ -63,7 +63,7 @@ const MutationFormEditStatusFinal = ({
                 className={'col-sm-6 form-group'}
                 value={
                     participantMutationFromProps.dateOption &&
-                    moment(participantMutationFromProps.dateOption.date).format('L')
+                    moment(participantMutationFromProps.dateOption).format('L')
                 }
             />
         </div>
@@ -89,7 +89,7 @@ const MutationFormEditStatusFinal = ({
                 className={'col-sm-6 form-group'}
                 value={
                     participantMutationFromProps.dateGranted &&
-                    moment(participantMutationFromProps.dateGranted.date).format('L')
+                    moment(participantMutationFromProps.dateGranted).format('L')
                 }
             />
         </div>

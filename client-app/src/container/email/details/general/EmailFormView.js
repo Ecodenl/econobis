@@ -50,7 +50,7 @@ const EmailFormView = props => {
                 <ViewText label={'Aan'} value={toWithGroup && toWithGroup.map(toWithGroup => toWithGroup).join(', ')} />
                 <ViewText
                     label={'Verzonden datum tijd'}
-                    value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY HH:mm') : ''}
+                    value={dateSent ? moment(dateSent).format('DD-MM-YYYY HH:mm') : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -130,7 +130,7 @@ const EmailFormView = props => {
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                         <ViewText
                             label={'Datum afgehandeld'}
-                            value={dateClosed ? moment(dateClosed.date).format('DD-MM-YYYY HH:mm') : ''}
+                            value={dateClosed ? moment(dateClosed).format('DD-MM-YYYY HH:mm') : ''}
                         />
                     </div>
                     <div className="row" onClick={props.switchToEdit}>

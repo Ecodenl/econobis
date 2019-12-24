@@ -39,7 +39,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                 lastNamePrefixId: person.lastNamePrefixId ? person.lastNamePrefixId : '',
                 lastNamePrefix: person.lastNamePrefix ? person.lastNamePrefix : '',
                 lastName: person.lastName,
-                dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth.date).format('Y-MM-DD') : '',
+                dateOfBirth: person.dateOfBirth ? moment(person.dateOfBirth).format('Y-MM-DD') : '',
                 didAgreeAvg: didAgreeAvg,
                 dateDidAgreeAvg: dateDidAgreeAvg ? moment(dateDidAgreeAvg).format('Y-MM-DD') : '',
             },

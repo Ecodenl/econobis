@@ -22,9 +22,9 @@ const RevenuesListFormView = ({
             onMouseLeave={() => onLineLeave()}
         >
             <div className="col-sm-1">{category ? category.name : ''}</div>
-            <div className="col-sm-2">{dateBegin ? moment(dateBegin.date).format('L') : ''}</div>
-            <div className="col-sm-2">{dateEnd ? moment(dateEnd.date).format('L') : ''}</div>
-            <div className="col-sm-2">{datePayed ? moment(datePayed.date).format('L') : ''}</div>
+            <div className="col-sm-2">{dateBegin ? moment(dateBegin).format('L') : ''}</div>
+            <div className="col-sm-2">{dateEnd ? moment(dateEnd).format('L') : ''}</div>
+            <div className="col-sm-2">{datePayed ? moment(datePayed).format('L') : ''}</div>
             <div className="col-sm-2">{type ? type.name : ''}</div>
             <div className="col-sm-1">{revenue ? revenue : ''}</div>
             {projectTypeCodeRef === 'postalcode_link_capital' ? (

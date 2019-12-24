@@ -57,7 +57,7 @@ class IntakeMeasuresRequestedEdit extends Component {
                                         label={'Gewenste datum'}
                                         size={'col-sm-6'}
                                         name={'desiredDate'}
-                                        value={desiredDate.date}
+                                        value={desiredDate}
                                         onChangeAction={this.props.handleDesiredDate}
                                     />
                                 </div>

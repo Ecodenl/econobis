@@ -10,7 +10,7 @@ const UserDetailsFormLogView = props => {
     return (
         <div>
             <div className="row">
-                <ViewText label={'Laatst ingelogd'} value={lastVisit && moment(lastVisit.date).format('DD-MM-Y')} />
+                <ViewText label={'Laatst ingelogd'} value={lastVisit && moment(lastVisit).format('DD-MM-Y')} />
                 <ViewText label={'Aantal keer ingelogd'} value={visitCount} />
             </div>
         </div>

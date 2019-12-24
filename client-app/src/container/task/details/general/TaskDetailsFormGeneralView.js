@@ -55,7 +55,7 @@ const TaskDetailsFormGeneralView = props => {
                 <div className="row margin-20-top">
                     <ViewText
                         label={'Datum afhandelen'}
-                        value={datePlannedStart && moment(datePlannedStart.date).format('L')}
+                        value={datePlannedStart && moment(datePlannedStart).format('L')}
                     />
 
                     <ViewText
@@ -65,10 +65,7 @@ const TaskDetailsFormGeneralView = props => {
                 </div>
 
                 <div className="row">
-                    <ViewText
-                        label={'Einddatum'}
-                        value={datePlannedFinish && moment(datePlannedFinish.date).format('L')}
-                    />
+                    <ViewText label={'Einddatum'} value={datePlannedFinish && moment(datePlannedFinish).format('L')} />
 
                     <ViewText
                         label={'Eind tijd'}
@@ -86,7 +83,7 @@ const TaskDetailsFormGeneralView = props => {
                 </div>
 
                 <div className="row">
-                    <ViewText label={'Datum gereed'} value={dateFinished && moment(dateFinished.date).format('L')} />
+                    <ViewText label={'Datum gereed'} value={dateFinished && moment(dateFinished).format('L')} />
                     <ViewText
                         label="Afgerond door"
                         value={finishedBy && finishedBy.fullName}

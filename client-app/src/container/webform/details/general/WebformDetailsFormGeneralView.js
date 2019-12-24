@@ -49,12 +49,12 @@ const WebformDetailsFormGeneralView = props => {
 
                     <div className="row" onClick={props.switchToEdit}>
                         <ViewText label={'Aanvragen per minuut?'} value={maxRequestsPerMinute} />
-                        <ViewText label={'Datum sleutel'} value={apiKeyDate && moment(apiKeyDate.date).format('L')} />
+                        <ViewText label={'Datum sleutel'} value={apiKeyDate && moment(apiKeyDate).format('L')} />
                     </div>
 
                     <div className="row" onClick={props.switchToEdit}>
-                        <ViewText label={'Startdatum'} value={dateStart && moment(dateStart.date).format('L')} />
-                        <ViewText label={'Einddatum'} value={dateEnd && moment(dateEnd.date).format('L')} />
+                        <ViewText label={'Startdatum'} value={dateStart && moment(dateStart).format('L')} />
+                        <ViewText label={'Einddatum'} value={dateEnd && moment(dateEnd).format('L')} />
                     </div>
 
                     <div className="row" onClick={props.switchToEdit}>

@@ -48,7 +48,7 @@ class EmailsInListItem extends Component {
                 onMouseOver={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{date && moment(date.date).format('L')}</td>
+                <td>{date && moment(date).format('L')}</td>
                 <td>{mailboxName}</td>
                 <td>{from}</td>
                 <td>{to && to.map(to => to).join(', ')}</td>

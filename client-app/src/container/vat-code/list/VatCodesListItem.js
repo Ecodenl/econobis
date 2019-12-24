@@ -41,7 +41,7 @@ class VatCodesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{startDate && moment(startDate.date).format('L')}</td>
+                <td>{startDate && moment(startDate).format('L')}</td>
                 <td>{description}</td>
                 <td>{percentage}%</td>
                 <td>

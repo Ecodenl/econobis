@@ -67,8 +67,8 @@ class Calendar extends Component {
 
             payload.data.data.map(item => {
                 //Php datetime to moment date to js date
-                let momentStartDate = moment(item.start.date);
-                let momentEndDate = moment(item.end.date);
+                let momentStartDate = moment(item.start);
+                let momentEndDate = moment(item.end);
 
                 calendar.push({
                     id: item.id,

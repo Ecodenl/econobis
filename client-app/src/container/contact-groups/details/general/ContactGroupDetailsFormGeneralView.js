@@ -63,8 +63,8 @@ const ContactGroupDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Startdatum'} value={dateStarted && moment(dateStarted.date).format('DD-MM-Y')} />
-                <ViewText label="Datum gereed" value={dateFinished && moment(dateFinished.date).format('DD-MM-Y')} />
+                <ViewText label={'Startdatum'} value={dateStarted && moment(dateStarted).format('DD-MM-Y')} />
+                <ViewText label="Datum gereed" value={dateFinished && moment(dateFinished).format('DD-MM-Y')} />
             </div>
 
             <div className="row">

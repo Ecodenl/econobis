@@ -148,7 +148,7 @@ const InvoiceDetailsFormGeneralView = props => {
                         {paymentTypeId === 'transfer' ? (
                             <ViewText
                                 label={'Uiterste betaaldatum'}
-                                value={datePaymentDue ? moment(datePaymentDue.date).format('DD-MM-Y') : ''}
+                                value={datePaymentDue ? moment(datePaymentDue).format('DD-MM-Y') : ''}
                             />
                         ) : (
                             <ViewText

@@ -40,7 +40,7 @@ const MutationFormEditStatusInterest = ({
                         className={'col-sm-6 form-group'}
                         value={
                             participantMutationFromProps.dateInterest &&
-                            moment(participantMutationFromProps.dateInterest.date).format('L')
+                            moment(participantMutationFromProps.dateInterest).format('L')
                         }
                     />
                 </div>

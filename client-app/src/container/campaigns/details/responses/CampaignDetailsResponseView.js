@@ -19,7 +19,7 @@ const CampaignDetailsResponseView = props => {
                 <div className="col-sm-2">{address ? address.street + address.number : ''}</div>
                 <div className="col-sm-1">{address ? address.postal_code : ''}</div>
                 <div className="col-sm-2">{address ? address.city : ''}</div>
-                <div className="col-sm-2">{dateResponded ? moment(dateResponded.date).format('L') : ''}</div>
+                <div className="col-sm-2">{dateResponded ? moment(dateResponded).format('L') : ''}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageMarketing ? (

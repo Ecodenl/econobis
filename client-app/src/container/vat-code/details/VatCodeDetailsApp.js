@@ -31,7 +31,7 @@ class VatCodeDetailsApp extends Component {
                     vatCode: {
                         ...payload.data.data,
                         startDate: payload.data.data.startDate
-                            ? moment(payload.data.data.startDate.date).format('Y-MM-DD')
+                            ? moment(payload.data.data.startDate).format('Y-MM-DD')
                             : '',
                     },
                 });

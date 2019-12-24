@@ -205,7 +205,7 @@ class EmailFormEdit extends Component {
                     />
                     <ViewText
                         label={'Verzonden datum tijd'}
-                        value={dateSent ? moment(dateSent.date).format('DD-MM-YYYY HH:mm') : ''}
+                        value={dateSent ? moment(dateSent).format('DD-MM-YYYY HH:mm') : ''}
                     />
                 </div>
                 <div className="row">

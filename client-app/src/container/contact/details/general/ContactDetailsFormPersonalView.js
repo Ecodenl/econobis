@@ -40,7 +40,7 @@ const ContactDetailsFormPersonalView = props => {
             <div className="row">
                 <ViewText
                     label={'Geboortedatum'}
-                    value={person.dateOfBirth && moment(person.dateOfBirth.date).format('DD-MM-Y')}
+                    value={person.dateOfBirth && moment(person.dateOfBirth).format('DD-MM-Y')}
                     className={'col-xs-12'}
                 />
             </div>

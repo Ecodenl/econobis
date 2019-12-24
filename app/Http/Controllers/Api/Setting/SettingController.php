@@ -58,7 +58,7 @@ class SettingController
             if (!$logo->isValid()) {
                 abort('422', 'Error uploading file');
             }
-            Storage::disk('public_portal')->putFileAs('images', $request->file('attachment'), 'logozzzz.png' );;
+            Storage::disk('public_portal')->putFileAs('images', $request->file('attachment'), 'logo.png' );;
         }
     }
 

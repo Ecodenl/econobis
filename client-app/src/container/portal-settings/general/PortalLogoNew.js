@@ -31,7 +31,7 @@ class PortalLogoNew extends Component {
             <Modal closeModal={this.props.toggleShowNew} showConfirmAction={false} title="Upload bestand">
                 <div className="upload-file-content">
                     <Dropzone
-                        accept="image/jpeg, image/png, image/jpg"
+                        accept="image/png"
                         multiple={false}
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}

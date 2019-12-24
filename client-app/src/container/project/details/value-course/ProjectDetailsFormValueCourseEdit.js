@@ -80,7 +80,7 @@ const ProjectDetailsFormValueCourseEdit = ({
                         <InputText
                             label={'Gemaakt op'}
                             name={'createdAt'}
-                            value={createdAt ? moment(createdAt.date).format('L') : ''}
+                            value={createdAt ? moment(createdAt).format('L') : ''}
                             readOnly={true}
                         />
                         <InputText

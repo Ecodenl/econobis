@@ -30,7 +30,7 @@ const ContactDetailsFormOrganisationView = props => {
                 <ViewText
                     className={'col-xs-12'}
                     label={'Gemaakt op'}
-                    value={createdAt && moment(createdAt.date).format('DD-MM-Y')}
+                    value={createdAt && moment(createdAt).format('DD-MM-Y')}
                 />
             </div>
 

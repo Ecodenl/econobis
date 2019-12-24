@@ -257,10 +257,7 @@ class DocumentTemplateFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <ViewText
-                        label={'Gemaakt op'}
-                        value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'}
-                    />
+                    <ViewText label={'Gemaakt op'} value={createdAt ? moment(createdAt).format('L') : 'Onbekend'} />
                     <ViewText
                         label={'Gemaakt door'}
                         value={createdBy ? createdBy.fullName : 'Onbekend'}

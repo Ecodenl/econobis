@@ -50,7 +50,7 @@ class DocumentsListItem extends Component {
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{number}</td>
-                <td>{createdAt ? moment(createdAt.date).format('DD-MM-Y') : 'Onbekend'}</td>
+                <td>{createdAt ? moment(createdAt).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{filename}</td>
                 <td>{contact && contact.fullName}</td>
                 <td>{documentType}</td>

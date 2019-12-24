@@ -28,9 +28,7 @@ class Participationslist extends Component {
                             {relatedParticipations.map((item, i) => {
                                 return (
                                     <tr onClick={() => this.openItem(item.id)} key={i}>
-                                        <td className="col-xs-5 clickable">
-                                            {moment(item.createdAt.date).format('L')}
-                                        </td>
+                                        <td className="col-xs-5 clickable">{moment(item.createdAt).format('L')}</td>
                                         <td className="col-xs-6 clickable">
                                             {item.projectTypeCodeRef === 'loan'
                                                 ? `${MoneyPresenter(item.amountDefinitive)} in ${item.projectName} `

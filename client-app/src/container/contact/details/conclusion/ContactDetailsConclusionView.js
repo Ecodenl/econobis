@@ -30,11 +30,8 @@ const ContactDetailsConclusionView = props => {
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Gemaakt op'} value={createdAt ? moment(createdAt.date).format('L') : 'Onbekend'} />
-                <ViewText
-                    label={'Laatste update op'}
-                    value={updatedAt ? moment(updatedAt.date).format('L') : 'Onbekend'}
-                />
+                <ViewText label={'Gemaakt op'} value={createdAt ? moment(createdAt).format('L') : 'Onbekend'} />
+                <ViewText label={'Laatste update op'} value={updatedAt ? moment(updatedAt).format('L') : 'Onbekend'} />
             </div>
         </div>
     );

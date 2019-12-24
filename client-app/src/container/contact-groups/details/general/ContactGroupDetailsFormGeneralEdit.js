@@ -358,7 +358,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                     <InputText
                         label={'Gemaakt op'}
                         name={'createdAt'}
-                        value={moment(createdAt.date).format('DD-MM-Y')}
+                        value={moment(createdAt).format('DD-MM-Y')}
                         readOnly={true}
                     />
                     <InputText

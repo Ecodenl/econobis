@@ -14,7 +14,7 @@ const OpportunityDetailsQuotationRequestsView = props => {
             onDoubleClick={() => hashHistory.push(`/offerteverzoek/${id}`)}
         >
             <div className="col-sm-2">{organisation && organisation.name}</div>
-            <div className="col-sm-2">{createdAt ? moment(createdAt.date).format('L') : ''}</div>
+            <div className="col-sm-2">{createdAt ? moment(createdAt).format('L') : ''}</div>
             <div className="col-sm-2">{dateRecorded ? moment(dateRecorded).format('L') : ''}</div>
             <div className="col-sm-2">{status && status.name}</div>
             <div className="col-sm-2">{dateReleased ? moment(dateReleased).format('L') : ''}</div>

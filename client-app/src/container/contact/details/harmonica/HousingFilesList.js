@@ -43,7 +43,7 @@ class HousingFileList extends Component {
                                     <tr key={i} onClick={() => this.openItem(housingFile.id)}>
                                         <td className="col-xs-12 clickable">
                                             {housingFile.createdAt
-                                                ? moment(housingFile.createdAt.date).format('DD-MM-Y')
+                                                ? moment(housingFile.createdAt).format('DD-MM-Y')
                                                 : ''}{' '}
                                             - {housingFile.addressName}
                                         </td>

@@ -28,8 +28,7 @@ class InvoicesList extends Component {
                                 return (
                                     <tr onClick={() => this.openItem(relatedInvoice.id)} key={i}>
                                         <td className="col-xs-12 clickable">
-                                            {moment(relatedInvoice.createdAt.date).format('L')} -{' '}
-                                            {relatedInvoice.number}
+                                            {moment(relatedInvoice.createdAt).format('L')} - {relatedInvoice.number}
                                         </td>
                                     </tr>
                                 );

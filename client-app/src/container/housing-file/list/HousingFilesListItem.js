@@ -40,7 +40,7 @@ class HousingFilesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{moment(createdAt.date).format('DD-MM-Y')}</td>
+                <td>{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>{fullAddress}</td>
                 <td>{fullName}</td>
                 <td>{buildingType ? buildingType : ''}</td>

@@ -23,9 +23,9 @@ class WebformDetailsFormGeneralEdit extends Component {
                 responsible: props.webformDetails.responsibleUserId
                     ? 'user' + props.webformDetails.responsibleUserId
                     : 'team' + props.webformDetails.responsibleTeamId,
-                dateStart: props.webformDetails.dateStart ? props.webformDetails.dateStart.date : '',
-                dateEnd: props.webformDetails.dateEnd ? props.webformDetails.dateEnd.date : '',
-                apiKeyDate: props.webformDetails.apiKeyDate ? props.webformDetails.apiKeyDate.date : '',
+                dateStart: props.webformDetails.dateStart ? props.webformDetails.dateStart : '',
+                dateEnd: props.webformDetails.dateEnd ? props.webformDetails.dateEnd : '',
+                apiKeyDate: props.webformDetails.apiKeyDate ? props.webformDetails.apiKeyDate : '',
             },
             errors: {
                 name: false,

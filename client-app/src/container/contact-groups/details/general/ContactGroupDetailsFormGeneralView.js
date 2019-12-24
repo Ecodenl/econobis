@@ -78,7 +78,7 @@ const ContactGroupDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Gemaakt op'} value={createdAt && moment(createdAt.date).format('DD-MM-Y')} />
+                <ViewText label={'Gemaakt op'} value={createdAt && moment(createdAt).format('DD-MM-Y')} />
                 <ViewText label="Gemaakt door" value={createdBy && createdBy.fullName} />
             </div>
         </div>

@@ -37,7 +37,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
             organisation: {
                 id: organisation.id,
                 number: number,
-                createdAt: createdAt.date,
+                createdAt: createdAt,
                 name: organisation.name,
                 chamberOfCommerceNumber: organisation.chamberOfCommerceNumber,
                 vatNumber: organisation.vatNumber,

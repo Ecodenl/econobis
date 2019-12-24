@@ -44,7 +44,7 @@ class WebformsListItem extends Component {
                 <td>{name}</td>
                 <td>{apiKey}</td>
                 <td>{maxRequestsPerMinute}</td>
-                <td>{createdAt && moment(createdAt.date).format('DD-MM-Y')}</td>
+                <td>{createdAt && moment(createdAt).format('DD-MM-Y')}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

@@ -41,7 +41,7 @@ class ConceptsInListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{createdAt && moment(createdAt.date).format('L')}</td>
+                <td>{createdAt && moment(createdAt).format('L')}</td>
                 <td>{mailboxName}</td>
                 <td>{from}</td>
                 <td>{subject}</td>

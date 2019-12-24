@@ -43,7 +43,7 @@ const EmailFormView = props => {
                 <ViewText label={'Van'} value={from} />
                 <ViewText
                     label={'Ontvangen datum tijd'}
-                    value={createdAt ? moment(createdAt.date).format('DD-MM-YYYY HH:mm') : ''}
+                    value={createdAt ? moment(createdAt).format('DD-MM-YYYY HH:mm') : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>

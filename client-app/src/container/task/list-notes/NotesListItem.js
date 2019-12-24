@@ -44,7 +44,7 @@ class NotesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{moment(createdAt.date).format('L')}</td>
+                <td>{moment(createdAt).format('L')}</td>
                 <td>{typeName}</td>
                 <td>{noteSummary}</td>
                 <td>{contactFullName}</td>

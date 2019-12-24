@@ -28,7 +28,7 @@ class TaskList extends Component {
                                 return (
                                     <tr onClick={() => this.openItem(relatedTask.id)} key={i}>
                                         <td className="col-xs-12 clickable">
-                                            {moment(relatedTask.createdAt.date).format('L')} - {relatedTask.noteSummary}
+                                            {moment(relatedTask.createdAt).format('L')} - {relatedTask.noteSummary}
                                         </td>
                                     </tr>
                                 );

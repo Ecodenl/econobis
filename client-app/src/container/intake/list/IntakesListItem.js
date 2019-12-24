@@ -51,7 +51,7 @@ class IntakesListItem extends Component {
                         <input type="checkbox" checked={checked} onChange={() => this.setCheckedIntake(id)} />
                     </td>
                 )}
-                <td>{moment(createdAt.date).format('DD-MM-Y')}</td>
+                <td>{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>{fullName}</td>
                 <td>{fullAddress}</td>
                 <td>{measuresRequestedNames.join(', ')}</td>

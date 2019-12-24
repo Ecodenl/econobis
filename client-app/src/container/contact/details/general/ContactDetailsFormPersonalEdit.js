@@ -32,7 +32,7 @@ class ContactDetailsFormPersonalEdit extends Component {
             person: {
                 id: person.id,
                 number: number,
-                createdAt: createdAt.date,
+                createdAt: createdAt,
                 titleId: person.title ? person.title.id : '',
                 initials: person.initials ? person.initials : '',
                 firstName: person.firstName,

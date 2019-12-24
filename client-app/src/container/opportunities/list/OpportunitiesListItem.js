@@ -61,7 +61,7 @@ class OpportunitiesListItem extends Component {
                     </td>
                 )}
                 <td>{number}</td>
-                <td>{createdAt ? moment(createdAt.date).format('DD-MM-Y') : 'Onbekend'}</td>
+                <td>{createdAt ? moment(createdAt).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{contactName}</td>
                 <td>{measureCategoryName}</td>
                 <td>{campaignName}</td>

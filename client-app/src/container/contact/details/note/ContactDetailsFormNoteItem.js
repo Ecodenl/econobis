@@ -20,7 +20,7 @@ class ContactDetailFormNoteItem extends Component {
             note: {
                 id: props.note.id,
                 note: props.note.note,
-                createdAt: props.note.createdAt ? moment(props.note.createdAt.date).format('DD-MM-Y') : '',
+                createdAt: props.note.createdAt ? moment(props.note.createdAt).format('DD-MM-Y') : '',
                 createdBy: props.note.createdBy,
             },
         };
@@ -54,7 +54,7 @@ class ContactDetailFormNoteItem extends Component {
             note: {
                 id: this.props.note.id,
                 note: this.props.note.note,
-                createdAt: this.props.note.createdAt ? moment(this.props.note.createdAt.date).format('DD-MM-Y') : '',
+                createdAt: this.props.note.createdAt ? moment(this.props.note.createdAt).format('DD-MM-Y') : '',
                 createdBy: this.props.note.createdBy,
             },
         });

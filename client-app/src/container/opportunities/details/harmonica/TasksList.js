@@ -19,7 +19,7 @@ const TasksList = ({ relatedTasks }) => {
                             return (
                                 <tr onClick={() => openItem(relatedTask.id)} key={i}>
                                     <td className="col-xs-12 clickable">
-                                        {moment(relatedTask.createdAt.date).format('L')} - {relatedTask.noteSummary}
+                                        {moment(relatedTask.createdAt).format('L')} - {relatedTask.noteSummary}
                                     </td>
                                 </tr>
                             );

@@ -19,7 +19,7 @@ const CampaignDetailsIntakeView = props => {
                 <div className="col-sm-2">{fullAddress && fullAddress}</div>
                 <div className="col-sm-2">{address && address.postalCode}</div>
                 <div className="col-sm-2">{address && address.city}</div>
-                <div className="col-sm-2">{createdAt ? moment(createdAt.date).format('L') : ''}</div>
+                <div className="col-sm-2">{createdAt ? moment(createdAt).format('L') : ''}</div>
             </div>
         </div>
     );

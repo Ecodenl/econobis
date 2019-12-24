@@ -34,7 +34,7 @@ class MutationFormListItem extends Component {
                 dateContractRetour: props.participantMutation.dateContractRetour
                     ? props.participantMutation.dateContractRetour.date
                     : '',
-                datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment.date : '',
+                datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment : '',
                 dateEntry: props.participantMutation.dateEntry
                     ? props.participantMutation.dateEntry.date
                     : props.projectDateEntry

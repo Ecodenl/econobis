@@ -95,14 +95,14 @@ class ContactDetailsConclusionEdit extends Component {
                         label={'Gemaakt op'}
                         size={'col-sm-6'}
                         name={'createdAt'}
-                        value={createdAt ? moment(createdAt.date).format('LL') : 'Onbekend'}
+                        value={createdAt ? moment(createdAt).format('LL') : 'Onbekend'}
                         readOnly={true}
                     />
                     <InputDate
                         label={'Laatste update op'}
                         size={'col-sm-6'}
                         name={'updatedAt'}
-                        value={updatedAt ? moment(updatedAt.date).format('LL') : 'Onbekend'}
+                        value={updatedAt ? moment(updatedAt).format('LL') : 'Onbekend'}
                         readOnly={true}
                     />
                 </div>

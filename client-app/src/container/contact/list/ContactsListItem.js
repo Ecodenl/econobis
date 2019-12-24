@@ -73,7 +73,7 @@ class ContactsListItem extends Component {
                 <td className="hidden-xs">{city}</td>
                 <td className="hidden-xs">{emailAddress}</td>
                 <td>{phoneNumber}</td>
-                <td className="hidden-xs hidden-sm">{moment(createdAt.date).format('DD-MM-Y')}</td>
+                <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

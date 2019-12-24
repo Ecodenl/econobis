@@ -28,7 +28,7 @@ class NoteList extends Component {
                                 return (
                                     <tr onClick={() => this.openItem(relatedNote.id)} key={i}>
                                         <td className="col-xs-12 clickable">
-                                            {moment(relatedNote.createdAt.date).format('L')} - {relatedNote.noteSummary}
+                                            {moment(relatedNote.createdAt).format('L')} - {relatedNote.noteSummary}
                                         </td>
                                     </tr>
                                 );

@@ -14,7 +14,7 @@ const IntakeDetailsOpportunityView = props => {
         >
             <div onClick={() => hashHistory.push(`/kans/${id}`)}>
                 <div className="col-sm-2">{number}</div>
-                <div className="col-sm-3">{createdAt ? moment(createdAt.date).format('L') : ''}</div>
+                <div className="col-sm-3">{createdAt ? moment(createdAt).format('L') : ''}</div>
                 <div className="col-sm-3">{measureCategory ? measureCategory.name : ''}</div>
                 <div className="col-sm-2">{status ? status.name : ''}</div>
                 <div className="col-sm-2">{quotationRequests.length}</div>

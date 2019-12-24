@@ -25,7 +25,9 @@
         "spatie/laravel-permission": "^2.7",
         "spatie/valuestore": "^1.2",
         "usmanhalalit/laracsv": "1.*@dev",
-        "venturecraft/revisionable": "^1.28"
+        "venturecraft/revisionable": "^1.28",
+        "kylekatarnls/laravel-carbon-2": "^1.0.0",
+        "nesbot/carbon": "2.0.0-beta.2 as 1.25.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.4",

@@ -38,7 +38,7 @@ class AuditTrailListItem extends Component {
                 <td>{oldValue ? oldValue : 'Null'}</td>
                 <td>{newValue ? newValue : 'Null'}</td>
                 <td>{changedBy ? changedBy.fullName : ''}</td>
-                <td>{moment(changedAt.date).format('L')}</td>
+                <td>{moment(changedAt).format('L')}</td>
             </tr>
         );
     }

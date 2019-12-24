@@ -90,7 +90,7 @@ class CampaignFormEdit extends Component {
                         label={'Gemaakt op'}
                         size={'col-sm-6'}
                         name={'createdAt'}
-                        value={createdAt ? createdAt.date : ''}
+                        value={createdAt ? createdAt : ''}
                         readOnly={true}
                     />
                 </div>

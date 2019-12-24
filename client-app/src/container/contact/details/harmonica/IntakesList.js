@@ -42,7 +42,7 @@ class IntakesList extends Component {
                                 return (
                                     <tr key={i} onClick={() => this.openItem(intake.id)}>
                                         <td className="col-xs-4 clickable">
-                                            {intake.createdAt ? moment(intake.createdAt.date).format('DD-MM-Y') : ''}
+                                            {intake.createdAt ? moment(intake.createdAt).format('DD-MM-Y') : ''}
                                         </td>
                                         <td className="col-xs-8 clickable">{intake.addressName}</td>
                                     </tr>

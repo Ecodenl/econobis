@@ -14,11 +14,7 @@ const ContactDetailsFormPersonalView = props => {
             </div>
 
             <div className="row">
-                <ViewText
-                    label={'Gemaakt op'}
-                    value={moment(createdAt.date).format('DD-MM-Y')}
-                    className={'col-xs-12'}
-                />
+                <ViewText label={'Gemaakt op'} value={moment(createdAt).format('DD-MM-Y')} className={'col-xs-12'} />
             </div>
 
             <div className="row">

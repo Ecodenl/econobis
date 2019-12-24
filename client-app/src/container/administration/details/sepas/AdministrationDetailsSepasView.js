@@ -14,7 +14,7 @@ const AdministrationDetailsSepasView = props => {
             <div>
                 <div className="col-sm-3">{id}</div>
                 <div className="col-sm-3">{name}</div>
-                <div className="col-sm-3">{createdAt ? moment(createdAt.date).format('L') : ''}</div>
+                <div className="col-sm-3">{createdAt ? moment(createdAt).format('L') : ''}</div>
                 <div className="col-sm-2">{type ? type.name : ''}</div>
                 <div className="col-sm-1">
                     {props.showActionButtons && props.permissions.manageFinancial ? (

@@ -23,8 +23,8 @@ class ContactDetailsFormOccupationsItem extends Component {
             occupation: {
                 ...props.occupation,
                 primaryContactId: props.occupation.primaryContact.id,
-                startDate: props.occupation.startDate ? props.occupation.startDate.date : '',
-                endDate: props.occupation.endDate ? props.occupation.endDate.date : '',
+                startDate: props.occupation.startDate ? props.occupation.startDate : '',
+                endDate: props.occupation.endDate ? props.occupation.endDate : '',
                 contactId: props.occupation.contact.id,
                 occupationId: props.occupation.occupation.id,
             },
@@ -44,8 +44,8 @@ class ContactDetailsFormOccupationsItem extends Component {
                 occupation: {
                     ...nextProps.occupation,
                     primaryContactId: nextProps.occupation.primaryContact.id,
-                    startDate: nextProps.occupation.startDate ? nextProps.occupation.startDate.date : '',
-                    endDate: nextProps.occupation.endDate ? nextProps.occupation.endDate.date : '',
+                    startDate: nextProps.occupation.startDate ? nextProps.occupation.startDate : '',
+                    endDate: nextProps.occupation.endDate ? nextProps.occupation.endDate : '',
                     contactId: nextProps.occupation.contact.id,
                     occupationId: nextProps.occupation.occupation.id,
                 },
@@ -81,8 +81,8 @@ class ContactDetailsFormOccupationsItem extends Component {
             occupation: {
                 ...this.props.occupation,
                 primaryContactId: this.props.occupation.primaryContact.id,
-                startDate: this.props.occupation.startDate ? this.props.occupation.startDate.date : '',
-                endDate: this.props.occupation.endDate ? this.props.occupation.endDate.date : '',
+                startDate: this.props.occupation.startDate ? this.props.occupation.startDate : '',
+                endDate: this.props.occupation.endDate ? this.props.occupation.endDate : '',
                 contactId: this.props.occupation.contact ? this.props.occupation.contact.id : '',
                 occupationId: this.props.occupation.occupation ? this.props.occupation.occupation.id : '',
             },

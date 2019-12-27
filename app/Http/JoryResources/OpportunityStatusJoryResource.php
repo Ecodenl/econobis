@@ -3,10 +3,13 @@
 namespace App\Http\JoryResources;
 
 
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Http\JoryResources\Base\JoryResource;
 
 class OpportunityStatusJoryResource extends JoryResource
 {
+    protected $modelClass = OpportunityStatus::class;
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

@@ -3,10 +3,13 @@
 namespace App\Http\JoryResources;
 
 
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Http\JoryResources\Base\JoryResource;
 
 class QuotationRequestStatusJoryResource extends JoryResource
 {
+    protected $modelClass = QuotationRequestStatus::class;
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

@@ -3,10 +3,13 @@
 namespace App\Http\JoryResources;
 
 
+use App\Eco\EmailTemplate\EmailTemplate;
 use App\Http\JoryResources\Base\JoryResource;
 
 class EmailTemplateJoryResource extends JoryResource
 {
+    protected $modelClass = EmailTemplate::class;
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

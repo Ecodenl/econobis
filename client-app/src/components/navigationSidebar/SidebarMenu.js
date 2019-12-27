@@ -17,6 +17,7 @@ import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 import { road } from 'react-icons-kit/icomoon/road';
+import { forward } from 'react-icons-kit/icomoon/forward';
 
 const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
@@ -262,6 +263,36 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     })}
                 </Nav>
             )}
+
+            {permissions.manageFinancial && (
+                <Nav id="workflow">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={forward} />
+                    </NavIcon>
+                    <NavText> Workflow </NavText>
+                    <Nav id="taak-types">
+                        <NavText>
+                            <Link className="sidebar-link" to="taak-types">
+                                Taak types
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="offerte-verzoek-statussen">
+                        <NavText>
+                            <Link className="sidebar-link" to="offerte-verzoek-statussen">
+                                Offerte verzoek statussen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="kans-statussen">
+                        <NavText>
+                            <Link className="sidebar-link" to="kans-statussen">
+                                Kans statussen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
             <Nav id="instellingen">
                 <NavIcon>
                     <SvgIcon size={20} icon={cog} />
@@ -351,34 +382,6 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </Link>
                     </NavText>
                 </Nav>
-                {permissions.manageFinancial && (
-                    <Nav id="taak-types">
-                        <NavText>
-                            <Link className="sidebar-link" to="taak-types">
-                                Taak types
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageFinancial && (
-                    <Nav id="offerte-verzoek-statussen">
-                        <NavText>
-                            <Link className="sidebar-link" to="offerte-verzoek-statussen">
-                                Offerte verzoek statussen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-                {permissions.manageFinancial && (
-                    <Nav id="kans-statussen">
-                        <NavText>
-                            <Link className="sidebar-link" to="kans-statussen">
-                                Kans statussen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
-
                 {permissions.viewMailbox && (
                     <Nav id="mailboxes">
                         <NavText>

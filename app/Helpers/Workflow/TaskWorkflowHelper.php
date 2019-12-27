@@ -6,6 +6,7 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Support\Facades\Mail;

@@ -23,20 +23,20 @@ class MutationFormListItem extends Component {
             participantMutation: {
                 ...props.participantMutation,
                 dateInterest: props.participantMutation.dateInterest
-                    ? props.participantMutation.dateInterest.date
+                    ? props.participantMutation.dateInterest
                     : moment().format('YYYY-MM-DD'),
                 dateOption: props.participantMutation.dateOption
-                    ? props.participantMutation.dateOption.date
+                    ? props.participantMutation.dateOption
                     : moment().format('YYYY-MM-DD'),
                 dateGranted: props.participantMutation.dateGranted
-                    ? props.participantMutation.dateGranted.date
+                    ? props.participantMutation.dateGranted
                     : moment().format('YYYY-MM-DD'),
                 dateContractRetour: props.participantMutation.dateContractRetour
-                    ? props.participantMutation.dateContractRetour.date
+                    ? props.participantMutation.dateContractRetour
                     : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment : '',
                 dateEntry: props.participantMutation.dateEntry
-                    ? props.participantMutation.dateEntry.date
+                    ? props.participantMutation.dateEntry
                     : props.projectDateEntry
                     ? props.projectDateEntry
                     : moment().format('YYYY-MM-DD'),
@@ -77,22 +77,22 @@ class MutationFormListItem extends Component {
                 participantMutation: {
                     ...this.props.participantMutation,
                     dateInterest: this.props.participantMutation.dateInterest
-                        ? this.props.participantMutation.dateInterest.date
+                        ? this.props.participantMutation.dateInterest
                         : moment().format('YYYY-MM-DD'),
                     dateOption: this.props.participantMutation.dateOption
-                        ? this.props.participantMutation.dateOption.date
+                        ? this.props.participantMutation.dateOption
                         : moment().format('YYYY-MM-DD'),
                     dateGranted: this.props.participantMutation.dateGranted
-                        ? this.props.participantMutation.dateGranted.date
+                        ? this.props.participantMutation.dateGranted
                         : moment().format('YYYY-MM-DD'),
                     dateContractRetour: this.props.participantMutation.dateContractRetour
-                        ? this.props.participantMutation.dateContractRetour.date
+                        ? this.props.participantMutation.dateContractRetour
                         : '',
                     datePayment: this.props.participantMutation.datePayment
-                        ? this.props.participantMutation.datePayment.date
+                        ? this.props.participantMutation.datePayment
                         : '',
                     dateEntry: this.props.participantMutation.dateEntry
-                        ? this.props.participantMutation.dateEntry.date
+                        ? this.props.participantMutation.dateEntry
                         : this.props.projectDateEntry
                         ? this.props.projectDateEntry
                         : moment().format('YYYY-MM-DD'),
@@ -153,22 +153,20 @@ class MutationFormListItem extends Component {
             participantMutation: {
                 ...this.props.participantMutation,
                 dateInterest: this.props.participantMutation.dateInterest
-                    ? this.props.participantMutation.dateInterest.date
+                    ? this.props.participantMutation.dateInterest
                     : '',
-                dateOption: this.props.participantMutation.dateOption
-                    ? this.props.participantMutation.dateOption.date
-                    : '',
+                dateOption: this.props.participantMutation.dateOption ? this.props.participantMutation.dateOption : '',
                 dateGranted: this.props.participantMutation.dateGranted
-                    ? this.props.participantMutation.dateGranted.date
+                    ? this.props.participantMutation.dateGranted
                     : '',
                 dateContractRetour: this.props.participantMutation.dateContractRetour
-                    ? this.props.participantMutation.dateContractRetour.date
+                    ? this.props.participantMutation.dateContractRetour
                     : '',
                 datePayment: this.props.participantMutation.datePayment
-                    ? this.props.participantMutation.datePayment.date
+                    ? this.props.participantMutation.datePayment
                     : '',
                 dateEntry: this.props.participantMutation.dateEntry
-                    ? this.props.participantMutation.dateEntry.date
+                    ? this.props.participantMutation.dateEntry
                     : this.props.projectDateEntry
                     ? this.props.projectDateEntry
                     : moment().format('YYYY-MM-DD'),

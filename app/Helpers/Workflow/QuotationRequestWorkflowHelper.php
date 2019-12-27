@@ -5,6 +5,7 @@ namespace App\Helpers\Workflow;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Support\Facades\Mail;

@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Portal;
 
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -36,8 +37,11 @@ class GeneratePortalCss implements ShouldQueue
         $html = view('portal.portal_css', [
             'store' => $store
         ])->render();
-
-        Storage::disk('public_portal')->put('portal.css', $html);
+        try{
+            Storage::disk('public_portal')->put('portal.css', $html);
+        }catch (Exception $exception){
+            Log::error('Opslaan gewijzigde portal.css mislukt : ' . $exception->getMessage());
+        }
     }
 
     protected function getStore(): Valuestore

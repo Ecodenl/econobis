@@ -15,6 +15,7 @@ import { home } from 'react-icons-kit/icomoon/home';
 import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 import { road } from 'react-icons-kit/icomoon/road';
+import { forward } from 'react-icons-kit/icomoon/forward';
 
 const SidebarMenuSmall = ({ permissions, administrations }) => (
     <div className="sidebar-menu-small">
@@ -66,6 +67,10 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
                 <SvgIcon size={20} icon={ic_business_center} />
             </div>
         )}
+        {/* Workflow */}
+        <div className="sidebar-menu-small-item">
+            <SvgIcon size={20} icon={forward} />
+        </div>
         {/* Instellingen */}
         <div className="sidebar-menu-small-item">
             <SvgIcon size={20} icon={cog} />

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
 import { AuthConsumer } from '../../../context/AuthContext';
-import LogoImage from '../../../images/logo.png';
 import LoginForm from './Form';
 import AuthAPI from '../../../api/auth/AuthAPI';
 import Alert from 'react-bootstrap/Alert';
@@ -69,7 +68,7 @@ export default props => {
                         <Container fluid className="authorization-container">
                             <Row className="justify-content-center align-content-center full-height">
                                 <Col xs="12" sm="6" md="4" lg="3" xl="2">
-                                    <img src={LogoImage} alt="" className="image logo-container" />
+                                    <img src="images/logo.png" alt="" className="image logo-container" />
                                     <LoginForm handleSubmit={handleSubmit} login={login} />
                                     {showError ? (
                                         <Row className="justify-content-center">

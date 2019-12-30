@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import LogoImage from '../../../images/logo.png';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,7 +9,7 @@ const NewAccountSuccess = () => {
         <Container fluid className="authorization-container text-light">
             <Row className="justify-content-center align-content-center full-height">
                 <Col xs="12" sm="10" md="8" lg="6" xl="4">
-                    <img src={LogoImage} alt="" className="image logo-container" />
+                    <img src="images/logo.png" alt="" className="image logo-container" />
                     <div>
                         <h3 className={'text-light'}>Een E-mail is onderweg!</h3>
                         <p className={'text-light'}>

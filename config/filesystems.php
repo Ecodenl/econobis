@@ -72,7 +72,7 @@ return [
 
         'public_portal' => [
             'driver' => 'local',
-            'root' => public_path('portal'),
+            'root' => realpath(__DIR__).'/portal',
         ],
 
         's3' => [

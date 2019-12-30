@@ -10,8 +10,8 @@
 /* ----------------- LOGIN STYLING -----------------*/
 .authorization-container {
 background-color: var(--main-primary-color);
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('../images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('../images/page-head5.jpg');
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
@@ -118,8 +118,8 @@ text-decoration: none;
 .header-deltaw {
 position: relative;
 height: 128px;
-background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('../images/page-head5.jpg');
-background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('../images/page-head5.jpg');
+background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
+background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-primary-rgba)), url('images/page-head5.jpg');
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 background-repeat: repeat, no-repeat;
@@ -406,6 +406,104 @@ min-width: 70px;
 .arrow-steps .step:after,
 .arrow-steps .step:before {
 border-bottom: 17px solid transparent;
+}
+}
+
+@media (max-width: 479px) {
+.body {
+background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(3, 75, 140, 0.9)), to(rgba(3, 75, 140, 0.9))), url('../images/page-head5.jpg');
+background-image: linear-gradient(180deg, rgba(3, 75, 140, 0.9), rgba(3, 75, 140, 0.9)), url('../images/page-head5.jpg');
+background-position: 0px 0px, 100% 50%;
+}
+.div-block {
+padding-right: 20px;
+padding-left: 20px;
+}
+.text-input {
+min-width: 240px;
+}
+.text-input.content._w-40 {
+width: 100%;
+}
+.text-input.content._w-40._w-40-mob {
+width: 25%;
+}
+.text-input.content._w-90 {
+width: 100%;
+}
+.text-input.content._w-90._w-90-mob {
+width: 91%;
+}
+.text-input.content._w-70 {
+width: 100%;
+}
+.text-input.content._w-70._w-70-mob {
+width: 71%;
+}
+.text-input.content._w-50 {
+display: inline-block;
+}
+.button {
+margin-bottom: 10px;
+}
+.login-button {
+cursor: pointer;
+}
+.header-deltaw {
+position: relative;
+height: 128px;
+}
+.navbar {
+position: fixed;
+width: 100%;
+background-color: transparent;
+}
+.container {
+background-color: rgba(3, 75, 140, 0);
+}
+.icon {
+color: #fff;
+}
+.nav-menu {
+width: 100%;
+background-color: #034b8c;
+}
+.nav-link {
+display: block;
+margin-left: 40px;
+line-height: 32px;
+}
+.nav-link.w--current {
+border-left: 1px solid #fff;
+color: #fff;
+}
+.heading {
+margin-left: 40px;
+padding-left: 20px;
+text-align: left;
+}
+.heading.in-menu {
+margin-top: 100px;
+}
+.menu-button.w--open {
+background-color: #034b8c;
+}
+.profile-pic {
+position: absolute;
+left: 50%;
+top: auto;
+right: auto;
+bottom: -60px;
+width: 120px;
+height: 120px;
+border: 4px solid #fff;
+border-radius: 50%;
+-webkit-transform: translate(-50%, 0px);
+-ms-transform: translate(-50%, 0px);
+transform: translate(-50%, 0px);
+}
+.heading-content {
+margin-bottom: 0px;
 }
 }
 

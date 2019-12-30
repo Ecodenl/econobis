@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import LogoImage from '../../../images/logo.png';
 import ResetForm from './Form';
 import AuthAPI from '../../../api/auth/AuthAPI';
 import Container from 'react-bootstrap/Container';
@@ -56,7 +55,7 @@ const Reset = ({ location, match, login }) => {
                 <Container fluid className="authorization-container">
                     <Row className="justify-content-center align-content-center full-height">
                         <Col xs="12" sm="8" md="6" lg="4" xl="2">
-                            <img src={LogoImage} alt="" className="image logo-container" />
+                            <img src="images/logo.png" alt="" className="image logo-container" />
                             {showSuccessMessage ? (
                                 <>
                                     <Row className="justify-content-center">

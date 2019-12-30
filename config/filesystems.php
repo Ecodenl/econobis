@@ -70,9 +70,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'public_portal_local' => [
+            'driver' => 'local',
+            'root' => public_path('portal'),
+        ],
+
         'public_portal' => [
             'driver' => 'local',
-            'root' => realpath(__DIR__).'/portal',
+            'root' => '/home/econobis/domains/econobis.nl/public_html/'.env('APP_COOP_NAME').'/portal',
         ],
 
         's3' => [

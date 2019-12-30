@@ -19,10 +19,11 @@ color: #333;
 min-height: 100vh;
 }
 
-.authorization-button {
+.authorization-button.authorization-button {
 width: 100%;
 border-radius: 7px;
-background-color: white;
+background-color: var(--button-primary-color);
+border-color: var(--button-primary-color);
 color: var(--main-primary-color);
 font-weight: 600;
 text-align: center;
@@ -30,6 +31,7 @@ text-align: center;
 
 .authorization-button.btn-primary:hover, .authorization-button.btn-primary:active, .authorization-button.btn-primary:focus, .authorization-button.btn-primary:disabled {
 background-color: white;
+border-color: var(--button-primary-color);
 color: var(--main-primary-color);
 outline: none;
 opacity: 1;

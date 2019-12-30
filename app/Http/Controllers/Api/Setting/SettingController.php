@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api\Setting;
 
 
 use App\Jobs\Portal\GeneratePortalCss;
+use Config;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Valuestore\Valuestore;
 
@@ -58,7 +61,18 @@ class SettingController
             if (!$logo->isValid()) {
                 abort('422', 'Error uploading file');
             }
-            Storage::disk('public_portal')->putFileAs('images', $request->file('attachment'), 'logo.png' );;
+
+            try{
+                if(Config::get('app.env') == "local")
+                {
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachment'), 'logo.png' );
+                }else{
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('attachment'), 'logo.png' );
+                }
+            }catch (Exception $exception){
+                Log::error('Opslaan gewijzigde logo.png mislukt : ' . $exception->getMessage());
+            }
+
         }
     }
 

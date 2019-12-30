@@ -44,10 +44,8 @@ class GeneratePortalCss implements ShouldQueue
             if(Config::get('app.env') == "local")
             {
                 Storage::disk('public_portal_local')->put('portal.css', $html);
-                Log::info('Gewijzigde portal.css opgeslagen in : ' . Storage::disk('public_portal_local')->path('portal.css'));
             }else{
                 Storage::disk('public_portal')->put('portal.css', $html);
-                Log::info('Gewijzigde portal.css opgeslagen in : ' . Storage::disk('public_portal')->path('portal.css'));
             }
         }catch (Exception $exception){
             Log::error('Opslaan gewijzigde portal.css mislukt : ' . $exception->getMessage());

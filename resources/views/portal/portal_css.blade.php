@@ -2,7 +2,7 @@
 --main-primary-color: {{ $store->get('backgroundColor', '#034b8c') }};
 --main-primary-rgba: {{ $store->get('backgroundImageColor', 'rgba(3, 75, 140, 0.9)') }};
 --main-secondary-color: {{ $store->get('backgroundSecondaryColor', '#3898EC') }};
---button-primary-color:{{ $store->get('buttonColor', '#3898EC') }};
+--button-primary-color: {{ $store->get('buttonColor', '#3898EC') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
 }
@@ -151,8 +151,9 @@ color: red;
 font-size: 18px;
 }
 /* ----------------- BUTTON STYLING -----------------*/
-.w-button {
+.w-button.w-button {
 background-color: var(--button-primary-color);
+border-color: var(--button-primary-color);
 color: white;
 }
 

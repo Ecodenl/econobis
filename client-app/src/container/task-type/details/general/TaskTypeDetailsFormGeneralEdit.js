@@ -145,6 +145,13 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                         {usesWfExpiredTask == true && (
                             <React.Fragment>
                                 <div className="row">
+                                    <ViewText
+                                        label={'Uitleg workflow'}
+                                        value={this.props.explanationWfExpiredTask}
+                                        className={'col-sm-6 form-group'}
+                                    />
+                                </div>
+                                <div className="row">
                                     <InputReactSelect
                                         label={'Template email verlopen taak'}
                                         name={'emailTemplateIdWfExpiredTask'}
@@ -171,6 +178,13 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
 
                         {usesWfCompletedTask == true && (
                             <React.Fragment>
+                                <div className="row">
+                                    <ViewText
+                                        label={'Uitleg workflow'}
+                                        value={this.props.explanationWfCompletedTask}
+                                        className={'col-sm-6 form-group'}
+                                    />
+                                </div>
                                 <div className="row">
                                     <InputReactSelect
                                         label={'Template email afgehandelde taak'}

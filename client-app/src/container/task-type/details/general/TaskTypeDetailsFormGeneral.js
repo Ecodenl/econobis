@@ -44,6 +44,9 @@ class TaskTypeDetailsFormGeneral extends Component {
     render() {
         const { permissions = {} } = this.props.meDetails;
 
+        const explanationWfExpiredTask = <span>Hier uitleg 1{/*<br /> enzo*/}</span>;
+        const explanationWfCompletedTask = <span>Hier uitleg 2{/*<br /> enzo*/}</span>;
+
         return (
             <div
                 className={this.state.activeDiv}
@@ -55,9 +58,16 @@ class TaskTypeDetailsFormGeneral extends Component {
                         taskType={this.props.taskType}
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}
+                        explanationWfExpiredTask={explanationWfExpiredTask}
+                        explanationWfCompletedTask={explanationWfCompletedTask}
                     />
                 ) : (
-                    <TaskTypeDetailsFormGeneralView {...this.props.taskType} switchToEdit={this.switchToEdit} />
+                    <TaskTypeDetailsFormGeneralView
+                        {...this.props.taskType}
+                        switchToEdit={this.switchToEdit}
+                        explanationWfExpiredTask={explanationWfExpiredTask}
+                        explanationWfCompletedTask={explanationWfCompletedTask}
+                    />
                 )}
             </div>
         );

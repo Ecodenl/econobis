@@ -7,13 +7,14 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class OpportunityStatusController extends Controller
 {
 
     public function jory(Request $request)
     {
-        return OpportunityStatus::jory()->applyRequest($request);
+        return Jory::on(OpportunityStatus::class);
     }
 
     public function update(RequestInput $input, OpportunityStatus $opportunityStatus, Request $request)
@@ -27,7 +28,7 @@ class OpportunityStatusController extends Controller
         $opportunityStatus->fill($data);
         $opportunityStatus->save();
 
-        return OpportunityStatus::jory()->onModel($opportunityStatus)->applyRequest($request);
+        return Jory::on($opportunityStatus);
     }
 
 }

@@ -12,6 +12,8 @@ const TaskTypeDetailsFormGeneralView = ({
     usesWfExpiredTask,
     emailTemplateWorkflowExpiredTask,
     switchToEdit,
+    explanationWfExpiredTask,
+    explanationWfCompletedTask,
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -26,6 +28,9 @@ const TaskTypeDetailsFormGeneralView = ({
 
                     {usesWfExpiredTask == true && (
                         <React.Fragment>
+                            <div className="row">
+                                <ViewText label={'Uitleg workflow'} value={explanationWfExpiredTask} />
+                            </div>
                             <div className="row">
                                 <ViewText
                                     label={'Template email verlopen taak'}
@@ -46,6 +51,9 @@ const TaskTypeDetailsFormGeneralView = ({
 
                     {usesWfCompletedTask == true && (
                         <React.Fragment>
+                            <div className="row">
+                                <ViewText label={'Uitleg workflow'} value={explanationWfCompletedTask} />
+                            </div>
                             <div className="row">
                                 <ViewText
                                     label={'Template email afgehandelde taak'}

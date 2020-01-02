@@ -108,7 +108,7 @@ class PortalSettingsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { portalSettings, attachmentLogo, filenameLogo, attachmentFavicon, filenameFavicon } = this.state;
+        const { portalSettings, attachmentLogo, attachmentFavicon } = this.state;
 
         // Validation
         let errors = {};
@@ -182,10 +182,6 @@ class PortalSettingsFormGeneralEdit extends Component {
     render() {
         const {
             portalName,
-            attachmentLogo,
-            attachmentFavicon,
-            filenameLogo,
-            filenameFavicon,
             cooperativeName,
             portalWebsite,
             portalUrl,
@@ -200,8 +196,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             linkPrivacyPolicy,
             showNewAtCooperativeLink,
         } = this.state.portalSettings;
-
-        // console.log('File: ' + filename);
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -222,7 +216,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                             <InputText
                                 label="Logo"
                                 divSize={'col-sm-8'}
-                                value={attachmentLogo ? attachmentLogo.name : filenameLogo}
+                                value={'logo.png'}
                                 onClickAction={this.toggleNewLogo}
                                 onChangeaction={() => {}}
                             />
@@ -234,7 +228,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                             <InputText
                                 label="Favicon"
                                 divSize={'col-sm-8'}
-                                value={attachmentFavicon ? attachmentFavicon.name : filenameFavicon}
+                                value={'favicon.ico'}
                                 onClickAction={this.toggleNewFavicon}
                                 onChangeaction={() => {}}
                             />

@@ -24,23 +24,33 @@ const PortalSettingsFormGeneralView = ({
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Contacten portal URL'} value={portalUrl} />
+                        <ViewText
+                            label={'Contacten portal URL'}
+                            divSize={'col-sm-8'}
+                            value={portalUrl}
+                            className={'col-sm-8 form-group'}
+                        />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Verantwoordelijke portal'}
+                            divSize={'col-sm-8'}
                             value={responsibleUser ? responsibleUser.fullName : ''}
+                            className={'col-sm-8 form-group'}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Eigenaar nieuwe contacten'}
+                            divSize={'col-sm-8'}
                             value={contactResponsibleOwnerUser ? contactResponsibleOwnerUser.fullName : ''}
+                            className={'col-sm-8 form-group'}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Verantwoordelijke uitvoeren taak'}
+                            divSize={'col-sm-8'}
                             value={
                                 checkContactTaskResponsibleUser
                                     ? checkContactTaskResponsibleUser.fullName
@@ -48,31 +58,56 @@ const PortalSettingsFormGeneralView = ({
                                     ? checkContactTaskResponsibleTeam.name
                                     : ''
                             }
+                            className={'col-sm-8 form-group'}
                         />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Nieuw bij, aanmelden mogelijk'}
+                            divSize={'col-sm-8'}
                             value={showNewAtCooperativeLink ? 'Ja' : 'Nee'}
+                            className={'col-sm-8 form-group'}
                         />
                     </div>
                     <div className="row">
-                        <ViewText label={'Privacybeleid link'} value={linkPrivacyPolicy} />
+                        <ViewText
+                            label={'Privacybeleid link'}
+                            divSize={'col-sm-8'}
+                            value={linkPrivacyPolicy}
+                            className={'col-sm-8 form-group'}
+                        />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Email template Nieuwe account activeren'}
+                            divSize={'col-sm-8'}
                             value={emailTemplateNewAccount ? emailTemplateNewAccount.name : ''}
+                            className={'col-sm-8 form-group'}
                         />
                     </div>
                     <div className="row">
-                        <ViewText label={'Coöperatie portal naam'} value={portalName} />
+                        <ViewText
+                            label={'Coöperatie portal naam'}
+                            divSize={'col-sm-8'}
+                            value={portalName}
+                            className={'col-sm-8 form-group'}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Coöperatie naam'} value={cooperativeName} />
+                        <ViewText
+                            label={'Coöperatie naam'}
+                            divSize={'col-sm-8'}
+                            value={cooperativeName}
+                            className={'col-sm-8 form-group'}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Coöperatie website'} value={portalWebsite} />
+                        <ViewText
+                            label={'Coöperatie website'}
+                            divSize={'col-sm-8'}
+                            value={portalWebsite}
+                            className={'col-sm-8 form-group'}
+                        />
                     </div>
                 </PanelBody>
             </Panel>

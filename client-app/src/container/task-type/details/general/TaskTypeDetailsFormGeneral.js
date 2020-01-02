@@ -44,8 +44,18 @@ class TaskTypeDetailsFormGeneral extends Component {
     render() {
         const { permissions = {} } = this.props.meDetails;
 
-        const explanationWfExpiredTask = <span>Hier uitleg 1{/*<br /> enzo*/}</span>;
-        const explanationWfCompletedTask = <span>Hier uitleg 2{/*<br /> enzo*/}</span>;
+        const explanationWfExpiredTask = (
+            <span>
+                Er zal automatisch eenmalig een email verstuurd worden naar de verantwoordelijke als deze taak is
+                verlopen.
+            </span>
+        );
+        const explanationWfCompletedTask = (
+            <span>
+                Er zal automatisch eenmalig een email verstuurd worden naar contact taak als deze taak is afgehandeld
+                is, rekening houdend met het opgegeven aantal dagen.
+            </span>
+        );
 
         return (
             <div

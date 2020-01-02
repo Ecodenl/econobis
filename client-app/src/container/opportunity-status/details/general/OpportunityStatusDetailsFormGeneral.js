@@ -44,6 +44,15 @@ class OpportunityStatusDetailsFormGeneral extends Component {
     render() {
         const { permissions = {} } = this.props.meDetails;
 
+        const explanationWf = (
+            <span>
+                Als gebruik workflow bij deze status is aangezet, dan zal er automatisch eenmalig een email verstuurd
+                gaan worden naar contact als kans op deze status is gezet.
+                <br />
+                De verzenddatum wordt dan bepaald, rekening houdend met het opgegeven aantal dagen.
+            </span>
+        );
+
         return (
             <div
                 className={this.state.activeDiv}
@@ -55,11 +64,13 @@ class OpportunityStatusDetailsFormGeneral extends Component {
                         opportunityStatus={this.props.opportunityStatus}
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}
+                        explanationWf={explanationWf}
                     />
                 ) : (
                     <OpportunityStatusDetailsFormGeneralView
                         {...this.props.opportunityStatus}
                         switchToEdit={this.switchToEdit}
+                        explanationWf={explanationWf}
                     />
                 )}
             </div>

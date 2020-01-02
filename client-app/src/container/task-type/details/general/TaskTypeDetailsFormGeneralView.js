@@ -20,23 +20,40 @@ const TaskTypeDetailsFormGeneralView = ({
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Omschrijving'} value={name} />
+                        <ViewText
+                            label={'Omschrijving'}
+                            divSize={'col-sm-10'}
+                            value={name}
+                            className={'col-sm-10 form-group'}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Gebruikt workflow verlopen taak'} value={usesWfExpiredTask ? 'Ja' : 'Nee'} />
+                        <ViewText
+                            label={'Gebruikt workflow verlopen taak'}
+                            divSize={'col-sm-10'}
+                            value={usesWfExpiredTask ? 'Ja' : 'Nee'}
+                            className={'col-sm-10 form-group'}
+                        />
                     </div>
 
                     {usesWfExpiredTask == true && (
                         <React.Fragment>
                             <div className="row">
-                                <ViewText label={'Uitleg workflow'} value={explanationWfExpiredTask} />
+                                <ViewText
+                                    label={'Uitleg workflow verlopen taak'}
+                                    divSize={'col-sm-10'}
+                                    value={explanationWfExpiredTask}
+                                    className={'col-sm-10 form-group'}
+                                />
                             </div>
                             <div className="row">
                                 <ViewText
                                     label={'Template email verlopen taak'}
+                                    divSize={'col-sm-10'}
                                     value={
                                         emailTemplateWorkflowExpiredTask ? emailTemplateWorkflowExpiredTask.name : ''
                                     }
+                                    className={'col-sm-10 form-group'}
                                 />
                             </div>
                         </React.Fragment>
@@ -45,29 +62,40 @@ const TaskTypeDetailsFormGeneralView = ({
                     <div className="row">
                         <ViewText
                             label={'Gebruikt workflow afgehandelde taak'}
+                            divSize={'col-sm-10'}
                             value={usesWfCompletedTask ? 'Ja' : 'Nee'}
+                            className={'col-sm-10 form-group'}
                         />
                     </div>
 
                     {usesWfCompletedTask == true && (
                         <React.Fragment>
                             <div className="row">
-                                <ViewText label={'Uitleg workflow'} value={explanationWfCompletedTask} />
+                                <ViewText
+                                    label={'Uitleg workflow afgehandelde taak'}
+                                    divSize={'col-sm-10'}
+                                    value={explanationWfCompletedTask}
+                                    className={'col-sm-10 form-group'}
+                                />
                             </div>
                             <div className="row">
                                 <ViewText
                                     label={'Template email afgehandelde taak'}
+                                    divSize={'col-sm-10'}
                                     value={
                                         emailTemplateWorkflowCompletedTask
                                             ? emailTemplateWorkflowCompletedTask.name
                                             : ''
                                     }
+                                    className={'col-sm-10 form-group'}
                                 />
                             </div>
                             <div className="row">
                                 <ViewText
                                     label={'Aantal dagen email na afgehandelde taak'}
+                                    divSize={'col-sm-10'}
                                     value={numberOfDaysToSendEmailCompletedTask}
+                                    className={'col-sm-10 form-group'}
                                 />
                             </div>
                         </React.Fragment>

@@ -44,6 +44,15 @@ class QuotationRequestStatusDetailsFormGeneral extends Component {
     render() {
         const { permissions = {} } = this.props.meDetails;
 
+        const explanationWf = (
+            <span>
+                Als gebruik workflow bij deze status is aangezet, dan zal er automatisch eenmalig een email verstuurd
+                gaan worden naar contact (verzoek voor) als offerteverzoek op deze status is gezet.
+                <br />
+                De verzenddatum wordt dan bepaald, rekening houdend met het opgegeven aantal dagen.
+            </span>
+        );
+
         return (
             <div
                 className={this.state.activeDiv}
@@ -55,11 +64,13 @@ class QuotationRequestStatusDetailsFormGeneral extends Component {
                         quotationRequestStatus={this.props.quotationRequestStatus}
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}
+                        explanationWf={explanationWf}
                     />
                 ) : (
                     <QuotationRequestStatusDetailsFormGeneralView
                         {...this.props.quotationRequestStatus}
                         switchToEdit={this.switchToEdit}
+                        explanationWf={explanationWf}
                     />
                 )}
             </div>

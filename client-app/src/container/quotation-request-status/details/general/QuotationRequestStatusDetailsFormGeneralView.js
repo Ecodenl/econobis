@@ -10,28 +10,54 @@ const QuotationRequestStatusDetailsFormGeneralView = ({
     emailTemplateWorkflow,
     numberOfDaysToSendEmail,
     switchToEdit,
+    explanationWf,
 }) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Omschrijving'} value={name} />
+                        <ViewText
+                            label={'Omschrijving'}
+                            divSize={'col-sm-10'}
+                            value={name}
+                            className={'col-sm-10 form-group'}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Gebruikt workflow bij deze status'} value={usesWf ? 'Ja' : 'Nee'} />
+                        <ViewText
+                            label={'Gebruikt workflow bij deze status'}
+                            divSize={'col-sm-10'}
+                            value={usesWf ? 'Ja' : 'Nee'}
+                            className={'col-sm-10 form-group'}
+                        />
                     </div>
 
                     {usesWf == true && (
                         <React.Fragment>
                             <div className="row">
                                 <ViewText
-                                    label={'Template email bij deze status'}
-                                    value={emailTemplateWorkflow ? emailTemplateWorkflow.name : ''}
+                                    label={'Uitleg workflow'}
+                                    divSize={'col-sm-10'}
+                                    value={explanationWf}
+                                    className={'col-sm-10 form-group'}
                                 />
                             </div>
                             <div className="row">
-                                <ViewText label={'Aantal dagen email na deze status'} value={numberOfDaysToSendEmail} />
+                                <ViewText
+                                    label={'Template email bij deze status'}
+                                    divSize={'col-sm-10'}
+                                    value={emailTemplateWorkflow ? emailTemplateWorkflow.name : ''}
+                                    className={'col-sm-10 form-group'}
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Aantal dagen email na deze status'}
+                                    divSize={'col-sm-10'}
+                                    value={numberOfDaysToSendEmail}
+                                    className={'col-sm-10 form-group'}
+                                />
                             </div>
                         </React.Fragment>
                     )}

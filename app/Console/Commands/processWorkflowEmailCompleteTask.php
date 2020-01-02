@@ -48,12 +48,9 @@ class processWorkflowEmailCompleteTask extends Command
             })->get();
 
         foreach ($tasksToProcess as $task) {
-//            echo "Date finished: " . Carbon::parse($task->date_finished)->toDateString() . "\n";
             $days = $task->type ? $task->type->number_of_days_to_send_email_completed_task : 0;
             $mailDate = Carbon::parse($task->date_finished)->addDays($days);
-//            echo "Date for mail: " . Carbon::parse($mailDate)->toDateString() . "\n";
-            if(Carbon::parse($mailDate) < Carbon::now()->startOfDay()){
-//                echo "do wat" . "\n";
+            if(Carbon::parse($mailDate) <= Carbon::now()->startOfDay()){
                 $taskWorkflowHelper = new TaskWorkflowHelper($task);
                 $processed = $taskWorkflowHelper->processWorkflowEmailCompleteTask();
                 if($processed)

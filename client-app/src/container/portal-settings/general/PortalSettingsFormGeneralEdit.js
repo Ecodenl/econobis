@@ -15,6 +15,7 @@ import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import InputToggle from '../../../components/form/InputToggle';
 import PortalLogoNew from './PortalLogoNew';
+import PortalFaviconNew from './PortalFaviconNew';
 
 class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
@@ -27,9 +28,12 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplates: {
                 ...props.emailTemplates,
             },
-            attachment: '',
-            filename: 'logo.png',
+            attachmentLogo: '',
+            filenameLogo: 'logo.png',
             newLogo: false,
+            attachmentFavicon: '',
+            filenameFavicon: 'favicon.ico',
+            newFavicon: false,
             errors: {
                 portalName: false,
                 cooperativeName: false,
@@ -58,11 +62,23 @@ class PortalSettingsFormGeneralEdit extends Component {
             newLogo: !this.state.newLogo,
         });
     };
-    addAttachment = file => {
+    toggleNewFavicon = () => {
+        this.setState({
+            newFavicon: !this.state.newFavicon,
+        });
+    };
+    addLogo = file => {
         this.setState({
             ...this.state,
-            attachment: file[0],
-            filename: file[0].name,
+            attachmentLogo: file[0],
+            filenameLogo: file[0].name,
+        });
+    };
+    addFavicon = file => {
+        this.setState({
+            ...this.state,
+            attachmentFavicon: file[0],
+            filenameFavicon: file[0].name,
         });
     };
 
@@ -92,7 +108,7 @@ class PortalSettingsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { portalSettings, attachment, filename } = this.state;
+        const { portalSettings, attachmentLogo, filenameLogo, attachmentFavicon, filenameFavicon } = this.state;
 
         // Validation
         let errors = {};
@@ -145,7 +161,8 @@ class PortalSettingsFormGeneralEdit extends Component {
         data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy);
         data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
 
-        data.append('attachment', attachment);
+        data.append('attachmentLogo', attachmentLogo);
+        data.append('attachmentFavicon', attachmentFavicon);
 
         this.setState({ ...this.state, errors: errors });
 
@@ -165,8 +182,10 @@ class PortalSettingsFormGeneralEdit extends Component {
     render() {
         const {
             portalName,
-            attachment,
-            filename,
+            attachmentLogo,
+            attachmentFavicon,
+            filenameLogo,
+            filenameFavicon,
             cooperativeName,
             portalWebsite,
             portalUrl,
@@ -201,15 +220,30 @@ class PortalSettingsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Contacten portal Logo"
+                                label="Logo"
                                 divSize={'col-sm-8'}
-                                value={attachment ? attachment.name : filename}
+                                value={attachmentLogo ? attachmentLogo.name : filenameLogo}
                                 onClickAction={this.toggleNewLogo}
                                 onChangeaction={() => {}}
                             />
                         </div>
                         {this.state.newLogo && (
-                            <PortalLogoNew toggleShowNew={this.toggleNewLogo} addAttachment={this.addAttachment} />
+                            <PortalLogoNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
+                        )}
+                        <div className="row">
+                            <InputText
+                                label="Favicon"
+                                divSize={'col-sm-8'}
+                                value={attachmentFavicon ? attachmentFavicon.name : filenameFavicon}
+                                onClickAction={this.toggleNewFavicon}
+                                onChangeaction={() => {}}
+                            />
+                        </div>
+                        {this.state.newFavicon && (
+                            <PortalFaviconNew
+                                toggleShowNewFavicon={this.toggleNewFavicon}
+                                addFavicon={this.addFavicon}
+                            />
                         )}
 
                         <div className="row">

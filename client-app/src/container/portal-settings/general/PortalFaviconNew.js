@@ -3,7 +3,7 @@ const Dropzone = require('react-dropzone').default;
 
 import Modal from '../../../components/modal/Modal';
 
-class PortalLogoNew extends Component {
+class PortalFaviconNew extends Component {
     constructor(props) {
         super(props);
 
@@ -14,9 +14,9 @@ class PortalLogoNew extends Component {
     }
 
     onDropAccepted(file) {
-        this.props.addLogo(file);
+        this.props.addFavicon(file);
         setTimeout(() => {
-            this.props.toggleShowNewLogo();
+            this.props.toggleShowNewFavicon();
         }, 500);
     }
 
@@ -29,18 +29,18 @@ class PortalLogoNew extends Component {
     render() {
         return (
             <Modal
-                closeModal={this.props.toggleShowNewLogo}
+                closeModal={this.props.toggleShowNewFavicon}
                 showConfirmAction={false}
-                title="Upload logo bestand (PNG)"
+                title="Upload favicon bestand (ICO)"
             >
                 <div className="upload-file-content">
                     <Dropzone
-                        accept="image/png"
+                        accept=".ico"
                         multiple={false}
                         className="dropzone"
                         onDropAccepted={this.onDropAccepted.bind(this)}
                         onDropRejected={this.onDropRejected.bind(this)}
-                        maxSize={6000000}
+                        maxSize={1000000}
                     >
                         <p>Klik hier voor het uploaden van een bestand</p>
                         <p>
@@ -53,7 +53,7 @@ class PortalLogoNew extends Component {
                 )}
                 {this.state.errorMaxSize && (
                     <p className="has-error-message">
-                        Uploaden mislukt. Het bestand moet bestandstype PNG zijn en mag maximaal 6MB groot zijn.
+                        Uploaden mislukt. Het bestand moet bestandstype ICO zijn en mag maximaal 1MB groot zijn.
                     </p>
                 )}
             </Modal>
@@ -61,4 +61,4 @@ class PortalLogoNew extends Component {
     }
 }
 
-export default PortalLogoNew;
+export default PortalFaviconNew;

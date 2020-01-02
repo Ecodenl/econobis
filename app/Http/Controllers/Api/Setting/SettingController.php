@@ -52,28 +52,51 @@ class SettingController
 
         GeneratePortalCss::dispatch();
 
-        //get attachments
-        $logo = $request->file('attachment')
-            ? $request->file('attachment') : false;
+        //get logo
+        $logo = $request->file('attachmentLogo')
+            ? $request->file('attachmentLogo') : false;
 
         if($logo){
             //store logo
             if (!$logo->isValid()) {
-                abort('422', 'Error uploading file');
+                abort('422', 'Error uploading file logo');
             }
 
             try{
                 if(Config::get('app.env') == "local")
                 {
-                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachment'), 'logo.png' );
+                    Storage::disk('public_portal_local')->putFileAs('images', $request->file('attachmentLogo'), 'logo.png' );
                 }else{
-                    Storage::disk('public_portal')->putFileAs('images', $request->file('attachment'), 'logo.png' );
+                    Storage::disk('public_portal')->putFileAs('images', $request->file('attachmentLogo'), 'logo.png' );
                 }
             }catch (Exception $exception){
                 Log::error('Opslaan gewijzigde logo.png mislukt : ' . $exception->getMessage());
             }
 
         }
+
+        //get favicon
+        $favicon = $request->file('attachmentFavicon')
+            ? $request->file('attachmentFavicon') : false;
+
+        if($favicon){
+            //store favicon
+            if (!$favicon->isValid()) {
+                abort('422', 'Error uploading file favicon');
+            }
+            try{
+                if(Config::get('app.env') == "local")
+                {
+                    Storage::disk('public_portal_local')->putFileAs('/', $request->file('attachmentFavicon'), 'favicon.ico' );
+                }else{
+                    Storage::disk('public_portal')->putFileAs('/', $request->file('attachmentFavicon'), 'favicon.ico' );
+                }
+            }catch (Exception $exception){
+                Log::error('Opslaan gewijzigde favicon.ico mislukt : ' . $exception->getMessage());
+            }
+
+        }
+
     }
 
     protected function getWhitelistedKeyValues(Request $request): array

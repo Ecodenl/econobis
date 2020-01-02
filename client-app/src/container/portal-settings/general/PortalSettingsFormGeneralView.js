@@ -39,6 +39,9 @@ const PortalSettingsFormGeneralView = ({
                         <ViewText label={'Logo'} value={'logo.png'} />
                     </div>
                     <div className="row">
+                        <ViewText label={'Favicon'} value={'favicon.ico'} />
+                    </div>
+                    <div className="row">
                         <ViewText label={'Achtergrond kleur'} value={backgroundColor} />
                     </div>
                     <div className="row">
@@ -50,9 +53,7 @@ const PortalSettingsFormGeneralView = ({
                     <div className="row">
                         <ViewText label={'Buttonknop kleur'} value={buttonColor} />
                     </div>
-
                     <hr />
-
                     <div className="row">
                         <ViewText
                             label={'Verantwoordelijke portal'}

@@ -65,6 +65,7 @@ InputText.defaultProps = {
     className: '',
     size: 'col-sm-6',
     divSize: 'col-sm-6',
+    name: '',
     type: 'text',
     value: '',
     required: '',

@@ -7,13 +7,14 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class TaskTypeController extends Controller
 {
 
     public function jory(Request $request)
     {
-        return TaskType::jory()->applyRequest($request);
+        return Jory::on(TaskType::class);
     }
 
     public function update(RequestInput $input, TaskType $taskType, Request $request)
@@ -29,7 +30,7 @@ class TaskTypeController extends Controller
         $taskType->fill($data);
         $taskType->save();
 
-        return TaskType::jory()->onModel($taskType)->applyRequest($request);
+        return Jory::on($taskType);
     }
 
 }

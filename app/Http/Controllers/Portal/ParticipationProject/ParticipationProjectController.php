@@ -53,7 +53,7 @@ class ParticipationProjectController extends Controller
         }
         // ophalen projectgegevens
         $project = Project::find($request->projectId);
-        if (!$contact) {
+        if (!$project) {
             abort(501, 'Er is helaas een fout opgetreden (4).');
         }
 

@@ -42,6 +42,7 @@ use App\Eco\Project\Project;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskPropertyValue;
+use App\Eco\Task\TaskType;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
@@ -80,6 +81,7 @@ class ExternalWebformController extends Controller
      * @var ContactGroup|null
      */
     protected $contactGroup = null;
+    protected $contactGroups = null;
 
     /**
      * Het gevonden webform hebben we op nog een aantal plekken nodig, daarom in class opslaan
@@ -209,6 +211,7 @@ class ExternalWebformController extends Controller
                 'incasso_schema' => 'collect_mandate_collection_schema',
                 // Groep
                 'contact_groep' => 'group_name',
+                'contact_groep_ids' => 'contact_group_ids',
             ],
             'energy_supplier' => [
                 // ContactEnergySupplier
@@ -834,6 +837,7 @@ class ExternalWebformController extends Controller
             return $participation;
         } else {
             $this->log('Er is geen project meegegeven, geen participatie aanmaken.');
+            return null;
         }
     }
 
@@ -857,6 +861,26 @@ class ExternalWebformController extends Controller
             $contactGroup->contacts()->syncWithoutDetaching($contact);
             $this->contactGroup = $contactGroup;
             $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
+
+        }elseif($data['contact_group_ids']){
+            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
+            if ($contactGroups->count() > 0) {
+                $this->log('Er is 1 of meerdere contactgroep meegegeven, groep(en) koppelen.');
+
+                foreach ($contactGroups as $contactGroup)
+                {
+                    if ($contactGroup->type_id != 'static') {
+                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
+                    }else{
+
+                        $contactGroup->contacts()->syncWithoutDetaching($contact);
+                        $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
+                    }
+                }
+                $this->contactGroups = $contactGroups;
+            } else {
+                $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
+            }
         } else {
             $this->log('Er is geen contact groep meegegeven, geen groep koppelen.');
         }
@@ -893,11 +917,34 @@ class ExternalWebformController extends Controller
         if($data['note']) $note .= $data['note'] . "\n\n";
         $note .= implode("\n", $this->taskErrors);
 
+        $contactGroupId = null;
+        if ($this->contactGroup) {
+            $contactGroupId = $this->contactGroup->id;
+            $note .= "Contact is aan groep " . $this->contactGroup->name . " gekoppeld.\n\n";
+            $this->log('Contact is aan groep ' . $this->contactGroup->name . ' gekoppeld.');
+        }elseif($this->contactGroups && $this->contactGroups->count() == 1 ){
+            $contactGroupId = $this->contactGroups[0]->id;
+            $note .= "Contact is aan groep " . $this->contactGroups[0]->name . " gekoppeld.\n\n";
+            $this->log('Contact is aan groep ' . $this->contactGroups[0]->name . ' gekoppeld.');
+        }elseif($this->contactGroups && $this->contactGroups->count() > 1 )
+        if ($this->contactGroups && $this->contactGroups->count() > 0) {
+            $note .= "Contact is aan meerdere groepen gekoppeld.\n\n";
+            $this->log('Contact is aan meerdere groepen gekoppeld.');
+        }
+
+        $taskTypeId = $data['type_id'];
+        $taskType = TaskType::find($taskTypeId);
+        if (!$taskType) {
+            $taskTypeId = 6;
+            $taskType = TaskType::find($taskTypeId);
+            $this->log('Geen bekende waarde voor taak_type_id (' . $data['type_id'] . ') meegegeven, default naar ' . $taskTypeId . ' ' . $taskType->name . '.');
+        }
+
         $task = Task::create([
             'note' => $note,
-            'type_id' => $data['type_id'] ?: 6,
+            'type_id' => $taskTypeId,
             'contact_id' => $contact->id,
-            'contact_group_id' => $this->contactGroup ? $this->contactGroup->id : null,
+            'contact_group_id' => $contactGroupId,
             'finished' => $data['finished'] ? (bool)$data['finished'] : false,
             'date_planned_start' => (new Carbon())->startOfDay(),
             'date_planned_finish' => $datePlannedFinish,
@@ -997,6 +1044,7 @@ class ExternalWebformController extends Controller
             return $order;
         } else {
             $this->log('Er is geen product meegegeven, geen order aanmaken.');
+            return null;
         }
     }
 

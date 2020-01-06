@@ -16,6 +16,7 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import InputToggle from '../../../components/form/InputToggle';
 import PortalLogoNew from './PortalLogoNew';
 import PortalFaviconNew from './PortalFaviconNew';
+import Image from 'react-bootstrap/es/Image';
 
 class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
@@ -197,6 +198,8 @@ class PortalSettingsFormGeneralEdit extends Component {
             showNewAtCooperativeLink,
         } = this.state.portalSettings;
 
+        const logoUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
+        const faviconUrl = `${URL_API}/portal/favicon.ico?${this.props.imageHash}`;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -216,9 +219,25 @@ class PortalSettingsFormGeneralEdit extends Component {
                             <InputText
                                 label="Logo"
                                 divSize={'col-sm-8'}
-                                value={'logo.png'}
+                                value={this.state.attachmentLogo.name ? this.state.attachmentLogo.name : 'logo.png'}
                                 onClickAction={this.toggleNewLogo}
                                 onChangeaction={() => {}}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentLogo && this.state.attachmentLogo.preview
+                                        ? this.state.attachmentLogo.preview
+                                        : logoUrl
+                                }
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
                             />
                         </div>
                         {this.state.newLogo && (
@@ -231,6 +250,21 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={'favicon.ico'}
                                 onClickAction={this.toggleNewFavicon}
                                 onChangeaction={() => {}}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentFavicon && this.state.attachmentFavicon.preview
+                                        ? this.state.attachmentFavicon.preview
+                                        : faviconUrl
+                                }
+                                style={{
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
                             />
                         </div>
                         {this.state.newFavicon && (
@@ -249,6 +283,20 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.backgroundColor}
                             />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            />
                         </div>
                         <div className="row">
                             <InputText
@@ -258,6 +306,20 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={backgroundImageColor}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.backgroundImageColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
                             />
                         </div>
                         <div className="row">
@@ -269,6 +331,20 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.backgroundSecondaryColor}
                             />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundSecondaryColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            />
                         </div>
                         <div className="row">
                             <InputText
@@ -278,6 +354,20 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={buttonColor}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.buttonColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: buttonColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
                             />
                         </div>
 

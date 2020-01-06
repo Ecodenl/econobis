@@ -3,6 +3,7 @@ import React from 'react';
 import ViewText from '../../../components/form/ViewText';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import Image from 'react-bootstrap/es/Image';
 
 const PortalSettingsFormGeneralView = ({
     portalName,
@@ -22,6 +23,7 @@ const PortalSettingsFormGeneralView = ({
     linkPrivacyPolicy,
     showNewAtCooperativeLink,
     switchToEdit,
+    imageHash,
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -36,22 +38,131 @@ const PortalSettingsFormGeneralView = ({
                         />
                     </div>
                     <div className="row">
-                        <ViewText label={'Logo'} value={'logo.png'} />
+                        <ViewText
+                            label={'Logo'}
+                            divSize={'col-sm-8'}
+                            value={'logo.png'}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={`${URL_API}/portal/images/logo.png?${imageHash}`}
+                            style={{
+                                backgroundColor: backgroundImageColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '50px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Favicon'} value={'favicon.ico'} />
+                        <ViewText
+                            label={'Favicon'}
+                            divSize={'col-sm-8'}
+                            value={'favicon.ico'}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <Image
+                            src={`${URL_API}/portal/favicon.ico?${imageHash}`}
+                            style={{
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '1px',
+                                borderRadius: '1px',
+                                height: '20px',
+                                boxShadow: '0 0 0 1px #fff inset',
+                            }}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Achtergrond kleur'} value={backgroundColor} />
+                        <ViewText
+                            label={'Achtergrond kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '20px',
+                                height: '20px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Achtergrond afbeelding kleur'} value={backgroundImageColor} />
+                        <ViewText
+                            label={'Achtergrond afbeelding kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundImageColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundImageColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '20px',
+                                height: '20px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Tweede achtergrond kleur'} value={backgroundSecondaryColor} />
+                        <ViewText
+                            label={'Tweede achtergrond kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundSecondaryColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundSecondaryColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '20px',
+                                height: '20px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        />
                     </div>
                     <div className="row">
-                        <ViewText label={'Buttonknop kleur'} value={buttonColor} />
+                        <ViewText
+                            label={'Buttonknop kleur'}
+                            divSize={'col-sm-8'}
+                            value={buttonColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: buttonColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '20px',
+                                height: '20px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        />
                     </div>
                     <hr />
                     <div className="row">

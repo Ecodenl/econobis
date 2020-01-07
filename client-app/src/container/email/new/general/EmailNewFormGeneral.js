@@ -42,7 +42,25 @@ const EmailNewFormGeneral = ({
                 </div>
                 <div className="row">
                     <InputMultiSelectCreate
-                        label="Aan selecteren"
+                        label={
+                            <span>
+                                Aan selecteren
+                                {to.split(',').length > 1 ? (
+                                    <React.Fragment>
+                                        <br />
+                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                            Meer dan 1 geselecteerd.
+                                        </small>
+                                        <br />
+                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                            Samenvoegvelden contact niet mogelijk.
+                                        </small>
+                                    </React.Fragment>
+                                ) : (
+                                    ''
+                                )}
+                            </span>
+                        }
                         name={'to'}
                         value={to}
                         options={emailAddresses}

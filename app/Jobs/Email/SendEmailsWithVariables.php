@@ -80,19 +80,24 @@ class SendEmailsWithVariables implements ShouldQueue
         $emailsToEmailAddress = [];
         $tos = $this->tos;
 
-        foreach ($tos as $to) {
-            if (is_numeric($to)) {
-                $emailAddress = EmailAddress::find($to);
-// bij emailsToContact wordt per contact een aparte email gemaakt, wellicht met ooit de bedoeling om deze emails
-// ook bij contact op te slaan? Ze willen nu altijd alle Aan's bij elkaar in 1 email.
-// todo functionaliteit emailsToContact vooralsnog intact gelaten, maar wordt nu vooralsnog niet meer gebruikt
-// later wellicht opschonen
+// Bij emailsToContact werd per contact een aparte email gemaakt
+// Ze willen nu altijd alle Aan's bij elkaar in 1 email.
+// In dat geval (meerdere Aan's, is de email niet persoonlijk en kunnen dus ook contact mergevelden niet gebruikt worden
+// Dat willen ze wel behouden als de email voor 1 contact bestemd is.
+        if(count($tos) == 1 && is_numeric($tos[0])){
+            $emailAddress = EmailAddress::find($tos[0]);
+            $emailsToContact[] = $emailAddress;
+        }else{
+            foreach ($tos as $to) {
+                if (is_numeric($to)) {
+                    $emailAddress = EmailAddress::find($to);
 //                    $emailsToContact[] = $emailAddress;
                     $emailsToEmailAddress[] = $emailAddress->email;
-            } elseif (substr($to, 0, 7) === "@group_") {
-                //niets doen
-            } else {
-                $emailsToEmailAddress[] = $to;
+                } elseif (substr($to, 0, 7) === "@group_") {
+                    //niets doen
+                } else {
+                    $emailsToEmailAddress[] = $to;
+                }
             }
         }
 

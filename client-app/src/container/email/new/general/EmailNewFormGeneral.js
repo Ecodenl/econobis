@@ -45,7 +45,7 @@ const EmailNewFormGeneral = ({
                         label={
                             <span>
                                 Aan selecteren
-                                {to.length > 1 && to.split(',').length > 1 ? (
+                                {(to + '').split(',').length > 1 ? (
                                     <React.Fragment>
                                         <br />
                                         <small style={{ color: 'red', fontWeight: 'normal' }}>

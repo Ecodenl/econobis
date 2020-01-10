@@ -684,8 +684,8 @@ class ExternalWebformController extends Controller
             }
 
             $reasons = IntakeReason::whereIn('id', explode(',', $data['reason_ids']))->get();
-            $measureCategories = MeasureCategory::whereIn('id', explode(',', $data['measure_categorie_ids']))->get();
             $sources = IntakeSource::whereIn('id', explode(',', $data['source_ids']))->get();
+            $measureCategories = MeasureCategory::whereIn('id', explode(',', $data['measure_categorie_ids']))->get();
 
             $intake = Intake::make([
                 'contact_id' => $address->contact->id,
@@ -700,8 +700,8 @@ class ExternalWebformController extends Controller
             $intake->reasons()->sync($reasons->pluck('id'));
             $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
 
-            $intake->sources()->sync($reasons->pluck('id'));
-            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $reasons->implode('name', ', '));
+            $intake->sources()->sync($sources->pluck('id'));
+            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $sources->implode('name', ', '));
 
             $intake->measuresRequested()->sync($measureCategories->pluck('id'));
             $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));

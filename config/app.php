@@ -5,7 +5,7 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '3',
     'version_minor' => '1',
-    'version_fix' => '20',
+    'version_fix' => '25',
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -73,6 +73,15 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Coop name
+    |--------------------------------------------------------------------------
+    */
+
+    'APP_COOP_NAME' => env('APP_COOP_NAME'),
+
 
     /*
     |--------------------------------------------------------------------------

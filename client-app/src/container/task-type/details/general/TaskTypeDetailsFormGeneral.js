@@ -44,6 +44,19 @@ class TaskTypeDetailsFormGeneral extends Component {
     render() {
         const { permissions = {} } = this.props.meDetails;
 
+        const explanationWfExpiredTask = (
+            <span>
+                Er zal automatisch eenmalig een email verstuurd worden naar de verantwoordelijke als deze taak is
+                verlopen.
+            </span>
+        );
+        const explanationWfCompletedTask = (
+            <span>
+                Er zal automatisch eenmalig een email verstuurd worden naar contact taak als deze taak is afgehandeld
+                is, rekening houdend met het opgegeven aantal dagen.
+            </span>
+        );
+
         return (
             <div
                 className={this.state.activeDiv}
@@ -55,9 +68,16 @@ class TaskTypeDetailsFormGeneral extends Component {
                         taskType={this.props.taskType}
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}
+                        explanationWfExpiredTask={explanationWfExpiredTask}
+                        explanationWfCompletedTask={explanationWfCompletedTask}
                     />
                 ) : (
-                    <TaskTypeDetailsFormGeneralView {...this.props.taskType} switchToEdit={this.switchToEdit} />
+                    <TaskTypeDetailsFormGeneralView
+                        {...this.props.taskType}
+                        switchToEdit={this.switchToEdit}
+                        explanationWfExpiredTask={explanationWfExpiredTask}
+                        explanationWfCompletedTask={explanationWfCompletedTask}
+                    />
                 )}
             </div>
         );

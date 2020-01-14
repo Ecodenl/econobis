@@ -2,6 +2,8 @@
 
 namespace App\Console;
 
+use App\Console\Commands\checkContactEmailAddress;
+use App\Console\Commands\checkContactIban;
 use App\Console\Commands\checkMailboxes;
 use App\Console\Commands\conversionParticipationsToMutationsDeltaWind;
 use App\Console\Commands\conversionParticipationsToMutationsLoanDiv100;
@@ -28,6 +30,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        checkContactEmailAddress::class,
+        checkContactIban::class,
         getAllEmail::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,

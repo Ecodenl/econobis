@@ -14,6 +14,9 @@ import InputText from '../../../components/form/InputText';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import InputToggle from '../../../components/form/InputToggle';
+import PortalLogoNew from './PortalLogoNew';
+import PortalFaviconNew from './PortalFaviconNew';
+import Image from 'react-bootstrap/es/Image';
 
 class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
@@ -26,12 +29,21 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplates: {
                 ...props.emailTemplates,
             },
+            attachmentLogo: '',
+            filenameLogo: 'logo.png',
+            newLogo: false,
+            attachmentFavicon: '',
+            filenameFavicon: 'favicon.ico',
+            newFavicon: false,
             errors: {
                 portalName: false,
                 cooperativeName: false,
                 portalWebsite: false,
                 portalUrl: false,
                 backgroundColor: false,
+                backgroundImageColor: false,
+                backgroundSecondaryColor: false,
+                buttonColor: false,
                 responsibleUserId: false,
                 checkContactTaskResponsibleUserId: false,
                 checkContactTaskResponsibleTeamId: false,
@@ -45,6 +57,31 @@ class PortalSettingsFormGeneralEdit extends Component {
 
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
+
+    toggleNewLogo = () => {
+        this.setState({
+            newLogo: !this.state.newLogo,
+        });
+    };
+    toggleNewFavicon = () => {
+        this.setState({
+            newFavicon: !this.state.newFavicon,
+        });
+    };
+    addLogo = file => {
+        this.setState({
+            ...this.state,
+            attachmentLogo: file[0],
+            filenameLogo: file[0].name,
+        });
+    };
+    addFavicon = file => {
+        this.setState({
+            ...this.state,
+            attachmentFavicon: file[0],
+            filenameFavicon: file[0].name,
+        });
+    };
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({
@@ -72,7 +109,7 @@ class PortalSettingsFormGeneralEdit extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const { portalSettings } = this.state;
+        const { portalSettings, attachmentLogo, attachmentFavicon } = this.state;
 
         // Validation
         let errors = {};
@@ -108,11 +145,31 @@ class PortalSettingsFormGeneralEdit extends Component {
             );
         }
 
+        const data = new FormData();
+
+        data.append('portalName', portalSettings.portalName);
+        data.append('cooperativeName', portalSettings.cooperativeName);
+        data.append('portalWebsite', portalSettings.portalWebsite);
+        data.append('portalUrl', portalSettings.portalUrl);
+        data.append('backgroundColor', portalSettings.backgroundColor);
+        data.append('backgroundImageColor', portalSettings.backgroundImageColor);
+        data.append('backgroundSecondaryColor', portalSettings.backgroundSecondaryColor);
+        data.append('buttonColor', portalSettings.buttonColor);
+        data.append('responsibleUserId', portalSettings.responsibleUserId);
+        data.append('checkContactTaskResponsible', portalSettings.checkContactTaskResponsible);
+        data.append('contactResponsibleOwnerUserId', portalSettings.contactResponsibleOwnerUserId);
+        data.append('emailTemplateNewAccountId', portalSettings.emailTemplateNewAccountId);
+        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy);
+        data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
+
+        data.append('attachmentLogo', attachmentLogo);
+        data.append('attachmentFavicon', attachmentFavicon);
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         !hasErrors &&
-            PortalSettingsAPI.updatePortalSettings(portalSettings)
+            PortalSettingsAPI.updatePortalSettings(data)
                 .then(payload => {
                     this.props.updateState(portalSettings);
                     this.props.fetchSystemData();
@@ -129,6 +186,10 @@ class PortalSettingsFormGeneralEdit extends Component {
             cooperativeName,
             portalWebsite,
             portalUrl,
+            backgroundColor,
+            backgroundImageColor,
+            backgroundSecondaryColor,
+            buttonColor,
             responsibleUserId,
             checkContactTaskResponsible,
             contactResponsibleOwnerUserId,
@@ -137,6 +198,8 @@ class PortalSettingsFormGeneralEdit extends Component {
             showNewAtCooperativeLink,
         } = this.state.portalSettings;
 
+        const logoUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
+        const faviconUrl = `${URL_API}/portal/favicon.ico?${this.props.imageHash}`;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -152,15 +215,164 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 error={this.state.errors.portalUrl}
                             />
                         </div>
-                        {/*<div className="row">*/}
-                        {/*<InputText*/}
-                        {/*label="Achtergrondkleur"*/}
-                        {/*name={'backgroundColor'}*/}
-                        {/*value={backgroundColor}*/}
-                        {/*onChangeAction={this.handleInputChange}*/}
-                        {/*error={this.state.errors.backgroundColor}*/}
-                        {/*/>*/}
-                        {/*</div>*/}
+                        <div className="row">
+                            <InputText
+                                label="Logo"
+                                divSize={'col-sm-8'}
+                                value={this.state.attachmentLogo.name ? this.state.attachmentLogo.name : 'logo.png'}
+                                onClickAction={this.toggleNewLogo}
+                                onChangeaction={() => {}}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentLogo && this.state.attachmentLogo.preview
+                                        ? this.state.attachmentLogo.preview
+                                        : logoUrl
+                                }
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '50px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        {this.state.newLogo && (
+                            <PortalLogoNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
+                        )}
+                        <div className="row">
+                            <InputText
+                                label="Favicon"
+                                divSize={'col-sm-8'}
+                                value={'favicon.ico'}
+                                onClickAction={this.toggleNewFavicon}
+                                onChangeaction={() => {}}
+                            />
+                            <Image
+                                src={
+                                    this.state.attachmentFavicon && this.state.attachmentFavicon.preview
+                                        ? this.state.attachmentFavicon.preview
+                                        : faviconUrl
+                                }
+                                style={{
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '1px',
+                                    borderRadius: '1px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 1px #fff inset',
+                                }}
+                            />
+                        </div>
+                        {this.state.newFavicon && (
+                            <PortalFaviconNew
+                                toggleShowNewFavicon={this.toggleNewFavicon}
+                                addFavicon={this.addFavicon}
+                            />
+                        )}
+
+                        <div className="row">
+                            <InputText
+                                label="Achtergrond kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundColor'}
+                                value={backgroundColor}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.backgroundColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Achtergrond afbeelding kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundImageColor'}
+                                value={backgroundImageColor}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.backgroundImageColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Tweede achtergrondkleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundSecondaryColor'}
+                                value={backgroundSecondaryColor}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.backgroundSecondaryColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundSecondaryColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Buttonknop kleur"
+                                divSize={'col-sm-8'}
+                                name={'buttonColor'}
+                                value={buttonColor}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.buttonColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: buttonColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '20px',
+                                    height: '20px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            />
+                        </div>
+
+                        <hr />
+
                         <div className="row">
                             <InputReactSelect
                                 label="Verantwoordelijke portal"

@@ -11,6 +11,7 @@ class PortalSettingsFormGeneral extends Component {
 
         this.state = {
             emailTemplates: [],
+            imageHash: Date.now(),
             showEdit: false,
             activeDiv: '',
         };
@@ -18,12 +19,9 @@ class PortalSettingsFormGeneral extends Component {
 
     componentDidMount() {
         EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
-            this.setState(
-                {
-                    emailTemplates: payload,
-                },
-                this.checkContactCollectMandate
-            );
+            this.setState({
+                emailTemplates: payload,
+            });
         });
     }
 
@@ -35,6 +33,7 @@ class PortalSettingsFormGeneral extends Component {
 
     switchToView = () => {
         this.setState({
+            imageHash: Date.now(),
             showEdit: false,
             activeDiv: '',
         });
@@ -115,12 +114,17 @@ class PortalSettingsFormGeneral extends Component {
                         portalSettings={this.props.portalSettings}
                         emailTemplates={this.state.emailTemplates}
                         switchToView={this.switchToView}
+                        imageHash={this.state.imageHash}
                         updateState={this.props.updateState}
                         users={this.props.users}
                         teams={this.props.teams}
                     />
                 ) : (
-                    <PortalSettingsFormGeneralView {...this.props.portalSettings} switchToEdit={this.switchToEdit} />
+                    <PortalSettingsFormGeneralView
+                        {...this.props.portalSettings}
+                        switchToEdit={this.switchToEdit}
+                        imageHash={this.state.imageHash}
+                    />
                 )}
             </div>
         );

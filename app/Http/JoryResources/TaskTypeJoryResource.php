@@ -3,10 +3,13 @@
 namespace App\Http\JoryResources;
 
 
+use App\Eco\Task\TaskType;
 use App\Http\JoryResources\Base\JoryResource;
 
 class TaskTypeJoryResource extends JoryResource
 {
+    protected $modelClass = TaskType::class;
+
     protected function configureForApp(): void
     {
         $this->field('id')->filterable()->sortable();

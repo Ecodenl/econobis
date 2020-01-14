@@ -2,11 +2,14 @@
 
 namespace App\Jobs\Portal;
 
+use Config;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Valuestore\Valuestore;
 
@@ -37,11 +40,20 @@ class GeneratePortalCss implements ShouldQueue
             'store' => $store
         ])->render();
 
-        Storage::disk('public_portal')->put('portal.css', $html);
+        try{
+            if(Config::get('app.env') == "local")
+            {
+                Storage::disk('public_portal_local')->put('portal.css', $html);
+            }else{
+                Storage::disk('public_portal')->put('portal.css', $html);
+            }
+        }catch (Exception $exception){
+            Log::error('Opslaan gewijzigde portal.css mislukt : ' . $exception->getMessage());
+        }
     }
 
     protected function getStore(): Valuestore
     {
-        return Valuestore::make(database_path('settings.json'));
+        return Valuestore::make(storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
     }
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { GoogleReCaptcha, GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
-import LogoImage from '../../../images/logo.png';
 import AuthAPI from '../../../api/auth/AuthAPI';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
@@ -61,7 +60,7 @@ const NewAccount = props => {
             <Row className="justify-content-center align-content-center full-height">
                 {/*<Col xs="12" sm="10" md="8" lg="6" xl="4">*/}
                 <Col xs="12" sm="6" md="4" lg="4" xl="4">
-                    <img src={LogoImage} alt="" className="image logo-container-small" />
+                    <img src="images/logo.png" alt="" className="image logo-container-small" />
 
                     {showSuccessMessage ? (
                         redirect()

@@ -7,13 +7,14 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class QuotationRequestStatusController extends Controller
 {
 
     public function jory(Request $request)
     {
-        return QuotationRequestStatus::jory()->applyRequest($request);
+        return Jory::on(QuotationRequestStatus::class);
     }
 
     public function update(RequestInput $input, QuotationRequestStatus $quotationRequestStatus, Request $request)
@@ -27,7 +28,7 @@ class QuotationRequestStatusController extends Controller
         $quotationRequestStatus->fill($data);
         $quotationRequestStatus->save();
 
-        return QuotationRequestStatus::jory()->onModel($quotationRequestStatus)->applyRequest($request);
+        return Jory::on($quotationRequestStatus);
     }
 
 }

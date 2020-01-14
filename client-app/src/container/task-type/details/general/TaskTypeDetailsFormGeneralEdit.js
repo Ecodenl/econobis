@@ -131,11 +131,17 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                 <Panel>
                     <PanelBody>
                         <div className="row">
-                            <ViewText label={'Omschrijving'} value={name} className={'col-sm-6 form-group'} />
+                            <ViewText
+                                label={'Omschrijving'}
+                                divSize={'col-sm-10'}
+                                value={name}
+                                className={'col-sm-10 form-group'}
+                            />
                         </div>
                         <div className="row">
                             <InputToggle
                                 label={'Gebruikt workflow verlopen taak'}
+                                divSize={'col-sm-10'}
                                 name={'usesWfExpiredTask'}
                                 value={usesWfExpiredTask}
                                 onChangeAction={this.handleInputChange}
@@ -145,8 +151,17 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                         {usesWfExpiredTask == true && (
                             <React.Fragment>
                                 <div className="row">
+                                    <ViewText
+                                        label={'Uitleg workflow verlopen taak'}
+                                        divSize={'col-sm-10'}
+                                        value={this.props.explanationWfExpiredTask}
+                                        className={'col-sm-10 form-group'}
+                                    />
+                                </div>
+                                <div className="row">
                                     <InputReactSelect
                                         label={'Template email verlopen taak'}
+                                        divSize={'col-sm-10'}
                                         name={'emailTemplateIdWfExpiredTask'}
                                         options={this.state.emailTemplates}
                                         value={emailTemplateIdWfExpiredTask}
@@ -163,6 +178,7 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputToggle
                                 label={'Gebruikt workflow afgehandelde taak'}
+                                divSize={'col-sm-10'}
                                 name={'usesWfCompletedTask'}
                                 value={usesWfCompletedTask}
                                 onChangeAction={this.handleInputChange}
@@ -172,8 +188,17 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                         {usesWfCompletedTask == true && (
                             <React.Fragment>
                                 <div className="row">
+                                    <ViewText
+                                        label={'Uitleg workflow afgehandelde taak'}
+                                        divSize={'col-sm-10'}
+                                        value={this.props.explanationWfCompletedTask}
+                                        className={'col-sm-10 form-group'}
+                                    />
+                                </div>
+                                <div className="row">
                                     <InputReactSelect
                                         label={'Template email afgehandelde taak'}
+                                        divSize={'col-sm-10'}
                                         name={'emailTemplateIdWfCompletedTask'}
                                         options={this.state.emailTemplates}
                                         value={emailTemplateIdWfCompletedTask}
@@ -187,8 +212,9 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                                 <div className="row">
                                     <InputText
                                         label={'Aantal dagen email na afgehandelde taak'}
+                                        divSize={'col-sm-10'}
                                         type={'number'}
-                                        min={'0'}
+                                        min={'1'}
                                         id={'numberOfDaysToSendEmailCompletedTask'}
                                         name={'numberOfDaysToSendEmailCompletedTask'}
                                         value={numberOfDaysToSendEmailCompletedTask}

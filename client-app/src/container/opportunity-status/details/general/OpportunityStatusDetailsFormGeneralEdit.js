@@ -116,11 +116,17 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
                 <Panel>
                     <PanelBody>
                         <div className="row">
-                            <ViewText label={'Omschrijving'} value={name} className={'col-sm-6 form-group'} />
+                            <ViewText
+                                label={'Omschrijving'}
+                                divSize={'col-sm-10'}
+                                value={name}
+                                className={'col-sm-10 form-group'}
+                            />
                         </div>
                         <div className="row">
                             <InputToggle
                                 label={'Gebruikt workflow email bij deze status'}
+                                divSize={'col-sm-10'}
                                 name={'usesWf'}
                                 value={usesWf}
                                 onChangeAction={this.handleInputChange}
@@ -130,8 +136,17 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
                         {usesWf == true && (
                             <React.Fragment>
                                 <div className="row">
+                                    <ViewText
+                                        label={'Uitleg workflow'}
+                                        divSize={'col-sm-10'}
+                                        value={this.props.explanationWf}
+                                        className={'col-sm-10 form-group'}
+                                    />
+                                </div>
+                                <div className="row">
                                     <InputReactSelect
                                         label={'Template email bij deze status'}
+                                        divSize={'col-sm-10'}
                                         name={'emailTemplateIdWf'}
                                         options={this.state.emailTemplates}
                                         value={emailTemplateIdWf}
@@ -145,8 +160,9 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
                                 <div className="row">
                                     <InputText
                                         label={'Aantal dagen email na deze status'}
+                                        divSize={'col-sm-10'}
                                         type={'number'}
-                                        min={'0'}
+                                        min={'1'}
                                         id={'numberOfDaysToSendEmail'}
                                         name={'numberOfDaysToSendEmail'}
                                         value={numberOfDaysToSendEmail}

@@ -10,7 +10,6 @@ import Form from 'react-bootstrap/Form';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
-import { getIn } from 'formik';
 
 function StepOnePcr({ next, project, initialContact, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -39,17 +38,6 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
     });
-    // const requiredFields = {
-    //     participationsOptioned: true,
-    //     pcrYearlyPowerKwhConsumption: true,
-    //     pcrPostalCode: true,
-    // };
-    //
-    // // console.log(requiredFields);
-    // const test1 = requiredFields.pcrYearlyPowerKwhConsumption ? requiredFields.pcrYearlyPowerKwhConsumption : false;
-    // console.log('test 1: ' + test1);
-    // const test2 = requiredFields.pcrHasSolarPanels ? requiredFields.pcrHasSolarPanels : false;
-    // console.log('test 2: ' + test2);
 
     const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
     const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
@@ -103,7 +91,9 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
                 let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);
-                let powerKwhConsumption = calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE;
+                let powerKwhConsumption = Math.ceil(
+                    calculatePowerKwhConsumption(values) * PCR_POWER_KWH_CONSUMPTION_PERCENTAGE
+                );
                 let pcrAdviseMaxNumberOfParticipations = calculateAdviseMaxNumberOfParticipations(values);
                 return (
                     <>

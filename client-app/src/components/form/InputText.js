@@ -11,6 +11,7 @@ const InputText = props => {
         placeholder,
         name,
         value,
+        onClickAction,
         onChangeAction,
         onBlurAction,
         required,
@@ -39,6 +40,7 @@ const InputText = props => {
                     placeholder={placeholder}
                     name={name}
                     value={value}
+                    onClick={onClickAction}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}
                     readOnly={readOnly}
@@ -63,6 +65,7 @@ InputText.defaultProps = {
     className: '',
     size: 'col-sm-6',
     divSize: 'col-sm-6',
+    name: '',
     type: 'text',
     value: '',
     required: '',
@@ -74,6 +77,8 @@ InputText.defaultProps = {
     step: '',
     errorMessage: '',
     autoComplete: 'off',
+    onBlurAction: () => {},
+    onClickAction: () => {},
     onChangeAction: () => {},
 };
 
@@ -81,12 +86,14 @@ InputText.propTypes = {
     label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     type: PropTypes.string,
     className: PropTypes.string,
+    divClassName: PropTypes.string,
     size: PropTypes.string,
     divSize: PropTypes.string,
     id: PropTypes.string,
     placeholder: PropTypes.string,
     name: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onClickAction: PropTypes.func,
     onChangeAction: PropTypes.func,
     onBlurAction: PropTypes.func,
     required: PropTypes.string,

@@ -47,6 +47,7 @@ class PortalSettingsApp extends Component {
                     isLoading: false,
                     portalSettings: {
                         ...payload.data,
+                        showNewAtCooperativeLink: payload.data.showNewAtCooperativeLink == 'true',
                     },
                 });
             })

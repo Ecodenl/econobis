@@ -128,7 +128,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.checkContactTaskResponsible = true;
             hasErrors = true;
         }
-
         if (portalSettings.checkContactTaskResponsible.search('user') >= 0) {
             portalSettings.checkContactTaskResponsibleUserId = portalSettings.checkContactTaskResponsible.replace(
                 'user',
@@ -156,7 +155,8 @@ class PortalSettingsFormGeneralEdit extends Component {
         data.append('backgroundSecondaryColor', portalSettings.backgroundSecondaryColor);
         data.append('buttonColor', portalSettings.buttonColor);
         data.append('responsibleUserId', portalSettings.responsibleUserId);
-        data.append('checkContactTaskResponsible', portalSettings.checkContactTaskResponsible);
+        data.append('checkContactTaskResponsibleUserId', portalSettings.checkContactTaskResponsibleUserId);
+        data.append('checkContactTaskResponsibleTeamId', portalSettings.checkContactTaskResponsibleTeamId);
         data.append('contactResponsibleOwnerUserId', portalSettings.contactResponsibleOwnerUserId);
         data.append('emailTemplateNewAccountId', portalSettings.emailTemplateNewAccountId);
         data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy);

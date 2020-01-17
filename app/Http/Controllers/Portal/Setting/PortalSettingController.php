@@ -13,7 +13,7 @@ class PortalSettingController extends Controller
     }
     protected function getShowNewAtCooperativeLink()
     {
-        return PortalSettings::get('showNewAtCooperativeLink') ? 'true' : 'false';
+        return PortalSettings::get('showNewAtCooperativeLink') ? PortalSettings::get('showNewAtCooperativeLink') : false;
     }
 
 

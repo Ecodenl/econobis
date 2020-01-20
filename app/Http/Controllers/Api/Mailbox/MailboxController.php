@@ -102,7 +102,7 @@ class MailboxController extends Controller
             ->string('imapEncryption')->onEmpty(null)->alias('imap_encryption')->next()
             ->string('imapInboxPrefix')->alias('imap_inbox_prefix')->next()
             ->string('username')->alias('username')->next()
-            ->string('password')->alias('password')->next()
+            ->string('password')->whenMissing($mailbox->password)->onEmpty($mailbox->password)->alias('password')->next()
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
             ->string('outgoingServerType')->alias('outgoing_server_type')->next()
             ->boolean('isActive')->alias('is_active')->next()

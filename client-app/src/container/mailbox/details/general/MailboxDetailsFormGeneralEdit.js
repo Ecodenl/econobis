@@ -92,11 +92,6 @@ class MailboxDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(mailbox.password)) {
-            errors.password = true;
-            hasErrors = true;
-        }
-
         if (mailbox.usesMailgun) {
             if (validator.isEmpty(mailbox.mailgunDomainId.toString())) {
                 errors.mailgunDomainId = true;
@@ -196,6 +191,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 label={'Wachtwoord'}
                                 name={'password'}
                                 value={password}
+                                placeholder="**********"
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.password}

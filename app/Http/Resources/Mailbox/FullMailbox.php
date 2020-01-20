@@ -34,7 +34,7 @@ class FullMailbox extends Resource
             'imapEncryption' => $this->imap_encryption,
             'imapInboxPrefix' => $this->imap_inbox_prefix,
             'username' => $this->username,
-            'password' => $this->password,
+            'password' => '',
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'users' => UserPeek::collection($this->whenLoaded('users')),

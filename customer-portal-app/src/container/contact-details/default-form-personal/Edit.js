@@ -146,7 +146,7 @@ const DefaultContactPersonalEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     id="email-correspondence"
-                                    placeholder={'E-mail'}
+                                    placeholder={'E-mailadres'}
                                 />
                             )}
                         />
@@ -166,7 +166,7 @@ const DefaultContactPersonalEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     id="email-invoice"
-                                    placeholder={'E-mail'}
+                                    placeholder={'E-mailadres'}
                                 />
                             )}
                         />

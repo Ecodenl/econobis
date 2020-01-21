@@ -79,18 +79,8 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                     </div>
                     <div className="row">
-                        <ViewText
-                            label={<span style={{ color: 'red' }}>IBAN niet meer van toepassing</span>}
-                            value={IBAN}
-                        />
+                        <div className={'form-group col-sm-6'} />
                         <ViewText label={'Opdracht nummer klant'} value={poNumber} />
-                    </div>
-
-                    <div className="row">
-                        <ViewText
-                            label={<span style={{ color: 'red' }}>IBAN t.n.v. niet meer van toepassing</span>}
-                            value={ibanAttn}
-                        />
                     </div>
 
                     <div className="row">

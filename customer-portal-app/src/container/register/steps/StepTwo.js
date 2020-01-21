@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import DefaultContactOrganisationEdit from '../../contact-details/default-form-organisation/Edit';
 
 function StepTwo({ portalSettings, previous, next, project, initialContact, handleSubmitContactValues }) {
+    initialContact.isParticipant = true;
     const typeContact = initialContact.typeId ? initialContact.typeId : null;
     const validationSchemaPcrPersonal = Yup.object().shape({
         primaryAddress: Yup.object().shape({

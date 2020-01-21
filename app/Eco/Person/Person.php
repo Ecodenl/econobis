@@ -2,6 +2,7 @@
 
 namespace App\Eco\Person;
 
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Contact\Contact;
 use App\Eco\PersonType\PersonType;
@@ -44,5 +45,16 @@ class Person extends Model
     public function organisation()
     {
         return $this->belongsTo(Organisation::class);
+    }
+
+    public function getLastNamePrefixIdAttribute()
+    {
+        $lastNamePrefixId = null;
+        if($this->last_name_prefix){
+            if(LastNamePrefix::where('name', $this->last_name_prefix)->exists()){
+                $lastNamePrefixId = LastNamePrefix::where('name', $this->last_name_prefix)->get()[0]->id;
+            }
+        }
+        return $lastNamePrefixId;
     }
 }

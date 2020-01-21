@@ -12,6 +12,7 @@ export default [
     { id: 'NL', name: 'Nederland' },
     { id: 'NO', name: 'Noorwegen' },
     { id: 'AT', name: 'Oostenrijk' },
+    { id: 'PL', name: 'Polen' },
     { id: 'PT', name: 'Portugal' },
     { id: 'ES', name: 'Spanje' },
     { id: 'GB', name: 'Verenigd Koninkrijk' },

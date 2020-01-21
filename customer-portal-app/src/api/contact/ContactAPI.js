@@ -29,6 +29,7 @@ export default {
                                 'initials',
                                 'titleId',
                                 'lastNamePrefix',
+                                'lastNamePrefixId',
                                 'dateOfBirth',
                             ],
                             rlt: {

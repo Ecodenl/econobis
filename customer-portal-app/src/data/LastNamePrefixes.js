@@ -24,4 +24,5 @@ export default [
     { id: 22, name: 'van ter' },
     { id: 23, name: "op 't" },
     { id: 24, name: 'op den' },
+    { id: 25, name: 'op ten' },
 ];

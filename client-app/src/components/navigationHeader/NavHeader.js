@@ -1,9 +1,11 @@
 import React from 'react';
+import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
+import { question } from 'react-icons-kit/icomoon/question';
 
 const NavHeader = props => {
     const heightLogo = '44px';
@@ -18,6 +20,12 @@ const NavHeader = props => {
                         ) : (
                             <span className="glyphicon glyphicon-menu-hamburger" />
                         )}
+                    </a>
+                    <a
+                        href="https://alfresco.econobis.nl"
+                        title="Als je op (?) help klikt dan kom je uit op de Alfreco Econobis Community Portaal. Hier vind je al informatie over het gebruik van Econobis. Je kan inloggen op de site met je inlog gegevens van Econobis. Kom je er niet uit stuur dan een mail naar support@econobis.nl"
+                    >
+                        <SvgIcon size={20} icon={question} />
                     </a>
                 </div>
                 <div className="col-md-2 hidden-xs hidden-sm">

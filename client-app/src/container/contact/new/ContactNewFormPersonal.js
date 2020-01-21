@@ -61,7 +61,7 @@ class ContactNewFormPersonal extends Component {
             },
             phoneNumber: {
                 number: '',
-                typeId: '',
+                typeId: 'home',
                 primary: true,
             },
             errors: {

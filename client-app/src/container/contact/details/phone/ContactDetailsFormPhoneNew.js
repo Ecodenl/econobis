@@ -19,7 +19,7 @@ class ContactDetailsFormPhoneNew extends Component {
             phoneNumber: {
                 contactId: this.props.id,
                 number: '',
-                typeId: '',
+                typeId: 'home',
                 primary: false,
             },
             errors: {

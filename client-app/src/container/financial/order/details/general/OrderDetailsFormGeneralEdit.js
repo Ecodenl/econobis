@@ -353,26 +353,12 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputText
-                                label={<span style={{ color: 'red' }}>IBAN niet meer van toepassing</span>}
-                                name={'IBAN'}
-                                value={IBAN}
-                                readOnly={true}
-                            />
+                            <div className={'form-group col-sm-6'} />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}
                                 value={poNumber}
                                 onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputText
-                                label={<span style={{ color: 'red' }}>IBAN t.n.v. niet meer van toepassing</span>}
-                                name={'ibanAttn'}
-                                value={ibanAttn}
-                                readOnly={true}
                             />
                         </div>
 

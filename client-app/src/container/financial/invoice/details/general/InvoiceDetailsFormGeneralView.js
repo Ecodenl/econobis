@@ -48,7 +48,7 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={'Betaalwijze'} value={paymentType ? paymentType.name : ''} />
-                        <ViewText label={'Onderwerp'} value={subject ? subject : ''} />
+                        <ViewText label={'Betreft'} value={subject ? subject : ''} />
                     </div>
 
                     <div className="row">

@@ -25,7 +25,7 @@ const InvoicesListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'12%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={'Onderwerp'} width={'12%'} />
+            <DataTableHeadTitle title={'Betreft'} width={'12%'} />
             <DataTableHeadTitleAndSort
                 sortColumn={'daysToExpire'}
                 title={'Verloopt over'}

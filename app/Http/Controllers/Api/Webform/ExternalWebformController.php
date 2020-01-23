@@ -270,6 +270,7 @@ class ExternalWebformController extends Controller
         }
         $mapping['task']['taak_type_id'] = 'type_id';
         $mapping['task']['taak_einddatum'] = 'date_planned_finish';
+        $mapping['task']['taak_dagen_einddatum'] = 'days_planned_finish';
         $mapping['task']['taak_afgehandeld'] = 'finished';
 
         $mapping['task']['taak_opmerkingen'] = 'note';
@@ -890,11 +891,23 @@ class ExternalWebformController extends Controller
     {
         // Default date planned finish
         $datePlannedFinish = null;
+
         // When date planned finish filled in
-        if($data['date_planned_finish'])
-        {
+        if($data['date_planned_finish']) {
             // Default requested date planned finish
             $datePlannedFinish = Carbon::make($data['date_planned_finish']);
+        }
+        // When days planned finish filled in
+        elseif(strlen( $data['days_planned_finish'] ) > 0) {
+            // Default today + requested days planned finish
+            $today = Carbon::today();
+            $datePlannedFinish = $today->addDay($data['days_planned_finish']);
+            $this->log('Datum einddatum bepaald op : ' . $datePlannedFinish);
+        }
+
+        // When date of days planned finish was requested
+        if($datePlannedFinish)
+        {
             // Only dates in future allowed. If not, then change date planned finish to tomorrow.
             if($datePlannedFinish < Carbon::tomorrow())
             {

@@ -153,6 +153,12 @@ const InvoicesListFilter = props => {
                         <option key={'irrecoverable'} value={'irrecoverable'}>
                             {'Oninbaar'}
                         </option>
+                        <option key={'error-making'} value={'error-making'}>
+                            {'Fout bij maken'}
+                        </option>
+                        <option key={'error-sending'} value={'error-sending'}>
+                            {'Fout verzenden'}
+                        </option>
                     </optgroup>
                     <optgroup label={'Substatus'}>
                         <option key={'reminder'} value={'reminder'}>

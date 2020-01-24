@@ -686,6 +686,11 @@ class TemplateVariableHelper
                 }
                 break;
             case 'bedrag_interesse':
+//                $amount_interessed = number_format($model->amount_interessed, 2, ',', '');
+//                if($projectTypeCodeRef != 'loan') {
+//                    $amount_interessed = number_format(($model->participations_interessed * $model->project->participation_worth), 2, ',', '');
+//                }
+//                return $amount_interessed;
                 return number_format($model->amount_interessed, 2, ',', '');
                 break;
             case 'bedrag_ingeschreven':

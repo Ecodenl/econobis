@@ -11,6 +11,7 @@ import Col from 'react-bootstrap/Col';
 import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 
 export default props => {
+    const [isLoading, setIsLoading] = useState(true);
     const [showError, toggleError] = useState(false);
 
     const [redirectToReferrer, toggleRedirect] = useState(false);
@@ -24,9 +25,11 @@ export default props => {
             PortalSettingsAPI.fetchCooperativeName()
                 .then(payload => {
                     setCooperativeName(payload.data);
+                    setIsLoading(false);
                 })
                 .catch(error => {
                     // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setIsLoading(false);
                 });
         })();
 
@@ -70,7 +73,7 @@ export default props => {
                                 <Col xs="12" sm="6" md="4" lg="3" xl="2">
                                     <img src="images/logo.png" alt="" className="image logo-container" />
 
-                                    {!cooperativeName ? (
+                                    {!isLoading && !cooperativeName ? (
                                         <React.Fragment>
                                             <Row className="justify-content-center">
                                                 <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>

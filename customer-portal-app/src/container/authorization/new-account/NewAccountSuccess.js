@@ -15,6 +15,10 @@ const NewAccountSuccess = () => {
                         <p className={'text-light'}>
                             Binnen enkele minuten ontvang je een e-mail met een persoonlijke link. Via deze link kun je
                             je account activeren.
+                            <br />
+                            Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van bijvoorbeeld
+                            Gmail en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail daar
+                            terug vindt.
                         </p>
                         <Link to={'/login'} className="authorization-link">
                             Terug naar inloggen

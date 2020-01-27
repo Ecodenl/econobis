@@ -14,6 +14,9 @@ function StepFive() {
                         Bedankt voor je inschrijving! Je ontvangt van ons een e-mail met daarin alle gegevens van je
                         inschrijving en informatie over de vervolgstappen die we nemen om jouw inschrijving definitief
                         te maken.
+                        <br />
+                        Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van bijvoorbeeld Gmail
+                        en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail daar terug vindt.
                     </p>
                     <p>Onder de menuknop “Huidige deelnames” vind je je inschrijving terug.</p>
                     <p>Wil je je inschrijving aanpassen? Neem dan contact met ons op.</p>

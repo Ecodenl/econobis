@@ -44,6 +44,10 @@ const Forgot = props => {
                                     Als het e-mailadres bij ons bekend is, dan ontvang je binnen enkele minuten een
                                     e-mail met een persoonlijke link. Via deze link kun je een nieuw wachtwoord
                                     instellen.
+                                    <br />
+                                    Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van
+                                    bijvoorbeeld Gmail en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of
+                                    je onze mail daar terug vindt.
                                 </p>
                             </Row>
                         </div>

@@ -57,6 +57,8 @@ class ContactController extends ApiController
         DB::transaction(function () use ($request) {
 
             $contact = Contact::find($request->id);
+            $ibanOld = $contact->iban;
+            $ibanAttnOld = $contact->iban_attn;
 
             $contactData = $request->validate([
                 'iban' => '',
@@ -64,9 +66,13 @@ class ContactController extends ApiController
                 'didAgreeAvg' => 'boolean',
             ]);
 
-
             $contact->fill($this->arrayKeysToSnakeCase($contactData));
             $contact->save();
+
+            if($ibanOld != $contact->iban || $ibanAttnOld != $contact->iban_attn)
+            {
+                $this->createTaskIbanChange($contact, $ibanOld, $ibanAttnOld);
+            }
 
             // PERSON
             if ($request->typeId == ContactType::PERSON) {
@@ -469,5 +475,33 @@ class ContactController extends ApiController
 
     }
 
+    protected function createTaskIbanChange(Contact $contact, $ibanOld, $ibanAttnOld)
+    {
+        //Make task note of changes
+        $note = "Controleren wijziging IBAN gegevens:\n";
+        if($ibanOld != $contact->iban) {
+            $note = $note . "Oude IBAN  : " . $ibanOld . "\n";
+            $note = $note . "Nieuwe IBAN: " . $contact->iban . "\n";
+        }
+        if($ibanAttnOld != $contact->iban_attn) {
+            $note = $note . "Oude IBAN t.n.v.  : " . $ibanAttnOld . "\n";
+            $note = $note . "Nieuwe IBAN t.n.v.: " . $contact->iban_attn . "\n";
+        }
+
+        $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
+        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+
+        $newTask = new Task();
+        $newTask->note = $note;
+        $newTask->type_id = 15;
+        $newTask->contact_id = $contact->id;
+        $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId
+            : null;
+        $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId
+            : null;
+        $newTask->date_planned_start = Carbon::today();
+
+        $newTask->save();
+    }
 
 }

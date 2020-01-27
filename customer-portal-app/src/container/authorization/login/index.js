@@ -69,26 +69,39 @@ export default props => {
                             <Row className="justify-content-center align-content-center full-height">
                                 <Col xs="12" sm="6" md="4" lg="3" xl="2">
                                     <img src="images/logo.png" alt="" className="image logo-container" />
-                                    <LoginForm handleSubmit={handleSubmit} login={login} />
-                                    {showError ? (
-                                        <Row className="justify-content-center">
-                                            <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                                Gebruikte logingegevens zijn onjuist!
-                                            </Alert>
-                                        </Row>
-                                    ) : null}
-                                    <Row className="justify-content-center">
-                                        <Link to={'/wachtwoord-vergeten'} className="authorization-link">
-                                            Wachtwoord vergeten?
-                                        </Link>
-                                    </Row>
-                                    {showNewAtCooperativeLink ? (
-                                        <Row className="justify-content-center">
-                                            <Link to={'/nieuw-account'} className="authorization-link">
-                                                Nieuw bij {cooperativeName}?
-                                            </Link>
-                                        </Row>
-                                    ) : null}
+
+                                    {!cooperativeName ? (
+                                        <React.Fragment>
+                                            <Row className="justify-content-center">
+                                                <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                                    Deze applicatie is nog niet gereed voor gebruik!
+                                                </Alert>
+                                            </Row>
+                                        </React.Fragment>
+                                    ) : (
+                                        <React.Fragment>
+                                            <LoginForm handleSubmit={handleSubmit} login={login} />
+                                            {showError ? (
+                                                <Row className="justify-content-center">
+                                                    <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                                        Gebruikte logingegevens zijn onjuist!
+                                                    </Alert>
+                                                </Row>
+                                            ) : null}
+                                            <Row className="justify-content-center">
+                                                <Link to={'/wachtwoord-vergeten'} className="authorization-link">
+                                                    Wachtwoord vergeten?
+                                                </Link>
+                                            </Row>
+                                            {showNewAtCooperativeLink ? (
+                                                <Row className="justify-content-center">
+                                                    <Link to={'/nieuw-account'} className="authorization-link">
+                                                        Nieuw bij {cooperativeName}?
+                                                    </Link>
+                                                </Row>
+                                            ) : null}
+                                        </React.Fragment>
+                                    )}
                                 </Col>
                             </Row>
                         </Container>

@@ -22,6 +22,11 @@ class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
+        this.manageTechnicalPortalSettings =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'info@xaris.nl'
+                ? true
+                : false;
+
         this.state = {
             portalSettings: {
                 ...props.portalSettings,
@@ -59,14 +64,18 @@ class PortalSettingsFormGeneralEdit extends Component {
     }
 
     toggleNewLogo = () => {
-        this.setState({
-            newLogo: !this.state.newLogo,
-        });
+        if (this.manageTechnicalPortalSettings) {
+            this.setState({
+                newLogo: !this.state.newLogo,
+            });
+        }
     };
     toggleNewFavicon = () => {
-        this.setState({
-            newFavicon: !this.state.newFavicon,
-        });
+        if (this.manageTechnicalPortalSettings) {
+            this.setState({
+                newFavicon: !this.state.newFavicon,
+            });
+        }
     };
     addLogo = file => {
         this.setState({
@@ -119,15 +128,55 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.portalUrl = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(portalSettings.linkPrivacyPolicy)) {
-            errors.linkPrivacyPolicy = true;
+        if (validator.isEmpty(portalSettings.backgroundColor)) {
+            errors.backgroundColor = true;
             hasErrors = true;
         }
-
-        if (validator.isEmpty(portalSettings.checkContactTaskResponsible)) {
+        if (validator.isEmpty(portalSettings.backgroundImageColor)) {
+            errors.backgroundImageColor = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettings.backgroundSecondaryColor)) {
+            errors.backgroundSecondaryColor = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettings.buttonColor)) {
+            errors.buttonColor = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.responsibleUserId)) {
+            errors.responsibleUserId = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.contactResponsibleOwnerUserId)) {
+            errors.contactResponsibleOwnerUserId = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.checkContactTaskResponsible)) {
             errors.checkContactTaskResponsible = true;
             hasErrors = true;
         }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.linkPrivacyPolicy)) {
+            errors.linkPrivacyPolicy = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.emailTemplateNewAccountId)) {
+            errors.emailTemplateNewAccountId = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.portalName)) {
+            errors.portalName = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.cooperativeName)) {
+            errors.cooperativeName = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.portalWebsite)) {
+            errors.portalWebsite = true;
+            hasErrors = true;
+        }
+
         if (portalSettings.checkContactTaskResponsible.search('user') >= 0) {
             portalSettings.checkContactTaskResponsibleUserId = portalSettings.checkContactTaskResponsible.replace(
                 'user',
@@ -211,6 +260,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'portalUrl'}
                                 value={portalUrl}
                                 onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
                                 error={this.state.errors.portalUrl}
                             />
@@ -222,6 +272,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={this.state.attachmentLogo.name ? this.state.attachmentLogo.name : 'logo.png'}
                                 onClickAction={this.toggleNewLogo}
                                 onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
                             />
                             <Image
                                 src={
@@ -250,6 +302,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={'favicon.ico'}
                                 onClickAction={this.toggleNewFavicon}
                                 onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
                             />
                             <Image
                                 src={
@@ -281,6 +335,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'backgroundColor'}
                                 value={backgroundColor}
                                 onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
                                 error={this.state.errors.backgroundColor}
                             />
                             <span
@@ -304,6 +360,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 divSize={'col-sm-8'}
                                 name={'backgroundImageColor'}
                                 value={backgroundImageColor}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.backgroundImageColor}
                             />
@@ -329,6 +387,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'backgroundSecondaryColor'}
                                 value={backgroundSecondaryColor}
                                 onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
                                 error={this.state.errors.backgroundSecondaryColor}
                             />
                             <span
@@ -353,6 +413,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'buttonColor'}
                                 value={buttonColor}
                                 onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
                                 error={this.state.errors.buttonColor}
                             />
                             <span
@@ -382,6 +444,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.responsibleUserId}
                                 multi={false}
                             />
@@ -395,6 +458,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.contactResponsibleOwnerUserId}
                                 multi={false}
                             />
@@ -416,7 +480,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 ]}
                                 value={checkContactTaskResponsible}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.checkContactTaskResponsible}
                             />
                         </div>
@@ -438,7 +502,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'linkPrivacyPolicy'}
                                 value={linkPrivacyPolicy}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.linkPrivacyPolicy}
                             />
                         </div>
@@ -450,6 +514,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={emailTemplateNewAccountId}
                                 options={this.props.emailTemplates}
                                 onChangeAction={this.handleReactSelectChange}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.emailTemplateNewAccountId}
                                 multi={false}
                             />
@@ -461,7 +526,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'portalName'}
                                 value={portalName}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.portalName}
                             />
                         </div>
@@ -472,7 +537,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'cooperativeName'}
                                 value={cooperativeName}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.cooperativeName}
                             />
                         </div>
@@ -483,7 +548,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'portalWebsite'}
                                 value={portalWebsite}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.portalWebsite}
                             />
                         </div>

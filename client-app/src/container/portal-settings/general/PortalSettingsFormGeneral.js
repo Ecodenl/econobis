@@ -118,6 +118,7 @@ class PortalSettingsFormGeneral extends Component {
                         updateState={this.props.updateState}
                         users={this.props.users}
                         teams={this.props.teams}
+                        meDetails={this.props.meDetails}
                     />
                 ) : (
                     <PortalSettingsFormGeneralView

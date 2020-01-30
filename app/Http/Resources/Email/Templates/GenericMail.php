@@ -4,15 +4,16 @@ namespace App\Http\Resources\Email\Templates;
 
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Mail\ConfigurableMailable;
+//use Illuminate\Bus\Queueable;
+//use Illuminate\Mail\Mailable;
+//use Illuminate\Queue\SerializesModels;
+//use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 
-class GenericMail extends Mailable
+class GenericMail extends ConfigurableMailable
 {
-    use Queueable, SerializesModels;
+//    use Queueable, SerializesModels;
 
     public $html_body;
     public $subject;

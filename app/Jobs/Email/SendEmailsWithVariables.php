@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Mail;
 use Config;
-use mysql_xdevapi\Exception;
 
 class SendEmailsWithVariables implements ShouldQueue
 {

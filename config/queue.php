@@ -96,7 +96,7 @@ return [
     */
 
     'email' => [
-        'chunk_size' => env('EMAIL_JOB_CHUNK_SIZE', 100),
+        'chunk_size' => env('EMAIL_JOB_CHUNK_SIZE', 20),
     ],
 
 ];

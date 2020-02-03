@@ -6,9 +6,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Transport\MailgunTransport;
 use Illuminate\Queue\SerializesModels;
 use Swift_Mailer;
 use Swift_SmtpTransport;
+use GuzzleHttp\Client as HttpClient;
 
 class ConfigurableMailable extends Mailable
 {
@@ -22,13 +24,22 @@ class ConfigurableMailable extends Mailable
      */
     public function send(Mailer $mailer)
     {
-        $host      = config('mail.host');
-        $port      = config('mail.port');
-        $security  = config('mail.encryption');
+        if(config('mail.driver') == 'mailgun') {
+            $key = config('services.mailgun.secret');
+            $domain = config('services.mailgun.domain');
+            $endpoint = config('services.mailgun.endpoint');
 
-        $transport = new Swift_SmtpTransport( $host, $port, $security);
-        $transport->setUsername(config('mail.username'));
-        $transport->setPassword(config('mail.password'));
+            $transport = new MailgunTransport(new HttpClient , $key, $domain, $endpoint);
+        } else {
+            $host      = config('mail.host');
+            $port      = config('mail.port');
+            $security  = config('mail.encryption');
+
+            $transport = new Swift_SmtpTransport( $host, $port, $security);
+            $transport->setUsername(config('mail.username'));
+            $transport->setPassword(config('mail.password'));
+        }
+
         $mailer->setSwiftMailer(new Swift_Mailer($transport));
 
         Container::getInstance()->call([$this, 'build']);

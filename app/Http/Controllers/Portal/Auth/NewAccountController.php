@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Person\Person;
@@ -123,6 +124,7 @@ class NewAccountController extends Controller
                 'personTitleId' => 'title_id',
                 'personFirstName' => 'first_name',
                 'personLastNamePrefix' => 'last_name_prefix',
+                'personLastNamePrefixId' => 'last_name_prefix_id',
                 'personLastName' => 'last_name',
                 // Organisation
                 'organisationName' => 'organisation_name',
@@ -130,7 +132,6 @@ class NewAccountController extends Controller
                 'email' => 'email_address',
             ],
         ];
-
         $data = [];
         foreach ($mapping as $groupname => $fields) {
             foreach ($fields as $inputName => $outputName) {
@@ -173,12 +174,16 @@ class NewAccountController extends Controller
 
             // Validatie op title_id
 
+            $lnp = null;
+            if(isset($data['last_name_prefix_id']) && $data['last_name_prefix_id']){
+                $lnp = LastNamePrefix::where('id', $data['last_name_prefix_id'])->pluck('name')[0];
+            }
             $person = Person::create([
                 'contact_id' => $contactPerson->id,
                 'title_id' => $titleValidator($data['title_id']),
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
-                'last_name_prefix' => $data['last_name_prefix'],
+                'last_name_prefix' => $lnp,
                 'organisation_id' => $organisation->id,
             ]);
 
@@ -202,6 +207,11 @@ class NewAccountController extends Controller
             'owner_id' => $contactResponsibleOwnerUserId,
         ]);
 
+        $lnp = null;
+        if(isset($data['last_name_prefix_id']) && $data['last_name_prefix_id']){
+            $lnp = LastNamePrefix::where('id', $data['last_name_prefix_id'])->pluck('name')[0];
+        }
+
         $lastName = $data['last_name'];
         if (!$lastName) {
             $emailParts = explode('@', $data['email_address']);
@@ -212,7 +222,7 @@ class NewAccountController extends Controller
             'title_id' => $titleValidator($data['title_id']),
             'first_name' => $data['first_name'],
             'last_name' => $lastName,
-            'last_name_prefix' => $data['last_name_prefix'],
+            'last_name_prefix' => $lnp,
         ]);
 
         // Overige gegevens aan persoon hangen

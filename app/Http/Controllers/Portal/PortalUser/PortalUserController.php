@@ -10,9 +10,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use JosKolenberg\LaravelJory\Facades\Jory;
 
 class PortalUserController extends Controller
 {
+
+    public function me()
+    {
+        return Jory::on(Auth::user()->contact);
+    }
+
+    public function portalUserEmail()
+    {
+        return Auth::user()->email;
+    }
+
     public function changeEmail(Request $request )
     {
         if (!isset($request) || !isset($request->email) || !isset($request->changePrimaryEmailAddress)) {

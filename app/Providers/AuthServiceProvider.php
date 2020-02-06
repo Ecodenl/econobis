@@ -145,7 +145,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
         Passport::tokensExpireIn(now()->addHours(12));
         Passport::refreshTokensExpireIn(now()->addHours(12));
 
@@ -158,42 +157,14 @@ class AuthServiceProvider extends ServiceProvider
             'use-portal' => 'Use Econobis portal',
         ]);
 
-        /**
-         * Standaard Passport routes registreren
-         *
-         * De tokens die via deze routes worden aangemaakt krijgen de 'use-app' scope.
-         * Op deze manier zijn tokens van de hoofdapplicatie te onderscheiden van
-         * tokens van het gebruikers portal en kunnen tokens van de gebruikers
-         * portal niet worden gebruikt om in Econobis zelf in te loggen.
-         */
         Passport::routes(null, [
-            'middleware' => [function ($request, $next) {
-                $request->merge(['scope' => 'use-app']);
-                return $next($request);
-            }],
+            'middleware' => ['scope.app'],
         ]);
-
-
-        /**
-         * Portal Passport routes registreren
-         *
-         * De tokens die via deze routes worden aangemaakt krijgen de 'use-portal' scope.
-         * Op deze manier zijn tokens van de hoofdapplicatie te onderscheiden van
-         * tokens van het gebruikers portal en kunnen tokens van de gebruikers
-         * portal niet worden gebruikt om in Econobis zelf in te loggen.
-         *
-         * Tevens de passport-portal middleware toepassen om te zorgen dat de tabel
-         * met portalgebruikers wordt gebruikt door passport ipv de standaard
-         * users tabel. Als laatste de url prefixen met 'portal/oauth om
-         * deze te onderscheiden van de standaard login routes.
-         */
         Passport::routes(null, [
-            'middleware' => ['passport-portal', function ($request, $next) {
-                $request->merge(['scope' => 'use-portal']);
-                return $next($request);
-            }],
+            'middleware' => ['passport-portal', 'scope.portal'],
             'prefix' => 'portal/oauth',
         ]);
+//        Passport::routes();
 
         /**
          * Helperfuncties op Auth facade toevoegen. Zo kan via

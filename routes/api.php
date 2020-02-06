@@ -324,7 +324,6 @@ Route::namespace('Api')
         Route::get('project/active', 'Project\ProjectController@getActive');
         Route::get('project/chart-status/{project}', 'Project\ProjectController@getChartData');
         Route::get('project/chart-participations-status/{project}', 'Project\ProjectController@getChartDataParticipations');
-        Route::get('project/chart-participations-status/{project}', 'Project\ProjectController@getChartDataParticipations');
         Route::get('project/chart-contact-status/{project}', 'Project\ProjectController@getChartDataStatus');
         Route::get('project/{project}', 'Project\ProjectController@show');
         Route::get('project/{project}/obligation-numbers', 'Project\ProjectController@getObligationNumbers');

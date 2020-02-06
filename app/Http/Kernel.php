@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\SetAppScope;
+use App\Http\Middleware\SetPortalScope;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -58,5 +60,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \App\Http\Middleware\ThrottleRequests::class,
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
+        'scope.app' => SetAppScope::class,
+        'scope.portal' => SetPortalScope::class,
     ];
 }

@@ -18,6 +18,19 @@ use phpDocumentor\Reflection\Types\Boolean;
 
 class conversionParticipationsToMutations extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'project:conversionParticipationsToMutations';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Maak mutatieregel aan voor aangekochte/verkochte participaties';
 
     public function doConversion($divideBy100 = false)
     {

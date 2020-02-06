@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\Setting\SettingController;
-use JosKolenberg\LaravelJory\Facades\Jory;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
@@ -14,13 +13,8 @@ Route::post('new-account', 'Auth\NewAccountController@createNewAccount');
 
 Route::middleware(['auth:api', 'scopes:use-portal'])
     ->group(function () {
-        Route::get('/me', function () {
-            return Jory::on(\Auth::user()->contact);
-        });
-
-        Route::get('/portal-user-email', function () {
-            return \Auth::user()->email;
-        });
+        Route::get('/me', 'PortalUser\PortalUserController@me');
+        Route::get('/portal-user-email', 'PortalUser\PortalUserController@portalUserEmail');
 
         Route::post('/portal-user/change-email', 'PortalUser\PortalUserController@changeEmail');
         Route::post('/portal-user/change-password', 'PortalUser\PortalUserController@changePassword');

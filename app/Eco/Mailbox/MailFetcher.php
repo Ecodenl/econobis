@@ -12,6 +12,7 @@ namespace App\Eco\Mailbox;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
+use Carbon\Carbon;
 use Storage;
 
 class MailFetcher
@@ -125,6 +126,7 @@ class MailFetcher
     private function fetchEmail($mailId)
     {
         $emailData = $this->imap->getMail($mailId);
+//        dd($emailData);
 
         if ($emailData->textHtml) {
             $textHtml = $emailData->textHtml;
@@ -145,6 +147,8 @@ class MailFetcher
             $subject = substr($emailData->textHtml, 0, 249);
         }
 
+        $dateSend = new Carbon( $emailData->date);
+
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
             'from' => $emailData->fromAddress,
@@ -153,7 +157,7 @@ class MailFetcher
             'bcc' => array_keys($emailData->bcc),
             'subject' => $subject,
             'html_body' => $textHtml,
-            'date_sent' => $emailData->date,
+            'date_sent' => $dateSend,
             'folder' => 'inbox',
             'imap_id' => $emailData->id,
             'message_id' => $emailData->messageId,

@@ -10,6 +10,7 @@ namespace App\Helpers\Twinfield;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -103,27 +104,31 @@ class TwinfieldSalesTransactionHelper
         }
 
         //Invoice datum
-        $dateInvoice = new \DateTime($invoice->date_sent);
+
+        $dateInvoice = Carbon::parse($invoice->date_sent);
         //Due datum bepalen
         if ($invoice->payment_type_id === 'transfer') {
             if ( $invoice->days_to_expire && $invoice->days_to_expire > 0 ){
-                $daysToAdd = new \DateInterval('P' . $invoice->days_to_expire . 'D');
-                $dueDateInvoice = new \DateTime($invoice->date_sent); ;
-                $dueDateInvoice->add( $daysToAdd);
+                $daysToAdd2 = new \DateInterval('P' . $invoice->days_to_expire . 'D');
+                $dueDateInvoice2 = new \DateTime($invoice->date_sent); ;
+                $dueDateInvoice2->add( $daysToAdd2);
+
+                $dueDateInvoice = Carbon::parse($invoice->date_sent)->addDay($invoice->days_to_expire);
             }else {
                 $datePaymentDue = $invoice->getDatePaymentDueAttribute();
                 if ($dueDateInvoice = 0) {
-                    $dueDateInvoice = new \DateTime($invoice->date_sent); ;
+                    $dueDateInvoice = Carbon::parse($invoice->date_sent);
                 } else {
-                    $dueDateInvoice = new \DateTime($datePaymentDue);
+                    $dueDateInvoice = Carbon::parse($datePaymentDue);
                 }
             }
         }else{
             if ($invoice->payment_type_id === 'collection' && $invoice->date_collection) {
-                $dueDateInvoice = new \DateTime($invoice->date_collection);
+                $dueDateInvoice = Carbon::parse($invoice->date_collection);
             }
         }
 
+//        dd("bye");
         //Salestransaction - Header XML maken
         $twinfieldSalesTransaction = new \PhpTwinfield\SalesTransaction();
         $twinfieldSalesTransaction
@@ -132,6 +137,7 @@ class TwinfieldSalesTransactionHelper
             ->setCode($this->dagboekCode)
             ->setCurrency($this->currency)
             ->setDate($dateInvoice)
+            ->setPeriod($dateInvoice->format("Y/m"))
             ->setInvoiceNumber($invoice->number)
             ->setPaymentReference("")
             ->setOffice($this->office)

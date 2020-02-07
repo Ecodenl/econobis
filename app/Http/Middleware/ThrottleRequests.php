@@ -8,7 +8,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests as LaravelThrottleRequests;
 class ThrottleRequests extends LaravelThrottleRequests
 {
 
-    public function handle($request, Closure $next, $maxAttempts = 60, $decayMinutes = 1)
+    public function handle($request, Closure $next, $maxAttempts = 60, $decayMinutes = 1, $prefix = '')
     {
         //Add this because when we do testing locally we dont want to hit max requests
         if(\Config::get('app.env') === 'local')return $next($request);

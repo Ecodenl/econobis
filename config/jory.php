@@ -7,11 +7,15 @@ return [
     | Request key
     |--------------------------------------------------------------------------
     |
-    | This key will be looked for to get the JSON string
-    | holding the jory data in the request.
+    | This keys will be looked for when making requests.
     |
-    | The case key can be used by users of your API to override the
-    | default casing when using the API ('snake' or 'camel').
+    | 'key' must hold the JSON string with the Jory Query.
+    |
+    | 'case' can be used by consumers of your API to override the
+    | default casing when calling the API ('snake' or 'camel').
+    |
+    | 'meta' is the key where will be checked for an array
+    | to determine which metadata should be returned.
     |
     */
 
@@ -21,6 +25,8 @@ return [
 
         'case-key' => 'case',
 
+        'meta-key' => 'meta',
+
     ],
 
     /*
@@ -28,10 +34,10 @@ return [
     | Response keys
     |--------------------------------------------------------------------------
     |
-    | Here you can set the keys on
-    | which the data will be returned.
+    | Here you can set the keys on which the data will be returned.
     |
-    | Set to null to return data in root.
+    | Set 'data-key' to null to return data in the root, but note that it
+    | is not possible use metadata when you set the data-key to null.
     |
     */
 
@@ -41,6 +47,8 @@ return [
 
         'errors-key' => 'errors',
 
+        'meta-key' => 'meta',
+
     ],
 
     /*
@@ -48,8 +56,9 @@ return [
     | Filter operators
     |--------------------------------------------------------------------------
     |
-    | Here you can define which operators are
-    | available by default for any filter.
+    | These are the default filter operators which can be
+    | applied, these settings can be overridden for each
+    | individual field in the Jory Resource classes.
     |
     */
 
@@ -100,18 +109,66 @@ return [
     | Case
     |--------------------------------------------------------------------------
     |
-    | Here you can set the default casing to be used
-    | for field, filter, sort and relation names.
+    | Casing can be used to cast all your resources to a specific case.
+    | Laravel's relations are typically camelCased while attributes
+    | are snake_cased. If you want to deliver a more consistent
+    | API to your clients you can set the casing here to
+    | convert all the keys to that specific case. The
+    | 'default' option does not apply any casing.
     |
-    | This casing will be used when calling the JoryResource or API.
-    |
-    | NB. All configuration in the JoryResource
-    | classes should always be in snake case.
-    |
-    | Possible values: 'snake', 'camel'.
+    | Possible values: 'default', 'snake', 'camel'.
     */
 
     'case' => 'camel',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Routes
+    |--------------------------------------------------------------------------
+    |
+    | By default Laravel Jory will create an API at the /api endpoint
+    | for you. If you want to change your API address or disable
+    | the default API completely you can configure this below.
+    |
+    | Some useful middleware are added to get you up and running
+    | quickly but don't forget to enable the 'auth' middleware
+    | if you don't want your data to be publicly available!
+    |
+    */
+
+    'routes' => [
+
+        'enabled' => false,
+
+        'path' => '/api/jory',
+
+        'middleware' => [
+            'api',
+            // 'auth',
+            \JosKolenberg\LaravelJory\Http\Middleware\SetJoryHandler::class
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Metadata
+    |--------------------------------------------------------------------------
+    |
+    | Here you can define which metadata is available to be
+    | requested. Note that returning metadata is disabled
+    | when the response.data-key value is set to null.
+    |
+    */
+
+    'metadata' => [
+
+        'user' => \JosKolenberg\LaravelJory\Meta\User::class,
+        'total' => \JosKolenberg\LaravelJory\Meta\Total::class,
+        'query_count' => \JosKolenberg\LaravelJory\Meta\QueryCount::class,
+        'time' => \JosKolenberg\LaravelJory\Meta\Time::class,
+
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -148,38 +205,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Routes
-    |--------------------------------------------------------------------------
-    |
-    | Here you can define if the default jory api routes should be enabled,
-    | the uri for these routes and which middleware should be applied.
-    |
-    */
-
-    'routes' => [
-
-        'enabled' => false,
-
-        'path' => '/api/jory',
-
-        'middleware' => [
-            'api',
-            \JosKolenberg\LaravelJory\Http\Middleware\SetJoryHandler::class
-        ],
-
-    ],
-
-
-    /*
-    |--------------------------------------------------------------------------
     | Generator
     |--------------------------------------------------------------------------
     |
-    | Define some settings for the artisan commands.
-    | - jory:generate-for
-    | - jory:generate-all
-    | - make:jory-resource
-
+    | The Generator command is a great help to quickly set up
+    | your Jory Resources, you can modify the settings below
+    | to fit your needs and make it even more powerful.
+    |
     */
 
     'generator' => [
@@ -193,7 +225,7 @@ return [
         | to be stored. You probably want to match this setting with
         | the path and namespace for the auto-registrar, don't
         | forget to manually register them if you store
-        | your jory-resources somewhere else.
+        | your Jory Resources somewhere else.
         |
         */
 
@@ -207,14 +239,35 @@ return [
         | Models location
         |--------------------------------------------------------------------------
         |
-        | Tell the generate:all command where your models are stored so he
-        | can find them en generate a jory-resource for all of them.
+        | Tell the generator command where your models are stored so he
+        | can find them en generate a Jory Resource for all of them.
         |
         */
 
         'models' => [
             'namespace' => 'App',
             'path' => app_path(),
+            'exclude' => [
+                // \App\BaseModel::class;
+            ],
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Fields
+        |--------------------------------------------------------------------------
+        |
+        | Here you can tell the generator which fields should NOT be
+        | automatically be configured, this is useful for hiding
+        | sensitive data like password and token fields.
+        |
+        */
+
+        'fields' => [
+            'exclude' => [
+                'password',
+                'remember_token'
+            ],
         ],
 
     ],

@@ -452,8 +452,8 @@ Route::namespace('Api')
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple');
         Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');
-        Route::get('jory/{uri}/{id}', '\\'.JoryController::class.'@show');
-        Route::get('jory/{uri}', '\\'.JoryController::class.'@index');
+        Route::get('jory/{uri}/{id}', '\\'.JoryController::class.'@find');
+        Route::get('jory/{uri}', '\\'.JoryController::class.'@get');
 
     });
 

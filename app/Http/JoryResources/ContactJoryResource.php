@@ -33,13 +33,13 @@ class ContactJoryResource extends JoryResource
 
         // Relations
         $this->relation('addresses');
-        $this->relation('email_addresses');
+        $this->relation('emailAddresses');
         $this->relation('person');
         $this->relation('organisation');
-        $this->relation('phone_numbers');
+        $this->relation('phoneNumbers');
         $this->relation('primaryContactEnergySupplier');
         $this->relation('occupations');
-        $this->relation('portal_user');
+        $this->relation('portalUser');
 
         $this->relation('participations');
     }

@@ -47,16 +47,7 @@ class ParticipantProjectJoryResource extends JoryResource
         $this->field('type_id')->filterable()->sortable();
 
         // Relations
-//        $this->relation('documents');
-//        $this->relation('giftedByContact');
-//        $this->relation('legalRepContact');
-//        $this->relation('mutations');
-//        $this->relation('mutationsDefinitive');
-//        $this->relation('obligationNumbers');
-//        $this->relation('participantProjectPayoutType');
         $this->relation('project');
-//        $this->relation('projectRevenueDistributions');
-//        $this->relation('tasks');
 
     }
 }

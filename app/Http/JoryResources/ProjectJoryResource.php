@@ -50,21 +50,6 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_understand_info')->filterable()->sortable();
 
         // Relations
-//        $this->relation('administration');
-//        $this->relation('created_by');
-//        $this->relation('documents');
-//        $this->relation('emails');
-//        $this->relation('owned_by');
-//        $this->relation('participant_mutations');
-//        $this->relation('participants_project');
-//        $this->relation('participants_project_definitive');
-//        $this->relation('project_revenues');
-//        $this->relation('project_status');
-        $this->relation('project_type');
-//        $this->relation('project_value_courses');
-//        $this->relation('requires_contact_groups');
-//        $this->relation('revision_history');
-//        $this->relation('tasks');
-//        $this->relation('updated_by');
+        $this->relation('projectType');
     }
 }

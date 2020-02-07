@@ -27,7 +27,7 @@ class OccupationContactJoryResource extends JoryResource
 
         // Relations
         $this->relation('contact');
-        $this->relation('primary_contact');
+        $this->relation('primaryContact');
         $this->relation('occupation');
     }
 

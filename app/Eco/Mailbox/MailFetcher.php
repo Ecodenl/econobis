@@ -147,7 +147,7 @@ class MailFetcher
             $subject = substr($emailData->textHtml, 0, 249);
         }
 
-        $dateSend = new Carbon( $emailData->date);
+        $dateSend = Carbon::parse( $emailData->date);
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,

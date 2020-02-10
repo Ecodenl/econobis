@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
         date_default_timezone_set('Europe/Amsterdam');
 
         if ($this->app->environment() == 'production') { // alleen errors naar slack versturen in productie
-            $monolog = Log::getMonolog(); // onderliggende monolog instatie ophalen
+            $monolog = Log::getLogger(); // onderliggende monolog instatie ophalen
             $slackHandler
                 = new SlackHandler( // nieuwe slackhandler
                     Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen

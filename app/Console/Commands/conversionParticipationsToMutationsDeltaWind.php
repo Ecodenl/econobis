@@ -39,8 +39,6 @@ class conversionParticipationsToMutationsDeltaWind extends Command
     public function __construct()
     {
         parent::__construct();
-
-        Auth::setUser(User::find(1));
     }
 
     /**
@@ -50,6 +48,7 @@ class conversionParticipationsToMutationsDeltaWind extends Command
      */
     public function handle()
     {
+        Auth::setUser(User::find(1));
         $this->makeFirstDepositMutations();
         // Even niet voor DeltaWind / Vogelwijk
 //        $this->makeWithDrawalMutations();

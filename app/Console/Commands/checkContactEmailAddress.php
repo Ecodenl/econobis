@@ -29,8 +29,6 @@ class checkContactEmailAddress extends Command
     public function __construct()
     {
         parent::__construct();
-
-//        Auth::setUser(User::find(1));
     }
 
     /**

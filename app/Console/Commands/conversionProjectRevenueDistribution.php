@@ -31,8 +31,6 @@ class conversionProjectRevenueDistribution extends Command
     public function __construct()
     {
         parent::__construct();
-
-        Auth::setUser(User::find(1));
     }
 
     /**
@@ -42,6 +40,7 @@ class conversionProjectRevenueDistribution extends Command
      */
     public function handle()
     {
+        Auth::setUser(User::find(1));
         foreach(ProjectRevenueDistribution::all() as $projectRevenueDistribution) {
 
             if($projectRevenueDistribution->revenue->confirmed) {

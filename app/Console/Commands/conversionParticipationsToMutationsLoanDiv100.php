@@ -39,8 +39,6 @@ class conversionParticipationsToMutationsLoanDiv100 extends Command
     public function __construct()
     {
         parent::__construct();
-
-        Auth::setUser(User::find(1));
         $this->conversionParticipationsToMutations = new conversionParticipationsToMutations();
     }
 
@@ -51,6 +49,7 @@ class conversionParticipationsToMutationsLoanDiv100 extends Command
      */
     public function handle()
     {
+        Auth::setUser(User::find(1));
         $this->conversionParticipationsToMutations->doConversion(true);
 
         dd('klaar');

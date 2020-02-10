@@ -3,9 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Eco\Contact\Contact;
-use App\Eco\User\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Auth;
 
 class checkContactIban extends Command
 {
@@ -31,8 +29,6 @@ class checkContactIban extends Command
     public function __construct()
     {
         parent::__construct();
-
-//        Auth::setUser(User::find(1));
     }
 
     /**

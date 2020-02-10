@@ -41,7 +41,6 @@ class conversionProjects extends Command
     {
         parent::__construct();
 
-        Auth::setUser(User::find(1));
     }
 
     /**
@@ -51,6 +50,7 @@ class conversionProjects extends Command
      */
     public function handle()
     {
+        Auth::setUser(User::find(1));
         foreach(Project::all() as $project) {
             if($project->projectValueCourses->isNotEmpty()) continue;
 

@@ -135,7 +135,7 @@ class RevenueDistributionForm extends Component {
             this.setState({
                 showCheckboxList: true,
                 createType: createType,
-                distributionIds: this.props.projectRevenue.distribution.data.map(distribution => distribution.id),
+                distributionIds: this.props.projectRevenue.distribution.meta.distributionIdsTotal,
                 checkedAll: true,
             });
         }
@@ -153,7 +153,7 @@ class RevenueDistributionForm extends Component {
         let distributionsIds = [];
 
         if (isChecked) {
-            distributionsIds = this.props.projectRevenue.distribution.data.map(distribution => distribution.id);
+            distributionsIds = this.props.projectRevenue.distribution.meta.distributionIdsTotal;
         }
 
         this.setState({
@@ -192,7 +192,7 @@ class RevenueDistributionForm extends Component {
 
     checkAllDistributionsAreChecked() {
         this.setState({
-            checkedAll: this.state.distributionIds.length === this.props.projectRevenue.distribution.data.length,
+            checkedAll: this.state.distributionIds.length === this.props.projectRevenue.distribution.meta.distributionIdsTotal.length,
         });
     }
 
@@ -311,6 +311,20 @@ class RevenueDistributionForm extends Component {
         this.props.administrations.forEach(function(administration) {
             administrationIds.push(administration.id);
         });
+        let numberSelectedNumberTotal = 0;
+        if (
+            this.props &&
+            this.props.projectRevenue &&
+            this.props.projectRevenue.distribution &&
+            this.props.projectRevenue.distribution.meta &&
+            this.props.projectRevenue.distribution.meta.distributionIdsTotal
+        ) {
+            numberSelectedNumberTotal =
+                this.state.distributionIds.length + '/' + this.props.projectRevenue.distribution.meta.distributionIdsTotal.length;
+        } else {
+            numberSelectedNumberTotal = this.state.distributionIds.length;
+        }
+
         return (
             <Panel>
                 <PanelHeader>
@@ -373,6 +387,8 @@ class RevenueDistributionForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
+
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}

@@ -96,6 +96,7 @@ class ParticipantsListApp extends Component {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.participantsProjectFilters);
             const sorts = this.props.participantsProjectSorts;
+            // todo Hier juiste records per page nog zetten (origineel 20: voor testen op 4)!
             const pagination = { limit: 20, offset: this.props.participantsProjectPagination.offset };
             const filterType = this.state.filterType;
             const fetchFromProject = true;
@@ -129,6 +130,7 @@ class ParticipantsListApp extends Component {
 
     handlePageClick(data) {
         let page = data.selected;
+        // todo Hier juiste records per page nog zetten (origineel 20: voor testen op 4)!
         let offset = Math.ceil(page * 20);
 
         this.props.setParticipantsProjectPagination({ page, offset });
@@ -195,7 +197,7 @@ class ParticipantsListApp extends Component {
         } else {
             this.setState({
                 showCheckboxList: true,
-                participantIds: this.props.participantsProject.data.map(participant => participant.id),
+                participantIds: this.props.participantsProject.meta.participantIdsTotal,
                 checkedAll: true,
             });
         }
@@ -213,7 +215,7 @@ class ParticipantsListApp extends Component {
         let participantIds = [];
 
         if (isChecked) {
-            participantIds = this.props.participantsProject.data.map(participant => participant.id);
+            participantIds = this.props.participantsProject.meta.participantIdsTotal;
         }
 
         this.setState({
@@ -243,7 +245,8 @@ class ParticipantsListApp extends Component {
 
     checkAllParticipantsAreChecked() {
         this.setState({
-            checkedAll: this.state.participantIds.length === this.props.participantsProject.data.length,
+            checkedAll:
+                this.state.participantIds.length === this.props.participantsProject.meta.participantIdsTotal.length,
         });
     }
 
@@ -293,7 +296,6 @@ class ParticipantsListApp extends Component {
         this.props.blockUI();
 
         const maxParticipants = 1000;
-        // const totalParticipants = this.props.participantsProject.meta.total;
         const amountFiles = Math.ceil(this.props.participantsProject.meta.total / maxParticipants);
         const splitsExcel = this.props.participantsProject.meta.total > maxParticipants;
         var counter = 1;
@@ -343,6 +345,24 @@ class ParticipantsListApp extends Component {
     }
 
     render() {
+        let numberSelectedNumberTotal = 0;
+
+        if (this.state.participantIds) {
+            if (
+                this.props &&
+                this.props.participantsProject &&
+                this.props.participantsProject.meta &&
+                this.props.participantsProject.meta.participantIdsTotal
+            ) {
+                numberSelectedNumberTotal =
+                    this.state.participantIds.length +
+                    '/' +
+                    this.props.participantsProject.meta.participantIdsTotal.length;
+            } else {
+                numberSelectedNumberTotal = this.state.participantIds.length;
+            }
+        }
+
         return (
             <Panel>
                 <PanelBody>
@@ -392,6 +412,8 @@ class ParticipantsListApp extends Component {
                                         />
                                     </div>
                                     <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
+
                                         <div className="margin-10-top pull-right btn-group" role="group">
                                             <ButtonText
                                                 buttonClassName={'btn-default'}
@@ -420,9 +442,8 @@ class ParticipantsListApp extends Component {
                             showCheckboxList={this.state.showCheckboxList}
                             toggleCheckedAll={this.toggleCheckedAll}
                             checkedAll={this.state.checkedAll}
-                            participantIds={this.state.participantIds}
                             toggleParticipantCheck={this.toggleParticipantCheck}
-                            toggleCheckedAll={this.toggleCheckedAll}
+                            participantIds={this.state.participantIds}
                             projectTypeRef={this.props.projectTypeRef}
                         />
                     </div>

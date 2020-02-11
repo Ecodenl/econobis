@@ -67,6 +67,7 @@ const RevenueDistributionFormList = props => {
             ) : (
                 <div>Geen deelnemers bekend.</div>
             )}
+            {/* todo origineel 100: voor testen op 4*/}
             <DataTablePagination
                 initialPage={0}
                 onPageChangeAction={props.changePage}

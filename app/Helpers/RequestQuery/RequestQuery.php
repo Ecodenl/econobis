@@ -88,6 +88,15 @@ abstract class RequestQuery
         return $query->count();
     }
 
+    public function totalIds()
+    {
+        $this->joiner->resetProcessedJoins();
+        $query = $this->baseQuery();
+        $this->applyFilter($query);
+        $this->applyExtraFilter($query);
+        return $query->get()->pluck('id');
+    }
+
     /**
      * @param $query
      */

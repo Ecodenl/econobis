@@ -60,7 +60,7 @@ class ParticipantReportCreateApp extends Component {
             document.body.style.cursor = 'default';
             if (!payload.data) {
                 this.setState({
-                    successMessage: 'De rapporten zijn verzonden.',
+                    successMessage: 'De rapporten zijn aangeboden voor verzenden.',
                     isBusy: false,
                 });
             } else {

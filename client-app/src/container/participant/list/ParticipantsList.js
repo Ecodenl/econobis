@@ -75,6 +75,8 @@ class ParticipantsList extends Component {
                 </DataTable>
                 <div className="col-md-4 col-md-offset-4">
                     <DataTablePagination
+ // todo Hier juiste records per page nog zetten (origineel 20: voor testen op 4)!
+                        recordsPerPage={20}
                         onPageChangeAction={this.props.handlePageClick}
                         totalRecords={meta.total}
                         initialPage={this.props.participantsProjectPagination.page}

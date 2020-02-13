@@ -675,13 +675,45 @@ class ParticipationProjectController extends ApiController
         $user = Auth::user();
 
         $messages = [];
+        //load template parts
+        $documentTemplate->load('footer', 'baseTemplate', 'header');
+
+        $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';
+
+        if ($documentTemplate->baseTemplate) {
+            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                $documentTemplate->html_body, '','');
+        } else {
+            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                '', '');
+        }
+
+        $html .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
 
         $participant = ParticipantProject::find($participantId);
-
         $contact = $participant->contact;
-        $primaryEmailAddress = $contact->primaryEmailAddress;
-
         $project = $participant->project;
+
+        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', $contact);
+        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'project', $project);
+        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'deelname', $participant);
+        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'mutaties',
+            $participant->mutations);
+        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'ik', $user);
+        $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'portal');
+        $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'contacten_portal');
+        $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml, 'cooperatie');
+        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'administratie',
+            $project->administration);
+
+        $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
+
+        //if preview there is 1 participantId so we return
+        $pdf = PDF::loadView('documents.generic', [
+            'html' => $revenueHtml,
+        ])->output();
+
+        $primaryEmailAddress = $contact->primaryEmailAddress;
 
         try
         {

@@ -195,13 +195,21 @@ class ProjectRevenueDistributionCalculator
                 $mutationValue = $currentBookWorth;
             }
 
-            if($dateEntry > $dateEnd) $mutationValue = 0;
-            $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
-
-            if($this->projectTypeCodeRef !== 'loan') {
-                $payout = floatval( number_format($payout, 2, '.', '') ) * $mutation->quantity;
+            if($dateEntry > $dateEnd){
+                $mutationValue = 0;
             }
+
+            if($this->projectTypeCodeRef == 'loan') {
+                $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100
+                    / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            }else {
+
+                $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100
+                    / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod * $mutation->quantity;
+            }
+
         }
+
         return number_format($payout, 2, '.', '');
     }
 

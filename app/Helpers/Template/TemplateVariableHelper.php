@@ -1194,6 +1194,9 @@ class TemplateVariableHelper
             case 'uitkering_percentage':
                 return number_format($model->pay_percentage, 2, ',', '');
                 break;
+            case 'uitkering_bedrag':
+                return number_format($model->pay_amount, 2, ',', '');
+                break;
             case 'bedrag_eerste_percentage':
                 return number_format($model->key_amount_first_percentage, 2, ',', '');
                 break;

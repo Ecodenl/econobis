@@ -72,10 +72,16 @@ class RevenueParticipantsCSVHelper
 
             //berekende velden
             if($this->projectRevenue->project->getCurrentParticipations() > 0) {
-                $participant->payout = round((($this->projectRevenue->revenue
-                            * ($this->projectRevenue->pay_percentage / 100))
-                        / $this->projectRevenue->project->getCurrentParticipations())
-                    * $participant->participationsCurrent, 2);
+                if($this->projectRevenue->pay_amount)
+                {
+                    $participant->payout = $this->projectRevenue->pay_amount;
+                }else{
+                    $participant->payout =
+                    $participant->payout = round((($this->projectRevenue->revenue
+                                * ($this->projectRevenue->pay_percentage / 100))
+                            / $this->projectRevenue->project->getCurrentParticipations())
+                        * $participant->participationsCurrent, 2);
+                }
 
                 $participant->delivered_total = round((($this->projectRevenue->kwh_end - $this->projectRevenue->kwh_start) / $this->projectRevenue->project->getCurrentParticipations()) * $participant->participations_current,2);
             }

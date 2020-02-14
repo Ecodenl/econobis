@@ -147,6 +147,7 @@ class ProjectRevenueController extends ApiController
             ->string('datePayed')->validate('nullable|date')
             ->alias('date_payed')->whenMissing(null)->onEmpty(null)->next()
             ->double('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
+            ->double('payAmount')->onEmpty(null)->alias('pay_amount')->next()
             ->double('keyAmountFirstPercentage')->onEmpty(null)->alias('key_amount_first_percentage')->next()
             ->double('payPercentageValidFromKeyAmount')->onEmpty(null)->alias('pay_percentage_valid_from_key_amount')->next()
             ->integer('typeId')
@@ -199,6 +200,7 @@ class ProjectRevenueController extends ApiController
             ->string('datePayed')->validate('nullable|date')->onEmpty(null)
             ->whenMissing(null)->alias('date_payed')->next()
             ->double('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
+            ->double('payAmount')->onEmpty(null)->alias('pay_amount')->next()
             ->double('keyAmountFirstPercentage')->onEmpty(null)->alias('key_amount_first_percentage')->next()
             ->double('payPercentageValidFromKeyAmount')->onEmpty(null)->alias('pay_percentage_valid_from_key_amount')->next()
             ->integer('typeId')
@@ -219,6 +221,7 @@ class ProjectRevenueController extends ApiController
             $projectRevenue->isDirty('kwh_end') ||
             $projectRevenue->isDirty('payout_kwh') ||
             $projectRevenue->isDirty('pay_percentage') ||
+            $projectRevenue->isDirty('pay_amount') ||
             $projectRevenue->isDirty('key_amount_first_percentage') ||
             $projectRevenue->isDirty('pay_percentage_valid_from_key_amount') ||
             $projectRevenue->isDirty('distribution_type_id') ||

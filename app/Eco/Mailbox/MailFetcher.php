@@ -13,6 +13,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Storage;
 
 class MailFetcher
@@ -83,6 +84,7 @@ class MailFetcher
             }
         }
         catch(\Exception $e){
+            Log::error($e->getMessage());
             $mb->valid = false;
             $mb->login_tries = $mb->login_tries + 1;
             $mb->save();

@@ -74,7 +74,9 @@ class RevenueParticipantsCSVHelper
             if($this->projectRevenue->project->getCurrentParticipations() > 0) {
                 if($this->projectRevenue->pay_amount)
                 {
-                    $participant->payout = $this->projectRevenue->pay_amount;
+                    // todo hier wordt nu geen rekening gehouden met het feit dat payout nooit > mag worden dan $participationValue
+                    // Maar ik heb het idee dat RevenueParticipantsCSVHelper helemaal niet meer gebruikt wordt ?!?!?
+                    $participant->payout = $this->projectRevenue->pay_amount * $participant->participationsCurrent;
                 }else{
                     $participant->payout =
                     $participant->payout = round((($this->projectRevenue->revenue

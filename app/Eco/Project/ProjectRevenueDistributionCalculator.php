@@ -152,7 +152,10 @@ class ProjectRevenueDistributionCalculator
         $daysOfPeriod = $dateEnd->diffInDays($dateBegin);
 
         if ($this->projectRevenueDistribution->revenue->pay_amount) {
-            $payout = $this->projectRevenueDistribution->revenue->pay_amount / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            $payout = $this->projectRevenueDistribution->revenue->pay_amount;
+            if($payout > $participationValue ) {
+                $payout = $participationValue;
+            }
         }else{
             // If key amount first percentage is filled and is greater participationValue, then split calculation with the two percentages
             if ($this->projectRevenueDistribution->revenue->key_amount_first_percentage && $participationValue > $this->projectRevenueDistribution->revenue->key_amount_first_percentage) {

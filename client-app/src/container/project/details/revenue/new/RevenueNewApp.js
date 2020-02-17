@@ -36,6 +36,7 @@ class RevenueNewApp extends Component {
                 revenue: '',
                 datePayed: '',
                 payPercentage: '',
+                payAmount: '',
                 keyAmountFirstPercentage: '',
                 payPercentageValidFromKeyAmount: '',
                 payoutKwh: '',
@@ -48,6 +49,7 @@ class RevenueNewApp extends Component {
                 payoutTypeId: false,
                 kwhEndHigh: false,
                 kwhEndLow: false,
+                payAmount: false,
             },
             errorMessage: {
                 payoutTypeId: '',
@@ -55,6 +57,7 @@ class RevenueNewApp extends Component {
                 dateEnd: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
+                payAmount: '',
             },
             project: {},
             isLoading: false,
@@ -292,6 +295,11 @@ class RevenueNewApp extends Component {
                 errors.payoutTypeId = true;
                 errorMessage.payoutTypeId =
                     'Als je een negatief resultaat wilt verdelen dan kan dat niet uitgekeerd worden op een rekening. Kies voor bijschrijven.';
+                hasErrors = true;
+            }
+            if (!validator.isEmpty(revenue.payPercentage + '') && !validator.isEmpty(revenue.payAmount + '')) {
+                errors.payAmount = true;
+                errorMessage.payAmount = 'Percentage en Bedrag mogen niet allebei ingevuld zijn.';
                 hasErrors = true;
             }
         }

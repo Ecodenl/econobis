@@ -358,8 +358,8 @@ class ProjectRevenueController extends ApiController
         $distributionId = $distribution->id;
         $revenue = $distribution->revenue;
 
-        $dateBeginFromRevenue = $revenue->date_begin;
-        $dateEndFromRevenue = $revenue->date_end;
+        $dateBeginFromRevenue = Carbon::parse($revenue->date_begin);
+        $dateEndFromRevenue = Carbon::parse($revenue->date_end);
 
         if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
 
@@ -374,10 +374,10 @@ class ProjectRevenueController extends ApiController
             $nextMutation = $mutations->get(++$index);
 
             if($nextMutation) {
-                $dateEnd = $nextMutation->date_entry->subDay();
+                $dateEnd = Carbon::parse($nextMutation->date_entry)->subDay();
             }
 
-            $dateEntry = $mutation->date_entry;
+            $dateEntry = Carbon::parse($mutation->date_entry);
 
             // If date entry is after date begin then date begin is equal to date entry
             if($dateEntry > $dateBegin) $dateBegin = $dateEntry;

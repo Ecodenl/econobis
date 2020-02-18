@@ -24,7 +24,7 @@ class Person extends Model
     ];
 
     protected $dates = [
-        'date_of_birth',
+//        'date_of_birth',
     ];
 
     public function contact()

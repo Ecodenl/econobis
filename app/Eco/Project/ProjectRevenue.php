@@ -23,11 +23,11 @@ class ProjectRevenue extends Model
     ];
 
     protected $dates = [
-        'date_begin',
-        'date_end',
-        'date_reference',
-        'date_confirmed',
-        'date_payed',
+//        'date_begin',
+//        'date_end',
+//        'date_reference',
+//        'date_confirmed',
+//        'date_payed',
         'created_at',
         'updated_at',
     ];

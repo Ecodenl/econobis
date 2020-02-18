@@ -46,8 +46,8 @@ class Contact extends Model
     ];
 
     protected $dates = [
-        'member_since',
-        'member_until',
+//        'member_since',
+//        'member_until',
     ];
 
     protected $encryptable = [

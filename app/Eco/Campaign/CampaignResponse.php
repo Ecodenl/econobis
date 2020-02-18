@@ -19,7 +19,7 @@ class CampaignResponse extends Model
     use RevisionableTrait;
 
     protected $dates = [
-        'date_responded',
+//        'date_responded',
     ];
 
     protected $guarded = [

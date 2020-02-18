@@ -44,6 +44,8 @@ class RevenueDistributionForm extends Component {
             showModal: false,
             showSuccessMessage: false,
             modalText: '',
+            modalText2: '',
+            modalAction: this.toggleModal,
             buttonConfirmText: '',
             readyForCreation: false,
             createType: '',
@@ -263,7 +265,26 @@ class RevenueDistributionForm extends Component {
                 });
                 return;
             } else {
-                this.createPaymentInvoices();
+                // this.createPaymentInvoices();
+                this.setState({
+                    showModal: true,
+                    modalText:
+                        'De uitkeringsdatum wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.\n' +
+                        'In een eventueel te maken Sepa betaalbestand wordt dit de datum waarop het bedrag van jouw rekening wordt afgeschreven, als je het Sepa betaalbestand hebt aangeboden bij je bank. Als je dus een uitkeringsdatum gebruikt, die voor of op de huidige datum ligt, dan kan je het Sepa bestand dus niet gebruiken.\n' +
+                        '\n' +
+                        'Weet je zeker dat je de goede uitkeringsdatum hebt gekozen ?',
+                    modalText2:
+                        moment(this.state.datePayout).format('YYYY-MM-DD') <
+                        moment()
+                            .nextBusinessDay()
+                            .format('YYYY-MM-DD')
+                            ? 'Gekozen uitkeringsdatum (' +
+                              moment(this.state.datePayout).format('L') +
+                              ') ligt voor volgende werkdag!'
+                            : '',
+                    modalAction: this.createPaymentInvoices,
+                    buttonConfirmText: 'Ga verder',
+                });
             }
         } else {
             this.setState({
@@ -275,6 +296,7 @@ class RevenueDistributionForm extends Component {
     };
 
     createPaymentInvoices = () => {
+        this.toggleModal();
         let administrationName = '**onbekend**';
         if (
             this.props.projectRevenue &&
@@ -426,9 +448,10 @@ class RevenueDistributionForm extends Component {
                                             value={this.state.datePayout}
                                             onChangeAction={this.handleInputChangeDate}
                                             required={'required'}
-                                            disabledBefore={moment()
-                                                .nextBusinessDay()
-                                                .format('YYYY-MM-DD')}
+                                            // Ze willen ook datum in verleden kunnen opgeven
+                                            // disabledBefore={moment()
+                                            //     .nextBusinessDay()
+                                            //     .format('YYYY-MM-DD')}
                                             // todo In testfase niet handig, wellicht na in gebruik name wel ?
                                             // disabledAfter={moment()
                                             //     .add(1, 'year')
@@ -479,9 +502,12 @@ class RevenueDistributionForm extends Component {
                         title={'Deelnemer rapport maken'}
                         closeModal={this.toggleModal}
                         buttonConfirmText={this.state.buttonConfirmText}
-                        confirmAction={this.createDistributionRevenueReport}
+                        confirmAction={this.state.modalAction}
                     >
                         {this.state.modalText}
+                        <br />
+                        <br />
+                        {this.state.modalText2}
                     </Modal>
                 )}
                 {this.state.showSuccessMessage && (

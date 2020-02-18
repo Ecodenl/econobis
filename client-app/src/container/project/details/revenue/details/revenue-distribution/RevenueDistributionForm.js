@@ -192,7 +192,9 @@ class RevenueDistributionForm extends Component {
 
     checkAllDistributionsAreChecked() {
         this.setState({
-            checkedAll: this.state.distributionIds.length === this.props.projectRevenue.distribution.meta.distributionIdsTotal.length,
+            checkedAll:
+                this.state.distributionIds.length ===
+                this.props.projectRevenue.distribution.meta.distributionIdsTotal.length,
         });
     }
 
@@ -320,7 +322,9 @@ class RevenueDistributionForm extends Component {
             this.props.projectRevenue.distribution.meta.distributionIdsTotal
         ) {
             numberSelectedNumberTotal =
-                this.state.distributionIds.length + '/' + this.props.projectRevenue.distribution.meta.distributionIdsTotal.length;
+                this.state.distributionIds.length +
+                '/' +
+                this.props.projectRevenue.distribution.meta.distributionIdsTotal.length;
         } else {
             numberSelectedNumberTotal = this.state.distributionIds.length;
         }

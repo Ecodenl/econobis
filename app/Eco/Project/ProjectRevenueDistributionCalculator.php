@@ -2,6 +2,8 @@
 
 namespace App\Eco\Project;
 
+use Carbon\Carbon;
+
 class ProjectRevenueDistributionCalculator
 {
     protected $projectRevenueDistribution;
@@ -144,8 +146,8 @@ class ProjectRevenueDistributionCalculator
             }
         }
 
-        $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
+        $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
+        $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -172,8 +174,8 @@ class ProjectRevenueDistributionCalculator
     {
         $currentBookWorth = $this->projectRevenueDistribution->revenue->project->currentBookWorth();
 
-        $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
+        $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
+        $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -219,9 +221,8 @@ class ProjectRevenueDistributionCalculator
 
         $keyAmountFirstPercentage = $this->projectRevenueDistribution->revenue->key_amount_first_percentage;
 
-
-        $dateBegin = $this->projectRevenueDistribution->revenue->date_begin;
-        $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
+        $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
+        $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -281,7 +282,7 @@ class ProjectRevenueDistributionCalculator
             $dateReference = $this->projectRevenueDistribution->revenue->date_reference;
             $mutations->whereDate('date_entry', '<=', $dateReference);
         } else {
-            $dateEnd = $this->projectRevenueDistribution->revenue->date_end->addDay();
+            $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
 
             $mutations->whereDate('date_entry', '<=', $dateEnd);
         }

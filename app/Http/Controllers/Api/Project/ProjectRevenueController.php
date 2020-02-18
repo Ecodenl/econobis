@@ -348,8 +348,8 @@ class ProjectRevenueController extends ApiController
         $distributionId = $distribution->id;
         $revenue = $distribution->revenue;
 
-        $dateBeginFromRevenue = $revenue->date_begin;
-        $dateEndFromRevenue = $revenue->date_end;
+        $dateBeginFromRevenue = Carbon::parse($revenue->date_begin);
+        $dateEndFromRevenue = Carbon::parse($revenue->date_end);
 
         if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
 

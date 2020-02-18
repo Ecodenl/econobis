@@ -28,8 +28,8 @@ class ContactGroup extends Model
 
     protected $dates
         = [
-            'date_started',
-            'date_finished',
+//            'date_started',
+//            'date_finished',
             'created_at',
             'updated_at',
         ];

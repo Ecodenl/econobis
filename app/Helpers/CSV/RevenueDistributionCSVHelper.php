@@ -73,6 +73,7 @@ class RevenueDistributionCSVHelper
             $csv = $this->csvExporter->build($chunk, [
                 'id' => '#',
                 'type' => 'Type',
+                'contact.number' => 'Nummer',
                 'contact.full_name' => 'Naam',
                 'participations_amount' => 'Participaties',
                 'payout_formatted' => 'Uit te keren bedrag',

@@ -43,6 +43,7 @@ class FullProjectRevenue extends Resource
                 'revenue' => $this->revenue,
                 'datePayed' => $this->date_payed,
                 'payPercentage' => $this->pay_percentage,
+                'payAmount' => $this->pay_amount,
                 'keyAmountFirstPercentage' => $this->key_amount_first_percentage,
                 'payPercentageValidFromKeyAmount' => $this->pay_percentage_valid_from_key_amount,
                 'categoryId' => $this->category_id,

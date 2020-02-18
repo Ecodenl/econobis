@@ -44,6 +44,7 @@ class RevenueFormEdit extends Component {
             revenue,
             datePayed,
             payPercentage,
+            payAmount,
             keyAmountFirstPercentage,
             payPercentageValidFromKeyAmount,
             payoutKwh,
@@ -69,6 +70,7 @@ class RevenueFormEdit extends Component {
                 revenue: revenue ? revenue : '',
                 datePayed: datePayed ? moment(datePayed).format('Y-MM-DD') : '',
                 payPercentage: payPercentage ? payPercentage : '',
+                payAmount: payAmount ? payAmount : '',
                 keyAmountFirstPercentage: keyAmountFirstPercentage ? keyAmountFirstPercentage : 0,
                 payPercentageValidFromKeyAmount: payPercentageValidFromKeyAmount ? payPercentageValidFromKeyAmount : '',
                 payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(3) : '',
@@ -81,6 +83,7 @@ class RevenueFormEdit extends Component {
                 payoutTypeId: false,
                 kwhEndHigh: false,
                 kwhEndLow: false,
+                payAmount: false,
             },
             errorMessage: {
                 payoutTypeId: '',
@@ -88,6 +91,7 @@ class RevenueFormEdit extends Component {
                 dateEnd: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
+                payAmount: '',
             },
             isSaving: false,
         };
@@ -276,6 +280,12 @@ class RevenueFormEdit extends Component {
             }
         }
 
+        if (!validator.isEmpty(revenue.payPercentage + '') && !validator.isEmpty(revenue.payAmount + '')) {
+            errors.payAmount = true;
+            errorMessage.payAmount = 'Percentage en Bedrag mogen niet allebei ingevuld zijn.';
+            hasErrors = true;
+        }
+
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         if (!hasErrors) {
@@ -309,6 +319,7 @@ class RevenueFormEdit extends Component {
             revenue,
             datePayed,
             payPercentage,
+            payAmount,
             keyAmountFirstPercentage,
             payPercentageValidFromKeyAmount,
             typeId,
@@ -607,6 +618,15 @@ class RevenueFormEdit extends Component {
                                         name={'payPercentage'}
                                         value={payPercentage}
                                         onChangeAction={this.handleInputChange}
+                                    />
+                                    <InputText
+                                        type={'number'}
+                                        label={'of aflossing bedrag (per deelnemer)'}
+                                        name={'payAmount'}
+                                        value={payAmount}
+                                        onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.payAmount}
+                                        errorMessage={this.state.errorMessage.payAmount}
                                     />
                                 </div>
                             </React.Fragment>

@@ -175,9 +175,9 @@ class ParticipantReportCreateApp extends Component {
                         <h4>{this.state.errorMessage}</h4>
                         {/*todo cleanup*/}
                         {/*<ul>*/}
-                            {/*{this.state.messages.map(message => (*/}
-                                {/*<li>{message}</li>*/}
-                            {/*))}*/}
+                        {/*{this.state.messages.map(message => (*/}
+                        {/*<li>{message}</li>*/}
+                        {/*))}*/}
                         {/*</ul>*/}
                     </Modal>
                 )}

@@ -33,6 +33,7 @@ const RevenueNew = props => {
         kwhEndLow,
         revenue,
         payPercentage,
+        payAmount,
         keyAmountFirstPercentage,
         payPercentageValidFromKeyAmount,
         categoryId,
@@ -331,6 +332,15 @@ const RevenueNew = props => {
                                     name={'payPercentage'}
                                     value={payPercentage}
                                     onChangeAction={props.handleInputChange}
+                                />
+                                <InputText
+                                    type={'number'}
+                                    label={'of aflossing bedrag (per deelnemer)'}
+                                    name={'payAmount'}
+                                    value={payAmount}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.payAmount}
+                                    errorMessage={props.errorMessage.payAmount}
                                 />
                             </div>
                         </React.Fragment>

@@ -173,6 +173,7 @@ class InvoiceHelper
             if ($preview) {
                 return [
                     'to' => 'Geen e-mailadres bekend',
+                    'bcc' => 'Geen bcc e-mailadres bekend',
                     'subject' => 'Geen e-mailadres bekend',
                     'htmlBody' => 'Geen e-mailadres bekend',
                 ];
@@ -221,6 +222,12 @@ class InvoiceHelper
 
         $mail = Mail::to($contactInfo['email']);
 
+        $bcc = $invoice->administration->email_bcc_notas;
+        if($bcc)
+        {
+            $mail->bcc($invoice->administration->email_bcc_notas);
+        }
+
         $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
         $htmlBody = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBody);
 
@@ -230,6 +237,7 @@ class InvoiceHelper
         if ($preview) {
             return [
                 'to' => $contactInfo['email'],
+                'bcc' => $bcc,
                 'subject' => $mail->subject,
                 'htmlBody' => $mail->html_body,
             ];

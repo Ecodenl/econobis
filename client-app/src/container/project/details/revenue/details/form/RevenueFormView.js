@@ -126,15 +126,27 @@ const RevenueFormView = props => {
                     <div className="row" onClick={props.switchToEdit}>
                         {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
                             <React.Fragment>
-                                <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
-                                <ViewText
-                                    label={
-                                        <React.Fragment>
-                                            Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
-                                        </React.Fragment>
-                                    }
-                                    value={keyAmountFirstPercentage && '€ ' + keyAmountFirstPercentage}
-                                />
+                                <div>
+                                    <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
+                                    <ViewText
+                                        label={
+                                            project.projectType.codeRef === 'loan'
+                                                ? 'of uitkeringsbedrag (per deelnemer)'
+                                                : 'of uitkeringsbedrag (per participatie)'
+                                        }
+                                        value={MoneyPresenter(payAmount)}
+                                    />
+                                </div>
+                                <div>
+                                    <ViewText
+                                        label={
+                                            <React.Fragment>
+                                                Bedrag <StyledEm>(uitkering % geldig tot en met)</StyledEm>
+                                            </React.Fragment>
+                                        }
+                                        value={keyAmountFirstPercentage && '€ ' + keyAmountFirstPercentage}
+                                    />
+                                </div>
                             </React.Fragment>
                         ) : null}
                         {project.projectType.codeRef === 'capital' ||

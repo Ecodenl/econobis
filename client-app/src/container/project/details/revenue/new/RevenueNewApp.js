@@ -268,10 +268,15 @@ class RevenueNewApp extends Component {
                 hasErrors = true;
             }
         }
-        if (revenue.distributionTypeId !== 'inPossessionOf') {
-            if (!validator.isEmpty(revenue.payAmount + '')) {
+        if (!validator.isEmpty(revenue.payAmount + '')) {
+            if (revenue.distributionTypeId !== 'inPossessionOf') {
                 errors.payAmount = true;
                 errorMessage.payAmount = 'Bedrag mag alleen bij type opbrengst verdeling "In bezit op" ingevuld zijn.';
+                hasErrors = true;
+            }
+            if (revenue.payAmount + '' < 0) {
+                errors.payAmount = true;
+                errorMessage.payAmount = 'Bedrag mag niet negatief zijn.';
                 hasErrors = true;
             }
         }

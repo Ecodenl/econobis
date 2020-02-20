@@ -53,6 +53,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             usesVat,
+            emailBccNotas,
         } = props.administrationDetails;
 
         this.state = {
@@ -94,6 +95,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
                 usesVat: usesVat,
+                emailBccNotas: emailBccNotas ? emailBccNotas : '',
             },
             errors: {
                 name: false,
@@ -108,6 +110,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
                 mailboxId: false,
+                emailBccNotas: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -239,6 +242,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             }
         }
 
+        if (!validator.isEmpty(administration.emailBccNotas + '')) {
+            if (!validator.isEmail(administration.emailBccNotas + '')) {
+                errors.emailBccNotas = true;
+                hasErrors = true;
+            }
+        }
+
         if (!validator.isEmpty(administration.website + '')) {
             if (!validator.isFQDN(administration.website + '')) {
                 errors.website = true;
@@ -341,6 +351,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('usesVat', administration.usesVat);
+            data.append('emailBccNotas', administration.emailBccNotas);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }
@@ -379,6 +390,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             usesVat,
+            emailBccNotas,
         } = this.state.administration;
 
         return (
@@ -593,6 +605,16 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label="Nota's ook mailen in BCC naar"
+                                name={'emailBccNotas'}
+                                value={emailBccNotas}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.emailBccNotas}
+                            />
                         </div>
 
                         {this.state.newLogo && (

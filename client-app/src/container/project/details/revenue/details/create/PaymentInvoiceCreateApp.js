@@ -20,6 +20,9 @@ class PaymentInvoiceCreateApp extends Component {
             distributions: [],
             distribution: {},
             successMessage: '',
+            errorMessage: '',
+            // todo cleanup
+            // messages: '',
             redirect: '',
             isBusy: false,
         };
@@ -61,10 +64,19 @@ class PaymentInvoiceCreateApp extends Component {
             this.props.reportPreview.distributionIds
         ).then(payload => {
             document.body.style.cursor = 'default';
-            this.setState({
-                successMessage: 'De rapporten zijn verzonden.',
-                isBusy: false,
-            });
+            if (!payload.data) {
+                this.setState({
+                    successMessage: 'De rapporten zijn aangeboden voor verzenden.',
+                    isBusy: false,
+                });
+            } else {
+                this.setState({
+                    errorMessage: 'Fouten bij verzenden rapporten',
+                    // todo cleanup
+                    // messages: payload.data,
+                    isBusy: false,
+                });
+            }
         });
     };
 
@@ -164,6 +176,22 @@ class PaymentInvoiceCreateApp extends Component {
                         title={'Succes'}
                     >
                         {this.state.successMessage}
+                    </Modal>
+                )}
+                {this.state.errorMessage && (
+                    <Modal
+                        closeModal={this.redirect}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Waarschuwing'}
+                    >
+                        <h4>{this.state.errorMessage}</h4>
+                        {/*todo cleanup*/}
+                        {/*<ul>*/}
+                        {/*{this.state.messages.map(message => (*/}
+                        {/*<li>{message}</li>*/}
+                        {/*))}*/}
+                        {/*</ul>*/}
                     </Modal>
                 )}
             </div>

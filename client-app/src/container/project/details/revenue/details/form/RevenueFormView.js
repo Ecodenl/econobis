@@ -6,7 +6,7 @@ moment.locale('nl');
 
 import ViewText from '../../../../../../components/form/ViewText';
 import styled from '@emotion/styled';
-import InputSelect from './RevenueFormEdit';
+import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const StyledEm = styled.em`
     font-weight: normal;
@@ -29,6 +29,7 @@ const RevenueFormView = props => {
         revenue,
         datePayed,
         payPercentage,
+        payAmount,
         keyAmountFirstPercentage,
         payPercentageValidFromKeyAmount,
         category,
@@ -160,13 +161,28 @@ const RevenueFormView = props => {
                     <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
                         <span className={'h5 text-bold'}>Aflossing euro</span>
                     </div>
-                    <div className="row" onClick={props.switchToEdit}>
-                        {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
-                            <React.Fragment>
-                                <ViewText label={'Aflossing %'} value={payPercentage && payPercentage + '%'} />
-                            </React.Fragment>
-                        ) : null}
-                    </div>
+                    {payAmount ? (
+                        <React.Fragment>
+                            <div className="row" onClick={props.switchToEdit}>
+                                {project.projectType.codeRef === 'loan' ||
+                                project.projectType.codeRef === 'obligation' ? (
+                                    <ViewText
+                                        label={'Aflossingsbedrag (per deelnemer)'}
+                                        value={MoneyPresenter(payAmount)}
+                                    />
+                                ) : null}
+                            </div>
+                        </React.Fragment>
+                    ) : (
+                        <React.Fragment>
+                            <div className="row" onClick={props.switchToEdit}>
+                                {project.projectType.codeRef === 'loan' ||
+                                project.projectType.codeRef === 'obligation' ? (
+                                    <ViewText label={'Aflossing %'} value={payPercentage && payPercentage + '%'} />
+                                ) : null}
+                            </div>
+                        </React.Fragment>
+                    )}
                 </React.Fragment>
             ) : null}
         </div>

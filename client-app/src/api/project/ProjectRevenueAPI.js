@@ -45,17 +45,17 @@ export default {
     createRevenueReport: (templateId, emailTemplateId, subject, distributionIds) => {
         const requestUrl = `${URL_API}/api/distribution/create-revenue-report`;
 
-        return axiosInstance
-            .post(requestUrl, {
-                documentTemplateId: templateId,
-                emailTemplateId: emailTemplateId,
-                distributionIds: distributionIds,
-                subject: subject,
-            })
-            .then(response => response)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl, {
+            documentTemplateId: templateId,
+            emailTemplateId: emailTemplateId,
+            distributionIds: distributionIds,
+            subject: subject,
+        });
+        // todo cleanup
+        // .then(response => response)
+        // .catch(error => {
+        //     console.log(error);
+        // });
     },
 
     createPaymentInvoices: (datePayout, distributionIds) => {

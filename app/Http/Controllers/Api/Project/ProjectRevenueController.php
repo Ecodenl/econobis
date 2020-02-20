@@ -25,6 +25,7 @@ use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -79,15 +80,18 @@ class ProjectRevenueController extends ApiController
 
     public function getRevenueDistribution(ProjectRevenue $projectRevenue, Request $request)
     {
+        //todo origineel 100: voor testen op 4
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
         $distribution = $projectRevenue->distribution()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $distributionIdsTotal = $projectRevenue->distribution()->pluck('id')->toArray();
         $total = $projectRevenue->distribution()->count();
 
         return FullProjectRevenueDistribution::collection($distribution)
             ->additional(['meta' => [
                 'total' => $total,
+                'distributionIdsTotal' => $distributionIdsTotal,
             ]
             ]);
 
@@ -95,10 +99,12 @@ class ProjectRevenueController extends ApiController
 
     public function getRevenueParticipants(ProjectRevenue $projectRevenue, Request $request)
     {
+        //todo origineel 100: voor testen op 4
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
         $participants = $projectRevenue->project->participantsProject()->limit($limit)->offset($offset)->get();
+        $participantIdsTotal = $projectRevenue->project->participantsProject()->pluck('id')->toArray();
         $total = $projectRevenue->project->participantsProject()->count();
 
         $participants->load([
@@ -108,6 +114,7 @@ class ProjectRevenueController extends ApiController
         return FullRevenueParticipantProject::collection($participants)
             ->additional(['meta' => [
                 'total' => $total,
+                'participantIdsTotal' => $participantIdsTotal,
             ]
             ]);
     }
@@ -140,6 +147,7 @@ class ProjectRevenueController extends ApiController
             ->string('datePayed')->validate('nullable|date')
             ->alias('date_payed')->whenMissing(null)->onEmpty(null)->next()
             ->double('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
+            ->double('payAmount')->onEmpty(null)->alias('pay_amount')->next()
             ->double('keyAmountFirstPercentage')->onEmpty(null)->alias('key_amount_first_percentage')->next()
             ->double('payPercentageValidFromKeyAmount')->onEmpty(null)->alias('pay_percentage_valid_from_key_amount')->next()
             ->integer('typeId')
@@ -192,6 +200,7 @@ class ProjectRevenueController extends ApiController
             ->string('datePayed')->validate('nullable|date')->onEmpty(null)
             ->whenMissing(null)->alias('date_payed')->next()
             ->double('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
+            ->double('payAmount')->onEmpty(null)->alias('pay_amount')->next()
             ->double('keyAmountFirstPercentage')->onEmpty(null)->alias('key_amount_first_percentage')->next()
             ->double('payPercentageValidFromKeyAmount')->onEmpty(null)->alias('pay_percentage_valid_from_key_amount')->next()
             ->integer('typeId')
@@ -212,6 +221,7 @@ class ProjectRevenueController extends ApiController
             $projectRevenue->isDirty('kwh_end') ||
             $projectRevenue->isDirty('payout_kwh') ||
             $projectRevenue->isDirty('pay_percentage') ||
+            $projectRevenue->isDirty('pay_amount') ||
             $projectRevenue->isDirty('key_amount_first_percentage') ||
             $projectRevenue->isDirty('pay_percentage_valid_from_key_amount') ||
             $projectRevenue->isDirty('distribution_type_id') ||
@@ -675,31 +685,223 @@ class ProjectRevenueController extends ApiController
 
     public function downloadPreview(Request $request, ProjectRevenueDistribution $distribution)
     {
-        return $this->createParticipantRevenueReport($request->input('subject'),
-            [$distribution->id],
-            DocumentTemplate::find($request->input('documentTemplateId')),
-            EmailTemplate::find($request->input('emailTemplateId')), true);
-    }
-
-    public function previewEmail(Request $request, ProjectRevenueDistribution $distribution)
-    {
-        return $this->createParticipantRevenueReport($request->input('subject'),
-            [$distribution->id],
-            DocumentTemplate::find($request->input('documentTemplateId')),
-            EmailTemplate::find($request->input('emailTemplateId')), false,
-            true);
-    }
-
-    public function createParticipantRevenueReport($subject, $distributionIds, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $previewPDF = false, $previewEmail = false)
-    {
         //get current logged in user
         $user = Auth::user();
 
         //load template parts
+        $documentTemplate = DocumentTemplate::find($request->input('documentTemplateId'));
         $documentTemplate->load('footer', 'baseTemplate', 'header');
 
-        $html = $documentTemplate->header ? $documentTemplate->header->html_body
-            : '';
+        $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';
+
+        if ($documentTemplate->baseTemplate) {
+            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                $documentTemplate->html_body, '', '');
+        } else {
+            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                '', '');
+        }
+
+        $html .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
+
+        if( !( empty($distribution->address)
+            || empty($distribution->postal_code)
+            || empty($distribution->city) ) ) {
+
+            $contact = $distribution->contact;
+            $orderController = new OrderController();
+            $contactInfo = $orderController->getContactInfoForOrder($contact);
+            $revenue = $distribution->revenue;
+            $project = $revenue->project;
+            $administration = $project->administration;
+
+            $html = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $html);
+
+            $revenueHtml = TemplateTableHelper::replaceTemplateTables($html, $contact);
+
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'contact', $contact);
+            $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'portal');
+            $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'contacten_portal');
+            $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml, 'cooperatie');
+
+            //wettelijk vertegenwoordiger
+            if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
+                $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)
+                    ->where('occupation_id', 7)->first()->primaryContact;
+                $revenueHtml
+                    = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'wettelijk_vertegenwoordiger',
+                    $wettelijkVertegenwoordiger);
+            }
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'ik', $user);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'administratie', $administration);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'verdeling', $distribution);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'opbrengst', $revenue);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'project', $project);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'deelname',
+                $distribution->participation);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'mutaties',
+                $distribution->participation->mutations);
+
+            $revenueHtml
+                = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
+            $pdf = PDF::loadView('documents.generic', [
+                'html' => $revenueHtml,
+            ])->output();
+
+            return $pdf;
+        }
+        return null;
+    }
+
+    public function previewEmail(Request $request, ProjectRevenueDistribution $distribution)
+    {
+        $subject = $request->input('subject');
+        $portalName = PortalSettings::get('portalName');
+        $cooperativeName = PortalSettings::get('cooperativeName');
+        $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
+        $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
+
+        //get current logged in user
+        $user = Auth::user();
+
+        //load template parts
+        $emailTemplate = EmailTemplate::find($request->input('emailTemplateId'));
+
+        if( !( empty($distribution->address)
+            || empty($distribution->postal_code)
+            || empty($distribution->city) ) ) {
+
+            $contact = $distribution->contact;
+            $orderController = new OrderController();
+
+            $contactInfo = $orderController->getContactInfoForOrder($contact);
+
+            $primaryEmailAddress = $contact->primaryEmailAddress;
+
+            $revenue = $distribution->revenue;
+            $project = $revenue->project;
+            $administration = $project->administration;
+
+            //send email
+            if ($primaryEmailAddress) {
+                $this->setMailConfigByDistribution($distribution);
+
+                $email = Mail::to($primaryEmailAddress->email);
+                if (!$subject) {
+                    $subject = 'Participant rapportage Econobis';
+                }
+
+                $email->subject = $subject;
+
+                $email->html_body
+                    = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                    . $subject . '</title></head>'
+                    . $emailTemplate->html_body . '</html>';
+
+                $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body,
+                    $contact);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact',
+                    $contact);
+
+                //wettelijk vertegenwoordiger
+                if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
+                    $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)
+                        ->where('occupation_id', 7)->first()->primaryContact;
+                    $htmlBodyWithContactVariables
+                        = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,
+                        'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
+                }
+
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', $user);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'administratie', $administration);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'verdeling', $distribution);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'opbrengst', $revenue);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'project', $project);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'deelname', $distribution->participation);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'mutaties', $distribution->participation->mutations);
+                $htmlBodyWithContactVariables
+                    = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+
+                $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
+                $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
+                    $htmlBodyWithContactVariables);
+
+                $primaryMailbox = Mailbox::getDefault();
+                if ($primaryMailbox) {
+                    $fromEmail = $primaryMailbox->email;
+                    $fromName = $primaryMailbox->name;
+                } else {
+                    $fromEmail = \Config::get('mail.from.address');
+                    $fromName = \Config::get('mail.from.name');
+                }
+
+                return [
+                    'from' => $fromEmail,
+                    'to' => $primaryEmailAddress->email,
+                    'subject' => $subject,
+                    'htmlBody' => $htmlBodyWithContactVariables
+                ];
+            } else {
+                return [
+                    'from' => 'Geen e-mail bekend.',
+                    'to' => 'Geen e-mail bekend.',
+                    'subject' => 'Geen e-mail bekend.',
+                    'htmlBody' => 'Geen e-mail bekend.'
+                ];
+            }
+        }
+        return null;
+    }
+
+    public function createRevenueReport(Request $request)
+    {
+        set_time_limit(0);
+        $distributionIds = $request->input('distributionIds');
+        $subject = $request->input('subject');
+        $documentTemplateId = $request->input('documentTemplateId');
+        $emailTemplateId = $request->input('emailTemplateId');
+
+        foreach($distributionIds as $distributionId) {
+            CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
+        }
+
+// null voor succesboodschap. todo nog even checken of wat nut was om hier ProjectRevenueDistiibution terug te geven.
+//        return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
+        return null;
+    }
+
+    public function createParticipantRevenueReport($subject, $distributionId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    {
+        $portalName = PortalSettings::get('portalName');
+        $cooperativeName = PortalSettings::get('cooperativeName');
+        $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
+        $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
+
+        //get current logged in user
+        $user = Auth::user();
+
+        $messages = [];
+
+        //load template parts
+        $documentTemplate->load('footer', 'baseTemplate', 'header');
+
+        $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';
 
         if ($documentTemplate->baseTemplate) {
             $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
@@ -712,110 +914,110 @@ class ProjectRevenueController extends ApiController
         $html .= $documentTemplate->footer
             ? $documentTemplate->footer->html_body : '';
 
-        foreach ($distributionIds as $distributionId) {
-            $distribution
-                = ProjectRevenueDistribution::find($distributionId);
+        $distribution = ProjectRevenueDistribution::find($distributionId);
 
-            if( !( empty($distribution->address)
-                || empty($distribution->postal_code)
-                || empty($distribution->city) ) ) {
+        if( !( empty($distribution->address)
+            || empty($distribution->postal_code)
+            || empty($distribution->city) ) ) {
 
-                $contact = $distribution->contact;
-                $orderController = new OrderController();
+            $contact = $distribution->contact;
+            $orderController = new OrderController();
 
-                $contactInfo = $orderController->getContactInfoForOrder($contact);
+            $contactInfo = $orderController->getContactInfoForOrder($contact);
 
-                $primaryEmailAddress = $contact->primaryEmailAddress;
+            $primaryEmailAddress = $contact->primaryEmailAddress;
 
-                $revenue = $distribution->revenue;
-                $project = $revenue->project;
-                $administration = $project->administration;
+            $revenue = $distribution->revenue;
+            $project = $revenue->project;
+            $administration = $project->administration;
 
-                if (!$previewEmail) {
+            $html = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $html);
 
-                    $html = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $html);
+            $revenueHtml = TemplateTableHelper::replaceTemplateTables($html, $contact);
 
-                    $revenueHtml = TemplateTableHelper::replaceTemplateTables($html, $contact);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'contact', $contact);
+            $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'portal' );
+            $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'contacten_portal' );
+            $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml,'cooperatie' );
 
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'contact', $contact);
-                    $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'portal' );
-                    $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml,'contacten_portal' );
-                    $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml,'cooperatie' );
+            //wettelijk vertegenwoordiger
+            if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
+                $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)
+                    ->where('occupation_id', 7)->first()->primaryContact;
+                $revenueHtml
+                    = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
+            }
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'ik', $user);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'administratie', $administration);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'verdeling', $distribution);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'opbrengst', $revenue);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'project', $project);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'deelname', $distribution->participation);
+            $revenueHtml
+                = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'mutaties', $distribution->participation->mutations);
 
-                    //wettelijk vertegenwoordiger
-                    if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
-                        $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)
-                            ->where('occupation_id', 7)->first()->primaryContact;
-                        $revenueHtml
-                            = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
-                    }
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'ik', $user);
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'administratie', $administration);
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'verdeling', $distribution);
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'opbrengst', $revenue);
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'project', $project);
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'deelname', $distribution->participation);
-                    $revenueHtml
-                        = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'mutaties', $distribution->participation->mutations);
+            $revenueHtml
+                = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
+            $pdf = PDF::loadView('documents.generic', [
+                'html' => $revenueHtml,
+            ])->output();
 
-                    $revenueHtml
-                        = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
-                    $pdf = PDF::loadView('documents.generic', [
-                        'html' => $revenueHtml,
-                    ])->output();
+            try
+            {
+                $time = Carbon::now();
 
-                    if ($previewPDF) {
-                        return $pdf;
-                    }
+                $document = new Document();
+                $document->document_type = 'internal';
+                $document->document_group = 'revenue';
+                $document->contact_id = $contact->id;
+                $document->project_id = $project->id;
+                $document->participation_project_id = $distribution->participation_id;
+                $document->template_id = $documentTemplate->id;
 
-                    $time = Carbon::now();
-
-                    $document = new Document();
-                    $document->document_type = 'internal';
-                    $document->document_group = 'revenue';
-                    $document->contact_id = $contact->id;
-                    $document->project_id = $project->id;
-                    $document->participation_project_id = $distribution->participation_id;
-                    $document->template_id = $documentTemplate->id;
-
-                    $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
-                        . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
+                $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
+                    . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
 
 
-                    //max length name 25
-                    $filename = substr($filename, 0, 25);
+                //max length name 25
+                $filename = substr($filename, 0, 25);
 
-                    $document->filename = $filename
-                        . substr($document->getDocumentGroup()->name, 0, 1)
-                        . (Document::where('document_group', 'revenue')->count()
-                            + 1) . '_' . $time->format('Ymd') . '.pdf';
+                $document->filename = $filename
+                    . substr($document->getDocumentGroup()->name, 0, 1)
+                    . (Document::where('document_group', 'revenue')->count()
+                        + 1) . '_' . $time->format('Ymd') . '.pdf';
 
-                    $document->save();
+                $document->save();
 
-                    $filePath = (storage_path('app' . DIRECTORY_SEPARATOR
-                        . 'documents/' . $document->filename));
-                    file_put_contents($filePath, $pdf);
+                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR
+                    . 'documents/' . $document->filename));
+                file_put_contents($filePath, $pdf);
 
-                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
-                        \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
+                    \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-                    $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                        $document->filename, $document->getDocumentGroup()->name);
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                    $document->filename, $document->getDocumentGroup()->name);
 
-                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-                    $document->save();
-                }
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                $document->save();
+            }
+            catch (\Exception $e) {
+                Log::error('Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                Log::error($e->getMessage());
+                array_push($messages, 'Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+            }
 
-                //send email
-                if ($primaryEmailAddress) {
-                    $this->setMailConfigByDistribution($distribution);
+            //send email
+            if ($primaryEmailAddress) {
+                try{
+                $this->setMailConfigByDistribution($distribution);
 
                     $email = Mail::to($primaryEmailAddress->email);
                     if (!$subject) {
@@ -874,46 +1076,37 @@ class ProjectRevenueController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    if ($previewEmail) {
-                        return [
-                            'from' => $fromEmail,
-                            'to' => $primaryEmailAddress->email,
-                            'subject' => $subject,
-                            'htmlBody' => $htmlBodyWithContactVariables
-                        ];
-                    } else {
-                        $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
-                            $htmlBodyWithContactVariables, $document));
-                    }
-                } else {
-                    return [
-                        'from' => 'Geen e-mail bekend.',
-                        'to' => 'Geen e-mail bekend.',
-                        'subject' => 'Geen e-mail bekend.',
-                        'htmlBody' => 'Geen e-mail bekend.'
-                    ];
+                    $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
+                        $htmlBodyWithContactVariables, $document));
+
+                } catch (\Exception $e) {
+                    Log::error( 'Fout bij verzenden email naar ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                    Log::error($e->getMessage());
+                    array_push($messages, 'Fout bij verzenden email naar ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
                 }
 
-                if (!$previewPDF && !$previewEmail) {
-                    //delete file on server, still saved on alfresco.
-                    Storage::disk('documents')->delete($document->filename);
-                }
+            } else {
+                return [
+                    'from' => 'Geen e-mail bekend.',
+                    'to' => 'Geen e-mail bekend.',
+                    'subject' => 'Geen e-mail bekend.',
+                    'htmlBody' => 'Geen e-mail bekend.'
+                ];
             }
+
+            //delete file on server, still saved on alfresco.
+            Storage::disk('documents')->delete($document->filename);
+        }
+        if(count($messages) > 0)
+        {
+            return ['messages' => $messages];
+        }
+        else
+        {
+            return null;
         }
     }
 
-    public function createRevenueReport(Request $request)
-    {
-        set_time_limit(0);
-        $distributionIds = $request->input('distributionIds');
-        $subject = $request->input('subject');
-        $documentTemplateId = $request->input('documentTemplateId');
-        $emailTemplateId = $request->input('emailTemplateId');
-
-        CreateRevenueReport::dispatch($distributionIds, $subject, $documentTemplateId, $emailTemplateId, Auth::id());
-
-        return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
-    }
     public function createPaymentInvoices(Request $request)
     {
         set_time_limit(0);

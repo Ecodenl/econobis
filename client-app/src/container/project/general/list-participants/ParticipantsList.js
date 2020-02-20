@@ -8,7 +8,6 @@ import ParticipantsListFilter from './ParticipantsListFilter';
 import ParticipantsListItem from './ParticipantsListItem';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import { connect } from 'react-redux';
-import PanelBody from '../../../participant/list/ParticipantsListApp';
 
 class ParticipantsList extends Component {
     constructor(props) {
@@ -80,6 +79,8 @@ class ParticipantsList extends Component {
                 </DataTable>
                 <div className="col-md-4 col-md-offset-4">
                     <DataTablePagination
+                        // todo Hier juiste records per page nog zetten (origineel 20: voor testen op 4)!
+                        recordsPerPage={20}
                         onPageChangeAction={this.props.handlePageClick}
                         totalRecords={meta.total}
                         initialPage={this.props.participantsProjectPagination.page}

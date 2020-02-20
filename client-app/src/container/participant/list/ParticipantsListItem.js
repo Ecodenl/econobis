@@ -68,7 +68,7 @@ class ParticipantsListItem extends Component {
                             type="checkbox"
                             name={id}
                             onChange={this.props.toggleParticipantCheck}
-                            checked={this.props.participantIds.includes(id)}
+                            checked={this.props.participantIds ? this.props.participantIds.includes(id) : false}
                         />
                     ) : null}
                 </td>

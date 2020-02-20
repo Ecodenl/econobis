@@ -6,13 +6,13 @@
  * Time: 16:06
  */
 
-namespace App\Jobs\Revenue;
+namespace App\Jobs\ParticipationProject;
 
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
-use App\Http\Controllers\Api\Project\ProjectRevenueController;
+use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -21,26 +21,26 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class CreateRevenueReport implements ShouldQueue
+class CreateParticipantReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $distributionId;
+    private $participantId;
     private $subject;
     private $documentTemplateId;
     private $emailTemplateId;
     private $userId;
 
-    public function __construct($distributionId, $subject, $documentTemplateId, $emailTemplateId, $userId)
+    public function __construct($participantId, $subject, $documentTemplateId, $emailTemplateId, $userId)
     {
-        $this->distributionId = $distributionId;
+        $this->participantId = $participantId;
         $this->subject = $subject;
         $this->documentTemplateId = $documentTemplateId;
         $this->emailTemplateId = $emailTemplateId;
         $this->userId = $userId;
 
         $jobLog = new JobsLog();
-        $jobLog->value = 'Start opbrengstverdeling deelnemer ('.$distributionId.') rapportage.';
+        $jobLog->value = 'Start deelnemer ('.$participantId.') rapportage.';
         $jobLog->user_id = $userId;
         $jobLog->save();
     }
@@ -50,19 +50,19 @@ class CreateRevenueReport implements ShouldQueue
         //user voor observer
         Auth::setUser(User::find($this->userId));
 
-        $projectRevenueController = new ProjectRevenueController();
+        $participationProjectController = new ParticipationProjectController();
 
-        $result = $projectRevenueController->createParticipantRevenueReport(
+        $result = $participationProjectController->createParticipantProjectReport(
             $this->subject,
-            $this->distributionId,
+            $this->participantId,
             DocumentTemplate::find($this->documentTemplateId),
             EmailTemplate::find($this->emailTemplateId));
 
         if($result && $result['messages'])
         {
-            $value = 'Fout bij rapportage deelnemer ('.$this->distributionId.'): '.implode(" ",$result['messages']);
+            $value = 'Fout bij rapportage deelnemer ('.$this->participantId.'): '.implode(" ",$result['messages']);
         }else{
-            $value = 'Opbrengstverdeling deelnemer ('.$this->distributionId.') rapportage gemaakt.';
+            $value = 'Deelnemer ('.$this->participantId.') rapportage gemaakt.';
         }
         $jobLog = new JobsLog();
         $jobLog->value = $value;
@@ -73,10 +73,10 @@ class CreateRevenueReport implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = 'Opbrengstverdeling deelnemer ('.$this->distributionId.') rapportage mislukt.';
+        $jobLog->value = 'Rapportage deelnemer ('.$this->participantId.') rapportage mislukt.';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error('Opbrengstverdeling deelnemer ('.$this->distributionId.') rapportage mislukt: ' . $exception->getMessage());
+        Log::error('Deelnemers ('.$this->participantId.') rapportage mislukt: ' . $exception->getMessage());
     }
 }

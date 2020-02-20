@@ -50,6 +50,9 @@ class RevenueNewApp extends Component {
                 kwhEndHigh: false,
                 kwhEndLow: false,
                 payAmount: false,
+                payPercentage: false,
+                keyAmountFirstPercentage: false,
+                payPercentageValidFromKeyAmount: false,
             },
             errorMessage: {
                 payoutTypeId: '',
@@ -265,6 +268,18 @@ class RevenueNewApp extends Component {
                 hasErrors = true;
             }
         }
+        if (!validator.isEmpty(revenue.payAmount + '')) {
+            if (revenue.distributionTypeId !== 'inPossessionOf') {
+                errors.payAmount = true;
+                errorMessage.payAmount = 'Bedrag mag alleen bij type opbrengst verdeling "In bezit op" ingevuld zijn.';
+                hasErrors = true;
+            }
+            if (revenue.payAmount + '' < 0) {
+                errors.payAmount = true;
+                errorMessage.payAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
 
         if (category.codeRef === 'revenueKwh') {
             if (revenue.kwhEndHigh < revenue.kwhStartHigh) {
@@ -297,11 +312,20 @@ class RevenueNewApp extends Component {
                     'Als je een negatief resultaat wilt verdelen dan kan dat niet uitgekeerd worden op een rekening. Kies voor bijschrijven.';
                 hasErrors = true;
             }
-            if (!validator.isEmpty(revenue.payPercentage + '') && !validator.isEmpty(revenue.payAmount + '')) {
-                errors.payAmount = true;
-                errorMessage.payAmount = 'Percentage en Bedrag mogen niet allebei ingevuld zijn.';
-                hasErrors = true;
-            }
+        }
+
+        if (
+            (!validator.isEmpty(revenue.payPercentage + '') ||
+                revenue.keyAmountFirstPercentage != 0 ||
+                !validator.isEmpty(revenue.payPercentageValidFromKeyAmount + '')) &&
+            !validator.isEmpty(revenue.payAmount + '')
+        ) {
+            errors.payAmount = true;
+            errors.payPercentage = true;
+            errors.keyAmountFirstPercentage = true;
+            errors.payPercentageValidFromKeyAmount = true;
+            errorMessage.payAmount = 'Percentage(s) en Bedrag mogen niet allebei ingevuld zijn.';
+            hasErrors = true;
         }
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });

@@ -275,7 +275,23 @@ const RevenueNew = props => {
                                     name={'payPercentage'}
                                     value={payPercentage}
                                     onChangeAction={props.handleInputChange}
+                                    error={props.errors.payPercentage}
                                 />
+                                <InputText
+                                    type={'number'}
+                                    label={
+                                        projectTypeCodeRef === 'loan'
+                                            ? 'of uitkeringsbedrag (per deelnemer)'
+                                            : 'of uitkeringsbedrag (per participatie)'
+                                    }
+                                    name={'payAmount'}
+                                    value={payAmount}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.payAmount}
+                                    errorMessage={props.errorMessage.payAmount}
+                                />
+                            </div>
+                            <div className="row">
                                 <InputText
                                     label={
                                         <React.Fragment>
@@ -285,6 +301,7 @@ const RevenueNew = props => {
                                     name={'keyAmountFirstPercentage'}
                                     value={keyAmountFirstPercentage}
                                     onChangeAction={props.handleInputChange}
+                                    error={props.errors.keyAmountFirstPercentage}
                                 />
                             </div>
                             {keyAmountFirstPercentage ? (
@@ -295,6 +312,7 @@ const RevenueNew = props => {
                                         name={'payPercentageValidFromKeyAmount'}
                                         value={payPercentageValidFromKeyAmount}
                                         onChangeAction={props.handleInputChange}
+                                        error={props.errors.payPercentageValidFromKeyAmount}
                                     />
                                 </div>
                             ) : null}
@@ -335,7 +353,11 @@ const RevenueNew = props => {
                                 />
                                 <InputText
                                     type={'number'}
-                                    label={'of aflossing bedrag (per deelnemer)'}
+                                    label={
+                                        projectTypeCodeRef === 'loan'
+                                            ? 'of aflossingsbedrag (per deelname)'
+                                            : 'of aflossingsbedrag (per participatie)'
+                                    }
                                     name={'payAmount'}
                                     value={payAmount}
                                     onChangeAction={props.handleInputChange}

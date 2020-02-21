@@ -84,6 +84,9 @@ class RevenueFormEdit extends Component {
                 kwhEndHigh: false,
                 kwhEndLow: false,
                 payAmount: false,
+                payPercentage: false,
+                keyAmountFirstPercentage: false,
+                payPercentageValidFromKeyAmount: false,
             },
             errorMessage: {
                 payoutTypeId: '',
@@ -245,6 +248,18 @@ class RevenueFormEdit extends Component {
                 hasErrors = true;
             }
         }
+        if (!validator.isEmpty(revenue.payAmount + '')) {
+            if (revenue.distributionTypeId !== 'inPossessionOf') {
+                errors.payAmount = true;
+                errorMessage.payAmount = 'Bedrag mag alleen bij type opbrengst verdeling "In bezit op" ingevuld zijn.';
+                hasErrors = true;
+            }
+            if (revenue.payAmount + '' < 0) {
+                errors.payAmount = true;
+                errorMessage.payAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
 
         if (this.props.revenue.category.codeRef === 'revenueKwh') {
             if (revenue.kwhEndHigh < revenue.kwhStartHigh) {
@@ -279,10 +294,17 @@ class RevenueFormEdit extends Component {
                 hasErrors = true;
             }
         }
-
-        if (!validator.isEmpty(revenue.payPercentage + '') && !validator.isEmpty(revenue.payAmount + '')) {
+        if (
+            (!validator.isEmpty(revenue.payPercentage + '') ||
+                revenue.keyAmountFirstPercentage != 0 ||
+                !validator.isEmpty(revenue.payPercentageValidFromKeyAmount + '')) &&
+            !validator.isEmpty(revenue.payAmount + '')
+        ) {
             errors.payAmount = true;
-            errorMessage.payAmount = 'Percentage en Bedrag mogen niet allebei ingevuld zijn.';
+            errors.payPercentage = true;
+            errors.keyAmountFirstPercentage = true;
+            errors.payPercentageValidFromKeyAmount = true;
+            errorMessage.payAmount = 'Percentage(s) en Bedrag mogen niet allebei ingevuld zijn.';
             hasErrors = true;
         }
 
@@ -561,7 +583,23 @@ class RevenueFormEdit extends Component {
                                         name={'payPercentage'}
                                         value={payPercentage}
                                         onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.payPercentage}
                                     />
+                                    <InputText
+                                        type={'number'}
+                                        label={
+                                            projectTypeCodeRef === 'loan'
+                                                ? 'of uitkeringsbedrag (per deelname)'
+                                                : 'of uitkeringsbedrag (per participatie)'
+                                        }
+                                        name={'payAmount'}
+                                        value={payAmount}
+                                        onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.payAmount}
+                                        errorMessage={this.state.errorMessage.payAmount}
+                                    />
+                                </div>
+                                <div className="row">
                                     <InputText
                                         label={
                                             <React.Fragment>
@@ -571,6 +609,7 @@ class RevenueFormEdit extends Component {
                                         name={'keyAmountFirstPercentage'}
                                         value={keyAmountFirstPercentage}
                                         onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.keyAmountFirstPercentage}
                                     />
                                 </div>
                                 {this.state.revenue.keyAmountFirstPercentage ? (
@@ -581,6 +620,7 @@ class RevenueFormEdit extends Component {
                                             name={'payPercentageValidFromKeyAmount'}
                                             value={payPercentageValidFromKeyAmount}
                                             onChangeAction={this.handleInputChange}
+                                            error={this.state.errors.payPercentageValidFromKeyAmount}
                                         />
                                     </div>
                                 ) : null}
@@ -621,7 +661,11 @@ class RevenueFormEdit extends Component {
                                     />
                                     <InputText
                                         type={'number'}
-                                        label={'of aflossing bedrag (per deelnemer)'}
+                                        label={
+                                            projectTypeCodeRef === 'loan'
+                                                ? 'of aflossingsbedrag (per deelname)'
+                                                : 'of aflossingsbedrag (per participatie)'
+                                        }
                                         name={'payAmount'}
                                         value={payAmount}
                                         onChangeAction={this.handleInputChange}

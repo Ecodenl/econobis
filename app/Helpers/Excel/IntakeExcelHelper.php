@@ -79,7 +79,7 @@ class IntakeExcelHelper
                     array_push($sources, $source->name);
                 }
                 if (count($sources) > 0) {
-                    $intake->sources_string = implode($sources, ', ');
+                    $intake->sources_string = implode(', ', $sources);
                 }
 
                 $address = $intake->address;

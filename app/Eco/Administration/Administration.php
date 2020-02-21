@@ -269,7 +269,7 @@ class Administration extends Model
 //        }
 
         if (!$canCreateInvoices['can']) {
-            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode($canCreateInvoices['requiredFields'], ', ') . ' zijn verplicht.';
+            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode(', ', $canCreateInvoices['requiredFields']) . ' zijn verplicht.';
         }
 
         return $canCreateInvoices;
@@ -293,7 +293,7 @@ class Administration extends Model
         }
 
         if (!$canCreatePaymentInvoices['can']) {
-            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode($canCreatePaymentInvoices['requiredFields'], ', ') . ' zijn verplicht.';
+            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode(', ', $canCreatePaymentInvoices['requiredFields']) . ' zijn verplicht.';
         }
 
         return $canCreatePaymentInvoices;

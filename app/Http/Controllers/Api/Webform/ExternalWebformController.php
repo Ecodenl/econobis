@@ -699,13 +699,19 @@ class ExternalWebformController extends Controller
             $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
             $intake->reasons()->sync($reasons->pluck('id'));
-            $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
+//            $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
+            $reasonsImploded = implode(', ', $reasons->name);
+            $this->log("Intake gekoppeld aan motivaties: " . $reasonsImploded);
 
             $intake->sources()->sync($sources->pluck('id'));
-            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $sources->implode('name', ', '));
+//            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $sources->implode('name', ', '));
+            $sourcesImploded = implode(', ', $sources->name);
+            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $sourcesImploded);
 
             $intake->measuresRequested()->sync($measureCategories->pluck('id'));
-            $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
+//            $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
+            $measureCategoriesImploded = implode(', ', $measureCategories->name);
+            $this->log("Intake gekoppeld aan interesses: " . $measureCategoriesImploded);
 
             return $intake;
         } else {

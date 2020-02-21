@@ -4,6 +4,7 @@ import moment from 'moment';
 import InputText from '../../../../../../components/form/InputText';
 import InputDate from '../../../../../../components/form/InputDate';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
+// import InputToggle from '../../../../../../components/form/InputToggle';
 
 const MutationFormEditStatusFinal = ({
     participantMutationFromState,
@@ -13,6 +14,7 @@ const MutationFormEditStatusFinal = ({
     errors,
     errorMessage,
     projectTypeCodeRef,
+    participantProjectDateRegister,
 }) => (
     <React.Fragment>
         <div className="row">
@@ -123,6 +125,7 @@ const MutationFormEditStatusFinal = ({
                 label={'Ingangsdatum'}
                 name={'dateEntry'}
                 value={participantMutationFromState.dateEntry}
+                disabledBefore={participantProjectDateRegister}
                 onChangeAction={handleInputChangeDate}
                 required={'required'}
                 error={errors.dateEntry}

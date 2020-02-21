@@ -25,6 +25,7 @@ const ParticipantFormView = props => {
         ibanPayout,
         ibanPayoutAttn,
         type,
+        dateRegister,
         powerKwhConsumption,
         participationsReturnsTotal,
         participationsReturnsKwhTotal,
@@ -102,6 +103,12 @@ const ParticipantFormView = props => {
                 {project.projectType.codeRef === 'loan' ? (
                     <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
                 ) : null}
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={'Eerste ingangsdatum'}
+                    value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
+                />
             </div>
 
             {projectTypeCodeRef === 'obligation' ? (

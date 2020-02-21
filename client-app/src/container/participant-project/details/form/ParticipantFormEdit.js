@@ -19,7 +19,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import ParticipantFormEditPostalcodeLinkCapital from './edit/ParticipantFormEditPostalcodeLinkCapital';
 import ParticipantFormEditCapital from './edit/ParticipantFormEditCapital';
 import ParticipantFormEditObligation from './edit/ParticipantFormEditObligation';
-import ParticipantFormViewPostalcodeLinkCapital from './view/ParticipantFormViewPostalcodeLinkCapital';
+import InputDate from '../../../../components/form/InputDate';
 
 class ParticipantFormEdit extends Component {
     constructor(props) {
@@ -37,6 +37,7 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
+            dateRegister,
         } = props.participation;
 
         this.state = {
@@ -53,6 +54,11 @@ class ParticipantFormEdit extends Component {
                 ibanPayoutAttn: ibanPayoutAttn ? ibanPayoutAttn : '',
                 typeId: typeId ? typeId : '',
                 powerKwhConsumption: powerKwhConsumption ? powerKwhConsumption : '',
+                dateRegister: dateRegister
+                    ? dateRegister
+                    : this.props.participation.project.dateEntry
+                    ? this.props.participation.project.dateEntry
+                    : moment().format('YYYY-MM-DD'),
             },
             errors: {
                 typeId: false,
@@ -147,6 +153,7 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
+            dateRegister,
         } = this.state.participation;
 
         const {
@@ -315,6 +322,15 @@ class ParticipantFormEdit extends Component {
                             error={this.state.errors.typeId}
                         />
                     ) : null}
+                </div>
+                <div className="row">
+                    <InputDate
+                        label={'Eerste ingangsdatum'}
+                        name={'dateRegister'}
+                        value={dateRegister}
+                        required={'required'}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
                 </div>
                 {projectTypeCodeRef === 'obligation' ? (
                     <ParticipantFormEditObligation

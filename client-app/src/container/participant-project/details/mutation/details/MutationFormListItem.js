@@ -67,6 +67,7 @@ class MutationFormListItem extends Component {
             },
             errors: {},
             errorMessage: {},
+            // changeDateRegister: false,
         };
     }
 

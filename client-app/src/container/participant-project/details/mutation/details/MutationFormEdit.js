@@ -20,6 +20,9 @@ const MutationFormEdit = ({
     projectTypeCodeRef,
     cancelEdit,
     participantMutationStatuses,
+    participantProjectDateRegister,
+    // dateEntryFirstDeposit,
+    // changeDateRegister,
 }) => {
     const { type, statusId } = participantMutationFromState;
 
@@ -84,6 +87,9 @@ const MutationFormEdit = ({
                             cancelEdit={cancelEdit}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
+                            participantProjectDateRegister={participantProjectDateRegister}
+                            // dateEntryFirstDeposit={dateEntryFirstDeposit}
+                            // changeDateRegister={changeDateRegister}
                         />
                     ) : null}
                     {type.codeRef === 'withDrawal' || type.codeRef === 'sell' ? (
@@ -128,6 +134,8 @@ const MutationFormEdit = ({
 const mapStateToProps = state => {
     return {
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+        participantProjectDateRegister: state.participantProjectDetails.dateRegister,
+        // dateEntryFirstDeposit: state.participantProjectDetails.dateEntryFirstDeposit,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };

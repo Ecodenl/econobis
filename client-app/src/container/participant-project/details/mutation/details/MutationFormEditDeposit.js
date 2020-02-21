@@ -24,6 +24,7 @@ function MutationFormEditDeposit({
     errors,
     errorMessage,
     buttonText,
+    participantProjectDateRegister,
 }) {
     return (
         <PanelBody>
@@ -108,6 +109,7 @@ function MutationFormEditDeposit({
                     errors={errors}
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
+                    participantProjectDateRegister={participantProjectDateRegister}
                 />
             )}
 
@@ -141,6 +143,7 @@ MutationFormEditDeposit.propTypes = {
     cancelEdit: PropTypes.any,
     buttonText: PropTypes.string,
     handleSubmit: PropTypes.any,
+    participantProjectDateRegister: PropTypes.any,
 };
 
 export default MutationFormEditDeposit;

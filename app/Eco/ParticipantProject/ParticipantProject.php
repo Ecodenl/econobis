@@ -125,6 +125,20 @@ class ParticipantProject extends Model
         return $mutationStatuses;
     }
 
+    // Return first (earliest) date entry of mutations
+    public function getDateEntryFirstDepositAttribute()
+    {
+        return $this->mutationsDefinitive()->first()->date_entry;
+    }
+
+    // Return if projectparicipant already has a link in a non-concept revenue distribution
+    public function getParticipantInDefinitiveRevenueAttribute()
+    {
+        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
+        return $projectRevenueDistributions->count() > 0;
+    }
+
+
     public function getParticipationsReturnsTotalAttribute()
     {
         $total = 0;

@@ -4,7 +4,6 @@ import moment from 'moment';
 import InputText from '../../../../../../components/form/InputText';
 import InputDate from '../../../../../../components/form/InputDate';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
-// import InputToggle from '../../../../../../components/form/InputToggle';
 
 const MutationFormEditStatusFinal = ({
     participantMutationFromState,

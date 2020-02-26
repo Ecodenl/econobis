@@ -1,4 +1,4 @@
-export default function(participantMutation, projectTypeCodeRef, changeDateRegister) {
+export default function(participantMutation, projectTypeCodeRef) {
     const orginalStatusCodeRef = participantMutation.status.codeRef;
     const orginalStatusId = participantMutation.status.id;
     const values = {

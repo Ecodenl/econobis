@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
@@ -128,7 +129,10 @@ class ParticipantProject extends Model
     // Return first (earliest) date entry of mutations
     public function getDateEntryFirstDepositAttribute()
     {
-        return $this->mutationsDefinitive()->first()->date_entry;
+        $projectType = $this->project->projectType;
+        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first();
+        $mutationFirstDeposit = $this->mutationsDefinitive()->where('type_id', $mutationType->id)->first();
+        return $mutationFirstDeposit ? $mutationFirstDeposit->date_entry : null;
     }
 
     // Return if projectparicipant already has a link in a non-concept revenue distribution

@@ -25,6 +25,7 @@ function MutationFormEditDeposit({
     errorMessage,
     buttonText,
     participantProjectDateRegister,
+    participantInDefinitiveRevenue,
 }) {
     return (
         <PanelBody>
@@ -110,6 +111,7 @@ function MutationFormEditDeposit({
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                     participantProjectDateRegister={participantProjectDateRegister}
+                    participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                 />
             )}
 
@@ -144,6 +146,7 @@ MutationFormEditDeposit.propTypes = {
     buttonText: PropTypes.string,
     handleSubmit: PropTypes.any,
     participantProjectDateRegister: PropTypes.any,
+    participantInDefinitiveRevenue: PropTypes.bool,
 };
 
 export default MutationFormEditDeposit;

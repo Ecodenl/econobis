@@ -38,6 +38,8 @@ class ParticipantFormEdit extends Component {
             typeId,
             powerKwhConsumption,
             dateRegister,
+            dateEntryFirstDeposit,
+            participantInDefinitiveRevenue,
         } = props.participation;
 
         this.state = {
@@ -59,6 +61,8 @@ class ParticipantFormEdit extends Component {
                     : this.props.participation.project.dateEntry
                     ? this.props.participation.project.dateEntry
                     : moment().format('YYYY-MM-DD'),
+                dateEntryFirstDeposit: dateEntryFirstDeposit ? dateEntryFirstDeposit : '',
+                participantInDefinitiveRevenue: participantInDefinitiveRevenue ? participantInDefinitiveRevenue : false,
             },
             errors: {
                 typeId: false,
@@ -154,6 +158,7 @@ class ParticipantFormEdit extends Component {
             typeId,
             powerKwhConsumption,
             dateRegister,
+            dateEntryFirstDeposit,
         } = this.state.participation;
 
         const {
@@ -325,11 +330,18 @@ class ParticipantFormEdit extends Component {
                 </div>
                 <div className="row">
                     <InputDate
-                        label={'Eerste ingangsdatum'}
+                        label={'Inschrijfdatum'}
                         name={'dateRegister'}
                         value={dateRegister}
                         required={'required'}
+                        disabledAfter={dateEntryFirstDeposit}
                         onChangeAction={this.handleInputChangeDate}
+                    />
+                    <ViewText
+                        label={'Eerste inlegdatum'}
+                        id={'dateEntryFirstDeposit'}
+                        className={'col-sm-6 form-group'}
+                        value={dateEntryFirstDeposit ? moment(dateEntryFirstDeposit).format('DD-MM-Y') : ''}
                     />
                 </div>
                 {projectTypeCodeRef === 'obligation' ? (

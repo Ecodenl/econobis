@@ -15,6 +15,7 @@ const MutationFormEditStatusFinal = ({
     errorMessage,
     projectTypeCodeRef,
     participantProjectDateRegister,
+    participantInDefinitiveRevenue,
 }) => (
     <React.Fragment>
         <div className="row">
@@ -105,6 +106,7 @@ const MutationFormEditStatusFinal = ({
                     value={participantMutationFromState.amountFinal}
                     onChangeAction={handleInputChange}
                     required={'required'}
+                    readOnly={participantInDefinitiveRevenue}
                     error={errors.amountFinal}
                     errorMessage={errorMessage.amountFinal}
                 />
@@ -117,6 +119,7 @@ const MutationFormEditStatusFinal = ({
                     value={participantMutationFromState.quantityFinal}
                     onChangeAction={handleInputChange}
                     required={'required'}
+                    readOnly={participantInDefinitiveRevenue}
                     error={errors.quantityFinal}
                     errorMessage={errorMessage.quantityFinal}
                 />
@@ -128,6 +131,7 @@ const MutationFormEditStatusFinal = ({
                 disabledBefore={participantProjectDateRegister}
                 onChangeAction={handleInputChangeDate}
                 required={'required'}
+                readOnly={participantInDefinitiveRevenue}
                 error={errors.dateEntry}
             />
         </div>

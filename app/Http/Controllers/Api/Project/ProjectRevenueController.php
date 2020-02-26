@@ -783,6 +783,7 @@ class ProjectRevenueController extends ApiController
             $orderController = new OrderController();
 
             $contactInfo = $orderController->getContactInfoForOrder($contact);
+            $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
 
             $primaryEmailAddress = $contact->primaryEmailAddress;
 
@@ -790,7 +791,7 @@ class ProjectRevenueController extends ApiController
             $project = $revenue->project;
             $administration = $project->administration;
 
-            //send email
+            //Make preview email
             if ($primaryEmailAddress) {
                 $this->setMailConfigByDistribution($distribution);
 
@@ -838,7 +839,6 @@ class ProjectRevenueController extends ApiController
                 $htmlBodyWithContactVariables
                     = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
                 $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
                     $htmlBodyWithContactVariables);
 
@@ -866,7 +866,12 @@ class ProjectRevenueController extends ApiController
                 ];
             }
         }
-        return null;
+        return [
+            'from' => 'Geen e-mail bekend.',
+            'to' => 'Geen e-mail bekend.',
+            'subject' => 'Geen e-mail bekend.',
+            'htmlBody' => 'Geen e-mail bekend.'
+        ];
     }
 
     public function createRevenueReport(Request $request)
@@ -924,6 +929,7 @@ class ProjectRevenueController extends ApiController
             $orderController = new OrderController();
 
             $contactInfo = $orderController->getContactInfoForOrder($contact);
+            $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
 
             $primaryEmailAddress = $contact->primaryEmailAddress;
 
@@ -1004,7 +1010,10 @@ class ProjectRevenueController extends ApiController
 
                 $alfrescoResponse = $alfrescoHelper->createFile($filePath,
                     $document->filename, $document->getDocumentGroup()->name);
-
+                if($alfrescoResponse == null)
+                {
+                    throw new \Exception('Fout bij maken rapport document in Alfresco.');
+                }
                 $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
                 $document->save();
             }
@@ -1063,7 +1072,6 @@ class ProjectRevenueController extends ApiController
                     $htmlBodyWithContactVariables
                         = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                    $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
                     $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
                         $htmlBodyWithContactVariables);
 

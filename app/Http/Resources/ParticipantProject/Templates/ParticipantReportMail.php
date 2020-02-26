@@ -4,15 +4,16 @@ namespace App\Http\Resources\ParticipantProject\Templates;
 
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
+use App\Mail\ConfigurableMailable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 
-class ParticipantReportMail extends Mailable
+class ParticipantReportMail extends ConfigurableMailable
 {
-    use Queueable, SerializesModels;
+//    use Queueable, SerializesModels;
 
     public $html_body;
     public $subject;

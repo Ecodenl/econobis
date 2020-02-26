@@ -43,7 +43,7 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
             <Form>
                 <>
                     <Row className="justify-content-center">
-                        <p className={'text-light'}>Account aanmaken voor je zelf</p>
+                        <p className={'text-light'}>Account aanmaken voor jezelf</p>
                     </Row>
                     <Row className="justify-content-center">
                         <Field

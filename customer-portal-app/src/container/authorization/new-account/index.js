@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import NewAccountFormPersonal from './NewAccountFormPersonal';
 import NewAccountFormOrganisation from './NewAccountFormOrganisation';
 import { Redirect } from 'react-router-dom';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 
 const NewAccount = props => {
     const { executeRecaptcha } = useGoogleReCaptcha();
@@ -74,29 +75,28 @@ const NewAccount = props => {
                             </Row>
                             <br />
                             <Row className="justify-content-center">
-                                <label className="radio-inline">
-                                    <input
-                                        type="radio"
-                                        id="personal"
-                                        checked={contactType === 'person'}
-                                        value={'person'}
-                                        onChange={() => setContactType('person')}
-                                    />
-                                    &nbsp;voor jezelf
-                                </label>
-                                &nbsp;&nbsp;
-                                <label className="radio-inline">
-                                    <input
-                                        type="radio"
-                                        id="organisation"
-                                        checked={contactType === 'organisation'}
-                                        value={'organisation'}
-                                        onChange={() => {
-                                            setContactType('organisation');
-                                        }}
-                                    />
-                                    &nbsp;voor je organisatie
-                                </label>
+                                <ButtonToolbar toggle>
+                                    <Col>
+                                        <Button
+                                            variant={
+                                                contactType === 'person' ? 'primary fixed-height' : 'light fixed-height'
+                                            }
+                                            block
+                                            onClick={() => setContactType('person')}
+                                        >
+                                            Voor jezelf
+                                        </Button>
+                                    </Col>
+                                    <Col>
+                                        <Button
+                                            variant={contactType === 'organisation' ? 'primary' : 'light'}
+                                            block
+                                            onClick={() => setContactType('organisation')}
+                                        >
+                                            Voor je organisatie
+                                        </Button>
+                                    </Col>
+                                </ButtonToolbar>
                             </Row>
                             <br />
 

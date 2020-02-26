@@ -37,6 +37,10 @@ outline: none;
 opacity: 1;
 }
 
+.fixed-height {
+height: 100%;
+}
+
 .authorization-input {
 border: 1px solid hsla(0, 0%, 100%, 0.5);
 border-radius: 7px;

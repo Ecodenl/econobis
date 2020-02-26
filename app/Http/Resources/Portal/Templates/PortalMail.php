@@ -3,13 +3,14 @@
 namespace App\Http\Resources\Portal\Templates;
 
 use App\Eco\Email\Email;
+use App\Mail\ConfigurableMailable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class PortalMail extends Mailable
+class PortalMail extends ConfigurableMailable
 {
-    use Queueable, SerializesModels;
+//    use Queueable, SerializesModels;
 
     public $html_body;
     public $subject;

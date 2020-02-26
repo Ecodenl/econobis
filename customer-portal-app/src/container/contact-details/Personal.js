@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -9,9 +9,14 @@ import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaPersonal from './../../helpers/ValidationSchemaPersonal';
 
-function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitContactValues }) {
-    const [editForm, setEditForm] = useState(false);
-
+function ContactDetailsPersonal({
+    portalSettings,
+    initialContact,
+    handleSubmitContactValues,
+    editButtonGroup,
+    editForm,
+    setEditForm,
+}) {
     const validationSchema = initialContact.isParticipant
         ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
         : ValidationSchemaPersonal.validationSchemaBasic;
@@ -28,7 +33,6 @@ function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitCo
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
-                        // console.log(errors);
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit
@@ -77,19 +81,7 @@ function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitCo
                 <>
                     <DefaultContactPersonalView portalSettings={portalSettings} initialContact={initialContact} />
                     <Row>
-                        <Col>
-                            <ButtonGroup aria-label="Steps" className="float-right">
-                                <Button
-                                    className={'w-button'}
-                                    size="sm"
-                                    onClick={function() {
-                                        setEditForm(true);
-                                    }}
-                                >
-                                    Wijzig
-                                </Button>
-                            </ButtonGroup>
-                        </Col>
+                        <Col>{editButtonGroup}</Col>
                     </Row>
                 </>
             )}

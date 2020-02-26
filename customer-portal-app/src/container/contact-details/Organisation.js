@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -9,9 +9,14 @@ import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaOrganisation from './../../helpers/ValidationSchemaOrganisation';
 
-function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubmitContactValues }) {
-    const [editForm, setEditForm] = useState(false);
-
+function ContactDetailsOrganisation({
+    portalSettings,
+    initialContact,
+    handleSubmitContactValues,
+    editButtonGroup,
+    editForm,
+    setEditForm,
+}) {
     const validationSchema = initialContact.isParticipant
         ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
               ValidationSchemaOrganisation.validationSchemaAdditional
@@ -30,7 +35,6 @@ function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubm
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
-                        // console.log(errors);
                         return (
                             <Form>
                                 <DefaultContactOrganisationEdit
@@ -79,19 +83,7 @@ function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubm
                 <>
                     <DefaultContactOrganisationView portalSettings={portalSettings} initialContact={initialContact} />
                     <Row>
-                        <Col>
-                            <ButtonGroup aria-label="Steps" className="float-right">
-                                <Button
-                                    className={'w-button'}
-                                    size="sm"
-                                    onClick={function() {
-                                        setEditForm(true);
-                                    }}
-                                >
-                                    Wijzig
-                                </Button>
-                            </ButtonGroup>
-                        </Col>
+                        <Col>{editButtonGroup}</Col>
                     </Row>
                 </>
             )}

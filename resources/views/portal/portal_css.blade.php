@@ -48,6 +48,31 @@ background-color: transparent;
 color: #fff;
 }
 
+#name-new-acount[type="text"]{
+text-align: left;
+}
+#first_name-new-acount[type="text"]{
+text-align: left;
+}
+#last_name-new-acount[type="text"]{
+text-align: left;
+}
+#email-new-acount[type="text"]{
+text-align: left;
+}
+#name-new-acount::placeholder{
+text-align: center;
+}
+#first_name-new-acount::placeholder{
+text-align: center;
+}
+#last_name-new-acount::placeholder{
+text-align: center;
+}
+#email-new-acount::placeholder{
+text-align: center;
+}
+
 .authorization-link {
 display: inline-block;
 margin-top: 10px;

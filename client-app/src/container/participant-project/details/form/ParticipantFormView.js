@@ -26,7 +26,6 @@ const ParticipantFormView = props => {
         ibanPayoutAttn,
         type,
         dateRegister,
-        dateEntryFirstDeposit,
         powerKwhConsumption,
         participationsReturnsTotal,
         participationsReturnsKwhTotal,
@@ -106,10 +105,9 @@ const ParticipantFormView = props => {
                 ) : null}
             </div>
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Inschrijfdatum'} value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''} />
                 <ViewText
-                    label={'Eerste inlegdatum'}
-                    value={dateEntryFirstDeposit ? moment(dateEntryFirstDeposit).format('DD-MM-Y') : ''}
+                    label={'Eerste ingangsdatum'}
+                    value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
                 />
             </div>
 

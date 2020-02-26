@@ -38,7 +38,6 @@ class ParticipantFormEdit extends Component {
             typeId,
             powerKwhConsumption,
             dateRegister,
-            dateEntryFirstDeposit,
             participantInDefinitiveRevenue,
         } = props.participation;
 
@@ -60,8 +59,7 @@ class ParticipantFormEdit extends Component {
                     ? dateRegister
                     : this.props.participation.project.dateEntry
                     ? this.props.participation.project.dateEntry
-                    : moment().format('YYYY-MM-DD'),
-                dateEntryFirstDeposit: dateEntryFirstDeposit ? dateEntryFirstDeposit : '',
+                    : '',
                 participantInDefinitiveRevenue: participantInDefinitiveRevenue ? participantInDefinitiveRevenue : false,
             },
             errors: {
@@ -158,7 +156,6 @@ class ParticipantFormEdit extends Component {
             typeId,
             powerKwhConsumption,
             dateRegister,
-            dateEntryFirstDeposit,
         } = this.state.participation;
 
         const {
@@ -329,19 +326,11 @@ class ParticipantFormEdit extends Component {
                     ) : null}
                 </div>
                 <div className="row">
-                    <InputDate
-                        label={'Inschrijfdatum'}
-                        name={'dateRegister'}
-                        value={dateRegister}
-                        required={'required'}
-                        disabledAfter={dateEntryFirstDeposit}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
                     <ViewText
-                        label={'Eerste inlegdatum'}
-                        id={'dateEntryFirstDeposit'}
+                        label={'Eerste ingangsdatum'}
+                        id={'dateRegister'}
+                        value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
                         className={'col-sm-6 form-group'}
-                        value={dateEntryFirstDeposit ? moment(dateEntryFirstDeposit).format('DD-MM-Y') : ''}
                     />
                 </div>
                 {projectTypeCodeRef === 'obligation' ? (

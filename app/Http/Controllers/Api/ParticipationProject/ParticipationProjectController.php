@@ -286,7 +286,6 @@ class ParticipationProjectController extends ApiController
         $data = $requestInput
             ->boolean('didAcceptAgreement')->alias('did_accept_agreement')->next()
             ->date('dateDidAcceptAgreement')->validate('date')->alias('date_did_accept_agreement')->next()
-            ->date('dateRegister')->validate('date')->alias('date_register')->next()
             ->boolean('didUnderstandInfo')->alias('did_understand_info')->next()
             ->date('dateDidUnderstandInfo')->validate('date')->alias('date_did_understand_info')->next()
             ->integer('giftedByContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('gifted_by_contact_id')->next()

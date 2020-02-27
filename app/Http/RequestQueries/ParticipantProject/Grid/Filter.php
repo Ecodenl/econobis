@@ -58,6 +58,7 @@ class Filter extends RequestFilter
         'statusId' => 'eq',
         'participantMutationStatusId' => 'eq',
         'energySupplierId' => 'eq',
+        'projectId' => 'eq',
     ];
 
     protected function applyAddressFilter($query, $type, $data)

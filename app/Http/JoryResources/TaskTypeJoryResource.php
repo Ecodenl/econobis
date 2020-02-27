@@ -14,11 +14,11 @@ class TaskTypeJoryResource extends JoryResource
     {
         $this->field('id')->filterable()->sortable();
         $this->field('name')->filterable()->sortable();
-        $this->field('usesWfCompletedTask')->filterable()->sortable();
-        $this->field('emailTemplateIdWfCompletedTask')->filterable()->sortable();
-        $this->field('numberOfDaysToSendEmailCompletedTask')->filterable()->sortable();
-        $this->field('usesWfExpiredTask')->filterable()->sortable();
-        $this->field('emailTemplateIdWfExpiredTask')->filterable()->sortable();
+        $this->field('uses_wf_completed_task')->filterable()->sortable();
+        $this->field('email_template_id_wf_completed_task')->filterable()->sortable();
+        $this->field('number_of_days_to_send_email_completed_task')->filterable()->sortable();
+        $this->field('uses_wf_expired_task')->filterable()->sortable();
+        $this->field('email_template_id_wf_expired_task')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
 

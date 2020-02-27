@@ -70,7 +70,9 @@ function ChangeAccountEmail() {
                     ) : null}
                     {showError ? (
                         <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                            Fout bij wijzigen inlog e-mail!
+                            Er bestaat al een account met het e-mailadres dat je hebt ingevuld. Je kunt met dit
+                            e-mailadres inloggen als bestaand contact. Wil je een nieuw account aanmaken? Gebruik dan
+                            alsjeblieft een ander e-mailadres.
                         </Alert>
                     ) : null}
 

@@ -30,6 +30,7 @@ const MutationFormView = ({
     permissions,
     projectTypeCodeRef,
     participantMutation,
+    participantInDefinitiveRevenue,
 }) => {
     const {
         type,
@@ -83,7 +84,7 @@ const MutationFormView = ({
                         ) : (
                             ''
                         )}
-                        {status && status.codeRef !== 'final' && showActionButtons && permissions.manageFinancial ? (
+                        {!participantInDefinitiveRevenue && showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={toggleDelete}>
                                 <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                             </a>
@@ -101,6 +102,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+        participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,
     };
 };
 

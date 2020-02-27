@@ -60,7 +60,7 @@ class ParticipantFormEdit extends Component {
                     : this.props.participation.project.dateEntry
                     ? this.props.participation.project.dateEntry
                     : '',
-                participantInDefinitiveRevenue: participantInDefinitiveRevenue ? participantInDefinitiveRevenue : false,
+                participantInDefinitiveRevenue: participantInDefinitiveRevenue ? participantInDefinitiveRevenue : true,
             },
             errors: {
                 typeId: false,

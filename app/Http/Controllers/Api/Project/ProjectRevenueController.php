@@ -285,6 +285,12 @@ class ProjectRevenueController extends ApiController
                 $distribution->save();
             }
         }
+        foreach($projectRevenue->distribution as $distribution) {
+            if($distribution->payout == 0)
+            {
+                $distribution->forceDelete();
+            }
+        }
     }
 
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)

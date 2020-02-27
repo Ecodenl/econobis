@@ -336,6 +336,9 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="iban"
                                     placeholder={'Rekeningnummer (IBAN)'}
+                                    customOnChange={e => {
+                                        setFieldValue('iban', ('' + e.target.value).toUpperCase());
+                                    }}
                                 />
                             )}
                         />

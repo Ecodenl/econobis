@@ -8,6 +8,7 @@ use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ParticipantMutationController extends ApiController
@@ -68,6 +69,8 @@ class ParticipantMutationController extends ApiController
     {
         $this->authorize('manage', ParticipantMutation::class);
 
+        $dateRegisterOld = $participantMutation->participation->dateEntryFirstDeposit;
+
         $data = $requestInput
             ->integer('typeId')->validate('required|exists:participant_mutation_types,id')->alias('type_id')->next()
             ->integer('statusId')->onEmpty(null)->validate('required|exists:participant_mutation_statuses,id')->alias('status_id')->next()
@@ -98,6 +101,17 @@ class ParticipantMutationController extends ApiController
         $participantMutation->fill($data);
 
         $this->recalculateParticipantMutation($participantMutation);
+
+        $dateRegisterNew = $participantMutation->participation->dateEntryFirstDeposit;
+        $melding = null;
+        if($dateRegisterOld != $dateRegisterNew )
+        {
+            $melding[] = "De eerste ingangsdatum is gewijzigd.";
+            $melding[] = "Oorspronkelijke eerste ingangsdatum was: " . Carbon::parse($dateRegisterOld)->format('d-m-Y') . ".";
+            $melding[] = "Nieuwe eerste ingangsdatum is geworden: " . Carbon::parse($dateRegisterNew)->format('d-m-Y') . ".";
+        }
+
+        return $melding;
     }
 
     public function destroy(ParticipantMutation $participantMutation)

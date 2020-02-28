@@ -57,12 +57,31 @@ export default {
                     return Number.isInteger(+value);
                 }),
         }),
+        phoneNumberPrimary: Yup.object().shape({
+            number: Yup.string()
+                .trim()
+                .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
+        }),
+        phoneNumberTwo: Yup.object().shape({
+            number: Yup.string()
+                .trim()
+                .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
+        }),
+        primaryContactEnergySupplier: Yup.object().shape({
+            eanElectricity: Yup.string()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+            eanGas: Yup.string()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+        }),
     }),
 
     validationSchemaAdditional: Yup.object().shape({
         phoneNumberPrimary: Yup.object().shape({
             number: Yup.string()
                 .trim()
+                .matches(/(\d.*){10}/, 'Minimaal 10 cijfers nodig')
                 .required('Verplicht'),
         }),
         iban: Yup.string()

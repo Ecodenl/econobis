@@ -8,6 +8,7 @@ use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Transport\MailgunTransport;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use GuzzleHttp\Client as HttpClient;
@@ -30,7 +31,7 @@ class ConfigurableMailable extends Mailable
             $endpoint = config('services.mailgun.endpoint');
 
             $transport = new MailgunTransport(new HttpClient , $key, $domain, $endpoint);
-        } else {
+        }elseif(config('mail.driver') !== 'log') {
             $host      = config('mail.host');
             $port      = config('mail.port');
             $security  = config('mail.encryption');
@@ -38,6 +39,8 @@ class ConfigurableMailable extends Mailable
             $transport = new Swift_SmtpTransport( $host, $port, $security);
             $transport->setUsername(config('mail.username'));
             $transport->setPassword(config('mail.password'));
+        }else{
+            return;
         }
 
         $mailer->setSwiftMailer(new Swift_Mailer($transport));

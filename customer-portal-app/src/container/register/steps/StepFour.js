@@ -10,6 +10,8 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import { ClipLoader } from 'react-spinners';
+import { Alert } from 'react-bootstrap';
+import isEmptyObject from 'is-empty-object';
 
 function StepFour({ previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
@@ -128,6 +130,16 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                         </ButtonGroup>
                                     </Col>
                                 </Row>
+                                {!isEmptyObject(errors) ? (
+                                    <Row>
+                                        <Col>
+                                            <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                                Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
+                                                volgende stap!
+                                            </Alert>
+                                        </Col>
+                                    </Row>
+                                ) : null}
                             </Form>
                         </>
                     )}

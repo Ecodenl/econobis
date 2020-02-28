@@ -10,6 +10,8 @@ import ValidationSchemaPersonal from '../../../helpers/ValidationSchemaPersonal'
 import ValidationSchemaOrganisation from '../../../helpers/ValidationSchemaOrganisation';
 import * as Yup from 'yup';
 import DefaultContactOrganisationEdit from '../../contact-details/default-form-organisation/Edit';
+import { Alert } from 'react-bootstrap';
+import isEmptyObject from 'is-empty-object';
 
 function StepTwo({ portalSettings, previous, next, project, initialContact, handleSubmitContactValues }) {
     initialContact.isParticipant = true;
@@ -150,6 +152,16 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     </ButtonGroup>
                                 </Col>
                             </Row>
+                            {!isEmptyObject(errors) ? (
+                                <Row>
+                                    <Col>
+                                        <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                            Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
+                                            volgende stap!
+                                        </Alert>
+                                    </Col>
+                                </Row>
+                            ) : null}
                         </Form>
                     );
                 }}

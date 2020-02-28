@@ -26,23 +26,17 @@ export default {
                 .email('Ongeldig e-mail adres'),
         }),
         primaryAddress: Yup.object().shape({
-            street: Yup.string()
-                .trim()
-                .required('Verplicht'),
+            street: Yup.string().trim(),
             number: Yup.string()
                 .nullable()
                 .trim()
                 .test('number', 'Alleen nummers', value => {
                     return Number.isInteger(+value);
-                })
-                .required('Verplicht'),
+                }),
             postalCode: Yup.string()
                 .trim()
-                .min(4, 'Minimum van ${min} postcode cijfers nodig')
-                .required('Verplicht'),
-            city: Yup.string()
-                .trim()
-                .required('Verplicht'),
+                .min(4, 'Minimum van ${min} postcode cijfers nodig'),
+            city: Yup.string().trim(),
         }),
         phoneNumberPrimary: Yup.object().shape({
             number: Yup.string()
@@ -86,6 +80,25 @@ export default {
             number: Yup.string()
                 .trim()
                 .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
+        }),
+        primaryAddress: Yup.object().shape({
+            street: Yup.string()
+                .trim()
+                .required('Verplicht'),
+            number: Yup.string()
+                .nullable()
+                .trim()
+                .test('number', 'Alleen nummers', value => {
+                    return Number.isInteger(+value);
+                })
+                .required('Verplicht'),
+            postalCode: Yup.string()
+                .trim()
+                .min(4, 'Minimum van ${min} postcode cijfers nodig')
+                .required('Verplicht'),
+            city: Yup.string()
+                .trim()
+                .required('Verplicht'),
         }),
         iban: Yup.string()
             .trim()

@@ -218,7 +218,10 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="street" className="field-label required">
+                <FormLabel
+                    htmlFor="street"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     Adres
                 </FormLabel>
                 <Row>

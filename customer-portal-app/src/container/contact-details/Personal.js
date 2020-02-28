@@ -12,10 +12,13 @@ import ValidationSchemaPersonal from './../../helpers/ValidationSchemaPersonal';
 function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitContactValues }) {
     const [editForm, setEditForm] = useState(false);
 
-    const validationSchema = initialContact.isParticipant
+    const validationSchema = initialContact.isParticipantPcrProject
+        ? ValidationSchemaPersonal.validationSchemaBasic
+              .concat(ValidationSchemaPersonal.validationSchemaAdditional)
+              .concat(ValidationSchemaPersonal.validationSchemaPcrAdditional)
+        : initialContact.isParticipant
         ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
         : ValidationSchemaPersonal.validationSchemaBasic;
-
     return (
         <div>
             {editForm ? (

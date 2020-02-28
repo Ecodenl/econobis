@@ -12,7 +12,11 @@ import ValidationSchemaOrganisation from './../../helpers/ValidationSchemaOrgani
 function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubmitContactValues }) {
     const [editForm, setEditForm] = useState(false);
 
-    const validationSchema = initialContact.isParticipant
+    const validationSchema = initialContact.isParticipantPcrProject
+        ? ValidationSchemaOrganisation.validationSchemaBasic
+              .concat(ValidationSchemaOrganisation.validationSchemaAdditional)
+              .concat(ValidationSchemaOrganisation.validationSchemaPcrAdditional)
+        : initialContact.isParticipant
         ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
               ValidationSchemaOrganisation.validationSchemaAdditional
           )

@@ -407,6 +407,7 @@ const DefaultContactPersonalEdit = function({
                         <FormLabel
                             htmlFor="energy_supplier_id"
                             className={
+                                initialContact.isParticipantPcrProject ||
                                 projectTypeCodeRef === 'postalcode_link_capital'
                                     ? 'field-label required'
                                     : 'field-label'

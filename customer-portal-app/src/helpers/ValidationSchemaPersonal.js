@@ -50,9 +50,11 @@ export default {
         }),
         primaryContactEnergySupplier: Yup.object().shape({
             eanElectricity: Yup.string()
+                .nullable()
                 .trim()
                 .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
             eanGas: Yup.string()
+                .nullable()
                 .trim()
                 .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
         }),
@@ -109,5 +111,26 @@ export default {
             .trim()
             .nullable()
             .required('Verplicht'),
+    }),
+
+    validationSchemaPcrAdditional: Yup.object().shape({
+        primaryContactEnergySupplier: Yup.object().shape({
+            energySupplierId: Yup.string()
+                .nullable()
+                .required('Verplicht'),
+            esNumber: Yup.string()
+                .nullable()
+                .trim()
+                .required('Verplicht'),
+            eanElectricity: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig')
+                .required('Verplicht'),
+            eanGas: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+        }),
     }),
 };

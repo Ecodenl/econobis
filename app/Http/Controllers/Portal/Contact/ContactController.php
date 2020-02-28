@@ -83,7 +83,7 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['primaryAddress'])) {
-                    $this->updateAddress($contact, $request['primaryAddress'], 'invoice');
+                    $this->updateAddress($contact, $request['primaryAddress'], 'visit');
                 }
                 if (isset($request['primaryContactEnergySupplier']) && $request['primaryContactEnergySupplier'] != null ) {
                     $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);

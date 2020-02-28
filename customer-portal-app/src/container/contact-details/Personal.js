@@ -19,11 +19,11 @@ function ContactDetailsPersonal({
 }) {
     const validationSchema = initialContact.isParticipantPcrProject
         ? ValidationSchemaPersonal.validationSchemaBasic
-            .concat(ValidationSchemaPersonal.validationSchemaAdditional)
-            .concat(ValidationSchemaPersonal.validationSchemaPcrAdditional)
+              .concat(ValidationSchemaPersonal.validationSchemaAdditional)
+              .concat(ValidationSchemaPersonal.validationSchemaPcrAdditional)
         : initialContact.isParticipant
-            ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
-            : ValidationSchemaPersonal.validationSchemaBasic;
+        ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
+        : ValidationSchemaPersonal.validationSchemaBasic;
     return (
         <div>
             {editForm ? (

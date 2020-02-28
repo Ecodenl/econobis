@@ -19,13 +19,13 @@ function ContactDetailsOrganisation({
 }) {
     const validationSchema = initialContact.isParticipantPcrProject
         ? ValidationSchemaOrganisation.validationSchemaBasic
-            .concat(ValidationSchemaOrganisation.validationSchemaAdditional)
-            .concat(ValidationSchemaOrganisation.validationSchemaPcrAdditional)
+              .concat(ValidationSchemaOrganisation.validationSchemaAdditional)
+              .concat(ValidationSchemaOrganisation.validationSchemaPcrAdditional)
         : initialContact.isParticipant
-            ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
-                ValidationSchemaOrganisation.validationSchemaAdditional
-            )
-            : ValidationSchemaOrganisation.validationSchemaBasic;
+        ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
+              ValidationSchemaOrganisation.validationSchemaAdditional
+          )
+        : ValidationSchemaOrganisation.validationSchemaBasic;
 
     return (
         <div>

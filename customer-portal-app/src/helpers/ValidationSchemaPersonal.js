@@ -61,7 +61,13 @@ export default {
         phoneNumberPrimary: Yup.object().shape({
             number: Yup.string()
                 .trim()
+                .matches(/(\d.*){10}/, 'Minimaal 10 cijfers nodig')
                 .required('Verplicht'),
+        }),
+        phoneNumberTwo: Yup.object().shape({
+            number: Yup.string()
+                .trim()
+                .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
         }),
         iban: Yup.string()
             .trim()

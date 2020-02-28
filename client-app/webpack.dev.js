@@ -10,7 +10,7 @@ module.exports = merge(common, {
     mode: 'development',
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: '[name].js'
+        chunkFilename: '[name].js'
     },
     devtool: 'source-map',
     devServer: {

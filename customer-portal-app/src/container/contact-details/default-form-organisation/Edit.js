@@ -571,6 +571,7 @@ const DefaultContactOrganisationEdit = function({
                         <FormLabel
                             htmlFor="energy_supplier_id"
                             className={
+                                initialContact.isParticipantPcrProject ||
                                 projectTypeCodeRef === 'postalcode_link_capital'
                                     ? 'field-label required'
                                     : 'field-label'
@@ -600,6 +601,7 @@ const DefaultContactOrganisationEdit = function({
                                 />
                             </Col>
                         </Row>
+
                         {values.primaryContactEnergySupplier && values.primaryContactEnergySupplier.energySupplierId ? (
                             <>
                                 <FormLabel

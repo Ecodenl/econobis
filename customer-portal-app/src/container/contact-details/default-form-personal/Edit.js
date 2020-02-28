@@ -218,7 +218,10 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="street" className="field-label required">
+                <FormLabel
+                    htmlFor="street"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     Adres
                 </FormLabel>
                 <Row>
@@ -407,6 +410,7 @@ const DefaultContactPersonalEdit = function({
                         <FormLabel
                             htmlFor="energy_supplier_id"
                             className={
+                                initialContact.isParticipantPcrProject ||
                                 projectTypeCodeRef === 'postalcode_link_capital'
                                     ? 'field-label required'
                                     : 'field-label'

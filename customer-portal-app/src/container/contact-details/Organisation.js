@@ -17,11 +17,15 @@ function ContactDetailsOrganisation({
     editForm,
     setEditForm,
 }) {
-    const validationSchema = initialContact.isParticipant
-        ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
-              ValidationSchemaOrganisation.validationSchemaAdditional
-          )
-        : ValidationSchemaOrganisation.validationSchemaBasic;
+    const validationSchema = initialContact.isParticipantPcrProject
+        ? ValidationSchemaOrganisation.validationSchemaBasic
+            .concat(ValidationSchemaOrganisation.validationSchemaAdditional)
+            .concat(ValidationSchemaOrganisation.validationSchemaPcrAdditional)
+        : initialContact.isParticipant
+            ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
+                ValidationSchemaOrganisation.validationSchemaAdditional
+            )
+            : ValidationSchemaOrganisation.validationSchemaBasic;
 
     return (
         <div>

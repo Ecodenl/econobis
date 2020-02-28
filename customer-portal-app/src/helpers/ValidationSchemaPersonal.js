@@ -26,23 +26,37 @@ export default {
                 .email('Ongeldig e-mail adres'),
         }),
         primaryAddress: Yup.object().shape({
-            street: Yup.string()
-                .trim()
-                .required('Verplicht'),
+            street: Yup.string().trim(),
             number: Yup.string()
                 .nullable()
                 .trim()
                 .test('number', 'Alleen nummers', value => {
                     return Number.isInteger(+value);
-                })
-                .required('Verplicht'),
+                }),
             postalCode: Yup.string()
                 .trim()
-                .min(4, 'Minimum van ${min} postcode cijfers nodig')
-                .required('Verplicht'),
-            city: Yup.string()
+                .min(4, 'Minimum van ${min} postcode cijfers nodig'),
+            city: Yup.string().trim(),
+        }),
+        phoneNumberPrimary: Yup.object().shape({
+            number: Yup.string()
                 .trim()
-                .required('Verplicht'),
+                .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
+        }),
+        phoneNumberTwo: Yup.object().shape({
+            number: Yup.string()
+                .trim()
+                .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
+        }),
+        primaryContactEnergySupplier: Yup.object().shape({
+            eanElectricity: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+            eanGas: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
         }),
     }),
 
@@ -61,6 +75,31 @@ export default {
         phoneNumberPrimary: Yup.object().shape({
             number: Yup.string()
                 .trim()
+                .matches(/(\d.*){10}/, 'Minimaal 10 cijfers nodig')
+                .required('Verplicht'),
+        }),
+        phoneNumberTwo: Yup.object().shape({
+            number: Yup.string()
+                .trim()
+                .matches(/(\d.*){10}|^$/, 'Minimaal 10 cijfers nodig'),
+        }),
+        primaryAddress: Yup.object().shape({
+            street: Yup.string()
+                .trim()
+                .required('Verplicht'),
+            number: Yup.string()
+                .nullable()
+                .trim()
+                .test('number', 'Alleen nummers', value => {
+                    return Number.isInteger(+value);
+                })
+                .required('Verplicht'),
+            postalCode: Yup.string()
+                .trim()
+                .min(4, 'Minimum van ${min} postcode cijfers nodig')
+                .required('Verplicht'),
+            city: Yup.string()
+                .trim()
                 .required('Verplicht'),
         }),
         iban: Yup.string()
@@ -72,5 +111,26 @@ export default {
             .trim()
             .nullable()
             .required('Verplicht'),
+    }),
+
+    validationSchemaPcrAdditional: Yup.object().shape({
+        primaryContactEnergySupplier: Yup.object().shape({
+            energySupplierId: Yup.string()
+                .nullable()
+                .required('Verplicht'),
+            esNumber: Yup.string()
+                .nullable()
+                .trim()
+                .required('Verplicht'),
+            eanElectricity: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig')
+                .required('Verplicht'),
+            eanGas: Yup.string()
+                .nullable()
+                .trim()
+                .matches(/(\d.*){18}|^$/, 'Minimaal 18 cijfers nodig'),
+        }),
     }),
 };

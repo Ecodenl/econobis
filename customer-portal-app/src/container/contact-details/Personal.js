@@ -17,10 +17,13 @@ function ContactDetailsPersonal({
     editForm,
     setEditForm,
 }) {
-    const validationSchema = initialContact.isParticipant
-        ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
-        : ValidationSchemaPersonal.validationSchemaBasic;
-
+    const validationSchema = initialContact.isParticipantPcrProject
+        ? ValidationSchemaPersonal.validationSchemaBasic
+            .concat(ValidationSchemaPersonal.validationSchemaAdditional)
+            .concat(ValidationSchemaPersonal.validationSchemaPcrAdditional)
+        : initialContact.isParticipant
+            ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
+            : ValidationSchemaPersonal.validationSchemaBasic;
     return (
         <div>
             {editForm ? (

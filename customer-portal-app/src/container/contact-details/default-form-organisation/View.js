@@ -203,7 +203,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                     </TextBlock>
                 </Row>
 
-                <FormLabel className={'field-label'}>Energieleverancier</FormLabel>
+                <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
                         {primaryContactEnergySupplier.energySupplier

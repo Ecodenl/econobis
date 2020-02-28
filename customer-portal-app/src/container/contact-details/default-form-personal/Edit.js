@@ -409,7 +409,7 @@ const DefaultContactPersonalEdit = function({
                                     : 'field-label'
                             }
                         >
-                            Energieleverancier
+                            Huidige energie leverancier
                         </FormLabel>
                         <Row>
                             <Col xs={12} sm={12} md={8}>

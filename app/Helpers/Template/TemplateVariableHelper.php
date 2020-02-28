@@ -669,7 +669,13 @@ class TemplateVariableHelper
                 break;
             case 'statussen':
                 return implode(', ', array_map(function ($status) {
-                    return $status->name;
+                    try{
+                        $statusName = $status->name;
+                    }catch (\Exception $e)
+                    {
+                        $statusName = $status['name'];
+                    }
+                    return $statusName;
                 }, $model->UniqueMutationStatuses)) ;
                 break;
             case 'project':

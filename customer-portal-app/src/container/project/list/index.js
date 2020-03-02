@@ -40,12 +40,23 @@ function ProjectList(props) {
         })();
     }, [props.currentSelectedContact]);
 
+    function callFetchContactProjects() {
+        ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
+            .then(payload => {
+                let contactProjecten = [];
+                payload.data.data.participations.map(item => contactProjecten.push(item.project.id));
+                setContactProjectsArray(contactProjecten);
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setLoading(false);
+            });
+    }
+
     function callFetchContact() {
-        setLoading(true);
         ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
             .then(payload => {
                 setContact(payload.data.data);
-                setLoading(false);
             })
             .catch(error => {
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -60,19 +71,6 @@ function ProjectList(props) {
 
             return firstName + ' ' + lastName;
         }
-    }
-
-    function callFetchContactProjects() {
-        ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
-            .then(payload => {
-                let contactProjecten = [];
-                payload.data.data.participations.map(item => contactProjecten.push(item.project.id));
-                setContactProjectsArray(contactProjecten);
-            })
-            .catch(error => {
-                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                setLoading(false);
-            });
     }
 
     function usePrevious(value) {

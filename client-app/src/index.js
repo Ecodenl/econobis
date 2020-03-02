@@ -41,9 +41,9 @@ const IEPage = () => {
             <div>
                 <pre>
                     <p>
-                        Internet explorer wordt niet meer ondersteund door Microsoft, en Econobis. Probeer ons nogmaals
-                        te bereiken op browsers die wij wel ondersteunen, zoals: Microsoft Edge, Chrome, Safari of
-                        Firefox.
+                        Internet explorer wordt niet meer ondersteund door Microsoft, en deze website. Probeer ons
+                        nogmaals te bereiken op browsers die wij wel ondersteunen, zoals: Microsoft Edge, Chrome, Safari
+                        of Firefox.
                     </p>
                 </pre>
             </div>

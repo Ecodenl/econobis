@@ -269,6 +269,12 @@ class ProjectRevenueController extends ApiController
                 $distribution->calculator()->runRevenueCapitalResult();
                 $distribution->save();
             }
+            foreach($projectRevenue->distribution as $distribution) {
+                if($distribution->payout == 0)
+                {
+                    $distribution->forceDelete();
+                }
+            }
         }
 
         if($projectRevenue->category->code_ref == 'redemptionEuro'
@@ -276,6 +282,12 @@ class ProjectRevenueController extends ApiController
             foreach($projectRevenue->distribution as $distribution) {
                 $distribution->calculator()->runRevenueEuro();
                 $distribution->save();
+            }
+            foreach($projectRevenue->distribution as $distribution) {
+                if($distribution->payout == 0)
+                {
+                    $distribution->forceDelete();
+                }
             }
         }
 

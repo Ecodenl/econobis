@@ -12,6 +12,8 @@ use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Measure\Measure;
 use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Task\Task;
@@ -93,9 +95,14 @@ class Project extends Model
     }
 
     public function participantsProjectDefinitive(){
-        return $this->hasMany(ParticipantProject::class, 'project_id')->where(function ($query) {
-            $query->where('participations_definitive', '>', 0)
-                ->orWhere('amount_definitive', '>', 0);
+        $projectType = $this->projectType;
+        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        return $this->hasMany(ParticipantProject::class, 'project_id')->whereNull('date_terminated')
+            ->where(function ($query) use($mutationType, $mutationStatusFinal) {
+            $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
+                $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
+            });
         });
     }
 

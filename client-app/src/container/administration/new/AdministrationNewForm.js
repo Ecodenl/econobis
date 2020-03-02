@@ -58,6 +58,7 @@ class AdministrationNewForm extends Component {
                 twinfieldOrganizationCode: '',
                 twinfieldOfficeCode: '',
                 usesVat: true,
+                emailBccNotas: '',
             },
             errors: {
                 name: false,
@@ -72,6 +73,7 @@ class AdministrationNewForm extends Component {
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
                 mailboxId: false,
+                emailBccNotas: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -186,6 +188,13 @@ class AdministrationNewForm extends Component {
             }
         }
 
+        if (!validator.isEmpty(administration.emailBccNotas + '')) {
+            if (!validator.isEmail(administration.emailBccNotas + '')) {
+                errors.emailBccNotas = true;
+                hasErrors = true;
+            }
+        }
+
         if (!validator.isEmpty(administration.website)) {
             if (!validator.isFQDN(administration.website)) {
                 errors.website = true;
@@ -260,6 +269,7 @@ class AdministrationNewForm extends Component {
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('usesVat', administration.usesVat);
+            data.append('emailBccNotas', administration.emailBccNotas);
 
             AdministrationDetailsAPI.newAdministration(data)
                 .then(payload => {
@@ -302,6 +312,7 @@ class AdministrationNewForm extends Component {
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             usesVat,
+            emailBccNotas,
         } = this.state.administration;
 
         return (
@@ -521,6 +532,16 @@ class AdministrationNewForm extends Component {
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label="Nota's ook mailen in BCC naar"
+                                name={'emailBccNotas'}
+                                value={emailBccNotas}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.emailBccNotas}
+                            />
                         </div>
 
                         {this.state.newLogo && (

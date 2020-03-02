@@ -56,7 +56,7 @@ class OpportunityCSVHelper
             }
 
             if(count($measures) > 0){
-                $opportunity->measures_specific = implode($measures, ', ');
+                $opportunity->measures_specific = implode(', ', $measures);
             }
 
             $opportunity->desired_date = $this->formatDate($opportunity->desired_date);

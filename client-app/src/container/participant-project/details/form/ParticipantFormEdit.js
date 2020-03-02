@@ -19,7 +19,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import ParticipantFormEditPostalcodeLinkCapital from './edit/ParticipantFormEditPostalcodeLinkCapital';
 import ParticipantFormEditCapital from './edit/ParticipantFormEditCapital';
 import ParticipantFormEditObligation from './edit/ParticipantFormEditObligation';
-import ParticipantFormViewPostalcodeLinkCapital from './view/ParticipantFormViewPostalcodeLinkCapital';
+import InputDate from '../../../../components/form/InputDate';
 
 class ParticipantFormEdit extends Component {
     constructor(props) {
@@ -37,6 +37,8 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
+            dateRegister,
+            participantInDefinitiveRevenue,
         } = props.participation;
 
         this.state = {
@@ -53,6 +55,12 @@ class ParticipantFormEdit extends Component {
                 ibanPayoutAttn: ibanPayoutAttn ? ibanPayoutAttn : '',
                 typeId: typeId ? typeId : '',
                 powerKwhConsumption: powerKwhConsumption ? powerKwhConsumption : '',
+                dateRegister: dateRegister
+                    ? dateRegister
+                    : this.props.participation.project.dateEntry
+                    ? this.props.participation.project.dateEntry
+                    : '',
+                participantInDefinitiveRevenue: participantInDefinitiveRevenue ? participantInDefinitiveRevenue : true,
             },
             errors: {
                 typeId: false,
@@ -147,6 +155,7 @@ class ParticipantFormEdit extends Component {
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
+            dateRegister,
         } = this.state.participation;
 
         const {
@@ -315,6 +324,14 @@ class ParticipantFormEdit extends Component {
                             error={this.state.errors.typeId}
                         />
                     ) : null}
+                </div>
+                <div className="row">
+                    <ViewText
+                        label={'Eerste ingangsdatum Deelname'}
+                        id={'dateRegister'}
+                        value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
+                        className={'col-sm-6 form-group'}
+                    />
                 </div>
                 {projectTypeCodeRef === 'obligation' ? (
                     <ParticipantFormEditObligation

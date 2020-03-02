@@ -13,6 +13,8 @@ const MutationFormEditStatusFinal = ({
     errors,
     errorMessage,
     projectTypeCodeRef,
+    participantProjectDateRegister,
+    participantInDefinitiveRevenue,
 }) => (
     <React.Fragment>
         <div className="row">
@@ -95,16 +97,33 @@ const MutationFormEditStatusFinal = ({
         </div>
         <div className="row">
             {projectTypeCodeRef === 'loan' ? (
-                <InputText
-                    type={'number'}
-                    label={'Bedrag definitief'}
-                    id={'amountFinal'}
-                    name={'amountFinal'}
-                    value={participantMutationFromState.amountFinal}
-                    onChangeAction={handleInputChange}
-                    required={'required'}
-                    error={errors.amountFinal}
-                    errorMessage={errorMessage.amountFinal}
+                participantInDefinitiveRevenue ? (
+                    <ViewText
+                        label={'Bedrag definitief'}
+                        id={'amountFinal'}
+                        className={'col-sm-6 form-group'}
+                        value={MoneyPresenter(participantMutationFromProps.amountFinal)}
+                    />
+                ) : (
+                    <InputText
+                        type={'number'}
+                        label={'Bedrag definitief'}
+                        id={'amountFinal'}
+                        name={'amountFinal'}
+                        value={participantMutationFromState.amountFinal}
+                        onChangeAction={handleInputChange}
+                        required={'required'}
+                        readOnly={participantInDefinitiveRevenue}
+                        error={errors.amountFinal}
+                        errorMessage={errorMessage.amountFinal}
+                    />
+                )
+            ) : participantInDefinitiveRevenue ? (
+                <ViewText
+                    label={'Aantal definitief'}
+                    id={'quantityFinal'}
+                    className={'col-sm-6 form-group'}
+                    value={participantMutationFromProps.quantityFinal}
                 />
             ) : (
                 <InputText
@@ -115,18 +134,30 @@ const MutationFormEditStatusFinal = ({
                     value={participantMutationFromState.quantityFinal}
                     onChangeAction={handleInputChange}
                     required={'required'}
+                    readOnly={participantInDefinitiveRevenue}
                     error={errors.quantityFinal}
                     errorMessage={errorMessage.quantityFinal}
                 />
             )}
-            <InputDate
-                label={'Ingangsdatum'}
-                name={'dateEntry'}
-                value={participantMutationFromState.dateEntry}
-                onChangeAction={handleInputChangeDate}
-                required={'required'}
-                error={errors.dateEntry}
-            />
+            {participantInDefinitiveRevenue ? (
+                <ViewText
+                    label={'Ingangsdatum'}
+                    id={'dateEntry'}
+                    className={'col-sm-6 form-group'}
+                    value={moment(participantMutationFromProps.dateEntry).format('L')}
+                />
+            ) : (
+                <InputDate
+                    label={'Ingangsdatum'}
+                    name={'dateEntry'}
+                    value={participantMutationFromState.dateEntry}
+                    // disabledBefore={participantProjectDateRegister}
+                    onChangeAction={handleInputChangeDate}
+                    required={'required'}
+                    readOnly={participantInDefinitiveRevenue}
+                    error={errors.dateEntry}
+                />
+            )}
         </div>
         <div className="row">
             <InputDate

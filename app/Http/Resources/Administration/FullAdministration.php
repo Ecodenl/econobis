@@ -106,6 +106,9 @@ class FullAdministration extends Resource
                 'mailboxEmail' => optional($this->mailbox)->email,
 
                 'usesVat' => $this->uses_vat,
+
+                'emailBccNotas' => $this->email_bcc_notas,
+
             ];
     }
 }

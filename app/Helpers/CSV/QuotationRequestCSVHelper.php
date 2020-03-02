@@ -57,7 +57,7 @@ class QuotationRequestCSVHelper
             }
 
             if(count($measures) > 0){
-                $quotationRequest->measures = implode($measures, ', ');
+                $quotationRequest->measures = implode(', ', $measures);
             }
 
             $quotationRequest->updated_by = $quotationRequest->updatedBy->present()->fullName();

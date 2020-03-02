@@ -35,6 +35,7 @@ const AdministrationDetailsFormGeneralView = props => {
         twinfieldOrganizationCode,
         twinfieldOfficeCode,
         usesVat,
+        emailBccNotas,
     } = props.administrationDetails;
 
     return (
@@ -110,6 +111,10 @@ const AdministrationDetailsFormGeneralView = props => {
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
                         <ViewText label={'Logo'} value={logoName} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
                     </div>
 
                     {usesTwinfield == true && (

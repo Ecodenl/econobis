@@ -10,6 +10,7 @@ import { isEqual } from 'lodash';
 import MutationValidateForm from './MutationValidateForm';
 import MutationSubmitHelper from './MutationSubmitHelper';
 import moment from 'moment/moment';
+import Modal from '../../../../../components/modal/Modal';
 
 class MutationFormListItem extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class MutationFormListItem extends Component {
 
         this.state = {
             showActionButtons: false,
+            successMessage: '',
             highlightLine: '',
             showEdit: false,
             showDelete: false,
@@ -144,7 +146,7 @@ class MutationFormListItem extends Component {
     };
 
     closeEdit = () => {
-        this.setState({ showEdit: false });
+        this.setState({ showEdit: false, successMessage: '' });
     };
 
     cancelEdit = () => {
@@ -226,7 +228,14 @@ class MutationFormListItem extends Component {
 
             ParticipantMutationAPI.updateParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
-                this.closeEdit();
+                if (payload.data) {
+                    this.setState({
+                        ...this.state,
+                        successMessage: payload.data,
+                    });
+                } else {
+                    this.closeEdit();
+                }
             });
         }
     };
@@ -257,6 +266,19 @@ class MutationFormListItem extends Component {
                 )}
                 {this.state.showDelete && this.props.permissions.manageFinancial && (
                     <MutationFormDelete closeDeleteItemModal={this.toggleDelete} {...this.props.participantMutation} />
+                )}
+                {this.state.successMessage && (
+                    <Modal
+                        closeModal={this.closeEdit}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Succes'}
+                    >
+                        {/*{this.state.successMessage}*/}
+                        {this.state.successMessage.map(function(messageLine, index) {
+                            return <p key={index}>{messageLine}</p>;
+                        })}
+                    </Modal>
                 )}
             </div>
         );

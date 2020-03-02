@@ -58,6 +58,9 @@ class FullRevenueParticipantProject extends Resource
                 'amountOptioned' => $this->amount_optioned,
                 'amountGranted' => $this->amount_granted,
                 'amountInteressed' => $this->amount_interessed,
+                'dateRegister' => $this->date_register,
+                'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
+                'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
             ];
     }
 }

@@ -17,6 +17,11 @@ if (token) {
     store.dispatch(authActions.authSuccess());
 }
 
+// Internet Explorer 6-11
+const isIE = /*@cc_on!@*/ false || !!document.documentMode;
+
+let isNotIE = !isIE;
+
 const App = () => {
     return (
         <Provider store={store}>
@@ -25,4 +30,29 @@ const App = () => {
     );
 };
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const IEPage = () => {
+    return (
+        <div>
+            <div>
+                <pre>
+                    <h1>Sorry, Econobis werkt niet in Internet Explorer!</h1>
+                </pre>
+            </div>
+            <div>
+                <pre>
+                    <p>
+                        Internet explorer wordt niet meer ondersteund door Microsoft, en Econobis. Probeer ons nogmaals
+                        te bereiken op browsers die wij wel ondersteunen, zoals: Microsoft Edge, Chrome, Safari of
+                        Firefox.
+                    </p>
+                </pre>
+            </div>
+        </div>
+    );
+};
+
+if (isNotIE) {
+    ReactDOM.render(<App />, document.getElementById('root'));
+} else {
+    ReactDOM.render(<IEPage />, document.getElementById('root'));
+}

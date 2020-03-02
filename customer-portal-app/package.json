@@ -8,7 +8,6 @@
     "bootstrap": "^4.3.1",
     "formik": "^1.5.8",
     "ibantools": "^2.2.0",
-    "is-empty-object": "^1.1.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "react": "^16.8.6",

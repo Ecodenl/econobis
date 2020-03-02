@@ -6,7 +6,7 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Col from 'react-bootstrap/Col';
 import { Alert } from 'react-bootstrap';
-import isEmptyObject from 'is-empty-object';
+import { isEmpty } from 'lodash';
 
 function StepThree({ project, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -121,7 +121,7 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                                     </ButtonGroup>
                                 </Col>
                             </Row>
-                            {!isEmptyObject(errors) ? (
+                            {!isEmpty(errors) ? (
                                 <Row>
                                     <Col>
                                         <Alert key={'form-general-error-alert'} variant={'warning'}>

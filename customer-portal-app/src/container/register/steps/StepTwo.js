@@ -11,7 +11,7 @@ import ValidationSchemaOrganisation from '../../../helpers/ValidationSchemaOrgan
 import * as Yup from 'yup';
 import DefaultContactOrganisationEdit from '../../contact-details/default-form-organisation/Edit';
 import { Alert } from 'react-bootstrap';
-import isEmptyObject from 'is-empty-object';
+import { isEmpty } from 'lodash';
 
 function StepTwo({ portalSettings, previous, next, project, initialContact, handleSubmitContactValues }) {
     initialContact.isParticipant = true;
@@ -130,7 +130,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     </ButtonGroup>
                                 </Col>
                             </Row>
-                            {!isEmptyObject(errors) ? (
+                            {!isEmpty(errors) ? (
                                 <Row>
                                     <Col>
                                         <Alert key={'form-general-error-alert'} variant={'warning'}>

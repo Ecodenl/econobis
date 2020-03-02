@@ -11,7 +11,7 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
-import isEmptyObject from 'is-empty-object';
+import { isEmpty } from 'lodash';
 
 function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -81,7 +81,7 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
                                 </ButtonGroup>
                             </Col>
                         </Row>
-                        {!isEmptyObject(errors) ? (
+                        {!isEmpty(errors) ? (
                             <Row>
                                 <Col>
                                     <Alert key={'form-general-error-alert'} variant={'warning'}>

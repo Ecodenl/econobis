@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
-import isEmptyObject from 'is-empty-object';
+import { isEmpty } from 'lodash';
 
 function StepFour({ previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
@@ -130,7 +130,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                         </ButtonGroup>
                                     </Col>
                                 </Row>
-                                {!isEmptyObject(errors) ? (
+                                {!isEmpty(errors) ? (
                                     <Row>
                                         <Col>
                                             <Alert key={'form-general-error-alert'} variant={'warning'}>

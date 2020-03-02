@@ -26,6 +26,15 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <script>
+        var isIE = /*@cc_on!@*/ false || !!document.documentMode;
+
+        if(isIE) {
+           element = window.location = './unsupported.html';
+           console.log(element);
+        }
+    </script>
     <div id="root"></div>
     <!--
       This HTML file is a template.

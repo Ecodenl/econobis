@@ -151,6 +151,7 @@ class ContactNewFormOrganisation extends Component {
                         value={chamberOfCommerceNumber}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputText label={'Opzegdatum'} name={'memberUntil'} value={''} readOnly={true} />
                 </div>
 
                 <div className="row">

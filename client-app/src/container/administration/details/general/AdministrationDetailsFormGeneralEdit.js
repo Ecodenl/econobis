@@ -288,9 +288,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                     existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() ===
                         administration.twinfieldOfficeCode.toUpperCase() &&
                     existingTwinfieldAdministration.twinfieldOrganizationCode &&
-                    administration.twinfieldOrganizationCode &&
-                    existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
-                        administration.twinfieldOrganizationCode.toUpperCase() &&
+                        administration.twinfieldOrganizationCode &&
+                        existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
+                            administration.twinfieldOrganizationCode.toUpperCase() &&
                     existingTwinfieldAdministration.id !== administration.id &&
                     (twinFieldOfficeAndOrganizationCodeNotUnique = true)
             );

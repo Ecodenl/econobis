@@ -287,10 +287,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                     administration.twinfieldOfficeCode &&
                     existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() ===
                         administration.twinfieldOfficeCode.toUpperCase() &&
-                    (existingTwinfieldAdministration.twinfieldOrganizationCode &&
-                        administration.twinfieldOrganizationCode &&
-                        existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
-                            administration.twinfieldOrganizationCode.toUpperCase()) &&
+                    existingTwinfieldAdministration.twinfieldOrganizationCode &&
+                    administration.twinfieldOrganizationCode &&
+                    existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
+                        administration.twinfieldOrganizationCode.toUpperCase() &&
                     existingTwinfieldAdministration.id !== administration.id &&
                     (twinFieldOfficeAndOrganizationCodeNotUnique = true)
             );
@@ -735,7 +735,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AdministrationDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsFormGeneralEdit);

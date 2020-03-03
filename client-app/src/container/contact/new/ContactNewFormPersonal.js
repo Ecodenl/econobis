@@ -363,7 +363,12 @@ class ContactNewFormPersonal extends Component {
                         value={initials}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputText label={'Opzegdatum'} name={'memberUntil'} value={''} readOnly={true} />
+                    <InputDate
+                        label={'Geboortedatum'}
+                        name={'dateOfBirth'}
+                        value={dateOfBirth}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
                 </div>
 
                 <div className="row">
@@ -375,12 +380,6 @@ class ContactNewFormPersonal extends Component {
                         onChangeAction={this.handleInputChange}
                         required={lastName === '' && 'required'}
                         error={this.state.errors.name}
-                    />
-                    <InputDate
-                        label={'Geboortedatum'}
-                        name={'dateOfBirth'}
-                        value={dateOfBirth}
-                        onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 

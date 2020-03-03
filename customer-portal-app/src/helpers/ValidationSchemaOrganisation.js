@@ -38,6 +38,7 @@ export default {
                 .required('Verplicht'),
             postalCode: Yup.string()
                 .trim()
+                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig')
                 .required('Verplicht'),
             city: Yup.string()
                 .trim()

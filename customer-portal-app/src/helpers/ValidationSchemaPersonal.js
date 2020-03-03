@@ -35,7 +35,7 @@ export default {
                 }),
             postalCode: Yup.string()
                 .trim()
-                .min(4, 'Minimum van ${min} postcode cijfers nodig'),
+                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig'),
             city: Yup.string().trim(),
         }),
         phoneNumberPrimary: Yup.object().shape({
@@ -96,7 +96,7 @@ export default {
                 .required('Verplicht'),
             postalCode: Yup.string()
                 .trim()
-                .min(4, 'Minimum van ${min} postcode cijfers nodig')
+                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig')
                 .required('Verplicht'),
             city: Yup.string()
                 .trim()

@@ -16,7 +16,7 @@ const ContactDetailFormAddressView = props => {
                 <div className="col-sm-1">
                     <GetNameByIdHelper id={typeId} items={props.addressTypes} />
                 </div>
-                <div className="col-sm-2">{street + ' ' + number + (addition ? addition : '')}</div>
+                <div className="col-sm-2">{street + ' ' + number + (addition ? '-' + addition : '')}</div>
                 <div className="col-sm-2">{postalCode}</div>
                 <div className="col-sm-2">{city}</div>
                 <div className="col-sm-2">{country ? country.name : ''}</div>
@@ -48,7 +48,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactDetailFormAddressView);
+export default connect(mapStateToProps, null)(ContactDetailFormAddressView);

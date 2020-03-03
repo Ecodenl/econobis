@@ -348,9 +348,9 @@ class ContactNewFormPersonal extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                     <InputDate
-                        label={'Lid sinds'}
-                        name="memberSince"
-                        value={memberSince}
+                        label={'Geboortedatum'}
+                        name={'dateOfBirth'}
+                        value={dateOfBirth}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
@@ -362,12 +362,6 @@ class ContactNewFormPersonal extends Component {
                         name="initials"
                         value={initials}
                         onChangeAction={this.handleInputChange}
-                    />
-                    <InputDate
-                        label={'Geboortedatum'}
-                        name={'dateOfBirth'}
-                        value={dateOfBirth}
-                        onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
 

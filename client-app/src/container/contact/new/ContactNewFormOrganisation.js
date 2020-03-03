@@ -135,12 +135,6 @@ class ContactNewFormOrganisation extends Component {
                         required={'required'}
                         error={this.state.errors.name}
                     />
-                    <InputDate
-                        label={'Lid sinds'}
-                        name="memberSince"
-                        value={memberSince}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
                 </div>
 
                 <div className="row">

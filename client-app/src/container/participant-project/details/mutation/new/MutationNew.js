@@ -12,6 +12,7 @@ import MutationNewDeposit from './MutationNewDeposit';
 import MutationNewValidateForm from './MutationNewValidateForm';
 import MutationNewSubmitHelper from './MutationNewSubmitHelper';
 import MutationNewWithDrawal from './MutationNewWithDrawal';
+import Modal from '../../../../../components/modal/Modal';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -131,7 +132,14 @@ class MutationFormNew extends Component {
 
             ParticipantMutationAPI.newParticipantMutation(values).then(payload => {
                 this.props.fetchParticipantProjectDetails(this.props.id);
-                this.props.toggleShowNew();
+                if (payload.data) {
+                    this.setState({
+                        ...this.state,
+                        successNewMessage: payload.data,
+                    });
+                } else {
+                    this.props.toggleShowNew();
+                }
             });
         }
     };
@@ -229,6 +237,18 @@ class MutationFormNew extends Component {
                         </PanelBody>
                     </Panel>
                 </form>
+                {this.state.successNewMessage && (
+                    <Modal
+                        closeModal={this.props.toggleShowNew}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Succes'}
+                    >
+                        {this.state.successNewMessage.map(function(messageLine, index) {
+                            return <p key={index}>{messageLine}</p>;
+                        })}
+                    </Modal>
+                )}
             </React.Fragment>
         );
     }

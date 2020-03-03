@@ -18,7 +18,8 @@ class MutationFormListItem extends Component {
 
         this.state = {
             showActionButtons: false,
-            successMessage: '',
+            successUpdateMessage: '',
+            successDeleteMessage: '',
             highlightLine: '',
             showEdit: false,
             showDelete: false,
@@ -146,7 +147,8 @@ class MutationFormListItem extends Component {
     };
 
     closeEdit = () => {
-        this.setState({ showEdit: false, successMessage: '' });
+        this.setState({ showEdit: false, successUpdateMessage: '' });
+        this.props.fetchParticipantProjectDetails(this.props.id);
     };
 
     cancelEdit = () => {
@@ -179,7 +181,8 @@ class MutationFormListItem extends Component {
     };
 
     toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+        this.setState({ showDelete: !this.state.showDelete, successDeleteMessage: '' });
+        this.props.fetchParticipantProjectDetails(this.props.id);
     };
 
     handleInputChange = event => {
@@ -227,17 +230,33 @@ class MutationFormListItem extends Component {
             const values = MutationSubmitHelper(participantMutation, this.props.projectTypeCodeRef);
 
             ParticipantMutationAPI.updateParticipantMutation(values).then(payload => {
-                this.props.fetchParticipantProjectDetails(this.props.id);
                 if (payload.data) {
                     this.setState({
                         ...this.state,
-                        successMessage: payload.data,
+                        successUpdateMessage: payload.data,
                     });
                 } else {
                     this.closeEdit();
                 }
             });
         }
+    };
+
+    handleSubmitDelete = () => {
+        // event.preventDefault();
+
+        const { participantMutation } = this.state;
+
+        ParticipantMutationAPI.deleteParticipantMutation(participantMutation.id).then(payload => {
+            if (payload.data) {
+                this.setState({
+                    ...this.state,
+                    successDeleteMessage: payload.data,
+                });
+            } else {
+                this.toggleDelete();
+            }
+        });
     };
 
     render() {
@@ -265,17 +284,32 @@ class MutationFormListItem extends Component {
                     />
                 )}
                 {this.state.showDelete && this.props.permissions.manageFinancial && (
-                    <MutationFormDelete closeDeleteItemModal={this.toggleDelete} {...this.props.participantMutation} />
+                    <MutationFormDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        handleSubmitDelete={this.handleSubmitDelete}
+                        {...this.props.participantMutation}
+                    />
                 )}
-                {this.state.successMessage && (
+                {this.state.successUpdateMessage && (
                     <Modal
                         closeModal={this.closeEdit}
                         buttonCancelText={'Ok'}
                         showConfirmAction={false}
                         title={'Succes'}
                     >
-                        {/*{this.state.successMessage}*/}
-                        {this.state.successMessage.map(function(messageLine, index) {
+                        {this.state.successUpdateMessage.map(function(messageLine, index) {
+                            return <p key={index}>{messageLine}</p>;
+                        })}
+                    </Modal>
+                )}
+                {this.state.successDeleteMessage && (
+                    <Modal
+                        closeModal={this.toggleDelete}
+                        buttonCancelText={'Ok'}
+                        showConfirmAction={false}
+                        title={'Succes'}
+                    >
+                        {this.state.successDeleteMessage.map(function(messageLine, index) {
                             return <p key={index}>{messageLine}</p>;
                         })}
                     </Modal>

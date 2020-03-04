@@ -39,12 +39,16 @@ function Header({ location, history }) {
 
     function formatProfilePicName(fullName) {
         if (fullName) {
-            const firstName = fullName.slice(fullName.search(',') + 2);
-
-            let lastName = fullName.slice(0, fullName.search(','));
-            lastName = lastName.replace(/\s(?=\S*$)/, '<br>');
-
-            return firstName + '<br>' + lastName;
+            if (fullName.search(',') < 0) {
+                return fullName.replace(/\s(?=\S*$)/, '<br>');
+            } else {
+                const firstName = fullName.slice(fullName.search(',') + 2);
+                let lastName = fullName.slice(0, fullName.search(','));
+                lastName = lastName.replace(/\s(?=\S*$)/, '<br>');
+                return firstName + '<br>' + lastName;
+            }
+        } else {
+            return '?';
         }
     }
 

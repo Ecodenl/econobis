@@ -66,10 +66,15 @@ function ProjectList(props) {
 
     function formatFullName(fullName) {
         if (fullName) {
-            const firstName = fullName.slice(fullName.search(',') + 2);
-            const lastName = fullName.slice(0, fullName.search(','));
-
-            return firstName + ' ' + lastName;
+            if (fullName.search(',') < 0) {
+                return fullName;
+            } else {
+                const firstName = fullName.slice(fullName.search(',') + 2);
+                const lastName = fullName.slice(0, fullName.search(','));
+                return firstName + ' ' + lastName;
+            }
+        } else {
+            return ' ';
         }
     }
 

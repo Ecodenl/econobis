@@ -178,7 +178,7 @@ class TemplateVariableHelper
                 break;
             case 'naam_officieel':
                 if($model->type_id == 'person'){
-                    $initials = $model->person->initials ? $model->person->initials : $model->person->first_name ? substr($model->person->first_name, 0, 1).".": "";
+                    $initials = $model->person->initials ? $model->person->initials : ($model->person->first_name ? substr($model->person->first_name, 0, 1).".": "");
                     $prefix = $model->person->last_name_prefix;
                     return $prefix ? $initials . ' ' . $prefix . ' ' . $model->person->last_name : $initials . ' ' . $model->person->last_name;
                 }
@@ -1429,7 +1429,7 @@ class TemplateVariableHelper
                 break;
             case 'contact_naam_officieel':
                 if($model->contact->type_id == 'person'){
-                    $initials = $model->contact->person->initials ? $model->contact->person->initials : $model->contact->person->first_name ? substr($model->contact->person->first_name, 0, 1).".": "";
+                    $initials = $model->contact->person->initials ? $model->contact->person->initials : ($model->contact->person->first_name ? substr($model->contact->person->first_name, 0, 1).".": "");
                     $prefix = $model->contact->person->last_name_prefix;
                     return $prefix ? $initials . ' ' . $prefix . ' ' . $model->contact->person->last_name : $initials . ' ' . $model->contact->person->last_name;
                 }

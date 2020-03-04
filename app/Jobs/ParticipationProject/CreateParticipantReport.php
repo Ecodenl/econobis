@@ -10,6 +10,7 @@ namespace App\Jobs\ParticipationProject;
 
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Jobs\JobsCategory;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
@@ -30,6 +31,7 @@ class CreateParticipantReport implements ShouldQueue
     private $documentTemplateId;
     private $emailTemplateId;
     private $userId;
+    private $jobCategory;
 
     public function __construct($participantId, $subject, $documentTemplateId, $emailTemplateId, $userId)
     {
@@ -39,9 +41,12 @@ class CreateParticipantReport implements ShouldQueue
         $this->emailTemplateId = $emailTemplateId;
         $this->userId = $userId;
 
+        $this->jobCategory = JobsCategory::where('name', 'Deelnemer rapportage')->first();
+
         $jobLog = new JobsLog();
         $jobLog->value = 'Start deelnemer ('.$participantId.') rapportage.';
         $jobLog->user_id = $userId;
+        $jobLog->job_category_id = isset($this->jobCategory) ? $this->jobCategory->id : null;
         $jobLog->save();
     }
 
@@ -67,6 +72,7 @@ class CreateParticipantReport implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = $value;
         $jobLog->user_id = $this->userId;
+        $jobLog->job_category_id = isset($this->jobCategory) ? $this->jobCategory->id : null;
         $jobLog->save();
     }
 
@@ -75,6 +81,7 @@ class CreateParticipantReport implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = 'Rapportage deelnemer ('.$this->participantId.') rapportage mislukt.';
         $jobLog->user_id = $this->userId;
+        $jobLog->job_category_id = isset($this->jobCategory) ? $this->jobCategory->id : null;
         $jobLog->save();
 
         Log::error('Deelnemers ('.$this->participantId.') rapportage mislukt: ' . $exception->getMessage());

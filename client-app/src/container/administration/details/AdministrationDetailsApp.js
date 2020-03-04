@@ -50,7 +50,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AdministrationDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsApp);

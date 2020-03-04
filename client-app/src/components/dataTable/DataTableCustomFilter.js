@@ -8,6 +8,7 @@ import DataTableCustomFilterSelectDate from './DataTableCustomFilterSelectDate';
 import moment from 'moment';
 import DataTableDateFilter from './DataTableDateFilter';
 import DataTableCustomFilterSelectDropdownHas from './DataTableCustomFilterSelectDropdownHas';
+import InputSelectGroup from '../form/InputSelectGroup';
 
 moment.locale('nl');
 
@@ -98,13 +99,14 @@ const DataTableCustomFilter = props => {
                         readOnly={props.filter.readOnly}
                     />
                 )}
-                {fieldType === 'dropdownHas' && (
-                    <DataTableCustomFilterSelectDropdownHas
-                        handleInputChange={handleInputChange}
-                        type={type}
-                        readOnly={props.filter.readOnly}
-                    />
-                )}
+                {fieldType === 'dropdownHas' ||
+                    (fieldType === 'dropdownGrouped' && (
+                        <DataTableCustomFilterSelectDropdownHas
+                            handleInputChange={handleInputChange}
+                            type={type}
+                            readOnly={props.filter.readOnly}
+                        />
+                    ))}
                 {fieldType === 'date' && (
                     <DataTableCustomFilterSelectDate
                         handleInputChange={handleInputChange}
@@ -143,6 +145,40 @@ const DataTableCustomFilter = props => {
                                     </option>
                                 );
                             })}
+                        </select>
+                    )}
+                    {fieldType === 'dropdownGrouped' && (
+                        <select
+                            className={`form-control input-sm`}
+                            id="data"
+                            name="data"
+                            value={props.filter.data}
+                            onChange={handleInputChange}
+                            disabled={props.filter.readOnly}
+                        >
+                            <option />
+                            <optgroup key="primair" label="Primaire rol">
+                                {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                    if (option.id.includes('primary')) {
+                                        return (
+                                            <option key={option.id} value={option.id}>
+                                                {option[optionName]}
+                                            </option>
+                                        );
+                                    }
+                                })}
+                            </optgroup>
+                            <optgroup key="secundair" label="Secundaire rol">
+                                {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                    if (option.id.includes('secondary')) {
+                                        return (
+                                            <option key={option.id} value={option.id}>
+                                                {option[optionName]}
+                                            </option>
+                                        );
+                                    }
+                                })}
+                            </optgroup>
                         </select>
                     )}
                     {fieldType === 'date' && (

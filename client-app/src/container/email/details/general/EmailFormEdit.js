@@ -373,7 +373,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(EmailFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailFormEdit);

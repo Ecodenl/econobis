@@ -281,7 +281,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);

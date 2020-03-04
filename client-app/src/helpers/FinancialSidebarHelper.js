@@ -38,6 +38,12 @@ export default currentRouteParams => {
                     case 'te-verzenden-overboeken':
                         activeMenuItem = 'invoices/to-send-transfer';
                         break;
+                    case 'fout-verzenden-incasso':
+                        activeMenuItem = 'invoices/error-sending-collection';
+                        break;
+                    case 'fout-verzenden-overboeken':
+                        activeMenuItem = 'invoices/error-sending-transfer';
+                        break;
                     case 'verzonden':
                         activeMenuItem = 'invoices/sent';
                         break;

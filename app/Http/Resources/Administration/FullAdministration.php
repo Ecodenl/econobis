@@ -77,6 +77,8 @@ class FullAdministration extends Resource
                 'totalInvoices' => $this->total_invoices,
                 'totalInvoicesToSendCollection' => $this->total_invoices_to_send_collection,
                 'totalInvoicesToSendTransfer' => $this->total_invoices_to_send_transfer,
+                'totalInvoicesErrorSendingCollection' => $this->total_invoices_error_sending_collection,
+                'totalInvoicesErrorSendingTransfer' => $this->total_invoices_error_sending_transfer,
                 'totalInvoicesSent' => $this->total_invoices_sent,
                 'totalInvoicesExported' => $this->total_invoices_exported,
                 'totalInvoicesReminder' => $this->total_invoices_reminder,

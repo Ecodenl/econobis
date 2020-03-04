@@ -168,6 +168,16 @@ class Administration extends Model
         return $this->invoices()->where('status_id', 'to-send')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'transfer')->count();
     }
 
+    public function getTotalInvoicesErrorSendingCollectionAttribute()
+    {
+        return $this->invoices()->where('status_id', 'error-sending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
+    }
+
+    public function getTotalInvoicesErrorSendingTransferAttribute()
+    {
+        return $this->invoices()->where('status_id', 'error-sending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'transfer')->count();
+    }
+
     public function getTotalInvoicesSentAttribute()
     {
         return $this->invoices()

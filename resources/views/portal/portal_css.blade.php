@@ -602,6 +602,9 @@ text-wrap: normal;
 padding: 10px 20px;
 }
 
+.alert-wrapper{
+margin-top: 10px;
+}
 
 .profile-pic .profile-title {
 color: white;

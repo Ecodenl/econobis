@@ -83,8 +83,7 @@ function ContactDetailsPersonal({
                                         <Col>
                                             <div className="alert-wrapper">
                                                 <Alert key={'form-general-error-alert'} variant={'warning'}>
-                                                    Niet alle verplichten velden zijn (juist) ingevuld om op te kunnen
-                                                    slaan!
+                                                    Niet alle verplichten velden zijn (juist) ingevuld!
                                                 </Alert>
                                             </div>
                                         </Col>

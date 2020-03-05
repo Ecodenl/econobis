@@ -599,7 +599,6 @@ border-radius: 100%;
 text-align: center;
 display: flex;
 text-wrap: normal;
-padding: 10px 20px;
 }
 
 .alert-wrapper{
@@ -610,6 +609,7 @@ margin-top: 10px;
 color: white;
 font-weight: bold;
 white-space: nowrap;
+margin: 20px;
 }
 
 .profile-pic .profile-sub-title {

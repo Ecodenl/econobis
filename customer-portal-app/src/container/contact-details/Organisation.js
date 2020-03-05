@@ -8,6 +8,8 @@ import Col from 'react-bootstrap/Col';
 import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaOrganisation from './../../helpers/ValidationSchemaOrganisation';
+import { isEmpty } from 'lodash';
+import { Alert } from 'react-bootstrap';
 
 function ContactDetailsOrganisation({
     portalSettings,
@@ -79,6 +81,18 @@ function ContactDetailsOrganisation({
                                         </ButtonGroup>
                                     </Col>
                                 </Row>
+                                {!isEmpty(errors) ? (
+                                    <Row>
+                                        <Col>
+                                            <div className="alert-wrapper">
+                                                <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                                    Niet alle verplichten velden zijn (juist) ingevuld om op te kunnen
+                                                    slaan!
+                                                </Alert>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                ) : null}
                             </Form>
                         );
                     }}

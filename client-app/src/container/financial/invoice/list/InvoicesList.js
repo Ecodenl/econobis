@@ -384,7 +384,8 @@ class InvoicesList extends Component {
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={this.resetInvoiceFilters} />
                             <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={this.getCSV} />
-                            {this.props.invoicesFilters.statusId.data == 'to-send' &&
+                            {(this.props.invoicesFilters.statusId.data == 'to-send' ||
+                                this.props.invoicesFilters.statusId.data == 'error-sending') &&
                                 this.props.invoicesFilters.paymentTypeId.data == 'collection' &&
                                 !this.state.onlyPostInvoices &&
                                 meta.total > 0 && (
@@ -393,7 +394,8 @@ class InvoicesList extends Component {
                                         onClickAction={() => this.previewSend('incasso')}
                                     />
                                 )}
-                            {this.props.invoicesFilters.statusId.data == 'to-send' &&
+                            {(this.props.invoicesFilters.statusId.data == 'to-send' ||
+                                this.props.invoicesFilters.statusId.data == 'error-sending') &&
                                 this.props.invoicesFilters.paymentTypeId.data == 'transfer' &&
                                 !this.state.onlyPostInvoices &&
                                 meta.total > 0 && (
@@ -402,7 +404,8 @@ class InvoicesList extends Component {
                                         onClickAction={() => this.previewSend('overboeken')}
                                     />
                                 )}
-                            {this.props.invoicesFilters.statusId.data == 'to-send' &&
+                            {(this.props.invoicesFilters.statusId.data == 'to-send' ||
+                                this.props.invoicesFilters.statusId.data == 'error-sending') &&
                                 this.props.invoicesFilters.paymentTypeId.data == 'collection' &&
                                 !this.state.onlyEmailInvoices &&
                                 meta.total > 0 && (
@@ -411,7 +414,8 @@ class InvoicesList extends Component {
                                         onClickAction={() => this.previewSendPost('incasso')}
                                     />
                                 )}
-                            {this.props.invoicesFilters.statusId.data == 'to-send' &&
+                            {(this.props.invoicesFilters.statusId.data == 'to-send' ||
+                                this.props.invoicesFilters.statusId.data == 'error-sending') &&
                                 this.props.invoicesFilters.paymentTypeId.data == 'transfer' &&
                                 !this.state.onlyEmailInvoices &&
                                 meta.total > 0 && (

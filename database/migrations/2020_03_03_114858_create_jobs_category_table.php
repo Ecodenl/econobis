@@ -48,7 +48,6 @@ class CreateJobsCategoryTable extends Migration
     function insertJobCategories() {
         \Illuminate\Support\Facades\DB::table('job_categories')->insertOrIgnore([
             ['name' => 'Deelnemer rapportage'],
-            ['name' => 'Projectdeelnemer rapportage'],
             ['name' => 'Opbrengstverdeling rapportage']
         ]);
     }

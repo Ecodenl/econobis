@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ParticipantReport from './list/ParticipantReport';
-import ProjectParticipantReport from './list/ProjectParticipantReport';
 import RevenueDistributionReport from './list/RevenueDistributionReport';
 
 class ProcessesApp extends Component {
@@ -10,13 +9,10 @@ class ProcessesApp extends Component {
 
     render() {
         const path = this.props.route.path;
-        console.log(path);
 
         switch (path) {
             case 'processen/deelnemer-rapportage':
                 return <ParticipantReport />;
-            case 'processen/projectdeelnemer-rapportage':
-                return <ProjectParticipantReport />;
             case 'processen/opbrengstverdeling-rapportage':
                 return <RevenueDistributionReport />;
         }

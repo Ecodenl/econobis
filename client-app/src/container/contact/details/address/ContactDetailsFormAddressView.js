@@ -48,4 +48,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailFormAddressView);
+export default connect(
+    mapStateToProps,
+    null
+)(ContactDetailFormAddressView);

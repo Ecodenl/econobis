@@ -10,6 +10,7 @@ const DataTableBody = props => {
             onChange={props.handleInputChange}
         >
             <option value="eq">heeft</option>
+            <option value="neq">heeft geen</option>
         </select>
     );
 };

@@ -51,6 +51,7 @@ const ContactDetails = function(props) {
                 const contactData = rebaseContact(payload.data.data);
 
                 setContact(contactData);
+                props.updateNameSelectedContact(contactData.fullName);
                 setLoading(false);
             })
             .catch(error => {
@@ -158,8 +159,12 @@ const ContactDetails = function(props) {
 export default function ContactDetailsWithContext(props) {
     return (
         <PortalUserConsumer>
-            {({ currentSelectedContact }) => (
-                <ContactDetails {...props} currentSelectedContact={currentSelectedContact} />
+            {({ currentSelectedContact, updateNameSelectedContact }) => (
+                <ContactDetails
+                    {...props}
+                    currentSelectedContact={currentSelectedContact}
+                    updateNameSelectedContact={updateNameSelectedContact}
+                />
             )}
         </PortalUserConsumer>
     );

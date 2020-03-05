@@ -577,4 +577,7 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoicesList);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(InvoicesList);

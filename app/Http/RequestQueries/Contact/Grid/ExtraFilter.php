@@ -128,23 +128,35 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyOccupationFilter($query, $type, $data)
     {
-       if(strchr($data, 'primary')){
+        if(strchr($data, 'primary')){
            // id strippen van tekst, zodat alleen werkelijke id overblijft
            $data = substr($data, 7);
 
-           $query->where(function($query) use ($data) {
-               $query->orWhereHas('primaryOccupations', function ($query) use ($data) {
-                   $query->where('occupation_id', $data);
-               });
+           $query->where(function($query) use ($data, $type) {
+               if($type == 'eq') {
+                   $query->WhereHas('primaryOccupations', function ($query) use ($data) {
+                       $query->where('occupation_id', $data);
+                   });
+               } else {
+                   $query->WhereDoesntHave('primaryOccupations', function ($query) use ($data) {
+                       $query->where('occupation_id', $data);
+                   });
+               }
            });
        } else {
            // id strippen van tekst, zodat alleen werkelijke id overblijft
            $data = substr($data, 9);
 
-           $query->where(function($query) use ($data) {
-               $query->whereHas('occupations', function ($query) use ($data) {
-                   $query->where('occupation_id', $data);
-               });
+           $query->where(function($query) use ($data, $type) {
+               if($type == 'eq') {
+                   $query->whereHas('occupations', function ($query) use ($data) {
+                       $query->where('occupation_id', $data);
+                   });
+               } else {
+                   $query->whereDoesntHave('occupations', function ($query) use ($data) {
+                       $query->where('occupation_id', $data);
+                   });
+               }
            });
        }
     }

@@ -136,7 +136,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactsInGroupListToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupListToolbar);

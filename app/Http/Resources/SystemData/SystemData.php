@@ -68,6 +68,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Measure\MeasurePeek;
+use App\Http\Resources\Occupation\PartialOccupation;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -167,6 +168,7 @@ class SystemData extends Resource
             'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
             'measures' => MeasurePeek::collection(Measure::all()),
             'occupations' => FullOccupation::collection(Occupation::all()),
+            'partialOccupations' => PartialOccupation::collection(Occupation::all()),
             'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),

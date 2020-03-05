@@ -100,6 +100,16 @@ class InvoicesList extends Component {
                     this.props.setStatusIdFilterInvoices('to-send');
                     this.props.setPaymentTypeIdFilterInvoices('transfer');
                     break;
+                case 'fout-verzenden-incasso':
+                    this.props.clearFilterInvoices();
+                    this.props.setStatusIdFilterInvoices('error-sending');
+                    this.props.setPaymentTypeIdFilterInvoices('collection');
+                    break;
+                case 'fout-verzenden-overboeken':
+                    this.props.clearFilterInvoices();
+                    this.props.setStatusIdFilterInvoices('error-sending');
+                    this.props.setPaymentTypeIdFilterInvoices('transfer');
+                    break;
                 case 'verzonden':
                     this.props.clearFilterInvoices();
                     this.props.setStatusIdFilterInvoices('sent');

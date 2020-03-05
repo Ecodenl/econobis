@@ -279,7 +279,7 @@ class InvoiceController extends ApiController
 
             if ($validatedInvoices->count() > 0) {
 
-                // Eerst hele zet in progress zetten
+                // Eerst hele zet in progress of is resending zetten
                 foreach ($validatedInvoices as $invoice) {
                     $orderController = new OrderController;
                     $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
@@ -287,20 +287,33 @@ class InvoiceController extends ApiController
                     if ($emailTo === 'Geen e-mail bekend') {
                         abort(404, 'Geen e-mail bekend');
                     } else {
-                        InvoiceHelper::invoiceInProgress($invoice);
+                        if($invoice->status_id === 'to-send') {
+                            InvoiceHelper::invoiceInProgress($invoice);
+                        }elseif($invoice->status_id === 'error-sending'){
+                            InvoiceHelper::invoiceIsResending($invoice);
+                        }else{
+                            abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden of Fout verzenden");
+                        }
                     }
                 }
-                foreach ($validatedInvoices as $invoice) {
-                    $invoice->date_collection = $request->input('dateCollection');
-                    $invoice->save();
-                    InvoiceHelper::createInvoiceDocument($invoice);
+                //invoice document maken (niet bij resenden
+                if($invoice->status_id !== 'is-resending'){
+                    foreach ($validatedInvoices as $invoice) {
+                        $invoice->date_collection = $request->input('dateCollection');
+                        $invoice->save();
+                        InvoiceHelper::createInvoiceDocument($invoice);
+                    }
                 }
 
                 foreach ($validatedInvoices as $invoice) {
                     //alleen als nota goed is aangemaakt, gaan we mailen
                     if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
-
-                        InvoiceHelper::invoiceIsSending($invoice);
+                        if($invoice->status_id === 'in-progress') {
+                            InvoiceHelper::invoiceIsSending($invoice);
+                        }
+                        if($invoice->status_id === 'is-resending'){
+                            $invoice->date_collection = $request->input('dateCollection');
+                        }
                         try {
                             $invoiceResponse = InvoiceHelper::send($invoice);
                             InvoiceHelper::invoiceSend($invoice);

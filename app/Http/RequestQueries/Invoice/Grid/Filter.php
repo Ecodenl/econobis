@@ -51,6 +51,7 @@ class Filter extends RequestFilter
             'daysToExpire' => 'lte',
         ];
 
+    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     protected function applyDateRequestedFilter($query, $type, $data)
     {
         $query->where(function ($q) use ($data) {
@@ -68,6 +69,7 @@ class Filter extends RequestFilter
         return false;
     }
 
+    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     protected function applySubjectFilter($query, $type, $data)
     {
         $query->join('orders', 'invoices.order_id', '=', 'orders.id');

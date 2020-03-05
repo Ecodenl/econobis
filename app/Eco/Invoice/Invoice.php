@@ -183,7 +183,7 @@ class Invoice extends Model
     }
 
     public function getIbanAttribute(){
-        if($this->status_id === 'to-send'){
+        if($this->status_id === 'to-send' || $this->status_id === 'error-sending'){
             return $this->order->contact->iban;
         }
         else{
@@ -192,7 +192,7 @@ class Invoice extends Model
     }
 
     public function getSubjectAttribute(){
-        if($this->status_id === 'to-send'){
+        if($this->status_id === 'to-send' || $this->status_id === 'error-sending'){
             return $this->order->subject;
         }
         else{
@@ -201,7 +201,7 @@ class Invoice extends Model
     }
 
     public function getInvoiceTextAttribute(){
-        if($this->status_id === 'to-send'){
+        if($this->status_id === 'to-send' || $this->status_id === 'error-sending'){
             return $this->order->invoice_text;
         }
         else{
@@ -217,6 +217,7 @@ class Invoice extends Model
         if ($this->status_id == 'paid'
             || $this->status_id == 'irrecoverable'
             || $this->status_id == 'to-send'
+            || $this->status_id == 'error-sending'
         ) {
             $daysLastReminder = 0;
         } else {
@@ -246,6 +247,7 @@ class Invoice extends Model
             || $this->status_id == 'paid'
             || $this->status_id == 'irrecoverable'
             || $this->status_id == 'to-send'
+            || $this->status_id == 'error-sending'
         ) {
             $daysToExpire = 0;
         } else {

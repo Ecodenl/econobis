@@ -30,7 +30,7 @@ class ConfigurableMailable extends Mailable
             $endpoint = config('services.mailgun.endpoint');
 
             $transport = new MailgunTransport(new HttpClient , $key, $domain, $endpoint);
-        } else {
+        }elseif(config('mail.driver') !== 'log') {
             $host      = config('mail.host');
             $port      = config('mail.port');
             $security  = config('mail.encryption');
@@ -38,6 +38,8 @@ class ConfigurableMailable extends Mailable
             $transport = new Swift_SmtpTransport( $host, $port, $security);
             $transport->setUsername(config('mail.username'));
             $transport->setPassword(config('mail.password'));
+        }else{
+            return;
         }
 
         $mailer->setSwiftMailer(new Swift_Mailer($transport));

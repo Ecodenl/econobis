@@ -115,6 +115,7 @@ class Administration extends Model
         return $this->orders()->where('status_id', 'concept')->count();
     }
 
+    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     public function getTotalOrdersUpcomingAttribute()
     {
         return $this->orders()
@@ -128,6 +129,7 @@ class Administration extends Model
             })->count();
     }
 
+    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     public function getTotalOrdersToCreateInvoicesAttribute()
     {
         return $this->orders()
@@ -138,6 +140,7 @@ class Administration extends Model
             })->count();
     }
 
+    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     public function getTotalOrdersToSendInvoicesAttribute()
     {
         return $this->orders()

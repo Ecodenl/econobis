@@ -143,7 +143,8 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'in-progress' ||
             this.props.statusId === 'is-sending' ||
             this.props.statusId === 'error-making' ||
-            this.props.statusId === 'error-sending'
+            this.props.statusId === 'error-sending' ||
+            this.props.statusId === 'is-resending'
                 ? 'in-progress-row'
                 : null;
         return (
@@ -214,6 +215,13 @@ class InvoicesListItem extends Component {
                     ) : (
                         ''
                     )}
+                    {this.state.showActionButtons && this.props.statusId === 'error-sending' ? (
+                        <a role="button" onClick={() => this.showSend()} title="Verstuur nota opnieuw">
+                            <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
+                        </a>
+                    ) : (
+                        ''
+                    )}
                     {!invoiceInTwinfield &&
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
@@ -238,6 +246,7 @@ class InvoicesListItem extends Component {
                         this.props.statusId !== 'is-sending' &&
                         this.props.statusId !== 'error-making' &&
                         this.props.statusId !== 'error-sending' &&
+                        this.props.statusId !== 'is-resending' &&
                         this.props.statusId !== 'paid' &&
                         this.props.statusId !== 'irrecoverable') ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">

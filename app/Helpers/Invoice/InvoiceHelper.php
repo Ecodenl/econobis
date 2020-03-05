@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -125,7 +126,8 @@ class InvoiceHelper
         if($invoice->status_id !== 'in-progress'
             && $invoice->status_id !== 'is-sending'
             && $invoice->status_id !== 'error-making'
-            && $invoice->status_id !== 'error-sending')
+            && $invoice->status_id !== 'error-sending'
+            && $invoice->status_id !== 'is-resending')
         {
             if($invoice->status_id === 'paid'){
                 if($invoice->twinfield_number){
@@ -487,10 +489,31 @@ class InvoiceHelper
             $invoice->save();
         }
     }
+    public static function invoiceIsResending(Invoice $invoice)
+    {
+        //Nota moet nog status in-progress hebben
+        if($invoice->status_id === 'error-sending')
+        {
+            $invoice->status_id = 'is-resending';
+            $invoice->save();
+        }
+    }
     public static function invoiceSend(Invoice $invoice)
     {
+        //todo cleanup later. Dit is even voor testen van resenden bij nota's met error-sending.
+        // met contact lastname "create-error-sending" forceren we een error-sending.
+        if($invoice
+            && $invoice->order
+            && $invoice->order->contact
+            && $invoice->order->contact->person
+            && $invoice->order->contact->person->last_name == "create-error-sending"
+        )
+        {
+            throw new Exception("Nota met ID " . $invoice->id . " in error-sending gezet.");
+        }
+
         //Nota moet nog status is-sending hebben
-        if($invoice->status_id === 'is-sending')
+        if($invoice->status_id === 'is-sending' || $invoice->status_id === 'is-resending')
         {
             //Haal nota uit tabel invoices-to-send
             $invoice->invoicesToSend()->delete();
@@ -521,7 +544,7 @@ class InvoiceHelper
     public static function invoiceErrorSending(Invoice $invoice)
     {
         //Nota moet nog status is-sending hebben
-        if($invoice->status_id === 'is-sending')
+        if($invoice->status_id === 'is-sending' || $invoice->status_id === 'is-resending')
         {
             //Status naar error-send
             $invoice->status_id = 'error-sending';

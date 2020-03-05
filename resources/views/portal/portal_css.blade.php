@@ -526,13 +526,14 @@ left: 50%;
 top: auto;
 right: auto;
 bottom: -60px;
-width: 120px;
+min-width: 120px;
 height: 120px;
 border: 4px solid #fff;
 border-radius: 50%;
 -webkit-transform: translate(-50%, 0px);
 -ms-transform: translate(-50%, 0px);
 transform: translate(-50%, 0px);
+padding: 10px 20px;
 }
 .heading-content {
 margin-bottom: 0px;
@@ -580,7 +581,7 @@ font-size: .9em;
 position: absolute;
 left: 50%;
 bottom: -60px;
-width: 120px;
+min-width: 120px;
 height: 120px;
 border: 4px solid white;
 background-color: var(--main-primary-rgba);
@@ -598,13 +599,13 @@ border-radius: 100%;
 text-align: center;
 display: flex;
 text-wrap: normal;
+padding: 10px 20px;
 }
 
 
 .profile-pic .profile-title {
 color: white;
 font-weight: bold;
-width: 110px;
 white-space: nowrap;
 }
 

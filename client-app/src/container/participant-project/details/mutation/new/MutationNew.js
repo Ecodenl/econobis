@@ -250,7 +250,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MutationFormNew);
+export default connect(mapStateToProps, mapDispatchToProps)(MutationFormNew);

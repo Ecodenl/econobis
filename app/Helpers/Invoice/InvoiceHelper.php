@@ -470,10 +470,7 @@ class InvoiceHelper
             }
 
             // We zetten nota voorlopig in progress zolang we bezig met maken (en evt. verzenden) van deze nota.
-            // We leggen ook al date-sent vast (deze wordt nl. gebruikt als notadatum op de nota en hebben we
-            // dus nodig bij maken nota (PDF).
             $invoice->status_id = 'in-progress';
-            $invoice->date_sent = Carbon::today();
             $invoice->save();
 
             $invoicesToSend = new InvoicesToSend();

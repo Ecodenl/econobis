@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleReCaptcha, GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import AuthAPI from '../../../api/auth/AuthAPI';
 import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
@@ -18,13 +18,10 @@ const NewAccount = props => {
     const [errorMessage, setErrorMessage] = useState('');
 
     async function handleSubmit(values, actions) {
-        // console.log('test 1');
         if (!executeRecaptcha) {
             return;
         }
-        // console.log('test 2');
         const reCaptchaToken = await executeRecaptcha('signup_page');
-        // console.log('test 3');
 
         AuthAPI.newAccount({ ...values, contactType: contactType, reCaptchaToken })
             .then(payload => {
@@ -34,7 +31,6 @@ const NewAccount = props => {
             })
             .catch(error => {
                 // If new account fails show error and then set submitting back to false
-                // console.log(error);
                 toggleError(true);
                 if (error.response && error.response.status === 404) {
                     setErrorMessage(
@@ -57,74 +53,77 @@ const NewAccount = props => {
     }
 
     return (
-        <Container fluid className="authorization-container text-light">
-            <Row className="justify-content-center align-content-center full-height">
-                {/*<Col xs="12" sm="10" md="8" lg="6" xl="4">*/}
-                <Col xs="12" sm="6" md="4" lg="4" xl="4">
-                    <img src="images/logo.png" alt="" className="image logo-container-small" />
+        <div className="authorization-container">
+            <Container fluid className="text-light">
+                <Row className="justify-content-center align-content-start align-content-lg-center full-height p-2">
+                    <Col xs="12" sm="6" md="4" lg="4" xl="4">
+                        <img src="images/logo.png" alt="" className="image logo-container-small" />
 
-                    {showSuccessMessage ? (
-                        redirect()
-                    ) : (
-                        <>
-                            <Row className="justify-content-center">
-                                <h3 className={'text-light'}>Nieuw account</h3>
-                            </Row>
-                            <Row className="justify-content-center">
-                                <p className={'text-light'}>Maak binnen 2 minuten een account aan.</p>
-                            </Row>
-                            <br />
-                            <Row className="justify-content-center">
-                                <ButtonToolbar toggle>
-                                    <Col>
-                                        <Button
-                                            variant={
-                                                contactType === 'person' ? 'primary fixed-height' : 'light fixed-height'
-                                            }
-                                            block
-                                            onClick={() => setContactType('person')}
-                                        >
-                                            Voor jezelf
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        <Button
-                                            variant={contactType === 'organisation' ? 'primary' : 'light'}
-                                            block
-                                            onClick={() => setContactType('organisation')}
-                                        >
-                                            Voor je organisatie
-                                        </Button>
-                                    </Col>
-                                </ButtonToolbar>
-                            </Row>
-                            <br />
-
-                            {contactType === 'person' ? (
-                                <NewAccountFormPersonal
-                                    handleSubmit={handleSubmit}
-                                    showSuccessMessage={showSuccessMessage}
-                                />
-                            ) : (
-                                <NewAccountFormOrganisation
-                                    handleSubmit={handleSubmit}
-                                    showSuccessMessage={showSuccessMessage}
-                                />
-                            )}
-                            <br />
-
-                            {showError ? (
-                                <Row>
-                                    <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                        {errorMessage}
-                                    </Alert>
+                        {showSuccessMessage ? (
+                            redirect()
+                        ) : (
+                            <>
+                                <Row className="justify-content-center">
+                                    <h3 className={'text-light'}>Nieuw account</h3>
                                 </Row>
-                            ) : null}
-                        </>
-                    )}
-                </Col>
-            </Row>
-        </Container>
+                                <Row className="justify-content-center">
+                                    <p className={'text-light'}>Maak binnen 2 minuten een account aan.</p>
+                                </Row>
+                                <br />
+                                <Row className="justify-content-center">
+                                    <ButtonToolbar toggle>
+                                        <Col>
+                                            <Button
+                                                variant={
+                                                    contactType === 'person'
+                                                        ? 'primary fixed-height'
+                                                        : 'light fixed-height'
+                                                }
+                                                block
+                                                onClick={() => setContactType('person')}
+                                            >
+                                                Voor jezelf
+                                            </Button>
+                                        </Col>
+                                        <Col>
+                                            <Button
+                                                variant={contactType === 'organisation' ? 'primary' : 'light'}
+                                                block
+                                                onClick={() => setContactType('organisation')}
+                                            >
+                                                Voor je organisatie
+                                            </Button>
+                                        </Col>
+                                    </ButtonToolbar>
+                                </Row>
+                                <br />
+
+                                {contactType === 'person' ? (
+                                    <NewAccountFormPersonal
+                                        handleSubmit={handleSubmit}
+                                        showSuccessMessage={showSuccessMessage}
+                                    />
+                                ) : (
+                                    <NewAccountFormOrganisation
+                                        handleSubmit={handleSubmit}
+                                        showSuccessMessage={showSuccessMessage}
+                                    />
+                                )}
+                                <br />
+
+                                {showError ? (
+                                    <Row>
+                                        <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                            {errorMessage}
+                                        </Alert>
+                                    </Row>
+                                ) : null}
+                            </>
+                        )}
+                    </Col>
+                </Row>
+            </Container>
+        </div>
     );
 };
 

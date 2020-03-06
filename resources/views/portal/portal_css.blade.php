@@ -16,7 +16,14 @@ background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
 color: #333;
-min-height: 100vh;
+height: 100vh;
+width: 100vw;
+position: fixed;
+left: 0;
+right: 0;
+top: 0;
+bottom: 0;
+overflow: auto;
 }
 
 .authorization-button.authorization-button {

@@ -31,7 +31,6 @@ class CreateRevenueReport implements ShouldQueue
     private $documentTemplateId;
     private $emailTemplateId;
     private $userId;
-    private $jobCategoryId;
 
     public function __construct($distributionId, $subject, $documentTemplateId, $emailTemplateId, $userId)
     {
@@ -41,12 +40,10 @@ class CreateRevenueReport implements ShouldQueue
         $this->emailTemplateId = $emailTemplateId;
         $this->userId = $userId;
 
-        $this->jobCategoryId = JobsCategory::where('Opbrengstverdeling rapportage')->first();
-
         $jobLog = new JobsLog();
         $jobLog->value = 'Start opbrengstverdeling deelnemer ('.$distributionId.') rapportage.';
         $jobLog->user_id = $userId;
-        $jobLog->job_category_id = isset($this->jobCategoryId) ? $this->jobCategoryId->id : "";
+        $jobLog->job_category_id = 'revenue';
         $jobLog->save();
     }
 
@@ -72,7 +69,7 @@ class CreateRevenueReport implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = $value;
         $jobLog->user_id = $this->userId;
-        $jobLog->job_category_id = isset($this->jobCategoryId) ? $this->jobCategoryId->id : "";
+        $jobLog->job_category_id = 'revenue';
         $jobLog->save();
     }
 
@@ -81,7 +78,7 @@ class CreateRevenueReport implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = 'Opbrengstverdeling deelnemer ('.$this->distributionId.') rapportage mislukt.';
         $jobLog->user_id = $this->userId;
-        $jobLog->job_category_id = isset($this->jobCategoryId) ? $this->jobCategoryId->id : "";
+        $jobLog->job_category_id = 'revenue';
         $jobLog->save();
 
         Log::error('Opbrengstverdeling deelnemer ('.$this->distributionId.') rapportage mislukt: ' . $exception->getMessage());

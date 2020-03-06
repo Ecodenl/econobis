@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
-import ParticipantReport from './list/ParticipantReport';
-import RevenueDistributionReport from './list/RevenueDistributionReport';
+import PanelHeader from '../../components/panel/PanelHeader';
+import PanelBody from '../../components/panel/PanelBody';
 
 class ProcessesApp extends Component {
     constructor(props) {
         super(props);
+
+        console.log(this.props);
     }
 
     render() {
-        const path = this.props.route.path;
-
-        switch (path) {
-            case 'processen/deelnemer-rapportage':
-                return <ParticipantReport />;
-            case 'processen/opbrengstverdeling-rapportage':
-                return <RevenueDistributionReport />;
-        }
+        return (
+            <div className="JobLog-Processes-List">
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Processen logs</span>
+                    </PanelHeader>
+                    <PanelBody />
+                </Panel>
+            </div>
+        );
     }
 }
 

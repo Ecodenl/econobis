@@ -5,3 +5,4 @@ node_modules/
 .env.development
 testcafe/config/constants.js
 src/index.html
+/package-lock.json

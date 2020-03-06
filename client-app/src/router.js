@@ -307,8 +307,7 @@ const Routes = () => {
                 <Route path="project/deelnemer/nieuw/contact/:contactId" component={ParticipantNewApp} />
                 <Route path="project/deelnemer/:id" component={ParticipantDetailsApp} />
                 /* Processes */
-                <Route path="processen/deelnemer-rapportage" component={ProcessesApp} />
-                <Route path="processen/opbrengstverdeling-rapportage" component={ProcessesApp} />
+                <route path="processen" component={ProcessesApp} />
                 /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:closed" component={TaskNewApp} />

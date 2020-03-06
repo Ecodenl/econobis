@@ -70,4 +70,7 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupListApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactsInGroupListApp);

@@ -63,4 +63,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(FinancialApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(FinancialApp);

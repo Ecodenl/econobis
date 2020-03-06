@@ -440,4 +440,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentFormEdit);

@@ -86,4 +86,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactListAddPersonToGroup);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ContactListAddPersonToGroup);

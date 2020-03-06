@@ -60,4 +60,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsApp);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(DocumentDetailsApp);

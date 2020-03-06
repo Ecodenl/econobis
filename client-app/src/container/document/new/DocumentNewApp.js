@@ -367,4 +367,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(DocumentNewApp);
+export default connect(
+    null,
+    mapDispatchToProps
+)(DocumentNewApp);

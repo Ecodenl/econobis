@@ -204,7 +204,9 @@ class ParticipantNewApp extends Component {
                         modalText: payload.data.message,
                     });
                     this.setState({
-                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${participation.projectId}/deelnemer/${payload.data.id}`,
+                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
+                            participation.projectId
+                        }/deelnemer/${payload.data.id}`,
                         modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
                     });
                 } else {

@@ -346,23 +346,25 @@ class ContactController extends ApiController
             }
 
         }else{
-            $addressData['typeId'] = $addressType;
-            $addressData['primary'] = true;
+            if(!empty($addressData['street']) && !empty($addressData['postalCode']) && !empty($addressData['city'])) {
+                $addressData['typeId'] = $addressType;
+                $addressData['primary'] = true;
 
-            Validator::make($addressData, [
-                'typeId' => new EnumExists(AddressType::class),
-                'number' => '',
-                'primary' => 'boolean',
-            ]);
+                Validator::make($addressData, [
+                    'typeId' => new EnumExists(AddressType::class),
+                    'number' => '',
+                    'primary' => 'boolean',
+                ]);
 
-            $addressData = $this->sanitizeData($addressData, [
-                'typeId' => 'nullable',
-                'primary' => 'boolean',
-            ]);
+                $addressData = $this->sanitizeData($addressData, [
+                    'typeId' => 'nullable',
+                    'primary' => 'boolean',
+                ]);
 
-            $address = new Address($this->arrayKeysToSnakeCase($addressData));
-            $address->contact_id = $contact->id;
-            $address->save();
+                $address = new Address($this->arrayKeysToSnakeCase($addressData));
+                $address->contact_id = $contact->id;
+                $address->save();
+            }
         }
     }
 

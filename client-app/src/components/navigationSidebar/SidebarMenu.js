@@ -237,28 +237,11 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 <NavIcon>
                     <SvgIcon size={20} icon={stopwatch} />
                 </NavIcon>
-                <NavText> Processen </NavText>
-                <Nav id="deelnemer-rapportage">
-                    <NavText>
-                        <Link classname="sidebar-link" to="processen/deelnemer-rapportage">
-                            Deelnemer rapportage
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav id="projectdeelnemer-rapportage">
-                    <NavText>
-                        <Link classname="sidebar-link" to="processen/projectdeelnemer-rapportage">
-                            Projectdeelnemers rapportage
-                        </Link>
-                    </NavText>
-                </Nav>
-                <Nav id="opbrengstverdeling-rapportage">
-                    <NavText>
-                        <Link classname="sidebar-link" to="processen/opbrengstverdeling-rapportage">
-                            Opbrengstverdeling rapportage
-                        </Link>
-                    </NavText>
-                </Nav>
+                <NavText>
+                    <Link className="sidebar-link-header" to="processen">
+                        Processen
+                    </Link>
+                </NavText>
             </Nav>
             {permissions.viewDocument && (
                 <Nav id="documenten">

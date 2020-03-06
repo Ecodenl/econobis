@@ -121,33 +121,6 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 </Row>
             </Col>
             <Col xs={12} md={6}>
-                <FormLabel className={'field-label'}>Postadres</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
-                        {postalAddress.street}
-                    </TextBlock>
-                </Row>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Nummer'}>
-                        {postalAddress.number}
-                    </TextBlock>
-                    <TextBlock className={'col-6 col-sm-4 '} placeholder={'Toevoeging'}>
-                        {postalAddress.addition}
-                    </TextBlock>
-                </Row>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Postcode'}>
-                        {postalAddress.postalCode}
-                    </TextBlock>
-                    <TextBlock className={'col-12 col-sm-6'} placeholder={'Plaats'}>
-                        {postalAddress.city}
-                    </TextBlock>
-                </Row>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
-                        {postalAddress.country ? postalAddress.country.name : ''}
-                    </TextBlock>{' '}
-                </Row>
                 <FormLabel className={'field-label'}>Bezoekadres</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
@@ -174,6 +147,33 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
                         {visitAddress.country ? visitAddress.country.name : ''}
                     </TextBlock>
+                </Row>
+                <FormLabel className={'field-label'}>Postadres</FormLabel>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
+                        {postalAddress.street}
+                    </TextBlock>
+                </Row>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Nummer'}>
+                        {postalAddress.number}
+                    </TextBlock>
+                    <TextBlock className={'col-6 col-sm-4 '} placeholder={'Toevoeging'}>
+                        {postalAddress.addition}
+                    </TextBlock>
+                </Row>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Postcode'}>
+                        {postalAddress.postalCode}
+                    </TextBlock>
+                    <TextBlock className={'col-12 col-sm-6'} placeholder={'Plaats'}>
+                        {postalAddress.city}
+                    </TextBlock>
+                </Row>
+                <Row>
+                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
+                        {postalAddress.country ? postalAddress.country.name : ''}
+                    </TextBlock>{' '}
                 </Row>
                 <FormLabel className={'field-label'}>Nota adres</FormLabel>
                 <Row>

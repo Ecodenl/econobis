@@ -26,37 +26,42 @@ export default {
                 .email('Ongeldig e-mail adres'),
         }),
         postalAddress: Yup.object().shape({
-            street: Yup.string()
-                .trim()
-                .required('Verplicht'),
+            street: Yup.string().trim(),
             number: Yup.string()
                 .nullable()
                 .trim()
                 .test('number', 'Alleen nummers', value => {
                     return Number.isInteger(+value);
-                })
-                .required('Verplicht'),
+                }),
             postalCode: Yup.string()
                 .trim()
-                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig')
-                .required('Verplicht'),
-            city: Yup.string()
-                .trim()
-                .required('Verplicht'),
+                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig'),
+            city: Yup.string().trim(),
         }),
         visitAddress: Yup.object().shape({
+            street: Yup.string().trim(),
             number: Yup.string()
                 .nullable()
+                .trim()
                 .test('number', 'Alleen nummers', value => {
                     return Number.isInteger(+value);
                 }),
+            postalCode: Yup.string()
+                .trim()
+                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig'),
+            city: Yup.string().trim(),
         }),
         invoiceAddress: Yup.object().shape({
+            street: Yup.string().trim(),
             number: Yup.string()
                 .nullable()
                 .test('number', 'Alleen nummers', value => {
                     return Number.isInteger(+value);
                 }),
+            postalCode: Yup.string()
+                .trim()
+                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig'),
+            city: Yup.string().trim(),
         }),
         phoneNumberPrimary: Yup.object().shape({
             number: Yup.string()
@@ -95,6 +100,25 @@ export default {
             .trim()
             .nullable()
             .required('Verplicht'),
+        visitAddress: Yup.object().shape({
+            street: Yup.string()
+                .trim()
+                .required('Verplicht'),
+            number: Yup.string()
+                .nullable()
+                .trim()
+                .test('number', 'Alleen nummers', value => {
+                    return Number.isInteger(+value);
+                })
+                .required('Verplicht'),
+            postalCode: Yup.string()
+                .trim()
+                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig')
+                .required('Verplicht'),
+            city: Yup.string()
+                .trim()
+                .required('Verplicht'),
+        }),
     }),
 
     validationSchemaPcrAdditional: Yup.object().shape({

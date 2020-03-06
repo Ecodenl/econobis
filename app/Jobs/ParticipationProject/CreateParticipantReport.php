@@ -46,7 +46,7 @@ class CreateParticipantReport implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = 'Start deelnemer ('.$participantId.') rapportage.';
         $jobLog->user_id = $userId;
-        $jobLog->job_category_id = isset($this->jobCategory) ? $this->jobCategory->id : null;
+        $jobLog->job_category_id = 'participant';
         $jobLog->save();
     }
 
@@ -72,7 +72,7 @@ class CreateParticipantReport implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = $value;
         $jobLog->user_id = $this->userId;
-        $jobLog->job_category_id = isset($this->jobCategory) ? $this->jobCategory->id : null;
+        $jobLog->job_category_id = 'participant';
         $jobLog->save();
     }
 
@@ -81,7 +81,7 @@ class CreateParticipantReport implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = 'Rapportage deelnemer ('.$this->participantId.') rapportage mislukt.';
         $jobLog->user_id = $this->userId;
-        $jobLog->job_category_id = isset($this->jobCategory) ? $this->jobCategory->id : null;
+        $jobLog->job_category_id = 'participant';
         $jobLog->save();
 
         Log::error('Deelnemers ('.$this->participantId.') rapportage mislukt: ' . $exception->getMessage());

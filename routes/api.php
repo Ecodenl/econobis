@@ -428,6 +428,8 @@ Route::namespace('Api')
         Route::post('vat-code', 'VatCode\VatCodeController@store');
         Route::post('vat-code/{vatCode}', 'VatCode\VatCodeController@update');
 
+        Route::get('jobslog/jory', 'JobsLog\JobsLogController@jory');
+
         Route::get('ledger/jory', 'Ledger\LedgerController@jory');
         Route::post('ledger', 'Ledger\LedgerController@store');
         Route::post('ledger/{ledger}', 'Ledger\LedgerController@update');

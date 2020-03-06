@@ -30,4 +30,11 @@ class JobsLog extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getCategory()
+    {
+        if (!$this->job_category_id) return null;
+
+        return JobCategory::get($this->job_category_id);
+    }
 }

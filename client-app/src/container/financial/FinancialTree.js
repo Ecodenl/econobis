@@ -153,7 +153,7 @@ class FinancialTree extends Component {
                                     </Link>
                                 </NavText>
                             </Nav>
-                            <Nav id="to-send-transfer">
+                            <Nav id="error-sending-collection">
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
@@ -164,7 +164,7 @@ class FinancialTree extends Component {
                                     </Link>
                                 </NavText>
                             </Nav>
-                            <Nav id="to-send-transfer">
+                            <Nav id="error-sending-transfer">
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"

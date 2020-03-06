@@ -377,6 +377,12 @@ class InvoicesList extends Component {
             loading = false;
         }
 
+        let messageText = null;
+        if (this.props.filter == 'fout-verzenden-incasso' || this.props.filter == 'fout-verzenden-overboeken') {
+            messageText =
+                'Een fout verzonden factuur is definitief aangemaakt in Econobis, maar kon niet worden verzonden omdat het contact een fout e-mailadres heeft of omdat de mailbox niet werkte. Corrigeer dit en e-mail de factuur opnieuw';
+        }
+
         return (
             <div>
                 <div className="row">
@@ -487,7 +493,9 @@ class InvoicesList extends Component {
                         </div>
                     </div>
                 </div>
-
+                <div className="col-md-12">
+                    {messageText ? <div className="alert alert-danger">{messageText}</div> : null}
+                </div>
                 <form onKeyUp={this.handleKeyUp} className={'margin-10-top'}>
                     <DataTable>
                         <DataTableHead>

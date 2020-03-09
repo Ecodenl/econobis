@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\ParticipantProject;
 
+use App\Eco\Order\Order;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\User\FullUser;
@@ -29,6 +31,7 @@ class FullParticipantProject extends Resource
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'projectId' => $this->project_id,
                 'project' => FullProject::make($this->whenLoaded('project')),
+                'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),
                 'didAcceptAgreement' => $this->did_accept_agreement,
                 'dateDidAcceptAgreement' => $this->date_did_accept_agreement,
                 'didUnderstandInfo' => $this->did_understand_info,

@@ -8,6 +8,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
@@ -238,5 +239,9 @@ class Order extends Model
             default:
                 return $date;
         }
+    }
+
+    public function participation(){
+        $this->belongsTo(ParticipantProject::class, 'participation_id');
     }
 }

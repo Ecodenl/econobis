@@ -351,7 +351,10 @@ class ContactController extends ApiController
 
         }else{
             $addressData['typeId'] = $addressType;
-            $addressData['primary'] = true;
+            if($addressType == 'visit')
+            {
+                $addressData['primary'] = true;
+            }
 
             Validator::make($addressData, [
                 'typeId' => new EnumExists(AddressType::class),

@@ -266,10 +266,10 @@ class OrderNewForm extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(order.participationId + '')) {
-            errors.participationId = true;
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(order.participationId + '')) {
+        //     errors.participationId = true;
+        //     hasErrors = true;
+        // }
 
         if (order.IBAN !== null && !validator.isEmpty(order.IBAN + '')) {
             if (!ibantools.isValidIBAN(order.IBAN)) {
@@ -356,7 +356,7 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputSelect
-                                label={'Project'}
+                                label={'Deelname'}
                                 id="ParticipationId"
                                 name={'ParticipationId'}
                                 options={this.state.participations}
@@ -364,8 +364,6 @@ class OrderNewForm extends Component {
                                 onChangeAction={this.handleInputChangeParticipation}
                                 optionValue={'id'}
                                 optionName={'project_name'}
-                                required={'required'}
-                                error={this.state.errors.participationId}
                             />
                             <InputText
                                 label="Betreft"
@@ -459,9 +457,6 @@ class OrderNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                        </div>
-
-                        <div className="row">
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}

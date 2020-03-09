@@ -13,7 +13,7 @@ import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI
 import InputDate from '../../../../../components/form/InputDate';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
 import moment from 'moment';
-import ViewText from './OrderDetailsFormGeneralView';
+import OrderDetailsAPI from '../../../../../api/order/OrderDetailsAPI';
 
 class OrderDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -21,8 +21,10 @@ class OrderDetailsFormGeneralEdit extends Component {
 
         const {
             id,
+            contactId,
             statusId,
             subject,
+            participationId,
             emailTemplateIdCollection,
             emailTemplateIdTransfer,
             emailTemplateReminderId,
@@ -42,11 +44,14 @@ class OrderDetailsFormGeneralEdit extends Component {
             emailTemplates: [],
             showExtraContactInfo: false,
             collectMandateActive: false,
+            participations: [],
             order: {
                 id,
+                contactId: contactId ? contactId : '',
                 statusId: statusId ? statusId : '',
                 administrationId: administrationId ? administrationId : '',
                 subject: subject ? subject : '',
+                participationId: participationId ? participationId : '',
                 emailTemplateIdCollection: emailTemplateIdCollection ? emailTemplateIdCollection : '',
                 emailTemplateIdTransfer: emailTemplateIdTransfer ? emailTemplateIdTransfer : '',
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
@@ -74,6 +79,13 @@ class OrderDetailsFormGeneralEdit extends Component {
     }
 
     componentDidMount() {
+        this.state.order.contactId &&
+            OrderDetailsAPI.fetchContactInfoForOrder(this.state.order.contactId).then(payload => {
+                this.setState({
+                    participations: payload.data.participations,
+                });
+            });
+
         EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState(
                 {
@@ -106,6 +118,23 @@ class OrderDetailsFormGeneralEdit extends Component {
             order: {
                 ...this.state.order,
                 [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeParticipation = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+        let participation;
+
+        participation = this.state.participations.filter(participation => participation.id == value);
+        participation = participation[0];
+
+        this.setState({
+            order: {
+                ...this.state.order,
+                participationId: participation.id,
             },
         });
     };
@@ -197,6 +226,7 @@ class OrderDetailsFormGeneralEdit extends Component {
         const {
             statusId,
             subject,
+            participationId,
             emailTemplateIdCollection,
             emailTemplateIdTransfer,
             emailTemplateReminderId,
@@ -262,14 +292,15 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <InputReactSelect
-                                label={'E-mail template nota incasso'}
-                                name={'emailTemplateIdCollection'}
-                                options={this.state.emailTemplates}
-                                value={emailTemplateIdCollection}
-                                onChangeAction={this.handleReactSelectChange}
-                                isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
+                            <InputSelect
+                                label={'Deelname'}
+                                id="ParticipationId"
+                                name={'ParticipationId'}
+                                options={this.state.participations}
+                                value={participationId}
+                                onChangeAction={this.handleInputChangeParticipation}
+                                optionValue={'id'}
+                                optionName={'project_name'}
                             />
                             <InputText
                                 label="Betreft"
@@ -283,10 +314,10 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template nota overboeken'}
-                                name={'emailTemplateIdTransfer'}
+                                label={'E-mail template nota incasso'}
+                                name={'emailTemplateIdCollection'}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateIdTransfer}
+                                value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -309,12 +340,13 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.paymentTypeId}
                             />
                         </div>
+
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template herinnering'}
-                                name={'emailTemplateReminderId'}
+                                label={'E-mail template nota overboeken'}
+                                name={'emailTemplateIdTransfer'}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateReminderId}
+                                value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -332,10 +364,10 @@ class OrderDetailsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template aanmaning'}
-                                name={'emailTemplateExhortationId'}
+                                label={'E-mail template herinnering'}
+                                name={'emailTemplateReminderId'}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateExhortationId}
+                                value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -353,7 +385,15 @@ class OrderDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
-                            <div className={'form-group col-sm-6'} />
+                            <InputReactSelect
+                                label={'E-mail template aanmaning'}
+                                name={'emailTemplateExhortationId'}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}

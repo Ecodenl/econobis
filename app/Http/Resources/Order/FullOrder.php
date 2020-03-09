@@ -10,6 +10,7 @@ use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Invoice\FullInvoice;
+use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
@@ -37,6 +38,9 @@ class FullOrder extends Resource
 
                 'contactId' => $this->contact_id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),
+
+                'participationId' => $this->participation_id,
+                'participations' => FullParticipantProject::make($this->whenLoaded('participations')),
 
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),

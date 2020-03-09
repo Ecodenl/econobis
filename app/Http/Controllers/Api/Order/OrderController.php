@@ -125,6 +125,7 @@ class OrderController extends ApiController
             ->integer('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
             ->string('statusId')->validate('required')->alias('status_id')->next()
             ->string('subject')->validate('required')->next()
+            ->string('participationId')->validate('required')->alias('participation_id')->next()
             ->integer('emailTemplateIdCollection')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_collection')->next()
             ->integer('emailTemplateIdTransfer')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_transfer')->next()
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()

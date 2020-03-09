@@ -49,23 +49,20 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText label="Nota wordt gemaild naar" value={props.contactEmail} />
                     </div>
                     <div className="row">
-                        <ViewText
-                            label={'E-mail template nota incasso'}
-                            value={emailTemplateCollection ? emailTemplateCollection.name : ''}
-                        />
+                        <ViewText label={'Deelname'} value={project.name} />
                         <ViewText label={'Betreft'} value={subject ? subject : ''} />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'E-mail template nota overboeken'}
-                            value={emailTemplateTransfer ? emailTemplateTransfer.name : ''}
+                            label={'E-mail template nota incasso'}
+                            value={emailTemplateCollection ? emailTemplateCollection.name : ''}
                         />
                         <ViewText label={'Betaalwijze'} value={paymentType ? paymentType.name : ''} />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'E-mail template herinnering'}
-                            value={emailTemplateReminder ? emailTemplateReminder.name : ''}
+                            label={'E-mail template nota overboeken'}
+                            value={emailTemplateTransfer ? emailTemplateTransfer.name : ''}
                         />
                         <ViewText
                             label={'Nota frequentie'}
@@ -74,13 +71,16 @@ const OrderDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'E-mail template aanmaning'}
-                            value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
+                            label={'E-mail template herinnering'}
+                            value={emailTemplateReminder ? emailTemplateReminder.name : ''}
                         />
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                     </div>
                     <div className="row">
-                        <div className={'form-group col-sm-6'} />
+                        <ViewText
+                            label={'E-mail template aanmaning'}
+                            value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
+                        />
                         <ViewText label={'Opdracht nummer klant'} value={poNumber} />
                     </div>
 
@@ -117,7 +117,6 @@ const OrderDetailsFormGeneralView = props => {
                                 })
                             }
                         />
-                        <ViewText label={'Project'} value={project.name} />
                     </div>
                 </PanelBody>
             </Panel>

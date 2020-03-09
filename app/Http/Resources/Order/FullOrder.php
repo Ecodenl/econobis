@@ -27,7 +27,13 @@ class FullOrder extends Resource
      */
     public function toArray($request)
     {
-        $project = ParticipantProject::find($this->participation_id)->project;
+
+       $project = null;
+       $participantProject = ParticipantProject::find($this->participation_id);
+       if($participantProject)
+       {
+           $project = $participantProject->project;
+       }
 
         return
             [

@@ -112,6 +112,10 @@ class Order extends Model
         return $this->belongsTo(EmailTemplate::class);
     }
 
+    public function participation(){
+        $this->belongsTo(ParticipantProject::class, 'participation_id');
+    }
+
     public function getCollectionFrequency()
     {
         if (!$this->collection_frequency_id) {
@@ -241,7 +245,4 @@ class Order extends Model
         }
     }
 
-    public function participation(){
-        $this->belongsTo(ParticipantProject::class, 'participation_id');
-    }
 }

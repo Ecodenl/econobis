@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
@@ -9,6 +10,7 @@ use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Invoice\FullInvoice;
+use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
@@ -24,11 +26,14 @@ class FullOrder extends Resource
      */
     public function toArray($request)
     {
+        $project = ParticipantProject::find($this->participation_id)->project;
+
         return
             [
                 'id' => $this->id,
                 'number' => $this->number,
                 'subject' => $this->subject,
+                'project' => FullProject::make($project),
 
                 'contactId' => $this->contact_id,
                 'contact' => FullContact::make($this->whenLoaded('contact')),

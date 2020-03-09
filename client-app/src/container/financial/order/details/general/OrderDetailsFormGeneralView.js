@@ -9,6 +9,7 @@ import moment from 'moment';
 const OrderDetailsFormGeneralView = props => {
     const {
         contact,
+        project,
         administration,
         status,
         subject,
@@ -116,6 +117,7 @@ const OrderDetailsFormGeneralView = props => {
                                 })
                             }
                         />
+                        <ViewText label={'Project'} value={project.name} />
                     </div>
                 </PanelBody>
             </Panel>

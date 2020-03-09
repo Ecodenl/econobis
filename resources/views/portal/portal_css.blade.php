@@ -16,7 +16,7 @@ background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
 color: #333;
-height: 100vh;
+height: 100%;
 width: 100vw;
 position: fixed;
 left: 0;
@@ -716,7 +716,7 @@ border-radius: 7px;
 background-color: transparent;
 color: white;
 font-weight: 500;
-text-align: center;
+text-align: left;
 }
 
 .text-input.content {
@@ -731,7 +731,7 @@ text-align: left;
 background-color: transparent !important;
 border: 1px solid #fff !important;
 border-radius: 7px !important;
-text-align: center;
+text-align: left;
 color: white;
 }
 .select-field-transparent option {

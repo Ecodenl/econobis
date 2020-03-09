@@ -423,11 +423,15 @@ class EnergySupplierExcelHelper
                 foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
                     $rowData = [];
                     $rowData[] = $distribution->contact->number;
-                    $rowData[] = $distribution->contact->person->title ? $distribution->contact->person->title->name
-                        : '';
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                        : '' : '';
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                    if($distribution->contact->type_id == 'organisation'){
+                        $rowData[] = $distribution->contact->full_name;
+                    }else{
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                    }
                     $rowData[] = $distribution->address;
                     $rowData[] = $distribution->postal_code;
                     $rowData[] = $distribution->city;

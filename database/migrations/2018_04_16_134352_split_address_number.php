@@ -14,7 +14,6 @@ class SplitAddressNumber extends Migration
     public function up()
     {
         Schema::table('addresses', function (Blueprint $table) {
-            $table->unsignedInteger('number')->default(null)->nullable(true)->change();
             $table->string('addition')->nullable();
         });
 
@@ -28,7 +27,6 @@ class SplitAddressNumber extends Migration
     public function down()
     {
         Schema::table('addresses', function (Blueprint $table) {
-            $table->string('number')->nullable()->change();
             $table->dropColumn('addition');
         });
     }

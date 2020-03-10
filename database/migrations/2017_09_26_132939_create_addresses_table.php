@@ -22,7 +22,7 @@ class CreateAddressesTable extends Migration
             $table->string('type_id', 16)->nullable()->default(null);
 
             $table->string('street')->default('');
-            $table->string('number')->default('');
+            $table->integer('number')->unsigned()->nullable()->default(null);
             $table->string('city')->default('');
             $table->string('postal_code')->default('');
 

@@ -1,21 +1,19 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    fetchJobslogs: () => {
+    fetchJobslogs: (filters, sorts, pagination) => {
         const requestUrl = `jory/jobs-log`;
 
-        return axiosInstance
-            .get(requestUrl, {
-                params: {
-                    jory: {
-                        fld: ['id', 'value', 'userId', 'createdAt', 'updatedAt', 'jobCategoryId'],
-                        srt: ['-createdAt'],
-                    },
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: ['id', 'value', 'userId', 'createdAt', 'updatedAt', 'jobCategoryId'],
+                    srt: sorts,
+                    flt: filters,
+                    ...pagination,
                 },
-            })
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
+                meta: ['total'],
+            },
+        });
     },
 };

@@ -78,7 +78,6 @@ import ProjectDetailsApp from './container/project/details/ProjectDetailsApp';
 import ProjectGeneralApp from './container/project/general/ProjectGeneralApp';
 import ProjectNewApp from './container/project/new/ProjectNewApp';
 import ProjectRevenueNewApp from './container/project/details/revenue/new/RevenueNewApp';
-import ProcessesApp from './container/processes/ProcessesApp';
 import PermissionHelper from './helpers/PermissionHelper';
 import IntakeDetailsApp from './container/intake/details/IntakeDetailsApp';
 import IntakeNewApp from './container/intake/new/IntakeNewApp';
@@ -121,6 +120,7 @@ import QuotationRequestStatusListApp from './container/quotation-request-status/
 import QuotationRequestStatusDetailsApp from './container/quotation-request-status/details/QuotationRequestStatusDetailsApp';
 import OpportunityStatusListApp from './container/opportunity-status/list/OpportunityStatusListApp';
 import OpportunityStatusDetailsApp from './container/opportunity-status/details/OpportunityStatusDetailsApp';
+import ProcessesListApp from './container/processes/list';
 
 const Routes = () => {
     return (
@@ -307,7 +307,7 @@ const Routes = () => {
                 <Route path="project/deelnemer/nieuw/contact/:contactId" component={ParticipantNewApp} />
                 <Route path="project/deelnemer/:id" component={ParticipantDetailsApp} />
                 /* Processes */
-                <route path="processen" component={ProcessesApp} />
+                <route path="processen" component={ProcessesListApp} />
                 /* Task / notes */
                 <Route path="taak/nieuw" component={TaskNewApp} />
                 <Route path="taak/nieuw/:closed" component={TaskNewApp} />

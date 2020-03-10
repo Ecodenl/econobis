@@ -67,18 +67,6 @@ text-align: left;
 #email-new-acount[type="text"]{
 text-align: left;
 }
-#name-new-acount::placeholder{
-text-align: center;
-}
-#first_name-new-acount::placeholder{
-text-align: center;
-}
-#last_name-new-acount::placeholder{
-text-align: center;
-}
-#email-new-acount::placeholder{
-text-align: center;
-}
 
 .authorization-link {
 display: inline-block;

@@ -49,7 +49,7 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText label="Nota wordt gemaild naar" value={props.contactEmail} />
                     </div>
                     <div className="row">
-                        <ViewText label={'Deelname'} value={project.name} />
+                        <ViewText label={'Deelname'} value={project ? project.name : ''} />
                         <ViewText label={'Betreft'} value={subject ? subject : ''} />
                     </div>
                     <div className="row">

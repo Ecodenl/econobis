@@ -11,6 +11,7 @@ class JobCategory extends EnumWithIdAndName
     protected static function seed()
     {
         return [
+            new static('email', 'Email'),
             new static('participant', 'Deelnemer rapportage'),
             new static('revenue', 'Opbrengst rapportage'),
         ];

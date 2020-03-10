@@ -39,6 +39,7 @@ class CreateAllInvoices implements ShouldQueue
 
         $jobLog = new JobsLog();
         $jobLog->value = "Start alle nota's aanmaken.";
+        $jobLog->job_category_id = 'create-invoice';
         $jobLog->user_id = $userId;
         $jobLog->save();
     }
@@ -63,6 +64,7 @@ class CreateAllInvoices implements ShouldQueue
 
         $jobLog = new JobsLog();
         $jobLog->value = "Alle nota's aangemaakt.";
+        $jobLog->job_category_id = 'create-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
     }
@@ -71,6 +73,7 @@ class CreateAllInvoices implements ShouldQueue
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Nota's maken mislukt.";
+        $jobLog->job_category_id = 'create-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 

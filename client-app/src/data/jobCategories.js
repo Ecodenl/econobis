@@ -2,4 +2,7 @@ export default [
     { code: 'email', name: 'Email' },
     { code: 'participant', name: 'Deelnemer rapportage' },
     { code: 'revenue', name: 'Opbrengst rapportage' },
+    { code: 'create-invoice', name: 'Maken facturen' },
+    { code: 'create-payment-invoice', name: "Maken uitkeringsnota's" },
+    { code: 'sent-invoice', name: 'Versturen nota' },
 ];

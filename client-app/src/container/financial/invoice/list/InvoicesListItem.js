@@ -6,8 +6,6 @@ import InvoiceListSetPaid from './InvoiceListSetPaid';
 import InvoiceListSendNotification from './InvoiceListSendNotification';
 import InvoiceListSetIrrecoverable from './InvoiceListSetIrrecoverable';
 import InvoiceListSend from './InvoiceListSend';
-import { setCheckedInvoice } from '../../../../actions/invoice/InvoicesActions';
-import { connect } from 'react-redux';
 
 class InvoicesListItem extends Component {
     constructor(props) {
@@ -16,7 +14,6 @@ class InvoicesListItem extends Component {
         this.state = {
             showActionButtons: false,
             highlightRow: '',
-            showSetChecked: false,
             showSend: false,
             showSetPaid: false,
             showSendNotification: false,
@@ -67,10 +64,6 @@ class InvoicesListItem extends Component {
         hashHistory.push(`/nota/inzien/${id}`);
     }
 
-    showSetChecked = () => {
-        this.setState({ showSetChecked: !this.state.showSetChecked });
-    };
-
     showSend = () => {
         this.setState({ showSend: !this.state.showSend });
     };
@@ -86,10 +79,6 @@ class InvoicesListItem extends Component {
     showSetIrrecoverable = () => {
         this.setState({ showSetIrrecoverable: !this.state.showSetIrrecoverable });
     };
-
-    setCheckedInvoice(id) {
-        this.props.setCheckedInvoice(id);
-    }
 
     render() {
         let hideRowClass = '';
@@ -131,12 +120,9 @@ class InvoicesListItem extends Component {
             totalPriceInclVatAndReduction,
             amountOpen,
             emailToAddress,
-            checked,
             iban,
             subStatus,
-            usesTwinfield,
             invoiceInTwinfield,
-            twinfieldNumber,
         } = this.props;
 
         const inProgressRowClass =
@@ -156,7 +142,12 @@ class InvoicesListItem extends Component {
             >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
-                        <input type="checkbox" checked={checked} onChange={() => this.setCheckedInvoice(id)} />
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={this.props.toggleInvoiceCheck}
+                            checked={this.props.invoiceIds ? this.props.invoiceIds.includes(id) : false}
+                        />
                     </td>
                 )}
                 <td>{number}</td>
@@ -305,13 +296,4 @@ class InvoicesListItem extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    setCheckedInvoice: id => {
-        dispatch(setCheckedInvoice(id));
-    },
-});
-
-export default connect(
-    null,
-    mapDispatchToProps
-)(InvoicesListItem);
+export default InvoicesListItem;

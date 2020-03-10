@@ -46,6 +46,7 @@ class SendAllInvoices implements ShouldQueue
 
         $jobLog = new JobsLog();
         $jobLog->value = "Start alle nota's verzenden.";
+        $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $userId;
         $jobLog->save();
     }
@@ -97,11 +98,13 @@ class SendAllInvoices implements ShouldQueue
 
             $sepaHelper = new SepaHelper($this->administration, $validatedInvoices);
             $sepa = $sepaHelper->generateSepaFile();
+// sent invoice now in queue (jobs), so download sepa when done not possible anymore
 //            return $sepaHelper->downloadSepa($sepa);
         }
 
         $jobLog = new JobsLog();
         $jobLog->value = "Alle nota's verzonden.";
+        $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
     }
@@ -110,6 +113,7 @@ class SendAllInvoices implements ShouldQueue
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Nota's maken mislukt.";
+        $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 

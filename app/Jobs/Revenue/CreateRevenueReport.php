@@ -12,6 +12,7 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Jobs\JobsCategory;
 use App\Eco\Jobs\JobsLog;
+use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\User\User;
 use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use Illuminate\Bus\Queueable;
@@ -27,6 +28,7 @@ class CreateRevenueReport implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $distributionId;
+    private $distributionFullName;
     private $subject;
     private $documentTemplateId;
     private $emailTemplateId;
@@ -35,13 +37,18 @@ class CreateRevenueReport implements ShouldQueue
     public function __construct($distributionId, $subject, $documentTemplateId, $emailTemplateId, $userId)
     {
         $this->distributionId = $distributionId;
+        $distribution = ProjectRevenueDistribution::find($distributionId);
+        $this->distributionFullName = "****";
+        if($distribution && $distribution->contact){
+            $this->distributionFullName = $distribution->contact->full_name;
+        }
         $this->subject = $subject;
         $this->documentTemplateId = $documentTemplateId;
         $this->emailTemplateId = $emailTemplateId;
         $this->userId = $userId;
 
         $jobLog = new JobsLog();
-        $jobLog->value = 'Start opbrengstverdeling deelnemer ('.$distributionId.') rapportage.';
+        $jobLog->value = 'Start opbrengstverdeling deelnemer '.$this->distributionFullName.' ('.$distributionId.') rapportage.';
         $jobLog->user_id = $userId;
         $jobLog->job_category_id = 'revenue';
         $jobLog->save();
@@ -62,9 +69,9 @@ class CreateRevenueReport implements ShouldQueue
 
         if($result && $result['messages'])
         {
-            $value = 'Fout bij rapportage deelnemer ('.$this->distributionId.'): '.implode(" ",$result['messages']);
+            $value = 'Fout bij rapportage deelnemer '.$this->distributionFullName.' ('.$this->distributionId.'): '.implode(" ",$result['messages']);
         }else{
-            $value = 'Opbrengstverdeling deelnemer ('.$this->distributionId.') rapportage gemaakt.';
+            $value = 'Opbrengstverdeling deelnemer '.$this->distributionFullName.' ('.$this->distributionId.') rapportage gemaakt.';
         }
         $jobLog = new JobsLog();
         $jobLog->value = $value;

@@ -12,6 +12,7 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Jobs\JobsCategory;
 use App\Eco\Jobs\JobsLog;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\User\User;
 use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use Illuminate\Bus\Queueable;
@@ -27,24 +28,27 @@ class CreateParticipantReport implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $participantId;
+    private $participantFullName;
     private $subject;
     private $documentTemplateId;
     private $emailTemplateId;
     private $userId;
-    private $jobCategory;
 
     public function __construct($participantId, $subject, $documentTemplateId, $emailTemplateId, $userId)
     {
         $this->participantId = $participantId;
+        $participant = ParticipantProject::find($participantId);
+        $this->participantFullName = "****";
+        if($participant && $participant->contact){
+            $this->participantFullName = $participant->contact->full_name;
+        }
         $this->subject = $subject;
         $this->documentTemplateId = $documentTemplateId;
         $this->emailTemplateId = $emailTemplateId;
         $this->userId = $userId;
 
-        $this->jobCategory = JobsCategory::where('name', 'Deelnemer rapportage')->first();
-
         $jobLog = new JobsLog();
-        $jobLog->value = 'Start deelnemer ('.$participantId.') rapportage.';
+        $jobLog->value = 'Start deelnemer '.$this->participantFullName.' ('.$participantId.') rapportage.';
         $jobLog->user_id = $userId;
         $jobLog->job_category_id = 'participant';
         $jobLog->save();
@@ -65,9 +69,9 @@ class CreateParticipantReport implements ShouldQueue
 
         if($result && $result['messages'])
         {
-            $value = 'Fout bij rapportage deelnemer ('.$this->participantId.'): '.implode(" ",$result['messages']);
+            $value = 'Fout bij rapportage deelnemer '.$this->participantFullName.' ('.$this->participantId.'): '.implode(" ",$result['messages']);
         }else{
-            $value = 'Deelnemer ('.$this->participantId.') rapportage gemaakt.';
+            $value = 'Deelnemer '.$this->participantFullName.' ('.$this->participantId.') rapportage gemaakt.';
         }
         $jobLog = new JobsLog();
         $jobLog->value = $value;

@@ -38,12 +38,35 @@ class InvoiceController extends ApiController
     {
         $invoices = $requestQuery->get();
 
+        $onlyEmailInvoices = $requestQuery->getRequest()->onlyEmailInvoices == 'true';
+        $onlyPostInvoices = $requestQuery->getRequest()->onlyPostInvoices == 'true';
+
         $invoices->load(['order.contact']);
 
         foreach ($invoices as $invoice) {
             $orderController = new OrderController;
             $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
         }
+
+        if ($onlyEmailInvoices)
+        {
+            $invoices = $invoices->reject(function ($invoice) {
+                return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
+            });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+        }
+        elseif ($onlyPostInvoices)
+        {
+            $invoices = $invoices->reject(function ($invoice) {
+                return ( $invoice->emailToAddress !== 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
+            });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+        }
+        $totalIds = $invoices->pluck("id");
 
         $totalPrice = 0;
         foreach ($invoices as $invoice) {
@@ -54,6 +77,7 @@ class InvoiceController extends ApiController
             ->additional([
                 'meta' => [
                     'total' => $requestQuery->total(),
+                    'invoiceIdsTotal' => $totalIds,
                     'totalPrice' => $totalPrice,
                 ]
             ]);

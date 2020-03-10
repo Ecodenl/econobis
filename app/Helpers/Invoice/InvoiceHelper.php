@@ -165,6 +165,19 @@ class InvoiceHelper
 
     public static function send(Invoice $invoice, $preview = false)
     {
+        //todo cleanup later. Dit is even voor testen van resenden bij nota's met error-sending.
+        // met contact lastname "create-error-sending" forceren we een error-sending.
+        if(!$preview
+            && $invoice
+            && $invoice->order
+            && $invoice->order->contact
+            && $invoice->order->contact->person
+            && $invoice->order->contact->person->last_name == "create-error-sending"
+        )
+        {
+            throw new Exception("Nota met ID " . $invoice->id . " in error-sending gezet.");
+        }
+
         self::setMailConfigByInvoice($invoice);
 
         $orderController = new OrderController();
@@ -497,18 +510,6 @@ class InvoiceHelper
     }
     public static function invoiceSend(Invoice $invoice)
     {
-        //todo cleanup later. Dit is even voor testen van resenden bij nota's met error-sending.
-        // met contact lastname "create-error-sending" forceren we een error-sending.
-        if($invoice
-            && $invoice->order
-            && $invoice->order->contact
-            && $invoice->order->contact->person
-            && $invoice->order->contact->person->last_name == "create-error-sending"
-        )
-        {
-            throw new Exception("Nota met ID " . $invoice->id . " in error-sending gezet.");
-        }
-
         //Nota moet nog status is-sending hebben
         if($invoice->status_id === 'is-sending' || $invoice->status_id === 'is-resending')
         {

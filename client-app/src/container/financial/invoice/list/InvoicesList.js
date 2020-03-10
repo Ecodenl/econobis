@@ -10,12 +10,7 @@ import InvoicesListItem from './InvoicesListItem';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {
-    fetchInvoices,
-    clearInvoices,
-    setCheckedInvoiceAll,
-    previewSend,
-} from '../../../../actions/invoice/InvoicesActions';
+import { fetchInvoices, clearInvoices, previewSend } from '../../../../actions/invoice/InvoicesActions';
 import { blockUI, unblockUI } from '../../../../actions/general/BlockUIActions';
 import { clearFilterInvoices } from '../../../../actions/invoice/InvoicesFiltersActions';
 import { setInvoicesPagination } from '../../../../actions/invoice/InvoicesPaginationActions';
@@ -37,7 +32,8 @@ import InvoiceListDeleteItem from './InvoiceListDeleteItem';
 
 const initialState = {
     showSelectInvoicesToSend: false,
-    checkedAllCheckboxes: false,
+    checkedAll: false,
+    invoiceIds: [],
     emailInvoicesText: "Selecteer preview e-mail nota's",
     onlyEmailInvoices: false,
     onlyPostInvoices: false,
@@ -61,6 +57,7 @@ class InvoicesList extends Component {
         this.setFilter(props.filter);
 
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.toggleInvoiceCheck = this.toggleInvoiceCheck.bind(this);
     }
 
     componentDidMount() {
@@ -78,8 +75,6 @@ class InvoicesList extends Component {
             setTimeout(() => {
                 this.fetchInvoicesData();
             }, 100);
-
-            this.props.setCheckedInvoiceAll(false);
 
             this.setState({
                 ...initialState,
@@ -150,8 +145,10 @@ class InvoicesList extends Component {
             const sorts = this.props.invoicesSorts;
             const pagination = { limit: 50, offset: this.props.invoicesPagination.offset };
             const administrationId = this.props.administrationId;
+            const onlyEmailInvoices = this.state.onlyEmailInvoices;
+            const onlyPostInvoices = this.state.onlyPostInvoices;
 
-            this.props.fetchInvoices(filters, sorts, pagination, administrationId);
+            this.props.fetchInvoices(filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices);
         }, 100);
     };
 
@@ -174,52 +171,60 @@ class InvoicesList extends Component {
     };
 
     previewSend = paymentType => {
-        let sendInvoiceIds = [];
-
         this.setState({
             emailInvoicesText: "Preview e-mail nota's",
             onlyEmailInvoices: true,
         });
 
+        this.fetchInvoicesData();
+
         this.props.invoices.data.map(
-            invoice =>
-                invoice.checked === true &&
-                invoice.emailToAddress !== 'Geen e-mail bekend' &&
-                sendInvoiceIds.push(invoice.id)
+            invoice => invoice.checked === true && invoice.emailToAddress !== 'Geen e-mail bekend'
         );
 
-        if (sendInvoiceIds.length > 0) {
-            this.props.previewSend(sendInvoiceIds);
+        if (this.state.invoiceIds.length > 0) {
+            this.props.previewSend(this.state.invoiceIds);
             hashHistory.push(
                 `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         } else {
-            this.setState({ showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend });
+            this.toggleShowCheckboxList();
         }
     };
 
     previewSendPost = paymentType => {
-        let sendInvoiceIds = [];
-
         this.setState({
             postInvoicesText: "Preview post nota's",
             onlyPostInvoices: true,
         });
 
+        this.fetchInvoicesData();
+
         this.props.invoices.data.map(
-            invoice =>
-                invoice.checked === true &&
-                invoice.emailToAddress === 'Geen e-mail bekend' &&
-                sendInvoiceIds.push(invoice.id)
+            invoice => invoice.checked === true && invoice.emailToAddress === 'Geen e-mail bekend'
         );
 
-        if (sendInvoiceIds.length > 0) {
-            this.props.previewSend(sendInvoiceIds);
+        if (this.state.invoiceIds.length > 0) {
+            this.props.previewSend(this.state.invoiceIds);
             hashHistory.push(
                 `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
             );
         } else {
-            this.setState({ showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend });
+            this.toggleShowCheckboxList();
+        }
+    };
+
+    toggleShowCheckboxList = () => {
+        if (this.state.showSelectInvoicesToSend) {
+            this.setState({
+                showSelectInvoicesToSend: false,
+                invoiceIds: [],
+            });
+        } else {
+            this.setState({
+                showSelectInvoicesToSend: true,
+                invoiceIds: [],
+            });
         }
     };
 
@@ -300,8 +305,6 @@ class InvoicesList extends Component {
 
         this.fetchInvoicesData();
 
-        this.props.setCheckedInvoiceAll(false);
-
         this.setState({ ...initialState });
     };
 
@@ -329,13 +332,44 @@ class InvoicesList extends Component {
         }
     };
 
-    selectAllCheckboxes = () => {
-        this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
-        });
+    toggleCheckedAll = () => {
+        const isChecked = event.target.checked;
+        let invoiceIds = [];
 
-        this.props.setCheckedInvoiceAll(!this.state.checkedAllCheckboxes);
+        if (isChecked) {
+            invoiceIds = this.props.invoices.meta.invoiceIdsTotal;
+        }
+
+        this.setState({
+            invoiceIds: invoiceIds,
+            checkedAll: isChecked,
+        });
     };
+
+    toggleInvoiceCheck = event => {
+        const isChecked = event.target.checked;
+        const invoiceId = Number(event.target.name);
+
+        if (isChecked) {
+            this.setState(
+                {
+                    invoiceIds: [...this.state.invoiceIds, invoiceId],
+                },
+                this.checkAllInvoicesAreChecked
+            );
+        } else {
+            this.setState({
+                invoiceIds: this.state.invoiceIds.filter(item => item !== invoiceId),
+                checkedAll: false,
+            });
+        }
+    };
+
+    checkAllInvoicesAreChecked() {
+        this.setState({
+            checkedAll: this.state.invoiceIds.length === this.props.invoices.meta.invoiceIdsTotal.length,
+        });
+    }
 
     showDeleteItemModal = (id, number) => {
         this.setState({
@@ -381,6 +415,22 @@ class InvoicesList extends Component {
         if (this.props.filter == 'fout-verzenden-incasso' || this.props.filter == 'fout-verzenden-overboeken') {
             messageText =
                 'Een fout verzonden factuur is definitief aangemaakt in Econobis, maar kon niet worden verzonden omdat het contact een fout e-mailadres heeft of omdat de mailbox niet werkte. Corrigeer dit en e-mail de factuur opnieuw';
+        }
+
+        let numberSelectedNumberTotal = 0;
+
+        if (this.state.invoiceIds) {
+            if (
+                this.props &&
+                this.props.invoices &&
+                this.props.invoices.meta &&
+                this.props.invoices.meta.invoiceIdsTotal
+            ) {
+                numberSelectedNumberTotal =
+                    this.state.invoiceIds.length + '/' + this.props.invoices.meta.invoiceIdsTotal.length;
+            } else {
+                numberSelectedNumberTotal = this.state.invoiceIds.length;
+            }
         }
 
         return (
@@ -496,6 +546,14 @@ class InvoicesList extends Component {
                 <div className="col-md-12">
                     {messageText ? <div className="alert alert-danger">{messageText}</div> : null}
                 </div>
+                {this.state.showSelectInvoicesToSend ? (
+                    <div className="col-md-12">
+                        {numberSelectedNumberTotal ? (
+                            <div className="alert alert-success">Geselecteerde nota's: {numberSelectedNumberTotal}</div>
+                        ) : null}
+                    </div>
+                ) : null}
+
                 <form onKeyUp={this.handleKeyUp} className={'margin-10-top'}>
                     <DataTable>
                         <DataTableHead>
@@ -506,7 +564,7 @@ class InvoicesList extends Component {
                             <InvoicesListFilter
                                 showSelectInvoicesToSend={this.state.showSelectInvoicesToSend}
                                 onSubmitFilter={this.onSubmitFilter}
-                                selectAllCheckboxes={this.selectAllCheckboxes}
+                                toggleCheckedAll={this.toggleCheckedAll}
                             />
                         </DataTableHead>
                         <DataTableBody>
@@ -519,6 +577,9 @@ class InvoicesList extends Component {
                                     return (
                                         <InvoicesListItem
                                             showSelectInvoicesToSend={this.state.showSelectInvoicesToSend}
+                                            checkedAll={this.props.checkedAll}
+                                            toggleInvoiceCheck={this.toggleInvoiceCheck}
+                                            invoiceIds={this.state.invoiceIds}
                                             key={invoice.id}
                                             {...invoice}
                                             showDeleteItemModal={this.showDeleteItemModal}
@@ -575,7 +636,6 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
             previewSend,
-            setCheckedInvoiceAll,
             fetchInvoices,
             clearInvoices,
             clearFilterInvoices,

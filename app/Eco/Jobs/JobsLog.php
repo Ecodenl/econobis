@@ -37,4 +37,11 @@ class JobsLog extends Model
 
         return JobCategory::get($this->job_category_id);
     }
+
+    public function getJobCategoryNameAttribute()
+    {
+        if (!$this->job_category_id) return '';
+
+        return JobCategory::get($this->job_category_id)->name;
+    }
 }

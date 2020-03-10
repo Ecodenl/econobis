@@ -13,14 +13,14 @@ import moment from 'moment';
 import ProcessesListFilter from './Filter';
 import useKeyPress from '../../../helpers/useKeyPress';
 
-const initialFilter = { createdAt: moment().format('YYYY-MM-DD'), value: '', jobCategoryId: '' };
+const initialFilter = { createdAt: moment().format('YYYY-MM-DD'), value: '', jobCategoryId: null };
 
 function ProcessesListApp() {
     const [jobs, setJobs] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
     const [filter, setFilter] = useState(initialFilter);
-    const [sort, setSort] = useState(['-createdAt']);
+    const [sort, setSort] = useState(['-createdAt', '-id']);
     const [pagination, setPagination] = useState({ offset: 0, limit: 20 });
     const pressedEnter = useKeyPress('Enter');
 
@@ -29,7 +29,7 @@ function ProcessesListApp() {
         function() {
             fetchJobslogs();
         },
-        [(pagination.offset, sort, filter.createdAt)]
+        [pagination.offset, sort, filter.createdAt, filter.jobCategoryId]
     );
 
     // If pressed enter then reload data
@@ -63,11 +63,14 @@ function ProcessesListApp() {
     }
 
     function handleChangeSort(column, value) {
+        let originalSort = sort;
+        if (originalSort.length === 3) originalSort.pop();
+
         // Set new sort record in front of array. Max 3 items in array. Set last added 2 items in array which are 0 and 1
         if (value === 'DESC') {
-            setSort([`-${column}`, sort[0], sort[1]]);
+            setSort([`-${column}`, ...originalSort]);
         } else {
-            setSort([column, sort[0], sort[1]]);
+            setSort([column, ...originalSort]);
         }
     }
 
@@ -91,7 +94,7 @@ function ProcessesListApp() {
         }
 
         if (filter.jobCategoryId) {
-            formattedFilter.and.push({ field: 'jobCategoryId', operator: 'like', data: `%${filter.jobCategoryId}%` });
+            formattedFilter.and.push({ field: 'jobCategoryId', data: filter.jobCategoryId });
         }
 
         return formattedFilter;
@@ -111,16 +114,16 @@ function ProcessesListApp() {
                                 sortColumn={'createdAt'}
                             />
                             <DataTableHeadTitleAndSort
-                                title={'Melding'}
-                                width={'60%'}
-                                setSorts={handleChangeSort}
-                                sortColumn={'value'}
-                            />
-                            <DataTableHeadTitleAndSort
                                 title={'Categorie'}
                                 width={'20%'}
                                 setSorts={handleChangeSort}
                                 sortColumn={'jobCategoryId'}
+                            />
+                            <DataTableHeadTitleAndSort
+                                title={'Melding'}
+                                width={'60%'}
+                                setSorts={handleChangeSort}
+                                sortColumn={'value'}
                             />
                         </tr>
                         <ProcessesListFilter filter={filter} handleChangeFilter={handleChangeFilter} />

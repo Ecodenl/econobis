@@ -14,7 +14,7 @@ class CreateJobsCategoryColumnInJobsLogTable extends Migration
     public function up()
     {
         Schema::table('jobs_log', function (Blueprint $table) {
-            $table->enum('job_category_id', ['Deelnemer rapportage', 'Opbrengstverdeling rapportage'])->nullable();
+            $table->string('job_category_id')->nullable();
         });
     }
 

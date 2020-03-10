@@ -18,6 +18,9 @@ class JobsLogJoryResource extends JoryResource
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
         $this->field('job_category_id')->filterable()->sortable();
+
+        // Custom attribute
+        $this->field('job_category_name');
     }
 
     protected function configureForPortal(): void

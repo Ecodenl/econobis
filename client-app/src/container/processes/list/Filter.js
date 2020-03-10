@@ -1,6 +1,7 @@
 import React from 'react';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 import moment from 'moment';
+import jobCategories from '../../../data/jobCategories';
 
 function ProcessesListFilter({ filter, handleChangeFilter }) {
     return (
@@ -12,19 +13,27 @@ function ProcessesListFilter({ filter, handleChangeFilter }) {
                 }
             />
             <th>
-                <input
-                    type="text"
+                <select
                     className="form-control input-sm"
-                    value={filter.value}
-                    onChange={e => handleChangeFilter('value', e.target.value)}
-                />
+                    value={filter.jobCategoryId}
+                    onChange={e => handleChangeFilter('jobCategoryId', e.target.value)}
+                >
+                    <option />
+                    {jobCategories.map(option => {
+                        return (
+                            <option key={option.code} value={option.code}>
+                                {option.name}
+                            </option>
+                        );
+                    })}
+                </select>
             </th>
             <th>
                 <input
                     type="text"
                     className="form-control input-sm"
-                    value={filter.jobCategoryId}
-                    onChange={e => handleChangeFilter('jobCategoryId', e.target.value)}
+                    value={filter.value}
+                    onChange={e => handleChangeFilter('value', e.target.value)}
                 />
             </th>
         </tr>

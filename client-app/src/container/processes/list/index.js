@@ -104,53 +104,57 @@ function ProcessesListApp() {
         <Panel>
             <PanelBody>
                 <ProccessesListToolbar countTotal={meta.total} reloadJobslogs={() => setFilter(initialFilter)} />
-                <DataTable>
-                    <DataTableHead>
-                        <tr className="thead-title">
-                            <DataTableHeadTitleAndSort
-                                title={'Datum'}
-                                width={'20%'}
-                                setSorts={handleChangeSort}
-                                sortColumn={'createdAt'}
-                            />
-                            <DataTableHeadTitleAndSort
-                                title={'Categorie'}
-                                width={'20%'}
-                                setSorts={handleChangeSort}
-                                sortColumn={'jobCategoryId'}
-                            />
-                            <DataTableHeadTitleAndSort
-                                title={'Melding'}
-                                width={'60%'}
-                                setSorts={handleChangeSort}
-                                sortColumn={'value'}
-                            />
-                        </tr>
-                        <ProcessesListFilter filter={filter} handleChangeFilter={handleChangeFilter} />
-                    </DataTableHead>
 
-                    <DataTableBody>
-                        {isLoading ? (
-                            <tr>
-                                <td colSpan={3}>Bezig met gegevens laden</td>
+                <div className="margin-10-top">
+                    <DataTable>
+                        <DataTableHead>
+                            <tr className="thead-title">
+                                <DataTableHeadTitleAndSort
+                                    title={'Datum'}
+                                    width={'20%'}
+                                    setSorts={handleChangeSort}
+                                    sortColumn={'createdAt'}
+                                />
+                                <DataTableHeadTitleAndSort
+                                    title={'Categorie'}
+                                    width={'20%'}
+                                    setSorts={handleChangeSort}
+                                    sortColumn={'jobCategoryId'}
+                                />
+                                <DataTableHeadTitleAndSort
+                                    title={'Melding'}
+                                    width={'60%'}
+                                    setSorts={handleChangeSort}
+                                    sortColumn={'value'}
+                                />
                             </tr>
-                        ) : jobs.length > 0 ? (
-                            jobs.map(job => {
-                                return <ProcessesListItem key={job.id} {...job} />;
-                            })
-                        ) : (
-                            <tr>
-                                <td colSpan={3}>Geen resultaten!</td>
-                            </tr>
-                        )}
-                    </DataTableBody>
-                </DataTable>
-                <div className="col-md-6 col-md-offset-3">
-                    <DataTablePagination
-                        onPageChangeAction={handlePageClick}
-                        totalRecords={meta.total}
-                        initialPage={0}
-                    />
+                            <ProcessesListFilter filter={filter} handleChangeFilter={handleChangeFilter} />
+                        </DataTableHead>
+
+                        <DataTableBody>
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={3}>Bezig met gegevens laden</td>
+                                </tr>
+                            ) : jobs.length > 0 ? (
+                                jobs.map(job => {
+                                    return <ProcessesListItem key={job.id} {...job} />;
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={3}>Geen resultaten!</td>
+                                </tr>
+                            )}
+                        </DataTableBody>
+                    </DataTable>
+
+                    <div className="col-md-6 col-md-offset-3">
+                        <DataTablePagination
+                            onPageChangeAction={handlePageClick}
+                            totalRecords={meta.total}
+                            initialPage={0}
+                        />
+                    </div>
                 </div>
             </PanelBody>
         </Panel>

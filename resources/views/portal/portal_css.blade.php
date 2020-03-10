@@ -16,7 +16,14 @@ background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
 color: #333;
-min-height: 100vh;
+height: 100%;
+width: 100vw;
+position: fixed;
+left: 0;
+right: 0;
+top: 0;
+bottom: 0;
+overflow: auto;
 }
 
 .authorization-button.authorization-button {
@@ -37,11 +44,28 @@ outline: none;
 opacity: 1;
 }
 
+.fixed-height {
+height: 100%;
+}
+
 .authorization-input {
 border: 1px solid hsla(0, 0%, 100%, 0.5);
 border-radius: 7px;
 background-color: transparent;
 color: #fff;
+}
+
+#name-new-acount[type="text"]{
+text-align: left;
+}
+#first_name-new-acount[type="text"]{
+text-align: left;
+}
+#last_name-new-acount[type="text"]{
+text-align: left;
+}
+#email-new-acount[type="text"]{
+text-align: left;
 }
 
 .authorization-link {
@@ -497,13 +521,14 @@ left: 50%;
 top: auto;
 right: auto;
 bottom: -60px;
-width: 120px;
+min-width: 120px;
 height: 120px;
 border: 4px solid #fff;
 border-radius: 50%;
 -webkit-transform: translate(-50%, 0px);
 -ms-transform: translate(-50%, 0px);
 transform: translate(-50%, 0px);
+padding: 10px 20px;
 }
 .heading-content {
 margin-bottom: 0px;
@@ -551,7 +576,7 @@ font-size: .9em;
 position: absolute;
 left: 50%;
 bottom: -60px;
-width: 120px;
+min-width: 120px;
 height: 120px;
 border: 4px solid white;
 background-color: var(--main-primary-rgba);
@@ -571,12 +596,15 @@ display: flex;
 text-wrap: normal;
 }
 
+.alert-wrapper{
+margin-top: 10px;
+}
 
 .profile-pic .profile-title {
 color: white;
 font-weight: bold;
-width: 110px;
 white-space: nowrap;
+margin: 20px;
 }
 
 .profile-pic .profile-sub-title {
@@ -676,7 +704,7 @@ border-radius: 7px;
 background-color: transparent;
 color: white;
 font-weight: 500;
-text-align: center;
+text-align: left;
 }
 
 .text-input.content {
@@ -691,7 +719,7 @@ text-align: left;
 background-color: transparent !important;
 border: 1px solid #fff !important;
 border-radius: 7px !important;
-text-align: center;
+text-align: left;
 color: white;
 }
 .select-field-transparent option {

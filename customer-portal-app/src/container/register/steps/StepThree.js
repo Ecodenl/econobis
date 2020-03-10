@@ -5,6 +5,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Col from 'react-bootstrap/Col';
+import { Alert } from 'react-bootstrap';
+import { isEmpty } from 'lodash';
 
 function StepThree({ project, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -119,6 +121,18 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                                     </ButtonGroup>
                                 </Col>
                             </Row>
+                            {!isEmpty(errors) ? (
+                                <Row>
+                                    <Col>
+                                        <div className="alert-wrapper">
+                                            <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                                Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
+                                                volgende stap!
+                                            </Alert>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            ) : null}
                         </Form>
                     </>
                 )}

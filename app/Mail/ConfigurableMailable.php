@@ -8,6 +8,7 @@ use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Transport\MailgunTransport;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Swift_Mailer;
 use Swift_SmtpTransport;
 use GuzzleHttp\Client as HttpClient;

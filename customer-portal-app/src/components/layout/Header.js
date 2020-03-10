@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import { FaUser } from 'react-icons/fa';
 import Dropdown from 'react-bootstrap/Dropdown';
+import ReactHtmlParser from 'react-html-parser';
 
 function Header({ location, history }) {
     const [menuOpen, updateStateMenu] = useState(false);
@@ -34,6 +35,21 @@ function Header({ location, history }) {
     // See https://github.com/negomi/react-burger-menu#custom-icons
     function toggleMenu() {
         updateStateMenu(!menuOpen);
+    }
+
+    function formatProfilePicName(fullName) {
+        if (fullName) {
+            if (fullName.search(',') < 0) {
+                return fullName.replace(/\s(?=\S*$)/, '<br>');
+            } else {
+                const firstName = fullName.slice(fullName.search(',') + 2);
+                let lastName = fullName.slice(0, fullName.search(','));
+                lastName = lastName.replace(/\s(?=\S*$)/, '<br>');
+                return firstName + '<br>' + lastName;
+            }
+        } else {
+            return '?';
+        }
     }
 
     /**
@@ -72,7 +88,9 @@ function Header({ location, history }) {
                 <div className="profile-pic">
                     <PortalUserConsumer>
                         {({ currentSelectedContact }) => (
-                            <span className="profile-title">{currentSelectedContact.fullName}</span>
+                            <p className="profile-title">
+                                {ReactHtmlParser(formatProfilePicName(currentSelectedContact.fullName))}
+                            </p>
                         )}
                     </PortalUserConsumer>
                 </div>

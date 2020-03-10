@@ -83,7 +83,7 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['primaryAddress'])) {
-                    $this->updateAddress($contact, $request['primaryAddress'], 'invoice');
+                    $this->updateAddress($contact, $request['primaryAddress'], 'visit');
                 }
                 if (isset($request['primaryContactEnergySupplier']) && $request['primaryContactEnergySupplier'] != null ) {
                     $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);
@@ -260,24 +260,26 @@ class ContactController extends ApiController
                 }
 
             } else {
-                $phoneNumberPrimaryData['typeId'] = PhoneNumberType::HOME;
-                $phoneNumberPrimaryData['primary'] = true;
+                if ( isset($phoneNumberPrimaryData['number']) && !empty($phoneNumberPrimaryData['number']) ) {
+                    $phoneNumberPrimaryData['typeId'] = PhoneNumberType::HOME;
+                    $phoneNumberPrimaryData['primary'] = true;
 
-                Validator::make($phoneNumberPrimaryData, [
-                    'typeId' => new EnumExists(PhoneNumberType::class),
-                    'number' => '',
-                    'primary' => 'boolean',
-                ]);
+                    Validator::make($phoneNumberPrimaryData, [
+                        'typeId' => new EnumExists(PhoneNumberType::class),
+                        'number' => '',
+                        'primary' => 'boolean',
+                    ]);
 
-                $phoneNumberPrimaryData = $this->sanitizeData($phoneNumberPrimaryData, [
-                    'typeId' => 'nullable',
-                    'primary' => 'boolean',
-                ]);
+                    $phoneNumberPrimaryData = $this->sanitizeData($phoneNumberPrimaryData, [
+                        'typeId' => 'nullable',
+                        'primary' => 'boolean',
+                    ]);
 
-                $phoneNumberPrimary = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberPrimaryData));
-                $phoneNumberPrimary->contact_id = $contact->id;
+                    $phoneNumberPrimary = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberPrimaryData));
+                    $phoneNumberPrimary->contact_id = $contact->id;
+                    $phoneNumberPrimary->save();
+                }
             }
-            $phoneNumberPrimary->save();
         }
 
     }
@@ -300,23 +302,25 @@ class ContactController extends ApiController
                 }
 
             } else {
-                $phoneNumberTwoData['typeId'] = PhoneNumberType::HOME;
-                $phoneNumberTwoData['primary'] = false;
+                if ( isset($phoneNumberTwoData['number']) && !empty($phoneNumberTwoData['number']) ) {
+                    $phoneNumberTwoData['typeId'] = PhoneNumberType::HOME;
+                    $phoneNumberTwoData['primary'] = false;
 
-                Validator::make($phoneNumberTwoData, [
-                    'typeId' => new EnumExists(PhoneNumberType::class),
-                    'number' => '',
-                    'primary' => 'boolean',
-                ]);
+                    Validator::make($phoneNumberTwoData, [
+                        'typeId' => new EnumExists(PhoneNumberType::class),
+                        'number' => '',
+                        'primary' => 'boolean',
+                    ]);
 
-                $phoneNumberTwoData = $this->sanitizeData($phoneNumberTwoData, [
-                    'typeId' => 'nullable',
-                    'primary' => 'boolean',
-                ]);
+                    $phoneNumberTwoData = $this->sanitizeData($phoneNumberTwoData, [
+                        'typeId' => 'nullable',
+                        'primary' => 'boolean',
+                    ]);
 
-                $phoneNumberTwo = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberTwoData));
-                $phoneNumberTwo->contact_id = $contact->id;
-                $phoneNumberTwo->save();
+                    $phoneNumberTwo = new PhoneNumber($this->arrayKeysToSnakeCase($phoneNumberTwoData));
+                    $phoneNumberTwo->contact_id = $contact->id;
+                    $phoneNumberTwo->save();
+                }
             }
         }
 
@@ -348,7 +352,9 @@ class ContactController extends ApiController
         }else{
             if(!empty($addressData['street']) && !empty($addressData['postalCode']) && !empty($addressData['city'])) {
                 $addressData['typeId'] = $addressType;
-                $addressData['primary'] = true;
+                if ($addressType == 'visit') {
+                    $addressData['primary'] = true;
+                }
 
                 Validator::make($addressData, [
                     'typeId' => new EnumExists(AddressType::class),

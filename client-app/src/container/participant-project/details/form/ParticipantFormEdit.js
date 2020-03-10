@@ -327,7 +327,7 @@ class ParticipantFormEdit extends Component {
                 </div>
                 <div className="row">
                     <ViewText
-                        label={'Eerste ingangsdatum Deelname'}
+                        label={'Eerste ingangsdatum deelname'}
                         id={'dateRegister'}
                         value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
                         className={'col-sm-6 form-group'}

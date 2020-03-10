@@ -125,9 +125,9 @@ class ParticipantMutationController extends ApiController
         $melding = null;
         if($dateRegisterOld != $dateRegisterNew )
         {
-            $melding[] = "De eerste ingangsdatum is gewijzigd.";
-            $melding[] = "Oorspronkelijke eerste ingangsdatum was: " . Carbon::parse($dateRegisterOld)->format('d-m-Y') . ".";
-            $melding[] = "Nieuwe eerste ingangsdatum is geworden: " . Carbon::parse($dateRegisterNew)->format('d-m-Y') . ".";
+            $melding[] = "De eerste ingangsdatum deelname is gewijzigd.";
+            $melding[] = "Oorspronkelijke eerste ingangsdatum deelname was: " . Carbon::parse($dateRegisterOld)->format('d-m-Y') . ".";
+            $melding[] = "Nieuwe eerste ingangsdatum deelname is geworden: " . Carbon::parse($dateRegisterNew)->format('d-m-Y') . ".";
         }
 
         return $melding;

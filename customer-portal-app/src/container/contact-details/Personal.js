@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -8,14 +8,24 @@ import Col from 'react-bootstrap/Col';
 import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaPersonal from './../../helpers/ValidationSchemaPersonal';
+import { isEmpty } from 'lodash';
+import { Alert } from 'react-bootstrap';
 
-function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitContactValues }) {
-    const [editForm, setEditForm] = useState(false);
-
-    const validationSchema = initialContact.isParticipant
+function ContactDetailsPersonal({
+    portalSettings,
+    initialContact,
+    handleSubmitContactValues,
+    editButtonGroup,
+    editForm,
+    setEditForm,
+}) {
+    const validationSchema = initialContact.isParticipantPcrProject
+        ? ValidationSchemaPersonal.validationSchemaBasic
+              .concat(ValidationSchemaPersonal.validationSchemaAdditional)
+              .concat(ValidationSchemaPersonal.validationSchemaPcrAdditional)
+        : initialContact.isParticipant
         ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
         : ValidationSchemaPersonal.validationSchemaBasic;
-
     return (
         <div>
             {editForm ? (
@@ -28,7 +38,6 @@ function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitCo
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
-                        // console.log(errors);
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit
@@ -69,6 +78,17 @@ function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitCo
                                         </ButtonGroup>
                                     </Col>
                                 </Row>
+                                {!isEmpty(errors) ? (
+                                    <Row>
+                                        <Col>
+                                            <div className="alert-wrapper">
+                                                <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                                    Niet alle verplichten velden zijn (juist) ingevuld!
+                                                </Alert>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                ) : null}
                             </Form>
                         );
                     }}
@@ -77,19 +97,7 @@ function ContactDetailsPersonal({ portalSettings, initialContact, handleSubmitCo
                 <>
                     <DefaultContactPersonalView portalSettings={portalSettings} initialContact={initialContact} />
                     <Row>
-                        <Col>
-                            <ButtonGroup aria-label="Steps" className="float-right">
-                                <Button
-                                    className={'w-button'}
-                                    size="sm"
-                                    onClick={function() {
-                                        setEditForm(true);
-                                    }}
-                                >
-                                    Wijzig
-                                </Button>
-                            </ButtonGroup>
-                        </Col>
+                        <Col>{editButtonGroup}</Col>
                     </Row>
                 </>
             )}

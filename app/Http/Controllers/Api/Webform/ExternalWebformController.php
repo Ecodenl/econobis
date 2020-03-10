@@ -89,6 +89,8 @@ class ExternalWebformController extends Controller
      */
     protected $webform = null;
 
+    private $contactActie = null;
+
     public function post(string $apiKey, Request $request)
     {
         try {
@@ -158,7 +160,7 @@ class ExternalWebformController extends Controller
 
         $data = $this->getDataFromRequest($request);
 
-        $contact = $this->updateOrCreateContact($data['contact']);
+        $contact = $this->updateOrCreateContact($data['contact'], $webform);
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
         if ($this->address) {
             $intake = $this->addIntakeToAddress($this->address, $data['intake']);
@@ -291,32 +293,72 @@ class ExternalWebformController extends Controller
         return $data;
     }
 
-    protected function updateOrCreateContact(array $data)
+    protected function updateOrCreateContact(array $data, Webform $webform)
     {
-        $contact = $this->getContactByNameAndEmail($data);
+        $contact = $this->getContactByAddressAndEmail($data);
+        $this->log('Actie: ' . $this->contactActie);
+
+//        $contact = $this->getContactByNameAndEmail($data);
 
         if ($contact) {
-            // Person of organisatie is gevonden obv naam en email, Eventueel adres en telefoonnummer toevoegen
-            $this->addAddressToContact($data, $contact);
-            $this->addPhoneNumberToContact($data, $contact);
-            $this->addContactToGroup($data, $contact);
-        }
-
-        if (!$contact) {
-            // Contact niet gevonden op basis van naam en email, kijken of er een match op basis van naam en adres is
-            $contact = $this->getContactByNameAndAddress($data);
-
-            if ($contact) {
-                // Person of organisatie is gevonden obv naam en adres, Eventueel email en telefoonnummer toevoegen
-                $this->addEmailToContact($data, $contact);
-                $this->addPhoneNumberToContact($data, $contact);
-                $this->addContactToGroup($data, $contact);
+            // Person of organisatie is gevonden, uitvoeren acties
+// contactActie = "GEEN"
+// contactActie = "NAT" -> Nieuw adres + taak
+// contactActie = "NET" -> Nieuw emailadres + taak
+// contactActie = "CCT" -> Controle contact taak
+            switch($this->contactActie){
+                case 'NAT' :
+                    $this->addAddressToContact($data, $contact);
+                    $this->addPhoneNumberToContact($data, $contact);
+                    $this->addContactToGroup($data, $contact);
+                    $note = "Webformulier " . $webform->name . ".\n\n";
+                    $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
+                    $note .= "Controleer contactgegevens\n";
+                    $this->addTaskCheckContact($contact, $webform, $note);
+                    break;
+                case 'NET' :
+                    $this->addEmailToContact($data, $contact);
+                    $this->addPhoneNumberToContact($data, $contact);
+                    $this->addContactToGroup($data, $contact);
+                    $note = "Webformulier " . $webform->name . ".\n\n";
+                    $note .= "Nieuw e-mailadres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
+                    $note .= "Controleer contactgegevens\n";
+                    $this->addTaskCheckContact($contact, $webform, $note);
+                    break;
+                case 'CCT' :
+                    $note = "Webformulier " . $webform->name . ".\n\n";
+                    $note .= "Gegevens contact " . $contact->full_name . " (".$contact->number.") gevonden op basis van naam en/of e-mail, zonder match op NAW.\n";
+                    $note .= "Controleer contactgegevens\n";
+                    $this->addTaskCheckContact($contact, $webform, $note);
+                    break;
             }
         }
 
+//        if (!$contact) {
+//            // Contact niet gevonden op basis van naam en email, kijken of er een match op basis van naam en adres is
+//            $contact = $this->getContactByNameAndAddress($data);
+//
+//            if ($contact) {
+//                // Person of organisatie is gevonden obv naam en adres, Eventueel email en telefoonnummer toevoegen
+//                $this->addEmailToContact($data, $contact);
+//                $this->addPhoneNumberToContact($data, $contact);
+//                $this->addContactToGroup($data, $contact);
+//            }
+//        }
+
+// contactActie = "NC"  -> Nieuw contact
+// contactActie = "NCT" -> Nieuw contact + taak
         if (!$contact) {
             $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
             $contact = $this->addContact($data);
+            switch($this->contactActie){
+                case 'NCT' :
+                    $note = "Webformulier " . $webform->name . ".\n\n";
+                    $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";
+                    $note .= "Controleer contactgegevens\n";
+                    $this->addTaskCheckContact($contact, $webform, $note);
+                    break;
+            }
         }
 
 
@@ -326,6 +368,112 @@ class ExternalWebformController extends Controller
     protected function error(string $string, int $statusCode = 422)
     {
         throw new WebformException($string, $statusCode);
+    }
+
+    protected function getContactByAddressAndEmail(array $data)
+    {
+        $this->contactActie = "???";
+        // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
+        if($data['address_postal_code'] || $data['address_number'] || $data['address_addition']) {
+            $contactAddressQuery = contact::whereHas('addresses', function ($query) use ($data) {
+                $query->where('postal_code', $data['address_postal_code'])
+                    ->where('number', $data['address_number'])
+                    ->where('addition', $data['address_addition']);
+            });
+            // Niet gevonden op adres, check op email
+            if ($contactAddressQuery->count() == 0) {
+                $contactEmailQuery = contact::whereHas('emailAddresses', function ($query) use ($data) {
+                    $query->where('email', $data['email_address']);
+                });
+                // Gevonden op emailcontact. Adres bijwerken op 1e contact + taak.
+                if ($contactEmailQuery->count() > 0) {
+                    $this->log($contactEmailQuery->count() . ' contacten gevonden met emailadres '
+                        . $data['email_address']);
+                    // add address + taak
+                    $this->contactActie = "NAT";
+                    $this->log('Nieuw adres maken + taak ');
+                    return $contactEmailQuery->first();
+                } else {
+                    // Niet gevonden dan aanmaken Nieuw contact
+                    $this->log('Contact niet gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) of emailadres');
+                    // add contact
+                    $this->contactActie = "NC";
+                    $this->log('Nieuw contact maken ');
+                    return null;
+                }
+                // Gevonden op adres, check op email
+            } else {
+                $this->log($contactAddressQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
+                    . ', '
+                    . $data['address_number'] . $data['address_addition'] );
+                $contactEmailQuery = $contactAddressQuery->whereHas('emailAddresses', function ($query) use ($data) {
+                    $query->where('email', $data['email_address']);
+                });
+                // Niet gevonden op email, check op 1e letter voornaam + achternaam (of naam in geval van organisatie)
+                if ($contactEmailQuery->count() == 0) {
+                    $contactNameQuery = $contactAddressQuery->whereHas('person', function ($query) use ($data) {
+                        $query->where('first_name', 'like', substr($data['first_name'], 0, 1))
+                            ->where('last_name', $data['last_name']);
+                    });
+//                        ->orWhereHas('organisation', function ($query) use ($data) {
+//                            $query->where('name', 'like', $data['organisation_name']);
+//                        });
+                    // Gevonden op adres maar niet op emailcontact. Wel op naam (voorletter + achternaam).
+                    if ($contactNameQuery->count() > 0) {
+                        $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
+                            . ', '
+                            . $data['address_number'] . $data['address_addition'] . ' en naam '
+                            . substr($data['first_name'], 0, 1) . ' ' . $data['last_name']);
+                        // add address + taak
+                        $this->log('Nieuw emailadres toevoegen + taak ');
+                        $this->contactActie = "NET";
+                        return $contactNameQuery->first();
+                    } else {
+                        // Gevonden op adres maar niet op email of naam.
+                        $this->log('Contact niet gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) of emailadres');
+                        // add contact + taak
+                        $this->contactActie = "NCT";
+                        $this->log('Nieuw contact maken + taak');
+                        return null;
+                    }
+                    // Ook gevonden op email, controle op voornaam en achternaam
+                } else {
+                    $contactNameQuery = $contactEmailQuery->whereHas('person', function ($query) use ($data) {
+                        $query->where('first_name', $data['first_name'])
+                            ->where('last_name', $data['last_name']);
+                    });
+//                        ->orWhereHas('organisation', function ($query) use ($data) {
+//                            $query->where('name', 'like', $data['organisation_name']);
+//                        });
+                    // Gevonden op adres, emailcontact en naam (voornaam + achternaam).
+                    if ($contactNameQuery->count() > 0) {
+                        $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
+                            . ', '
+                            . $data['address_number'] . $data['address_addition'] . 'en emailadres ' . $data['email_address'] .
+                            ' en naam ' . $data['first_name'] . ' ' . $data['last_name']);
+                        // geen actie inzake contact, adres en/of email
+                        $this->contactActie = "GEEN";
+                        return $contactNameQuery->first();
+                    } else {
+                        // Gevonden op adres maar niet op email of naam.
+                        $this->log('Contact niet gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) of emailadres');
+                        // add contact + taak
+                        $this->contactActie = "NC";
+                        $this->log('Nieuw contact maken + taak');
+                        return null;
+                    }
+                    return null;
+
+                }
+
+            }
+            // Geen adres opgegeven, check op naam en email
+        }else{
+            // taak controle
+            $this->contactActie = "CCT";
+            return $this->getContactByNameAndEmail($data);
+        }
+        return null;
     }
 
     protected function getContactByNameAndEmail(array $data)
@@ -699,19 +847,13 @@ class ExternalWebformController extends Controller
             $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
             $intake->reasons()->sync($reasons->pluck('id'));
-//            $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
-            $reasonsImploded = implode(', ', $reasons->name);
-            $this->log("Intake gekoppeld aan motivaties: " . $reasonsImploded);
+            $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
 
             $intake->sources()->sync($sources->pluck('id'));
-//            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $sources->implode('name', ', '));
-            $sourcesImploded = implode(', ', $sources->name);
-            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $sourcesImploded);
+            $this->log("Intake gekoppeld aan aanmeldingsbronnen: " . $sources->implode('name', ', '));
 
             $intake->measuresRequested()->sync($measureCategories->pluck('id'));
-//            $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
-            $measureCategoriesImploded = implode(', ', $measureCategories->name);
-            $this->log("Intake gekoppeld aan interesses: " . $measureCategoriesImploded);
+            $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
 
             return $intake;
         } else {
@@ -994,6 +1136,31 @@ class ExternalWebformController extends Controller
                 $this->log('Eigenschap ' . $taskProperty->name . ' met waarde ' . $data[$taskProperty->code] . ' aan taak toegevoegd.');
             }
         }
+    }
+
+    protected function addTaskCheckContact(Contact $contact, Webform $webform, $note)
+    {
+        $taskTypeId = 6;
+        $taskType = TaskType::find($taskTypeId);
+        $this->log('Taak Controle contact met taak_type_id (default)' . $taskTypeId . ' ' . $taskType->name . ' aangemaakt.');
+
+        $task = Task::create([
+            'note' => $note,
+            'type_id' => $taskTypeId,
+            'contact_id' => $contact->id,
+            'contact_group_id' => null,
+            'finished' => false,
+            'date_planned_start' => (new Carbon())->startOfDay(),
+            'date_planned_finish' => null,
+            'responsible_user_id' => $webform->responsible_user_id,
+            'responsible_team_id' => $webform->responsible_team_id,
+            'intake_id' => null,
+            'project_id' => null,
+            'participation_project_id' => null,
+            'order_id' => null,
+        ]);
+
+        $this->log('Taak met id ' . $task->id . ' aangemaakt.');
     }
 
     protected function addOrderToContact(Contact $contact, array $data)

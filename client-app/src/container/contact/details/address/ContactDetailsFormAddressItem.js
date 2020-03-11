@@ -25,6 +25,7 @@ class ContactDetailFormAddressItem extends Component {
                 typeId: false,
                 postalCode: false,
                 number: false,
+                countryId: false,
             },
         };
     }
@@ -100,7 +101,7 @@ class ContactDetailFormAddressItem extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (!validator.isPostalCode(address.postalCode, 'any')) {
+        if (validator.isEmpty(address.postalCode + '')) {
             errors.postalCode = true;
             hasErrors = true;
         }
@@ -113,6 +114,16 @@ class ContactDetailFormAddressItem extends Component {
         if (validator.isEmpty(address.typeId + '')) {
             errors.typeId = true;
             hasErrors = true;
+        }
+
+        if (validator.isEmpty(address.countryId + '')) {
+            errors.countryId = true;
+            hasErrors = true;
+        } else {
+            if (address.countryId == 'NL' && !validator.isPostalCode(address.postalCode, 'NL')) {
+                errors.postalCode = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -148,6 +159,7 @@ class ContactDetailFormAddressItem extends Component {
                         typeIdError={this.state.errors.typeId}
                         postalCodeError={this.state.errors.postalCode}
                         numberError={this.state.errors.number}
+                        countryIdError={this.state.errors.countryId}
                         cancelEdit={this.cancelEdit}
                     />
                 )}

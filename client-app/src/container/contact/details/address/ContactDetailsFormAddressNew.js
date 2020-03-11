@@ -31,6 +31,7 @@ class ContactDetailsFormAddressNew extends Component {
                 typeId: false,
                 postalCode: false,
                 number: false,
+                countryId: false,
             },
         };
     }
@@ -95,7 +96,7 @@ class ContactDetailsFormAddressNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (!validator.isPostalCode(address.postalCode, 'any')) {
+        if (validator.isEmpty(address.postalCode)) {
             errors.postalCode = true;
             hasErrors = true;
         }
@@ -108,6 +109,21 @@ class ContactDetailsFormAddressNew extends Component {
         if (validator.isEmpty(address.typeId)) {
             errors.typeId = true;
             hasErrors = true;
+        }
+
+        if (validator.isEmpty(address.countryId)) {
+            errors.countryId = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(address.countryId + '')) {
+            errors.countryId = true;
+            hasErrors = true;
+        } else {
+            if (address.countryId == 'NL' && !validator.isPostalCode(address.postalCode, 'NL')) {
+                errors.postalCode = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -217,6 +233,8 @@ class ContactDetailsFormAddressNew extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.countryId}
                                 emptyOption={false}
                             />
                         </div>

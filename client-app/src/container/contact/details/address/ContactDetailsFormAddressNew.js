@@ -217,6 +217,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
+                                emptyOption={false}
                             />
                         </div>
 

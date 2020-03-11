@@ -101,6 +101,7 @@ const ContactDetailsFormAddressEdit = props => {
                                 options={props.countries}
                                 value={countryId}
                                 onChangeAction={props.handleInputChange}
+                                emptyOption={false}
                             />
                         </div>
 

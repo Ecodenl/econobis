@@ -103,7 +103,13 @@ function ProcessesListApp() {
     return (
         <Panel>
             <PanelBody>
-                <ProccessesListToolbar countTotal={meta.total} reloadJobslogs={() => setFilter(initialFilter)} />
+                <ProccessesListToolbar
+                    countTotal={meta.total}
+                    reloadJobslogs={() => {
+                        setFilter(initialFilter);
+                        fetchJobslogs();
+                    }}
+                />
 
                 <div className="margin-10-top">
                     <DataTable>

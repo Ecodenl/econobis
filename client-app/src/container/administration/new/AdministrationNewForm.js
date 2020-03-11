@@ -28,6 +28,8 @@ class AdministrationNewForm extends Component {
             mailboxAddresses: [],
             isSaving: false,
             loadingText: 'Aan het opslaan',
+            postalCodeError: false,
+            postalCodeErrorMessage: 'De postcode moet uit 4 cijfers en 2 letters bestaan.',
             administration: {
                 name: '',
                 administrationNumber: '',
@@ -74,6 +76,7 @@ class AdministrationNewForm extends Component {
                 twinfieldOfficeCode: false,
                 mailboxId: false,
                 emailBccNotas: false,
+                countryId: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -160,8 +163,17 @@ class AdministrationNewForm extends Component {
             }
         }
 
-        if (!validator.isEmpty(administration.postalCode)) {
-            if (!validator.isPostalCode(administration.postalCode + '', 'any')) {
+        if (validator.isEmpty(administration.postalCode + '')) {
+            errors.postalCode = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(administration.countryId + '')) {
+            errors.countryId = true;
+            hasErrors = true;
+        } else {
+            if (administration.countryId == 'NL' && !validator.isPostalCode(administration.postalCode, 'NL')) {
+                this.setState({ postalCodeError: true });
                 errors.postalCode = true;
                 hasErrors = true;
             }
@@ -350,6 +362,7 @@ class AdministrationNewForm extends Component {
                                 value={postalCode}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.postalCode}
+                                required={'required'}
                             />
                         </div>
 

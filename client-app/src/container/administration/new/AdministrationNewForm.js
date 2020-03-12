@@ -28,8 +28,6 @@ class AdministrationNewForm extends Component {
             mailboxAddresses: [],
             isSaving: false,
             loadingText: 'Aan het opslaan',
-            postalCodeError: false,
-            postalCodeErrorMessage: 'De postcode moet uit 4 cijfers en 2 letters bestaan.',
             administration: {
                 name: '',
                 administrationNumber: '',
@@ -173,8 +171,8 @@ class AdministrationNewForm extends Component {
             hasErrors = true;
         } else {
             if (administration.countryId == 'NL' && !validator.isPostalCode(administration.postalCode, 'NL')) {
-                this.setState({ postalCodeError: true });
                 errors.postalCode = true;
+                errors.countryId = true;
                 hasErrors = true;
             }
         }

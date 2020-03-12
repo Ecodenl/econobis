@@ -25,7 +25,7 @@ class ContactDetailsFormAddressNew extends Component {
                 city: '',
                 typeId: 'visit',
                 primary: false,
-                countryId: '',
+                countryId: 'NL',
             },
             errors: {
                 typeId: false,
@@ -122,6 +122,7 @@ class ContactDetailsFormAddressNew extends Component {
         } else {
             if (address.countryId == 'NL' && !validator.isPostalCode(address.postalCode, 'NL')) {
                 errors.postalCode = true;
+                errors.countryId = true;
                 hasErrors = true;
             }
         }

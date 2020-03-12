@@ -16,7 +16,6 @@ import axios from 'axios';
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
-import { Alert } from 'react-bootstrap';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -63,8 +62,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             mailboxAddresses: [],
             isSaving: false,
             loadingText: 'Aan het opslaan',
-            postalCodeError: false,
-            postalCodeErrorMessage: 'De postcode moet uit 4 cijfers en 2 letters bestaan.',
             administration: {
                 id,
                 name: name ? name : '',
@@ -221,8 +218,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         } else {
             if (administration.countryId == 'NL' && !validator.isPostalCode(administration.postalCode, 'NL')) {
-                this.setState({ postalCodeError: true });
                 errors.postalCode = true;
+                errors.countryId = true;
                 hasErrors = true;
             }
         }
@@ -729,11 +726,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={'Submit'}
                             />
                         </div>
-                    </PanelBody>
-                    <PanelBody>
-                        {this.state.postalCodeError && (
-                            <Alert variant={'danger'}>{this.state.postalCodeErrorMessage}</Alert>
-                        )}
                     </PanelBody>
                 </Panel>
             </form>

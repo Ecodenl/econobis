@@ -122,6 +122,7 @@ class ContactDetailFormAddressItem extends Component {
         } else {
             if (address.countryId == 'NL' && !validator.isPostalCode(address.postalCode, 'NL')) {
                 errors.postalCode = true;
+                errors.countryId = true;
                 hasErrors = true;
             }
         }

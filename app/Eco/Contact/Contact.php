@@ -228,6 +228,16 @@ class Contact extends Model
         return $this->hasMany(OccupationContact::class)->join('contacts', 'primary_contact_id', '=', 'contacts.id')->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')->orderBy('contacts.full_name');
     }
 
+    public function isPrimaryOccupant()
+    {
+        return $this->hasMany(OccupationContact::class, 'primary_contact_id');
+    }
+
+    public function isSecondaryOccupant()
+    {
+        return $this->hasMany(OccupationContact::class, 'contact_id');
+    }
+
     public function contactPerson()
     {
         return $this->hasOne(OccupationContact::class, 'primary_contact_id')->where('primary', true)->orWhere('contact_id', $this->id)->where('primary', true);

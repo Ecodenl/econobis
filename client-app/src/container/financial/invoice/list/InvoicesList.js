@@ -240,10 +240,8 @@ class InvoicesList extends Component {
 
         if (this.state.invoiceIds.length > 0) {
             this.props.previewSend(this.state.invoiceIds);
-            InvoiceDetailsAPI.sendNotifications(this.state.invoiceIds).then(payload => {
-                this.props.fetchAdministrationDetails(this.props.administrationId);
-                this.fetchInvoicesData();
-            });
+            InvoiceDetailsAPI.sendNotifications(this.state.invoiceIds).then(payload => {});
+            this.toggleShowCheckboxList();
         } else {
             this.toggleShowCheckboxList();
         }
@@ -260,9 +258,8 @@ class InvoicesList extends Component {
         if (this.state.invoiceIds.length > 0) {
             InvoiceDetailsAPI.sendNotificationsPost(this.state.invoiceIds).then(payload => {
                 fileDownload(payload.data, payload.headers['x-filename']);
-                this.props.fetchAdministrationDetails(this.props.administrationId);
-                this.fetchInvoicesData();
             });
+            this.toggleShowCheckboxList();
         } else {
             this.toggleShowCheckboxList();
         }

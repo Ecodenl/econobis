@@ -67,6 +67,7 @@ class SendAllInvoices implements ShouldQueue
                 InvoiceHelper::createInvoiceDocument($invoice);
             }
         }
+        $response = [];
 
         foreach ($this->validatedInvoices as $invoice) {
             //alleen als nota goed is aangemaakt, gaan we mailen
@@ -86,6 +87,10 @@ class SendAllInvoices implements ShouldQueue
                     Log::error($e->getMessage());
                     InvoiceHelper::invoiceErrorSending($invoice);
                 }
+            }else{
+                if($invoice->status_id === 'is-resending'){
+                    InvoiceHelper::invoiceErrorSending($invoice);
+                }
             }
         }
 
@@ -97,9 +102,10 @@ class SendAllInvoices implements ShouldQueue
             });
 
             $sepaHelper = new SepaHelper($this->administration, $validatedInvoices);
-            $sepa = $sepaHelper->generateSepaFile();
 // sent invoice now in queue (jobs), so download sepa when done not possible anymore
+//            $sepa = $sepaHelper->generateSepaFile();
 //            return $sepaHelper->downloadSepa($sepa);
+            $sepaHelper->generateSepaFile();
         }
 
         $jobLog = new JobsLog();

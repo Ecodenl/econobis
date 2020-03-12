@@ -11,7 +11,7 @@ import OrdersDeleteItem from './OrdersDeleteItem';
 import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { fetchOrders, clearOrders, setCheckedOrderAll, previewCreate } from '../../../../actions/order/OrdersActions';
+import { fetchOrders, clearOrders, previewCreate } from '../../../../actions/order/OrdersActions';
 import { clearFilterOrders } from '../../../../actions/order/OrdersFiltersActions';
 import { setOrdersPagination } from '../../../../actions/order/OrdersPaginationActions';
 import filterHelper from '../../../../helpers/FilterHelper';
@@ -28,7 +28,8 @@ import ButtonText from '../../../../components/button/ButtonText';
 const initialState = {
     showDeleteItem: false,
     showSelectOrdersToCreate: false,
-    checkedAllCheckboxes: false,
+    checkedAll: false,
+    orderIds: [],
     previewOrderText: "Selecteer preview nota's",
     deleteItem: {
         id: '',
@@ -45,6 +46,7 @@ class OrdersList extends Component {
         this.state = initialState;
 
         this.handlePageClick = this.handlePageClick.bind(this);
+        this.toggleOrderCheck = this.toggleOrderCheck.bind(this);
     }
 
     componentDidMount() {
@@ -104,7 +106,7 @@ class OrdersList extends Component {
         setTimeout(() => {
             const filters = filterHelper(this.props.ordersFilters);
             const sorts = this.props.ordersSorts;
-            const pagination = { limit: 20, offset: this.props.ordersPagination.offset };
+            const pagination = { limit: 50, offset: this.props.ordersPagination.offset };
             const administrationId = this.props.administrationId;
 
             this.props.fetchOrders(filters, sorts, pagination, administrationId);
@@ -129,6 +131,34 @@ class OrdersList extends Component {
         }, 100);
     };
 
+    previewOrders = () => {
+        this.setState({
+            previewOrderText: "Preview nota's",
+        });
+
+        this.fetchOrdersData();
+        if (this.state.orderIds.length > 0) {
+            this.props.previewCreate(this.state.orderIds);
+            hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
+        } else {
+            this.toggleShowCheckboxList();
+        }
+    };
+
+    toggleShowCheckboxList = () => {
+        if (this.state.showSelectOrdersToCreate) {
+            this.setState({
+                showSelectOrdersToCreate: false,
+                orderIds: [],
+            });
+        } else {
+            this.setState({
+                showSelectOrdersToCreate: true,
+                orderIds: [],
+            });
+        }
+    };
+
     resetOrderFilters = () => {
         this.props.clearFilterOrders();
         this.setFilter(this.props.filter);
@@ -148,7 +178,7 @@ class OrdersList extends Component {
 
     handlePageClick(data) {
         let page = data.selected;
-        let offset = Math.ceil(page * 20);
+        let offset = Math.ceil(page * 50);
 
         this.props.setOrdersPagination({ page, offset });
 
@@ -161,6 +191,45 @@ class OrdersList extends Component {
             this.onSubmitFilter();
         }
     };
+
+    toggleCheckedAll = () => {
+        const isChecked = event.target.checked;
+        let orderIds = [];
+
+        if (isChecked) {
+            orderIds = this.props.orders.meta.orderIdsTotal;
+        }
+
+        this.setState({
+            orderIds: orderIds,
+            checkedAll: isChecked,
+        });
+    };
+
+    toggleOrderCheck = event => {
+        const isChecked = event.target.checked;
+        const orderId = Number(event.target.name);
+
+        if (isChecked) {
+            this.setState(
+                {
+                    orderIds: [...this.state.orderIds, orderId],
+                },
+                this.checkAllOrdersAreChecked
+            );
+        } else {
+            this.setState({
+                orderIds: this.state.orderIds.filter(item => item !== orderId),
+                checkedAll: false,
+            });
+        }
+    };
+
+    checkAllOrdersAreChecked() {
+        this.setState({
+            checkedAll: this.state.orderIds.length === this.props.orders.meta.orderIdsTotal.length,
+        });
+    }
 
     showDeleteItemModal = (id, name) => {
         this.setState({
@@ -186,31 +255,6 @@ class OrdersList extends Component {
         });
     };
 
-    selectAllCheckboxes = () => {
-        this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
-        });
-
-        this.props.setCheckedOrderAll(!this.state.checkedAllCheckboxes);
-    };
-
-    previewOrders = () => {
-        let createOrderIds = [];
-
-        this.setState({
-            previewOrderText: "Preview nota's",
-        });
-
-        this.props.orders.data.map(order => order.checked === true && createOrderIds.push(order.id));
-
-        if (createOrderIds.length > 0) {
-            this.props.previewCreate(createOrderIds);
-            hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
-        } else {
-            this.setState({ showSelectOrdersToCreate: !this.state.showSelectOrdersToCreate });
-        }
-    };
-
     render() {
         const { data = [], meta = {} } = this.props.orders;
 
@@ -225,6 +269,17 @@ class OrdersList extends Component {
             loadingText = 'Geen orders gevonden!';
         } else {
             loading = false;
+        }
+
+        let numberSelectedNumberTotal = 0;
+
+        if (this.state.orderIds) {
+            if (this.props && this.props.orders && this.props.orders.meta && this.props.orders.meta.orderIdsTotal) {
+                numberSelectedNumberTotal =
+                    this.state.orderIds.length + '/' + this.props.orders.meta.orderIdsTotal.length;
+            } else {
+                numberSelectedNumberTotal = this.state.orderIds.length;
+            }
         }
 
         return (
@@ -249,6 +304,13 @@ class OrdersList extends Component {
                         <div className="pull-right">Resultaten: {meta.total || 0}</div>
                     </div>
                 </div>
+                {this.state.showSelectOrdersToCreate ? (
+                    <div className="col-md-12">
+                        {numberSelectedNumberTotal ? (
+                            <div className="alert alert-success">Geselecteerde orders: {numberSelectedNumberTotal}</div>
+                        ) : null}
+                    </div>
+                ) : null}
 
                 <form onKeyUp={this.handleKeyUp} className={'margin-10-top'}>
                     <DataTable>
@@ -258,9 +320,9 @@ class OrdersList extends Component {
                                 fetchOrdersData={this.fetchOrdersData}
                             />
                             <OrdersListFilter
-                                onSubmitFilter={this.onSubmitFilter}
                                 showSelectOrdersToCreate={this.state.showSelectOrdersToCreate}
-                                selectAllCheckboxes={this.selectAllCheckboxes}
+                                onSubmitFilter={this.onSubmitFilter}
+                                toggleCheckedAll={this.toggleCheckedAll}
                             />
                         </DataTableHead>
                         <DataTableBody>
@@ -273,9 +335,13 @@ class OrdersList extends Component {
                                     return (
                                         <OrdersListItem
                                             showSelectOrdersToCreate={this.state.showSelectOrdersToCreate}
+                                            checkedAll={this.props.checkedAll}
+                                            toggleOrderCheck={this.toggleOrderCheck}
+                                            orderIds={this.state.orderIds}
                                             key={order.id}
                                             {...order}
                                             showDeleteItemModal={this.showDeleteItemModal}
+                                            fetchOrdersData={this.fetchOrdersData}
                                         />
                                     );
                                 })
@@ -287,11 +353,16 @@ class OrdersList extends Component {
                             onPageChangeAction={this.handlePageClick}
                             totalRecords={meta.total}
                             initialPage={this.props.ordersPagination.page}
+                            recordsPerPage={50}
                         />
                     </div>
                 </form>
                 {this.state.showDeleteItem && (
-                    <OrdersDeleteItem closeDeleteItemModal={this.closeDeleteItemModal} {...this.state.deleteItem} />
+                    <OrdersDeleteItem
+                        closeDeleteItemModal={this.closeDeleteItemModal}
+                        fetchOrders={this.fetchOrdersData}
+                        {...this.state.deleteItem}
+                    />
                 )}
             </div>
         );
@@ -313,15 +384,14 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
             previewCreate,
-            setCheckedOrderAll,
-            blockUI,
-            unblockUI,
             fetchOrders,
             clearOrders,
             clearFilterOrders,
             setOrdersPagination,
             setPaymentTypeIdFilterOrders,
             setStatusIdFilterOrders,
+            blockUI,
+            unblockUI,
         },
         dispatch
     );

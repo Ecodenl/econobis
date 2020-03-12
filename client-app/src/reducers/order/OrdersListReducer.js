@@ -5,6 +5,7 @@ export default function(state = [], action) {
                 data: action.orders.data.data,
                 meta: {
                     total: action.orders.data.meta.total,
+                    orderIdsTotal: action.orders.data.meta.orderIdsTotal,
                 },
             };
         case 'CLEAR_ORDERS':

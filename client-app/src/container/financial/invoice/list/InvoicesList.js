@@ -34,9 +34,9 @@ const initialState = {
     showSelectInvoicesToSend: false,
     checkedAll: false,
     invoiceIds: [],
-    emailInvoicesText: "Selecteer preview e-mail nota's",
     onlyEmailInvoices: false,
     onlyPostInvoices: false,
+    emailInvoicesText: "Selecteer preview e-mail nota's",
     postInvoicesText: "Selecteer preview post nota's",
     sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
     sendRemindersTextPost: 'Selecteer post herinneringen',
@@ -109,6 +109,18 @@ class InvoicesList extends Component {
                     this.props.clearFilterInvoices();
                     this.props.setStatusIdFilterInvoices('sent');
                     break;
+                case 'wordt-gemaakt':
+                    this.props.clearFilterInvoices();
+                    this.props.setStatusIdFilterInvoices('in-progress');
+                    break;
+                case 'wordt-verstuurd':
+                    this.props.clearFilterInvoices();
+                    this.props.setStatusIdFilterInvoices('is-sending');
+                    break;
+                case 'wordt-opnieuw-verstuurd':
+                    this.props.clearFilterInvoices();
+                    this.props.setStatusIdFilterInvoices('is-resending');
+                    break;
                 case 'geexporteerd':
                     this.props.clearFilterInvoices();
                     this.props.setStatusIdFilterInvoices('exported');
@@ -178,10 +190,6 @@ class InvoicesList extends Component {
 
         this.fetchInvoicesData();
 
-        this.props.invoices.data.map(
-            invoice => invoice.checked === true && invoice.emailToAddress !== 'Geen e-mail bekend'
-        );
-
         if (this.state.invoiceIds.length > 0) {
             this.props.previewSend(this.state.invoiceIds);
             hashHistory.push(
@@ -200,10 +208,6 @@ class InvoicesList extends Component {
 
         this.fetchInvoicesData();
 
-        this.props.invoices.data.map(
-            invoice => invoice.checked === true && invoice.emailToAddress === 'Geen e-mail bekend'
-        );
-
         if (this.state.invoiceIds.length > 0) {
             this.props.previewSend(this.state.invoiceIds);
             hashHistory.push(
@@ -212,6 +216,68 @@ class InvoicesList extends Component {
         } else {
             this.toggleShowCheckboxList();
         }
+    };
+
+    sendReminders = () => {
+        this.setState({
+            sendRemindersTextEmail: 'Verstuur e-mail herinneringen',
+            onlyEmailInvoices: true,
+        });
+
+        this.fetchInvoicesData();
+
+        if (this.state.invoiceIds.length > 0) {
+            this.props.previewSend(this.state.invoiceIds);
+            InvoiceDetailsAPI.sendNotifications(this.state.invoiceIds).then(payload => {
+                this.props.fetchAdministrationDetails(this.props.administrationId);
+                this.fetchInvoicesData();
+            });
+        } else {
+            this.toggleShowCheckboxList();
+        }
+    };
+
+    sendRemindersPost = () => {
+        this.setState({
+            sendRemindersTextPost: 'Verstuur post herinneringen',
+            onlyPostInvoices: true,
+        });
+
+        this.fetchInvoicesData();
+
+        if (this.state.invoiceIds.length > 0) {
+            InvoiceDetailsAPI.sendNotificationsPost(this.state.invoiceIds).then(payload => {
+                fileDownload(payload.data, payload.headers['x-filename']);
+                this.props.fetchAdministrationDetails(this.props.administrationId);
+                this.fetchInvoicesData();
+            });
+        } else {
+            this.toggleShowCheckboxList();
+        }
+    };
+
+    toggleSetInvoicesPaid = () => {
+        if (this.state.invoiceIds.length > 0) {
+            this.setState({
+                showSetInvoicesPaid: true,
+                setInvoicesPaidText: "Selecteer betaalde nota's",
+            });
+        } else {
+            this.setState({
+                showSetInvoicesPaid: false,
+                setInvoicesPaidText: "Zet nota's betaald",
+            });
+            this.toggleShowCheckboxList();
+        }
+    };
+
+    closeSetMultiplePaidModel = () => {
+        this.setState({
+            showSetInvoicesPaid: false,
+            invoiceIds: [],
+            setInvoicesPaidText: "Zet nota's betaald",
+        });
+        this.toggleShowCheckboxList();
     };
 
     toggleShowCheckboxList = () => {
@@ -224,77 +290,6 @@ class InvoicesList extends Component {
             this.setState({
                 showSelectInvoicesToSend: true,
                 invoiceIds: [],
-            });
-        }
-    };
-
-    sendReminders = () => {
-        let sendRemindersInvoiceIds = [];
-
-        this.setState({
-            sendRemindersTextEmail: 'Verstuur e-mail herinneringen',
-            onlyEmailInvoices: true,
-        });
-
-        this.props.invoices.data.map(
-            invoice =>
-                invoice.checked === true &&
-                invoice.emailToAddress !== 'Geen e-mail bekend' &&
-                sendRemindersInvoiceIds.push(invoice.id)
-        );
-
-        if (sendRemindersInvoiceIds.length > 0) {
-            InvoiceDetailsAPI.sendNotifications(sendRemindersInvoiceIds).then(payload => {
-                this.props.fetchAdministrationDetails(this.props.administrationId);
-                this.fetchInvoicesData();
-            });
-        }
-
-        this.setState({ showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend });
-    };
-
-    sendRemindersPost = () => {
-        let sendRemindersInvoiceIds = [];
-
-        this.setState({
-            sendRemindersTextPost: 'Verstuur post herinneringen',
-            onlyPostInvoices: true,
-        });
-
-        this.props.invoices.data.map(
-            invoice =>
-                invoice.checked === true &&
-                invoice.emailToAddress === 'Geen e-mail bekend' &&
-                sendRemindersInvoiceIds.push(invoice.id)
-        );
-
-        if (sendRemindersInvoiceIds.length > 0) {
-            InvoiceDetailsAPI.sendNotificationsPost(sendRemindersInvoiceIds).then(payload => {
-                fileDownload(payload.data, payload.headers['x-filename']);
-                this.props.fetchAdministrationDetails(this.props.administrationId);
-                this.fetchInvoicesData();
-            });
-        }
-
-        this.setState({ showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend });
-    };
-
-    toggleSetInvoicesPaid = () => {
-        this.setState({ showSelectInvoicesToSend: !this.state.showSelectInvoicesToSend });
-
-        let setPaidInvoicesIds = [];
-
-        this.props.invoices.data.map(invoice => invoice.checked === true && setPaidInvoicesIds.push(invoice.id));
-
-        if (setPaidInvoicesIds.length > 0) {
-            this.setState({
-                showSetInvoicesPaid: true,
-                setInvoicesPaidText: "Selecteer betaalde nota's",
-            });
-        } else {
-            this.setState({
-                showSetInvoicesPaid: false,
-                setInvoicesPaidText: "Zet nota's betaald",
             });
         }
     };
@@ -604,9 +599,9 @@ class InvoicesList extends Component {
                 </form>
                 {this.state.showSetInvoicesPaid && (
                     <InvoiceListSetMultiplePaid
-                        invoices={this.props.invoices.data.filter(invoice => invoice.checked === true)}
+                        invoiceIds={this.state.invoiceIds}
                         administrationId={this.props.administrationId}
-                        closeModal={this.toggleSetInvoicesPaid}
+                        closeModal={this.closeSetMultiplePaidModel}
                     />
                 )}
                 {this.state.showDeleteItem && (

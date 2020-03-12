@@ -430,19 +430,19 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </Link>
                     </NavText>
                 </Nav>
-                {permissions.managePortalSettings && (
-                    <Nav id="portalSettings">
-                        <NavIcon>
-                            <SvgIcon size={20} icon={road} />
-                        </NavIcon>
-                        <NavText>
-                            <Link className="sidebar-link-header" to="portal-settings">
-                                Portal instellingen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                )}
             </Nav>
+            {permissions.managePortalSettings && (
+                <Nav id="portalSettings">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={road} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="portal-settings">
+                            Portal instellingen
+                        </Link>
+                    </NavText>
+                </Nav>
+            )}
         </SideNav>
     </div>
 );

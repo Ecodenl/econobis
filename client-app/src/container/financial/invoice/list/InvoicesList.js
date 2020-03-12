@@ -29,6 +29,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
 import InvoiceListDeleteItem from './InvoiceListDeleteItem';
+import ErrorModal from '../../../../components/modal/ErrorModal';
 
 const initialState = {
     showSelectInvoicesToSend: false,
@@ -36,6 +37,7 @@ const initialState = {
     invoiceIds: [],
     onlyEmailInvoices: false,
     onlyPostInvoices: false,
+    showErrorMessagePost: false,
     emailInvoicesText: "Selecteer preview e-mail nota's",
     postInvoicesText: "Selecteer preview post nota's",
     sendRemindersTextEmail: 'Selecteer e-mail herinneringen',
@@ -208,14 +210,24 @@ class InvoicesList extends Component {
 
         this.fetchInvoicesData();
 
-        if (this.state.invoiceIds.length > 0) {
-            this.props.previewSend(this.state.invoiceIds);
-            hashHistory.push(
-                `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
-            );
+        // Bij verzenden post voorlopig even max 50 tegelijk (worden in 1 PDF samengevoegd en anders wordt PDF wel erg groot)
+        if (this.state.invoiceIds.length > 50) {
+            this.toggleErrorMessagePost();
         } else {
-            this.toggleShowCheckboxList();
+            if (this.state.invoiceIds.length > 0) {
+                this.props.previewSend(this.state.invoiceIds);
+                hashHistory.push(
+                    `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
+                );
+            } else {
+                this.toggleShowCheckboxList();
+            }
         }
+    };
+    toggleErrorMessagePost = () => {
+        this.setState({
+            showErrorMessagePost: !this.state.showErrorMessagePost,
+        });
     };
 
     sendReminders = () => {
@@ -409,7 +421,7 @@ class InvoicesList extends Component {
         let messageText = null;
         if (this.props.filter == 'fout-verzenden-incasso' || this.props.filter == 'fout-verzenden-overboeken') {
             messageText =
-                'Een fout verzonden factuur is definitief aangemaakt in Econobis, maar kon niet worden verzonden omdat het contact een fout e-mailadres heeft of omdat de mailbox niet werkte. Corrigeer dit en e-mail de factuur opnieuw';
+                'Een fout verzonden nota is definitief aangemaakt in Econobis, maar kon niet worden verzonden. Dit omdat het contact een fout e-mailadres heeft of omdat de mailbox niet werkte. Corrigeer het e-mailadres of zorg er voor dat de mail box weer werkt. Vervolgens kan je met bovenstaande knoppen de factuur opnieuw verzenden. Omdat de nota definitief is kan je deze niet verwijderen.';
         }
 
         let numberSelectedNumberTotal = 0;
@@ -548,6 +560,15 @@ class InvoicesList extends Component {
                         ) : null}
                     </div>
                 ) : null}
+                <div className="col-md-12">
+                    {this.state.showErrorMessagePost ? (
+                        <ErrorModal
+                            closeModal={this.toggleErrorMessagePost}
+                            title={"Te veel nota's geselecteerd"}
+                            errorMessage={"Er kunnen maximaal 50 post nota's tegelijk aangemaakt worden."}
+                        />
+                    ) : null}
+                </div>
 
                 <form onKeyUp={this.handleKeyUp} className={'margin-10-top'}>
                     <DataTable>

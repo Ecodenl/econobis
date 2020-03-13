@@ -137,7 +137,7 @@ class SendAllInvoices implements ShouldQueue
 
         $jobLog = new JobsLog();
         if($this->invoicesError>0){
-            $jobLog->value = "Fouten bij maken/verzenden nota's. Verzonden nota's: ".$this->invoicesOk.". Niet verzonden nota's: ".$this->invoicesOk."." ;
+            $jobLog->value = "Fouten bij maken/verzenden nota's. Verzonden nota's: ".$this->invoicesOk.". Niet verzonden nota's: ".$this->invoicesError."." ;
         }else{
             $jobLog->value = "Alle nota's (".$this->invoicesOk.") verzonden";
         }

@@ -281,7 +281,6 @@ class TemplateMergeFieldsTest extends TestCase
         $productionProject->power_kw_available = '101';
         $productionProject->max_participations = '102';
         $productionProject->tax_referral = 'Belasting1';
-        $productionProject->max_participations_youth = '103';
         $productionProject->min_participations = '104';
         $productionProject->owned_by_id = 1;
         $productionProject->participation_worth = 0;

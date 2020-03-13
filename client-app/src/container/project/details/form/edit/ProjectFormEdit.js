@@ -211,7 +211,6 @@ class ProjectFormEdit extends Component {
             powerKwAvailable,
             maxParticipations,
             taxReferral,
-            maxParticipationsYouth,
             totalParticipations,
             minParticipations,
             isParticipationTransferable,
@@ -300,7 +299,6 @@ class ProjectFormEdit extends Component {
                         powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
-                        maxParticipationsYouth={maxParticipationsYouth}
                         isParticipationTransferable={isParticipationTransferable}
                         valueCourses={valueCourses}
                         handleInputChange={this.handleInputChange}
@@ -320,7 +318,6 @@ class ProjectFormEdit extends Component {
                         powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
-                        maxParticipationsYouth={maxParticipationsYouth}
                         isParticipationTransferable={isParticipationTransferable}
                         valueCourses={valueCourses}
                         handleInputChange={this.handleInputChange}

@@ -218,7 +218,10 @@ const DefaultContactPersonalEdit = function({
                     </Col>
                 </Row>
 
-                <FormLabel htmlFor="street" className="field-label required">
+                <FormLabel
+                    htmlFor="street"
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                >
                     Adres
                 </FormLabel>
                 <Row>
@@ -336,6 +339,9 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="iban"
                                     placeholder={'Rekeningnummer (IBAN)'}
+                                    customOnChange={e => {
+                                        setFieldValue('iban', ('' + e.target.value).toUpperCase());
+                                    }}
                                 />
                             )}
                         />
@@ -404,12 +410,13 @@ const DefaultContactPersonalEdit = function({
                         <FormLabel
                             htmlFor="energy_supplier_id"
                             className={
+                                initialContact.isParticipantPcrProject ||
                                 projectTypeCodeRef === 'postalcode_link_capital'
                                     ? 'field-label required'
                                     : 'field-label'
                             }
                         >
-                            Energieleverancier
+                            Huidige energie leverancier
                         </FormLabel>
                         <Row>
                             <Col xs={12} sm={12} md={8}>

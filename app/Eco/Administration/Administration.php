@@ -124,7 +124,7 @@ class Administration extends Model
                     ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
             })
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
 
@@ -134,7 +134,7 @@ class Administration extends Model
             ->where('orders.status_id', 'active')
             ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
 
@@ -143,7 +143,7 @@ class Administration extends Model
         return $this->orders()
             ->where('orders.status_id', 'active')
             ->whereHas('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
 
@@ -166,6 +166,16 @@ class Administration extends Model
     public function getTotalInvoicesToSendTransferAttribute()
     {
         return $this->invoices()->where('status_id', 'to-send')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'transfer')->count();
+    }
+
+    public function getTotalInvoicesErrorSendingCollectionAttribute()
+    {
+        return $this->invoices()->where('status_id', 'error-sending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
+    }
+
+    public function getTotalInvoicesErrorSendingTransferAttribute()
+    {
+        return $this->invoices()->where('status_id', 'error-sending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'transfer')->count();
     }
 
     public function getTotalInvoicesSentAttribute()
@@ -269,7 +279,7 @@ class Administration extends Model
 //        }
 
         if (!$canCreateInvoices['can']) {
-            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode(', ', $canCreateInvoices['requiredFields']) . ' zijn verplicht.';
+            $canCreateInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode(', ', $canCreateInvoices['requiredFields'] ) . ' zijn verplicht.';
         }
 
         return $canCreateInvoices;
@@ -293,7 +303,7 @@ class Administration extends Model
         }
 
         if (!$canCreatePaymentInvoices['can']) {
-            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode(', ', $canCreatePaymentInvoices['requiredFields']) . ' zijn verplicht.';
+            $canCreatePaymentInvoices['message'] = 'Kan SEPA niet aanmaken. De administratie velden ' . implode(', ', $canCreatePaymentInvoices['requiredFields'] ) . ' zijn verplicht.';
         }
 
         return $canCreatePaymentInvoices;

@@ -64,6 +64,11 @@ abstract class RequestQuery
         if ($this->sort) $this->sort->setJoiner($this->joiner);
     }
 
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
     public function getQuery()
     {
         $query = $this->baseQuery();

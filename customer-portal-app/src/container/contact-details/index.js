@@ -9,12 +9,15 @@ import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
     const [portalSettings, setPortalSettings] = useState({});
     const [isLoading, setLoading] = useState(true);
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
+    const [editForm, setEditForm] = useState(false);
 
     useEffect(() => {
         const keys =
@@ -48,6 +51,7 @@ const ContactDetails = function(props) {
                 const contactData = rebaseContact(payload.data.data);
 
                 setContact(contactData);
+                props.updateNameSelectedContact(contactData.fullName);
                 setLoading(false);
             })
             .catch(error => {
@@ -78,27 +82,51 @@ const ContactDetails = function(props) {
             });
     }
 
+    const editButtonGroup = (
+        <ButtonGroup aria-label="Steps" className={'float-right'}>
+            <Button
+                className={'w-button'}
+                size="sm"
+                onClick={function() {
+                    setEditForm(true);
+                }}
+            >
+                Wijzig
+            </Button>
+        </ButtonGroup>
+    );
+
     return (
         <div className="content-section">
             {isLoading ? (
                 <LoadingView />
             ) : (
                 <div className="content-container w-container">
-                    <ButtonGroup aria-label="Steps" className="float-left">
-                        <Link to={`/inschrijven-projecten`}>
-                            <Button className={'w-button'} size="sm">
-                                Inschrijven projecten
-                            </Button>
-                        </Link>
-                        &nbsp;
-                        <Link to={`/inschrijvingen-projecten`}>
-                            <Button className={'w-button'} size="sm">
-                                Huidige deelnames
-                            </Button>
-                        </Link>
-                    </ButtonGroup>
-                    <p>&nbsp;</p>
-                    <h1 className="content-heading">Contactgegevens</h1>
+                    <Row>
+                        <ButtonGroup aria-label="Steps" className="float-left">
+                            <Link to={`/inschrijven-projecten`}>
+                                <Button className={'w-button'} size="sm">
+                                    Inschrijven projecten
+                                </Button>
+                            </Link>
+                            &nbsp;
+                            <Link to={`/inschrijvingen-projecten`}>
+                                <Button className={'w-button'} size="sm">
+                                    Huidige deelnames
+                                </Button>
+                            </Link>
+                        </ButtonGroup>
+                    </Row>
+                    {editForm ? (
+                        <h1 className="content-heading mt-0">Contactgegevens</h1>
+                    ) : (
+                        <Row>
+                            <Col>
+                                <h1 className="content-heading mt-0">Contactgegevens</h1>
+                            </Col>
+                            <Col>{editButtonGroup}</Col>
+                        </Row>
+                    )}
                     <div className="w-form" />
                     {/* If contact is person */}
                     {contact.typeId === 'person' ? (
@@ -106,6 +134,9 @@ const ContactDetails = function(props) {
                             portalSettings={portalSettings}
                             initialContact={contact}
                             handleSubmitContactValues={handleSubmitContactValues}
+                            editButtonGroup={editButtonGroup}
+                            editForm={editForm}
+                            setEditForm={setEditForm}
                         />
                     ) : null}
                     {/* If contact is organisation */}
@@ -114,6 +145,9 @@ const ContactDetails = function(props) {
                             portalSettings={portalSettings}
                             initialContact={contact}
                             handleSubmitContactValues={handleSubmitContactValues}
+                            editButtonGroup={editButtonGroup}
+                            editForm={editForm}
+                            setEditForm={setEditForm}
                         />
                     ) : null}
                 </div>
@@ -125,8 +159,12 @@ const ContactDetails = function(props) {
 export default function ContactDetailsWithContext(props) {
     return (
         <PortalUserConsumer>
-            {({ currentSelectedContact }) => (
-                <ContactDetails {...props} currentSelectedContact={currentSelectedContact} />
+            {({ currentSelectedContact, updateNameSelectedContact }) => (
+                <ContactDetails
+                    {...props}
+                    currentSelectedContact={currentSelectedContact}
+                    updateNameSelectedContact={updateNameSelectedContact}
+                />
             )}
         </PortalUserConsumer>
     );

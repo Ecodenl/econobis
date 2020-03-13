@@ -41,10 +41,11 @@ class AdministrationController extends ApiController
         $administrations->load(['country']);
 
         return GridAdministration::collection($administrations)
-            ->additional(['meta' => [
-            'total' => $requestQuery->total(),
-            ]
-        ]);
+            ->additional([
+                'meta' => [
+                    'total' => $requestQuery->total(),
+                ]
+            ]);
     }
 
     public function show(Administration $administration)
@@ -126,8 +127,7 @@ class AdministrationController extends ApiController
         if($administration->uses_twinfield) {
             $twinfieldHelper = new TwinfieldHelper($administration);
             $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
-        }
-        else{
+        }else{
             $administration->twinfield_is_valid = 0;
         }
 
@@ -209,8 +209,7 @@ class AdministrationController extends ApiController
         if($administration->uses_twinfield) {
             $twinfieldHelper = new TwinfieldHelper($administration);
             $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
-        }
-        else{
+        }else{
             $administration->twinfield_is_valid = 0;
         }
         // We bewaren even of uses_twinfield was gewijzigd.
@@ -343,6 +342,37 @@ class AdministrationController extends ApiController
     public function syncSentInvoicesFromTwinfield(Administration $administration){
         $twinfieldInvoiceHelper = new TwinfieldInvoiceHelper($administration);
         return $twinfieldInvoiceHelper->processPaidInvoices();
+    }
+
+    public function getTotalsInfoAdministration(Administration $administration)
+    {
+        $totalsInfo = [
+            'totalOrders' => $administration->total_orders,
+            'totalOrdersConcepts' => $administration->total_orders_concepts,
+            'totalOrdersUpcoming' => $administration->total_orders_upcoming,
+            'totalOrdersToCreateInvoices' => $administration->total_orders_to_create_invoices,
+            'totalOrdersToSendInvoices' => $administration->total_orders_to_send_invoices,
+            'totalOrdersClosed' => $administration->total_orders_closed,
+
+            'totalInvoices' => $administration->total_invoices,
+            'totalInvoicesToSendCollection' => $administration->total_invoices_to_send_collection,
+            'totalInvoicesToSendTransfer' => $administration->total_invoices_to_send_transfer,
+            'totalInvoicesErrorSendingCollection' => $administration->total_invoices_error_sending_collection,
+            'totalInvoicesErrorSendingTransfer' => $administration->total_invoices_error_sending_transfer,
+            'totalInvoicesSent' => $administration->total_invoices_sent,
+            'totalInvoicesExported' => $administration->total_invoices_exported,
+            'totalInvoicesReminder' => $administration->total_invoices_reminder,
+            'totalInvoicesExhortation' => $administration->total_invoices_exhortation,
+            'totalInvoicesPaid' => $administration->total_invoices_paid,
+            'totalInvoicesIrrecoverable' => $administration->total_invoices_irrecoverable,
+
+            'totalPaymentInvoices' => $administration->total_payment_invoices,
+            'totalPaymentInvoicesConcepts' => $administration->total_payment_invoices_concepts,
+            'totalPaymentInvoicesSent' => $administration->total_payment_invoices_sent,
+            'totalPaymentInvoicesNotPaid' => $administration->total_payment_invoices_not_paid,
+        ];
+
+        return $totalsInfo;
     }
 
 }

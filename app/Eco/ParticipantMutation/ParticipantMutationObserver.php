@@ -44,17 +44,8 @@ class ParticipantMutationObserver
 
             $participantMutationStatusLog->save();
 
-            // On first deposit set date_register by participant, if not set earlier
-//            $participantMutationFinalStatusId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
-//            if($participantMutation->status_id == $participantMutationFinalStatusId) {
-//                $participantProject = $participantMutation->participation;
-//
-//                if(!$participantProject->date_register) {
-//                    $participantProject->date_register = $participantMutation->date_entry;
-//                    $participantProject->save();
-//                }
-//            }
         }
+        // If date_entry is changed, than determine date_register (is earliest first deposit date entry) by participant again.
         if($participantMutation->isDirty('date_entry')) {
             $participantProject = $participantMutation->participation;
             $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
@@ -67,4 +58,13 @@ class ParticipantMutationObserver
         $userId = Auth::id();
         $participantMutation->updated_by_id = $userId;
     }
+
+    public function deleted(ParticipantMutation $participantMutation)
+    {
+        // If mutation was deleted, than determine date_register (is earliest first deposit date entry) by participant again.
+        $participantProject = $participantMutation->participation;
+        $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
+        $participantProject->save();
+    }
+
 }

@@ -1,24 +1,12 @@
-export const fetchInvoices = (filters, sorts, pagination, administrationId) => {
+export const fetchInvoices = (filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices) => {
     return {
         type: 'FETCH_INVOICES',
         filters,
         sorts,
         pagination,
         administrationId,
-    };
-};
-
-export const setCheckedInvoiceAll = checkedValue => {
-    return {
-        type: 'SET_CHECKED_INVOICE_ALL',
-        checkedValue,
-    };
-};
-
-export const setCheckedInvoice = id => {
-    return {
-        type: 'SET_CHECKED_INVOICE',
-        id,
+        onlyEmailInvoices,
+        onlyPostInvoices,
     };
 };
 

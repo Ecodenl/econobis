@@ -18,6 +18,7 @@ import { drawer } from 'react-icons-kit/icomoon/drawer';
 import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
+import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
 const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
@@ -229,6 +230,16 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                 <NavText>
                     <Link className="sidebar-link-header" to="agenda">
                         Agenda
+                    </Link>
+                </NavText>
+            </Nav>
+            <Nav id="processen">
+                <NavIcon>
+                    <SvgIcon size={20} icon={stopwatch} />
+                </NavIcon>
+                <NavText>
+                    <Link className="sidebar-link-header" to="processen">
+                        Processen
                     </Link>
                 </NavText>
             </Nav>

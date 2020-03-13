@@ -248,7 +248,7 @@ const ProjectFormEditGeneral = ({
             </div>
             <div className="row">
                 <InputReactSelect
-                    label="Document template inschrijfbevestiging"
+                    label="Document template inschrijfformulier"
                     name={'documentTemplateAgreementId'}
                     options={documentTemplates}
                     value={documentTemplateAgreementId}

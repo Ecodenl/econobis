@@ -90,7 +90,7 @@ class ParticipantExcelHelper
         $headerData[64] = 'Iban uitkeren t.n.v.';
         $headerData[65] = 'Iban contact';
         $headerData[66] = 'Iban contact t.n.v.';
-        $headerData[67] = 'Eerste ingangsdatum';
+        $headerData[67] = 'Eerste ingangsdatum deelname';
         $headerData[68] = 'Uitkeren op';
         $headerData[69] = 'Contactpersoon startdatum';
         $headerData[70] = 'Contactpersoon einddatum';

@@ -342,6 +342,7 @@ Route::namespace('Api')
         Route::get('administration/{administration}', 'Administration\AdministrationController@show');
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
         Route::get('administration/{administration}/ledgers', 'Administration\AdministrationController@getLedgers');
+        Route::get('administration/{administration}/totals-info-administration', 'Administration\AdministrationController@getTotalsInfoAdministration');
         Route::post('administration/sepa/{sepa}/delete', 'Administration\AdministrationController@deleteSepa');
         Route::post('administration', 'Administration\AdministrationController@store');
         Route::post('administration/ledger', 'Administration\AdministrationController@storeLedger');

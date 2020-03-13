@@ -50,7 +50,7 @@ class SendAllInvoices implements ShouldQueue
         $this->invoicesError = 0;
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Start alle nota's verzenden.";
+        $jobLog->value = "Start alle nota's maken/verzenden.";
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $userId;
         $jobLog->save();
@@ -149,11 +149,11 @@ class SendAllInvoices implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = "Nota's maken mislukt.";
+        $jobLog->value = "Nota's maken/verzenden mislukt.";
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Nota's maken mislukt:" . $exception->getMessage());
+        Log::error("Nota's maken/verzenden mislukt: " . $exception->getMessage());
     }
 }

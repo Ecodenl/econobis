@@ -61,11 +61,10 @@ class SendInvoiceNotifications implements ShouldQueue
     {
         $jobLog = new JobsLog();
         $jobLog->value = 'Versturen herinnering nota ('.$this->invoice->number.') naar '.$this->contactInfo['contactPerson'].' ('.$this->invoice->order->contact_id.') mislukt.';
-        $jobLog->value = "Nota's maken mislukt.";
         $jobLog->job_category_id = 'sent-invoice-reminder';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Nota's maken mislukt:" . $exception->getMessage());
+        Log::error($jobLog->value. ": " . $exception->getMessage());
     }
 }

@@ -159,7 +159,7 @@ class NewAccountController extends Controller
         if ($data['organisation_name']) {
             $contactOrganisation = Contact::create([
                 'type_id' => ContactType::ORGANISATION,
-                'status_id' => 'none',
+                'status_id' => 'portal',
             ]);
 
             $organisation = Organisation::create([
@@ -169,7 +169,7 @@ class NewAccountController extends Controller
 
             $contactPerson = Contact::create([
                 'type_id' => ContactType::PERSON,
-                'status_id' => 'none',
+                'status_id' => 'portal',
             ]);
 
             // Validatie op title_id
@@ -203,7 +203,7 @@ class NewAccountController extends Controller
 
         $contact = Contact::create([
             'type_id' => ContactType::PERSON,
-            'status_id' => 'none',
+            'status_id' => 'portal',
             'owner_id' => $contactResponsibleOwnerUserId,
         ]);
 
@@ -296,6 +296,7 @@ class NewAccountController extends Controller
 
         $mail->send(new PortalMail($mail, $htmlBody));
 
+        var_dump($htmlBody);
 
         return true;
     }

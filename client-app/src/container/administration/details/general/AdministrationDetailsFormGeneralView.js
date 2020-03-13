@@ -106,11 +106,11 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'E-mail template aanmaning'}
                             value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
                         />
-                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Logo'} value={logoName} />
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
-                        <ViewText label={'Logo'} value={logoName} />
+                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
                     </div>
 
                     <div className="row">

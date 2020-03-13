@@ -20,6 +20,8 @@ use App\Http\Resources\Invoice\FullInvoiceProduct;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Invoice\SendInvoice;
+use App\Jobs\Invoice\SendAllInvoices;
+use App\Jobs\Invoice\SendInvoiceNotifications;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -37,12 +39,35 @@ class InvoiceController extends ApiController
     {
         $invoices = $requestQuery->get();
 
+        $onlyEmailInvoices = $requestQuery->getRequest()->onlyEmailInvoices == 'true';
+        $onlyPostInvoices = $requestQuery->getRequest()->onlyPostInvoices == 'true';
+
         $invoices->load(['order.contact']);
 
         foreach ($invoices as $invoice) {
             $orderController = new OrderController;
             $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
         }
+
+        if ($onlyEmailInvoices)
+        {
+            $invoices = $invoices->reject(function ($invoice) {
+                return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
+            });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+        }
+        elseif ($onlyPostInvoices)
+        {
+            $invoices = $invoices->reject(function ($invoice) {
+                return ( $invoice->emailToAddress !== 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
+            });
+            $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+        }
+        $totalIds = $invoices->pluck("id");
 
         $totalPrice = 0;
         foreach ($invoices as $invoice) {
@@ -53,6 +78,7 @@ class InvoiceController extends ApiController
             ->additional([
                 'meta' => [
                     'total' => $requestQuery->total(),
+                    'invoiceIdsTotal' => $totalIds,
                     'totalPrice' => $totalPrice,
                 ]
             ]);
@@ -189,7 +215,7 @@ class InvoiceController extends ApiController
 
     public function sendNotification(Invoice $invoice)
     {
-        return InvoiceHelper::sendNotification($invoice);
+        SendInvoiceNotifications::dispatch($invoice, Auth::id());
     }
 
     public function sendNotificationPost(Invoice $invoice)
@@ -209,7 +235,7 @@ class InvoiceController extends ApiController
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
 
         foreach ($invoices as $invoice) {
-            InvoiceHelper::sendNotification($invoice);
+            SendInvoiceNotifications::dispatch($invoice, Auth::id());
         }
     }
 
@@ -250,6 +276,8 @@ class InvoiceController extends ApiController
     public function sendAll(Request $request)
     {
         set_time_limit(0);
+        $this->authorize('manage', Invoice::class);
+
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
         // verwijder alle notas waar twinfield gebruikt wordt en geen ledgercode bekend is
@@ -279,7 +307,7 @@ class InvoiceController extends ApiController
 
             if ($validatedInvoices->count() > 0) {
 
-                // Eerst hele zet in progress zetten
+                // Eerst hele zet in progress of is resending zetten
                 foreach ($validatedInvoices as $invoice) {
                     $orderController = new OrderController;
                     $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
@@ -287,42 +315,16 @@ class InvoiceController extends ApiController
                     if ($emailTo === 'Geen e-mail bekend') {
                         abort(404, 'Geen e-mail bekend');
                     } else {
-                        InvoiceHelper::invoiceInProgress($invoice);
-                    }
-                }
-                foreach ($validatedInvoices as $invoice) {
-                    $invoice->date_collection = $request->input('dateCollection');
-                    $invoice->save();
-                    InvoiceHelper::createInvoiceDocument($invoice);
-                }
-
-                foreach ($validatedInvoices as $invoice) {
-                    //alleen als nota goed is aangemaakt, gaan we mailen
-                    if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
-
-                        InvoiceHelper::invoiceIsSending($invoice);
-                        try {
-                            $invoiceResponse = InvoiceHelper::send($invoice);
-                            InvoiceHelper::invoiceSend($invoice);
-                            array_push($response, $invoiceResponse);
-                        } catch (\Exception $e) {
-                            Log::error($e->getMessage());
-                            InvoiceHelper::invoiceErrorSending($invoice);
+                        if($invoice->status_id === 'to-send') {
+                            InvoiceHelper::invoiceInProgress($invoice);
+                        }elseif($invoice->status_id === 'error-sending'){
+                            InvoiceHelper::invoiceIsResending($invoice);
+                        }else{
+                            abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden of Fout verzenden");
                         }
                     }
                 }
-
-                if ($paymentTypeId === 'collection') {
-                    // haal niet goed aangemaakte notas uit list voor SEPA file
-                    $validatedInvoices = $validatedInvoices->reject(function ($invoice) {
-                        return ($invoice->invoicesToSend()->exists()
-                            && !$invoice->invoicesToSend()->first()->invoice_created);
-                    });
-
-                    $sepaHelper = new SepaHelper($administration, $validatedInvoices);
-                    $sepa = $sepaHelper->generateSepaFile();
-                    return $sepaHelper->downloadSepa($sepa);
-                }
+                SendAllInvoices::dispatch($validatedInvoices, Auth::id(), $request->input('dateCollection'), $administration, $paymentTypeId);
 
             }
         }
@@ -333,6 +335,8 @@ class InvoiceController extends ApiController
     public function sendAllPost(Request $request)
     {
         set_time_limit(0);
+        $this->authorize('manage', Invoice::class);
+
         $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
 
         // verwijder alle notas waar twinfield gebruikt wordt en geen ledgercode bekend is
@@ -350,8 +354,11 @@ class InvoiceController extends ApiController
         if ($validatedInvoices->count() > 0) {
             // Eerst hele zet in progress zetten
             foreach ($validatedInvoices as $k => $invoice) {
-                InvoiceHelper::invoiceInProgress($invoice, true);
-            }
+                if($invoice->status_id === 'to-send') {
+                    InvoiceHelper::invoiceInProgress($invoice);
+                }else{
+                    abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden");
+                }            }
 
             $orderController = new OrderController;
 

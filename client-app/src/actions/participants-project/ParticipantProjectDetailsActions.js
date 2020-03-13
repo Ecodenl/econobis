@@ -66,25 +66,3 @@ export const deleteObligationNumber = id => {
         id,
     };
 };
-
-export const newParticipationMutation = participationMutations => {
-    return {
-        type: 'NEW_PARTICIPATION_MUTATION',
-        participationMutations,
-    };
-};
-
-export const updateParticipationMutation = participationMutations => {
-    return {
-        type: 'UPDATE_PARTICIPATION_MUTATION',
-        participationMutations,
-    };
-};
-
-export const deleteParticipationMutation = (id, participationId) => {
-    return {
-        type: 'DELETE_PARTICIPATION_MUTATION',
-        id,
-        participationId,
-    };
-};

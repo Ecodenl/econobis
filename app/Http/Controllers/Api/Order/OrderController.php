@@ -44,7 +44,8 @@ class OrderController extends ApiController
 
         return GridOrder::collection($orders)
             ->additional(['meta' => [
-            'total' => $requestQuery->total(),
+                'total' => $requestQuery->total(),
+                'orderIdsTotal' => $requestQuery->totalIds(),
             ]
         ]);
     }

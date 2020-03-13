@@ -342,6 +342,7 @@ Route::namespace('Api')
         Route::get('administration/{administration}', 'Administration\AdministrationController@show');
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
         Route::get('administration/{administration}/ledgers', 'Administration\AdministrationController@getLedgers');
+        Route::get('administration/{administration}/totals-info-administration', 'Administration\AdministrationController@getTotalsInfoAdministration');
         Route::post('administration/sepa/{sepa}/delete', 'Administration\AdministrationController@deleteSepa');
         Route::post('administration', 'Administration\AdministrationController@store');
         Route::post('administration/ledger', 'Administration\AdministrationController@storeLedger');
@@ -428,6 +429,8 @@ Route::namespace('Api')
         Route::post('vat-code', 'VatCode\VatCodeController@store');
         Route::post('vat-code/{vatCode}', 'VatCode\VatCodeController@update');
 
+        Route::get('jobs-log/jory', 'JobsLog\JobsLogController@jory');
+
         Route::get('ledger/jory', 'Ledger\LedgerController@jory');
         Route::post('ledger', 'Ledger\LedgerController@store');
         Route::post('ledger/{ledger}', 'Ledger\LedgerController@update');
@@ -450,10 +453,10 @@ Route::namespace('Api')
         Route::post('setting', 'Setting\SettingController@store');
 
         // Apart voor app en portal ivm toepassen aparte middleware
-        Route::get('jory', '\\'.JoryController::class.'@multiple');
-        Route::get('jory/{uri}/count', '\\'.JoryController::class.'@count');
-        Route::get('jory/{uri}/{id}', '\\'.JoryController::class.'@find');
-        Route::get('jory/{uri}', '\\'.JoryController::class.'@get');
+        Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');
+        Route::get('jory/{resource}/count', '\\'.JoryController::class.'@count');
+        Route::get('jory/{resource}/{id}', '\\'.JoryController::class.'@find');
+        Route::get('jory/{resource}', '\\'.JoryController::class.'@get')->name('jory.get');
 
     });
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 const URL_INVOICE = `${URL_API}/api/invoice`;
 
 export default {
-    fetchInvoices: ({ filters, sorts, pagination, administrationId }) => {
+    fetchInvoices: ({ filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices }) => {
         const requestUrl = `${URL_INVOICE}/grid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
@@ -11,6 +11,8 @@ export default {
         return axios.get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
+                onlyEmailInvoices: JSON.stringify(onlyEmailInvoices),
+                onlyPostInvoices: JSON.stringify(onlyPostInvoices),
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,

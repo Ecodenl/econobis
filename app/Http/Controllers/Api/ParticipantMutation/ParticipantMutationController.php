@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\ParticipantMutation;
 
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
@@ -44,6 +45,14 @@ class ParticipantMutationController extends ApiController
             ->string('paidOn')->onEmpty(null)->alias('paid_on')->next()
             ->get();
 
+        $participantProject = ParticipantProject::find($data['participation_id']);
+        if($participantProject){
+            $dateRegisterOld = $participantProject->dateEntryFirstDeposit;
+        }
+        else{
+            $dateRegisterOld = Carbon::parse('9999-12-31');
+        }
+
         if(ParticipantMutationStatus::find( $data['status_id'] )->code_ref == 'final'
             && isset( $data['date_granted'] ) )
         {
@@ -62,8 +71,18 @@ class ParticipantMutationController extends ApiController
 
         $this->recalculateParticipantMutation($participantMutation);
 
+        $dateRegisterNew = $participantMutation->participation->dateEntryFirstDeposit;
+        $melding = null;
 
-    }
+        if($dateRegisterOld != $dateRegisterNew )
+        {
+            $melding[] = "De eerste ingangsdatum is gewijzigd.";
+            $melding[] = "Oorspronkelijke eerste ingangsdatum was: " . Carbon::parse($dateRegisterOld)->format('d-m-Y') . ".";
+            $melding[] = "Nieuwe eerste ingangsdatum is geworden: " . Carbon::parse($dateRegisterNew)->format('d-m-Y') . ".";
+        }
+
+        return $melding;
+   }
 
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
     {
@@ -106,9 +125,9 @@ class ParticipantMutationController extends ApiController
         $melding = null;
         if($dateRegisterOld != $dateRegisterNew )
         {
-            $melding[] = "De eerste ingangsdatum is gewijzigd.";
-            $melding[] = "Oorspronkelijke eerste ingangsdatum was: " . Carbon::parse($dateRegisterOld)->format('d-m-Y') . ".";
-            $melding[] = "Nieuwe eerste ingangsdatum is geworden: " . Carbon::parse($dateRegisterNew)->format('d-m-Y') . ".";
+            $melding[] = "De eerste ingangsdatum deelname is gewijzigd.";
+            $melding[] = "Oorspronkelijke eerste ingangsdatum deelname was: " . Carbon::parse($dateRegisterOld)->format('d-m-Y') . ".";
+            $melding[] = "Nieuwe eerste ingangsdatum deelname is geworden: " . Carbon::parse($dateRegisterNew)->format('d-m-Y') . ".";
         }
 
         return $melding;
@@ -118,8 +137,13 @@ class ParticipantMutationController extends ApiController
     {
         $this->authorize('manage', ParticipantMutation::class);
 
-        DB::transaction(function () use ($participantMutation) {
-            $participantProject = $participantMutation->participation;
+        $melding = null;
+
+        $participantProject = $participantMutation->participation;
+
+        $dateRegisterOld = $participantProject->dateEntryFirstDeposit;
+
+        DB::transaction(function () use ($participantMutation, $participantProject) {
 
             if( !$participantProject->participantInDefinitiveRevenue )
             {
@@ -139,6 +163,15 @@ class ParticipantMutationController extends ApiController
 
         });
 
+        $dateRegisterNew = $participantProject->dateEntryFirstDeposit;
+
+        if($dateRegisterOld != $dateRegisterNew )
+        {
+            $melding[] = "De eerste ingangsdatum is gewijzigd.";
+            $melding[] = "Oorspronkelijke eerste ingangsdatum was: " . Carbon::parse($dateRegisterOld)->format('d-m-Y') . ".";
+            $melding[] = "Nieuwe eerste ingangsdatum is geworden: " . Carbon::parse($dateRegisterNew)->format('d-m-Y') . ".";
+        }
+        return $melding;
     }
 
     /**

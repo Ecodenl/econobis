@@ -53,10 +53,11 @@ class Product extends Model
         return $this->hasMany(InvoiceProduct::class);
     }
 
+    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     public function invoiceProductsToSend()
     {
         return $this->hasMany(InvoiceProduct::class)->whereHas('invoice', function ($q) {
-            $q->where('invoices.status_id', 'to-send');
+            $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
         });
     }
 

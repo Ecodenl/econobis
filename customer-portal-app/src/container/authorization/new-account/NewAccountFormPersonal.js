@@ -43,22 +43,7 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
             <Form>
                 <>
                     <Row className="justify-content-center">
-                        <p className={'text-light'}>Account aanmaken voor je zelf</p>
-                    </Row>
-                    <Row className="justify-content-center">
-                        <Field
-                            name="email"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    id="email"
-                                    className={''}
-                                    placeholder={'E-mailadres'}
-                                    errors={errors}
-                                    touched={touched}
-                                />
-                            )}
-                        />
+                        <p className={'text-light'}>Account aanmaken voor jezelf</p>
                     </Row>
                     <Row className="justify-content-center">
                         <p className={'text-light'}>Gegevens</p>
@@ -87,7 +72,7 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                                     field={field}
                                     errors={errors}
                                     touched={touched}
-                                    id="first_name"
+                                    id="first_name-new-acount"
                                     className={''}
                                     placeholder={'Voornaam'}
                                 />
@@ -116,9 +101,24 @@ const NewAccountFormPersonal = ({ handleSubmit, showSuccessMessage }) => (
                                     field={field}
                                     errors={errors}
                                     touched={touched}
-                                    id="last_name"
+                                    id="last_name-new-acount"
                                     className={''}
                                     placeholder={'Achternaam'}
+                                />
+                            )}
+                        />
+                    </Row>
+                    <Row className="justify-content-center">
+                        <Field
+                            name="email"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    id="email-new-acount"
+                                    className={''}
+                                    placeholder={'E-mailadres'}
+                                    errors={errors}
+                                    touched={touched}
                                 />
                             )}
                         />

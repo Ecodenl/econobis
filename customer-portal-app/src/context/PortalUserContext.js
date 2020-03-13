@@ -19,6 +19,23 @@ const PortalUserProvider = function(props) {
         setCurrentContact({});
     }
 
+    function updateNameSelectedContact(fullName) {
+        setCurrentContact({ ...currentSelectedContact, fullName });
+
+        if (user.id === currentSelectedContact.id) {
+            user.fullName = fullName;
+        }
+
+        const updatedOccupations = user.occupations.map(occupationContact => {
+            if (occupationContact.primaryContact.id === currentSelectedContact.id) {
+                occupationContact.primaryContact.fullName = fullName;
+            }
+            return occupationContact;
+        });
+
+        setUser({ ...user, occupations: updatedOccupations });
+    }
+
     return (
         <PortalUserContext.Provider
             value={{
@@ -27,6 +44,7 @@ const PortalUserProvider = function(props) {
                 currentSelectedContact,
                 setCurrentContact,
                 resetCurrentUserToDefault,
+                updateNameSelectedContact,
             }}
         >
             {props.children}

@@ -128,14 +128,28 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyOccupationFilter($query, $type, $data)
     {
-        $query->where(function($query) use ($data) {
-            $query->whereHas('occupations', function ($query) use ($data) {
-                $query->where('occupation_id', $data);
-            });
-            $query->orWhereHas('primaryOccupations', function ($query) use ($data) {
-                $query->where('occupation_id', $data);
-            });
-        });
+        switch($type){
+            case 'eq':
+                $query->whereHas('isSecondaryOccupant', function($query) use ($data) {
+                   $query->where('occupation_contact.occupation_id', $data);
+                });
+                break;
+            case 'neq':
+                $query->whereDoesntHave('isSecondaryOccupant', function($join) use ($data){
+                    $join->where('occupation_contact.occupation_id', $data);
+                });
+                break;
+            case 'rel':
+                $query->whereHas('isPrimaryOccupant', function($join) use ($data){
+                    $join->where('occupation_contact.occupation_id', $data);
+                });
+                break;
+            case 'nrel':
+                $query->whereDoesntHave('isPrimaryOccupant', function($join) use ($data){
+                    $join->where('occupation_contact.occupation_id', $data);
+                });
+                break;
+        }
     }
 
     protected function applyOpportunityFilter($query, $type, $data)

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import { hashHistory } from 'react-router';
 import moment from 'moment';
-import { setCheckedOrder } from '../../../../actions/order/OrdersActions';
-import { connect } from 'react-redux';
 
 class OrdersListItem extends Component {
     constructor(props) {
@@ -33,10 +31,6 @@ class OrdersListItem extends Component {
         hashHistory.push(`/order/${id}`);
     }
 
-    setCheckedOrder(id) {
-        this.props.setCheckedOrder(id);
-    }
-
     render() {
         const {
             id,
@@ -59,7 +53,12 @@ class OrdersListItem extends Component {
             >
                 {this.props.showSelectOrdersToCreate && (
                     <td>
-                        <input type="checkbox" checked={checked} onChange={() => this.setCheckedOrder(id)} />
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={this.props.toggleOrderCheck}
+                            checked={this.props.orderIds ? this.props.orderIds.includes(id) : false}
+                        />
                     </td>
                 )}
                 <td>{number}</td>
@@ -96,13 +95,4 @@ class OrdersListItem extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    setCheckedOrder: id => {
-        dispatch(setCheckedOrder(id));
-    },
-});
-
-export default connect(
-    null,
-    mapDispatchToProps
-)(OrdersListItem);
+export default OrdersListItem;

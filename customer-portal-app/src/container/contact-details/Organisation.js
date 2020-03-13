@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -8,11 +8,22 @@ import Col from 'react-bootstrap/Col';
 import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaOrganisation from './../../helpers/ValidationSchemaOrganisation';
+import { isEmpty } from 'lodash';
+import { Alert } from 'react-bootstrap';
 
-function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubmitContactValues }) {
-    const [editForm, setEditForm] = useState(false);
-
-    const validationSchema = initialContact.isParticipant
+function ContactDetailsOrganisation({
+    portalSettings,
+    initialContact,
+    handleSubmitContactValues,
+    editButtonGroup,
+    editForm,
+    setEditForm,
+}) {
+    const validationSchema = initialContact.isParticipantPcrProject
+        ? ValidationSchemaOrganisation.validationSchemaBasic
+              .concat(ValidationSchemaOrganisation.validationSchemaAdditional)
+              .concat(ValidationSchemaOrganisation.validationSchemaPcrAdditional)
+        : initialContact.isParticipant
         ? ValidationSchemaOrganisation.validationSchemaBasic.concat(
               ValidationSchemaOrganisation.validationSchemaAdditional
           )
@@ -30,7 +41,6 @@ function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubm
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                     render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
-                        // console.log(errors);
                         return (
                             <Form>
                                 <DefaultContactOrganisationEdit
@@ -71,6 +81,17 @@ function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubm
                                         </ButtonGroup>
                                     </Col>
                                 </Row>
+                                {!isEmpty(errors) ? (
+                                    <Row>
+                                        <Col>
+                                            <div className="alert-wrapper">
+                                                <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                                    Niet alle verplichten velden zijn (juist) ingevuld!
+                                                </Alert>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                ) : null}
                             </Form>
                         );
                     }}
@@ -79,19 +100,7 @@ function ContactDetailsOrganisation({ portalSettings, initialContact, handleSubm
                 <>
                     <DefaultContactOrganisationView portalSettings={portalSettings} initialContact={initialContact} />
                     <Row>
-                        <Col>
-                            <ButtonGroup aria-label="Steps" className="float-right">
-                                <Button
-                                    className={'w-button'}
-                                    size="sm"
-                                    onClick={function() {
-                                        setEditForm(true);
-                                    }}
-                                >
-                                    Wijzig
-                                </Button>
-                            </ButtonGroup>
-                        </Col>
+                        <Col>{editButtonGroup}</Col>
                     </Row>
                 </>
             )}

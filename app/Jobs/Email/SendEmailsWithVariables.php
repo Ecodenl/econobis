@@ -52,6 +52,7 @@ class SendEmailsWithVariables implements ShouldQueue
             $jobLog = new JobsLog();
             $jobLog->value = 'Start e-mail(s) versturen.';
             $jobLog->user_id = $userId;
+            $jobLog->job_category_id = 'email';
             $jobLog->save();
         }
     }
@@ -245,6 +246,7 @@ class SendEmailsWithVariables implements ShouldQueue
             $jobLog = new JobsLog();
             $jobLog->value = 'E-mail(s) verstuurd.';
             $jobLog->user_id = $this->userId;
+            $jobLog->job_category_id = 'email';
             $jobLog->save();
         }
     }
@@ -254,6 +256,7 @@ class SendEmailsWithVariables implements ShouldQueue
         $jobLog = new JobsLog();
         $jobLog->value = 'E-mail(s) versturen mislukt.';
         $jobLog->user_id = $this->userId;
+        $jobLog->job_category_id = 'email';
         $jobLog->save();
 
         Log::error('E-mail maken mislukt:' . $exception->getMessage());

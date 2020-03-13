@@ -37,6 +37,7 @@ class CreatePaymentInvoices implements ShouldQueue
 
         $jobLog = new JobsLog();
         $jobLog->value = "Start uitkering nota's.";
+        $jobLog->job_category_id = 'create-payment-invoice';
         $jobLog->user_id = $userId;
         $jobLog->save();
     }
@@ -57,12 +58,14 @@ class CreatePaymentInvoices implements ShouldQueue
         } else {
             $jobLog = new JobsLog();
             $jobLog->value = "Geen uitkering nota's gemaakt.";
+            $jobLog->job_category_id = 'create-payment-invoice';
             $jobLog->user_id = $this->userId;
             $jobLog->save();
         }
 
         $jobLog = new JobsLog();
         $jobLog->value = "Uitkering nota's verwerkt.";
+        $jobLog->job_category_id = 'create-payment-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
     }
@@ -71,6 +74,7 @@ class CreatePaymentInvoices implements ShouldQueue
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Uitkering nota's mislukt.";
+        $jobLog->job_category_id = 'create-payment-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 

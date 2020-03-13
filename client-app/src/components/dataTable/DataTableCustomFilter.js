@@ -8,6 +8,7 @@ import DataTableCustomFilterSelectDate from './DataTableCustomFilterSelectDate';
 import moment from 'moment';
 import DataTableDateFilter from './DataTableDateFilter';
 import DataTableCustomFilterSelectDropdownHas from './DataTableCustomFilterSelectDropdownHas';
+import DataTableCustomFilterSelectDropdownRelations from './DataTableCustomFilterSelectDropdownRelations';
 
 moment.locale('nl');
 
@@ -105,6 +106,13 @@ const DataTableCustomFilter = props => {
                         readOnly={props.filter.readOnly}
                     />
                 )}
+                {fieldType === 'dropdownRelations' && (
+                    <DataTableCustomFilterSelectDropdownRelations
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
                 {fieldType === 'date' && (
                     <DataTableCustomFilterSelectDate
                         handleInputChange={handleInputChange}
@@ -126,7 +134,7 @@ const DataTableCustomFilter = props => {
                             readOnly={props.filter.readOnly}
                         />
                     )}
-                    {(fieldType === 'dropdown' || fieldType === 'dropdownHas') && (
+                    {(fieldType === 'dropdown' || fieldType === 'dropdownHas' || fieldType === 'dropdownRelations') && (
                         <select
                             className={`form-control input-sm`}
                             id="data"

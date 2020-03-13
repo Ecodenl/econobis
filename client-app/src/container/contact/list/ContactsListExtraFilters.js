@@ -177,8 +177,8 @@ class ContactsListExtraFilters extends Component {
             },
             occupation: {
                 name: 'Verbinding',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.occupations,
+                type: 'dropdownRelations',
+                dropDownOptions: this.props.primaryOccupations,
             },
             opportunity: {
                 name: 'Kans',
@@ -299,7 +299,7 @@ class ContactsListExtraFilters extends Component {
 const mapStateToProps = state => {
     return {
         contactStatuses: state.systemData.contactStatuses,
-        occupations: state.systemData.occupations,
+        primaryOccupations: state.systemData.primaryOccupations,
         measureCategories: state.systemData.measureCategories,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,

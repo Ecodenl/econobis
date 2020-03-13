@@ -41,7 +41,7 @@ const ParticipantsListHead = ({
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateRegister'}
-                title={'Eerste ingangsdatum'}
+                title={'Eerste ingangsdatum deelname'}
                 width={'10%'}
                 setSorts={setSorts}
             />

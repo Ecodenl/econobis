@@ -14,6 +14,7 @@ use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\Sepa\SepaHelper;
+use App\Http\Controllers\Api\Order\OrderController;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,6 +36,8 @@ class SendAllInvoices implements ShouldQueue
     private $dateCollection;
     private $administration;
     private $paymentTypeId;
+    private $invoicesOk;
+    private $invoicesError;
 
     public function __construct($validatedInvoices, $userId, $dateCollection, $administration, $paymentTypeId)
     {
@@ -43,9 +46,11 @@ class SendAllInvoices implements ShouldQueue
         $this->dateCollection = $dateCollection;
         $this->administration = $administration;
         $this->paymentTypeId = $paymentTypeId;
+        $this->invoicesOk = 0;
+        $this->invoicesError = 0;
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Start alle nota's verzenden.";
+        $jobLog->value = "Start alle nota's maken/verzenden.";
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $userId;
         $jobLog->save();
@@ -57,6 +62,15 @@ class SendAllInvoices implements ShouldQueue
         Auth::setUser(User::find($this->userId));
 
         foreach ($this->validatedInvoices as $invoice) {
+            $orderController = new OrderController();
+            $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
+
+            $jobLog = new JobsLog();
+            $jobLog->value = 'Start maken en versturen nota ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.').';
+            $jobLog->job_category_id = 'sent-invoice';
+            $jobLog->user_id = $this->userId;
+            $jobLog->save();
+
             //invoice document maken (niet bij resenden)
             // We leggen ook al date_sent en date_collection vast (deze wordt nl. gebruikt als notadatum op de nota en hebben we
             // dus nodig bij maken nota (PDF).
@@ -67,6 +81,7 @@ class SendAllInvoices implements ShouldQueue
                 InvoiceHelper::createInvoiceDocument($invoice);
             }
         }
+        $response = [];
 
         foreach ($this->validatedInvoices as $invoice) {
             //alleen als nota goed is aangemaakt, gaan we mailen
@@ -86,7 +101,24 @@ class SendAllInvoices implements ShouldQueue
                     Log::error($e->getMessage());
                     InvoiceHelper::invoiceErrorSending($invoice);
                 }
+            }else{
+                if($invoice->status_id === 'is-resending'){
+                    InvoiceHelper::invoiceErrorSending($invoice);
+                }
             }
+
+            $jobLog = new JobsLog();
+            if($invoice->status_id === 'sent'){
+                $this->invoicesOk += 1;
+                $jobLog->value = 'Maken en versturen nota '.$invoice->number.' ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.') voltooid.';
+            }else{
+                $this->invoicesError += 1;
+                $jobLog->value = 'Maken en versturen nota '.$invoice->number.' ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.') mislukt. Status: '.$invoice->status_id;
+            }
+            $jobLog->job_category_id = 'sent-invoice';
+            $jobLog->user_id = $this->userId;
+            $jobLog->save();
+
         }
 
         if ($this->paymentTypeId === 'collection') {
@@ -97,13 +129,18 @@ class SendAllInvoices implements ShouldQueue
             });
 
             $sepaHelper = new SepaHelper($this->administration, $validatedInvoices);
-            $sepa = $sepaHelper->generateSepaFile();
 // sent invoice now in queue (jobs), so download sepa when done not possible anymore
+//            $sepa = $sepaHelper->generateSepaFile();
 //            return $sepaHelper->downloadSepa($sepa);
+            $sepaHelper->generateSepaFile();
         }
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Alle nota's verzonden.";
+        if($this->invoicesError>0){
+            $jobLog->value = "Fouten bij maken/verzenden nota's. Verzonden nota's: ".$this->invoicesOk.". Niet verzonden nota's: ".$this->invoicesError."." ;
+        }else{
+            $jobLog->value = "Alle nota's (".$this->invoicesOk.") verzonden";
+        }
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
@@ -112,11 +149,11 @@ class SendAllInvoices implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = "Nota's maken mislukt.";
+        $jobLog->value = "Nota's maken/verzenden mislukt.";
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Nota's maken mislukt:" . $exception->getMessage());
+        Log::error("Nota's maken/verzenden mislukt: " . $exception->getMessage());
     }
 }

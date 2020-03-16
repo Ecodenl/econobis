@@ -77,6 +77,6 @@ class CreateAllInvoices implements ShouldQueue
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Nota's maken mislukt:" . $exception->getMessage());
+        Log::error("Nota's maken mislukt: " . $exception->getMessage());
     }
 }

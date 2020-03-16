@@ -180,6 +180,15 @@ const InvoicesListFilter = props => {
                             <option key={'error-sending'} value={'error-sending'}>
                                 {'Fout verzenden'}
                             </option>
+                            <option key={'in-progress'} value={'in-progress'}>
+                                {'Wordt gemaakt'}
+                            </option>
+                            <option key={'is-sending'} value={'is-sending'}>
+                                {'Wordt verstuurd'}
+                            </option>
+                            <option key={'is-resending'} value={'is-resending'}>
+                                {'Wordt opnieuw verstuurd'}
+                            </option>
                         </optgroup>
                         <optgroup label={'Substatus'}>
                             <option key={'reminder'} value={'reminder'}>

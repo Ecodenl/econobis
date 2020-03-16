@@ -57,7 +57,7 @@ class Product extends Model
     public function invoiceProductsToSend()
     {
         return $this->hasMany(InvoiceProduct::class)->whereHas('invoice', function ($q) {
-            $q->where('invoices.status_id', 'to-send');
+            $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
         });
     }
 

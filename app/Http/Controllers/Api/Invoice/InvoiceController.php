@@ -21,6 +21,7 @@ use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Invoice\SendInvoice;
 use App\Jobs\Invoice\SendAllInvoices;
+use App\Jobs\Invoice\SendInvoiceNotifications;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -214,7 +215,7 @@ class InvoiceController extends ApiController
 
     public function sendNotification(Invoice $invoice)
     {
-        return InvoiceHelper::sendNotification($invoice);
+        SendInvoiceNotifications::dispatch($invoice, Auth::id());
     }
 
     public function sendNotificationPost(Invoice $invoice)
@@ -234,7 +235,7 @@ class InvoiceController extends ApiController
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
 
         foreach ($invoices as $invoice) {
-            InvoiceHelper::sendNotification($invoice);
+            SendInvoiceNotifications::dispatch($invoice, Auth::id());
         }
     }
 

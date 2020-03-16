@@ -17,6 +17,20 @@ export default {
                 console.log(error);
             });
     },
+    fetchTotalsInfoAdministration: function(id) {
+        const requestUrl = `${URL_ADMINISTRATION}/${id}/totals-info-administration`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
 
     newAdministration: administration => {
         const requestUrl = `${URL_ADMINISTRATION}`;

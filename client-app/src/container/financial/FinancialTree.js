@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { hashHistory, Link } from 'react-router';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
@@ -10,6 +10,7 @@ import { fileText } from 'react-icons-kit/fa/fileText';
 import { fileO } from 'react-icons-kit/fa/fileO';
 
 import FinancialSidebarHelper from '../../helpers/FinancialSidebarHelper';
+import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
 
 class FinancialTree extends Component {
     constructor(props) {
@@ -18,6 +19,7 @@ class FinancialTree extends Component {
         const activeMenu = FinancialSidebarHelper(props.currentRouteParams);
 
         this.state = {
+            totalsInfoAdministration: [],
             activeMenuItem: activeMenu.activeMenuItem,
             activeParent: activeMenu.activeParent,
         };
@@ -25,7 +27,12 @@ class FinancialTree extends Component {
         this.onItemClick = this.onItemClick.bind(this);
     }
 
+    componentDidMount() {
+        this.fetchTotalsInfoAdministration(this.props.currentRouteParams.id);
+    }
+
     componentWillReceiveProps(nextProps) {
+        this.fetchTotalsInfoAdministration(this.props.currentRouteParams.id);
         if (
             this.props.currentRouteParams.type !== nextProps.currentRouteParams.type ||
             this.props.currentRouteParams.filter !== nextProps.currentRouteParams.filter
@@ -37,12 +44,20 @@ class FinancialTree extends Component {
     }
 
     onItemClick(id, parent) {
+        this.fetchTotalsInfoAdministration(this.props.currentRouteParams.id);
+
         if (parent) {
             this.setState({ activeParent: parent, activeMenuItem: id });
         } else {
             this.setState({ activeParent: null, activeMenuItem: id });
         }
     }
+
+    fetchTotalsInfoAdministration = administrationId => {
+        AdministrationDetailsAPI.fetchTotalsInfoAdministration(administrationId).then(payload => {
+            this.setState({ totalsInfoAdministration: payload });
+        });
+    };
 
     render() {
         return (
@@ -63,7 +78,7 @@ class FinancialTree extends Component {
                             </NavIcon>
                             <NavText>
                                 <Link className="financial-tree-link-header" to={`financieel/${this.props.id}/orders`}>
-                                    Alle orders({this.props.administrationDetails.totalOrders})
+                                    Alle orders({this.state.totalsInfoAdministration.totalOrders})
                                 </Link>
                             </NavText>
                             <Nav id="concepts">
@@ -72,7 +87,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/orders/concepten`}
                                     >
-                                        Concept orders({this.props.administrationDetails.totalOrdersConcepts})
+                                        Concept orders({this.state.totalsInfoAdministration.totalOrdersConcepts})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -83,7 +98,7 @@ class FinancialTree extends Component {
                                         to={`financieel/${this.props.id}/orders/aankomend`}
                                     >
                                         Actief - toekomstig orders(
-                                        {this.props.administrationDetails.totalOrdersUpcoming})
+                                        {this.state.totalsInfoAdministration.totalOrdersUpcoming})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -95,7 +110,7 @@ class FinancialTree extends Component {
                                     >
                                         {' '}
                                         Actief - te factureren orders(
-                                        {this.props.administrationDetails.totalOrdersToCreateInvoices})
+                                        {this.state.totalsInfoAdministration.totalOrdersToCreateInvoices})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -107,7 +122,7 @@ class FinancialTree extends Component {
                                     >
                                         {' '}
                                         Actief - te verzenden orders(
-                                        {this.props.administrationDetails.totalOrdersToSendInvoices})
+                                        {this.state.totalsInfoAdministration.totalOrdersToSendInvoices})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -117,7 +132,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/orders/beeindigd`}
                                     >
-                                        Beëindigde orders({this.props.administrationDetails.totalOrdersClosed})
+                                        Beëindigde orders({this.state.totalsInfoAdministration.totalOrdersClosed})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -128,7 +143,7 @@ class FinancialTree extends Component {
                             </NavIcon>
                             <NavText>
                                 <Link className="financial-tree-link-header" to={`financieel/${this.props.id}/notas`}>
-                                    Alle nota's({this.props.administrationDetails.totalInvoices})
+                                    Alle nota's({this.state.totalsInfoAdministration.totalInvoices})
                                 </Link>
                             </NavText>
                             <Nav id="to-send-collection">
@@ -138,7 +153,7 @@ class FinancialTree extends Component {
                                         to={`financieel/${this.props.id}/notas/te-verzenden-incasso`}
                                     >
                                         Te verzenden - incasso nota's(
-                                        {this.props.administrationDetails.totalInvoicesToSendCollection})
+                                        {this.state.totalsInfoAdministration.totalInvoicesToSendCollection})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -149,7 +164,7 @@ class FinancialTree extends Component {
                                         to={`financieel/${this.props.id}/notas/te-verzenden-overboeken`}
                                     >
                                         Te verzenden - overboek nota's(
-                                        {this.props.administrationDetails.totalInvoicesToSendTransfer})
+                                        {this.state.totalsInfoAdministration.totalInvoicesToSendTransfer})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -160,7 +175,7 @@ class FinancialTree extends Component {
                                         to={`financieel/${this.props.id}/notas/fout-verzenden-incasso`}
                                     >
                                         Fout verzenden - incasso nota's(
-                                        {this.props.administrationDetails.totalInvoicesErrorSendingCollection})
+                                        {this.state.totalsInfoAdministration.totalInvoicesErrorSendingCollection})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -171,7 +186,7 @@ class FinancialTree extends Component {
                                         to={`financieel/${this.props.id}/notas/fout-verzenden-overboeken`}
                                     >
                                         Fout verzenden - overboek nota's(
-                                        {this.props.administrationDetails.totalInvoicesErrorSendingTransfer})
+                                        {this.state.totalsInfoAdministration.totalInvoicesErrorSendingTransfer})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -181,7 +196,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/notas/verzonden`}
                                     >
-                                        Verzonden({this.props.administrationDetails.totalInvoicesSent})
+                                        Verzonden({this.state.totalsInfoAdministration.totalInvoicesSent})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -193,7 +208,8 @@ class FinancialTree extends Component {
                                             className="financial-tree-link"
                                             to={`financieel/${this.props.id}/notas/geexporteerd`}
                                         >
-                                            Verzonden geboekt({this.props.administrationDetails.totalInvoicesExported})
+                                            Verzonden geboekt(
+                                            {this.state.totalsInfoAdministration.totalInvoicesExported})
                                         </Link>
                                     </NavText>
                                 </Nav>
@@ -204,7 +220,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/notas/herinnering`}
                                     >
-                                        Herinnering({this.props.administrationDetails.totalInvoicesReminder})
+                                        Herinnering({this.state.totalsInfoAdministration.totalInvoicesReminder})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -214,7 +230,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/notas/aanmaning`}
                                     >
-                                        Aanmaning({this.props.administrationDetails.totalInvoicesExhortation})
+                                        Aanmaning({this.state.totalsInfoAdministration.totalInvoicesExhortation})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -224,7 +240,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/notas/betaald`}
                                     >
-                                        Betaald({this.props.administrationDetails.totalInvoicesPaid})
+                                        Betaald({this.state.totalsInfoAdministration.totalInvoicesPaid})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -234,7 +250,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/notas/oninbaar`}
                                     >
-                                        Oninbaar({this.props.administrationDetails.totalInvoicesIrrecoverable})
+                                        Oninbaar({this.state.totalsInfoAdministration.totalInvoicesIrrecoverable})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -248,7 +264,7 @@ class FinancialTree extends Component {
                                     className="financial-tree-link-header"
                                     to={`financieel/${this.props.id}/uitkering-notas`}
                                 >
-                                    Uitkering nota's({this.props.administrationDetails.totalPaymentInvoices})
+                                    Uitkering nota's({this.state.totalsInfoAdministration.totalPaymentInvoices})
                                 </Link>
                             </NavText>
                             <Nav id="sent">
@@ -257,7 +273,8 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/uitkering-notas/verzonden`}
                                     >
-                                        Verzonden({this.props.administrationDetails.totalPaymentInvoicesSent})
+                                        Verzonden({this.props.administrationDetails.totalPaymentInvoicesSent}) | (
+                                        {this.state.totalsInfoAdministration.totalPaymentInvoicesSent})
                                     </Link>
                                 </NavText>
                             </Nav>
@@ -267,7 +284,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/uitkering-notas/niet-betaald`}
                                     >
-                                        Niet betaald({this.props.administrationDetails.totalPaymentInvoicesNotPaid})
+                                        Niet betaald({this.state.totalsInfoAdministration.totalPaymentInvoicesNotPaid})
                                     </Link>
                                 </NavText>
                             </Nav>

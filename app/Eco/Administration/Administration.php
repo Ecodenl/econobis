@@ -115,7 +115,6 @@ class Administration extends Model
         return $this->orders()->where('status_id', 'concept')->count();
     }
 
-    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     public function getTotalOrdersUpcomingAttribute()
     {
         return $this->orders()
@@ -125,28 +124,26 @@ class Administration extends Model
                     ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
             })
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
 
-    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     public function getTotalOrdersToCreateInvoicesAttribute()
     {
         return $this->orders()
             ->where('orders.status_id', 'active')
             ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
             ->whereDoesntHave('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
 
-    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     public function getTotalOrdersToSendInvoicesAttribute()
     {
         return $this->orders()
             ->where('orders.status_id', 'active')
             ->whereHas('invoices', function ($q) {
-                $q->where('invoices.status_id', 'to-send');
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
 

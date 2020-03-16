@@ -51,16 +51,15 @@ class Filter extends RequestFilter
             'daysToExpire' => 'lte',
         ];
 
-    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     protected function applyDateRequestedFilter($query, $type, $data)
     {
         $query->where(function ($q) use ($data) {
             $q->orWhere(function ($q1) use ($data) {
-                $q1->where('invoices.status_id', 'to-send')
+                $q1->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
                 ->where('invoices.date_requested', '<=',
                     $data);})
                 ->orWhere(function ($q2) use ($data) {
-                    $q2->where('invoices.status_id', '!=', 'to-send')
+                    $q2->whereNotIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
                         ->where('invoices.date_sent', '<=',
                             $data);
                 });
@@ -69,17 +68,16 @@ class Filter extends RequestFilter
         return false;
     }
 
-    // todo moeten we hier ook niet wat doen met invoice status in-progress, error-making en/of error-sending ??
     protected function applySubjectFilter($query, $type, $data)
     {
         $query->join('orders', 'invoices.order_id', '=', 'orders.id');
 
         $query->where(function ($q) use ($data) {
             $q->orWhere(function ($q1) use ($data) {
-                $q1->where('invoices.status_id', 'to-send')
+                $q1->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
                     ->where('orders.subject', 'LIKE', '%' . $data . '%');})
                 ->orWhere(function ($q2) use ($data) {
-                    $q2->where('invoices.status_id', '!=', 'to-send')
+                    $q2->whereNotIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
                         ->where('invoices.subject', 'LIKE', '%' . $data . '%');
                 });
         });

@@ -234,7 +234,6 @@ class ContactDetailsFormAddressNew extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
                                 error={this.state.errors.countryId}
                                 emptyOption={false}
                             />

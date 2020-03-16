@@ -103,6 +103,7 @@ class ContactNewFormAddress extends Component {
                             options={this.props.countries}
                             value={countryId}
                             onChangeAction={this.props.handleInputChange}
+                            error={this.state.errors.countryId}
                             emptyOption={false}
                         />
                     </div>

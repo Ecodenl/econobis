@@ -360,7 +360,6 @@ class AdministrationNewForm extends Component {
                                 value={postalCode}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.postalCode}
-                                required={'required'}
                             />
                         </div>
 

@@ -438,7 +438,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={postalCode}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.postalCode}
-                                required={'required'}
                             />
                         </div>
 
@@ -458,6 +457,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
                                 emptyOption={false}
+                                error={this.state.errors.countryId}
                             />
                         </div>
 

@@ -460,6 +460,8 @@ class TemplateVariableHelper
     }
 
     public static function getProjectVar($model, $varname){
+        $projectTypeCodeRef = $model->projectType->code_ref;
+
         switch ($varname) {
             case 'naam':
                 return $model->name;
@@ -552,16 +554,36 @@ class TemplateVariableHelper
                 return  $model->total_participations - $model->participations_definitive;
                 break;
             case 'bedrag_interesse':
-                return number_format($model->amount_interessed, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_interessed, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_interessed * $model->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'bedrag_ingeschreven':
-                return number_format($model->amount_optioned, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_optioned, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_optioned * $model->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'bedrag_toegekend':
-                return number_format($model->amount_granted, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_granted, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_granted * $model->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'bedrag_definitief':
-                return number_format($model->amount_definitive, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_definitive, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_definitive * $model->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'aantal_participanten':
                 return $model->participantsProject->count();
@@ -647,7 +669,13 @@ class TemplateVariableHelper
                 break;
             case 'statussen':
                 return implode(', ', array_map(function ($status) {
-                    return $status->name;
+                    try{
+                        $statusName = $status->name;
+                    }catch (\Exception $e)
+                    {
+                        $statusName = $status['name'];
+                    }
+                    return $statusName;
                 }, $model->UniqueMutationStatuses)) ;
                 break;
             case 'project':
@@ -686,21 +714,36 @@ class TemplateVariableHelper
                 }
                 break;
             case 'bedrag_interesse':
-//                $amount_interessed = number_format($model->amount_interessed, 2, ',', '');
-//                if($projectTypeCodeRef != 'loan') {
-//                    $amount_interessed = number_format(($model->participations_interessed * $model->project->participation_worth), 2, ',', '');
-//                }
-//                return $amount_interessed;
-                return number_format($model->amount_interessed, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_interessed, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_interessed * $model->project->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'bedrag_ingeschreven':
-                return number_format($model->amount_optioned, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_optioned, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_optioned * $model->project->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'bedrag_toegekend':
-                return number_format($model->amount_granted, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_granted, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_granted * $model->project->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'bedrag_definitief':
-                return number_format($model->amount_definitive, 2, ',', '');
+                if($projectTypeCodeRef == 'loan') {
+                    $amount = number_format($model->amount_definitive, 2, ',', '');
+                }else{
+                    $amount = number_format(($model->participations_definitive * $model->project->participation_worth), 2, ',', '');
+                }
+                return $amount;
                 break;
             case 'saldo_kapitaal_rekening':
             case 'huidig_saldo_kapitaal_rekening':

@@ -137,7 +137,14 @@ class ParticipationProjectController extends Controller
 
         //send email
         if ($primaryEmailAddress) {
-            $this->setMailConfigByDistribution($project);
+            $mailbox = $this->setMailConfigByDistribution($project);
+            if ($mailbox) {
+                $fromEmail = $mailbox->email;
+                $fromName = $mailbox->name;
+            } else {
+                $fromEmail = Config::get('mail.from.address');
+                $fromName = Config::get('mail.from.name');
+            }
 
             $portalUserContact = $portalUser ? $portalUser->contact : null;
 
@@ -196,14 +203,6 @@ class ParticipationProjectController extends Controller
 //            $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
 //                $htmlBodyWithContactVariables);
 
-            $primaryMailbox = Mailbox::getDefault();
-            if ($primaryMailbox) {
-                $fromEmail = $primaryMailbox->email;
-                $fromName = $primaryMailbox->name;
-            } else {
-                $fromEmail = Config::get('mail.from.address');
-                $fromName = Config::get('mail.from.name');
-            }
 
             $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
                 $htmlBodyWithContactVariables, $document));
@@ -228,6 +227,7 @@ class ParticipationProjectController extends Controller
         if ($mailboxToSendFrom) {
             (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
         }
+        return $mailboxToSendFrom;
     }
     protected function translateToValidCharacterSet($field){
 

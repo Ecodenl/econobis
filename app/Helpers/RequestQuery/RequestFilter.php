@@ -30,6 +30,8 @@ abstract class RequestFilter
     protected $types = [
         'eq',
         'neq',
+        'rel',
+        'nrel',
         'ct',
         'lt',
         'lte',

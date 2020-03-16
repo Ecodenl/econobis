@@ -162,7 +162,7 @@ class ParticipantsListExtraFilters extends Component {
                 dropDownOptions: this.state.projects,
             },
             dateRegister: {
-                name: 'Eerste ingangsdatum',
+                name: 'Eerste ingangsdatum deelname',
                 type: 'date',
             },
             participantMutationTypeId: {

@@ -47,9 +47,7 @@ class InvoiceListSetMultiplePaid extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        let invoiceIds = [];
-
-        this.props.invoices.map(invoice => invoiceIds.push(invoice.id));
+        let invoiceIds = this.props.invoiceIds;
 
         // If no errors send form
         if (!hasErrors) {

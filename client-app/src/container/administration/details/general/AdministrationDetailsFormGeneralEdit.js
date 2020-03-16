@@ -111,6 +111,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldOfficeCode: false,
                 mailboxId: false,
                 emailBccNotas: false,
+                countryId: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -207,9 +208,18 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(administration.postalCode + '')) {
-            if (!validator.isPostalCode(administration.postalCode + '', 'any')) {
+        if (validator.isEmpty(administration.postalCode + '')) {
+            errors.postalCode = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(administration.countryId + '')) {
+            errors.countryId = true;
+            hasErrors = true;
+        } else {
+            if (administration.countryId == 'NL' && !validator.isPostalCode(administration.postalCode, 'NL')) {
                 errors.postalCode = true;
+                errors.countryId = true;
                 hasErrors = true;
             }
         }
@@ -287,10 +297,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                     administration.twinfieldOfficeCode &&
                     existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() ===
                         administration.twinfieldOfficeCode.toUpperCase() &&
-                    (existingTwinfieldAdministration.twinfieldOrganizationCode &&
-                        administration.twinfieldOrganizationCode &&
-                        existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
-                            administration.twinfieldOrganizationCode.toUpperCase()) &&
+                    existingTwinfieldAdministration.twinfieldOrganizationCode &&
+                    administration.twinfieldOrganizationCode &&
+                    existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
+                        administration.twinfieldOrganizationCode.toUpperCase() &&
                     existingTwinfieldAdministration.id !== administration.id &&
                     (twinFieldOfficeAndOrganizationCodeNotUnique = true)
             );
@@ -446,6 +456,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
+                                emptyOption={false}
+                                error={this.state.errors.countryId}
                             />
                         </div>
 

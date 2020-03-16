@@ -1,7 +1,7 @@
 export default function(contactData) {
     const typeContact = contactData.typeId ? contactData.typeId : null;
 
-    let emptyAddress = { street: '', number: '', addition: '', postalCode: '', city: '', countryId: null };
+    let emptyAddress = { street: '', number: '', addition: '', postalCode: '', city: '', countryId: 'NL' };
     let primaryAddress = null;
     let visitAddress = null;
     let postalAddress = null;

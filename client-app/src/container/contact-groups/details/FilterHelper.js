@@ -53,7 +53,7 @@ export default (type, field) => {
                 case 'address':
                     return 'Adres';
                 case 'dateRegister':
-                    return 'Eerste ingangsdatum';
+                    return 'Eerste ingangsdatum deelname';
                 case 'energySupplierId':
                     return 'Energie leverancier';
                 case 'contactBirthday':

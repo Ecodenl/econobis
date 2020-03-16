@@ -5,6 +5,7 @@ export default function(state = [], action) {
                 data: action.invoices.data.data,
                 meta: {
                     total: action.invoices.data.meta.total,
+                    invoiceIdsTotal: action.invoices.data.meta.invoiceIdsTotal,
                     totalPrice: action.invoices.data.meta.totalPrice,
                 },
             };

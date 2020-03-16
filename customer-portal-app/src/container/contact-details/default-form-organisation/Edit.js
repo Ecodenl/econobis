@@ -101,6 +101,9 @@ const DefaultContactOrganisationEdit = function({
                                     touched={touched}
                                     id="iban"
                                     placeholder={'Rekeningnummer (IBAN)'}
+                                    customOnChange={e => {
+                                        setFieldValue('iban', ('' + e.target.value).toUpperCase());
+                                    }}
                                 />
                             )}
                         />
@@ -269,107 +272,9 @@ const DefaultContactOrganisationEdit = function({
             </Col>
 
             <Col xs={12} md={6}>
-                <FormLabel htmlFor="street" className="field-label required">
-                    Postadres
-                </FormLabel>
-                <Row>
-                    <Col xs={12} sm={12}>
-                        <Field
-                            name="postalAddress.street"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street"
-                                    placeholder={'Straat'}
-                                />
-                            )}
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field
-                            name="postalAddress.number"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street_number"
-                                    placeholder={'Nummer'}
-                                />
-                            )}
-                        />
-                    </Col>
-                    <Col xs={12} sm={4}>
-                        <Field
-                            name="postalAddress.addition"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="addition"
-                                    placeholder={'Toevoeging'}
-                                />
-                            )}
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field
-                            name="postalAddress.postalCode"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="postal_code"
-                                    placeholder={'Postcode'}
-                                />
-                            )}
-                        />
-                    </Col>
-                    <Col xs={12} sm={8}>
-                        <Field
-                            name="postalAddress.city"
-                            render={({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="city"
-                                    placeholder={'Plaats'}
-                                />
-                            )}
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={8}>
-                        <Field
-                            name="postalAddress.countryId"
-                            render={({ field }) => (
-                                <Select
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="country_id"
-                                    placeholder={'Selecteer uw land'}
-                                    options={Countries}
-                                />
-                            )}
-                        />
-                    </Col>
-                </Row>
                 <FormLabel
                     htmlFor="street"
-                    className={
-                        projectTypeCodeRef === 'postalcode_link_capital' ? 'field-label required' : 'field-label'
-                    }
+                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
                 >
                     Bezoekadres
                 </FormLabel>
@@ -460,8 +365,106 @@ const DefaultContactOrganisationEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     id="country_id"
-                                    placeholder={'Selecteer uw land'}
+                                    // placeholder={'Selecteer uw land'}
                                     options={Countries}
+                                    emptyOption={false}
+                                />
+                            )}
+                        />
+                    </Col>
+                </Row>
+                <FormLabel htmlFor="street" className="field-label">
+                    Postadres
+                </FormLabel>
+                <Row>
+                    <Col xs={12} sm={12}>
+                        <Field
+                            name="postalAddress.street"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="street"
+                                    placeholder={'Straat'}
+                                />
+                            )}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} sm={4}>
+                        <Field
+                            name="postalAddress.number"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="street_number"
+                                    placeholder={'Nummer'}
+                                />
+                            )}
+                        />
+                    </Col>
+                    <Col xs={12} sm={4}>
+                        <Field
+                            name="postalAddress.addition"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="addition"
+                                    placeholder={'Toevoeging'}
+                                />
+                            )}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} sm={4}>
+                        <Field
+                            name="postalAddress.postalCode"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="postal_code"
+                                    placeholder={'Postcode'}
+                                />
+                            )}
+                        />
+                    </Col>
+                    <Col xs={12} sm={8}>
+                        <Field
+                            name="postalAddress.city"
+                            render={({ field }) => (
+                                <InputText
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="city"
+                                    placeholder={'Plaats'}
+                                />
+                            )}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} sm={8}>
+                        <Field
+                            name="postalAddress.countryId"
+                            render={({ field }) => (
+                                <Select
+                                    field={field}
+                                    errors={errors}
+                                    touched={touched}
+                                    id="country_id"
+                                    // placeholder={'Selecteer uw land'}
+                                    options={Countries}
+                                    emptyOption={false}
                                 />
                             )}
                         />
@@ -556,8 +559,9 @@ const DefaultContactOrganisationEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     id="country_id"
-                                    placeholder={'Selecteer uw land'}
+                                    // placeholder={'Selecteer uw land'}
                                     options={Countries}
+                                    emptyOption={false}
                                 />
                             )}
                         />
@@ -568,12 +572,13 @@ const DefaultContactOrganisationEdit = function({
                         <FormLabel
                             htmlFor="energy_supplier_id"
                             className={
+                                initialContact.isParticipantPcrProject ||
                                 projectTypeCodeRef === 'postalcode_link_capital'
                                     ? 'field-label required'
                                     : 'field-label'
                             }
                         >
-                            Energieleverancier
+                            Huidige energie leverancier
                         </FormLabel>
                         <Row>
                             <Col xs={12} sm={12} md={8}>
@@ -597,6 +602,7 @@ const DefaultContactOrganisationEdit = function({
                                 />
                             </Col>
                         </Row>
+
                         {values.primaryContactEnergySupplier && values.primaryContactEnergySupplier.energySupplierId ? (
                             <>
                                 <FormLabel

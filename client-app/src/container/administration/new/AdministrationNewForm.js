@@ -74,6 +74,7 @@ class AdministrationNewForm extends Component {
                 twinfieldOfficeCode: false,
                 mailboxId: false,
                 emailBccNotas: false,
+                countryId: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -160,9 +161,18 @@ class AdministrationNewForm extends Component {
             }
         }
 
-        if (!validator.isEmpty(administration.postalCode)) {
-            if (!validator.isPostalCode(administration.postalCode + '', 'any')) {
+        if (validator.isEmpty(administration.postalCode + '')) {
+            errors.postalCode = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(administration.countryId + '')) {
+            errors.countryId = true;
+            hasErrors = true;
+        } else {
+            if (administration.countryId == 'NL' && !validator.isPostalCode(administration.postalCode, 'NL')) {
                 errors.postalCode = true;
+                errors.countryId = true;
                 hasErrors = true;
             }
         }
@@ -368,6 +378,7 @@ class AdministrationNewForm extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
+                                emptyOption={false}
                             />
                         </div>
 

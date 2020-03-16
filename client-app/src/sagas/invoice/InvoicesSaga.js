@@ -2,10 +2,24 @@ import { put, call } from 'redux-saga/effects';
 import InvoicesAPI from '../../api/invoice/InvoicesAPI';
 import InvoiceDetailsAPI from '../../api/invoice/InvoiceDetailsAPI';
 
-export function* fetchInvoicesSaga({ filters, sorts, pagination, administrationId }) {
+export function* fetchInvoicesSaga({
+    filters,
+    sorts,
+    pagination,
+    administrationId,
+    onlyEmailInvoices,
+    onlyPostInvoices,
+}) {
     try {
         yield put({ type: 'IS_LOADING' });
-        const invoices = yield call(InvoicesAPI.fetchInvoices, { filters, sorts, pagination, administrationId });
+        const invoices = yield call(InvoicesAPI.fetchInvoices, {
+            filters,
+            sorts,
+            pagination,
+            administrationId,
+            onlyEmailInvoices,
+            onlyPostInvoices,
+        });
         yield put({ type: 'FETCH_INVOICES_SUCCESS', invoices });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {

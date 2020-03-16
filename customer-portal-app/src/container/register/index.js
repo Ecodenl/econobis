@@ -136,6 +136,20 @@ function RegisterProject({ match, currentSelectedContact }) {
             });
     }
 
+    function formatFullName(fullName) {
+        if (fullName) {
+            if (fullName.search(',') < 0) {
+                return fullName;
+            } else {
+                const firstName = fullName.slice(fullName.search(',') + 2);
+                const lastName = fullName.slice(0, fullName.search(','));
+                return firstName + ' ' + lastName;
+            }
+        } else {
+            return ' ';
+        }
+    }
+
     function handleSubmitRegisterValues(values) {
         setRegisterValues({ ...registerValues, ...values });
     }
@@ -161,6 +175,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                 alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
+
     return (
         <Container className={'content-section'}>
             {isLoading ? (
@@ -170,7 +185,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                     <Row>
                         <Col>
                             <h1 className="content-heading">
-                                <strong>{contact.fullName}</strong> is al ingeschreven voor project{' '}
+                                <strong>{formatFullName(contact.fullName)}</strong> is al ingeschreven voor project{' '}
                                 <strong>{project.name}</strong>
                             </h1>
                         </Col>
@@ -196,7 +211,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                             </h1>
                         ) : (
                             <h1 className="content-heading">
-                                Schrijf <strong>{contact.fullName}</strong> in voor project{' '}
+                                Schrijf <strong>{formatFullName(contact.fullName)}</strong> in voor project{' '}
                                 <strong>{project.name}</strong>
                             </h1>
                         )}

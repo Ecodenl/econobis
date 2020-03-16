@@ -330,10 +330,14 @@ class ContactController extends ApiController
     {
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
-            $addressData['countryId'] = null;
+            $addressData['countryId'] = 'NL';
         }
         if($addressData['number'] == ''){
             $addressData['number'] = null;
+        }
+        $addressData['postalCode'] = strtoupper( $addressData['postalCode']);
+        if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $addressData['postalCode'])){
+            $addressData['postalCode'] = preg_replace('/\s+/', '', $addressData['postalCode']);
         }
         if (isset($addressData['id']))
         {

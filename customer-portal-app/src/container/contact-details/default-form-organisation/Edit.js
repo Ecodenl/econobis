@@ -365,8 +365,9 @@ const DefaultContactOrganisationEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     id="country_id"
-                                    placeholder={'Selecteer uw land'}
+                                    // placeholder={'Selecteer uw land'}
                                     options={Countries}
+                                    emptyOption={false}
                                 />
                             )}
                         />
@@ -461,8 +462,9 @@ const DefaultContactOrganisationEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     id="country_id"
-                                    placeholder={'Selecteer uw land'}
+                                    // placeholder={'Selecteer uw land'}
                                     options={Countries}
+                                    emptyOption={false}
                                 />
                             )}
                         />
@@ -557,8 +559,9 @@ const DefaultContactOrganisationEdit = function({
                                     errors={errors}
                                     touched={touched}
                                     id="country_id"
-                                    placeholder={'Selecteer uw land'}
+                                    // placeholder={'Selecteer uw land'}
                                     options={Countries}
+                                    emptyOption={false}
                                 />
                             )}
                         />

@@ -266,11 +266,6 @@ class OrderNewForm extends Component {
             hasErrors = true;
         }
 
-        // if (validator.isEmpty(order.participationId + '')) {
-        //     errors.participationId = true;
-        //     hasErrors = true;
-        // }
-
         if (order.IBAN !== null && !validator.isEmpty(order.IBAN + '')) {
             if (!ibantools.isValidIBAN(order.IBAN)) {
                 errors.IBAN = true;

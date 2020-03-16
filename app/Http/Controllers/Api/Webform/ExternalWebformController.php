@@ -298,14 +298,12 @@ class ExternalWebformController extends Controller
         $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);
 
-//        $contact = $this->getContactByNameAndEmail($data);
-
         if ($contact) {
             // Person of organisatie is gevonden, uitvoeren acties
-// contactActie = "GEEN"
-// contactActie = "NAT" -> Nieuw adres + taak
-// contactActie = "NET" -> Nieuw emailadres + taak
-// contactActie = "CCT" -> Controle contact taak
+            // contactActie = "GEEN"
+            // contactActie = "NAT" -> Nieuw adres + taak
+            // contactActie = "NET" -> Nieuw emailadres + taak
+            // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'NAT' :
                     $this->addAddressToContact($data, $contact);
@@ -313,6 +311,14 @@ class ExternalWebformController extends Controller
                     $this->addContactToGroup($data, $contact);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
+                    $note .= "Voornaam : " . $data['first_name'] . "\n";
+                    $note .= "Achternaam : " . $data['last_name'] . "\n";
+                    $note .= "Straat : " . $data['address_street'] . "\n";
+                    $note .= "Nummer : " . $data['address_number'] . "\n";
+                    $note .= "Toevoeging : " . $data['address_addition'] . "\n";
+                    $note .= "Postcode : " . $data['address_postal_code'] . "\n";
+                    $note .= "Plaats : " . $data['address_city'] . "\n";
+                    $note .= "Landcode : " . $data['address_country_id'] . "\n";
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($contact, $webform, $note);
                     break;
@@ -321,34 +327,31 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactToGroup($data, $contact);
                     $note = "Webformulier " . $webform->name . ".\n\n";
-                    $note .= "Nieuw e-mailadres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
+                    $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($contact, $webform, $note);
                     break;
                 case 'CCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
-                    $note .= "Gegevens contact " . $contact->full_name . " (".$contact->number.") gevonden op basis van naam en/of e-mail, zonder match op NAW.\n";
+                    $note .= "Gegevens contact met emailadres " . $data['email_address'] . " (".$contact->number.") gevonden bij op basis van e-mail maar zonder goede match op NAW.\n";
+                    $note .= "Voornaam : " . $data['first_name'] . "\n";
+                    $note .= "Achternaam : " . $data['last_name'] . "\n";
+                    $note .= "Straat : " . $data['address_street'] . "\n";
+                    $note .= "Nummer : " . $data['address_number'] . "\n";
+                    $note .= "Toevoeging : " . $data['address_addition'] . "\n";
+                    $note .= "Postcode : " . $data['address_postal_code'] . "\n";
+                    $note .= "Plaats : " . $data['address_city'] . "\n";
+                    $note .= "Landcode : " . $data['address_country_id'] . "\n";
                     $note .= "Controleer contactgegevens\n";
                     $this->addTaskCheckContact($contact, $webform, $note);
                     break;
             }
         }
 
-//        if (!$contact) {
-//            // Contact niet gevonden op basis van naam en email, kijken of er een match op basis van naam en adres is
-//            $contact = $this->getContactByNameAndAddress($data);
-//
-//            if ($contact) {
-//                // Person of organisatie is gevonden obv naam en adres, Eventueel email en telefoonnummer toevoegen
-//                $this->addEmailToContact($data, $contact);
-//                $this->addPhoneNumberToContact($data, $contact);
-//                $this->addContactToGroup($data, $contact);
-//            }
-//        }
-
-// contactActie = "NC"  -> Nieuw contact
-// contactActie = "NCT" -> Nieuw contact + taak
         if (!$contact) {
+            // Person of organisatie is niet gevonden, uitvoeren acties
+            // contactActie = "NC"  -> Nieuw contact
+            // contactActie = "NCT" -> Nieuw contact + taak
             $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
             $contact = $this->addContact($data);
             switch($this->contactActie){
@@ -373,8 +376,14 @@ class ExternalWebformController extends Controller
     protected function getContactByAddressAndEmail(array $data)
     {
         $this->contactActie = "???";
+
+//        $this->log('Data emailadres |' . $data['email_address'] . '|');
+//        $this->log('Data address_postal_code |' . $data['address_postal_code'] . '|');
+//        $this->log('Data address_number |' . $data['address_number'] . '|');
+//        $this->log('Data address_addition |' . $data['address_addition'] . '|');
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
-        if($data['address_postal_code'] || $data['address_number'] || $data['address_addition']) {
+        if($data['address_postal_code'] && $data['address_number']) {
+            $this->log('Er zijn adres gegevens meegegeven');
             $contactAddressQuery = contact::whereHas('addresses', function ($query) use ($data) {
                 $query->where('postal_code', $data['address_postal_code'])
                     ->where('number', $data['address_number'])
@@ -409,6 +418,7 @@ class ExternalWebformController extends Controller
                 $contactEmailQuery = $contactAddressQuery->whereHas('emailAddresses', function ($query) use ($data) {
                     $query->where('email', $data['email_address']);
                 });
+                $this->log('Aantal gevonden op adres en emailadres ' . $data['email_address'] . ' : ' . $contactEmailQuery->count());
                 // Niet gevonden op email, check op 1e letter voornaam + achternaam (of naam in geval van organisatie)
                 if ($contactEmailQuery->count() == 0) {
                     $contactNameQuery = $contactAddressQuery->whereHas('person', function ($query) use ($data) {
@@ -430,7 +440,7 @@ class ExternalWebformController extends Controller
                         return $contactNameQuery->first();
                     } else {
                         // Gevonden op adres maar niet op email of naam.
-                        $this->log('Contact niet gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) of emailadres');
+                        $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) maar niet op emailadres of naam');
                         // add contact + taak
                         $this->contactActie = "NCT";
                         $this->log('Nieuw contact maken + taak');
@@ -449,14 +459,14 @@ class ExternalWebformController extends Controller
                     if ($contactNameQuery->count() > 0) {
                         $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
                             . ', '
-                            . $data['address_number'] . $data['address_addition'] . 'en emailadres ' . $data['email_address'] .
+                            . $data['address_number'] . $data['address_addition'] . ' en emailadres ' . $data['email_address'] .
                             ' en naam ' . $data['first_name'] . ' ' . $data['last_name']);
                         // geen actie inzake contact, adres en/of email
                         $this->contactActie = "GEEN";
                         return $contactNameQuery->first();
                     } else {
                         // Gevonden op adres maar niet op email of naam.
-                        $this->log('Contact niet gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) of emailadres');
+                        $this->log('Contact gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en emailadres maar niet op naam');
                         // add contact + taak
                         $this->contactActie = "NC";
                         $this->log('Nieuw contact maken + taak');
@@ -469,8 +479,6 @@ class ExternalWebformController extends Controller
             }
             // Geen adres opgegeven, check op naam en email
         }else{
-            // taak controle
-            $this->contactActie = "CCT";
             return $this->getContactByNameAndEmail($data);
         }
         return null;
@@ -490,8 +498,35 @@ class ExternalWebformController extends Controller
 
         if ($person) {
             $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en emailadres');
+            // Geen taak nodig
+            $this->contactActie = "GEEN";
             return $person->contact;
         } else {
+            // Kijken of er een persoon gematcht kan worden op basis van alleen email
+            $person = Person::whereHas('contact', function ($query) use ($data) {
+                    $query->whereHas('emailAddresses', function ($query) use ($data) {
+                        $query->where('email', $data['email_address']);
+                    });
+                });
+            $this->log('Contacten gevonden op emailadres ' . $data['email_address'] . ': ' . $person->count());
+            // Gevonden op email contact.
+            if ($person->count() > 0) {
+                $this->log($person->count() . ' contact gevonden op emailadres ' . $data['email_address']);
+                // Controle contact taak
+                $this->contactActie = "CCT";
+                return $person->first()->contact;
+                // meer dan 1 gevonden op email contact.
+            } else {
+                // Ook niet gevonden op alleen email contact.
+                $this->log('Contact niet gevonden op basis van adres (postcode, huisnummer en huisnummer toevoeging) en niet op basis van emailadres');
+                // add contact + taak
+                $this->contactActie = "NC";
+                $this->log('Nieuw contact maken + taak');
+                return null;
+            }
+            return null;
+
+
             $this->log('Geen persoon gevonden op basis van naam en emailadres');
         }
 
@@ -506,11 +541,15 @@ class ExternalWebformController extends Controller
 
         if ($organisation) {
             $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en emailadres');
+            // Geen taak nodig
+            $this->contactActie = "GEEN";
             return $organisation->contact;
         } else {
             $this->log('Geen organisatie gevonden op basis van naam en emailadres');
         }
 
+        // Nieuw contact + taak
+        $this->contactActie = "NCT";
         return null;
     }
 

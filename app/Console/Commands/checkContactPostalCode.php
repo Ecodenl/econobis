@@ -43,7 +43,7 @@ class checkContactPostalCode extends Command
             foreach($contact->addresses as $address) {
                 if( !empty($address->postal_code) && $address->country_id == 'NL' )
                 {
-                        if ($this->postalCodeNLCheck($address->postal_code)) {
+                        if (!$this->postalCodeNLCheck($address->postal_code)) {
                             print_r("ContactId: (" . $contact->id . ", AddressId " . $address->id . ": Nederlands postcode NIET OK: " . $address->postal_code . ".\n");
                         }
                 }

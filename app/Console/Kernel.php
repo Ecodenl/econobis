@@ -67,21 +67,26 @@ class Kernel extends ConsoleKernel
                 Log::info('Check A: ' . $appCoopName);
                 $timeSetDaysLastReminder = '16:00';
                 $timeSetDaysToExpire = '16:05';
+                $timeCheckContactPostalCode = '16:11';
                 break;
             case 'test-lokaal':
                 Log::info('Check B: ' . $appCoopName);
                 $timeSetDaysLastReminder = '15:50';
                 $timeSetDaysToExpire = '15:55';
+                $timeCheckContactPostalCode = '07:00';
                 break;
             default:
                 Log::info('Check rest: ' . $appCoopName);
                 $timeSetDaysLastReminder = '00:05';
                 $timeSetDaysToExpire = '01:05';
+                $timeCheckContactPostalCode = '07:00';
                 break;
         }
 
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
         $schedule->command('email:checkMailboxes')->everyThirtyMinutes();
+
+        $schedule->command('contact:checkContactPostalCode')->dailyAt($timeCheckContactPostalCode);
         $schedule->command('invoice:setDaysLastReminder')->dailyAt($timeSetDaysLastReminder);
         $schedule->command('invoice:setDaysToExpire')->dailyAt($timeSetDaysToExpire);
         $schedule->command('invoice:processPaidInvoices')->dailyAt('03:00');

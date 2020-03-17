@@ -21,7 +21,6 @@ use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -58,27 +57,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $appCoopName =  env('APP_COOP_NAME');
-        Log::info('AppCoopName: ' . $appCoopName);
-        switch (substr( $appCoopName )) {
-            case 'test':
-                $timeSetDaysLastReminder = '02:05';
-                $timeSetDaysToExpire = '02:10';
-                break;
-            case 'testtraais':
-                $timeSetDaysLastReminder = '02:06';
-                $timeSetDaysToExpire = '02:11';
-                break;
-            default:
-                $timeSetDaysLastReminder = '00:05';
-                $timeSetDaysToExpire = '00:10';
-                break;
-        }
-
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
         $schedule->command('email:checkMailboxes')->everyThirtyMinutes();
-        $schedule->command('invoice:setDaysLastReminder')->dailyAt($timeSetDaysLastReminder);
-        $schedule->command('invoice:setDaysToExpire')->dailyAt($timeSetDaysToExpire);
+        $schedule->command('invoice:setDaysLastReminder')->dailyAt('00:05');
+        $schedule->command('invoice:setDaysToExpire')->dailyAt('01:05');
         $schedule->command('invoice:processPaidInvoices')->dailyAt('03:00');
         $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('04:00');
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('04:05');

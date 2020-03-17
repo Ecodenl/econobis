@@ -46,6 +46,7 @@ class InputTinyMCEUpdateable extends Component {
                         init={{
                             branding: false,
                             language: 'nl',
+                            language_url: 'langs/nl.js',
                             menubar: false,
                             plugins: 'paste lists advlist link image code table textcolor pagebreak',
                             toolbar:

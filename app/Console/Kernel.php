@@ -61,22 +61,18 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $appCoopName =  \Config::get('app.APP_COOP_NAME');
-        Log::info('AppCoopName: ' . $appCoopName);
         switch ( $appCoopName ) {
             case 'test-acceptatie':
-                Log::info('Check A: ' . $appCoopName);
-                $timeSetDaysLastReminder = '00:05';
-                $timeSetDaysToExpire = '01:05';
+                $timeSetDaysLastReminder = '02:00';
+                $timeSetDaysToExpire = '02:05';
                 $timeCheckContactPostalCode = '16:15';
                 break;
-            case 'test-lokaal':
-                Log::info('Check B: ' . $appCoopName);
-                $timeSetDaysLastReminder = '00:05';
-                $timeSetDaysToExpire = '01:05';
-                $timeCheckContactPostalCode = '07:00';
-                break;
+//            case 'test-lokaal':
+//                $timeSetDaysLastReminder = '00:05';
+//                $timeSetDaysToExpire = '01:05';
+//                $timeCheckContactPostalCode = '07:00';
+//                break;
             default:
-                Log::info('Check rest: ' . $appCoopName);
                 $timeSetDaysLastReminder = '00:05';
                 $timeSetDaysToExpire = '01:05';
                 $timeCheckContactPostalCode = '07:00';

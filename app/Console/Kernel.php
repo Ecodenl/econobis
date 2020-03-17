@@ -65,14 +65,14 @@ class Kernel extends ConsoleKernel
         switch ( $appCoopName ) {
             case 'test-acceptatie':
                 Log::info('Check A: ' . $appCoopName);
-                $timeSetDaysLastReminder = '16:00';
-                $timeSetDaysToExpire = '16:05';
-                $timeCheckContactPostalCode = '16:11';
+                $timeSetDaysLastReminder = '00:05';
+                $timeSetDaysToExpire = '01:05';
+                $timeCheckContactPostalCode = '16:15';
                 break;
             case 'test-lokaal':
                 Log::info('Check B: ' . $appCoopName);
-                $timeSetDaysLastReminder = '15:50';
-                $timeSetDaysToExpire = '15:55';
+                $timeSetDaysLastReminder = '00:05';
+                $timeSetDaysToExpire = '01:05';
                 $timeCheckContactPostalCode = '07:00';
                 break;
             default:

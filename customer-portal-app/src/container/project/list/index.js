@@ -12,6 +12,7 @@ import { PortalUserConsumer } from '../../../context/PortalUserContext';
 
 function ProjectList(props) {
     const [contactProjectsArray, setContactProjectsArray] = useState([]);
+    const [contact, setContact] = useState({});
     const [projectData, setProjectData] = useState({});
     const [isLoading, setLoading] = useState(true);
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
@@ -24,6 +25,7 @@ function ProjectList(props) {
                 // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
                 if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
                     callFetchContactProjects();
+                    callFetchContact();
                 }
             }
             ProjectAPI.fetchProjects()
@@ -51,6 +53,31 @@ function ProjectList(props) {
             });
     }
 
+    function callFetchContact() {
+        ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
+            .then(payload => {
+                setContact(payload.data.data);
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setLoading(false);
+            });
+    }
+
+    function formatFullName(fullName) {
+        if (fullName) {
+            if (fullName.search(',') < 0) {
+                return fullName;
+            } else {
+                const firstName = fullName.slice(fullName.search(',') + 2);
+                const lastName = fullName.slice(0, fullName.search(','));
+                return firstName + ' ' + lastName;
+            }
+        } else {
+            return ' ';
+        }
+    }
+
     function usePrevious(value) {
         const ref = useRef();
         useEffect(() => {
@@ -63,7 +90,9 @@ function ProjectList(props) {
         <Container className={'content-section'}>
             <Row>
                 <Col>
-                    <h1 className="content-heading">Overzicht projecten waarop je kan inschrijven.</h1>
+                    <h1 className="content-heading">
+                        Overzicht projecten waarop <strong>{formatFullName(contact.fullName)}</strong> kan inschrijven.
+                    </h1>
                 </Col>
             </Row>
             <Row>

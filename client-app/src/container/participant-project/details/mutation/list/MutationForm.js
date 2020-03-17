@@ -13,12 +13,14 @@ class MutationForm extends Component {
 
         this.state = {
             showNew: false,
+            successNewMessage: '',
         };
     }
 
     toggleShowNew = () => {
         this.setState({
             showNew: !this.state.showNew,
+            successNewMessage: '',
         });
     };
 

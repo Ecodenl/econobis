@@ -108,11 +108,13 @@ class InvoiceToolbar extends Component {
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
                         <ButtonIcon iconName={'glyphicon-eye-open'} onClickAction={this.view} />
-                        {this.props.invoiceDetails.statusId === 'to-send' &&
+                        {(this.props.invoiceDetails.statusId === 'to-send' ||
+                            this.props.invoiceDetails.statusId === 'error-sending') &&
                             this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend' && (
                                 <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSend} />
                             )}
-                        {this.props.invoiceDetails.statusId === 'to-send' &&
+                        {(this.props.invoiceDetails.statusId === 'to-send' ||
+                            this.props.invoiceDetails.statusId === 'error-sending') &&
                             this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend' && (
                                 <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.showSendPost} />
                             )}
@@ -131,6 +133,7 @@ class InvoiceToolbar extends Component {
                             this.props.invoiceDetails.statusId !== 'is-sending' &&
                             this.props.invoiceDetails.statusId !== 'error-making' &&
                             this.props.invoiceDetails.statusId !== 'error-sending' &&
+                            this.props.invoiceDetails.statusId !== 'is-resending' &&
                             this.props.invoiceDetails.statusId !== 'paid' &&
                             this.props.invoiceDetails.statusId !== 'irrecoverable' && (
                                 <ButtonIcon iconName={'glyphicon-remove'} onClickAction={this.showSetIrrecoverable} />

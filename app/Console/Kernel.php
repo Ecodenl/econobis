@@ -60,7 +60,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
         $schedule->command('email:checkMailboxes')->everyThirtyMinutes();
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('00:05');
-        $schedule->command('invoice:setDaysToExpire')->dailyAt('00:10');
+        $schedule->command('invoice:setDaysToExpire')->dailyAt('01:05');
         $schedule->command('invoice:processPaidInvoices')->dailyAt('03:00');
         $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('04:00');
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->dailyAt('04:05');

@@ -53,73 +53,91 @@ const OrdersListFilter = props => {
         <tr className="thead-filter">
             {props.showSelectOrdersToCreate && (
                 <td>
-                    <input type="checkbox" onChange={props.selectAllCheckboxes} />
+                    <input type="checkbox" onChange={props.toggleCheckedAll} />
                 </td>
             )}
             <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.number.data}
-                    onChange={onNumberChange}
-                />
+                {!props.showSelectOrdersToCreate ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.number.data}
+                        onChange={onNumberChange}
+                    />
+                ) : null}
             </th>
-            <DataTableFilterDate
-                value={props.filters.dateNextInvoice.data && props.filters.dateNextInvoice.data}
-                onChangeAction={onDateNextInvoiceChange}
-            />
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.subject.data}
-                    onChange={onSubjectChange}
+            {!props.showSelectOrdersToCreate ? (
+                <DataTableFilterDate
+                    value={props.filters.dateNextInvoice.data && props.filters.dateNextInvoice.data}
+                    onChangeAction={onDateNextInvoiceChange}
                 />
+            ) : (
+                <th>{null}</th>
+            )}
+            <th>
+                {!props.showSelectOrdersToCreate ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.subject.data}
+                        onChange={onSubjectChange}
+                    />
+                ) : null}
             </th>
             <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.contact.data}
-                    onChange={onContactChange}
-                />
+                {!props.showSelectOrdersToCreate ? (
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.contact.data}
+                        onChange={onContactChange}
+                    />
+                ) : null}
             </th>
             <th />
             <th>
-                <select
-                    className="form-control input-sm"
-                    value={props.filters.paymentTypeId.data}
-                    onChange={onPaymentTypeChange}
-                >
-                    <option />
-                    {props.orderPaymentTypes.map(orderPaymentType => {
-                        return (
-                            <option key={orderPaymentType.id} value={orderPaymentType.id}>
-                                {orderPaymentType.name}
-                            </option>
-                        );
-                    })}
-                </select>
+                {!props.showSelectOrdersToCreate ? (
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.paymentTypeId.data}
+                        onChange={onPaymentTypeChange}
+                    >
+                        <option />
+                        {props.orderPaymentTypes.map(orderPaymentType => {
+                            return (
+                                <option key={orderPaymentType.id} value={orderPaymentType.id}>
+                                    {orderPaymentType.name}
+                                </option>
+                            );
+                        })}
+                    </select>
+                ) : null}
             </th>
             <th>
-                <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
-                    <option />
-                    <option key={'concept'} value={'concept'}>
-                        {'Concept'}
-                    </option>
-                    <option key={'upcoming'} value={'upcoming'}>
-                        {'Aankomende'}
-                    </option>
-                    <option key={'to-create'} value={'create'}>
-                        {'Te factureren'}
-                    </option>
-                    <option key={'to-send'} value={'send'}>
-                        {'Te verzenden'}
-                    </option>
-                    <option key={'closed'} value={'closed'}>
-                        {'Beëindigd'}
-                    </option>
-                </select>
+                {!props.showSelectOrdersToCreate ? (
+                    <select
+                        className="form-control input-sm"
+                        value={props.filters.statusId.data}
+                        onChange={onStatusChange}
+                    >
+                        <option />
+                        <option key={'concept'} value={'concept'}>
+                            {'Concept'}
+                        </option>
+                        <option key={'upcoming'} value={'upcoming'}>
+                            {'Aankomende'}
+                        </option>
+                        <option key={'to-create'} value={'create'}>
+                            {'Te factureren'}
+                        </option>
+                        <option key={'to-send'} value={'send'}>
+                            {'Te verzenden'}
+                        </option>
+                        <option key={'closed'} value={'closed'}>
+                            {'Beëindigd'}
+                        </option>
+                    </select>
+                ) : null}
             </th>
             <th />
         </tr>

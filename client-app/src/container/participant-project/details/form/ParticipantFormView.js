@@ -106,7 +106,7 @@ const ParticipantFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Eerste ingangsdatum Deelname'}
+                    label={'Eerste ingangsdatum deelname'}
                     value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
                 />
             </div>

@@ -10,6 +10,8 @@ import ValidationSchemaPersonal from '../../../helpers/ValidationSchemaPersonal'
 import ValidationSchemaOrganisation from '../../../helpers/ValidationSchemaOrganisation';
 import * as Yup from 'yup';
 import DefaultContactOrganisationEdit from '../../contact-details/default-form-organisation/Edit';
+import { Alert } from 'react-bootstrap';
+import { isEmpty } from 'lodash';
 
 function StepTwo({ portalSettings, previous, next, project, initialContact, handleSubmitContactValues }) {
     initialContact.isParticipant = true;
@@ -24,19 +26,6 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                 }
             ),
         }),
-        primaryContactEnergySupplier: Yup.object().shape({
-            energySupplierId: Yup.string()
-                .nullable()
-                .required('Verplicht'),
-            esNumber: Yup.string()
-                .nullable()
-                .trim()
-                .required('Verplicht'),
-            eanElectricity: Yup.string()
-                .nullable()
-                .trim()
-                .required('Verplicht'),
-        }),
     });
     const validationSchemaPcrOrganisation = Yup.object().shape({
         visitAddress: Yup.object().shape({
@@ -50,43 +39,34 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                 )
                 .required('Verplicht'),
         }),
-        primaryContactEnergySupplier: Yup.object().shape({
-            energySupplierId: Yup.string()
-                .nullable()
-                .required('Verplicht'),
-            esNumber: Yup.string()
-                .nullable()
-                .trim()
-                .required('Verplicht'),
-            eanElectricity: Yup.string()
-                .nullable()
-                .trim()
-                .required('Verplicht'),
-        }),
     });
 
     let validationSchema = null;
     let validationSchemaBasic = null;
     let validationSchemaAdditional = null;
+    let validationSchemaPcrAdditional = null;
     switch (typeContact) {
         case 'person':
             validationSchemaBasic = ValidationSchemaPersonal.validationSchemaBasic;
             validationSchemaAdditional = ValidationSchemaPersonal.validationSchemaAdditional;
+            validationSchemaPcrAdditional = ValidationSchemaPersonal.validationSchemaPcrAdditional;
             validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
             if (project.projectType.codeRef === 'postalcode_link_capital') {
+                validationSchema = validationSchema.concat(validationSchemaPcrAdditional);
                 validationSchema = validationSchema.concat(validationSchemaPcrPersonal);
             }
             break;
         case 'organisation':
             validationSchemaBasic = ValidationSchemaOrganisation.validationSchemaBasic;
             validationSchemaAdditional = ValidationSchemaOrganisation.validationSchemaAdditional;
+            validationSchemaPcrAdditional = ValidationSchemaPersonal.validationSchemaPcrAdditional;
             validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
             if (project.projectType.codeRef === 'postalcode_link_capital') {
+                validationSchema = validationSchema.concat(validationSchemaPcrAdditional);
                 validationSchema = validationSchema.concat(validationSchemaPcrOrganisation);
             }
             break;
     }
-
     return (
         <div>
             <Formik
@@ -150,6 +130,18 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     </ButtonGroup>
                                 </Col>
                             </Row>
+                            {!isEmpty(errors) ? (
+                                <Row>
+                                    <Col>
+                                        <div className="alert-wrapper">
+                                            <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                                Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
+                                                volgende stap!
+                                            </Alert>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            ) : null}
                         </Form>
                     );
                 }}

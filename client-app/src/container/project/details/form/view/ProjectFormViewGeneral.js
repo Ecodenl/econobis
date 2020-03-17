@@ -111,7 +111,7 @@ const ProjectFormViewGeneral = ({
         </div>
         <div className="row">
             <ViewText
-                label={'Document template inschrijfbevestiging'}
+                label={'Document template inschrijfformulier'}
                 value={documentTemplateAgreement ? documentTemplateAgreement.name : ''}
             />
         </div>

@@ -21,20 +21,6 @@ export const deleteOrder = id => {
     };
 };
 
-export const setCheckedOrderAll = checkedValue => {
-    return {
-        type: 'SET_CHECKED_ORDER_ALL',
-        checkedValue,
-    };
-};
-
-export const setCheckedOrder = id => {
-    return {
-        type: 'SET_CHECKED_ORDER',
-        id,
-    };
-};
-
 export const previewCreate = data => {
     return {
         type: 'ORDER_PREVIEW_CREATE',

@@ -173,6 +173,26 @@ class Administration extends Model
         return $this->invoices()->where('status_id', 'error-sending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
     }
 
+    public function getTotalInvoicesInProgressCollectionAttribute()
+    {
+        return $this->invoices()->where('status_id', 'in-progress')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
+    }
+
+    public function getTotalInvoicesIsSendingCollectionAttribute()
+    {
+        return $this->invoices()->where('status_id', 'is-sending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
+    }
+
+    public function getTotalInvoicesErrorMakingCollectionAttribute()
+    {
+        return $this->invoices()->where('status_id', 'error-making')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
+    }
+
+    public function getTotalInvoicesisResendingCollectionAttribute()
+    {
+        return $this->invoices()->where('status_id', 'is-resending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'collection')->count();
+    }
+
     public function getTotalInvoicesErrorSendingTransferAttribute()
     {
         return $this->invoices()->where('status_id', 'error-sending')->whereNull('date_reminder_1')->whereNull('date_reminder_2')->whereNull('date_reminder_3')->whereNull('date_exhortation')->where('payment_type_id', 'transfer')->count();

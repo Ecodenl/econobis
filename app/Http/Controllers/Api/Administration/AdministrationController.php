@@ -366,6 +366,11 @@ class AdministrationController extends ApiController
             'totalInvoicesPaid' => $administration->total_invoices_paid,
             'totalInvoicesIrrecoverable' => $administration->total_invoices_irrecoverable,
 
+            'totalInvoicesInProgressCollection' => $administration->total_invoices_in_progress_collection,
+            'totalInvoicesIsSendingCollection' => $administration->total_invoices_Is_Sending_collection,
+            'totalInvoicesErrorMakingCollection' => $administration->total_invoices_Error_Making_collection,
+            'totalInvoicesIsResendingCollection' => $administration->total_invoices_Is_Resending_collection,
+
             'totalPaymentInvoices' => $administration->total_payment_invoices,
             'totalPaymentInvoicesConcepts' => $administration->total_payment_invoices_concepts,
             'totalPaymentInvoicesSent' => $administration->total_payment_invoices_sent,

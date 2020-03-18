@@ -25,7 +25,7 @@ class ContactDetailsFormAddressNew extends Component {
                 city: '',
                 typeId: 'visit',
                 primary: false,
-                countryId: 'NL',
+                countryId: '',
             },
             errors: {
                 typeId: false,
@@ -100,6 +100,24 @@ class ContactDetailsFormAddressNew extends Component {
             errors.postalCode = true;
             hasErrors = true;
         }
+        let countryId = address.countryId;
+        if (validator.isEmpty(address.countryId + '')) {
+            countryId = 'NL';
+        }
+
+        let postalCodeValid = true;
+        if (!validator.isEmpty(address.postalCode + '')) {
+            if (countryId == 'NL') {
+                postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
+            } else {
+                postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
+            }
+            if (!postalCodeValid) {
+                errors.postalCode = true;
+                errors.countryId = true;
+                hasErrors = true;
+            }
+        }
 
         if (validator.isEmpty(address.number)) {
             errors.number = true;
@@ -109,22 +127,6 @@ class ContactDetailsFormAddressNew extends Component {
         if (validator.isEmpty(address.typeId)) {
             errors.typeId = true;
             hasErrors = true;
-        }
-
-        if (validator.isEmpty(address.countryId)) {
-            errors.countryId = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(address.countryId + '')) {
-            errors.countryId = true;
-            hasErrors = true;
-        } else {
-            if (address.countryId == 'NL' && !validator.isPostalCode(address.postalCode, 'NL')) {
-                errors.postalCode = true;
-                errors.countryId = true;
-                hasErrors = true;
-            }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -235,7 +237,6 @@ class ContactDetailsFormAddressNew extends Component {
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.countryId}
-                                emptyOption={false}
                             />
                         </div>
 

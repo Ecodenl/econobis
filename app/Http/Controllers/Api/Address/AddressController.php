@@ -21,7 +21,7 @@ class AddressController extends ApiController
     {
         $data = $request->validate([
             'contactId' => ['required', 'exists:contacts,id'],
-            'countryId' => 'exists:countries,id',
+            'countryId' => 'nullable|exists:countries,id',
             'typeId' => new EnumExists(AddressType::class),
             'street' => '',
             'number' => 'integer',
@@ -33,6 +33,7 @@ class AddressController extends ApiController
 
         $data = $this->sanitizeData($data, [
             'typeId' => 'nullable',
+            'countryId' => 'nullable',
             'primary' => 'boolean',
         ]);
 

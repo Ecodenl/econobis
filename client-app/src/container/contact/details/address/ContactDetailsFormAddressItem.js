@@ -96,7 +96,9 @@ class ContactDetailFormAddressItem extends Component {
         const { address } = this.state;
 
         // Postalcode always to uppercase
-        address.postalCode = address.postalCode.toUpperCase();
+        if (address.postalCode) {
+            address.postalCode = address.postalCode.toUpperCase();
+        }
 
         let errors = {};
         let hasErrors = false;
@@ -104,6 +106,25 @@ class ContactDetailFormAddressItem extends Component {
         if (validator.isEmpty(address.postalCode + '')) {
             errors.postalCode = true;
             hasErrors = true;
+        }
+
+        let countryId = address.countryId;
+        if (validator.isEmpty(address.countryId + '')) {
+            countryId = 'NL';
+        }
+
+        let postalCodeValid = true;
+        if (!validator.isEmpty(address.postalCode + '')) {
+            if (countryId == 'NL') {
+                postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
+            } else {
+                postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
+            }
+            if (!postalCodeValid) {
+                errors.postalCode = true;
+                errors.countryId = true;
+                hasErrors = true;
+            }
         }
 
         if (validator.isEmpty(address.number + '')) {
@@ -114,17 +135,6 @@ class ContactDetailFormAddressItem extends Component {
         if (validator.isEmpty(address.typeId + '')) {
             errors.typeId = true;
             hasErrors = true;
-        }
-
-        if (validator.isEmpty(address.countryId + '')) {
-            errors.countryId = true;
-            hasErrors = true;
-        } else {
-            if (address.countryId == 'NL' && !validator.isPostalCode(address.postalCode, 'NL')) {
-                errors.postalCode = true;
-                errors.countryId = true;
-                hasErrors = true;
-            }
         }
 
         this.setState({ ...this.state, errors: errors });

@@ -365,7 +365,7 @@ class Contact extends Model
 
         $addressLines['street'] = $address->street . ' ' . $address->number . $address->addition;
         $addressLines['city'] = $address->postal_code . ' ' . $address->city;
-        $addressLines['country'] = $address->country && $address->country->id != 'NL' ? $address->country->name : '';
+        $addressLines['country'] = $address->country ? $address->country->name : '';
 
         return $addressLines;
     }

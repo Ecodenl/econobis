@@ -104,7 +104,6 @@ class ContactNewFormAddress extends Component {
                             value={countryId}
                             onChangeAction={this.props.handleInputChange}
                             error={this.props.errors.countryId}
-                            emptyOption={false}
                         />
                     </div>
                 </PanelBody>

@@ -330,7 +330,7 @@ class ContactController extends ApiController
     {
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
-            $addressData['countryId'] = 'NL';
+            $addressData['countryId'] = null;
         }
         if($addressData['number'] == ''){
             $addressData['number'] = null;

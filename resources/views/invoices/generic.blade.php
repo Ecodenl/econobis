@@ -188,7 +188,7 @@
         </tr>
         <tr>
             <td>
-                {{ $invoice->administration->country && $invoice->administration->country->id != 'NL'? $invoice->administration->country->name : '' }}
+                {{ $invoice->administration->country ? $invoice->administration->country->name : '' }}
             </td>
         </tr>
         <tr>

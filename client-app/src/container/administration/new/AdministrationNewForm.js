@@ -34,7 +34,7 @@ class AdministrationNewForm extends Component {
                 address: '',
                 postalCode: '',
                 city: '',
-                countryId: 'NL',
+                countryId: '',
                 kvkNumber: '',
                 btwNumber: '',
                 IBAN: '',
@@ -161,16 +161,19 @@ class AdministrationNewForm extends Component {
             }
         }
 
-        if (validator.isEmpty(administration.postalCode + '')) {
-            errors.postalCode = true;
-            hasErrors = true;
+        let countryId = administration.countryId;
+        if (validator.isEmpty(administration.countryId + '')) {
+            countryId = 'NL';
         }
 
-        if (validator.isEmpty(administration.countryId + '')) {
-            errors.countryId = true;
-            hasErrors = true;
-        } else {
-            if (administration.countryId == 'NL' && !validator.isPostalCode(administration.postalCode, 'NL')) {
+        let postalCodeValid = true;
+        if (!validator.isEmpty(administration.postalCode + '')) {
+            if (countryId == 'NL') {
+                postalCodeValid = validator.isPostalCode(administration.postalCode, 'NL');
+            } else {
+                postalCodeValid = validator.isPostalCode(administration.postalCode, 'any');
+            }
+            if (!postalCodeValid) {
                 errors.postalCode = true;
                 errors.countryId = true;
                 hasErrors = true;
@@ -378,7 +381,7 @@ class AdministrationNewForm extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
-                                emptyOption={false}
+                                error={this.state.errors.countryId}
                             />
                         </div>
 

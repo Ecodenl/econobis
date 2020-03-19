@@ -37,7 +37,9 @@ export default function ProtectedRouteWithContext(props) {
         <AuthConsumer>
             {({ isAuth }) => (
                 <PortalUserConsumer>
-                    {({ setInitialUserData }) => <ProtectedRoute {...props} setInitialUserData={setInitialUserData} isAuth={isAuth} />}
+                    {({ setInitialUserData }) => (
+                        <ProtectedRoute {...props} setInitialUserData={setInitialUserData} isAuth={isAuth} />
+                    )}
                 </PortalUserConsumer>
             )}
         </AuthConsumer>

@@ -18,22 +18,24 @@ const PortalUserProvider = function(props) {
 
         // When there is already a selected contact id then lookup the contact
         // Selected contact could be the user or one of the occupations
-        if(selectedContactId) {
-            if(user.id == selectedContactId) {
+        if (selectedContactId) {
+            if (user.id == selectedContactId) {
                 setCurrentContact(user);
             } else {
-                const occupationUser = user.occupations.find(occupation => occupation.primaryContact.id ==
-                    selectedContactId);
+                const occupationUser = user.occupations.find(
+                    occupation => occupation.primaryContact.id == selectedContactId
+                );
 
                 setCurrentContact(occupationUser.primaryContact);
             }
         } else {
             // If there is no selected contact then set default the login user as selected contact.
             // Except if the user has an organisation as occupation
-            const organisationUser = user.occupations.find(occupation => occupation.primaryContact.typeId ===
-                'organisation');
+            const organisationUser = user.occupations.find(
+                occupation => occupation.primaryContact.typeId === 'organisation'
+            );
 
-            if(organisationUser) {
+            if (organisationUser) {
                 setCurrentContact(organisationUser.primaryContact);
                 window.localStorage.setItem(localStorageCurrentSelectedContact, organisationUser.primaryContact.id);
             } else {

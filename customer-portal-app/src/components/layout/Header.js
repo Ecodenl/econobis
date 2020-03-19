@@ -120,7 +120,7 @@ function Header({ location, history }) {
                                                 {({
                                                     user,
                                                     currentSelectedContact,
-                                                    setCurrentContact,
+                                                    switchCurrentContact,
                                                     resetCurrentUserToDefault,
                                                 }) => {
                                                     return (
@@ -149,7 +149,7 @@ function Header({ location, history }) {
                                                                 <Dropdown.Header>Beheren van</Dropdown.Header>
                                                                 <Dropdown.Item
                                                                     onClick={() => {
-                                                                        setCurrentContact(user);
+                                                                        switchCurrentContact(user);
                                                                         redirect('gegevens');
                                                                     }}
                                                                     active={
@@ -172,7 +172,7 @@ function Header({ location, history }) {
                                                                               <Dropdown.Item
                                                                                   key={occupationContact.id}
                                                                                   onClick={() => {
-                                                                                      setCurrentContact(
+                                                                                      switchCurrentContact(
                                                                                           occupationContact.primaryContact
                                                                                       );
                                                                                       redirect('gegevens');

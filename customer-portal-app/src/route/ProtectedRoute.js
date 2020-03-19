@@ -5,13 +5,13 @@ import Header from '../components/layout/Header';
 import PortalUserAPI from '../api/portal-user/PortalUserAPI';
 import { PortalUserConsumer } from '../context/PortalUserContext';
 
-const ProtectedRoute = ({ component: Component, updateUser, isAuth, ...rest }) => {
+const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...rest }) => {
     useEffect(() => {
         if (isAuth) {
             (function callFetchPortalUserDetails() {
                 PortalUserAPI.fetchPortalUserDetails()
                     .then(payload => {
-                        updateUser(payload.data.data);
+                        setInitialUserData(payload.data.data);
                     })
                     .catch(error => {
                         alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -37,7 +37,7 @@ export default function ProtectedRouteWithContext(props) {
         <AuthConsumer>
             {({ isAuth }) => (
                 <PortalUserConsumer>
-                    {({ updateUser }) => <ProtectedRoute {...props} updateUser={updateUser} isAuth={isAuth} />}
+                    {({ setInitialUserData }) => <ProtectedRoute {...props} setInitialUserData={setInitialUserData} isAuth={isAuth} />}
                 </PortalUserConsumer>
             )}
         </AuthConsumer>

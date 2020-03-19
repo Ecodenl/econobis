@@ -20,9 +20,9 @@ const NewAccountSuccess = () => {
                             Gmail en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail daar
                             terug vindt.
                         </p>
-                        <Link to={'/login'} className="authorization-link">
-                            Terug naar inloggen
-                        </Link>
+                        <a onClick={window.close} href="#" className="authorization-link">
+                            Sluit venster
+                        </a>
                     </div>
                 </Col>
             </Row>

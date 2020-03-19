@@ -5,12 +5,14 @@ const AuthContext = React.createContext();
 
 const localStorageToken = '__customer-portal-econobis-token__';
 const localStorageLastActivity = '__customer-portal-econobis-last-activity__';
+const localStorageCurrentSelectedContact = '__customer-portal-econobis-current_selected_contact__';
 
 const AuthProvider = function(props) {
     const [isAuth, setAuth] = useState(checkIfAuth());
 
     function login(payload, cbRedirect) {
         const token = payload.access_token;
+        window.localStorage.removeItem(localStorageCurrentSelectedContact);
         window.localStorage.setItem(localStorageToken, token);
         localStorage.setItem(localStorageLastActivity, moment().format());
         setAuth(true);

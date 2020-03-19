@@ -3,6 +3,7 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
+import OrderHarmonica from './harmonica/OrderHarmonica';
 
 class ParticipantDetailsHarmonica extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class ParticipantDetailsHarmonica extends Component {
         this.state = {
             toggleShowList: {
                 documents: false,
+                orders: false,
             },
         };
 
@@ -35,15 +37,35 @@ class ParticipantDetailsHarmonica extends Component {
         );
     };
 
+    newOrder = () => {
+        hashHistory.push(`/order/nieuw/contact/${this.props.participant.contact.id}`);
+    };
+
     render() {
+        let orderCount = 0;
+        if (this.props.participant.relatedOrders) {
+            orderCount = this.props.participant.relatedOrders.length;
+        }
+
         return (
-            <div className="margin-10-top">
-                <DocumentHarmonica
-                    toggleShowList={() => this.toggleShowList('documents')}
-                    showDocumentsList={this.state.toggleShowList.documents}
-                    newDocument={this.newDocument}
-                    documentCount={this.props.participant.documentCount}
-                />
+            <div>
+                <div className="margin-10-top">
+                    <DocumentHarmonica
+                        toggleShowList={() => this.toggleShowList('documents')}
+                        showDocumentsList={this.state.toggleShowList.documents}
+                        newDocument={this.newDocument}
+                        documentCount={this.props.participant.documentCount}
+                    />
+                </div>
+                <div className="margin-10-top">
+                    <OrderHarmonica
+                        toggleShowList={() => this.toggleShowList('orders')}
+                        showOrdersList={this.state.toggleShowList.orders}
+                        newOrder={this.newOrder}
+                        orderCount={orderCount}
+                        permissions={this.props.meDetails.permissions}
+                    />
+                </div>
             </div>
         );
     }
@@ -52,7 +74,11 @@ class ParticipantDetailsHarmonica extends Component {
 const mapStateToProps = state => {
     return {
         participant: state.participantProjectDetails,
+        meDetails: state.meDetails,
     };
 };
 
-export default connect(mapStateToProps)(ParticipantDetailsHarmonica);
+export default connect(
+    mapStateToProps,
+    null
+)(ParticipantDetailsHarmonica);

@@ -296,8 +296,6 @@ class NewAccountController extends Controller
 
         $mail->send(new PortalMail($mail, $htmlBody));
 
-        var_dump($htmlBody);
-
         return true;
     }
 

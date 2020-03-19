@@ -98,7 +98,11 @@ export default props => {
                                             </Row>
                                             {showNewAtCooperativeLink ? (
                                                 <Row className="justify-content-center">
-                                                    <a href={'/#/nieuw-account'} className="authorization-link" target="_blank">
+                                                    <a
+                                                        href={'/#/nieuw-account'}
+                                                        className="authorization-link"
+                                                        target="_blank"
+                                                    >
                                                         Nieuw bij {cooperativeName}?
                                                     </a>
                                                 </Row>

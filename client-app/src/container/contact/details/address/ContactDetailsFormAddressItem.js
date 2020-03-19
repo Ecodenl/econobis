@@ -25,6 +25,7 @@ class ContactDetailFormAddressItem extends Component {
                 typeId: false,
                 postalCode: false,
                 number: false,
+                countryId: false,
             },
         };
     }
@@ -95,14 +96,35 @@ class ContactDetailFormAddressItem extends Component {
         const { address } = this.state;
 
         // Postalcode always to uppercase
-        address.postalCode = address.postalCode.toUpperCase();
+        if (address.postalCode) {
+            address.postalCode = address.postalCode.toUpperCase();
+        }
 
         let errors = {};
         let hasErrors = false;
 
-        if (!validator.isPostalCode(address.postalCode, 'any')) {
+        if (validator.isEmpty(address.postalCode + '')) {
             errors.postalCode = true;
             hasErrors = true;
+        }
+
+        let countryId = address.countryId;
+        if (validator.isEmpty(address.countryId + '')) {
+            countryId = 'NL';
+        }
+
+        let postalCodeValid = true;
+        if (!validator.isEmpty(address.postalCode + '')) {
+            if (countryId == 'NL') {
+                postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
+            } else {
+                postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
+            }
+            if (!postalCodeValid) {
+                errors.postalCode = true;
+                errors.countryId = true;
+                hasErrors = true;
+            }
         }
 
         if (validator.isEmpty(address.number + '')) {
@@ -148,6 +170,7 @@ class ContactDetailFormAddressItem extends Component {
                         typeIdError={this.state.errors.typeId}
                         postalCodeError={this.state.errors.postalCode}
                         numberError={this.state.errors.number}
+                        countryIdError={this.state.errors.countryId}
                         cancelEdit={this.cancelEdit}
                     />
                 )}

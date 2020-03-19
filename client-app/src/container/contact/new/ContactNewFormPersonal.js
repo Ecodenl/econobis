@@ -71,6 +71,7 @@ class ContactNewFormPersonal extends Component {
                 typeId: false,
                 postalCode: false,
                 number: false,
+                countryId: false,
             },
             emailErrors: {
                 typeId: false,
@@ -229,14 +230,30 @@ class ContactNewFormPersonal extends Component {
         const { address } = this.state;
 
         // Postalcode always to uppercase
-        address.postalCode = address.postalCode.toUpperCase();
+        if (address.postalCode) {
+            address.postalCode = address.postalCode.toUpperCase();
+        }
 
         let addressErrors = {};
 
         if (!validator.isEmpty(address.postalCode)) {
-            if (!validator.isPostalCode(address.postalCode, 'any')) {
-                addressErrors.postalCode = true;
-                hasErrors = true;
+            let countryId = address.countryId;
+            if (validator.isEmpty(address.countryId + '')) {
+                countryId = 'NL';
+            }
+
+            let postalCodeValid = true;
+            if (!validator.isEmpty(address.postalCode + '')) {
+                if (countryId == 'NL') {
+                    postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
+                } else {
+                    postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
+                }
+                if (!postalCodeValid) {
+                    addressErrors.postalCode = true;
+                    addressErrors.countryId = true;
+                    hasErrors = true;
+                }
             }
 
             if (validator.isEmpty(address.number)) {

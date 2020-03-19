@@ -76,6 +76,7 @@ class ProjectNewApp extends Component {
                 projectStatusId: false,
                 ownedById: false,
                 postalCode: false,
+                // countryId: false,
                 contactGroupIds: false,
             },
             loading: false,
@@ -157,6 +158,25 @@ class ProjectNewApp extends Component {
             hasErrors = true;
         }
 
+        // todo projects doesn't have a countryId field yet
+        // let countryId = project.countryId;
+        // if (validator.isEmpty(project.countryId + '')) {
+        //     countryId = 'NL';
+        // }
+        //
+        // let postalCodeValid = true;
+        // if (!validator.isEmpty(project.postalCode + '')) {
+        //     if (countryId == 'NL') {
+        //         postalCodeValid = validator.isPostalCode(project.postalCode, 'NL');
+        //     } else {
+        //         postalCodeValid = validator.isPostalCode(project.postalCode, 'any');
+        //     }
+        //     if (!postalCodeValid) {
+        //         errors.postalCode = true;
+        //         errors.countryId = true;
+        //         hasErrors = true;
+        //     }
+        // }
         if (!validator.isEmpty('' + project.postalCode) && !validator.isPostalCode(project.postalCode, 'any')) {
             errors.postalCode = true;
             hasErrors = true;

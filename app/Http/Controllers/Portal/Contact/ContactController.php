@@ -335,6 +335,10 @@ class ContactController extends ApiController
         if($addressData['number'] == ''){
             $addressData['number'] = null;
         }
+        $addressData['postalCode'] = strtoupper( $addressData['postalCode']);
+        if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $addressData['postalCode'])){
+            $addressData['postalCode'] = preg_replace('/\s+/', '', $addressData['postalCode']);
+        }
         if (isset($addressData['id']))
         {
             $address = $contact->addresses->find($addressData['id']);

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\checkContactEmailAddress;
 use App\Console\Commands\checkContactIban;
+use App\Console\Commands\checkContactPostalCode;
 use App\Console\Commands\checkMailboxes;
 use App\Console\Commands\conversionParticipationsToMutationsDeltaWind;
 use App\Console\Commands\conversionParticipationsToMutationsLoanDiv100;
@@ -21,6 +22,7 @@ use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -32,6 +34,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         checkContactEmailAddress::class,
         checkContactIban::class,
+        checkContactPostalCode::class,
         getAllEmail::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,

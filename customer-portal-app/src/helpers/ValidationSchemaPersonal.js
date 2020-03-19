@@ -35,7 +35,18 @@ export default {
                 }),
             postalCode: Yup.string()
                 .trim()
-                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig'),
+                .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
+                    if (
+                        (this.parent.countryId !== 'NL' &&
+                            this.parent.countryId !== null &&
+                            this.parent.countryId != '') ||
+                        value.trim() == ''
+                    ) {
+                        return true;
+                    } else {
+                        return !value.search(/^[1-9][0-9]{3}[ ]?([A-RT-Za-rt-z][A-Za-z]|[sS][BCbcE-Re-rT-Zt-z])$/);
+                    }
+                }),
             city: Yup.string().trim(),
         }),
         phoneNumberPrimary: Yup.object().shape({
@@ -96,7 +107,17 @@ export default {
                 .required('Verplicht'),
             postalCode: Yup.string()
                 .trim()
-                .matches(/(\d.*){4}|^$/, 'Minimum van 4 postcode cijfers nodig')
+                .test('postal-code-nl-check', 'Formaat Nederlandse postcode is 1234 AB', function(value) {
+                    if (
+                        this.parent.countryId !== 'NL' &&
+                        this.parent.countryId !== null &&
+                        this.parent.countryId != ''
+                    ) {
+                        return true;
+                    } else {
+                        return !value.search(/^[1-9][0-9]{3}[ ]?([A-RT-Za-rt-z][A-Za-z]|[sS][BCbcE-Re-rT-Zt-z])$/);
+                    }
+                })
                 .required('Verplicht'),
             city: Yup.string()
                 .trim()

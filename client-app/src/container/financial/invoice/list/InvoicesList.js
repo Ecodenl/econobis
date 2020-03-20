@@ -45,7 +45,6 @@ const initialState = {
     sendRemindersTextPost: 'Selecteer post herinneringen',
     setInvoicesPaidText: "Selecteer betaalde nota's",
     showSetInvoicesPaid: false,
-    totalsInfoAdministration: [],
     deleteItem: {
         id: '',
         fullName: '',
@@ -66,7 +65,6 @@ class InvoicesList extends Component {
 
     componentDidMount() {
         this.fetchInvoicesData();
-        // this.fetchTotalsInfoAdministration();
     }
 
     componentWillUnmount() {
@@ -166,14 +164,9 @@ class InvoicesList extends Component {
             const onlyPostInvoices = this.state.onlyPostInvoices;
 
             this.props.fetchInvoices(filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices);
-            this.fetchTotalsInfoAdministration();
         }, 100);
-    };
 
-    fetchTotalsInfoAdministration = () => {
-        AdministrationDetailsAPI.fetchTotalsInfoAdministration(this.props.administrationId).then(payload => {
-            this.setState({ totalsInfoAdministration: payload });
-        });
+        this.props.fetchTotalsInfoAdministration(this.props.administrationId);
     };
 
     getCSV = () => {
@@ -247,7 +240,6 @@ class InvoicesList extends Component {
         });
 
         this.fetchInvoicesData();
-        // this.fetchTotalsInfoAdministration();
 
         if (this.state.invoiceIds.length > 0) {
             this.props.previewSend(this.state.invoiceIds);
@@ -265,7 +257,6 @@ class InvoicesList extends Component {
         });
 
         this.fetchInvoicesData();
-        // this.fetchTotalsInfoAdministration();
 
         if (this.state.invoiceIds.length > 0) {
             InvoiceDetailsAPI.sendNotificationsPost(this.state.invoiceIds).then(payload => {
@@ -320,7 +311,6 @@ class InvoicesList extends Component {
         this.setFilter(this.props.filter);
 
         this.fetchInvoicesData();
-        // this.fetchTotalsInfoAdministration();
 
         this.setState({ ...initialState });
     };
@@ -331,7 +321,6 @@ class InvoicesList extends Component {
         this.props.setInvoicesPagination({ page: 0, offset: 0 });
 
         this.fetchInvoicesData();
-        // this.fetchTotalsInfoAdministration();
     };
 
     handlePageClick(data) {
@@ -341,7 +330,6 @@ class InvoicesList extends Component {
         this.props.setInvoicesPagination({ page, offset });
 
         this.fetchInvoicesData();
-        // this.fetchTotalsInfoAdministration();
     }
 
     // On key Enter filter form will submit
@@ -463,18 +451,18 @@ class InvoicesList extends Component {
         let isSendingText = null;
         let isResendingText = null;
         let errorMakingText = null;
-        if (this.state.totalsInfoAdministration) {
-            totalInvoicesInProgress = this.state.totalsInfoAdministration.totalInvoicesInProgress
-                ? this.state.totalsInfoAdministration.totalInvoicesInProgress
+        if (this.props.totalsInfoAdministration) {
+            totalInvoicesInProgress = this.props.totalsInfoAdministration.totalInvoicesInProgress
+                ? this.props.totalsInfoAdministration.totalInvoicesInProgress
                 : 0;
-            totalInvoicesIsSending = this.state.totalsInfoAdministration.totalInvoicesIsSending
-                ? this.state.totalsInfoAdministration.totalInvoicesIsSending
+            totalInvoicesIsSending = this.props.totalsInfoAdministration.totalInvoicesIsSending
+                ? this.props.totalsInfoAdministration.totalInvoicesIsSending
                 : 0;
-            totalInvoicesIsResending = this.state.totalsInfoAdministration.totalInvoicesIsResending
-                ? this.state.totalsInfoAdministration.totalInvoicesIsResending
+            totalInvoicesIsResending = this.props.totalsInfoAdministration.totalInvoicesIsResending
+                ? this.props.totalsInfoAdministration.totalInvoicesIsResending
                 : 0;
-            totalInvoicesErrorMaking = this.state.totalsInfoAdministration.totalInvoicesErrorMaking
-                ? this.state.totalsInfoAdministration.totalInvoicesErrorMaking
+            totalInvoicesErrorMaking = this.props.totalsInfoAdministration.totalInvoicesErrorMaking
+                ? this.props.totalsInfoAdministration.totalInvoicesErrorMaking
                 : 0;
 
             amountInProgress +=
@@ -501,7 +489,7 @@ class InvoicesList extends Component {
                 if (totalInvoicesErrorMaking > 0) {
                     errorMakingText = '- Nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
                 }
-                inProgressEndText = 'Gebruik refresh/vernieuwen knop om voortgang van nota statussen te verversen';
+                inProgressEndText = 'Gebruik refresh/vernieuwen knop om voortgang van nota statussen te verversen.';
             }
         }
         return (
@@ -617,42 +605,43 @@ class InvoicesList extends Component {
                 <div className="col-md-12">
                     {messageText ? <div className="alert alert-danger">{messageText}</div> : null}
                 </div>
-                <div className="col-md-12">
-                    {inProgressStartText ? (
-                        <div className="alert alert-warning">
-                            {inProgressStartText}
-                            <br />
-                            {inProgressText ? (
-                                <span>
-                                    {inProgressText} <br />
-                                </span>
-                            ) : null}
-                            {isSendingText ? (
-                                <span>
-                                    {isSendingText} <br />
-                                </span>
-                            ) : null}
-                            {isResendingText ? (
-                                <span>
-                                    {isResendingText} <br />
-                                </span>
-                            ) : null}
-                            {errorMakingText ? (
-                                <span>
-                                    {errorMakingText} <br />
-                                </span>
-                            ) : null}
-                            <br /> {inProgressEndText}
-                        </div>
-                    ) : null}
-                </div>
-                {this.state.showSelectInvoicesToSend ? (
+                {!this.state.showSelectInvoicesToSend ? (
+                    <div className="col-md-12">
+                        {inProgressStartText ? (
+                            <div className="alert alert-warning">
+                                {inProgressStartText}
+                                <br />
+                                {inProgressText ? (
+                                    <span>
+                                        {inProgressText} <br />
+                                    </span>
+                                ) : null}
+                                {isSendingText ? (
+                                    <span>
+                                        {isSendingText} <br />
+                                    </span>
+                                ) : null}
+                                {isResendingText ? (
+                                    <span>
+                                        {isResendingText} <br />
+                                    </span>
+                                ) : null}
+                                {errorMakingText ? (
+                                    <span>
+                                        {errorMakingText} <br />
+                                    </span>
+                                ) : null}
+                                <br /> {inProgressEndText}
+                            </div>
+                        ) : null}
+                    </div>
+                ) : (
                     <div className="col-md-12">
                         {numberSelectedNumberTotal ? (
                             <div className="alert alert-success">Geselecteerde nota's: {numberSelectedNumberTotal}</div>
                         ) : null}
                     </div>
-                ) : null}
+                )}
                 <div className="col-md-12">
                     {this.state.showErrorMessagePost ? (
                         <ErrorModal

@@ -46,6 +46,6 @@ class setDaysToExpireInvoice extends Command
             $invoice->save();
         }
 
-        Log::info('Dagen laatste herinnering herberekend');
+        Log::info('Dagen voor verlopen betaaltermijn herberekend');
     }
 }

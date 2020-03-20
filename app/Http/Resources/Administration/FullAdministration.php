@@ -86,10 +86,10 @@ class FullAdministration extends Resource
                 'totalInvoicesPaid' => $this->total_invoices_paid,
                 'totalInvoicesIrrecoverable' => $this->total_invoices_irrecoverable,
 
-                'totalInvoicesInProgressCollection' => $this->total_invoices_in_progress_collection,
-                'totalInvoicesIsSendingCollection' => $this->total_invoices_Is_Sending_collection,
-                'totalInvoicesErrorMakingCollection' => $this->total_invoices_Error_Making_collection,
-                'totalInvoicesIsResendingCollection' => $this->total_invoices_Is_Resending_collection,
+                'totalInvoicesInProgress' => $this->total_invoices_in_progress,
+                'totalInvoicesIsSending' => $this->total_invoices_is_sending,
+                'totalInvoicesErrorMaking' => $this->total_invoices_error_making,
+                'totalInvoicesIsResending' => $this->total_invoices_is_resending,
 
                 'totalPaymentInvoices' => $this->total_payment_invoices,
                 'totalPaymentInvoicesConcepts' => $this->total_payment_invoices_concepts,

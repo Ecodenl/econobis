@@ -66,7 +66,7 @@ class InvoicesList extends Component {
 
     componentDidMount() {
         this.fetchInvoicesData();
-        this.fetchTotalsInfoAdministration();
+        // this.fetchTotalsInfoAdministration();
     }
 
     componentWillUnmount() {
@@ -79,7 +79,6 @@ class InvoicesList extends Component {
 
             setTimeout(() => {
                 this.fetchInvoicesData();
-                this.fetchTotalsInfoAdministration();
             }, 100);
 
             this.setState({
@@ -167,6 +166,7 @@ class InvoicesList extends Component {
             const onlyPostInvoices = this.state.onlyPostInvoices;
 
             this.props.fetchInvoices(filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices);
+            this.fetchTotalsInfoAdministration();
         }, 100);
     };
 
@@ -247,7 +247,7 @@ class InvoicesList extends Component {
         });
 
         this.fetchInvoicesData();
-        this.fetchTotalsInfoAdministration();
+        // this.fetchTotalsInfoAdministration();
 
         if (this.state.invoiceIds.length > 0) {
             this.props.previewSend(this.state.invoiceIds);
@@ -265,7 +265,7 @@ class InvoicesList extends Component {
         });
 
         this.fetchInvoicesData();
-        this.fetchTotalsInfoAdministration();
+        // this.fetchTotalsInfoAdministration();
 
         if (this.state.invoiceIds.length > 0) {
             InvoiceDetailsAPI.sendNotificationsPost(this.state.invoiceIds).then(payload => {
@@ -320,7 +320,7 @@ class InvoicesList extends Component {
         this.setFilter(this.props.filter);
 
         this.fetchInvoicesData();
-        this.fetchTotalsInfoAdministration();
+        // this.fetchTotalsInfoAdministration();
 
         this.setState({ ...initialState });
     };
@@ -331,7 +331,7 @@ class InvoicesList extends Component {
         this.props.setInvoicesPagination({ page: 0, offset: 0 });
 
         this.fetchInvoicesData();
-        this.fetchTotalsInfoAdministration();
+        // this.fetchTotalsInfoAdministration();
     };
 
     handlePageClick(data) {
@@ -341,7 +341,7 @@ class InvoicesList extends Component {
         this.props.setInvoicesPagination({ page, offset });
 
         this.fetchInvoicesData();
-        this.fetchTotalsInfoAdministration();
+        // this.fetchTotalsInfoAdministration();
     }
 
     // On key Enter filter form will submit
@@ -452,14 +452,58 @@ class InvoicesList extends Component {
             }
         }
 
-        const foutTijdensMaken = this.state.totalsInfoAdministration.totalInvoicesErrorMakingCollection;
-        const inProces = this.state.totalsInfoAdministration.totalInvoicesInProgressCollection;
-        const wordHerzonden = this.state.totalsInfoAdministration.totalInvoicesIsResendingCollection;
-        const wordVerzonden = this.state.totalsInfoAdministration.totalInvoicesIsSendingCollection;
-
+        let totalInvoicesInProgress = 0;
+        let totalInvoicesIsSending = 0;
+        let totalInvoicesIsResending = 0;
+        let totalInvoicesErrorMaking = 0;
         let amountInProgress = 0;
-        amountInProgress += foutTijdensMaken + inProces + wordHerzonden + wordVerzonden;
+        let inProgressStartText = null;
+        let inProgressEndText = null;
+        let inProgressText = null;
+        let isSendingText = null;
+        let isResendingText = null;
+        let errorMakingText = null;
+        if (this.state.totalsInfoAdministration) {
+            totalInvoicesInProgress = this.state.totalsInfoAdministration.totalInvoicesInProgress
+                ? this.state.totalsInfoAdministration.totalInvoicesInProgress
+                : 0;
+            totalInvoicesIsSending = this.state.totalsInfoAdministration.totalInvoicesIsSending
+                ? this.state.totalsInfoAdministration.totalInvoicesIsSending
+                : 0;
+            totalInvoicesIsResending = this.state.totalsInfoAdministration.totalInvoicesIsResending
+                ? this.state.totalsInfoAdministration.totalInvoicesIsResending
+                : 0;
+            totalInvoicesErrorMaking = this.state.totalsInfoAdministration.totalInvoicesErrorMaking
+                ? this.state.totalsInfoAdministration.totalInvoicesErrorMaking
+                : 0;
 
+            amountInProgress +=
+                totalInvoicesErrorMaking + totalInvoicesInProgress + totalInvoicesIsResending + totalInvoicesIsSending;
+
+            if (
+                amountInProgress > 0 &&
+                (this.props.filter == 'te-verzenden-incasso' ||
+                    this.props.filter == 'te-verzenden-overboeken' ||
+                    this.props.filter == 'fout-verzenden-incasso' ||
+                    this.props.filter == 'fout-verzenden-overboeken' ||
+                    this.props.filter == 'verzonden')
+            ) {
+                inProgressStartText = "Nota's die momenteel in de maak en/of verzonden worden:";
+                if (totalInvoicesInProgress > 0) {
+                    inProgressText = "- Nota's die nu gemaakt worden: " + totalInvoicesInProgress;
+                }
+                if (totalInvoicesIsSending > 0) {
+                    isSendingText = "- Nota's die nu verzonden worden: " + totalInvoicesIsSending;
+                }
+                if (totalInvoicesIsResending > 0) {
+                    isResendingText = "- Nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
+                }
+                if (totalInvoicesErrorMaking > 0) {
+                    errorMakingText = '- Nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
+                }
+                inProgressEndText = 'Gebruik refresh/vernieuwen knop om voortgang van nota statussen te verversen';
+            }
+        }
         return (
             <div>
                 <div className="row">
@@ -574,28 +618,33 @@ class InvoicesList extends Component {
                     {messageText ? <div className="alert alert-danger">{messageText}</div> : null}
                 </div>
                 <div className="col-md-12">
-                    {(this.props.invoicesFilters.statusId.data == 'sent' ||
-                        (this.props.invoicesFilters.statusId.data == 'to-send' &&
-                            (this.props.invoicesFilters.paymentTypeId.data == 'transfer' ||
-                                this.props.invoicesFilters.paymentTypeId.data == 'collection'))) &&
-                        amountInProgress > 0 && (
-                            <>
-                                {inProces > 0 && <div className="alert alert-warning">{inProces} nog in proces</div>}
-                                {foutTijdensMaken > 0 && (
-                                    <div className="alert alert-warning">
-                                        {foutTijdensMaken} fout(en) tijdens het maken
-                                    </div>
-                                )}
-                                {wordHerzonden > 0 && (
-                                    <div className="alert alert-warning">
-                                        {wordHerzonden} word(en) er opnieuw verzonden
-                                    </div>
-                                )}
-                                {wordVerzonden > 0 && (
-                                    <div className="alert alert-warning">{wordVerzonden} word(en) er verzonden</div>
-                                )}
-                            </>
-                        )}
+                    {inProgressStartText ? (
+                        <div className="alert alert-warning">
+                            {inProgressStartText}
+                            <br />
+                            {inProgressText ? (
+                                <span>
+                                    {inProgressText} <br />
+                                </span>
+                            ) : null}
+                            {isSendingText ? (
+                                <span>
+                                    {isSendingText} <br />
+                                </span>
+                            ) : null}
+                            {isResendingText ? (
+                                <span>
+                                    {isResendingText} <br />
+                                </span>
+                            ) : null}
+                            {errorMakingText ? (
+                                <span>
+                                    {errorMakingText} <br />
+                                </span>
+                            ) : null}
+                            <br /> {inProgressEndText}
+                        </div>
+                    ) : null}
                 </div>
                 {this.state.showSelectInvoicesToSend ? (
                     <div className="col-md-12">

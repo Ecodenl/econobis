@@ -103,7 +103,7 @@ class PersonController extends ApiController
                 = new EmailAddress($this->arrayKeysToSnakeCase($data));
         }
 
-        if ($request['address']['street']) {
+        if ($request['address']['postalCode']) {
             Validator::make($request['address'], [
                 'countryId' => 'nullable|exists:countries,id',
                 'typeId' => new EnumExists(AddressType::class),

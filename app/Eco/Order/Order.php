@@ -8,6 +8,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
@@ -109,6 +110,10 @@ class Order extends Model
     public function emailTemplateExhortation()
     {
         return $this->belongsTo(EmailTemplate::class);
+    }
+
+    public function participation(){
+        $this->belongsTo(ParticipantProject::class, 'participation_id');
     }
 
     public function getCollectionFrequency()
@@ -242,4 +247,5 @@ class Order extends Model
                 return $date;
         }
     }
+
 }

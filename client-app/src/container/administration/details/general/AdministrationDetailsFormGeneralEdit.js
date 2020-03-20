@@ -111,6 +111,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldOfficeCode: false,
                 mailboxId: false,
                 emailBccNotas: false,
+                countryId: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -207,9 +208,21 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        let countryId = administration.countryId;
+        if (validator.isEmpty(administration.countryId + '')) {
+            countryId = 'NL';
+        }
+
+        let postalCodeValid = true;
         if (!validator.isEmpty(administration.postalCode + '')) {
-            if (!validator.isPostalCode(administration.postalCode + '', 'any')) {
+            if (countryId == 'NL') {
+                postalCodeValid = validator.isPostalCode(administration.postalCode, 'NL');
+            } else {
+                postalCodeValid = validator.isPostalCode(administration.postalCode, 'any');
+            }
+            if (!postalCodeValid) {
                 errors.postalCode = true;
+                errors.countryId = true;
                 hasErrors = true;
             }
         }
@@ -446,6 +459,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 options={this.props.countries}
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
+                                error={this.state.errors.countryId}
                             />
                         </div>
 

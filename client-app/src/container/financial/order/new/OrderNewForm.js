@@ -23,6 +23,7 @@ class OrderNewForm extends Component {
         this.state = {
             contacts: [],
             emailTemplates: [],
+            participations: [],
             contactPerson: '',
             contactEmail: '',
             contactCollectMandate: false,
@@ -33,6 +34,7 @@ class OrderNewForm extends Component {
                 administrationId: '',
                 statusId: 'concept',
                 subject: '',
+                participationId: '',
                 emailTemplateIdCollection: '',
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
@@ -84,6 +86,7 @@ class OrderNewForm extends Component {
                         contactEmail: payload.data.email,
                         contactCollectMandate: payload.data.collectMandate,
                         contactCollectMandateFirstRun: payload.data.collectMandateFirstRun,
+                        participations: payload.data.participations,
                     },
                     this.checkContactCollectMandate
                 );
@@ -141,6 +144,23 @@ class OrderNewForm extends Component {
         });
     };
 
+    handleInputChangeParticipation = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+        let participation;
+
+        participation = this.state.participations.filter(participation => participation.id == value);
+        participation = participation[0];
+
+        this.setState({
+            order: {
+                ...this.state.order,
+                participationId: participation.id,
+            },
+        });
+    };
+
     handleInputChangeDate = (value, name) => {
         this.setState({
             order: {
@@ -169,6 +189,7 @@ class OrderNewForm extends Component {
                     contactEmail: payload.data.email,
                     contactCollectMandate: payload.data.collectMandate,
                     contactCollectMandateFirstRun: payload.data.collectMandateFirstRun,
+                    participations: payload.data.participations,
                     order: {
                         ...this.state.order,
                         [name]: selectedOption,
@@ -272,6 +293,7 @@ class OrderNewForm extends Component {
             administrationId,
             statusId,
             subject,
+            participationId,
             emailTemplateIdCollection,
             emailTemplateIdTransfer,
             emailTemplateReminderId,
@@ -328,14 +350,15 @@ class OrderNewForm extends Component {
                         </div>
 
                         <div className="row">
-                            <InputReactSelect
-                                label={'E-mail template nota incasso'}
-                                name={'emailTemplateIdCollection'}
-                                options={this.state.emailTemplates}
-                                value={emailTemplateIdCollection}
-                                onChangeAction={this.handleReactSelectChange}
-                                isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
+                            <InputSelect
+                                label={'Deelname'}
+                                id="ParticipationId"
+                                name={'ParticipationId'}
+                                options={this.state.participations}
+                                value={participationId}
+                                onChangeAction={this.handleInputChangeParticipation}
+                                optionValue={'id'}
+                                optionName={'project_name'}
                             />
                             <InputText
                                 label="Betreft"
@@ -349,10 +372,10 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template nota overboeken'}
-                                name={'emailTemplateIdTransfer'}
+                                label={'E-mail template nota incasso'}
+                                name={'emailTemplateIdCollection'}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateIdTransfer}
+                                value={emailTemplateIdCollection}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -378,10 +401,10 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template herinnering'}
-                                name={'emailTemplateReminderId'}
+                                label={'E-mail template nota overboeken'}
+                                name={'emailTemplateIdTransfer'}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateReminderId}
+                                value={emailTemplateIdTransfer}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -399,10 +422,10 @@ class OrderNewForm extends Component {
 
                         <div className="row">
                             <InputReactSelect
-                                label={'E-mail template aanmaning'}
-                                name={'emailTemplateExhortationId'}
+                                label={'E-mail template herinnering'}
+                                name={'emailTemplateReminderId'}
                                 options={this.state.emailTemplates}
-                                value={emailTemplateExhortationId}
+                                value={emailTemplateReminderId}
                                 onChangeAction={this.handleReactSelectChange}
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
@@ -420,6 +443,15 @@ class OrderNewForm extends Component {
                         </div>
 
                         <div className="row">
+                            <InputReactSelect
+                                label={'E-mail template aanmaning'}
+                                name={'emailTemplateExhortationId'}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateExhortationId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}

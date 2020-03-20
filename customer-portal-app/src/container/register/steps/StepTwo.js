@@ -19,7 +19,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
     const validationSchemaPcrPersonal = Yup.object().shape({
         primaryAddress: Yup.object().shape({
             postalCode: Yup.string().test(
-                'test-compare a few values',
+                'postal-code-primary-address-in-pcr-area',
                 'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
                 function(value) {
                     return project.postalcodeLink.includes(value.substring(0, 4));
@@ -31,7 +31,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
         visitAddress: Yup.object().shape({
             postalCode: Yup.string()
                 .test(
-                    'test-compare a few values',
+                    'postal-code-visit-address-in-pcr-area',
                     'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
                     function(value) {
                         return project.postalcodeLink.includes(value.substring(0, 4));

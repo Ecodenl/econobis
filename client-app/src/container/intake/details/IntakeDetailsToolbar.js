@@ -58,6 +58,7 @@ class IntakeDetailsToolbar extends Component {
                         closeDeleteItemModal={this.toggleDelete}
                         fullStreet={fullStreet}
                         id={this.props.id}
+                        contactId={this.props.contact.id}
                     />
                 )}
             </div>
@@ -71,6 +72,7 @@ const mapStateToProps = state => {
         id: state.intakeDetails.id,
         campaign: state.intakeDetails.campaign,
         permissions: state.meDetails.permissions,
+        contact: state.intakeDetails.contact,
     };
 };
 

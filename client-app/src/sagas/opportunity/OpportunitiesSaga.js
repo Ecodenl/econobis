@@ -16,11 +16,15 @@ export function* fetchOpportunitiesSaga({ filters, sorts, pagination }) {
     }
 }
 
-export function* deleteOpportunitySaga({ id }) {
+export function* deleteOpportunitySaga({ id, contactId }) {
     try {
         yield call(OpportunityDetailsAPI.deleteOpportunity, id);
         yield put({ type: 'DELETE_OPPORTUNITY_SUCCESS', id });
-        hashHistory.push(`/kansen`);
+        if (contactId == 0) {
+            hashHistory.push(`/kansen`);
+        } else {
+            hashHistory.push(`/contact/` + contactId);
+        }
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_OPPORTUNITY_ERROR', error });

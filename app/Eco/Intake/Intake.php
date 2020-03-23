@@ -100,4 +100,11 @@ class Intake extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function setStatusToInBehandeling()
+    {
+        $statusId = IntakeStatus::where('name', 'In Behandeling')->first()->id;
+        $this->intake_status_id = $statusId;
+        $this->save();
+    }
 }

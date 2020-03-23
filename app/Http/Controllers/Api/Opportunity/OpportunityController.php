@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Opportunity;
 
 use App\Eco\Email\Email;
+use App\Eco\Intake\Intake;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityEvaluation;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -90,6 +91,8 @@ class OpportunityController extends ApiController
         $opportunity = new Opportunity();
         $opportunity->fill($data);
         $opportunity->save();
+
+        Intake::findOrFail($request->only(['intakeId']))->first()->setStatusToInBehandeling();
 
         $measureIds = explode(',', $request->measureIds);
 

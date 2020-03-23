@@ -107,7 +107,7 @@ class IntakeController extends ApiController
         $data = $request->validate([
             'contactId' => 'required|exists:contacts,id',
             'addressId' => 'exists:addresses,id',
-            'campaignId' => 'nullable|exists:campaigns,id',
+            'campaignId' => 'required|exists:campaigns,id',
             'statusId' => 'exists:intake_status,id',
             'sourceIds' => '',
             'intakeReasonIds' => '',
@@ -161,7 +161,7 @@ class IntakeController extends ApiController
         $this->authorize('manage', Intake::class);
 
         $data = $request->validate([
-            'campaignId' => 'nullable|exists:campaigns,id',
+            'campaignId' => 'required|exists:campaigns,id',
             'statusId' => 'exists:intake_status,id',
             'sourceIds' => '',
             'intakeReasonIds' => '',

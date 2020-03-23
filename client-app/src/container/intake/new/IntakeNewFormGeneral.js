@@ -19,7 +19,7 @@ class IntakeNewFormGeneral extends Component {
             intake: {
                 contactId: props.contactId,
                 addressId: props.addressId,
-                campaignId: '',
+                campaignId: props.campaigns[0].id,
                 statusId: '1',
                 sourceIds: '',
                 intakeReasonIds: '',
@@ -103,7 +103,7 @@ class IntakeNewFormGeneral extends Component {
                                 {addresses.map((address, i) => {
                                     return (
                                         <option key={i} value={address.id}>
-                                            {address.street + ' ' + address.number}
+                                            {address.street + ' ' + address.number + ', ' + address.city}
                                         </option>
                                     );
                                 })}
@@ -119,6 +119,8 @@ class IntakeNewFormGeneral extends Component {
                         value={campaignId}
                         options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
+                        required={true}
+                        emptyOption={false}
                     />
                     <InputSelect
                         label={'Status'}

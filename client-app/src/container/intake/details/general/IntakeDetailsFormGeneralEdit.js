@@ -33,9 +33,15 @@ class IntakeDetailsFormGeneralEdit extends Component {
     }
 
     componentWillMount() {
+        const { campaign } = this.props.intakeDetails;
+
         CampaignsAPI.peekCampaigns().then(payload => {
             this.setState({
                 campaigns: payload,
+                intake: {
+                    ...this.state.intake,
+                    campaignId: campaign ? campaign.id : payload[0].id,
+                },
             });
         });
     }
@@ -115,6 +121,8 @@ class IntakeDetailsFormGeneralEdit extends Component {
                         value={campaignId}
                         options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
+                        required={true}
+                        emptyOption={false}
                     />
                     <InputText label={'Woonplaats'} name={'city'} value={address && address.city} readOnly />
                 </div>

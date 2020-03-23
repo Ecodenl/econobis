@@ -180,6 +180,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownRelations',
                 dropDownOptions: this.props.primaryOccupations,
             },
+            occupationPrimary: {
+                name: 'Primaire verbinding',
+                type: 'dropdownRelations',
+                dropDownOptions: this.props.primaryOccupations,
+            },
             opportunity: {
                 name: 'Kans',
                 type: 'dropdownHas',

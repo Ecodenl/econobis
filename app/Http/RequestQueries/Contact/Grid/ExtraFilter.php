@@ -26,6 +26,7 @@ class ExtraFilter extends RequestExtraFilter
         'currentPostalcodeLinkCapital',
         'currentLoan',
         'occupation',
+        'occupationPrimary',
         'opportunity',
         'product',
         'dateStart',
@@ -128,28 +129,91 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyOccupationFilter($query, $type, $data)
     {
-        switch($type){
-            case 'eq':
-                $query->whereHas('isSecondaryOccupant', function($query) use ($data) {
-                   $query->where('occupation_contact.occupation_id', $data);
-                });
-                break;
-            case 'neq':
-                $query->whereDoesntHave('isSecondaryOccupant', function($join) use ($data){
-                    $join->where('occupation_contact.occupation_id', $data);
-                });
-                break;
-            case 'rel':
-                $query->whereHas('isPrimaryOccupant', function($join) use ($data){
-                    $join->where('occupation_contact.occupation_id', $data);
-                });
-                break;
-            case 'nrel':
-                $query->whereDoesntHave('isPrimaryOccupant', function($join) use ($data){
-                    $join->where('occupation_contact.occupation_id', $data);
-                });
-                break;
+        if(empty($data))
+        {
+            switch($type){
+                case 'eq':
+                    $query->whereDoesntHave('isSecondaryOccupant');
+                    break;
+                case 'neq':
+                    $query->whereHas('isSecondaryOccupant');
+                    break;
+                case 'rel':
+                    $query->whereDoesntHave('isPrimaryOccupant');
+                    break;
+                case 'nrel':
+                    $query->whereHas('isPrimaryOccupant');
+                    break;
+            }
+        }else{
+            switch($type){
+                case 'eq':
+                    $query->whereHas('isSecondaryOccupant', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+                case 'neq':
+                    $query->whereDoesntHave('isSecondaryOccupant', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+                case 'rel':
+                    $query->whereHas('isPrimaryOccupant', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+                case 'nrel':
+                    $query->whereDoesntHave('isPrimaryOccupant', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+            }
         }
+
+    }
+    protected function applyOccupationPrimaryFilter($query, $type, $data)
+    {
+        if(empty($data))
+        {
+            switch($type){
+                case 'eq':
+                    $query->whereDoesntHave('isSecondaryOccupantPrimary');
+                    break;
+                case 'neq':
+                    $query->whereHas('isSecondaryOccupantPrimary');
+                    break;
+                case 'rel':
+                    $query->whereDoesntHave('isPrimaryOccupantPrimary');
+                    break;
+                case 'nrel':
+                    $query->whereHas('isPrimaryOccupantPrimary');
+                    break;
+            }
+        }else{
+            switch($type){
+                case 'eq':
+                    $query->whereHas('isSecondaryOccupantPrimary', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+                case 'neq':
+                    $query->whereDoesntHave('isSecondaryOccupantPrimary', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+                case 'rel':
+                    $query->whereHas('isPrimaryOccupantPrimary', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+                case 'nrel':
+                    $query->whereDoesntHave('isPrimaryOccupantPrimary', function($join) use ($data){
+                        $join->where('occupation_contact.occupation_id', $data);
+                    });
+                    break;
+            }
+        }
+
     }
 
     protected function applyOpportunityFilter($query, $type, $data)

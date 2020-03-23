@@ -26,6 +26,10 @@ class IntakeDetailsToolbar extends Component {
         intakeAddress &&
             (fullStreet = `${intakeAddress.street || ''} ${intakeAddress.number || ''}${intakeAddress.addition || ''}`);
 
+        const { campaign = {} } = this.props;
+        let campaignName = '';
+        campaignName = campaign.name;
+
         return (
             <div className="row">
                 <div className="col-sm-12">
@@ -43,7 +47,7 @@ class IntakeDetailsToolbar extends Component {
                                 </div>
                             </div>
                             <div className="col-md-8">
-                                <h4 className="text-center">{`Intake voor: ${fullStreet}`}</h4>
+                                <h4 className="text-center">{`Intake voor: ${campaignName}`}</h4>
                             </div>
                             <div className="col-md-2" />
                         </PanelBody>
@@ -65,6 +69,7 @@ const mapStateToProps = state => {
     return {
         intakeAddress: state.intakeDetails.address,
         id: state.intakeDetails.id,
+        campaign: state.intakeDetails.campaign,
         permissions: state.meDetails.permissions,
     };
 };

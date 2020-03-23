@@ -116,6 +116,17 @@ class IntakeDetailsFormGeneralEdit extends Component {
                         options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
                     />
+                    <InputText label={'Woonplaats'} name={'city'} value={address && address.city} readOnly />
+                </div>
+
+                <div className="row">
+                    <InputMultiSelect
+                        label="Aanmeldingsbron"
+                        name="sourceIds"
+                        value={sourceIds}
+                        options={this.props.intakeSources}
+                        onChangeAction={this.handleSourceIds}
+                    />
                     <InputSelect
                         label={'Status'}
                         size={'col-sm-6'}
@@ -127,13 +138,6 @@ class IntakeDetailsFormGeneralEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputMultiSelect
-                        label="Aanmeldingsbron"
-                        name="sourceIds"
-                        value={sourceIds}
-                        options={this.props.intakeSources}
-                        onChangeAction={this.handleSourceIds}
-                    />
                     <InputMultiSelect
                         label="Wat is belangrijk"
                         name="intakeReasonIds"

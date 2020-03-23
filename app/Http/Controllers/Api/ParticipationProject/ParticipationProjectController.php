@@ -1032,7 +1032,7 @@ class ParticipationProjectController extends ApiController
         $payout = 0;
 
         foreach ($mutations as $mutation) {
-            $dateEntry = $mutation->date_entry;
+            $dateEntry = new Carbon($mutation->date_entry);
 
             // If date entry is before date begin then date entry is equal to date begin
             if($dateEntry < $dateBegin) $dateEntry = $dateBegin;

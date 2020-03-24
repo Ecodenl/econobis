@@ -92,7 +92,9 @@ class OpportunityController extends ApiController
         $opportunity->fill($data);
         $opportunity->save();
 
-        Intake::findOrFail($request->only(['intakeId']))->first()->setStatusToInBehandeling();
+        $intake = Intake::findOrFail($request->only(['intakeId']))->first();
+        $intake->setStatusToInBehandeling();
+        $intake->updateStatusToAfgeslotenMetKans();
 
         $measureIds = explode(',', $request->measureIds);
 
@@ -133,6 +135,7 @@ class OpportunityController extends ApiController
     public function destroy(Opportunity $opportunity)
     {
         $this->authorize('manage', Opportunity::class);
+        $intake = $opportunity->intake;
 
         try {
             DB::beginTransaction();
@@ -146,6 +149,7 @@ class OpportunityController extends ApiController
             }
 
             DB::commit();
+            $intake->updateStatusToAfgeslotenMetKans();
         } catch (\PDOException $e) {
             DB::rollBack();
             Log::error($e->getMessage());

@@ -61,11 +61,11 @@ const OpportunityFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Datum uitvoering gepland'}
+                    label={'Datum uitvoering'}
                     value={desiredDate ? moment(desiredDate).format('L') : ''}
                 />
                 <ViewText
-                    label={'Datum evaluatie akkoord'}
+                    label={'Datum evaluatie'}
                     value={evaluationAgreedDate ? moment(evaluationAgreedDate).format('L') : ''}
                 />
             </div>

@@ -55,8 +55,8 @@ class IntakeExcelHelper
         $headerData[] = 'Interesse maatregel';
         $headerData[] = 'Gerelateerde kans';
         $headerData[] = 'Kans status';
-        $headerData[] = 'Kans datum uitvoering gepland';
-        $headerData[] = 'Kans datum evaluatie akkoord';
+        $headerData[] = 'Kans datum uitvoering';
+        $headerData[] = 'Kans datum evaluatie';
 
         $completeData[] = $headerData;
 

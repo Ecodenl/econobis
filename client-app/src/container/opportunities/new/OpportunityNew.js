@@ -91,6 +91,7 @@ const OpportunityNew = props => {
                     name="desiredDate"
                     value={desiredDate}
                     onChangeAction={props.handleInputChangeDate}
+                    error={props.errors.desiredDate}
                 />
                 <InputDate
                     label="Datum evaluatie"

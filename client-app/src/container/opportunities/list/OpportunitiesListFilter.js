@@ -19,8 +19,6 @@ import {
 import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
 
 const OpportunitiesListFilter = props => {
-    console.log(props);
-
     const onNumberChange = e => {
         props.setFilterOpportunityNumber(e.target.value);
     };

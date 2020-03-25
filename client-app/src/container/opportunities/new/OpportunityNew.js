@@ -68,7 +68,7 @@ const OpportunityNew = props => {
                     label={'Status'}
                     size={'col-sm-6'}
                     name={'statusId'}
-                    options={props.status}
+                    options={props.status.filter(item => item.active == 1)}
                     value={statusId}
                     onChangeAction={props.handleInputChange}
                     required={'required'}

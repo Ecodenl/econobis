@@ -33,7 +33,7 @@ class OpportunityFormEdit extends Component {
         } = props.opportunity;
 
         this.state = {
-            status: props.status,
+            status: props.status.filter(item => item.active == 1),
             opportunity: {
                 id,
                 measureIds: measures && measures.map(measure => measure.id).join(','),
@@ -183,7 +183,7 @@ class OpportunityFormEdit extends Component {
                         label={'Status'}
                         size={'col-sm-6'}
                         name={'statusId'}
-                        options={this.props.status}
+                        options={this.state.status}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                         required={'required'}

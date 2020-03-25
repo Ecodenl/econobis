@@ -14,16 +14,16 @@ class AddColumnDeletedAtToOpportunityStatusTable extends Migration
     public function up()
     {
         Schema::table('opportunity_status', function (Blueprint $table) {
-            $table->date('deleted_at')->default(null);
+            $table->boolean('active')->default(true);
         });
 
         // Soft deleten van de kansen 'Uitvoering, doe het zelf' en 'opdracht'
         $kansUitvoeringDoeHetZelf = \App\Eco\Opportunity\OpportunityStatus::where('name', 'Uitvoering, doe het zelf')->first();
-        $kansUitvoeringDoeHetZelf->deleted_at = \Carbon\Carbon::now('Europe/Amsterdam');
+        $kansUitvoeringDoeHetZelf->active = false;
         $kansUitvoeringDoeHetZelf->save();
 
         $kansOpdracht = \App\Eco\Opportunity\OpportunityStatus::where('name', 'Opdracht')->first();
-        $kansOpdracht->deleted_at = \Carbon\Carbon::now('Europe/Amsterdam');
+        $kansOpdracht->active = false;
         $kansOpdracht->save();
     }
 
@@ -35,7 +35,7 @@ class AddColumnDeletedAtToOpportunityStatusTable extends Migration
     public function down()
     {
         Schema::table('opportunity_status', function (Blueprint $table) {
-            $table->dropColumn('deleted_at');
+            $table->dropColumn('active');
         });
     }
 }

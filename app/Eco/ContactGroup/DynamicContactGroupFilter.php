@@ -55,7 +55,16 @@ class DynamicContactGroupFilter extends Model
                     $name = $model->full_name;
                     break;
                 default:
-                    $name = $model->name;
+                      $name = $model->name;
+                      //todo &model is soma null, en dan dumpt ie hier
+//                    try{
+//                        $name = $model->name;
+//                    }catch (\Exception $e)
+//                    {
+//                        print_r("hallo");
+//                        dd($this->data);
+//                        dd($e);
+//                    }
             }
         } catch (EnumNotFoundException $e) {
             $name = $this->model_name::get($this->data)->name;

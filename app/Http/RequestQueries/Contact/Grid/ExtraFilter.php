@@ -25,6 +25,7 @@ class ExtraFilter extends RequestExtraFilter
         'currentParticipations',
         'currentPostalcodeLinkCapital',
         'currentLoan',
+        'staticContactGroup',
         'occupation',
         'occupationPrimary',
         'opportunity',
@@ -125,6 +126,22 @@ class ExtraFilter extends RequestExtraFilter
 
         // Betreft geen uitzondering; standaar functie doorlopen:
         $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], $filterType);
+    }
+
+    protected function applyStaticContactGroupFilter($query, $type, $data)
+    {
+        switch($type) {
+            case 'eq':
+                $query->whereHas('groups', function ($query) use ($data) {
+                    $query->where('contact_groups.id', $data);
+                });
+                break;
+            case 'neq':
+                $query->whereDoesntHave('groups', function ($query) use ($data) {
+                    $query->where('contact_groups.id', $data);
+                });
+                break;
+        }
     }
 
     protected function applyOccupationFilter($query, $type, $data)

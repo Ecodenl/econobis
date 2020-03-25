@@ -175,6 +175,11 @@ class ContactsListExtraFilters extends Component {
                 name: 'Huidig bedrag lening',
                 type: 'number',
             },
+            staticContactGroup: {
+                name: 'Statische groep',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.staticContactGroups,
+            },
             occupation: {
                 name: 'Verbinding',
                 type: 'dropdownRelations',
@@ -304,6 +309,7 @@ class ContactsListExtraFilters extends Component {
 const mapStateToProps = state => {
     return {
         contactStatuses: state.systemData.contactStatuses,
+        staticContactGroups: state.systemData.staticContactGroups,
         primaryOccupations: state.systemData.primaryOccupations,
         measureCategories: state.systemData.measureCategories,
         products: state.systemData.products,

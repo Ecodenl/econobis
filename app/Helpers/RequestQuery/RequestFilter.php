@@ -33,6 +33,7 @@ abstract class RequestFilter
         'rel',
         'nrel',
         'ct',
+        'nct',
         'lt',
         'lte',
         'gt',
@@ -185,6 +186,9 @@ abstract class RequestFilter
             case 'ct':
                 $query->where($mappedField, 'LIKE', '%' . $data . '%');
                 break;
+            case 'nct':
+                $query->where($mappedField, 'NOT LIKE', '%' . $data . '%');
+                break;
             case 'lt':
                 $query->where($mappedField, '<', $data);
                 break;
@@ -231,6 +235,9 @@ abstract class RequestFilter
                 break;
             case 'ct':
                 $query->having($mappedField, 'LIKE', '%' . $data . '%');
+                break;
+            case 'nct':
+                $query->having($mappedField, 'NOT LIKE', '%' . $data . '%');
                 break;
             case 'lt':
                 $query->having($mappedField, '<', $data);

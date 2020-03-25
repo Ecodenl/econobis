@@ -954,21 +954,19 @@ class ParticipationProjectController extends ApiController
         $participantMutation->participation_id = $participantProject->id;
         $participantMutation->type_id = $mutationTypeWithDrawalId;
         $participantMutation->status_id = $mutationStatusFinalId;
+        $participantMutation->date_entry = $participantProject['date_terminated'];
+
         if ($projectType->code_ref == 'loan') {
             $amountDefinitive = $participantProject->calculator()->amountDefinitive();
 
-            $participantMutation->amount = '-' . $amountDefinitive;
-            $participantMutation->amount_final = '-' . $amountDefinitive;
+            $participantMutation->amount = $amountDefinitive * -1;
+            $participantMutation->amount_final = $amountDefinitive * -1;
         } else {
             $participationsDefinitive = $participantProject->calculator()->participationsDefinitive();
 
-            $participantMutation->quantity = '-' . $participationsDefinitive;
-            $participantMutation->quantity_final = '-' . $participationsDefinitive;
-        }
-        $participantMutation->date_entry = $participantProject['date_terminated'];
+            $participantMutation->quantity = $participationsDefinitive * -1;
+            $participantMutation->quantity_final = $participationsDefinitive * -1;
 
-        // Calculate participation worth based on current book worth of project
-        if ($participantMutation->status->code_ref === 'final' && $participantMutation->participation->project->projectType->code_ref !== 'loan') {
             $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
                 ->where('date', '<=', $participantMutation->date_entry)
                 ->orderBy('date', 'desc')
@@ -1032,7 +1030,7 @@ class ParticipationProjectController extends ApiController
         $payout = 0;
 
         foreach ($mutations as $mutation) {
-            $dateEntry = $mutation->date_entry;
+            $dateEntry = new Carbon($mutation->date_entry);
 
             // If date entry is before date begin then date entry is equal to date begin
             if($dateEntry < $dateBegin) $dateEntry = $dateBegin;

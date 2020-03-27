@@ -64,6 +64,29 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyPostalCodeFilter($query, $type, $data)
     {
+//        switch($type) {
+//            case 'nct':
+//            case 'neq':
+//            case 'nbw':
+//            case 'new':
+//            case 'nl':
+//            $query->whereDoesntHave('primaryAddress')
+//                ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+//                $data = str_replace(' ', '', $data);
+//                RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+//            });
+////                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+////                    $data = str_replace(' ', '', $data);
+////                    RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+////                })->doesntHave('primaryAddress', 'or');
+//                break;
+//            default:
+//                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+//                    $data = str_replace(' ', '', $data);
+//                    RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+//                });
+//                break;
+//        }
         $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
             $data = str_replace(' ', '', $data);
             RequestFilter::applyFilter($query, 'postal_code', $type, $data);

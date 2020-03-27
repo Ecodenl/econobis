@@ -77,7 +77,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
             <div className="row">
                 <div className="col-sm-3">
                     <label htmlFor="quotationText" className="col-sm-12">
-                        Offerte tekst
+                        Offerte omschrijving
                     </label>
                 </div>
                 <div className="col-sm-9" id="quotationText">

@@ -90,7 +90,7 @@ class QuotationRequestCSVHelper
             'date_recorded' => 'Datum opname',
             'status.name' => 'Status',
             'date_released' => 'Offerte uitgebracht',
-            'quotation_text' => 'Offerte tekst',
+            'quotation_text' => 'Offerte omschrijving',
             'opportunity.intake.contact.full_name' => 'Contact',
             'title.name' => 'Persoon titel',
             'initials' => 'Persoon initialen',

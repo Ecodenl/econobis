@@ -220,7 +220,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputTextArea
-                        label={'Offerte tekst'}
+                        label={'Offerte omschrijving'}
                         name={'quotationText'}
                         value={quotationText}
                         onChangeAction={this.handleInputChange}

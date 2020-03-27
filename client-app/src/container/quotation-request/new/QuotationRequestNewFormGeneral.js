@@ -31,7 +31,6 @@ class QuotationRequestNewFormGeneral extends Component {
                 dateRecorded: '',
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
                 dateReleased: '',
-                dateValid: '',
                 quotationText: '',
             },
             errors: {
@@ -57,7 +56,6 @@ class QuotationRequestNewFormGeneral extends Component {
                     dateRecorded: '',
                     statusId: '5',
                     dateReleased: '',
-                    dateValid: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',
                 },
             });
@@ -125,7 +123,6 @@ class QuotationRequestNewFormGeneral extends Component {
             dateRecorded,
             statusId,
             dateReleased,
-            dateValid,
             quotationText,
         } = this.state.quotationRequest;
         const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
@@ -202,16 +199,6 @@ class QuotationRequestNewFormGeneral extends Component {
                         size={'col-sm-6'}
                         name="dateReleased"
                         value={dateReleased}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
-                <div className="row">
-                    <InputDate
-                        label="Offerte geldig tot"
-                        size={'col-sm-6'}
-                        name="dateValid"
-                        value={dateValid}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>

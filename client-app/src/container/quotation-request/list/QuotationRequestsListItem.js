@@ -31,7 +31,7 @@ class QuotationRequestsListItem extends Component {
     }
 
     render() {
-        const { id, organisation, opportunity, createdAt, dateRecorded, status, dateReleased, dateValid } = this.props;
+        const { id, organisation, opportunity, createdAt, dateRecorded, status, dateReleased} = this.props;
 
         return (
             <tr
@@ -48,7 +48,6 @@ class QuotationRequestsListItem extends Component {
                 <td>{dateRecorded && moment(dateRecorded).format('DD-MM-Y')}</td>
                 <td>{status ? status.name : 'Onbekend'}</td>
                 <td>{dateReleased && moment(dateReleased).format('DD-MM-Y')}</td>
-                <td>{dateValid && moment(dateValid).format('DD-MM-Y')}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

@@ -12,7 +12,6 @@ const QuotationRequestDetailsFormGeneralView = props => {
         status,
         datePlannedToSendWfEmailStatus,
         dateReleased,
-        dateValid,
         quotationText,
         opportunity,
     } = props.quotationRequestDetails;
@@ -73,7 +72,6 @@ const QuotationRequestDetailsFormGeneralView = props => {
 
             <div className="row">
                 <ViewText label={'Offerte uitgebracht'} value={dateReleased ? moment(dateReleased).format('L') : ''} />
-                <ViewText label={'Offerte geldig tot'} value={dateValid ? moment(dateValid).format('L') : ''} />
             </div>
 
             <div className="row">

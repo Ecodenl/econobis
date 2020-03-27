@@ -26,7 +26,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             status,
             datePlannedToSendWfEmailStatus,
             dateReleased,
-            dateValid,
             quotationText,
             opportunity,
         } = props.quotationRequestDetails;
@@ -49,7 +48,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     ? moment(datePlannedToSendWfEmailStatus).format('L')
                     : '',
                 dateReleased: dateReleased ? dateReleased : '',
-                dateValid: dateValid ? dateValid : '',
                 quotationText: quotationText ? quotationText : '',
             },
             errors: {
@@ -126,7 +124,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             statusUsesWf,
             datePlannedToSendWfEmailStatus,
             dateReleased,
-            dateValid,
             quotationText,
         } = this.state.quotationRequest;
         const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
@@ -217,13 +214,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         size={'col-sm-6'}
                         name="dateReleased"
                         value={dateReleased}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    <InputDate
-                        label="Offerte geldig tot"
-                        size={'col-sm-6'}
-                        name="dateValid"
-                        value={dateValid}
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>

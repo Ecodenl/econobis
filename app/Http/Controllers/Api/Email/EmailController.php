@@ -368,6 +368,7 @@ class EmailController
         $email->bcc = $sanitizedData['bcc'];
         $email->subject = $sanitizedData['subject'];
         $email->html_body = $sanitizedData['html_body'];
+        $email->sent_by_user_id = Auth::id();
         $email->save();
         
         return $email;

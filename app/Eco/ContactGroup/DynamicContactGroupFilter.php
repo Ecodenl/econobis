@@ -3,6 +3,7 @@
 namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Occupation\Occupation;
 use App\Eco\Order\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -47,26 +48,22 @@ class DynamicContactGroupFilter extends Model
         try {
             $model = $this->model_name::find($this->data);
 
-            switch ($this->model_name) {
-                case 'App\Eco\Occupation\Occupation':
-                    $name = $model->primary_occupation;
-                    break;
-                case Contact::class:
-                    $name = $model->full_name;
-                    break;
-                default:
-                      $name = $model->name;
-                      //todo &model is soma null, en dan dumpt ie hier
-//                    try{
-//                        $name = $model->name;
-//                    }catch (\Exception $e)
-//                    {
-//                        print_r("hallo");
-//                        dd($this->data);
-//                        dd($e);
-//                    }
+            if($model)
+            {
+                switch ($this->model_name) {
+                    case Occupation::class:
+                        $name = $model->primary_occupation;
+                        break;
+                    case Contact::class:
+                        $name = $model->full_name;
+                        break;
+                    default:
+                        $name = $model->name;
+                }
+            }else{
+                $name = '';
             }
-        } catch (EnumNotFoundException $e) {
+       } catch (EnumNotFoundException $e) {
             $name = $this->model_name::get($this->data)->name;
         }
 

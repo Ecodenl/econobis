@@ -26,8 +26,8 @@ export default (type, field) => {
                     return 'Status';
                 case 'name':
                     return 'Naam';
-                case 'postalCodeNumber':
-                    return 'Postcode nummer';
+                // case 'postalCodeNumber':
+                //     return 'Postcode nummer';
                 case 'currentObligations':
                     return 'Aantal obligaties';
                 case 'currentParticipations':
@@ -36,8 +36,12 @@ export default (type, field) => {
                     return 'Aantal postcoderoos';
                 case 'currentLoan':
                     return 'Bedrag lening';
+                case 'staticContactGroup':
+                    return 'Statische groep';
                 case 'occupation':
                     return 'Verbinding';
+                case 'occupationPrimary':
+                    return 'Primaire verbinding';
                 case 'opportunity':
                     return 'Kans';
                 case 'product':
@@ -104,6 +108,8 @@ export default (type, field) => {
                     return 'niet gelijk aan';
                 case 'ct':
                     return 'bevat';
+                case 'nct':
+                    return 'bevat niet';
                 case 'lt':
                     return 'kleiner dan';
                 case 'lte':
@@ -116,14 +122,18 @@ export default (type, field) => {
                     return 'is leeg';
                 case 'nnl':
                     return 'is niet leeg';
+                case 'is0':
+                    return 'is 0';
+                case 'isn0':
+                    return 'is niet 0';
                 case 'bw':
                     return 'begint met';
                 case 'nbw':
                     return 'begint niet met';
                 case 'ew':
-                    return 'eindigd met';
+                    return 'eindigt met';
                 case 'new':
-                    return 'eindigd niet met';
+                    return 'eindigt niet met';
             }
     }
 };

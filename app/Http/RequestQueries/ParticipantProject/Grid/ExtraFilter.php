@@ -18,7 +18,7 @@ class ExtraFilter extends RequestExtraFilter
     protected $fields = [
         'name',
         'postalCode',
-        'postalCodeNumber',
+//        'postalCodeNumber',
         'obligationsDefinitive',
         'participationsDefinitive',
         'postalcodeLinkCapitalDefinitive',
@@ -116,11 +116,11 @@ class ExtraFilter extends RequestExtraFilter
         });
     }
 
-    protected function applyPostalCodeNumberFilter($query, $type, $data)
-    {
-        $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
-        $query->whereHas('contact.primaryAddress', function ($query) use ($raw, $type, $data) {
-            RequestFilter::applyFilter($query, $raw, $type, $data);
-        });
-    }
+//    protected function applyPostalCodeNumberFilter($query, $type, $data)
+//    {
+//        $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
+//        $query->whereHas('contact.primaryAddress', function ($query) use ($raw, $type, $data) {
+//            RequestFilter::applyFilter($query, $raw, $type, $data);
+//        });
+//    }
 }

@@ -151,10 +151,10 @@ class ContactsListExtraFilters extends Component {
                 name: 'Postcode',
                 type: 'string',
             },
-            postalCodeNumber: {
-                name: 'Postcode nummer',
-                type: 'number',
-            },
+            // postalCodeNumber: {
+            //     name: 'Postcode nummer',
+            //     type: 'number',
+            // },
             createdAt: {
                 name: 'Gemaakt op',
                 type: 'date',
@@ -174,6 +174,11 @@ class ContactsListExtraFilters extends Component {
             currentLoan: {
                 name: 'Huidig bedrag lening',
                 type: 'number',
+            },
+            staticContactGroup: {
+                name: 'Statische groep',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.staticContactGroups,
             },
             occupation: {
                 name: 'Verbinding',
@@ -304,6 +309,7 @@ class ContactsListExtraFilters extends Component {
 const mapStateToProps = state => {
     return {
         contactStatuses: state.systemData.contactStatuses,
+        staticContactGroups: state.systemData.staticContactGroups,
         primaryOccupations: state.systemData.primaryOccupations,
         measureCategories: state.systemData.measureCategories,
         products: state.systemData.products,

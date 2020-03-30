@@ -5,6 +5,7 @@ namespace App\Http\Resources\SystemData;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
@@ -63,6 +64,7 @@ use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\FullAdministration;
+use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Ledger\FullLedger;
@@ -144,6 +146,7 @@ class SystemData extends Resource
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
+            'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),

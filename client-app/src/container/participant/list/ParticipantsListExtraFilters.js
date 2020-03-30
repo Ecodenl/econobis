@@ -132,10 +132,10 @@ class ParticipantsListExtraFilters extends Component {
                 name: 'Postcode',
                 type: 'string',
             },
-            postalCodeNumber: {
-                name: 'Postcode nummer',
-                type: 'number',
-            },
+            // postalCodeNumber: {
+            //     name: 'Postcode nummer',
+            //     type: 'number',
+            // },
             amountDefinitive: {
                 name: 'Huidig aantal lening',
                 type: 'number',

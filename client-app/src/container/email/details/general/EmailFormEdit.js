@@ -187,7 +187,7 @@ class EmailFormEdit extends Component {
             invoiceId,
             responsible,
         } = this.state.email;
-        const { from, toWithGroup, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status } = this.props.email;
+        const { from, toWithGroup, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status, sentByUser } = this.props.email;
 
         return (
             <div>
@@ -207,6 +207,9 @@ class EmailFormEdit extends Component {
                         label={'Verzonden datum tijd'}
                         value={dateSent ? moment(dateSent).format('DD-MM-YYYY HH:mm') : ''}
                     />
+                </div>
+                <div className="row">
+                    <ViewText label={'Verzonden door gebruiker'} value={sentByUser && sentByUser.fullName} />
                 </div>
                 <div className="row">
                     <ViewText label={'Cc'} value={cc && cc.map(cc => cc).join(', ')} />

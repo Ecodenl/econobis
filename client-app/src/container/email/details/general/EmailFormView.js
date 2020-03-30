@@ -31,6 +31,7 @@ const EmailFormView = props => {
         htmlBody,
         createdAt,
         dateSent,
+        sentByUser,
         folder,
         status,
         closedBy,
@@ -52,6 +53,9 @@ const EmailFormView = props => {
                     label={'Verzonden datum tijd'}
                     value={dateSent ? moment(dateSent).format('DD-MM-YYYY HH:mm') : ''}
                 />
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Verzonden door gebruiker'} value={sentByUser && sentByUser.fullName} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Cc'} value={cc && cc.map(cc => cc).join(', ')} />

@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Email;
 
 
+use App\Eco\User\User;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
@@ -46,6 +47,7 @@ class FullEmail extends Resource
             'bcc' => $this->bcc,
             'subject' => $this->subject,
             'htmlBody' => $this->html_body,
+            'sentByUser' => FullUser::make(User::find($this->sent_by_user_id)),
             'dateSent' => $this->date_sent,
             'folder' => $this->folder,
             'imapId' => $this->imap_id,

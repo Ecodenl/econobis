@@ -14,7 +14,6 @@ const ProjectFormDefaultCapital = ({
     powerKwAvailable,
     minParticipations,
     maxParticipations,
-    maxParticipationsYouth,
     isParticipationTransferable,
     valueCourses,
     handleInputChange,
@@ -105,15 +104,6 @@ const ProjectFormDefaultCapital = ({
                     label={'Opgesteld vermogen kWh'}
                     name={'powerKwAvailable'}
                     value={powerKwAvailable}
-                    onChangeAction={handleInputChange}
-                />
-            </div>
-            <div className="row">
-                <InputText
-                    type={'number'}
-                    label={'Max. aantal participaties jeugd'}
-                    name={'maxParticipationsYouth'}
-                    value={maxParticipationsYouth}
                     onChangeAction={handleInputChange}
                 />
             </div>

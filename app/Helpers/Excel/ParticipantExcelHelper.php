@@ -404,7 +404,7 @@ class ParticipantExcelHelper
                     $rowData[93] = $mutationType ? $mutationType->name : '';
                     $rowData[94] = $mutationStatus ? $mutationStatus->name : '';
 
-                    if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' )
+                    if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' || $mutationType->code_ref === 'withDrawal' )
                     {
                         $rowData[95] = $mutation->quantity_interest;
                         $rowData[96] = $mutation->amount_interest;

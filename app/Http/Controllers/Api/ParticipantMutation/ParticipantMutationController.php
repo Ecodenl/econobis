@@ -184,6 +184,8 @@ class ParticipantMutationController extends ApiController
             if ($participantMutation->status
                 && $participantMutation->status->code_ref === 'final'
                 && $participantMutation->participation->project->projectType->code_ref !== 'loan'
+                && ($participantMutation->type->code_ref === 'first_deposit' || $participantMutation->type->code_ref === 'deposit' || $participantMutation->type->code_ref === 'withDrawal')
+                && $participantMutation->quantity !== null
             ) {
                 $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
                     ->where('date', '<=', $participantMutation->date_entry)

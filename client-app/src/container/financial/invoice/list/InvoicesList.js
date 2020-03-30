@@ -30,6 +30,7 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
 import InvoiceListDeleteItem from './InvoiceListDeleteItem';
 import ErrorModal from '../../../../components/modal/ErrorModal';
+import AdministrationDetailsAPI from '../../../../api/administration/AdministrationDetailsAPI';
 
 const initialState = {
     showSelectInvoicesToSend: false,
@@ -164,6 +165,8 @@ class InvoicesList extends Component {
 
             this.props.fetchInvoices(filters, sorts, pagination, administrationId, onlyEmailInvoices, onlyPostInvoices);
         }, 100);
+
+        this.props.fetchTotalsInfoAdministration(this.props.administrationId);
     };
 
     getCSV = () => {
@@ -437,6 +440,58 @@ class InvoicesList extends Component {
             }
         }
 
+        let totalInvoicesInProgress = 0;
+        let totalInvoicesIsSending = 0;
+        let totalInvoicesIsResending = 0;
+        let totalInvoicesErrorMaking = 0;
+        let amountInProgress = 0;
+        let inProgressStartText = null;
+        let inProgressEndText = null;
+        let inProgressText = null;
+        let isSendingText = null;
+        let isResendingText = null;
+        let errorMakingText = null;
+        if (this.props.totalsInfoAdministration) {
+            totalInvoicesInProgress = this.props.totalsInfoAdministration.totalInvoicesInProgress
+                ? this.props.totalsInfoAdministration.totalInvoicesInProgress
+                : 0;
+            totalInvoicesIsSending = this.props.totalsInfoAdministration.totalInvoicesIsSending
+                ? this.props.totalsInfoAdministration.totalInvoicesIsSending
+                : 0;
+            totalInvoicesIsResending = this.props.totalsInfoAdministration.totalInvoicesIsResending
+                ? this.props.totalsInfoAdministration.totalInvoicesIsResending
+                : 0;
+            totalInvoicesErrorMaking = this.props.totalsInfoAdministration.totalInvoicesErrorMaking
+                ? this.props.totalsInfoAdministration.totalInvoicesErrorMaking
+                : 0;
+
+            amountInProgress +=
+                totalInvoicesErrorMaking + totalInvoicesInProgress + totalInvoicesIsResending + totalInvoicesIsSending;
+
+            if (
+                amountInProgress > 0 &&
+                (this.props.filter == 'te-verzenden-incasso' ||
+                    this.props.filter == 'te-verzenden-overboeken' ||
+                    this.props.filter == 'fout-verzenden-incasso' ||
+                    this.props.filter == 'fout-verzenden-overboeken' ||
+                    this.props.filter == 'verzonden')
+            ) {
+                inProgressStartText = "Nota's die momenteel in de maak en/of verzonden worden:";
+                if (totalInvoicesInProgress > 0) {
+                    inProgressText = "- Nota's die nu gemaakt worden: " + totalInvoicesInProgress;
+                }
+                if (totalInvoicesIsSending > 0) {
+                    isSendingText = "- Nota's die nu verzonden worden: " + totalInvoicesIsSending;
+                }
+                if (totalInvoicesIsResending > 0) {
+                    isResendingText = "- Nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
+                }
+                if (totalInvoicesErrorMaking > 0) {
+                    errorMakingText = '- Nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
+                }
+                inProgressEndText = 'Gebruik refresh/vernieuwen knop om voortgang van nota statussen te verversen.';
+            }
+        }
         return (
             <div>
                 <div className="row">
@@ -550,13 +605,43 @@ class InvoicesList extends Component {
                 <div className="col-md-12">
                     {messageText ? <div className="alert alert-danger">{messageText}</div> : null}
                 </div>
-                {this.state.showSelectInvoicesToSend ? (
+                {!this.state.showSelectInvoicesToSend ? (
+                    <div className="col-md-12">
+                        {inProgressStartText ? (
+                            <div className="alert alert-warning">
+                                {inProgressStartText}
+                                <br />
+                                {inProgressText ? (
+                                    <span>
+                                        {inProgressText} <br />
+                                    </span>
+                                ) : null}
+                                {isSendingText ? (
+                                    <span>
+                                        {isSendingText} <br />
+                                    </span>
+                                ) : null}
+                                {isResendingText ? (
+                                    <span>
+                                        {isResendingText} <br />
+                                    </span>
+                                ) : null}
+                                {errorMakingText ? (
+                                    <span>
+                                        {errorMakingText} <br />
+                                    </span>
+                                ) : null}
+                                <br /> {inProgressEndText}
+                            </div>
+                        ) : null}
+                    </div>
+                ) : (
                     <div className="col-md-12">
                         {numberSelectedNumberTotal ? (
                             <div className="alert alert-success">Geselecteerde nota's: {numberSelectedNumberTotal}</div>
                         ) : null}
                     </div>
-                ) : null}
+                )}
                 <div className="col-md-12">
                     {this.state.showErrorMessagePost ? (
                         <ErrorModal

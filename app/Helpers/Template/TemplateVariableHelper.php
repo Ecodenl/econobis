@@ -522,9 +522,6 @@ class TemplateVariableHelper
             case 'min_participaties':
                 return $model->min_participations;
                 break;
-            case 'max_participaties_jeugd':
-                return $model->max_participations_youth;
-                break;
             case 'amount_of_loan_needed':
             case 'bedrag_lening_nodig':
                 return $model->amount_of_loan_needed;

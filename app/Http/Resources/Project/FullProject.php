@@ -57,7 +57,6 @@ class FullProject extends Resource
                 'powerKwAvailable' => $this->power_kw_available,
                 'maxParticipations' => $this->max_participations,
                 'taxReferral' => $this->tax_referral,
-                'maxParticipationsYouth' => $this->max_participations_youth,
                 'totalParticipations' => $this->total_participations,
                 'minParticipations' => $this->min_participations,
                 'isMembershipRequired' => $this->is_membership_required,

@@ -6,7 +6,7 @@ moment.locale('nl');
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsConclusionView = props => {
-    const { owner = {}, updatedBy = {}, createdBy = {}, createdAt = {}, updatedAt = {} } = props.contact;
+    const { owner = {}, status = {}, updatedBy = {}, createdBy = {}, createdAt = {}, updatedAt = {} } = props.contact;
 
     return (
         <div>
@@ -20,8 +20,26 @@ const ContactDetailsConclusionView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Gemaakt door'}
-                    value={createdBy ? createdBy.fullName : 'Onbekend'}
-                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
+                    value={
+                        status
+                            ? status.name == 'Portal'
+                                ? status.name
+                                : createdBy
+                                ? createdBy.fullName
+                                : 'Onbekend'
+                            : 'Onbekend'
+                    }
+                    link={
+                        status
+                            ? status.name == 'Portal'
+                                ? ''
+                                : createdBy
+                                ? 'gebruiker/' + createdBy.id
+                                : ''
+                            : createdBy
+                            ? 'gebruiker/' + createdBy.id
+                            : ''
+                    }
                 />
                 <ViewText
                     label={'Laatste update door'}

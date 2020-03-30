@@ -98,9 +98,13 @@ export default props => {
                                             </Row>
                                             {showNewAtCooperativeLink ? (
                                                 <Row className="justify-content-center">
-                                                    <Link to={'/nieuw-account'} className="authorization-link">
+                                                    <a
+                                                        href={'/#/nieuw-account'}
+                                                        className="authorization-link"
+                                                        target="_blank"
+                                                    >
                                                         Nieuw bij {cooperativeName}?
-                                                    </Link>
+                                                    </a>
                                                 </Row>
                                             ) : null}
                                         </React.Fragment>

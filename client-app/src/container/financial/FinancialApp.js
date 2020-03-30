@@ -7,14 +7,19 @@ import FinancialTree from './FinancialTree';
 import Panel from '../../components/panel/Panel';
 import PanelBody from '../../components/panel/PanelBody';
 import { fetchAdministrationDetails } from '../../actions/administration/AdministrationDetailsActions';
+import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
 
 class FinancialApp extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            totalsInfoAdministration: [],
+        };
     }
 
     componentDidMount() {
         this.props.fetchAdministrationDetails(this.props.params.id);
+        this.fetchTotalsInfoAdministration(this.props.params.id);
     }
 
     componentDidUpdate(prevProps) {
@@ -23,6 +28,12 @@ class FinancialApp extends Component {
         }
     }
 
+    fetchTotalsInfoAdministration = administrationId => {
+        AdministrationDetailsAPI.fetchTotalsInfoAdministration(administrationId).then(payload => {
+            this.setState({ totalsInfoAdministration: payload });
+        });
+    };
+
     render() {
         return (
             <div className="row">
@@ -30,7 +41,11 @@ class FinancialApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-financial-tree'}>
-                                <FinancialTree currentRouteParams={this.props.params} />
+                                <FinancialTree
+                                    currentRouteParams={this.props.params}
+                                    fetchTotalsInfoAdministration={this.fetchTotalsInfoAdministration}
+                                    totalsInfoAdministration={this.state.totalsInfoAdministration}
+                                />
                             </PanelBody>
                         </Panel>
                     </div>
@@ -49,6 +64,8 @@ class FinancialApp extends Component {
                             type={this.props.params.type}
                             filter={this.props.params.filter}
                             administrationId={this.props.params.administrationId}
+                            fetchTotalsInfoAdministration={this.fetchTotalsInfoAdministration}
+                            totalsInfoAdministration={this.state.totalsInfoAdministration}
                         />
                     </div>
                 </div>

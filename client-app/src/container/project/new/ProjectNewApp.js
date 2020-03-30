@@ -50,7 +50,6 @@ class ProjectNewApp extends Component {
                 powerKwAvailable: '',
                 maxParticipations: '',
                 taxReferral: '',
-                maxParticipationsYouth: '',
                 totalParticipations: '',
                 minParticipations: '',
                 isMembershipRequired: false,
@@ -248,7 +247,6 @@ class ProjectNewApp extends Component {
             powerKwAvailable,
             maxParticipations,
             taxReferral,
-            maxParticipationsYouth,
             totalParticipations,
             minParticipations,
             isMembershipRequired,
@@ -332,7 +330,6 @@ class ProjectNewApp extends Component {
                                             powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}
-                                            maxParticipationsYouth={maxParticipationsYouth}
                                             isParticipationTransferable={isParticipationTransferable}
                                             handleInputChange={this.handleInputChange}
                                             projectTypeId={projectTypeId}
@@ -351,7 +348,6 @@ class ProjectNewApp extends Component {
                                             powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}
-                                            maxParticipationsYouth={maxParticipationsYouth}
                                             isParticipationTransferable={isParticipationTransferable}
                                             handleInputChange={this.handleInputChange}
                                             projectTypeId={projectTypeId}

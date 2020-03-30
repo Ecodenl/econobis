@@ -30,6 +30,7 @@ class ContactStatus extends EnumWithIdAndName
             new static('stopped', 'Uitgeschreven'),
             new static('donor', 'Donateur'),
             new static('none', 'Geen'),
+            new static('portal', 'Portal'),
         ];
     }
 }

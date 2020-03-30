@@ -16,11 +16,20 @@ import InputDate from '../../../../components/form/InputDate';
 class ContactDetailsConclusionEdit extends Component {
     constructor(props) {
         super(props);
-        const { id, createdBy = {}, updatedBy = {}, createdAt = {}, updatedAt = {}, owner = {} } = props.contact;
+        const {
+            id,
+            status = {},
+            createdBy = {},
+            updatedBy = {},
+            createdAt = {},
+            updatedAt = {},
+            owner = {},
+        } = props.contact;
 
         this.state = {
             contact: {
                 id,
+                status: status ? status.name : '',
                 updatedBy: updatedBy ? updatedBy.fullName : '',
                 createdBy: createdBy ? createdBy.fullName : '',
                 ownedById: owner ? owner.id : '',
@@ -70,7 +79,7 @@ class ContactDetailsConclusionEdit extends Component {
     };
 
     render() {
-        const { createdBy, updatedBy, ownedById, createdAt, updatedAt } = this.state.contact;
+        const { status, createdBy, updatedBy, ownedById, createdAt, updatedAt } = this.state.contact;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -87,7 +96,12 @@ class ContactDetailsConclusionEdit extends Component {
                     />
                 </div>
                 <div className="row">
-                    <InputText label={'Gemaakt door'} name={'createdBy'} value={createdBy} readOnly={true} />
+                    <InputText
+                        label={'Gemaakt door'}
+                        name={'createdBy'}
+                        value={status == 'Portal' ? status : createdBy}
+                        readOnly={true}
+                    />
                     <InputText label={'Laatste update door'} name={'updatedBy'} value={updatedBy} readOnly={true} />
                 </div>
                 <div className="row">

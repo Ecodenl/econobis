@@ -34,7 +34,6 @@ const ProjectFormView = props => {
         powerKwAvailable,
         maxParticipations,
         taxReferral,
-        maxParticipationsYouth,
         totalParticipations,
         minParticipations,
         isMembershipRequired,
@@ -113,7 +112,6 @@ const ProjectFormView = props => {
                     powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
-                    maxParticipationsYouth={maxParticipationsYouth}
                     isParticipationTransferable={isParticipationTransferable}
                     valueCourses={valueCourses}
                 />
@@ -131,7 +129,6 @@ const ProjectFormView = props => {
                     powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
-                    maxParticipationsYouth={maxParticipationsYouth}
                     isParticipationTransferable={isParticipationTransferable}
                     valueCourses={valueCourses}
                 />

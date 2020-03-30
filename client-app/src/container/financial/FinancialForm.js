@@ -6,7 +6,13 @@ import Panel from '../../components/panel/Panel';
 import PanelBody from '../../components/panel/PanelBody';
 import PaymentInvoicesList from './payment-invoice/list/PaymentInvoicesList';
 
-const FinancialForm = ({ administrationDetails, filter, type }) => (
+const FinancialForm = ({
+    administrationDetails,
+    filter,
+    type,
+    fetchTotalsInfoAdministration,
+    totalsInfoAdministration,
+}) => (
     <React.Fragment>
         {administrationDetails.id ? (
             <div>
@@ -20,7 +26,12 @@ const FinancialForm = ({ administrationDetails, filter, type }) => (
                 {type === 'notas' && (
                     <Panel>
                         <PanelBody>
-                            <InvoicesList administrationId={administrationDetails.id} filter={filter} />
+                            <InvoicesList
+                                administrationId={administrationDetails.id}
+                                filter={filter}
+                                fetchTotalsInfoAdministration={fetchTotalsInfoAdministration}
+                                totalsInfoAdministration={totalsInfoAdministration}
+                            />
                         </PanelBody>
                     </Panel>
                 )}

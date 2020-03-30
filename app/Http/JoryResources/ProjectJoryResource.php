@@ -34,7 +34,6 @@ class ProjectJoryResource extends JoryResource
         $this->field('description')->filterable()->sortable();
         $this->field('id')->filterable()->sortable();
         $this->field('max_participations')->filterable()->sortable();
-        $this->field('max_participations_youth')->filterable()->sortable();
         $this->field('min_participations')->filterable()->sortable();
         $this->field('name')->filterable()->sortable();
         $this->field('participation_worth')->filterable()->sortable();

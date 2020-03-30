@@ -511,17 +511,17 @@ class AdministrationNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            {/*<InputToggle*/}
-                            {/*label={'Gebruikt BTW'}*/}
-                            {/*name={'usesVat'}*/}
-                            {/*value={usesVat}*/}
-                            {/*onChangeAction={this.handleInputChange}*/}
-                            {/*/>*/}
-                            <ViewText
-                                label={'Gebruikt BTW'}
-                                value={usesVat ? 'Ja' : 'Nee'}
-                                className={'col-sm-6 form-group'}
-                            />
+                            <div className="form-group col-sm-6">
+                                <label className="col-sm-6">Kies logo</label>
+                                <div className="col-sm-6">
+                                    <input
+                                        type="text"
+                                        className="form-control input-sm col-sm-6"
+                                        value={attachment && attachment.name}
+                                        onClick={this.toggleNewLogo}
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="row">
@@ -535,17 +535,18 @@ class AdministrationNewForm extends Component {
                                 value={mailboxId}
                                 onChangeAction={this.handleInputChange}
                             />
-                            <div className="form-group col-sm-6">
-                                <label className="col-sm-6">Kies logo</label>
-                                <div className="col-sm-6">
-                                    <input
-                                        type="text"
-                                        className="form-control input-sm col-sm-6"
-                                        value={attachment && attachment.name}
-                                        onClick={this.toggleNewLogo}
-                                    />
-                                </div>
-                            </div>
+                            {/*<InputToggle*/}
+                            {/*label={'Gebruikt BTW'}*/}
+                            {/*name={'usesVat'}*/}
+                            {/*value={usesVat}*/}
+                            {/*onChangeAction={this.handleInputChange}*/}
+                            {/*/>*/}
+                            <ViewText
+                                label={'Gebruikt BTW'}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
+                                hidden={true}
+                            />
                         </div>
 
                         <div className="row">

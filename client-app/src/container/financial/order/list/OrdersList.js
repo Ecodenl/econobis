@@ -305,11 +305,16 @@ class OrdersList extends Component {
                     </div>
                 </div>
                 {this.state.showSelectOrdersToCreate ? (
-                    <div className="col-md-12">
-                        {numberSelectedNumberTotal ? (
-                            <div className="alert alert-success">Geselecteerde orders: {numberSelectedNumberTotal}</div>
-                        ) : null}
-                    </div>
+                    <>
+                        <div className="col-md-12">&nbsp;</div>
+                        <div className="col-md-12">
+                            {numberSelectedNumberTotal ? (
+                                <div className="alert alert-success">
+                                    Geselecteerde orders: {numberSelectedNumberTotal}
+                                </div>
+                            ) : null}
+                        </div>
+                    </>
                 ) : null}
 
                 <form onKeyUp={this.handleKeyUp} className={'margin-10-top'}>

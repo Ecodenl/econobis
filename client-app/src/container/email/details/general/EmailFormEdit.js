@@ -187,7 +187,19 @@ class EmailFormEdit extends Component {
             invoiceId,
             responsible,
         } = this.state.email;
-        const { from, toWithGroup, cc, bcc, subject, htmlBody, createdAt, dateSent, folder, status, sentByUser } = this.props.email;
+        const {
+            from,
+            toWithGroup,
+            cc,
+            bcc,
+            subject,
+            htmlBody,
+            createdAt,
+            dateSent,
+            folder,
+            status,
+            sentByUser,
+        } = this.props.email;
 
         return (
             <div>
@@ -209,10 +221,15 @@ class EmailFormEdit extends Component {
                     />
                 </div>
                 <div className="row">
-                    <ViewText label={'Verzonden door gebruiker'} value={sentByUser && sentByUser.fullName} />
+                    <div className={'form-group col-md-6'} />
+                    <ViewText label={'Verzonden door gebruiker'} value={sentByUser ? sentByUser.fullName : ''} />
                 </div>
                 <div className="row">
                     <ViewText label={'Cc'} value={cc && cc.map(cc => cc).join(', ')} />
+                    <ViewText label={'Bcc'} value={bcc && bcc.map(bcc => bcc).join(', ')} />
+                </div>
+
+                <div className="row">
                     <InputReactSelect
                         label={'Contact'}
                         name={'contactIds'}
@@ -222,9 +239,6 @@ class EmailFormEdit extends Component {
                         optionName={'fullName'}
                         isLoading={this.state.peekLoading.contacts}
                     />
-                </div>
-
-                <div className="row">
                     <InputSelect
                         label={'Intake'}
                         size={'col-sm-6'}
@@ -233,6 +247,9 @@ class EmailFormEdit extends Component {
                         value={intakeId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={'Taak'}
                         size={'col-sm-6'}
@@ -241,9 +258,6 @@ class EmailFormEdit extends Component {
                         value={taskId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputSelect
                         label={'Offerteverzoek'}
                         size={'col-sm-6'}
@@ -252,6 +266,9 @@ class EmailFormEdit extends Component {
                         value={quotationRequestId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={'Maatregel'}
                         size={'col-sm-6'}
@@ -260,9 +277,6 @@ class EmailFormEdit extends Component {
                         value={measureId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputSelect
                         label={'Kans'}
                         size={'col-sm-6'}
@@ -271,6 +285,9 @@ class EmailFormEdit extends Component {
                         value={opportunityId}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
                     <InputSelect
                         label={'Order'}
                         size={'col-sm-6'}
@@ -279,9 +296,6 @@ class EmailFormEdit extends Component {
                         value={orderId}
                         onChangeAction={this.handleInputChange}
                     />
-                </div>
-
-                <div className="row">
                     <InputSelect
                         label={'Nota'}
                         size={'col-sm-6'}

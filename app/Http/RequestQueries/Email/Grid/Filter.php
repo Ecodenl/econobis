@@ -27,6 +27,7 @@ class Filter extends RequestFilter
         'statusId',
         'responsibleName',
         'me',
+        'sentByUser',
     ];
 
     protected $mapping = [
@@ -36,6 +37,7 @@ class Filter extends RequestFilter
         'to' => 'emails.to',
         'subject' => 'emails.subject',
         'statusId'  => 'emails.status',
+        'sentByUser' => 'emails.sent_by_user_id'
     ];
 
     protected $joins = [
@@ -107,6 +109,13 @@ class Filter extends RequestFilter
             $query->where('emails.responsible_user_id', $userId);
             $query->orWhereIn('emails.responsible_team_id', $teamIds);
         });
+
+        return false;
+    }
+
+    protected function applyUserFilter($query, $type, $data)
+    {
+        $query->where('emails.sent_by_user_id', $data);
 
         return false;
     }

@@ -11,7 +11,7 @@ class AddRowSourcesTable extends Migration
      */
     public function up()
     {
-        \Illuminate\Support\Facades\DB::insert('insert into sources (name) values (?)', ['netwerk']);
+        \Illuminate\Support\Facades\DB::insert('insert into sources (name) values (?)', ['Netwerk']);
     }
 
     /**
@@ -21,6 +21,6 @@ class AddRowSourcesTable extends Migration
      */
     public function down()
     {
-        \Illuminate\Support\Facades\DB::delete('delete from sources where name = ?', ['netwerk']);
+        \Illuminate\Support\Facades\DB::delete('delete from sources where name = ?', ['Netwerk']);
     }
 }

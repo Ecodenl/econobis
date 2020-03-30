@@ -26,8 +26,8 @@ export default (type, field) => {
                     return 'Status';
                 case 'name':
                     return 'Naam';
-                case 'postalCodeNumber':
-                    return 'Postcode nummer';
+                // case 'postalCodeNumber':
+                //     return 'Postcode nummer';
                 case 'currentObligations':
                     return 'Aantal obligaties';
                 case 'currentParticipations':
@@ -122,6 +122,10 @@ export default (type, field) => {
                     return 'is leeg';
                 case 'nnl':
                     return 'is niet leeg';
+                case 'is0':
+                    return 'is 0';
+                case 'isn0':
+                    return 'is niet 0';
                 case 'bw':
                     return 'begint met';
                 case 'nbw':

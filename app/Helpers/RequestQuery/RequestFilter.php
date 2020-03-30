@@ -44,6 +44,8 @@ abstract class RequestFilter
         'new',
         'nl',
         'nnl',
+        'is0',
+        'isn0',
     ];
 
     protected $joiner;
@@ -215,11 +217,19 @@ abstract class RequestFilter
                 break;
             case 'nl':
                 $query->where(function ($query) use ($mappedField) {
-                    $query->whereNull($mappedField)->orWhere($mappedField, '=', 0);
+                    $query->whereNull($mappedField)->orWhere($mappedField, '=', '');
                 });
                 break;
             case 'nnl':
-                $query->whereNotNull($mappedField);
+                $query->whereNotNull($mappedField)->where($mappedField, '!=', '');
+                break;
+            case 'is0':
+                $query->where(function ($query) use ($mappedField) {
+                    $query->whereNull($mappedField)->orWhere($mappedField, '=', 0);
+                });
+                break;
+            case 'isn0':
+                $query->whereNotNull($mappedField)->where($mappedField, '!=', 0);
                 break;
         }
     }
@@ -264,10 +274,16 @@ abstract class RequestFilter
                 $query->having($mappedField, 'NOT LIKE', '%' . $data);
                 break;
             case 'nl':
-                $query->havingRaw($mappedField . 'is null')->orHaving($mappedField, '=', 0);
+                $query->havingRaw($mappedField . 'is null')->orHaving($mappedField, '=', '');
                 break;
             case 'nnl':
-                $query->havingRaw($mappedField . 'is not null')->orHaving($mappedField, '!=', 0);
+                $query->havingRaw($mappedField . 'is not null')->havingRaw($mappedField, '!=', '' );
+                break;
+            case 'is0':
+                $query->havingRaw($mappedField . 'is null')->orHaving($mappedField, '=', 0);
+                break;
+            case 'isn0':
+                $query->havingRaw($mappedField . 'is not null')->havingRaw($mappedField, '!=', 0);
                 break;
         }
     }

@@ -40,18 +40,24 @@ class AddressObserver
 
         if($address->isDirty('street')
             || $address->isDirty('number')
+            || $address->isDirty('addition')
             || $address->isDirty('postal_code')
-            || $address->isDirty('city'))
+            || $address->isDirty('city')
+            || $address->isDirty('country_id'))
         {
             // Check if any project revenue distribution is present with status concept
             // If so, then change address
             $projectRevenueDistributions = $address->contact->projectRevenueDistributions->whereIn('status', ['concept', 'confirmed']);
 
             foreach($projectRevenueDistributions as $projectRevenueDistribution) {
+                $projectRevenueDistribution->street = $address->street;
+                $projectRevenueDistribution->street_number = $address->number;
+                $projectRevenueDistribution->street_number_addition = $address->addition;
                 $projectRevenueDistribution->address = $address->present()
                     ->streetAndNumber();
                 $projectRevenueDistribution->postal_code = $address->postal_code;
                 $projectRevenueDistribution->city = $address->city;
+                $projectRevenueDistribution->country = $address->country_id ? $address->country->name : '';
 
                 $projectRevenueDistribution->save();
             }

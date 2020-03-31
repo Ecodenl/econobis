@@ -324,10 +324,15 @@ class ProjectRevenueController extends ApiController
         }
 
         if ($primaryAddress) {
+            $distribution->street = $primaryAddress->street;
+            $distribution->street_number = $primaryAddress->number;
+            $distribution->street_number_addition = $primaryAddress->addition;
             $distribution->address = $primaryAddress->present()
                 ->streetAndNumber();
             $distribution->postal_code = $primaryAddress->postal_code;
             $distribution->city = $primaryAddress->city;
+            $distribution->country = $primaryAddress->country_id ? $primaryAddress->country->name : '';
+
         }
 
         if($projectRevenue->participantProjectPayoutType) {

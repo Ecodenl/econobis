@@ -108,14 +108,20 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
                     $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                        ? substr($distribution->postal_code, 0, 4) : '';
-                    $rowData[] = $distribution->postal_code_letters
-                        = strlen($distribution->postal_code) == 6
-                        ? substr($distribution->postal_code, 4)
-                        : (strlen($distribution->postal_code) == 7
-                            ? substr($distribution->postal_code, 5)
-                            : '');
+                    if($distribution->country != '' && $distribution->country != 'Nederland')
+                    {
+                        $rowData[] = $distribution->postal_code_numbers = $distribution->postal_code;
+                        $rowData[] = $distribution->postal_code_letters = '';
+                    }else{
+                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                            ? substr($distribution->postal_code, 0, 4) : '';
+                        $rowData[] = $distribution->postal_code_letters
+                            = strlen($distribution->postal_code) == 6
+                            ? substr($distribution->postal_code, 4)
+                            : (strlen($distribution->postal_code) == 7
+                                ? substr($distribution->postal_code, 5)
+                                : '');
+                    }
                     $rowData[] = $distribution->city;
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
                         ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
@@ -565,20 +571,24 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
-//                    $rowData[] = $distribution->street;
-                    $rowData[] = '';
-//                    $rowData[] = $distribution->number;
-                    $rowData[] = '';
+                    $rowData[] = $distribution->street;
+                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
                     $rowData[] = $distribution->address;
                     $rowData[] = $distribution->postal_code;
-                    $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                        ? substr($distribution->postal_code, 0, 4) : '';
-                    $rowData[] = $distribution->postal_code_letters
-                        = strlen($distribution->postal_code) == 6
-                        ? substr($distribution->postal_code, 4)
-                        : (strlen($distribution->postal_code) == 7
-                            ? substr($distribution->postal_code, 5)
-                            : '');
+                    if($distribution->country != '' && $distribution->country != 'Nederland')
+                    {
+                        $rowData[] = '';
+                        $rowData[] = '';
+                    }else {
+                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                            ? substr($distribution->postal_code, 0, 4) : '';
+                        $rowData[] = $distribution->postal_code_letters
+                            = strlen($distribution->postal_code) == 6
+                            ? substr($distribution->postal_code, 4)
+                            : (strlen($distribution->postal_code) == 7
+                                ? substr($distribution->postal_code, 5)
+                                : '');
+                    }
                     $rowData[] = $distribution->city;
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
                         ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';

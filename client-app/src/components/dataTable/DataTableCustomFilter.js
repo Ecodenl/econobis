@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DataTableCustomFilterSelectString from './DataTableCustomFilterSelectString';
+import DataTableCustomFilterSelectStringWithoutNull from './DataTableCustomFilterSelectStringWithoutNull';
 import DataTableCustomFilterSelectNumber from './DataTableCustomFilterSelectNumber';
 import DataTableCustomFilterSelectDropdown from './DataTableCustomFilterSelectDropdown';
 import DataTableCustomFilterSelectDate from './DataTableCustomFilterSelectDate';
@@ -85,6 +86,13 @@ const DataTableCustomFilter = props => {
                         readOnly={props.filter.readOnly}
                     />
                 )}
+                {fieldType === 'stringWithoutNull' && (
+                    <DataTableCustomFilterSelectStringWithoutNull
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
                 {fieldType === 'number' && (
                     <DataTableCustomFilterSelectNumber
                         handleInputChange={handleInputChange}
@@ -123,7 +131,7 @@ const DataTableCustomFilter = props => {
             </td>
             {props.filter.comperator !== 'nl' && props.filter.comperator !== 'nnl' && (
                 <td className="col-md-4">
-                    {(fieldType === 'number' || fieldType === 'string') && (
+                    {(fieldType === 'number' || fieldType === 'string' || fieldType === 'stringWithoutNull') && (
                         <input
                             className={'form-control input-sm'}
                             type="text"

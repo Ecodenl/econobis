@@ -145,7 +145,7 @@ class ContactsListExtraFilters extends Component {
         const fields = {
             name: {
                 name: 'Naam',
-                type: 'string',
+                type: 'stringWithoutNull',
             },
             postalCode: {
                 name: 'Postcode',

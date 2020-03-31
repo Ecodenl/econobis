@@ -293,7 +293,7 @@ class ExternalWebformController extends Controller
         }
 
         // Sanitize
-        $data['contact']['address_postal_code'] = str_replace(' ', '', $data['contact']['address_postal_code']);
+        $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code'])); ;
 
         return $data;
     }

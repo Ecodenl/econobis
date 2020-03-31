@@ -9,7 +9,7 @@ import PanelFooter from '../../../../../components/panel/PanelFooter';
 import InputText from '../../../../../components/form/InputText';
 
 const EnergySupplierReportNew = props => {
-    const { templateId, energySupplierId, documentName } = props.report;
+    const { templateId, documentName } = props.report;
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -22,18 +22,6 @@ const EnergySupplierReportNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.templateId}
-                />
-            </div>
-
-            <div className="row">
-                <InputSelect
-                    label={'Energie leverancier'}
-                    name={'energySupplierId'}
-                    options={props.energySuppliers}
-                    value={energySupplierId}
-                    onChangeAction={props.handleInputChange}
-                    required={'required'}
-                    error={props.errors.energySupplierId}
                 />
             </div>
 
@@ -68,10 +56,4 @@ const EnergySupplierReportNew = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        energySuppliers: state.systemData.energySuppliers,
-    };
-};
-
-export default connect(mapStateToProps)(EnergySupplierReportNew);
+export default EnergySupplierReportNew;

@@ -419,8 +419,7 @@ class ProjectRevenueController extends ApiController
     public function createEnergySupplierReport(
         Request $request,
         ProjectRevenue $projectRevenue,
-        DocumentTemplate $documentTemplate,
-        EnergySupplier $energySupplier
+        DocumentTemplate $documentTemplate
     )
     {
         $documentName = $request->input('documentName');

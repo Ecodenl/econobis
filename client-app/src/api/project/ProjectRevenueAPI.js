@@ -72,8 +72,8 @@ export default {
             });
     },
 
-    createEnergySupplierReport: (revenueId, templateId, energySupplierId, documentName) => {
-        const requestUrl = `${URL_REVENUE}/create-energy-supplier-report/${revenueId}/${templateId}/${energySupplierId}`;
+    createEnergySupplierReport: (revenueId, templateId, documentName) => {
+        const requestUrl = `${URL_REVENUE}/create-energy-supplier-report/${revenueId}/${templateId}`;
 
         return axiosInstance
             .post(requestUrl, { documentName: documentName })

@@ -151,10 +151,6 @@ class ContactsListExtraFilters extends Component {
                 name: 'Postcode',
                 type: 'string',
             },
-            // postalCodeNumber: {
-            //     name: 'Postcode nummer',
-            //     type: 'number',
-            // },
             createdAt: {
                 name: 'Gemaakt op',
                 type: 'date',

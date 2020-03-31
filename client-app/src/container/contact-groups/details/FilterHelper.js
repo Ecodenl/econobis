@@ -26,8 +26,6 @@ export default (type, field) => {
                     return 'Status';
                 case 'name':
                     return 'Naam';
-                // case 'postalCodeNumber':
-                //     return 'Postcode nummer';
                 case 'currentObligations':
                     return 'Aantal obligaties';
                 case 'currentParticipations':

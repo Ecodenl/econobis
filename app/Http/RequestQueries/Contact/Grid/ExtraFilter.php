@@ -19,7 +19,6 @@ class ExtraFilter extends RequestExtraFilter
     protected $fields = [
         'name',
         'postalCode',
-//        'postalCodeNumber',
         'createdAt',
         'currentObligations',
         'currentParticipations',
@@ -87,33 +86,6 @@ class ExtraFilter extends RequestExtraFilter
                 break;
         }
     }
-
-//    protected function applyPostalCodeNumberFilter($query, $type, $data)
-//    {
-//        switch($type) {
-//            case 'nct':
-//            case 'neq':
-//            case 'nbw':
-//            case 'new':
-//            case 'nl':
-//            case 'is0':
-//            $query->where(function ($query) use ($type, $data) {
-//                $query->whereDoesntHave('primaryAddress')
-//                    ->orhereHas('primaryAddress', function ($query) use ($type, $data) {
-//                        $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
-//                        RequestFilter::applyFilter($query, $raw, $type, $data);
-//                    });
-//            });
-//            break;
-//            default:
-//                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-//                    $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
-//                    RequestFilter::applyFilter($query, $raw, $type, $data);
-//                });
-//                break;
-//        }
-//
-//    }
 
     /**
      * Override method omdat het in het contactgrid mogelijk is dat er extra parameters

@@ -9,7 +9,7 @@ import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
 import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import validator from 'validator';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 
 class OppportunitiesNewApp extends Component {
     constructor(props) {
@@ -87,12 +87,12 @@ class OppportunitiesNewApp extends Component {
             errors.statusId = true;
             hasErrors = true;
         } else {
-           const chosenStatus = this.state.status.find(item => {
+            const chosenStatus = this.state.status.find(item => {
                 return item.id == opportunity.statusId;
             });
 
-            if(chosenStatus.name === 'Uitvoering') {
-                if(validator.isEmpty(opportunity.desiredDate)){
+            if (chosenStatus.name === 'Uitvoering') {
+                if (validator.isEmpty(opportunity.desiredDate)) {
                     errors.desiredDate = true;
                     hasErrors = true;
                 }

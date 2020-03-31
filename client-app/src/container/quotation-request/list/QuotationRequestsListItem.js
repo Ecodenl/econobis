@@ -31,7 +31,7 @@ class QuotationRequestsListItem extends Component {
     }
 
     render() {
-        const { id, organisation, opportunity, createdAt, dateRecorded, status, dateReleased} = this.props;
+        const { id, organisation, opportunity, createdAt, dateRecorded, status, dateReleased } = this.props;
 
         return (
             <tr

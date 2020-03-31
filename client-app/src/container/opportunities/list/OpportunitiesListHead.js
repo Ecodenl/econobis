@@ -18,7 +18,12 @@ const OpportunitiesListHead = props => {
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'desiredDate'} title={'Datum Uitvoering'} width={'17%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'desiredDate'}
+                title={'Datum Uitvoering'}
+                width={'17%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureCategory'}

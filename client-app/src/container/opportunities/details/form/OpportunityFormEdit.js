@@ -111,13 +111,13 @@ class OpportunityFormEdit extends Component {
         if (validator.isEmpty('' + opportunity.statusId)) {
             errors.statusId = true;
             hasErrors = true;
-        }  else {
+        } else {
             const chosenStatus = this.state.status.find(item => {
                 return item.id == opportunity.statusId;
             });
 
-            if(chosenStatus.name === 'Uitvoering') {
-                if(validator.isEmpty(opportunity.desiredDate)){
+            if (chosenStatus.name === 'Uitvoering') {
+                if (validator.isEmpty(opportunity.desiredDate)) {
                     errors.desiredDate = true;
                     hasErrors = true;
                 }

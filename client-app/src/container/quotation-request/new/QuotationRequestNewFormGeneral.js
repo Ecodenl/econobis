@@ -118,13 +118,7 @@ class QuotationRequestNewFormGeneral extends Component {
     };
 
     render() {
-        const {
-            organisationId,
-            dateRecorded,
-            statusId,
-            dateReleased,
-            quotationText,
-        } = this.state.quotationRequest;
+        const { organisationId, dateRecorded, statusId, dateReleased, quotationText } = this.state.quotationRequest;
         const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
 
         return (

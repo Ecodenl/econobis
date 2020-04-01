@@ -60,9 +60,9 @@ class SendAllInvoices implements ShouldQueue
     {
         //user voor observer
         Auth::setUser(User::find($this->userId));
+        $orderController = new OrderController();
 
         foreach ($this->validatedInvoices as $invoice) {
-            $orderController = new OrderController();
             $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
 
             $jobLog = new JobsLog();
@@ -84,6 +84,8 @@ class SendAllInvoices implements ShouldQueue
         $response = [];
 
         foreach ($this->validatedInvoices as $invoice) {
+            $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
+
             //alleen als nota goed is aangemaakt, gaan we mailen
             if ($invoice->invoicesToSend()->exists() && $invoice->invoicesToSend()->first()->invoice_created) {
                 if($invoice->status_id === 'in-progress') {

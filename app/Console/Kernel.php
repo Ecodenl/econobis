@@ -6,6 +6,7 @@ use App\Console\Commands\checkContactEmailAddress;
 use App\Console\Commands\checkContactIban;
 use App\Console\Commands\checkContactPostalCode;
 use App\Console\Commands\checkMailboxes;
+use App\Console\Commands\checkJobsLogForRecovery;
 use App\Console\Commands\conversionParticipationsToMutationsDeltaWind;
 use App\Console\Commands\conversionParticipationsToMutationsLoanDiv100;
 use App\Console\Commands\conversionParticipationsToMutationsDefault;
@@ -23,6 +24,7 @@ use App\Console\Commands\setDaysToExpireInvoice;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
+use App\Console\Commands\recoveryJobsLog;
 
 class Kernel extends ConsoleKernel
 {
@@ -35,6 +37,7 @@ class Kernel extends ConsoleKernel
         checkContactEmailAddress::class,
         checkContactIban::class,
         checkContactPostalCode::class,
+        checkJobsLogForRecovery::class,
         getAllEmail::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
@@ -50,6 +53,7 @@ class Kernel extends ConsoleKernel
         conversionParticipationsToMutationsDeltaWind::class,
         conversionParticipationsToMutationsLoanDiv100::class,
         conversionParticipationsToMutationsDefault::class,
+        recoveryJobsLog::class,
     ];
 
     /**

@@ -228,18 +228,20 @@ class SepaPaymentHelper
 
         $this->checkStorageDir();
 
-        $name = 'betaal-sepa' . Carbon::now()->format('Ymdhi') . '.xml';
-
-        $path = 'administration_' . $this->administration->id
-            . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
-
-        Storage::put('administrations/' . $path, $xml);
-
         $sepa = new Sepa();
         $sepa->administration_id = $this->administration->id;
+        $sepa->sepa_type_id = 'payment';
+        $sepa->filename = '';
+        $sepa->name = '';
+        $sepa->save();
+
+        $name = 'betaal-sepa-' . $sepa->id .  '-' . Carbon::now()->format('Ymdhi') . '.xml';
+        $path = 'administration_' . $this->administration->id
+            . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
+        Storage::put('administrations/' . $path, $xml);
+
         $sepa->filename = $path;
         $sepa->name = $name;
-        $sepa->sepa_type_id = 'payment';
         $sepa->save();
 
         foreach ($this->invoices as $invoice){

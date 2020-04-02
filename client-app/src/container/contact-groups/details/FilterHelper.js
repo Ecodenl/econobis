@@ -18,6 +18,8 @@ export default (type, field) => {
                     return 'Postcode';
                 case 'city':
                     return 'Woonplaats';
+                case 'country':
+                    return 'Land';
                 case 'emailAddress':
                     return 'E-mailadres';
                 case 'phoneNumber':
@@ -26,8 +28,6 @@ export default (type, field) => {
                     return 'Status';
                 case 'name':
                     return 'Naam';
-                // case 'postalCodeNumber':
-                //     return 'Postcode nummer';
                 case 'currentObligations':
                     return 'Aantal obligaties';
                 case 'currentParticipations':

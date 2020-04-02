@@ -132,10 +132,6 @@ class ParticipantsListExtraFilters extends Component {
                 name: 'Postcode',
                 type: 'string',
             },
-            postalCodeNumber: {
-                name: 'Postcode nummer',
-                type: 'number',
-            },
             contactBirthday: {
                 name: 'Contact geboortedatum',
                 type: 'date',

@@ -19,7 +19,7 @@ class ExtraFilter extends RequestExtraFilter
     protected $fields = [
         'name',
         'postalCode',
-//        'postalCodeNumber',
+        'country',
         'createdAt',
         'currentObligations',
         'currentParticipations',
@@ -88,32 +88,65 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
-//    protected function applyPostalCodeNumberFilter($query, $type, $data)
-//    {
-//        switch($type) {
-//            case 'nct':
-//            case 'neq':
-//            case 'nbw':
-//            case 'new':
-//            case 'nl':
-//            case 'is0':
-//            $query->where(function ($query) use ($type, $data) {
-//                $query->whereDoesntHave('primaryAddress')
-//                    ->orhereHas('primaryAddress', function ($query) use ($type, $data) {
-//                        $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
-//                        RequestFilter::applyFilter($query, $raw, $type, $data);
-//                    });
-//            });
-//            break;
-//            default:
-//                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-//                    $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
-//                    RequestFilter::applyFilter($query, $raw, $type, $data);
-//                });
-//                break;
-//        }
-//
-//    }
+    protected function applyCountryFilter($query, $type, $data)
+    {
+        switch($type) {
+            case 'neq':
+                if($data == 'NL') {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                            })
+                            ->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', 'nnl', null);
+                            });
+                    });
+                }else{
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                            ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                            })
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                        });
+                    });
+                }
+                break;
+            case 'nl':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                        });
+                });
+                break;
+            default:
+                if($data == 'NL')
+                {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);})
+                            ->orwhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                            });
+                    });
+                }else{
+                    $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                        $data = str_replace(' ', '', $data);
+                        RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                    });
+                }
+                break;
+        }
+    }
 
     /**
      * Override method omdat het in het contactgrid mogelijk is dat er extra parameters

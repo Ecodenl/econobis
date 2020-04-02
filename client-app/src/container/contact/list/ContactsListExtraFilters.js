@@ -149,7 +149,12 @@ class ContactsListExtraFilters extends Component {
             },
             postalCode: {
                 name: 'Postcode',
-                type: 'string',
+                type: 'numberOrString',
+            },
+            country: {
+                name: 'Land',
+                type: 'dropdown',
+                dropDownOptions: this.props.countries,
             },
             createdAt: {
                 name: 'Gemaakt op',
@@ -310,6 +315,7 @@ const mapStateToProps = state => {
         measureCategories: state.systemData.measureCategories,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,
+        countries: state.systemData.countries,
         orderStatuses: state.systemData.orderStatuses,
     };
 };

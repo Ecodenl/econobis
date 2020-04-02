@@ -18,6 +18,8 @@ export default (type, field) => {
                     return 'Postcode';
                 case 'city':
                     return 'Woonplaats';
+                case 'country':
+                    return 'Land';
                 case 'emailAddress':
                     return 'E-mailadres';
                 case 'phoneNumber':

@@ -19,6 +19,7 @@ class ExtraFilter extends RequestExtraFilter
     protected $fields = [
         'name',
         'postalCode',
+        'country',
         'createdAt',
         'currentObligations',
         'currentParticipations',
@@ -83,6 +84,66 @@ class ExtraFilter extends RequestExtraFilter
                     $data = str_replace(' ', '', $data);
                     RequestFilter::applyFilter($query, 'postal_code', $type, $data);
                 });
+                break;
+        }
+    }
+
+    protected function applyCountryFilter($query, $type, $data)
+    {
+        switch($type) {
+            case 'neq':
+                if($data == 'NL') {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                            })
+                            ->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', 'nnl', null);
+                            });
+                    });
+                }else{
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                            ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                            })
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                        });
+                    });
+                }
+                break;
+            case 'nl':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                        });
+                });
+                break;
+            default:
+                if($data == 'NL')
+                {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);})
+                            ->orwhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                            });
+                    });
+                }else{
+                    $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                        $data = str_replace(' ', '', $data);
+                        RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                    });
+                }
                 break;
         }
     }

@@ -445,6 +445,18 @@ class OrderController extends ApiController
 
         $orders = Order::whereIn('id', $orderIds)->get();
 
+        // Eerst hele zet in progress
+        foreach ($orders as $order) {
+            //Order moet status active hebben
+            if($order->status_id !== 'active') {
+                abort(404, "Order met ID " . $order->id . " heeft geen status actief");
+            }else{
+                // We zetten order voorlopig in progress zolang we bezig met maken van nota voor deze order.
+                $order->status_id = 'in-progress';
+                $order->save();
+            }
+        }
+
         CreateAllInvoices::dispatch($orders, Auth::id());
     }
 

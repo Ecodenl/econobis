@@ -36,6 +36,7 @@ class SendAllInvoices implements ShouldQueue
     private $dateCollection;
     private $administration;
     private $paymentTypeId;
+    private $countInvoices;
     private $invoicesOk;
     private $invoicesError;
 
@@ -46,11 +47,14 @@ class SendAllInvoices implements ShouldQueue
         $this->dateCollection = $dateCollection;
         $this->administration = $administration;
         $this->paymentTypeId = $paymentTypeId;
+
+        $countInvoices = $validatedInvoices ? $validatedInvoices->count() : 0;
+        $this->countInvoices = $countInvoices;
         $this->invoicesOk = 0;
         $this->invoicesError = 0;
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Start alle nota's maken/verzenden.";
+        $jobLog->value = "Start alle nota's (". $countInvoices .") maken/verzenden.";
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $userId;
         $jobLog->save();
@@ -141,7 +145,7 @@ class SendAllInvoices implements ShouldQueue
         if($this->invoicesError>0){
             $jobLog->value = "Fouten bij maken/verzenden nota's. Verzonden nota's: ".$this->invoicesOk.". Niet verzonden nota's: ".$this->invoicesError."." ;
         }else{
-            $jobLog->value = "Alle nota's (".$this->invoicesOk.") verzonden";
+            $jobLog->value = "Alle nota's (".$this->countInvoices.") verzonden";
         }
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;

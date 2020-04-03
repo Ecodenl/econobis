@@ -9,6 +9,7 @@ const DataTableBody = props => {
             value={props.type}
             onChange={props.handleInputChange}
         >
+            <option />
             {props.contactType !== 'person' ? (
                 <React.Fragment>
                     <option value="rel">heeft</option>

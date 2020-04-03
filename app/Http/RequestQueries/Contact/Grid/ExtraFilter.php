@@ -202,17 +202,28 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyStaticContactGroupFilter($query, $type, $data)
     {
-        switch($type) {
-            case 'eq':
-                $query->whereHas('groups', function ($query) use ($data) {
-                    $query->where('contact_groups.id', $data);
-                });
-                break;
-            case 'neq':
-                $query->whereDoesntHave('groups', function ($query) use ($data) {
-                    $query->where('contact_groups.id', $data);
-                });
-                break;
+        if(empty($data)){
+            switch($type) {
+                case 'neq':
+                    $query->whereHas('groups');
+                    break;
+                default:
+                    $query->whereDoesntHave('groups');
+                    break;
+            }
+        }else {
+            switch ($type) {
+                case 'neq':
+                    $query->whereDoesntHave('groups', function ($query) use ($data) {
+                        $query->where('contact_groups.id', $data);
+                    });
+                    break;
+                default:
+                    $query->whereHas('groups', function ($query) use ($data) {
+                        $query->where('contact_groups.id', $data);
+                    });
+                    break;
+            }
         }
     }
 

@@ -307,21 +307,33 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyOpportunityFilter($query, $type, $data)
     {
-        switch($type) {
-            case 'neq':
-                $query->where(function ($query) use ($type, $data) {
-                    $query->whereDoesntHave('opportunities')
-                        ->orWhereHas('opportunities', function ($query) use ($type, $data) {
-                            RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
-                        });
-                });
-                break;
-            default:
-                $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                    RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
-                });
-                break;
+        if(empty($data)){
+            switch($type) {
+                case 'neq':
+                    $query->whereHas('opportunities');
+                    break;
+                default:
+                    $query->whereDoesntHave('opportunities');
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'measure_category_id', 'eq', $data);
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                        RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
+                    });
+                    break;
+            }
         }
+
     }
 
     protected function applyDateOfBirthFilter($query, $type, $data)

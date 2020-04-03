@@ -2,26 +2,25 @@
 
 namespace App\Console\Commands;
 
-use App\Eco\Mailbox\Mailbox;
-use App\Eco\Mailbox\MailFetcher;
+use App\Jobs\Portal\GeneratePortalCss;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class checkMailboxes extends Command
+class rebuildPortalCss extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'email:checkMailboxes';
+    protected $signature = 'portal:rebuildPortalCss';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Kijkt of mailboxen valide zijn';
+    protected $description = 'Maak nieuwe portal css aan';
 
     /**
      * Create a new command instance.
@@ -40,11 +39,8 @@ class checkMailboxes extends Command
      */
     public function handle()
     {
-        $mailboxes = Mailbox::where('valid', 0)->where('is_active', 1)->where('login_tries', '<', 5)->get();
-        foreach ($mailboxes as $mailbox) {
-            //In construct wordt gelijk valid gekeken
-            new MailFetcher($mailbox);
-        }
-        Log::info('Mailboxen gecheckt.');
+        GeneratePortalCss::dispatch();
+        Log::info('Einde Maak nieuwe portal css aan');
     }
+
 }

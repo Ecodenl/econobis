@@ -84,6 +84,20 @@ class IntakeNewFormGeneral extends Component {
         const { addressId, statusId, sourceIds, campaignId, intakeReasonIds, note } = this.state.intake;
         const { addresses = [], fullName } = this.props.contactDetails;
 
+        function compareIntakeSources(a, b) {
+            const sourceA = a.name.toLowerCase();
+            const sourceB = b.name.toLowerCase();
+
+            let result = 0;
+            if (sourceA > sourceB) {
+                result = 1;
+            } else if (sourceA < sourceB) {
+                result = -1;
+            }
+
+            return result;
+        }
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -137,7 +151,7 @@ class IntakeNewFormGeneral extends Component {
                         label="Aanmeldingsbron"
                         name="sourceIds"
                         value={sourceIds}
-                        options={this.props.intakeSources}
+                        options={this.props.intakeSources.sort(compareIntakeSources)}
                         onChangeAction={this.handleSourceIds}
                     />
                     <InputMultiSelect

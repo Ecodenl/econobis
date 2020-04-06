@@ -44,7 +44,7 @@ class IntakesList extends Component {
                                         <td className="col-xs-4 clickable">
                                             {intake.createdAt ? moment(intake.createdAt).format('DD-MM-Y') : ''}
                                         </td>
-                                        <td className="col-xs-8 clickable">{intake.campaign}</td>
+                                        <td className="col-xs-8 clickable">{intake.campaignName}</td>
                                     </tr>
                                 );
                             })}

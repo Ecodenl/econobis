@@ -130,6 +130,9 @@ const OrdersListFilter = props => {
                         <option key={'to-create'} value={'create'}>
                             {'Te factureren'}
                         </option>
+                        <option key={'in-progress'} value={'in-progress'}>
+                            {'Nota wordt gemaakt'}
+                        </option>
                         <option key={'to-send'} value={'send'}>
                             {'Te verzenden'}
                         </option>

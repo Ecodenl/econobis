@@ -84,6 +84,10 @@ class OrdersList extends Component {
                     this.props.clearFilterOrders();
                     this.props.setStatusIdFilterOrders('create');
                     break;
+                case 'in-progress':
+                    this.props.clearFilterOrders();
+                    this.props.setStatusIdFilterOrders('in-progress');
+                    break;
                 case 'te-verzenden':
                     this.props.clearFilterOrders();
                     this.props.setStatusIdFilterOrders('send');

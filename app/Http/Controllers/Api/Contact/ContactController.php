@@ -92,6 +92,7 @@ class ContactController extends Controller
             $result[] = [
                 'id' => $intake->id,
                 'addressName' =>  $intake->address ? $intake->address->present()->streetAndNumber() : 'Onbekend',
+                'campaign' => $intake->campaign ? $intake->campaign->name : 'Onbekend',
                 'createdAt' => $intake->created_at,
             ];
         }

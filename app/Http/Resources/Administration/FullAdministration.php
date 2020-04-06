@@ -69,6 +69,7 @@ class FullAdministration extends Resource
 
                 'totalOrders' => $this->total_orders,
                 'totalOrdersConcepts' => $this->total_orders_concepts,
+                'totalOrdersInProgress' => $this->total_orders_in_progress,
                 'totalOrdersUpcoming' => $this->total_orders_upcoming,
                 'totalOrdersToCreateInvoices' => $this->total_orders_to_create_invoices,
                 'totalOrdersToSendInvoices' => $this->total_orders_to_send_invoices,

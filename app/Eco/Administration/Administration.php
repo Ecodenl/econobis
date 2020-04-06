@@ -115,6 +115,11 @@ class Administration extends Model
         return $this->orders()->where('status_id', 'concept')->count();
     }
 
+    public function getTotalOrdersInProgressAttribute()
+    {
+        return $this->orders()->where('status_id', 'in-progress')->count();
+    }
+
     public function getTotalOrdersUpcomingAttribute()
     {
         return $this->orders()

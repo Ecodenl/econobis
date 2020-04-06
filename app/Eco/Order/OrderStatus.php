@@ -23,6 +23,7 @@ class OrderStatus extends EnumWithIdAndName
         return [
             new static('concept', 'Concept'),
             new static('active', 'Actief'),
+            new static('in-progress', 'In behandeling'),
             new static('closed', 'Beëindigd'),
         ];
     }

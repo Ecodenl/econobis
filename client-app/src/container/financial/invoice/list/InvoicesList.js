@@ -30,7 +30,6 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
 import InvoiceListDeleteItem from './InvoiceListDeleteItem';
 import ErrorModal from '../../../../components/modal/ErrorModal';
-import AdministrationDetailsAPI from '../../../../api/administration/AdministrationDetailsAPI';
 
 const initialState = {
     showSelectInvoicesToSend: false,

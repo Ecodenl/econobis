@@ -115,6 +115,8 @@ class OrdersList extends Component {
 
             this.props.fetchOrders(filters, sorts, pagination, administrationId);
         }, 100);
+
+        this.props.fetchTotalsInfoAdministration(this.props.administrationId);
     };
 
     getCSV = () => {
@@ -286,6 +288,69 @@ class OrdersList extends Component {
             }
         }
 
+        let totalOrdersInProgressInvoices = 0;
+        let totalInvoicesInProgress = 0;
+        let totalInvoicesIsSending = 0;
+        let totalInvoicesIsResending = 0;
+        let totalInvoicesErrorMaking = 0;
+        let amountInProgress = 0;
+        let inProgressStartText = null;
+        let inProgressEndText = null;
+        let ordersInProgressInvoicesText = null;
+        let inProgressText = null;
+        let isSendingText = null;
+        let isResendingText = null;
+        let errorMakingText = null;
+        if (this.props.totalsInfoAdministration) {
+            totalOrdersInProgressInvoices = this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
+                ? this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
+                : 0;
+            totalInvoicesInProgress = this.props.totalsInfoAdministration.totalInvoicesInProgress
+                ? this.props.totalsInfoAdministration.totalInvoicesInProgress
+                : 0;
+            totalInvoicesIsSending = this.props.totalsInfoAdministration.totalInvoicesIsSending
+                ? this.props.totalsInfoAdministration.totalInvoicesIsSending
+                : 0;
+            totalInvoicesIsResending = this.props.totalsInfoAdministration.totalInvoicesIsResending
+                ? this.props.totalsInfoAdministration.totalInvoicesIsResending
+                : 0;
+            totalInvoicesErrorMaking = this.props.totalsInfoAdministration.totalInvoicesErrorMaking
+                ? this.props.totalsInfoAdministration.totalInvoicesErrorMaking
+                : 0;
+
+            amountInProgress +=
+                totalOrdersInProgressInvoices +
+                totalInvoicesErrorMaking +
+                totalInvoicesInProgress +
+                totalInvoicesIsResending +
+                totalInvoicesIsSending;
+
+            if (
+                amountInProgress > 0 &&
+                (this.props.filter == 'aankomend' ||
+                    this.props.filter == 'te-factureren' ||
+                    this.props.filter == 'te-verzenden')
+            ) {
+                inProgressStartText = "Nota's die momenteel in de maak en/of verzonden worden:";
+                if (totalOrdersInProgressInvoices > 0) {
+                    ordersInProgressInvoicesText =
+                        "- Nota's die nu gemaakt worden van uit orders: " + totalOrdersInProgressInvoices;
+                }
+                if (totalInvoicesInProgress > 0) {
+                    inProgressText = "- Nota's die nu definitief gemaakt worden: " + totalInvoicesInProgress;
+                }
+                if (totalInvoicesIsSending > 0) {
+                    isSendingText = "- Nota's die nu verzonden worden: " + totalInvoicesIsSending;
+                }
+                if (totalInvoicesIsResending > 0) {
+                    isResendingText = "- Nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
+                }
+                if (totalInvoicesErrorMaking > 0) {
+                    errorMakingText = '- Nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
+                }
+                inProgressEndText = 'Gebruik refresh/vernieuwen knop om voortgang van order statussen te verversen.';
+            }
+        }
         return (
             <div>
                 <div className="row">
@@ -308,7 +373,42 @@ class OrdersList extends Component {
                         <div className="pull-right">Resultaten: {meta.total || 0}</div>
                     </div>
                 </div>
-                {this.state.showSelectOrdersToCreate ? (
+                {!this.state.showSelectOrdersToCreate ? (
+                    <div className="col-md-12">
+                        {inProgressStartText ? (
+                            <div className="alert alert-warning">
+                                {inProgressStartText}
+                                <br />
+                                {ordersInProgressInvoicesText ? (
+                                    <span>
+                                        {ordersInProgressInvoicesText} <br />
+                                    </span>
+                                ) : null}
+                                {inProgressText ? (
+                                    <span>
+                                        {inProgressText} <br />
+                                    </span>
+                                ) : null}
+                                {isSendingText ? (
+                                    <span>
+                                        {isSendingText} <br />
+                                    </span>
+                                ) : null}
+                                {isResendingText ? (
+                                    <span>
+                                        {isResendingText} <br />
+                                    </span>
+                                ) : null}
+                                {errorMakingText ? (
+                                    <span>
+                                        {errorMakingText} <br />
+                                    </span>
+                                ) : null}
+                                <br /> {inProgressEndText}
+                            </div>
+                        ) : null}
+                    </div>
+                ) : (
                     <>
                         <div className="col-md-12">&nbsp;</div>
                         <div className="col-md-12">
@@ -319,7 +419,7 @@ class OrdersList extends Component {
                             ) : null}
                         </div>
                     </>
-                ) : null}
+                )}
 
                 <form onKeyUp={this.handleKeyUp} className={'margin-10-top'}>
                     <DataTable>

@@ -83,27 +83,27 @@ const PortalSettingsFormGeneralView = ({
                         />
                     </div>
                     {/*<div className="row">*/}
-                        {/*<ViewText*/}
-                            {/*label={'Standaard tekst kleur'}*/}
-                            {/*divSize={'col-sm-8'}*/}
-                            {/*value={defaultTextColor}*/}
-                            {/*className={'col-sm-8 form-group'}*/}
-                        {/*/>*/}
-                        {/*<span*/}
-                            {/*className="rc-color-picker-trigger"*/}
-                            {/*unselectable="unselectable"*/}
-                            {/*style={{*/}
-                                {/*backgroundColor: '#fff',*/}
-                                {/*color: defaultTextColor,*/}
-                                {/*border: '1px solid #999',*/}
-                                {/*display: 'inline-block',*/}
-                                {/*padding: '2px',*/}
-                                {/*borderRadius: '2px',*/}
-                                {/*width: '50px',*/}
-                                {/*height: '30px',*/}
-                                {/*boxShadow: '0 0 0 2px #fff inset',*/}
-                            {/*}}*/}
-                        {/*>Tekst</span>*/}
+                    {/*<ViewText*/}
+                    {/*label={'Standaard tekst kleur'}*/}
+                    {/*divSize={'col-sm-8'}*/}
+                    {/*value={defaultTextColor}*/}
+                    {/*className={'col-sm-8 form-group'}*/}
+                    {/*/>*/}
+                    {/*<span*/}
+                    {/*className="rc-color-picker-trigger"*/}
+                    {/*unselectable="unselectable"*/}
+                    {/*style={{*/}
+                    {/*backgroundColor: '#fff',*/}
+                    {/*color: defaultTextColor,*/}
+                    {/*border: '1px solid #999',*/}
+                    {/*display: 'inline-block',*/}
+                    {/*padding: '2px',*/}
+                    {/*borderRadius: '2px',*/}
+                    {/*width: '50px',*/}
+                    {/*height: '30px',*/}
+                    {/*boxShadow: '0 0 0 2px #fff inset',*/}
+                    {/*}}*/}
+                    {/*>Tekst</span>*/}
                     {/*</div>*/}
                     <div className="row">
                         <ViewText
@@ -149,7 +149,9 @@ const PortalSettingsFormGeneralView = ({
                                 height: '30px',
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
-                        >Tekst</span>
+                        >
+                            Tekst
+                        </span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -195,7 +197,9 @@ const PortalSettingsFormGeneralView = ({
                                 height: '30px',
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
-                        >Tekst</span>
+                        >
+                            Tekst
+                        </span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -241,7 +245,9 @@ const PortalSettingsFormGeneralView = ({
                                 height: '30px',
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
-                        >Tekst</span>
+                        >
+                            Tekst
+                        </span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -287,7 +293,9 @@ const PortalSettingsFormGeneralView = ({
                                 height: '30px',
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
-                        >Tekst</span>
+                        >
+                            Tekst
+                        </span>
                     </div>
                     <hr />
                     <div className="row">

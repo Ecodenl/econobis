@@ -365,31 +365,31 @@ class PortalSettingsFormGeneralEdit extends Component {
                         )}
 
                         {/*<div className="row">*/}
-                            {/*<InputText*/}
-                                {/*label="Standaard tekst kleur"*/}
-                                {/*divSize={'col-sm-8'}*/}
-                                {/*name={'defaultTextColor'}*/}
-                                {/*value={defaultTextColor}*/}
-                                {/*onChangeAction={this.handleInputChange}*/}
-                                {/*readOnly={!this.manageTechnicalPortalSettings}*/}
-                                {/*required={'required'}*/}
-                                {/*error={this.state.errors.defaultTextColor}*/}
-                            {/*/>*/}
-                            {/*<span*/}
-                                {/*className="rc-color-picker-trigger"*/}
-                                {/*unselectable="unselectable"*/}
-                                {/*style={{*/}
-                                    {/*backgroundColor: '#fff',*/}
-                                    {/*color: defaultTextColor,*/}
-                                    {/*border: '1px solid #999',*/}
-                                    {/*display: 'inline-block',*/}
-                                    {/*padding: '2px',*/}
-                                    {/*borderRadius: '2px',*/}
-                                    {/*width: '50px',*/}
-                                    {/*height: '30px',*/}
-                                    {/*boxShadow: '0 0 0 2px #fff inset',*/}
-                                {/*}}*/}
-                            {/*>Tekst</span>*/}
+                        {/*<InputText*/}
+                        {/*label="Standaard tekst kleur"*/}
+                        {/*divSize={'col-sm-8'}*/}
+                        {/*name={'defaultTextColor'}*/}
+                        {/*value={defaultTextColor}*/}
+                        {/*onChangeAction={this.handleInputChange}*/}
+                        {/*readOnly={!this.manageTechnicalPortalSettings}*/}
+                        {/*required={'required'}*/}
+                        {/*error={this.state.errors.defaultTextColor}*/}
+                        {/*/>*/}
+                        {/*<span*/}
+                        {/*className="rc-color-picker-trigger"*/}
+                        {/*unselectable="unselectable"*/}
+                        {/*style={{*/}
+                        {/*backgroundColor: '#fff',*/}
+                        {/*color: defaultTextColor,*/}
+                        {/*border: '1px solid #999',*/}
+                        {/*display: 'inline-block',*/}
+                        {/*padding: '2px',*/}
+                        {/*borderRadius: '2px',*/}
+                        {/*width: '50px',*/}
+                        {/*height: '30px',*/}
+                        {/*boxShadow: '0 0 0 2px #fff inset',*/}
+                        {/*}}*/}
+                        {/*>Tekst</span>*/}
                         {/*</div>*/}
                         <div className="row">
                             <InputText
@@ -443,7 +443,9 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
-                            >Tekst</span>
+                            >
+                                Tekst
+                            </span>
                         </div>
                         <div className="row">
                             <InputText
@@ -497,7 +499,9 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
-                            >Tekst</span>
+                            >
+                                Tekst
+                            </span>
                         </div>
                         <div className="row">
                             <InputText
@@ -551,7 +555,9 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
-                            >Tekst</span>
+                            >
+                                Tekst
+                            </span>
                         </div>
                         <div className="row">
                             <InputText
@@ -605,7 +611,9 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
-                            >Tekst</span>
+                            >
+                                Tekst
+                            </span>
                         </div>
 
                         <hr />

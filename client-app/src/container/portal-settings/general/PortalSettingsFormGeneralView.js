@@ -10,10 +10,15 @@ const PortalSettingsFormGeneralView = ({
     cooperativeName,
     portalWebsite,
     portalUrl,
+    // defaultTextColor,
     backgroundColor,
+    backgroundTextColor,
     backgroundImageColor,
+    backgroundImageTextColor,
     backgroundSecondaryColor,
+    backgroundSecondaryTextColor,
     buttonColor,
+    buttonTextColor,
     responsibleUser,
     checkContactTaskResponsibleUser,
     checkContactTaskResponsibleTeam,
@@ -48,6 +53,7 @@ const PortalSettingsFormGeneralView = ({
                             src={`${URL_API}/portal/images/logo.png?${imageHash}`}
                             style={{
                                 backgroundColor: backgroundImageColor,
+                                color: backgroundImageTextColor,
                                 border: '1px solid #999',
                                 display: 'inline-block',
                                 padding: '1px',
@@ -76,6 +82,29 @@ const PortalSettingsFormGeneralView = ({
                             }}
                         />
                     </div>
+                    {/*<div className="row">*/}
+                        {/*<ViewText*/}
+                            {/*label={'Standaard tekst kleur'}*/}
+                            {/*divSize={'col-sm-8'}*/}
+                            {/*value={defaultTextColor}*/}
+                            {/*className={'col-sm-8 form-group'}*/}
+                        {/*/>*/}
+                        {/*<span*/}
+                            {/*className="rc-color-picker-trigger"*/}
+                            {/*unselectable="unselectable"*/}
+                            {/*style={{*/}
+                                {/*backgroundColor: '#fff',*/}
+                                {/*color: defaultTextColor,*/}
+                                {/*border: '1px solid #999',*/}
+                                {/*display: 'inline-block',*/}
+                                {/*padding: '2px',*/}
+                                {/*borderRadius: '2px',*/}
+                                {/*width: '50px',*/}
+                                {/*height: '30px',*/}
+                                {/*boxShadow: '0 0 0 2px #fff inset',*/}
+                            {/*}}*/}
+                        {/*>Tekst</span>*/}
+                    {/*</div>*/}
                     <div className="row">
                         <ViewText
                             label={'Achtergrond kleur'}
@@ -88,6 +117,7 @@ const PortalSettingsFormGeneralView = ({
                             unselectable="unselectable"
                             style={{
                                 backgroundColor: backgroundColor,
+                                color: backgroundTextColor,
                                 border: '1px solid #999',
                                 display: 'inline-block',
                                 padding: '2px',
@@ -97,6 +127,29 @@ const PortalSettingsFormGeneralView = ({
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
                         />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Achtergrond tekst kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundTextColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundColor,
+                                color: backgroundTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '50px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >Tekst</span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -110,6 +163,7 @@ const PortalSettingsFormGeneralView = ({
                             unselectable="unselectable"
                             style={{
                                 backgroundColor: backgroundImageColor,
+                                color: backgroundImageTextColor,
                                 border: '1px solid #999',
                                 display: 'inline-block',
                                 padding: '2px',
@@ -119,6 +173,29 @@ const PortalSettingsFormGeneralView = ({
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
                         />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Achtergrond afbeelding tekst kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundImageTextColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundImageColor,
+                                color: backgroundImageTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '50px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >Tekst</span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -132,6 +209,7 @@ const PortalSettingsFormGeneralView = ({
                             unselectable="unselectable"
                             style={{
                                 backgroundColor: backgroundSecondaryColor,
+                                color: backgroundSecondaryTextColor,
                                 border: '1px solid #999',
                                 display: 'inline-block',
                                 padding: '2px',
@@ -141,6 +219,29 @@ const PortalSettingsFormGeneralView = ({
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
                         />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Tweede achtergrond tekst kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundSecondaryTextColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundSecondaryColor,
+                                color: backgroundSecondaryTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '50px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >Tekst</span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -154,6 +255,7 @@ const PortalSettingsFormGeneralView = ({
                             unselectable="unselectable"
                             style={{
                                 backgroundColor: buttonColor,
+                                color: buttonTextColor,
                                 border: '1px solid #999',
                                 display: 'inline-block',
                                 padding: '2px',
@@ -163,6 +265,29 @@ const PortalSettingsFormGeneralView = ({
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
                         />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Buttonknop tekst kleur'}
+                            divSize={'col-sm-8'}
+                            value={buttonTextColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: buttonColor,
+                                color: buttonTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '50px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >Tekst</span>
                     </div>
                     <hr />
                     <div className="row">

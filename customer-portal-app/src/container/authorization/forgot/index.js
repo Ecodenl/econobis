@@ -37,10 +37,10 @@ const Forgot = props => {
                     {showSuccessMessage ? (
                         <div>
                             <Row className={'justify-content-center '}>
-                                <h3 className={'text-light'}>Een E-mail is onderweg!</h3>
+                                <h3 className={'authorization-text'}>Een E-mail is onderweg!</h3>
                             </Row>
                             <Row className={'justify-content-center '}>
-                                <p className={'text-light'}>
+                                <p className={'authorization-text'}>
                                     Als het e-mailadres bij ons bekend is, dan ontvang je binnen enkele minuten een
                                     e-mail met een persoonlijke link. Via deze link kun je een nieuw wachtwoord
                                     instellen.
@@ -54,10 +54,10 @@ const Forgot = props => {
                     ) : (
                         <div>
                             <Row className={'justify-content-center '}>
-                                <h3 className={'text-light'}>Wachtwoord vergeten</h3>
+                                <h3 className={'authorization-text'}>Wachtwoord vergeten</h3>
                             </Row>
                             <Row className={'justify-content-center '}>
-                                <p className={'text-light'}>
+                                <p className={'authorization-text'}>
                                     Vul het e-mailadres in waarmee je inlogt en die bij ons bekend is. Je ontvangt van
                                     ons een e-mail waarmee je een nieuw wachtwoord kunt instellen.
                                 </p>

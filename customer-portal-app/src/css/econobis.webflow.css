@@ -60,74 +60,74 @@ h3 {
   text-align: center;
 }
 
-.text-input::-webkit-input-placeholder {
-  color: hsla(0, 0%, 100%, 0.5);
-}
+/*.text-input::-webkit-input-placeholder {*/
+  /*color: hsla(0, 0%, 100%, 0.5);*/
+/*}*/
 
-.text-input:-ms-input-placeholder {
-  color: hsla(0, 0%, 100%, 0.5);
-}
+/*.text-input:-ms-input-placeholder {*/
+  /*color: hsla(0, 0%, 100%, 0.5);*/
+/*}*/
 
-.text-input::-ms-input-placeholder {
-  color: hsla(0, 0%, 100%, 0.5);
-}
+/*.text-input::-ms-input-placeholder {*/
+  /*color: hsla(0, 0%, 100%, 0.5);*/
+/*}*/
 
-.text-input::placeholder {
-  color: hsla(0, 0%, 100%, 0.5);
-}
+/*.text-input::placeholder {*/
+  /*color: hsla(0, 0%, 100%, 0.5);*/
+/*}*/
 
-.text-input.content::-webkit-input-placeholder {
-  color: rgba(29, 29, 29, 0.5);
-}
+/*.text-input.content::-webkit-input-placeholder {*/
+  /*color: rgba(29, 29, 29, 0.5);*/
+/*}*/
 
-.text-input.content:-ms-input-placeholder {
-  color: rgba(29, 29, 29, 0.5);
-}
+/*.text-input.content:-ms-input-placeholder {*/
+  /*color: rgba(29, 29, 29, 0.5);*/
+/*}*/
 
-.text-input.content::-ms-input-placeholder {
-  color: rgba(29, 29, 29, 0.5);
-}
+/*.text-input.content::-ms-input-placeholder {*/
+  /*color: rgba(29, 29, 29, 0.5);*/
+/*}*/
 
-.text-input.content::placeholder {
-  color: rgba(29, 29, 29, 0.5);
-}
+/*.text-input.content::placeholder {*/
+  /*color: rgba(29, 29, 29, 0.5);*/
+/*}*/
 
-.text-input.content._w-40 {
-  display: inline-block;
-  width: 25%;
-  min-width: 40px;
-  margin-right: 10px;
-}
+/*.text-input.content._w-40 {*/
+  /*display: inline-block;*/
+  /*width: 25%;*/
+  /*min-width: 40px;*/
+  /*margin-right: 10px;*/
+/*}*/
 
-.text-input.content._w-40.clear-right {
-  display: inline-block;
-}
+/*.text-input.content._w-40.clear-right {*/
+  /*display: inline-block;*/
+/*}*/
 
-.text-input.content._w-90 {
-  display: inline-block;
-  width: 92%;
-  min-width: 60px;
-}
+/*.text-input.content._w-90 {*/
+  /*display: inline-block;*/
+  /*width: 92%;*/
+  /*min-width: 60px;*/
+/*}*/
 
-.text-input.content._w-70 {
-  display: inline-block;
-  width: 72%;
-  min-width: 40px;
-}
+/*.text-input.content._w-70 {*/
+  /*display: inline-block;*/
+  /*width: 72%;*/
+  /*min-width: 40px;*/
+/*}*/
 
-.text-input.content._w-50 {
-  display: inline-block;
-  width: 48%;
-  min-width: 40px;
-  margin-right: 2%;
-}
+/*.text-input.content._w-50 {*/
+  /*display: inline-block;*/
+  /*width: 48%;*/
+  /*min-width: 40px;*/
+  /*margin-right: 2%;*/
+/*}*/
 
-.w-select.content._w-40 {
-  display: inline-block;
-  width: 25%;
-  min-width: 40px;
-  margin-right: 10px;
-}
+/*.w-select.content._w-40 {*/
+  /*display: inline-block;*/
+  /*width: 25%;*/
+  /*min-width: 40px;*/
+  /*margin-right: 10px;*/
+/*}*/
 
 .div-block-2 {
   position: absolute;

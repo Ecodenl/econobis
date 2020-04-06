@@ -1,8 +1,13 @@
 :root {
+--main-default-text-color: {{ $store->get('defaultTextColor', '#000') }};
 --main-primary-color: {{ $store->get('backgroundColor', '#034b8c') }};
+--main-primary-text-color: {{ $store->get('backgroundTextColor', '#fff') }};
 --main-primary-rgba: {{ $store->get('backgroundImageColor', 'rgba(3, 75, 140, 0.9)') }};
+--main-primary-rgba-text-color: {{ $store->get('backgroundImageTextColor', '#333') }};
 --main-secondary-color: {{ $store->get('backgroundSecondaryColor', '#3898EC') }};
+--main-secondary-text-color: {{ $store->get('backgroundSecondaryTextColor', '#fff') }};
 --button-primary-color: {{ $store->get('buttonColor', '#3898EC') }};
+--button-primary-text-color: {{ $store->get('buttonTextColor', '#fff') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
 }
@@ -15,7 +20,7 @@ background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-p
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 font-family: Montserrat, sans-serif;
-color: #333;
+color: var(--main-primary-rgba-text-color);
 height: 100%;
 width: 100vw;
 position: fixed;
@@ -31,7 +36,7 @@ width: 100%;
 border-radius: 7px;
 background-color: var(--button-primary-color);
 border-color: var(--button-primary-color);
-color: var(--main-primary-color);
+color: var(--button-primary-text-color);
 font-weight: 600;
 text-align: center;
 }
@@ -39,7 +44,7 @@ text-align: center;
 .authorization-button.btn-primary:hover, .authorization-button.btn-primary:active, .authorization-button.btn-primary:focus, .authorization-button.btn-primary:disabled {
 background-color: white;
 border-color: var(--button-primary-color);
-color: var(--main-primary-color);
+color: black;
 outline: none;
 opacity: 1;
 }
@@ -71,11 +76,11 @@ text-align: left;
 .authorization-link {
 display: inline-block;
 margin-top: 10px;
-color: white;
+color: var(--main-primary-rgba-text-color);
 }
 
 .authorization-link:hover, .authorization-link:active {
-color: white;
+color: var(--main-primary-rgba-text-color);
 }
 
 @font-face {
@@ -141,7 +146,7 @@ text-decoration: none;
 }
 
 /* ----------------- HEADER STYLING -----------------*/
-.header-deltaw {
+.header-portal {
 position: relative;
 height: 128px;
 background-image: -webkit-gradient(linear, left top, left bottom, from(var(--main-primary-rgba)), to(var(--main-primary-rgba))), url('images/page-head5.jpg');
@@ -149,6 +154,8 @@ background-image: linear-gradient(180deg, var(--main-primary-rgba), var(--main-p
 background-position: 0px 0px, 50% 50%;
 background-size: auto, cover;
 background-repeat: repeat, no-repeat;
+color: var(--main-primary-rgba-text-color);
+
 }
 
 /* ----------------- INPUT STYLING -----------------*/
@@ -180,7 +187,7 @@ font-size: 18px;
 .w-button.w-button {
 background-color: var(--button-primary-color);
 border-color: var(--button-primary-color);
-color: white;
+color: var(--button-primary-text-color);
 }
 
 .save-btn {
@@ -205,18 +212,19 @@ text-shadow: none;
 }
 
 .nav-link {
-color: white;
+color: var(--main-primary-text-color) !important;
 font-size: 1.15em;
 }
 
 .nav-link:hover {
-color: white;
+background-color: var(--main-primary-text-color) !important;
+color: var(--main-primary-color) !important;
 text-shadow: none;
 }
 
 .nav-link.w--current {
-border-left: 1px solid white;
-color: white;
+border-left: 1px solid var(--main-primary-text-color) !important;
+color: var(--main-primary-text-color) !important;
 }
 
 
@@ -282,6 +290,7 @@ height: 100%;
 /* General sidebar styles */
 .bm-menu {
 background-color: var(--main-primary-color);
+color: var(--main-primary-text-color);
 padding: 0.5em 1.5em 0;
 /*font-size: 1.15em;*/
 }
@@ -389,8 +398,8 @@ transition: opacity 0.3s ease 0.5s;
 }
 
 .arrow-steps .step.current {
-color: white;
 background-color: var(--main-primary-color);
+color: var(--main-primary-text-color);
 }
 
 .arrow-steps .step.current:after {
@@ -476,7 +485,7 @@ margin-bottom: 10px;
 .login-button {
 cursor: pointer;
 }
-.header-deltaw {
+.header-portal {
 position: relative;
 height: 128px;
 }
@@ -580,10 +589,10 @@ min-width: 120px;
 height: 120px;
 border: 4px solid white;
 background-color: var(--main-primary-rgba);
-/*background-image: url('../images/user.png');*/
 background-position: 50% 50%;
 background-size: contain;
 background-repeat: no-repeat;
+color: var(--main-primary-rgba-text-color);
 box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1);
 -webkit-transform: translate(-50%, 0px);
 -ms-transform: translate(-50%, 0px);
@@ -601,7 +610,7 @@ margin-top: 10px;
 }
 
 .profile-pic .profile-title {
-color: white;
+color: var(--main-primary-rgba-text-color);
 font-weight: bold;
 white-space: nowrap;
 margin: 20px;
@@ -667,11 +676,12 @@ color: var(--black-color);
 .dropdown-item:hover {
 text-decoration: none;
 background: var(--main-secondary-color);
-color: white;
+color: var(--main-secondary-text-color);
 }
 
 .dropdown-item.active {
 background: var(--main-secondary-color);
+color: var(--main-secondary-text-color);
 }
 
 /* ----------------- INPUT STYLING -----------------*/
@@ -694,6 +704,23 @@ border: 1px solid #cccccc;
 border-color: var(--main-secondary-color);
 outline: 0;
 }
+.w-input:-moz-placeholder,
+.w-select:-moz-placeholder {
+color: var(--main-secondary-text-color);
+}
+.w-input::-moz-placeholder,
+.w-select::-moz-placeholder {
+color: var(--main-secondary-text-color);
+opacity: 1;
+}
+.w-input:-ms-input-placeholder,
+.w-select:-ms-input-placeholder {
+color: var(--main-secondary-text-color);
+}
+.w-input::-webkit-input-placeholder,
+.w-select::-webkit-input-placeholder {
+color: var(--main-secondary-text-color);
+}
 
 .text-input {
 width: 100%;
@@ -701,8 +728,8 @@ border-style: solid;
 border-width: 1px;
 border-color: hsla(0, 0%, 100%, 0.5);
 border-radius: 7px;
-background-color: transparent;
-color: white;
+background-color: var(--main-secondary-color);
+color: var(--main-primary-rgba-text-color);
 font-weight: 500;
 text-align: left;
 }
@@ -716,13 +743,14 @@ text-align: left;
 }
 
 .select-field-transparent {
-background-color: transparent !important;
+background-color: var(--main-secondary-color);
+color: var(--main-primary-rgba-text-color);
 border: 1px solid #fff !important;
 border-radius: 7px !important;
 text-align: left;
-color: white;
 }
 .select-field-transparent option {
+background-color: white;
 color: black;
 }
 
@@ -743,9 +771,6 @@ background-color: #eeeeee;
 textarea.w-input,
 textarea.w-select {
 height: auto;
-}
-.w-select {
-background-color: #f3f3f3;
 }
 .w-select[multiple] {
 height: auto;

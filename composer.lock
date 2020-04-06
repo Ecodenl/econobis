@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "95be1223e6fcfe299fb8e39c1e4c6c1c",
+    "content-hash": "67b1686ab8ceb806d71e7dad5d58539f",
     "packages": [
         {
             "name": "amphp/amp",
@@ -3641,16 +3641,16 @@
         },
         {
             "name": "php-imap/php-imap",
-            "version": "3.0.33",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barbushin/php-imap.git",
-                "reference": "3ac294a7f852bd85bef04642ada78eb75be6e477"
+                "reference": "9c1469c053d4f1473cbd3648fc7ae363f6b3aace"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/3ac294a7f852bd85bef04642ada78eb75be6e477",
-                "reference": "3ac294a7f852bd85bef04642ada78eb75be6e477",
+                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/9c1469c053d4f1473cbd3648fc7ae363f6b3aace",
+                "reference": "9c1469c053d4f1473cbd3648fc7ae363f6b3aace",
                 "shasum": ""
             },
             "require": {
@@ -3690,7 +3690,7 @@
                 "pop3",
                 "receive emails"
             ],
-            "time": "2019-11-30T13:08:13+00:00"
+            "time": "2019-12-25 13:15:28"
         },
         {
             "name": "php-twinfield/twinfield",
@@ -4884,6 +4884,7 @@
                 "fpdi",
                 "pdf"
             ],
+            "abandoned": true,
             "time": "2019-01-30T14:38:19+00:00"
         },
         {
@@ -8915,6 +8916,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "ecodenl/pico-wrapper": 20,
+        "php-imap/php-imap": 20,
         "usmanhalalit/laracsv": 20
     },
     "prefer-stable": false,

@@ -6,6 +6,7 @@ use App\Console\Commands\checkContactEmailAddress;
 use App\Console\Commands\checkContactIban;
 use App\Console\Commands\checkContactPostalCode;
 use App\Console\Commands\checkMailboxes;
+use App\Console\Commands\checkJobsLogForRecovery;
 use App\Console\Commands\conversionParticipationsToMutationsDeltaWind;
 use App\Console\Commands\conversionParticipationsToMutationsLoanDiv100;
 use App\Console\Commands\conversionParticipationsToMutationsDefault;
@@ -18,11 +19,12 @@ use App\Console\Commands\processWorkflowEmailCompleteTask;
 use App\Console\Commands\processWorkflowEmailExpiredTask;
 use App\Console\Commands\processWorkflowEmailOpportunityStatus;
 use App\Console\Commands\processWorkflowEmailQuotationRequestStatus;
+use App\Console\Commands\rebuildPortalCss;
+use App\Console\Commands\recoveryJobsLog;
 use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -35,6 +37,7 @@ class Kernel extends ConsoleKernel
         checkContactEmailAddress::class,
         checkContactIban::class,
         checkContactPostalCode::class,
+        checkJobsLogForRecovery::class,
         getAllEmail::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
@@ -44,12 +47,14 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailExpiredTask::class,
         processWorkflowEmailOpportunityStatus::class,
         processWorkflowEmailQuotationRequestStatus::class,
+        rebuildPortalCss::class,
         conversionProjects::class,
         conversionProjectRevenues::class,
         conversionProjectRevenueDistribution::class,
         conversionParticipationsToMutationsDeltaWind::class,
         conversionParticipationsToMutationsLoanDiv100::class,
         conversionParticipationsToMutationsDefault::class,
+        recoveryJobsLog::class,
     ];
 
     /**
@@ -66,8 +71,11 @@ class Kernel extends ConsoleKernel
         $timeSetDaysToExpire = (isset($this->getArrayTimeSetDaysToExpire()[$appCoopName]) ? $this->getArrayTimeSetDaysToExpire()[$appCoopName] : '03:50' );
 
         $schedule->command('email:getAllEmail')->everyFiveMinutes();
-        $schedule->command('email:checkMailboxes')->everyThirtyMinutes();
-
+        $schedule->command('email:checkMailboxes')->dailyAt('05:58');
+        $schedule->command('email:checkMailboxes')->dailyAt('08:58');
+        $schedule->command('email:checkMailboxes')->dailyAt('11:58');
+        $schedule->command('email:checkMailboxes')->dailyAt('14:58');
+        $schedule->command('email:checkMailboxes')->dailyAt('17:58');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt($timeSetDaysLastReminder);
         $schedule->command('invoice:setDaysToExpire')->dailyAt($timeSetDaysToExpire);
         $schedule->command('invoice:processPaidInvoices')->dailyAt('04:30');

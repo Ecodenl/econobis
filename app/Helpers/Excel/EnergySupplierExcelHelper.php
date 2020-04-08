@@ -476,7 +476,7 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->city;
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
                         ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
-                    $rowData[] = '';
+                    $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = $deliveredKwhPeriod->participations_quantity;
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;

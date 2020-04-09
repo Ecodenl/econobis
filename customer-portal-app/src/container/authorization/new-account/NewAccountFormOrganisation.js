@@ -41,7 +41,7 @@ const NewAccountFormOrganisation = ({ handleSubmit, showSuccessMessage }) => (
             <Form>
                 <>
                     <Row className="justify-content-center">
-                        <p className={'text-light'}>Account aanmaken voor je organisatie</p>
+                        <p className={'authorization-text'}>Account aanmaken voor je organisatie</p>
                     </Row>
                     <Row className="justify-content-center">
                         <Field
@@ -59,7 +59,7 @@ const NewAccountFormOrganisation = ({ handleSubmit, showSuccessMessage }) => (
                         />
                     </Row>
                     <Row className="justify-content-center">
-                        <p className={'text-light'}>Gegevens contactpersoon</p>
+                        <p className={'authorization-text'}>Gegevens contactpersoon</p>
                     </Row>
                     <Row className="justify-content-center">
                         <Field

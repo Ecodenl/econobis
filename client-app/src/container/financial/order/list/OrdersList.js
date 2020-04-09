@@ -110,6 +110,7 @@ class OrdersList extends Component {
         setTimeout(() => {
             const filters = filterHelper(this.props.ordersFilters);
             const sorts = this.props.ordersSorts;
+            // Pagination op 50
             const pagination = { limit: 50, offset: this.props.ordersPagination.offset };
             const administrationId = this.props.administrationId;
 
@@ -184,6 +185,7 @@ class OrdersList extends Component {
 
     handlePageClick(data) {
         let page = data.selected;
+        // Pagination is 50
         let offset = Math.ceil(page * 50);
 
         this.props.setOrdersPagination({ page, offset });
@@ -458,6 +460,7 @@ class OrdersList extends Component {
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
+                        {/*Pagination is 50*/}
                         <DataTablePagination
                             onPageChangeAction={this.handlePageClick}
                             totalRecords={meta.total}

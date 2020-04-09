@@ -64,7 +64,7 @@ class CreateAllInvoices implements ShouldQueue
             $jobLog->user_id = $this->userId;
             $jobLog->save();
 
-            if($order->status_id === 'in-progress' && $order->can_create_invoice) {
+            if($order->status_id === 'in-progress') {
                 $invoice = new Invoice();
                 $invoice->status_id = 'to-send';
                 $invoice->date_requested = $order->date_next_invoice;

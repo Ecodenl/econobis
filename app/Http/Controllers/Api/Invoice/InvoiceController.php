@@ -23,6 +23,7 @@ use App\Http\Resources\Invoice\SendInvoice;
 use App\Jobs\Invoice\SendAllInvoices;
 use App\Jobs\Invoice\SendInvoiceNotifications;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -44,9 +45,17 @@ class InvoiceController extends ApiController
 
         $invoices->load(['order.contact']);
 
+        $orderController = new OrderController;
+
         foreach ($invoices as $invoice) {
-            $orderController = new OrderController;
             $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+        }
+
+        $selectedInvoices = new Collection();
+        foreach ($requestQuery->totalIds() as $invoiceId) {
+            $invoice = Invoice::find($invoiceId);
+            $invoice->emailToAddress = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
+            $selectedInvoices->push($invoice);
         }
 
         if ($onlyEmailInvoices)
@@ -55,6 +64,12 @@ class InvoiceController extends ApiController
                 return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
             $invoices = $invoices->reject(function ($invoice) {
+                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
                 return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
         }
@@ -66,8 +81,15 @@ class InvoiceController extends ApiController
             $invoices = $invoices->reject(function ($invoice) {
                 return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                return ( $invoice->emailToAddress !== 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
+            });
+            $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
+                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+            });
         }
-        $totalIds = $invoices->pluck("id");
+
+        $totalIds = $selectedInvoices->pluck("id");
 
         $totalPrice = 0;
         foreach ($invoices as $invoice) {

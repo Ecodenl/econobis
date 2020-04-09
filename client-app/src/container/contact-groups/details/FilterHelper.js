@@ -10,6 +10,8 @@ export default (type, field) => {
                     return 'Type';
                 case 'payoutTypeId':
                     return 'Uitkeren op';
+                case 'didAgreeAvg':
+                    return 'Akkoord privacybeleid';
                 case 'fullName':
                     return 'Naam';
                 case 'streetAndNumber':
@@ -44,6 +46,8 @@ export default (type, field) => {
                     return 'Primaire verbinding';
                 case 'opportunity':
                     return 'Kans';
+                case 'portalUser':
+                    return 'Portal gebruiker actief';
                 case 'product':
                     return 'Product';
                 case 'dateStart':
@@ -134,6 +138,8 @@ export default (type, field) => {
                     return 'eindigt met';
                 case 'new':
                     return 'eindigt niet met';
+                case 'bool':
+                    return 'is';
             }
     }
 };

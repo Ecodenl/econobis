@@ -35,6 +35,8 @@ class ExtraFilter extends RequestExtraFilter
         'orderStatus',
         'dateOfBirth',
         'energySupplier',
+        'portalUser',
+        'didAgreeAvg',
     ];
 
     protected $mapping = [
@@ -60,92 +62,6 @@ class ExtraFilter extends RequestExtraFilter
         $lastFilter['connectName'] = isset($filter['connectName']) ? $filter['connectName'] : null;
         $lastFilter['connectedTo'] = isset($filter['connectedTo']) ? $filter['connectedTo'] : null;
         $this->filters[] = $lastFilter;
-    }
-
-    protected function applyPostalCodeFilter($query, $type, $data)
-    {
-        switch($type) {
-            case 'nct':
-            case 'neq':
-            case 'nbw':
-            case 'new':
-            case 'nl':
-            case 'is0':
-            $query->where(function ($query) use ($type, $data) {
-                    $query->whereDoesntHave('primaryAddress')
-                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
-                            $data = str_replace(' ', '', $data);
-                            RequestFilter::applyFilter($query, 'postal_code', $type, $data);
-                    });
-                });
-            break;
-            default:
-                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-                    $data = str_replace(' ', '', $data);
-                    RequestFilter::applyFilter($query, 'postal_code', $type, $data);
-                });
-                break;
-        }
-    }
-
-    protected function applyCountryFilter($query, $type, $data)
-    {
-        switch($type) {
-            case 'neq':
-                if($data == 'NL') {
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-                                $data = str_replace(' ', '', $data);
-                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
-                            })
-                            ->whereHas('primaryAddress', function ($query) use ($type, $data) {
-                                $data = str_replace(' ', '', $data);
-                                RequestFilter::applyFilter($query, 'country_id', 'nnl', null);
-                            });
-                    });
-                }else{
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddress')
-                            ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
-                                $data = str_replace(' ', '', $data);
-                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
-                            })
-                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
-                            $data = str_replace(' ', '', $data);
-                            RequestFilter::applyFilter($query, 'country_id', 'nl', null);
-                        });
-                    });
-                }
-                break;
-            case 'nl':
-                $query->where(function ($query) use ($type, $data) {
-                    $query->whereDoesntHave('primaryAddress')
-                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
-                            $data = str_replace(' ', '', $data);
-                            RequestFilter::applyFilter($query, 'country_id', $type, $data);
-                        });
-                });
-                break;
-            default:
-                if($data == 'NL')
-                {
-                    $query->where(function ($query) use ($type, $data) {
-                        $query->whereDoesntHave('primaryAddress')
-                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
-                            $data = str_replace(' ', '', $data);
-                            RequestFilter::applyFilter($query, 'country_id', $type, $data);})
-                            ->orwhereHas('primaryAddress', function ($query) use ($type, $data) {
-                                RequestFilter::applyFilter($query, 'country_id', 'nl', null);
-                            });
-                    });
-                }else{
-                    $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-                        $data = str_replace(' ', '', $data);
-                        RequestFilter::applyFilter($query, 'country_id', $type, $data);
-                    });
-                }
-                break;
-        }
     }
 
     /**
@@ -198,19 +114,116 @@ class ExtraFilter extends RequestExtraFilter
         $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], $filterType);
     }
 
-    protected function applyStaticContactGroupFilter($query, $type, $data)
+    protected function applyPostalCodeFilter($query, $type, $data)
     {
         switch($type) {
-            case 'eq':
-                $query->whereHas('groups', function ($query) use ($data) {
-                    $query->where('contact_groups.id', $data);
-                });
-                break;
+            case 'nct':
             case 'neq':
-                $query->whereDoesntHave('groups', function ($query) use ($data) {
-                    $query->where('contact_groups.id', $data);
+            case 'nbw':
+            case 'new':
+            case 'nl':
+            case 'is0':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+                        });
                 });
                 break;
+            default:
+                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                    $data = str_replace(' ', '', $data);
+                    RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+                });
+                break;
+        }
+    }
+
+    protected function applyCountryFilter($query, $type, $data)
+    {
+        switch($type) {
+            case 'neq':
+                if($data == 'NL') {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                        })
+                            ->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', 'nnl', null);
+                            });
+                    });
+                }else{
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                            ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                            })
+                            ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                            });
+                    });
+                }
+                break;
+            case 'nl':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                        });
+                });
+                break;
+            default:
+                if($data == 'NL')
+                {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                            ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);})
+                            ->orwhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                            });
+                    });
+                }else{
+                    $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                        $data = str_replace(' ', '', $data);
+                        RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                    });
+                }
+                break;
+        }
+    }
+
+    protected function applyStaticContactGroupFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            switch($type) {
+                case 'neq':
+                    $query->whereHas('groups');
+                    break;
+                default:
+                    $query->whereDoesntHave('groups');
+                    break;
+            }
+        }else {
+            switch ($type) {
+                case 'neq':
+                    $query->whereDoesntHave('groups', function ($query) use ($data) {
+                        $query->where('contact_groups.id', $data);
+                    });
+                    break;
+                default:
+                    $query->whereHas('groups', function ($query) use ($data) {
+                        $query->where('contact_groups.id', $data);
+                    });
+                    break;
+            }
         }
     }
 
@@ -305,26 +318,33 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyOpportunityFilter($query, $type, $data)
     {
-        switch($type) {
-            case 'nct':
-            case 'neq':
-            case 'nbw':
-            case 'new':
-            case 'nl':
-            case 'is0':
-                $query->where(function ($query) use ($type, $data) {
-                    $query->whereDoesntHave('opportunities')
-                        ->orWhereHas('opportunities', function ($query) use ($type, $data) {
-                            RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
-                        });
-                });
-                break;
-            default:
-                $query->whereHas('opportunities', function ($query) use ($type, $data) {
-                    RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
-                });
-                break;
+        if(empty($data)){
+            switch($type) {
+                case 'neq':
+                    $query->whereHas('opportunities');
+                    break;
+                default:
+                    $query->whereDoesntHave('opportunities');
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('opportunities')
+                            ->orWhereDoesntHave('opportunities', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'measure_category_id', 'eq', $data);
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                        RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
+                    });
+                    break;
+            }
         }
+
     }
 
     protected function applyDateOfBirthFilter($query, $type, $data)
@@ -382,7 +402,6 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyEnergySupplierFilter($query, $type, $data)
     {
-
         if($type === 'eq'){
             if($data === '') {
                 $query->whereDoesntHave('primaryContactEnergySupplier');
@@ -411,4 +430,20 @@ class ExtraFilter extends RequestExtraFilter
         }
 
     }
+
+    protected function applyDidAgreeAvgFilter($query, $type, $data)
+    {
+        RequestFilter::applyFilter($query, 'did_agree_avg', 'eq', $data);
+    }
+
+    protected function applyPortalUserFilter($query, $type, $data)
+    {
+        if($data){
+            $query->whereHas('portalUser');
+        }else{
+            $query->whereDoesntHave('portalUser');
+        }
+    }
+
+
 }

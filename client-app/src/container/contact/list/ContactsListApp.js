@@ -247,6 +247,7 @@ class ContactsListApp extends Component {
                         filterType={this.state.filterType}
                         toggleShowExtraFilters={this.toggleShowExtraFilters}
                         handleExtraFiltersChange={this.handleExtraFiltersChange}
+                        contactType={this.props.contactsFilters.typeId.data}
                         extraFilters={this.state.extraFilters}
                         amountOfFilters={this.state.amountOfFilters}
                     />

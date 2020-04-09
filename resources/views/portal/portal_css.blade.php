@@ -161,6 +161,7 @@ color: var(--main-primary-rgba-text-color);
 /* ----------------- INPUT STYLING -----------------*/
 .has-error {
 border: 1px solid var(--main-warning-color) !important;
+background-color: white !important;
 color: red !important;
 }
 
@@ -674,16 +675,16 @@ color: #999;
 color: var(--black-color);
 }
 
-.dropdown-item:hover {
-text-decoration: none;
-background: var(--main-secondary-color);
-color: var(--main-secondary-text-color);
-}
+{{--.dropdown-item:hover {--}}
+{{--text-decoration: none;--}}
+{{--background: var(--main-secondary-color);--}}
+{{--color: var(--main-secondary-text-color);--}}
+{{--}--}}
 
-.dropdown-item.active {
-background: var(--main-secondary-color);
-color: var(--main-secondary-text-color);
-}
+{{--.dropdown-item.active {--}}
+{{--background: var(--main-secondary-color);--}}
+{{--color: var(--main-secondary-text-color);--}}
+{{--}--}}
 
 /* ----------------- INPUT STYLING -----------------*/
 .w-input,
@@ -702,25 +703,25 @@ border: 1px solid #cccccc;
 }
 .w-input:focus,
 .w-select:focus {
-border-color: var(--main-secondary-color);
+{{--border-color: var(--main-secondary-color);--}}
 outline: 0;
 }
 .w-input:-moz-placeholder,
 .w-select:-moz-placeholder {
-color: var(--main-secondary-text-color);
+{{--color: var(--main-secondary-text-color);--}}
 }
 .w-input::-moz-placeholder,
 .w-select::-moz-placeholder {
-color: var(--main-secondary-text-color);
+{{--color: var(--main-secondary-text-color);--}}
 opacity: 1;
 }
 .w-input:-ms-input-placeholder,
 .w-select:-ms-input-placeholder {
-color: var(--main-secondary-text-color);
+{{--color: var(--main-secondary-text-color);--}}
 }
 .w-input::-webkit-input-placeholder,
 .w-select::-webkit-input-placeholder {
-color: var(--main-secondary-text-color);
+{{--color: var(--main-secondary-text-color);--}}
 }
 
 .text-input {
@@ -730,7 +731,7 @@ border-width: 1px;
 border-color: hsla(0, 0%, 100%, 0.5);
 border-radius: 7px;
 background-color: var(--main-secondary-color);
-color: var(--main-primary-rgba-text-color);
+color: var(--main-secondary-text-color);
 font-weight: 500;
 text-align: left;
 }
@@ -745,7 +746,7 @@ text-align: left;
 
 .select-field-transparent {
 background-color: var(--main-secondary-color);
-color: var(--main-primary-rgba-text-color);
+color: var(--main-secondary-text-color);
 border: 1px solid #fff !important;
 border-radius: 7px !important;
 text-align: left;

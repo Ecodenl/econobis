@@ -393,6 +393,97 @@ class PortalSettingsFormGeneralEdit extends Component {
                         {/*</div>*/}
                         <div className="row">
                             <InputText
+                                label="Login - achtergrond afbeelding kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundImageColor'}
+                                value={backgroundImageColor}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.backgroundImageColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    color: backgroundImageTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '50px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Tekst
+                            </span>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Login - achtergrond afbeelding tekst kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundImageTextColor'}
+                                value={backgroundImageTextColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.backgroundImageTextColor}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Login - veld achtergrond kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundSecondaryColor'}
+                                value={backgroundSecondaryColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.backgroundSecondaryColor}
+                            />
+                            <div
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    display: 'inline-block',
+                                }}
+                            >
+                                <span
+                                    className="rc-color-picker-trigger"
+                                    unselectable="unselectable"
+                                    style={{
+                                        backgroundColor: backgroundSecondaryColor,
+                                        color: backgroundSecondaryTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '2px',
+                                        borderRadius: '2px',
+                                        width: '50px',
+                                        height: '30px',
+                                        boxShadow: '0 0 0 2px #fff inset',
+                                    }}
+                                >
+                                    Tekst
+                                </span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Login - veld tekst kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundSecondaryTextColor'}
+                                value={backgroundSecondaryTextColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.backgroundSecondaryTextColor}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
                                 label="Achtergrond kleur"
                                 divSize={'col-sm-8'}
                                 name={'backgroundColor'}
@@ -412,11 +503,13 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     display: 'inline-block',
                                     padding: '2px',
                                     borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
+                                    width: '50px',
+                                    height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
-                            />
+                            >
+                                Tekst
+                            </span>
                         </div>
                         <div className="row">
                             <InputText
@@ -429,135 +522,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.backgroundTextColor}
                             />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundColor,
-                                    color: backgroundTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                Tekst
-                            </span>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Achtergrond afbeelding kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundImageColor'}
-                                value={backgroundImageColor}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.backgroundImageColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundImageColor,
-                                    color: backgroundImageTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Achtergrond afbeelding tekst kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundImageTextColor'}
-                                value={backgroundImageTextColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundImageTextColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundImageColor,
-                                    color: backgroundImageTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                Tekst
-                            </span>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Tweede achtergrond kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundSecondaryColor'}
-                                value={backgroundSecondaryColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundSecondaryColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundSecondaryColor,
-                                    color: backgroundSecondaryTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Tweede achtergrond tekst kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundSecondaryTextColor'}
-                                value={backgroundSecondaryTextColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundSecondaryTextColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundSecondaryColor,
-                                    color: backgroundSecondaryTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                Tekst
-                            </span>
                         </div>
                         <div className="row">
                             <InputText
@@ -580,11 +544,13 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     display: 'inline-block',
                                     padding: '2px',
                                     borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
+                                    width: '50px',
+                                    height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
-                            />
+                            >
+                                Tekst
+                            </span>
                         </div>
                         <div className="row">
                             <InputText
@@ -597,23 +563,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.buttonTextColor}
                             />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: buttonColor,
-                                    color: buttonTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                Tekst
-                            </span>
                         </div>
 
                         <hr />

@@ -107,6 +107,80 @@ const PortalSettingsFormGeneralView = ({
                     {/*</div>*/}
                     <div className="row">
                         <ViewText
+                            label={'Login - achtergrond afbeelding kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundImageColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundImageColor,
+                                color: backgroundImageTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px',
+                                borderRadius: '2px',
+                                width: '50px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >
+                            Tekst
+                        </span>
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Login - achtergrond afbeelding tekst kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundImageTextColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Login - veld achtergrond kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundSecondaryColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <div
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundImageColor,
+                                display: 'inline-block',
+                            }}
+                        >
+                            <span
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundSecondaryColor,
+                                    color: backgroundSecondaryTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '50px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Tekst
+                            </span>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Login - veld tekst kleur'}
+                            divSize={'col-sm-8'}
+                            value={backgroundSecondaryTextColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
                             label={'Achtergrond kleur'}
                             divSize={'col-sm-8'}
                             value={backgroundColor}
@@ -122,11 +196,13 @@ const PortalSettingsFormGeneralView = ({
                                 display: 'inline-block',
                                 padding: '2px',
                                 borderRadius: '2px',
-                                width: '20px',
-                                height: '20px',
+                                width: '50px',
+                                height: '30px',
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
-                        />
+                        >
+                            Tekst
+                        </span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -135,119 +211,6 @@ const PortalSettingsFormGeneralView = ({
                             value={backgroundTextColor}
                             className={'col-sm-8 form-group'}
                         />
-                        <span
-                            className="rc-color-picker-trigger"
-                            unselectable="unselectable"
-                            style={{
-                                backgroundColor: backgroundColor,
-                                color: backgroundTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '2px',
-                                borderRadius: '2px',
-                                width: '50px',
-                                height: '30px',
-                                boxShadow: '0 0 0 2px #fff inset',
-                            }}
-                        >
-                            Tekst
-                        </span>
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Achtergrond afbeelding kleur'}
-                            divSize={'col-sm-8'}
-                            value={backgroundImageColor}
-                            className={'col-sm-8 form-group'}
-                        />
-                        <span
-                            className="rc-color-picker-trigger"
-                            unselectable="unselectable"
-                            style={{
-                                backgroundColor: backgroundImageColor,
-                                color: backgroundImageTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '2px',
-                                borderRadius: '2px',
-                                width: '20px',
-                                height: '20px',
-                                boxShadow: '0 0 0 2px #fff inset',
-                            }}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Achtergrond afbeelding tekst kleur'}
-                            divSize={'col-sm-8'}
-                            value={backgroundImageTextColor}
-                            className={'col-sm-8 form-group'}
-                        />
-                        <span
-                            className="rc-color-picker-trigger"
-                            unselectable="unselectable"
-                            style={{
-                                backgroundColor: backgroundImageColor,
-                                color: backgroundImageTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '2px',
-                                borderRadius: '2px',
-                                width: '50px',
-                                height: '30px',
-                                boxShadow: '0 0 0 2px #fff inset',
-                            }}
-                        >
-                            Tekst
-                        </span>
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Tweede achtergrond kleur'}
-                            divSize={'col-sm-8'}
-                            value={backgroundSecondaryColor}
-                            className={'col-sm-8 form-group'}
-                        />
-                        <span
-                            className="rc-color-picker-trigger"
-                            unselectable="unselectable"
-                            style={{
-                                backgroundColor: backgroundSecondaryColor,
-                                color: backgroundSecondaryTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '2px',
-                                borderRadius: '2px',
-                                width: '20px',
-                                height: '20px',
-                                boxShadow: '0 0 0 2px #fff inset',
-                            }}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Tweede achtergrond tekst kleur'}
-                            divSize={'col-sm-8'}
-                            value={backgroundSecondaryTextColor}
-                            className={'col-sm-8 form-group'}
-                        />
-                        <span
-                            className="rc-color-picker-trigger"
-                            unselectable="unselectable"
-                            style={{
-                                backgroundColor: backgroundSecondaryColor,
-                                color: backgroundSecondaryTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '2px',
-                                borderRadius: '2px',
-                                width: '50px',
-                                height: '30px',
-                                boxShadow: '0 0 0 2px #fff inset',
-                            }}
-                        >
-                            Tekst
-                        </span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -266,11 +229,13 @@ const PortalSettingsFormGeneralView = ({
                                 display: 'inline-block',
                                 padding: '2px',
                                 borderRadius: '2px',
-                                width: '20px',
-                                height: '20px',
+                                width: '50px',
+                                height: '30px',
                                 boxShadow: '0 0 0 2px #fff inset',
                             }}
-                        />
+                        >
+                            Tekst
+                        </span>
                     </div>
                     <div className="row">
                         <ViewText
@@ -279,23 +244,6 @@ const PortalSettingsFormGeneralView = ({
                             value={buttonTextColor}
                             className={'col-sm-8 form-group'}
                         />
-                        <span
-                            className="rc-color-picker-trigger"
-                            unselectable="unselectable"
-                            style={{
-                                backgroundColor: buttonColor,
-                                color: buttonTextColor,
-                                border: '1px solid #999',
-                                display: 'inline-block',
-                                padding: '2px',
-                                borderRadius: '2px',
-                                width: '50px',
-                                height: '30px',
-                                boxShadow: '0 0 0 2px #fff inset',
-                            }}
-                        >
-                            Tekst
-                        </span>
                     </div>
                     <hr />
                     <div className="row">

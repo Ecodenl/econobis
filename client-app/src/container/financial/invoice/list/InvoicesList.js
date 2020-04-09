@@ -157,6 +157,7 @@ class InvoicesList extends Component {
         setTimeout(() => {
             const filters = filterHelper(this.props.invoicesFilters);
             const sorts = this.props.invoicesSorts;
+            // Pagination op 50
             const pagination = { limit: 50, offset: this.props.invoicesPagination.offset };
             const administrationId = this.props.administrationId;
             const onlyEmailInvoices = this.state.onlyEmailInvoices;
@@ -324,6 +325,7 @@ class InvoicesList extends Component {
 
     handlePageClick(data) {
         let page = data.selected;
+        // Pagination is 50
         let offset = Math.ceil(page * 50);
 
         this.props.setInvoicesPagination({ page, offset });
@@ -709,6 +711,7 @@ class InvoicesList extends Component {
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
+                        {/*Pagination is 50*/}
                         <DataTablePagination
                             onPageChangeAction={this.handlePageClick}
                             totalRecords={meta.total}

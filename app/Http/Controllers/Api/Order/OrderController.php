@@ -448,9 +448,7 @@ class OrderController extends ApiController
         // Eerst hele zet in progress
         foreach ($orders as $order) {
             //Order moet status active hebben
-            if($order->status_id !== 'active') {
-                abort(404, "Order met ID " . $order->id . " heeft geen status actief");
-            }else{
+            if($order->can_create_invoice) {
                 // We zetten order voorlopig in progress zolang we bezig met maken van nota voor deze order.
                 $order->status_id = 'in-progress';
                 $order->save();

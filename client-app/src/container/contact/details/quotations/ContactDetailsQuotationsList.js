@@ -12,7 +12,6 @@ const ContactDetailsQuotationsList = props => {
                 <div className="col-sm-2">Status</div>
                 <div className="col-sm-2">Datum opname</div>
                 <div className="col-sm-2">Offerte uitgebracht</div>
-                <div className="col-sm-2">Offerte geldig tot</div>
             </div>
             {props.quotationRequests.length > 0 ? (
                 props.quotationRequests.map(quotation => {

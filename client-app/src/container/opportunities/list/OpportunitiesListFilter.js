@@ -9,6 +9,8 @@ import {
     setFilterOpportunityCampaign,
     setFilterOpportunityCreatedAtStart,
     setFilterOpportunityCreatedAtEnd,
+    setFilterOpportunityDesiredDateStart,
+    setFilterOpportunityDesiredDateEnd,
     setFilterOpportunityMeasureCategory,
     setFilterOpportunityName,
     setFilterOpportunityNumber,
@@ -34,6 +36,22 @@ const OpportunitiesListFilter = props => {
             props.setFilterOpportunityCreatedAtEnd('');
         } else {
             props.setFilterOpportunityCreatedAtEnd(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+
+    const onDesiredDateStartChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterOpportunityDesiredDateStart('');
+        } else {
+            props.setFilterOpportunityDesiredDateStart(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+
+    const onDesiredDateEndChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterOpportunityDesiredDateEnd('');
+        } else {
+            props.setFilterOpportunityDesiredDateEnd(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -83,6 +101,13 @@ const OpportunitiesListFilter = props => {
                 endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
                 onChangeActionStart={onCreatedAtStartChange}
                 onChangeActionEnd={onCreatedAtEndChange}
+            />
+
+            <DataTableFilterDateStartEnd
+                startDate={props.filters.desiredDateStart.data && props.filters.desiredDateStart.data}
+                endDate={props.filters.desiredDateEnd.data && props.filters.desiredDateEnd.data}
+                onChangeActionStart={onDesiredDateStartChange}
+                onChangeActionEnd={onDesiredDateEndChange}
             />
 
             <th>
@@ -153,6 +178,8 @@ const mapDispatchToProps = dispatch => {
             setFilterOpportunityCampaign,
             setFilterOpportunityCreatedAtStart,
             setFilterOpportunityCreatedAtEnd,
+            setFilterOpportunityDesiredDateStart,
+            setFilterOpportunityDesiredDateEnd,
             setFilterOpportunityMeasureCategory,
             setFilterOpportunityName,
             setFilterOpportunityNumber,

@@ -33,6 +33,7 @@ class OpportunityFormEdit extends Component {
         } = props.opportunity;
 
         this.state = {
+            status: props.status.filter(item => item.active == 1),
             opportunity: {
                 id,
                 measureIds: measures && measures.map(measure => measure.id).join(','),
@@ -47,6 +48,7 @@ class OpportunityFormEdit extends Component {
             },
             errors: {
                 statusId: false,
+                desiredDate: false,
             },
         };
 
@@ -109,6 +111,17 @@ class OpportunityFormEdit extends Component {
         if (validator.isEmpty('' + opportunity.statusId)) {
             errors.statusId = true;
             hasErrors = true;
+        } else {
+            const chosenStatus = this.state.status.find(item => {
+                return item.id == opportunity.statusId;
+            });
+
+            if (chosenStatus.name === 'Uitvoering') {
+                if (validator.isEmpty(opportunity.desiredDate)) {
+                    errors.desiredDate = true;
+                    hasErrors = true;
+                }
+            }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -170,7 +183,7 @@ class OpportunityFormEdit extends Component {
                         label={'Status'}
                         size={'col-sm-6'}
                         name={'statusId'}
-                        options={this.props.status}
+                        options={this.state.status}
                         value={statusId}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
@@ -200,13 +213,14 @@ class OpportunityFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label="Datum uitvoering gepland"
+                        label="Datum uitvoering"
                         name="desiredDate"
                         value={desiredDate}
                         onChangeAction={this.handleInputChangeDate}
+                        error={this.state.errors.desiredDate}
                     />
                     <InputDate
-                        label="Datum evaluatie akkoord"
+                        label="Datum evaluatie"
                         name="evaluationAgreedDate"
                         value={evaluationAgreedDate}
                         onChangeAction={this.handleInputChangeDate}

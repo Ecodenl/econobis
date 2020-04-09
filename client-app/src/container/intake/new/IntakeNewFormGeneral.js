@@ -19,7 +19,7 @@ class IntakeNewFormGeneral extends Component {
             intake: {
                 contactId: props.contactId,
                 addressId: props.addressId,
-                campaignId: '',
+                campaignId: props.campaigns[0].id,
                 statusId: '1',
                 sourceIds: '',
                 intakeReasonIds: '',
@@ -84,6 +84,20 @@ class IntakeNewFormGeneral extends Component {
         const { addressId, statusId, sourceIds, campaignId, intakeReasonIds, note } = this.state.intake;
         const { addresses = [], fullName } = this.props.contactDetails;
 
+        function compareIntakeSources(a, b) {
+            const sourceA = a.name.toLowerCase();
+            const sourceB = b.name.toLowerCase();
+
+            let result = 0;
+            if (sourceA > sourceB) {
+                result = 1;
+            } else if (sourceA < sourceB) {
+                result = -1;
+            }
+
+            return result;
+        }
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -103,7 +117,7 @@ class IntakeNewFormGeneral extends Component {
                                 {addresses.map((address, i) => {
                                     return (
                                         <option key={i} value={address.id}>
-                                            {address.street + ' ' + address.number}
+                                            {address.street + ' ' + address.number + ', ' + address.city}
                                         </option>
                                     );
                                 })}
@@ -119,6 +133,8 @@ class IntakeNewFormGeneral extends Component {
                         value={campaignId}
                         options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
+                        required={true}
+                        emptyOption={false}
                     />
                     <InputSelect
                         label={'Status'}
@@ -135,7 +151,7 @@ class IntakeNewFormGeneral extends Component {
                         label="Aanmeldingsbron"
                         name="sourceIds"
                         value={sourceIds}
-                        options={this.props.intakeSources}
+                        options={this.props.intakeSources.sort(compareIntakeSources)}
                         onChangeAction={this.handleSourceIds}
                     />
                     <InputMultiSelect

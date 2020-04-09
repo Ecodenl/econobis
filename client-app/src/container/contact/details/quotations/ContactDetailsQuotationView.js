@@ -3,7 +3,7 @@ import moment from 'moment';
 import { hashHistory } from 'react-router';
 
 const ContactDetailsQuotationView = props => {
-    const { opportunity, dateRecorded, dateReleased, dateValid } = props.quotation;
+    const { opportunity, dateRecorded, dateReleased } = props.quotation;
 
     return (
         <div
@@ -17,7 +17,6 @@ const ContactDetailsQuotationView = props => {
                 <div className="col-sm-2">{opportunity ? opportunity.status.name : ''}</div>
                 <div className="col-sm-2">{dateRecorded ? moment(dateRecorded).format('L') : ''}</div>
                 <div className="col-sm-2">{dateReleased ? moment(dateReleased).format('L') : ''}</div>
-                <div className="col-sm-2">{dateValid ? moment(dateValid).format('L') : ''}</div>
             </div>
         </div>
     );

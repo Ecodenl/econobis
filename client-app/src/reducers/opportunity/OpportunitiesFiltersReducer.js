@@ -11,6 +11,14 @@ const filtersReducerDefaultState = {
         field: 'createdAtEnd',
         data: '',
     },
+    desiredDateStart: {
+        field: 'desiredDateStart',
+        data: '',
+    },
+    desiredDateEnd: {
+        field: 'desiredDateEnd',
+        data: '',
+    },
     name: {
         field: 'name',
         data: '',
@@ -57,6 +65,22 @@ export default (state = filtersReducerDefaultState, action) => {
                 createdAtEnd: {
                     ...state.createdAtEnd,
                     data: action.createdAtEnd,
+                },
+            };
+        case 'SET_FILTER_OPPORTUNITY_DESIRED_DATE_START':
+            return {
+                ...state,
+                desiredDateStart: {
+                    ...state.desiredDateStart,
+                    data: action.desiredDateStart,
+                },
+            };
+        case 'SET_FILTER_OPPORTUNITY_DESIRED_DATE_END':
+            return {
+                ...state,
+                desiredDateEnd: {
+                    ...state.desiredDateEnd,
+                    data: action.desiredDateEnd,
                 },
             };
         case 'SET_FILTER_OPPORTUNITY_NAME':

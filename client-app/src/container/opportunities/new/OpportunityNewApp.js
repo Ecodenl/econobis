@@ -9,6 +9,7 @@ import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
 import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import validator from 'validator';
+import { connect } from 'react-redux';
 
 class OppportunitiesNewApp extends Component {
     constructor(props) {
@@ -17,6 +18,7 @@ class OppportunitiesNewApp extends Component {
         this.state = {
             measure: [],
             intake: [],
+            status: props.status,
             opportunity: {
                 intakeId: '',
                 measureCategoryId: props.params.measureCategoryId,
@@ -28,6 +30,7 @@ class OppportunitiesNewApp extends Component {
             },
             errors: {
                 statusId: false,
+                desiredDate: false,
             },
         };
 
@@ -83,6 +86,17 @@ class OppportunitiesNewApp extends Component {
         if (validator.isEmpty(opportunity.statusId)) {
             errors.statusId = true;
             hasErrors = true;
+        } else {
+            const chosenStatus = this.state.status.find(item => {
+                return item.id == opportunity.statusId;
+            });
+
+            if (chosenStatus.name === 'Uitvoering') {
+                if (validator.isEmpty(opportunity.desiredDate)) {
+                    errors.desiredDate = true;
+                    hasErrors = true;
+                }
+            }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -137,4 +151,10 @@ class OppportunitiesNewApp extends Component {
     }
 }
 
-export default OppportunitiesNewApp;
+const mapStateToProps = state => {
+    return {
+        status: state.systemData.opportunityStatus,
+    };
+};
+
+export default connect(mapStateToProps)(OppportunitiesNewApp);

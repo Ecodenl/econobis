@@ -12,10 +12,11 @@ export const updateIntake = intake => {
     };
 };
 
-export const deleteIntake = id => {
+export const deleteIntake = (id, contactId = 0) => {
     return {
         type: 'DELETE_INTAKE',
         id,
+        contactId,
     };
 };
 

@@ -291,7 +291,7 @@ Route::namespace('Api')
         Route::get('project/revenue/{projectRevenue}/csv', 'Project\ProjectRevenueController@csv');
         Route::post('project/revenue/{projectRevenue}/distribution', 'Project\ProjectRevenueController@getRevenueDistribution');
         Route::post('project/revenue/{projectRevenue}/participants', 'Project\ProjectRevenueController@getRevenueParticipants');
-        Route::post('project/revenue/create-energy-supplier-report/{projectRevenue}/{documentTemplate}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierReport');
+        Route::post('project/revenue/create-energy-supplier-report/{projectRevenue}/{documentTemplate}', 'Project\ProjectRevenueController@createEnergySupplierReport');
         Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierExcel');
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');

@@ -30,7 +30,6 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
 import InvoiceListDeleteItem from './InvoiceListDeleteItem';
 import ErrorModal from '../../../../components/modal/ErrorModal';
-import AdministrationDetailsAPI from '../../../../api/administration/AdministrationDetailsAPI';
 
 const initialState = {
     showSelectInvoicesToSend: false,
@@ -440,6 +439,7 @@ class InvoicesList extends Component {
             }
         }
 
+        let totalOrdersInProgressInvoices = 0;
         let totalInvoicesInProgress = 0;
         let totalInvoicesIsSending = 0;
         let totalInvoicesIsResending = 0;
@@ -447,11 +447,15 @@ class InvoicesList extends Component {
         let amountInProgress = 0;
         let inProgressStartText = null;
         let inProgressEndText = null;
+        let ordersInProgressInvoicesText = null;
         let inProgressText = null;
         let isSendingText = null;
         let isResendingText = null;
         let errorMakingText = null;
         if (this.props.totalsInfoAdministration) {
+            totalOrdersInProgressInvoices = this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
+                ? this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
+                : 0;
             totalInvoicesInProgress = this.props.totalsInfoAdministration.totalInvoicesInProgress
                 ? this.props.totalsInfoAdministration.totalInvoicesInProgress
                 : 0;
@@ -466,7 +470,11 @@ class InvoicesList extends Component {
                 : 0;
 
             amountInProgress +=
-                totalInvoicesErrorMaking + totalInvoicesInProgress + totalInvoicesIsResending + totalInvoicesIsSending;
+                totalOrdersInProgressInvoices +
+                totalInvoicesErrorMaking +
+                totalInvoicesInProgress +
+                totalInvoicesIsResending +
+                totalInvoicesIsSending;
 
             if (
                 amountInProgress > 0 &&
@@ -477,8 +485,12 @@ class InvoicesList extends Component {
                     this.props.filter == 'verzonden')
             ) {
                 inProgressStartText = "Nota's die momenteel in de maak en/of verzonden worden:";
+                if (totalOrdersInProgressInvoices > 0) {
+                    ordersInProgressInvoicesText =
+                        "- Nota's die nu gemaakt worden van uit orders: " + totalOrdersInProgressInvoices;
+                }
                 if (totalInvoicesInProgress > 0) {
-                    inProgressText = "- Nota's die nu gemaakt worden: " + totalInvoicesInProgress;
+                    inProgressText = "- Nota's die nu definitief gemaakt worden: " + totalInvoicesInProgress;
                 }
                 if (totalInvoicesIsSending > 0) {
                     isSendingText = "- Nota's die nu verzonden worden: " + totalInvoicesIsSending;
@@ -611,6 +623,11 @@ class InvoicesList extends Component {
                             <div className="alert alert-warning">
                                 {inProgressStartText}
                                 <br />
+                                {ordersInProgressInvoicesText ? (
+                                    <span>
+                                        {ordersInProgressInvoicesText} <br />
+                                    </span>
+                                ) : null}
                                 {inProgressText ? (
                                     <span>
                                         {inProgressText} <br />

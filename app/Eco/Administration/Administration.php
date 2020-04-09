@@ -138,6 +138,11 @@ class Administration extends Model
             })->count();
     }
 
+    public function getTotalOrdersInProgressInvoicesAttribute()
+    {
+        return $this->orders()->where('status_id', 'in-progress')->count();
+    }
+
     public function getTotalOrdersToSendInvoicesAttribute()
     {
         return $this->orders()
@@ -146,7 +151,6 @@ class Administration extends Model
                 $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
             })->count();
     }
-
 
     public function getTotalOrdersClosedAttribute()
     {

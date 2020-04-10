@@ -364,6 +364,7 @@ class InvoiceController extends ApiController
 
             foreach ($validatedInvoices as $k => $invoice) {
 
+                $invoice->date_sent = Carbon::today();
                 $invoice->date_collection = $request->input('dateCollection');
                 $invoice->save();
 

@@ -100,7 +100,6 @@ class QuotationRequestController extends ApiController
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
-            'dateValid' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
             'quotationText' => 'string',
         ]);
@@ -122,10 +121,6 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = $data['dateReleased'];
         }
 
-        if ($data['dateValid']) {
-            $quotationRequest->date_valid = $data['dateValid'];
-        }
-
         if ($data['quotationText']) {
             $quotationRequest->quotation_text = $data['quotationText'];
         }
@@ -145,7 +140,6 @@ class QuotationRequestController extends ApiController
             'opportunityId' => 'required|exists:opportunities,id',
             'dateRecorded' => 'string',
             'dateReleased' => 'string',
-            'dateValid' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
             'quotationText' => 'string',
         ]);
@@ -162,10 +156,6 @@ class QuotationRequestController extends ApiController
 
         if ($data['dateReleased']) {
             $quotationRequest->date_released = $data['dateReleased'];
-        }
-
-        if ($data['dateValid']) {
-            $quotationRequest->date_valid = $data['dateValid'];
         }
 
         if ($data['quotationText']) {

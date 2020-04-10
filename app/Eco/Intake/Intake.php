@@ -100,4 +100,36 @@ class Intake extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function setStatusToInBehandeling()
+    {
+        $statusIdToUse = IntakeStatus::where('name', 'In Behandeling')->first()->id;
+        $this->intake_status_id = $statusIdToUse;
+        $this->save();
+    }
+
+    public function updateStatusToAfgeslotenMetKans()
+    {
+        $statusIdToUse = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
+
+        if($this->checkIfAllMeasureRequestedHaveOpportunity()){
+            $this->intake_status_id = $statusIdToUse;
+            $this->save();
+        }
+    }
+
+    private function checkIfAllMeasureRequestedHaveOpportunity()
+    {
+        $canUpdateStatus = true;
+
+        $intakeOpportunities = $this->opportunities;
+        $intakeMeasuresRequested = $this->measuresRequested;
+        $measurementCategories = $intakeMeasuresRequested->modelKeys();
+
+        foreach ($measurementCategories as $categoryId){
+            if(count($intakeOpportunities->where('measure_category_id', $categoryId)->all()) == 0) $canUpdateStatus = false;
+        }
+
+        return $canUpdateStatus;
+    }
 }

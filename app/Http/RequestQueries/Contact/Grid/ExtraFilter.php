@@ -19,12 +19,13 @@ class ExtraFilter extends RequestExtraFilter
     protected $fields = [
         'name',
         'postalCode',
-        'postalCodeNumber',
+        'country',
         'createdAt',
         'currentObligations',
         'currentParticipations',
         'currentPostalcodeLinkCapital',
         'currentLoan',
+        'staticContactGroup',
         'occupation',
         'occupationPrimary',
         'opportunity',
@@ -63,18 +64,88 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyPostalCodeFilter($query, $type, $data)
     {
-        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-            $data = str_replace(' ', '', $data);
-            RequestFilter::applyFilter($query, 'postal_code', $type, $data);
-        });
+        switch($type) {
+            case 'nct':
+            case 'neq':
+            case 'nbw':
+            case 'new':
+            case 'nl':
+            case 'is0':
+            $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+                    });
+                });
+            break;
+            default:
+                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                    $data = str_replace(' ', '', $data);
+                    RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+                });
+                break;
+        }
     }
 
-    protected function applyPostalCodeNumberFilter($query, $type, $data)
+    protected function applyCountryFilter($query, $type, $data)
     {
-        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-            $raw = DB::raw('SUBSTRING(postal_code, 1, 4)');
-            RequestFilter::applyFilter($query, $raw, $type, $data);
-        });
+        switch($type) {
+            case 'neq':
+                if($data == 'NL') {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                            })
+                            ->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', 'nnl', null);
+                            });
+                    });
+                }else{
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                            ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                $data = str_replace(' ', '', $data);
+                                RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                            })
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                        });
+                    });
+                }
+                break;
+            case 'nl':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                        });
+                });
+                break;
+            default:
+                if($data == 'NL')
+                {
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'country_id', $type, $data);})
+                            ->orwhereHas('primaryAddress', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'country_id', 'nl', null);
+                            });
+                    });
+                }else{
+                    $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                        $data = str_replace(' ', '', $data);
+                        RequestFilter::applyFilter($query, 'country_id', $type, $data);
+                    });
+                }
+                break;
+        }
     }
 
     /**
@@ -125,6 +196,22 @@ class ExtraFilter extends RequestExtraFilter
 
         // Betreft geen uitzondering; standaar functie doorlopen:
         $this->applySingle($query, $filter['field'], $filter['type'], $filter['data'], $filterType);
+    }
+
+    protected function applyStaticContactGroupFilter($query, $type, $data)
+    {
+        switch($type) {
+            case 'eq':
+                $query->whereHas('groups', function ($query) use ($data) {
+                    $query->where('contact_groups.id', $data);
+                });
+                break;
+            case 'neq':
+                $query->whereDoesntHave('groups', function ($query) use ($data) {
+                    $query->where('contact_groups.id', $data);
+                });
+                break;
+        }
     }
 
     protected function applyOccupationFilter($query, $type, $data)
@@ -218,9 +305,26 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyOpportunityFilter($query, $type, $data)
     {
-        $query->whereHas('opportunities', function ($query) use ($data) {
-            $query->where('measure_category_id', $data);
-        });
+        switch($type) {
+            case 'nct':
+            case 'neq':
+            case 'nbw':
+            case 'new':
+            case 'nl':
+            case 'is0':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('opportunities')
+                        ->orWhereHas('opportunities', function ($query) use ($type, $data) {
+                            RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
+                        });
+                });
+                break;
+            default:
+                $query->whereHas('opportunities', function ($query) use ($type, $data) {
+                    RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
+                });
+                break;
+        }
     }
 
     protected function applyDateOfBirthFilter($query, $type, $data)
@@ -241,62 +345,70 @@ class ExtraFilter extends RequestExtraFilter
         $orderStatusFilter = array_values(array_filter($this->filters, function($element) use($connectName){
             return ($element['connectedTo'] == $connectName && $element['field'] == 'orderStatus');
         }))[0];
-        $query->whereHas('orderProducts', function ($query) use ($data, $dateStartFilter, $dateFinishFilter, $orderStatusFilter) {
-            $query->where('product_id', $data);
 
-            // Eventueel extra filters toepassen
-            //
-            // PS; Laravel's hasManyThrough werkt dmv een join.
-            // Aangezien order_product en orders allebei een date_start en date_end hebben
-            // hier de volledige veldnaam incl. tabelnaam opgeven voor filterveld.
-            if($dateStartFilter['data']){
-                static::applyFilter($query, 'order_product.date_start', $dateStartFilter['type'], $dateStartFilter['data']);
-            }
-            if($dateFinishFilter['data']){
-                static::applyFilter($query, 'order_product.date_end', $dateFinishFilter['type'], $dateFinishFilter['data']);
-            }
-            if($orderStatusFilter['data']){
-                $query->whereHas('order', function($query) use ($orderStatusFilter) {
-                    $query->where('status_id', $orderStatusFilter['data']);
+        switch($type) {
+            case 'neq':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('orderProducts')
+                        ->orWhereHas('orderProducts', function ($query) use ($data) {
+                            $query->where('product_id', $data);
+                        });
                 });
-            }
-        });
+                break;
+            default:
+                $query->whereHas('orderProducts', function ($query) use ($data, $dateStartFilter, $dateFinishFilter, $orderStatusFilter) {
+                    $query->where('product_id', $data);
+
+                    // Eventueel extra filters toepassen
+                    //
+                    // PS; Laravel's hasManyThrough werkt dmv een join.
+                    // Aangezien order_product en orders allebei een date_start en date_end hebben
+                    // hier de volledige veldnaam incl. tabelnaam opgeven voor filterveld.
+                    if($dateStartFilter['data']){
+                        static::applyFilter($query, 'order_product.date_start', $dateStartFilter['type'], $dateStartFilter['data']);
+                    }
+                    if($dateFinishFilter['data']){
+                        static::applyFilter($query, 'order_product.date_end', $dateFinishFilter['type'], $dateFinishFilter['data']);
+                    }
+                    if($orderStatusFilter['data']){
+                        $query->whereHas('order', function($query) use ($orderStatusFilter) {
+                            $query->where('status_id', $orderStatusFilter['data']);
+                        });
+                    }
+                });
+                break;
+        }
     }
 
     protected function applyEnergySupplierFilter($query, $type, $data)
     {
-        if($type === 'eq' && $data === ''){
+
+        if($type === 'eq'){
+            if($data === '') {
+                $query->whereDoesntHave('primaryContactEnergySupplier');
+            }else{
+                $query->whereHas('primaryContactEnergySupplier', function($query) use ($data) {
+                    $query->where('energy_supplier_id', $data);
+                });
+            }
+        }
+        elseif($type === 'neq'){
+            if($data === ''){
+                $query->whereHas('primaryContactEnergySupplier');
+            }else {
+                $query->whereDoesntHave('primaryContactEnergySupplier', function ($query) use ($data) {
+                    $query->where('energy_supplier_id', $data);
+                });
+            }
+        }
+        elseif($type === 'nl'){
             $query->whereDoesntHave('primaryContactEnergySupplier');
             return false;
         }
-
-        if($type === 'neq' && $data === ''){
+        elseif($type === 'nnl'){
             $query->whereHas('primaryContactEnergySupplier');
             return false;
         }
 
-        if($type === 'nl'){
-            $query->whereDoesntHave('primaryContactEnergySupplier');
-            return false;
-        }
-
-        if($type === 'nnl'){
-            $query->whereHas('primaryContactEnergySupplier');
-            return false;
-        }
-
-        if($type === 'eq' && $data !== ''){
-            $query->whereHas('primaryContactEnergySupplier', function($query) use ($data) {
-                $query->where('energy_supplier_id', $data);
-            });
-            return false;
-        }
-
-        if($type === 'neq' && $data !== ''){
-            $query->whereDoesntHave('primaryContactEnergySupplier', function($query) use ($data) {
-                $query->where('energy_supplier_id', $data);
-            });
-            return false;
-        }
     }
 }

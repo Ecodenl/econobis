@@ -20,7 +20,7 @@ class setDaysToExpireInvoice extends Command
      *
      * @var string
      */
-    protected $description = 'Herberekend dagen verlopen';
+    protected $description = 'Herberekend dagen verlopen betaaltermijn';
 
     /**
      * Create a new command instance.

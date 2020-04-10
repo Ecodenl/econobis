@@ -52,7 +52,13 @@ class OpportunityDetailsToolbar extends Component {
                     </Panel>
                 </div>
 
-                {this.state.showDelete && <OpportunityDetailsDelete closeDeleteItemModal={this.toggleDelete} id={id} />}
+                {this.state.showDelete && (
+                    <OpportunityDetailsDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        id={id}
+                        contactId={intake ? intake.contact.id : 0}
+                    />
+                )}
             </div>
         );
     }

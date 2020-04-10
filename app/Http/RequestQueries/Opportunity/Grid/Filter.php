@@ -19,6 +19,8 @@ class Filter extends RequestFilter
         'number',
         'createdAtStart',
         'createdAtEnd',
+        'desiredDateStart',
+        'desiredDateEnd',
         'name',
         'measureCategory',
         'campaign',
@@ -55,6 +57,18 @@ class Filter extends RequestFilter
         $query->where('created_at', '<=', Carbon::parse($data)->endOfDay());
         return false;
     }
+
+    protected function applyDesiredDateStartFilter($query, $type, $data)
+    {
+        $query->where('desired_date', '>=', Carbon::parse($data)->startOfDay());
+        return false;
+    }
+    protected function applyDesiredDateEndFilter($query, $type, $data)
+    {
+        $query->where('desired_date', '<=', Carbon::parse($data)->endOfDay());
+        return false;
+    }
+
     protected function applyAmountOfQuotationRequestsFilter($query, $type, $data)
     {
         $query->has('quotationRequests', '=', $data);

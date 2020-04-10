@@ -44,7 +44,9 @@ class DeleteRevenue implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->projectRevenue->forceDelete();
+        if( !sizeof($this->errorMessage)>0 ) {
+            $this->projectRevenue->forceDelete();
+        }
 
         return $this->errorMessage;
     }

@@ -5,10 +5,11 @@ export const fetchOpportunity = id => {
     };
 };
 
-export const deleteOpportunity = id => {
+export const deleteOpportunity = (id, contactId = 0) => {
     return {
         type: 'DELETE_OPPORTUNITY',
         id,
+        contactId,
     };
 };
 

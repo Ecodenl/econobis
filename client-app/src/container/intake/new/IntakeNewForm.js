@@ -2,7 +2,6 @@ import React from 'react';
 
 import IntakeNewFormGeneral from './IntakeNewFormGeneral';
 import Panel from '../../../components/panel/Panel';
-import PanelHeader from '../../../components/panel/PanelHeader';
 import PanelBody from '../../../components/panel/PanelBody';
 
 const IntakeNewForm = props => {

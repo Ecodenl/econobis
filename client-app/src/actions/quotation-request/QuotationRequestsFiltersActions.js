@@ -43,11 +43,6 @@ export const setQuotationRequestDateReleasedFilter = dateReleased => ({
     dateReleased,
 });
 
-export const setQuotationRequestDateValidFilter = dateValid => ({
-    type: 'SET_FILTER_QUOTATION_REQUEST_DATE_VALID',
-    dateValid,
-});
-
 export const clearFilterQuotationRequests = () => ({
     type: 'CLEAR_FILTER_QUOTATION_REQUESTS',
 });

@@ -24,7 +24,6 @@ class Filter extends RequestFilter
         'dateRecorded',
         'statusId',
         'dateReleased',
-        'dateValid'
     ];
 
     protected $mapping = [
@@ -34,7 +33,6 @@ class Filter extends RequestFilter
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',
         'dateReleased' => 'quotation_requests.date_released',
-        'dateValid' => 'quotation_requests.date_valid',
     ];
 
     protected $joins = [

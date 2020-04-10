@@ -68,7 +68,7 @@ const OpportunityNew = props => {
                     label={'Status'}
                     size={'col-sm-6'}
                     name={'statusId'}
-                    options={props.status}
+                    options={props.status.filter(item => item.active == 1)}
                     value={statusId}
                     onChangeAction={props.handleInputChange}
                     required={'required'}
@@ -87,13 +87,14 @@ const OpportunityNew = props => {
 
             <div className="row">
                 <InputDate
-                    label="Datum uitvoering gepland"
+                    label="Datum uitvoering"
                     name="desiredDate"
                     value={desiredDate}
                     onChangeAction={props.handleInputChangeDate}
+                    error={props.errors.desiredDate}
                 />
                 <InputDate
-                    label="Datum evaluatie akkoord"
+                    label="Datum evaluatie"
                     name="evaluationAgreedDate"
                     value={evaluationAgreedDate}
                     onChangeAction={props.handleInputChangeDate}

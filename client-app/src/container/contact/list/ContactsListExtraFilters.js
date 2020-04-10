@@ -145,15 +145,16 @@ class ContactsListExtraFilters extends Component {
         const fields = {
             name: {
                 name: 'Naam',
-                type: 'string',
+                type: 'stringWithoutNull',
             },
             postalCode: {
                 name: 'Postcode',
-                type: 'string',
+                type: 'numberOrString',
             },
-            postalCodeNumber: {
-                name: 'Postcode nummer',
-                type: 'number',
+            country: {
+                name: 'Land',
+                type: 'dropdown',
+                dropDownOptions: this.props.countries,
             },
             createdAt: {
                 name: 'Gemaakt op',
@@ -174,6 +175,11 @@ class ContactsListExtraFilters extends Component {
             currentLoan: {
                 name: 'Huidig bedrag lening',
                 type: 'number',
+            },
+            staticContactGroup: {
+                name: 'Statische groep',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.staticContactGroups,
             },
             occupation: {
                 name: 'Verbinding',
@@ -304,10 +310,12 @@ class ContactsListExtraFilters extends Component {
 const mapStateToProps = state => {
     return {
         contactStatuses: state.systemData.contactStatuses,
+        staticContactGroups: state.systemData.staticContactGroups,
         primaryOccupations: state.systemData.primaryOccupations,
         measureCategories: state.systemData.measureCategories,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,
+        countries: state.systemData.countries,
         orderStatuses: state.systemData.orderStatuses,
     };
 };

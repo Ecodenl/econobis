@@ -72,6 +72,7 @@ text-align: left;
 display: inline-block;
 margin-top: 10px;
 color: white;
+text-align: center;
 }
 
 .authorization-link:hover, .authorization-link:active {

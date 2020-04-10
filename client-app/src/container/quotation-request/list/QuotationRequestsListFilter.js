@@ -13,7 +13,6 @@ import {
     setQuotationRequestCreatedAtEndFilter,
     setQuotationRequestDateRecordedFilter,
     setQuotationRequestDateReleasedFilter,
-    setQuotationRequestDateValidFilter,
     setQuotationRequestMeasureFilter,
     setQuotationRequestOrganisationFilter,
 } from '../../../actions/quotation-request/QuotationRequestsFiltersActions';
@@ -65,14 +64,6 @@ const QuotationRequestsListFilter = props => {
             props.setQuotationRequestDateReleasedFilter('');
         } else {
             props.setQuotationRequestDateReleasedFilter(moment(selectedDay).format('Y-MM-DD'));
-        }
-    };
-
-    const onQuotationRequestDateValidChange = selectedDay => {
-        if (selectedDay === undefined) {
-            props.setQuotationRequestDateValidFilter('');
-        } else {
-            props.setQuotationRequestDateValidFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
 
@@ -147,11 +138,6 @@ const QuotationRequestsListFilter = props => {
                 value={props.filters.dateReleased.data && props.filters.dateReleased.data}
                 onChangeAction={onQuotationRequestDateReleasedChange}
             />
-            <DataTableFilterDate
-                value={props.filters.dateValid.data && props.filters.dateValid.data}
-                onChangeAction={onQuotationRequestDateValidChange}
-            />
-
             <th />
         </tr>
     );
@@ -173,7 +159,6 @@ const mapDispatchToProps = dispatch => {
             setQuotationRequestCreatedAtEndFilter,
             setQuotationRequestDateRecordedFilter,
             setQuotationRequestDateReleasedFilter,
-            setQuotationRequestDateValidFilter,
             setQuotationRequestMeasureFilter,
             setQuotationRequestOrganisationFilter,
         },

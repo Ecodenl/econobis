@@ -44,7 +44,10 @@ class DeleteRevenueDistribution implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->revenueDistribution->forceDelete();
+        if( !sizeof($this->errorMessage)>0 )
+        {
+            $this->revenueDistribution->forceDelete();
+        }
 
         return $this->errorMessage;
     }

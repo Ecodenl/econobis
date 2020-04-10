@@ -5,6 +5,7 @@ namespace App\Http\Resources\SystemData;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\ContactGroupType;
 use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
@@ -63,12 +64,14 @@ use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\FullAdministration;
+use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\CostCenter\FullCostCenter;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Measure\MeasurePeek;
 use App\Http\Resources\Occupation\PrimaryOccupation;
+use App\Http\Resources\Opportunity\OpportunityStatusResource;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Eco\Title\Title;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -143,6 +146,7 @@ class SystemData extends Resource
             'campaignTypes' => FullEnumWithIdAndName::collection(CampaignType::all()),
             'contactEnergySupplierStatus' => GenericResource::collection(ContactEnergySupplierStatus::all()),
             'contactEnergySupplierTypes' => GenericResource::collection(ContactEnergySupplierType::all()),
+            'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
@@ -169,7 +173,7 @@ class SystemData extends Resource
             'measures' => MeasurePeek::collection(Measure::all()),
             'occupations' => FullOccupation::collection(Occupation::all()),
             'primaryOccupations' => PrimaryOccupation::collection(Occupation::all()),
-            'opportunityStatus' => FullEnumWithIdAndName::collection(OpportunityStatus::all()),
+            'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatus::collection()),

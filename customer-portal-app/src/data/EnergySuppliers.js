@@ -41,4 +41,5 @@ export default [
     { id: 40, name: 'Groenpand' },
     { id: 41, name: 'Windcentrale' },
     { id: 42, name: 'Energiebesteding' },
+    { id: 43, name: 'GreenNL' },
 ];

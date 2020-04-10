@@ -35,10 +35,6 @@ const filtersReducerDefaultState = {
         field: 'dateReleased',
         data: '',
     },
-    dateValid: {
-        field: 'dateValid',
-        data: '',
-    },
 };
 
 export default (state = filtersReducerDefaultState, action) => {
@@ -113,14 +109,6 @@ export default (state = filtersReducerDefaultState, action) => {
                 dateReleased: {
                     ...state.dateReleased,
                     data: action.dateReleased,
-                },
-            };
-        case 'SET_FILTER_QUOTATION_REQUEST_DATE_VALID':
-            return {
-                ...state,
-                dateValid: {
-                    ...state.dateValid,
-                    data: action.dateValid,
                 },
             };
         case 'CLEAR_FILTER_QUOTATION_REQUESTS':

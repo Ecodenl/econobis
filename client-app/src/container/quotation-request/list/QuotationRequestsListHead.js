@@ -22,20 +22,14 @@ const QuotationRequestsListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateReleased'}
                 title={'Uitgebracht'}
-                width={'10%'}
-                setSorts={setSorts}
-            />
-            <DataTableHeadTitleAndSort
-                sortColumn={'dateValid'}
-                title={'Geldig tot'}
                 width={'10%'}
                 setSorts={setSorts}
             />

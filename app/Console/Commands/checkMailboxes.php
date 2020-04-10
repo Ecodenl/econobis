@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
-use App\Http\Controllers\Api\Mailbox\MailboxController;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class checkMailboxes extends Command
 {
@@ -45,5 +45,6 @@ class checkMailboxes extends Command
             //In construct wordt gelijk valid gekeken
             new MailFetcher($mailbox);
         }
+        Log::info('Mailboxen gecheckt.');
     }
 }

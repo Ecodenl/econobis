@@ -22,7 +22,6 @@ class GridQuotationRequest extends Resource
                'id' => $this->id,
                'dateRecorded' => $this->date_recorded,
                'dateReleased' => $this->date_released,
-               'dateValid' => $this->date_valid,
                'quotationText' => $this->quotation_text,
                'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
                'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),

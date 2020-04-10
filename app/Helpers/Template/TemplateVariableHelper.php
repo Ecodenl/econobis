@@ -1404,9 +1404,6 @@ class TemplateVariableHelper
             case 'uitgebracht':
                 return $model->date_released ? Carbon::parse($model->date_released)->format('d/m/Y') : null;
                 break;
-            case 'geldig_tot':
-                return $model->date_valid ? Carbon::parse($model->date_valid)->format('d/m/Y') : null;
-                break;
             case 'maatregel':
             case 'maatregel_categorie':
                 return optional(optional($model->opportunity)->measureCategory)->name;

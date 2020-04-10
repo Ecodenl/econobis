@@ -13,6 +13,16 @@ export const setFilterOpportunityCreatedAtEnd = createdAtEnd => ({
     createdAtEnd,
 });
 
+export const setFilterOpportunityDesiredDateStart = desiredDateStart => ({
+    type: 'SET_FILTER_OPPORTUNITY_DESIRED_DATE_START',
+    desiredDateStart,
+});
+
+export const setFilterOpportunityDesiredDateEnd = desiredDateEnd => ({
+    type: 'SET_FILTER_OPPORTUNITY_DESIRED_DATE_END',
+    desiredDateEnd,
+});
+
 export const setFilterOpportunityName = name => ({
     type: 'SET_FILTER_OPPORTUNITY_NAME',
     name,

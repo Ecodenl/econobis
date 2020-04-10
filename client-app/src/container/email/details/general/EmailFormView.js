@@ -31,6 +31,7 @@ const EmailFormView = props => {
         htmlBody,
         createdAt,
         dateSent,
+        sentByUser,
         folder,
         status,
         closedBy,
@@ -53,9 +54,15 @@ const EmailFormView = props => {
                     value={dateSent ? moment(dateSent).format('DD-MM-YYYY HH:mm') : ''}
                 />
             </div>
+            {folder === 'sent' ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    <div className={'form-group col-md-6'} />
+                    <ViewText label={'Verzonden door gebruiker'} value={sentByUser ? sentByUser.fullName : ''} />
+                </div>
+            ) : null}
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Cc'} value={cc && cc.map(cc => cc).join(', ')} />
-                <ViewText label={'Bcc'} value={bcc && bcc.map(cc => bcc).join(', ')} />
+                <ViewText label={'Bcc'} value={bcc && bcc.map(bcc => bcc).join(', ')} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

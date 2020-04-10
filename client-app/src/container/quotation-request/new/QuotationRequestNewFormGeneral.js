@@ -31,7 +31,6 @@ class QuotationRequestNewFormGeneral extends Component {
                 dateRecorded: '',
                 statusId: '5', //offerte aangevraagd, also alter componentwillmount when changing default!
                 dateReleased: '',
-                dateValid: '',
                 quotationText: '',
             },
             errors: {
@@ -57,7 +56,6 @@ class QuotationRequestNewFormGeneral extends Component {
                     dateRecorded: '',
                     statusId: '5',
                     dateReleased: '',
-                    dateValid: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',
                 },
             });
@@ -120,14 +118,7 @@ class QuotationRequestNewFormGeneral extends Component {
     };
 
     render() {
-        const {
-            organisationId,
-            dateRecorded,
-            statusId,
-            dateReleased,
-            dateValid,
-            quotationText,
-        } = this.state.quotationRequest;
+        const { organisationId, dateRecorded, statusId, dateReleased, quotationText } = this.state.quotationRequest;
         const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
 
         return (
@@ -207,18 +198,8 @@ class QuotationRequestNewFormGeneral extends Component {
                 </div>
 
                 <div className="row">
-                    <InputDate
-                        label="Offerte geldig tot"
-                        size={'col-sm-6'}
-                        name="dateValid"
-                        value={dateValid}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                </div>
-
-                <div className="row">
                     <InputTextArea
-                        label={'Offerte tekst'}
+                        label={'Offerte omschrijving'}
                         name={'quotationText'}
                         value={quotationText}
                         onChangeAction={this.handleInputChange}

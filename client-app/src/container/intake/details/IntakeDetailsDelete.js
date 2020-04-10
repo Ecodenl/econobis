@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 const IntakeDetailsDelete = props => {
     const confirmAction = () => {
-        props.deleteIntake(props.id);
+        props.deleteIntake(props.id, props.contactId);
 
         props.closeDeleteItemModal();
     };
@@ -27,8 +27,8 @@ const IntakeDetailsDelete = props => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteIntake: id => {
-        dispatch(deleteIntake(id));
+    deleteIntake: (id, contactId) => {
+        dispatch(deleteIntake(id, contactId));
     },
 });
 

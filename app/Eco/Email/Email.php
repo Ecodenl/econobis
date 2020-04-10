@@ -103,6 +103,10 @@ class Email extends Model
         return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses');
     }
 
+    public function sentByUser(){
+        return $this->belongsTo(User::class, 'sent_by_user_id');
+    }
+
     /**
      * optional
      */

@@ -146,6 +146,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </Link>
                     </NavText>
                 </Nav>
+                <Nav id="marketing-sub">
+                    <NavText>
+                        <Link className="sidebar-link" to="campagnes">
+                            Marketing
+                        </Link>
+                    </NavText>
+                </Nav>
             </Nav>
 
             <Nav id="contact-groups">

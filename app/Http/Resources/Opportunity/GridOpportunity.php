@@ -18,6 +18,7 @@ class GridOpportunity extends Resource
             'id' => $this->id,
             'number' => $this->number,
             'createdAt' => $this->created_at,
+            'desiredDate' => $this->desired_date,
             'contactName' => optional(optional($this->intake)->contact)->full_name,
             'measureCategoryName' => $this->measureCategory->name,
             'campaignName' => optional(optional($this->intake)->campaign)->name,

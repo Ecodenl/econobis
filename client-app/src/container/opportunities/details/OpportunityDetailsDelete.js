@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 const OpportunityDetailsDelete = props => {
     const confirmAction = () => {
-        props.deleteOpportunity(props.id);
+        props.deleteOpportunity(props.id, props.contactId);
         props.closeDeleteItemModal();
     };
 
@@ -24,8 +24,8 @@ const OpportunityDetailsDelete = props => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteOpportunity: id => {
-        dispatch(deleteOpportunity(id));
+    deleteOpportunity: (id, contactId) => {
+        dispatch(deleteOpportunity(id, contactId));
     },
 });
 

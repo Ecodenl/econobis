@@ -23,7 +23,6 @@ class Sort extends RequestSort
         'dateRecorded',
         'statusId',
         'dateReleased',
-        'dateValid'
     ];
 
     protected $mapping = [
@@ -34,7 +33,6 @@ class Sort extends RequestSort
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',
         'dateReleased' => 'quotation_requests.date_released',
-        'dateValid' => 'quotation_requests.date_valid',
     ];
 
     protected $joins = [

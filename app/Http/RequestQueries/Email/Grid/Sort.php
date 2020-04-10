@@ -21,6 +21,7 @@ class Sort extends RequestSort
         'to',
         'subject',
         'statusId',
+        'sentByUserId',
     ];
 
     protected $mapping = [
@@ -30,6 +31,7 @@ class Sort extends RequestSort
         'to' => 'emails.to',
         'subject' => 'emails.subject',
         'statusId'  => 'emails.status',
+        'sentByUserId' => 'emails.sent_by_user_id',
     ];
 
     protected $joins = [

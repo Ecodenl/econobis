@@ -35,11 +35,15 @@ const IntakeDetailsFormGeneralView = props => {
 
             <div className="row">
                 <ViewText label="Campagne" value={campaign && campaign.name} />
-                <ViewText label="Status" value={status && status.name} />
+                <ViewText label="Woonplaats" value={address && address.city} />
             </div>
 
             <div className="row">
                 <ViewText label={'Aanmeldingsbron'} value={sources && sources.map(source => source.name).join(', ')} />
+                <ViewText label="Status" value={status && status.name} />
+            </div>
+
+            <div className="row">
                 <ViewText
                     label={'Wat is belangrijk'}
                     value={reasons && reasons.map(reason => reason.name).join(', ')}

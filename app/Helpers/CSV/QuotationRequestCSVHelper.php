@@ -47,8 +47,6 @@ class QuotationRequestCSVHelper
 
             $quotationRequest->date_recorded = $this->formatDate($quotationRequest->date_recorded);
             $quotationRequest->date_released = $this->formatDate($quotationRequest->date_released);
-            $quotationRequest->date_valid = $this->formatDate($quotationRequest->date_valid);
-
             $quotationRequest->measures = '';
 
             $measures = [];
@@ -92,8 +90,7 @@ class QuotationRequestCSVHelper
             'date_recorded' => 'Datum opname',
             'status.name' => 'Status',
             'date_released' => 'Offerte uitgebracht',
-            'date_valid' => 'Offerte geldig tot',
-            'quotation_text' => 'Offerte tekst',
+            'quotation_text' => 'Offerte omschrijving',
             'opportunity.intake.contact.full_name' => 'Contact',
             'title.name' => 'Persoon titel',
             'initials' => 'Persoon initialen',

@@ -47,6 +47,7 @@ class GridEmail extends Resource
             'folder' => $this->folder,
             'contacts' => ContactPeek::collection($this->whenLoaded('contacts')),
             'responsibleName' => $responsible,
+            'sentByUser' => $this->sent_by_user_id,
         ];
     }
 }

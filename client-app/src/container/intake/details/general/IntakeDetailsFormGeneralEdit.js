@@ -33,9 +33,15 @@ class IntakeDetailsFormGeneralEdit extends Component {
     }
 
     componentWillMount() {
+        const { campaign } = this.props.intakeDetails;
+
         CampaignsAPI.peekCampaigns().then(payload => {
             this.setState({
                 campaigns: payload,
+                intake: {
+                    ...this.state.intake,
+                    campaignId: campaign ? campaign.id : payload[0].id,
+                },
             });
         });
     }
@@ -96,6 +102,20 @@ class IntakeDetailsFormGeneralEdit extends Component {
     render() {
         const { contact, address, statusId, sourceIds, campaignId, intakeReasonIds, note } = this.state.intake;
 
+        function compareIntakeSources(a, b) {
+            const sourceA = a.name.toLowerCase();
+            const sourceB = b.name.toLowerCase();
+
+            let result = 0;
+            if (sourceA > sourceB) {
+                result = 1;
+            } else if (sourceA < sourceB) {
+                result = -1;
+            }
+
+            return result;
+        }
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -115,6 +135,19 @@ class IntakeDetailsFormGeneralEdit extends Component {
                         value={campaignId}
                         options={this.props.campaigns}
                         onChangeAction={this.handleInputChange}
+                        required={true}
+                        emptyOption={false}
+                    />
+                    <InputText label={'Woonplaats'} name={'city'} value={address && address.city} readOnly />
+                </div>
+
+                <div className="row">
+                    <InputMultiSelect
+                        label="Aanmeldingsbron"
+                        name="sourceIds"
+                        value={sourceIds}
+                        options={this.props.intakeSources.sort(compareIntakeSources)}
+                        onChangeAction={this.handleSourceIds}
                     />
                     <InputSelect
                         label={'Status'}
@@ -127,13 +160,6 @@ class IntakeDetailsFormGeneralEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputMultiSelect
-                        label="Aanmeldingsbron"
-                        name="sourceIds"
-                        value={sourceIds}
-                        options={this.props.intakeSources}
-                        onChangeAction={this.handleSourceIds}
-                    />
                     <InputMultiSelect
                         label="Wat is belangrijk"
                         name="intakeReasonIds"

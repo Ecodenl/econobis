@@ -441,7 +441,8 @@ class ExtraFilter extends RequestExtraFilter
         if($data){
             $query->whereHas('portalUser');
         }else{
-            $query->whereDoesntHave('portalUser');
+            $query->whereDoesntHave('portalUser')
+            ->whereHas('person');
         }
     }
 

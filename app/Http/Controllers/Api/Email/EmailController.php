@@ -275,8 +275,17 @@ class EmailController
             $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
             foreach ($contactGroup->all_contacts as $contact) {
                 if ($contact->primaryEmailAddress) {
+//                    dd($email->groupEmailAddresses()->pluck('email_address_id'));
+//                    $emailIds[] = $email->groupEmailAddresses()->pluck('email_address_id');
+//                    $newEmailIds = array_diff([$contact->primaryEmailAddress->id], $emailIds);
+//                    $email->groupEmailAddresses()->attach($newEmailIds);
                     $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-
+//                    $contactIds[] = $email->contacts()->pluck('contact.id');
+//                    $newContactIds = array_diff([$contact->id], $contactIds);
+//                    print_r($contact->id);
+//                    print_r($contactIds);
+//                    print_r($newContactIds);
+//                    $email->contacts()->attach($newContactIds);
                     $email->contacts()->attach($contact->id);
                 }
             }
@@ -413,6 +422,11 @@ class EmailController
             $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
             foreach ($contactGroup->all_contacts as $contact) {
                 if ($contact->primaryEmailAddress) {
+//                    dd($email->groupEmailAddresses()->pluck('email_address_id'));
+//                    $attachedIds = $email->groupEmailAddresses()->pluck('email_address_id');
+//                    $newIds = array_diff($contact->primaryEmailAddress->id, $attachedIds);
+//                    $email->groupEmailAddresses()->attach($newIds);
+
                     $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
 
                     $email->contacts()->attach($contact->id);

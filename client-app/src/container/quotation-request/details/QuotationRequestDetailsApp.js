@@ -30,7 +30,7 @@ class QuotationRequestDetailsApp extends Component {
                         <QuotationRequestDetailsForm />
                     </div>
                 </div>
-                <Panel className="col-md-3">
+                <Panel className="col-md-3 harmonica">
                     <PanelBody>
                         <QuotationRequestDetailsHarmonica id={this.props.params.id} />
                     </PanelBody>

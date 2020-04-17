@@ -17,7 +17,7 @@ const ContactDetailFormPhoneView = props => {
                     <GetNameByIdHelper id={typeId} items={props.phoneNumberTypes} />
                 </div>
                 <div className="col-sm-7">{number}</div>
-                <div className="col-sm-2 push">{primary ? <span className="h6 pull-right">Primair</span> : ''}</div>
+                <div className="col-sm-2 push">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons ? (

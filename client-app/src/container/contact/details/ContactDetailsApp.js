@@ -18,7 +18,7 @@ const ContactDetailsApp = props => {
                     <ContactDetailsForm id={props.params.id} />
                 </div>
             </div>
-            <Panel className="col-md-3">
+            <Panel className="col-md-3 harmonica">
                 <PanelBody>
                     <ContactDetailsHarmonica id={props.params.id} />
                 </PanelBody>

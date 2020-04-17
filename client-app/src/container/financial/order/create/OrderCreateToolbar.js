@@ -24,7 +24,7 @@ class OrderCreateToolbar extends Component {
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
                         {this.props.amountOfOrders > 0 && (
-                            <ButtonText buttonText={"Maak nota's"} onClickAction={this.showCreate} />
+                            <ButtonText buttonText={"Maak concept nota's"} onClickAction={this.showCreate} />
                         )}
                     </div>
                 </div>

@@ -70,7 +70,7 @@ class SendAllInvoices implements ShouldQueue
             $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'Start maken en versturen nota ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.').';
+            $jobLog->value = 'Start definitief maken en versturen nota ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.').';
             $jobLog->job_category_id = 'sent-invoice';
             $jobLog->user_id = $this->userId;
             $jobLog->save();
@@ -116,10 +116,10 @@ class SendAllInvoices implements ShouldQueue
             $jobLog = new JobsLog();
             if($invoice->status_id === 'sent'){
                 $this->invoicesOk += 1;
-                $jobLog->value = 'Maken en versturen nota '.$invoice->number.' ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.') voltooid.';
+                $jobLog->value = 'Definitief maken en versturen nota '.$invoice->number.' ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.') voltooid.';
             }else{
                 $this->invoicesError += 1;
-                $jobLog->value = 'Maken en versturen nota '.$invoice->number.' ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.') mislukt. Status: '.$invoice->status_id;
+                $jobLog->value = 'Definitief maken en versturen nota '.$invoice->number.' ('.$invoice->id.') naar '.$contactInfo['contactPerson'].' ('.$invoice->order->contact_id.') mislukt. Status: '.$invoice->status_id;
             }
             $jobLog->job_category_id = 'sent-invoice';
             $jobLog->user_id = $this->userId;
@@ -145,7 +145,7 @@ class SendAllInvoices implements ShouldQueue
         if($this->invoicesError>0){
             $jobLog->value = "Fouten bij definitief maken/verzenden nota's. Verzonden nota's: ".$this->invoicesOk.". Niet verzonden nota's: ".$this->invoicesError."." ;
         }else{
-            $jobLog->value = "Alle nota's (".$this->countInvoices.") verzonden";
+            $jobLog->value = "Alle nota's (".$this->countInvoices.") definitief gemaakt en verzonden";
         }
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;
@@ -155,11 +155,11 @@ class SendAllInvoices implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = "Nota's maken/verzenden mislukt.";
+        $jobLog->value = "Nota's definitief maken/verzenden mislukt.";
         $jobLog->job_category_id = 'sent-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Nota's maken/verzenden mislukt: " . $exception->getMessage());
+        Log::error("Nota's definitief maken/verzenden mislukt: " . $exception->getMessage());
     }
 }

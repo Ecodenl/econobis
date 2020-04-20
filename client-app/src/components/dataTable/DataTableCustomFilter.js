@@ -163,7 +163,7 @@ const DataTableCustomFilter = props => {
                             readOnly={props.filter.readOnly}
                         />
                     )}
-                    {(fieldType === 'boolean' || fieldType === 'dropdown' || fieldType === 'dropdownHas') && (
+                    {(fieldType === 'dropdown' || fieldType === 'dropdownHas') && (
                         <select
                             className={`form-control input-sm`}
                             id="data"
@@ -172,7 +172,25 @@ const DataTableCustomFilter = props => {
                             onChange={handleInputChange}
                             disabled={props.filter.readOnly}
                         >
-                            <option />
+                            <option value="">*</option>
+                            {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                return (
+                                    <option key={option.id} value={option.id}>
+                                        {option[optionName]}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    )}
+                    {fieldType === 'boolean' && (
+                        <select
+                            className={`form-control input-sm`}
+                            id="data"
+                            name="data"
+                            value={props.filter.data}
+                            onChange={handleInputChange}
+                            disabled={props.filter.readOnly}
+                        >
                             {props.fields[props.filter.field].dropDownOptions.map(option => {
                                 return (
                                     <option key={option.id} value={option.id}>

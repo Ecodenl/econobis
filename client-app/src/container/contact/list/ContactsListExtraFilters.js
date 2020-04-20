@@ -15,12 +15,12 @@ class ContactsListExtraFilters extends Component {
             filters: props.extraFilters,
             yesNoOptions: [
                 {
-                    id: 1,
-                    name: 'Ja',
-                },
-                {
                     id: 0,
                     name: 'Nee',
+                },
+                {
+                    id: 1,
+                    name: 'Ja',
                 },
             ],
         };
@@ -216,7 +216,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             energySupplier: {
-                name: 'Energie leverancier',
+                name: 'Primaire Energie leverancier',
                 type: 'dropdown',
                 dropDownOptions: this.props.energySuppliers,
             },

@@ -46,7 +46,7 @@ class CreateAllInvoices implements ShouldQueue
         $this->ordersError = 0;
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Start alle nota's (". $countOrders .") aanmaken vanuit orders.";
+        $jobLog->value = "Start alle concept nota's (". $countOrders .") aanmaken vanuit orders.";
         $jobLog->job_category_id = 'create-invoice';
         $jobLog->user_id = $userId;
         $jobLog->save();
@@ -59,7 +59,7 @@ class CreateAllInvoices implements ShouldQueue
 
         foreach ($this->orders as $order){
             $jobLog = new JobsLog();
-            $jobLog->value = 'Maak nota vanuit order ('.$order->number.').';
+            $jobLog->value = 'Maak concept nota vanuit order ('.$order->number.').';
             $jobLog->job_category_id = 'create-invoice';
             $jobLog->user_id = $this->userId;
             $jobLog->save();
@@ -76,14 +76,14 @@ class CreateAllInvoices implements ShouldQueue
 
                 $this->ordersOk += 1;
                 $jobLog = new JobsLog();
-                $jobLog->value = 'Nota gemaakt vanuit order ('.$order->number.').';
+                $jobLog->value = 'Concept nota gemaakt vanuit order ('.$order->number.').';
                 $jobLog->job_category_id = 'create-invoice';
                 $jobLog->user_id = $this->userId;
                 $jobLog->save();
             }else{
                 $this->ordersError += 1;
                 $jobLog = new JobsLog();
-                $jobLog->value = 'Nota kon niet gemaakt worden vanuit order ('.$order->number.').';
+                $jobLog->value = 'Concept nota kon niet gemaakt worden vanuit order ('.$order->number.').';
                 $jobLog->job_category_id = 'create-invoice';
                 $jobLog->user_id = $this->userId;
                 $jobLog->save();
@@ -95,9 +95,9 @@ class CreateAllInvoices implements ShouldQueue
 
         $jobLog = new JobsLog();
         if($this->ordersError>0){
-            $jobLog->value = "Fouten bij maken nota's vanuit orders. Gemaakte nota's: ".$this->ordersOk.". Niet gemaakte nota's: ".$this->ordersError."." ;
+            $jobLog->value = "Fouten bij maken concept nota's vanuit orders. Gemaakte concept nota's: ".$this->ordersOk.". Niet gemaakte concept nota's: ".$this->ordersError."." ;
         }else{
-            $jobLog->value = "Alle nota's (". $this->countOrders .") vanuit orders aangemaakt.";
+            $jobLog->value = "Alle concept nota's (". $this->countOrders .") vanuit orders aangemaakt.";
         }
         $jobLog->job_category_id = 'create-invoice';
         $jobLog->user_id = $this->userId;
@@ -107,11 +107,11 @@ class CreateAllInvoices implements ShouldQueue
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = "Nota's maken vanuit orders mislukt.";
+        $jobLog->value = "Concept nota's maken vanuit orders mislukt.";
         $jobLog->job_category_id = 'create-invoice';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Nota's maken mislukt: " . $exception->getMessage());
+        Log::error("Concept nota's maken mislukt: " . $exception->getMessage());
     }
 }

@@ -30,7 +30,7 @@ const initialState = {
     showSelectOrdersToCreate: false,
     checkedAll: false,
     orderIds: [],
-    previewOrderText: "Selecteer preview nota's",
+    previewOrderText: "Selecteer concept nota's",
     deleteItem: {
         id: '',
         subject: '',
@@ -140,7 +140,7 @@ class OrdersList extends Component {
 
     previewOrders = () => {
         this.setState({
-            previewOrderText: "Preview nota's",
+            previewOrderText: "Concept nota's",
         });
 
         this.fetchOrdersData();

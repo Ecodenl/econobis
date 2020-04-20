@@ -31,6 +31,8 @@ class SendEmailsWithVariables implements ShouldQueue
      */
     private $email;
     private $tos;
+    private $ccs;
+    private $bccs;
     private $userId;
 
     /**
@@ -48,13 +50,20 @@ class SendEmailsWithVariables implements ShouldQueue
         $this->userId = $userId;
         $this->firstCall = $firstCall;
 
+        // bij 1e call cc's en bcc's bewaren
         if ($firstCall) {
+            $this->ccs = ($email->cc != []) ? $email->cc : null;
+            $this->bccs = ($email->bcc != []) ? $email->bcc : null;
+
             $jobLog = new JobsLog();
             $jobLog->value = 'Start e-mail(s) versturen.';
             $jobLog->user_id = $userId;
             $jobLog->job_category_id = 'email';
             $jobLog->save();
         }
+
+        (new EmailHelper())->setConfigToMailbox($email->mailbox);
+
     }
 
     public function handle()
@@ -72,8 +81,6 @@ class SendEmailsWithVariables implements ShouldQueue
         $email = $this->email;
 
         $mailbox = $email->mailbox;
-
-        (new EmailHelper())->setConfigToMailbox($mailbox);
 
         //First see if the to's are contact, user or created option
         $emailsToContact = [];
@@ -94,7 +101,7 @@ class SendEmailsWithVariables implements ShouldQueue
 //                    $emailsToContact[] = $emailAddress;
                     $emailsToEmailAddress[] = $emailAddress->email;
                 } elseif (substr($to, 0, 7) === "@group_") {
-                    //niets doen
+                    //niets doen nog
                 } else {
                     $emailsToEmailAddress[] = $to;
                 }
@@ -111,8 +118,8 @@ class SendEmailsWithVariables implements ShouldQueue
         if (!empty($emailsToEmailAddress)) {
             $mail = Mail::to($emailsToEmailAddress);
 
-            ($email->cc != []) ? $mail->cc($email->cc) : null;
-            ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
+            ($this->ccs != []) ? $mail->cc($this->ccs) : null;
+            ($this->bccs != []) ? $mail->bcc($this->bccs) : null;
             $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($email->html_body, 'ik', Auth::user());
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
 
@@ -125,9 +132,16 @@ class SendEmailsWithVariables implements ShouldQueue
                 }
 
                 $ccBccSent = true;
+                $this->ccs = [];
+                $this->bccs = [];
             } catch (\Exception $e) {
-                Log::error('Mail naar e-mailadres kon niet worden verzonden');
+                Log::error('Mail ' . $email->id . '  naar e-mailadres kon niet worden verzonden');
                 Log::error($e->getMessage());
+                $jobLog = new JobsLog();
+                $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress ) . ' kon niet worden verzonden';
+                $jobLog->user_id = $this->userId;
+                $jobLog->job_category_id = 'email';
+                $jobLog->save();
             }
 
         }
@@ -138,12 +152,11 @@ class SendEmailsWithVariables implements ShouldQueue
 
                 $mail = Mail::to($emailToContact->email);
                 if (!$ccBccSent) {
-                    ($email->cc != []) ? $mail->cc($email->cc) : null;
-                    ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
+                    ($this->ccs != []) ? $mail->cc($this->ccs) : null;
+                    ($this->bccs != []) ? $mail->bcc($this->bccs) : null;
                     $ccBccSent = true;
-                } else {
-                    $email->cc = [];
-                    $email->bcc = [];
+                    $this->ccs = [];
+                    $this->bccs = [];
                 }
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $emailAddress->contact);
@@ -177,8 +190,13 @@ class SendEmailsWithVariables implements ShouldQueue
                         $mergedHtmlBody = $htmlBodyWithContactVariables;
                     }
                 } catch (\Exception $e) {
-                    Log::error('Mail naar contact kon niet worden verzonden');
+                    Log::error('Mail ' . $email->id . ' naar contact kon niet worden verzonden');
                     Log::error($e->getMessage());
+                    $jobLog = new JobsLog();
+                    $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres ' . $emailToContact->email . ' kon niet worden verzonden';
+                    $jobLog->user_id = $this->userId;
+                    $jobLog->job_category_id = 'email';
+                    $jobLog->save();
                 }
 
             }
@@ -195,12 +213,11 @@ class SendEmailsWithVariables implements ShouldQueue
 
                 $mail = Mail::to($emailAddress->email);
                 if (!$ccBccSent) {
-                    ($email->cc != []) ? $mail->cc($email->cc) : null;
-                    ($email->bcc != []) ? $mail->bcc($email->bcc) : null;
+                    ($this->ccs != []) ? $mail->cc($this->ccs) : null;
+                    ($this->bccs != []) ? $mail->bcc($this->bccs) : null;
                     $ccBccSent = true;
-                } else {
-                    $email->cc = [];
-                    $email->bcc = [];
+                    $this->ccs = [];
+                    $this->bccs = [];
                 }
 
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
@@ -221,6 +238,11 @@ class SendEmailsWithVariables implements ShouldQueue
                 } catch (\Exception $e) {
                     Log::error('Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar e-mailadres ' . $emailAddress->email);
                     Log::error($e->getMessage());
+                    $jobLog = new JobsLog();
+                    $jobLog->value = 'Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar e-mailadres ' . $emailAddress->email;
+                    $jobLog->user_id = $this->userId;
+                    $jobLog->job_category_id = 'email';
+                    $jobLog->save();
                 }
                 // Email always detach from table otherwise the jobs can stay in a loop when error occur in try/catch while sending
                 $email->groupEmailAddresses()->detach($emailAddress->id);

@@ -37,11 +37,21 @@ class ParticipantsListItem extends Component {
         const {
             id,
             contact,
+            participationsInteressed,
+            participationsOptioned,
+            participationsGranted,
             participationsDefinitive,
+            amountInteressed,
+            amountOptioned,
+            amountGranted,
             amountDefinitive,
             uniqueMutationStatuses,
             dateRegister,
         } = this.props;
+        const participantionsTotal =
+            participationsInteressed + participationsOptioned + participationsGranted + participationsDefinitive;
+        const amountTotal =
+            amountInteressed + amountOptioned + amountGranted + amountDefinitive;
         const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';
@@ -52,6 +62,7 @@ class ParticipantsListItem extends Component {
             primaryAddress.number && (number = primaryAddress.number);
             primaryAddress.addition && (addition = primaryAddress.addition);
         }
+
         const missingEmail =
             !contact.primaryEmailAddress ||
             !contact.primaryEmailAddress.email ||
@@ -86,9 +97,9 @@ class ParticipantsListItem extends Component {
                 <td>{contact.primaryAddress ? contact.primaryAddress.postalCode : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.city : ''}</td>
                 {this.props.projectTypeRef === 'loan' ? (
-                    <td>{amountDefinitive ? MoneyPresenter(amountDefinitive) : ''}</td>
+                    <td>{amountTotal ? MoneyPresenter(amountTotal) : ''}</td>
                 ) : (
-                    <td>{participationsDefinitive ? participationsDefinitive : ''}</td>
+                    <td>{participantionsTotal ? participantionsTotal : ''}</td>
                 )}
                 <td>{uniqueMutationStatuses.map(item => item.name).join(', ')}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>

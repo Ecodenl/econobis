@@ -29,7 +29,7 @@ class ContactDetailsConclusionEdit extends Component {
         this.state = {
             contact: {
                 id,
-                status: status ? status.name : '',
+                status: status ? status : '',
                 updatedBy: updatedBy ? updatedBy.fullName : '',
                 createdBy: createdBy ? createdBy.fullName : '',
                 ownedById: owner ? owner.id : '',
@@ -99,7 +99,7 @@ class ContactDetailsConclusionEdit extends Component {
                     <InputText
                         label={'Gemaakt door'}
                         name={'createdBy'}
-                        value={status == 'Portal' ? status : createdBy}
+                        value={status.id == 'portal' || status.id == 'webform' ? status.name : createdBy}
                         readOnly={true}
                     />
                     <InputText label={'Laatste update door'} name={'updatedBy'} value={updatedBy} readOnly={true} />

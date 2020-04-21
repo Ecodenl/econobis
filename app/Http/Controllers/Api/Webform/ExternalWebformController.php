@@ -725,7 +725,7 @@ class ExternalWebformController extends Controller
             $iban = $this->checkIban($data['iban'], 'organisatie.');
             $contactOrganisation = Contact::create([
                 'type_id' => 'organisation',
-                'status_id' => 'none',
+                'status_id' => 'webform',
                 'iban' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'did_agree_avg' => (bool)$data['did_agree_avg'],
@@ -748,7 +748,7 @@ class ExternalWebformController extends Controller
 
             $contactPerson = Contact::create([
                 'type_id' => 'person',
-                'status_id' => 'none',
+                'status_id' => 'webform',
             ]);
 
             // Validatie op title_id
@@ -788,7 +788,7 @@ class ExternalWebformController extends Controller
         $iban = $this->checkIban($data['iban'], 'contactpersoon.');
         $contact = Contact::create([
             'type_id' => 'person',
-            'status_id' => 'none',
+            'status_id' => 'webform',
             'iban' => $iban,
             'iban_attn' => $data['iban_attn'],
             'did_agree_avg' => (bool)$data['did_agree_avg'],

@@ -30,7 +30,7 @@ const initialState = {
     showSelectOrdersToCreate: false,
     checkedAll: false,
     orderIds: [],
-    previewOrderText: "Selecteer concept nota's",
+    previewOrderText: "Selecteer preview concept nota's",
     deleteItem: {
         id: '',
         subject: '',
@@ -140,7 +140,7 @@ class OrdersList extends Component {
 
     previewOrders = () => {
         this.setState({
-            previewOrderText: "Concept nota's",
+            previewOrderText: "Preview concept nota's",
         });
 
         this.fetchOrdersData();
@@ -333,24 +333,24 @@ class OrdersList extends Component {
                     this.props.filter == 'te-factureren' ||
                     this.props.filter == 'te-verzenden')
             ) {
-                inProgressStartText = "Nota's die momenteel in de maak en/of verzonden worden:";
+                inProgressStartText = "Overzicht status bij het maken en verzenden nota's";
                 if (totalOrdersInProgressInvoices > 0) {
                     ordersInProgressInvoicesText =
-                        "- Nota's die nu gemaakt worden van uit orders: " + totalOrdersInProgressInvoices;
+                        "- Concept nota's die nu gemaakt worden van uit order: " + totalOrdersInProgressInvoices;
                 }
                 if (totalInvoicesInProgress > 0) {
-                    inProgressText = "- Nota's die nu definitief gemaakt worden: " + totalInvoicesInProgress;
+                    inProgressText = "- Concept nota's die nu definitief gemaakt worden: " + totalInvoicesInProgress;
                 }
                 if (totalInvoicesIsSending > 0) {
-                    isSendingText = "- Nota's die nu verzonden worden: " + totalInvoicesIsSending;
+                    isSendingText = "- Definitieve nota's die nu verzonden (e-mail of PDF) worden: " + totalInvoicesIsSending;
                 }
                 if (totalInvoicesIsResending > 0) {
-                    isResendingText = "- Nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
+                    isResendingText = "- Definitieve nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
                 }
                 if (totalInvoicesErrorMaking > 0) {
-                    errorMakingText = '- Nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
+                    errorMakingText = '- Definitieve nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
                 }
-                inProgressEndText = 'Gebruik refresh/vernieuwen knop om voortgang van order statussen te verversen.';
+                inProgressEndText = 'Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om status overzicht te verversen.';
             }
         }
         return (
@@ -374,6 +374,9 @@ class OrdersList extends Component {
                     <div className="col-md-4">
                         <div className="pull-right">Resultaten: {meta.total || 0}</div>
                     </div>
+                </div>
+                <div className="col-md-12">
+                    &nbsp;
                 </div>
                 {!this.state.showSelectOrdersToCreate ? (
                     <div className="col-md-12">

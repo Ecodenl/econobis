@@ -40,7 +40,7 @@ class OrderToolbar extends Component {
                             <ButtonIcon iconName={'glyphicon-eye-open'} onClickAction={this.preview} />
                         )}
                         {this.props.orderDetails.canCreateInvoice && (
-                            <ButtonText buttonText={'Concept nota'} onClickAction={this.newInvoice} />
+                            <ButtonText buttonText={'Preview concept nota'} onClickAction={this.newInvoice} />
                         )}
                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                     </div>

@@ -35,7 +35,7 @@ export default class ModelDetailsOrder {
             .child()
             .child();
 
-        this.newInvoice = Selector('button').withExactText('Concept nota');
+        this.newInvoice = Selector('button').withExactText('Preview concept nota');
         this.dateCollection = Selector('input[name="dateCollection"]');
     }
 }

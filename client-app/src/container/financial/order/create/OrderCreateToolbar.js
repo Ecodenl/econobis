@@ -29,7 +29,7 @@ class OrderCreateToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">Nota's aanmaken({this.props.amountOfOrders})</h4>
+                    <h4 className="text-center">Concept nota's aanmaken({this.props.amountOfOrders})</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showCreate && (

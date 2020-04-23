@@ -342,15 +342,18 @@ class OrdersList extends Component {
                     inProgressText = "- Concept nota's die nu definitief gemaakt worden: " + totalInvoicesInProgress;
                 }
                 if (totalInvoicesIsSending > 0) {
-                    isSendingText = "- Definitieve nota's die nu verzonden (e-mail of PDF) worden: " + totalInvoicesIsSending;
+                    isSendingText =
+                        "- Definitieve nota's die nu verzonden (e-mail of PDF) worden: " + totalInvoicesIsSending;
                 }
                 if (totalInvoicesIsResending > 0) {
-                    isResendingText = "- Definitieve nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
+                    isResendingText =
+                        "- Definitieve nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
                 }
                 if (totalInvoicesErrorMaking > 0) {
                     errorMakingText = '- Definitieve nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
                 }
-                inProgressEndText = 'Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om status overzicht te verversen.';
+                inProgressEndText =
+                    'Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om status overzicht te verversen.';
             }
         }
         return (
@@ -375,9 +378,7 @@ class OrdersList extends Component {
                         <div className="pull-right">Resultaten: {meta.total || 0}</div>
                     </div>
                 </div>
-                <div className="col-md-12">
-                    &nbsp;
-                </div>
+                <div className="col-md-12">&nbsp;</div>
                 {!this.state.showSelectOrdersToCreate ? (
                     <div className="col-md-12">
                         {inProgressStartText ? (

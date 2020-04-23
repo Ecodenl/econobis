@@ -50,8 +50,7 @@ class ParticipantsListItem extends Component {
         } = this.props;
         const participantionsTotal =
             participationsInteressed + participationsOptioned + participationsGranted + participationsDefinitive;
-        const amountTotal =
-            amountInteressed + amountOptioned + amountGranted + amountDefinitive;
+        const amountTotal = amountInteressed + amountOptioned + amountGranted + amountDefinitive;
         const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';

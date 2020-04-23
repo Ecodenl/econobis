@@ -27,9 +27,7 @@ const ParticipantsListHead = ({
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'6%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Plaats'} width={'12%'} setSorts={setSorts} />
             {projectTypeRef === 'loan' ? <DataTableHeadTitle title={'Aantal lening'} width={'8%'} /> : null}
-            {projectTypeRef === 'obligation' ? (
-                <DataTableHeadTitle title={'Aantal obligaties'} width={'8%'} />
-            ) : null}
+            {projectTypeRef === 'obligation' ? <DataTableHeadTitle title={'Aantal obligaties'} width={'8%'} /> : null}
             {projectTypeRef === 'capital' || projectTypeRef === 'postalcode_link_capital' ? (
                 <DataTableHeadTitle title={'Aantal deelnames'} width={'8%'} />
             ) : null}

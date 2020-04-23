@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 import validator from 'validator';
-import MoneyPresenter from "../../../helpers/MoneyPresenter";
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
 moment.locale('nl');
 
 class ParticipantsListItem extends Component {
@@ -52,8 +52,7 @@ class ParticipantsListItem extends Component {
         const projectTypeCodeRef = project ? project.typeCodeRef : '';
         const participantionsTotal =
             participationsInteressed + participationsOptioned + participationsGranted + participationsDefinitive;
-        const amountTotal =
-            amountInteressed + amountOptioned + amountGranted + amountDefinitive;
+        const amountTotal = amountInteressed + amountOptioned + amountGranted + amountDefinitive;
         const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';

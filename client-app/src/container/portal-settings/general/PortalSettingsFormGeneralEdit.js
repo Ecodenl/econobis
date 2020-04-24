@@ -236,12 +236,6 @@ class PortalSettingsFormGeneralEdit extends Component {
         data.append('backgroundSecondaryTextColor', portalSettings.backgroundSecondaryTextColor);
         data.append('buttonColor', portalSettings.buttonColor);
         data.append('buttonTextColor', portalSettings.buttonTextColor);
-        data.append('responsibleUserId', portalSettings.responsibleUserId);
-        data.append('checkContactTaskResponsibleUserId', portalSettings.checkContactTaskResponsibleUserId);
-        data.append('checkContactTaskResponsibleTeamId', portalSettings.checkContactTaskResponsibleTeamId);
-        data.append('contactResponsibleOwnerUserId', portalSettings.contactResponsibleOwnerUserId);
-        data.append('emailTemplateNewAccountId', portalSettings.emailTemplateNewAccountId);
-        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy);
         data.append('responsibleUserId', portalSettings.responsibleUserId ? portalSettings.responsibleUserId : '');
         data.append(
             'checkContactTaskResponsibleUserId',

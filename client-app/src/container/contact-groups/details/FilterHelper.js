@@ -102,6 +102,8 @@ export default (type, field) => {
                     return 'Huidig aantal postcoderoos';
                 case 'loanDefinitive':
                     return 'Huidig bedrag obligaties';
+                case 'createdAt':
+                    return 'Gemaakt op';
             }
             break;
         case 'comperator':
@@ -109,6 +111,10 @@ export default (type, field) => {
                 case 'eq':
                     return 'gelijk aan';
                 case 'neq':
+                    return 'niet gelijk aan';
+                case 'rel':
+                    return 'gelijk aan';
+                case 'nrel':
                     return 'niet gelijk aan';
                 case 'ct':
                     return 'bevat';

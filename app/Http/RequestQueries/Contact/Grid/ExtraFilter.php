@@ -247,10 +247,10 @@ class ExtraFilter extends RequestExtraFilter
         if(empty($data))
         {
             switch($type){
-                case 'eq':
+                case 'neq':
                     $query->whereDoesntHave('isSecondaryOccupant');
                     break;
-                case 'neq':
+                case 'eq':
                     $query->whereHas('isSecondaryOccupant');
                     break;
                 case 'rel':

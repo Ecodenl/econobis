@@ -210,7 +210,7 @@ const DataTableCustomFilter = props => {
                                 onChange={handleInputChange}
                                 disabled={props.filter.readOnly}
                             >
-                                <option />
+                                <option value="">--Willekeurige waarde--</option>
                                 {props.fields[props.filter.field].dropDownOptions.map(option => {
                                     return (
                                         <option key={option.id} value={option.id}>

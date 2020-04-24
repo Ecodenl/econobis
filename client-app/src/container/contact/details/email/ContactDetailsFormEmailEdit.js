@@ -46,6 +46,7 @@ const ContactDetailsFormEmailEdit = props => {
                             name={'primary'}
                             value={primary}
                             onChangeAction={props.handleInputChange}
+                            disabled={primary}
                         />
                     </div>
 

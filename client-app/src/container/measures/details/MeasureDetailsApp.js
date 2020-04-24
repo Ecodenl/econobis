@@ -33,7 +33,7 @@ class MeasureDetailsApp extends Component {
                         <MeasureDetailsForm />
                     </div>
                 </div>
-                <Panel className="col-md-3">
+                <Panel className="col-md-3 harmonica">
                     <PanelBody>
                         <MeasureDetailsHarmonica id={this.props.params.id} />
                     </PanelBody>

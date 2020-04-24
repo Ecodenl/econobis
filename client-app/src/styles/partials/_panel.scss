@@ -1,6 +1,15 @@
+.panel {
+  margin-bottom: 7px;
+}
+
 .panel-heading {
   color: $brand-primary !important;
   border: 0;
+  padding: 5px 15px;
+}
+
+.panel-body {
+  padding: 10px;
 }
 
 .panel-footer {

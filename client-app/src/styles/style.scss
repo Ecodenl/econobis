@@ -39,7 +39,7 @@ body {
 }
 
 .text-bold {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .badge {
@@ -57,7 +57,8 @@ body {
 }
 
 .header {
-    color: #aaa;
+    color: $header-color !important;
+    font-weight: bold;
     border-bottom: 2px solid #F1EFF0;
 }
 
@@ -68,4 +69,16 @@ body {
 
 .field-to-be-removed {
     color: #fc1300;
+}
+
+.row {
+    color: $text-color;
+}
+
+label {
+    color: $header-color;
+}
+
+h5, .h5 {
+    color: $header-color;
 }

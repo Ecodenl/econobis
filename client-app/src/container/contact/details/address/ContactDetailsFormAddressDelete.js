@@ -16,6 +16,7 @@ const ContactDetailsAddressDelete = props => {
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
+            showConfirmAction={!props.primary}
             title="Verwijderen"
         >
             <p>
@@ -24,7 +25,7 @@ const ContactDetailsAddressDelete = props => {
 
             {props.primary && (
                 <p className={'text-danger'}>
-                    <strong>Let op!</strong> Dit is een primair adres
+                    <strong>Let op!</strong> Dit is een primair adres en kan niet worden verwijderd.
                 </p>
             )}
         </Modal>

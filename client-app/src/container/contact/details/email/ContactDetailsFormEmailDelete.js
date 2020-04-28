@@ -16,6 +16,7 @@ const ContactDetailsEmailDelete = props => {
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
+            showConfirmAction={!props.primary}
             title="Verwijderen"
         >
             <p>
@@ -24,7 +25,7 @@ const ContactDetailsEmailDelete = props => {
 
             {props.primary && (
                 <p className={'text-danger'}>
-                    <strong>Let op!</strong> Dit is een primair e-mailadres
+                    <strong>Let op!</strong> Dit is een primair e-mailadres en kan niet worden verwijderd.
                 </p>
             )}
         </Modal>

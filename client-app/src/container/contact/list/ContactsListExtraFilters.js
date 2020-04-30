@@ -8,11 +8,21 @@ import { connect } from 'react-redux';
 class ContactsListExtraFilters extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             filterType: props.filterType,
+            contactType: props.contactType,
             amountOfFilters: props.amountOfFilters,
             filters: props.extraFilters,
+            yesNoOptions: [
+                {
+                    id: 0,
+                    name: 'Nee',
+                },
+                {
+                    id: 1,
+                    name: 'Ja',
+                },
+            ],
         };
 
         this.closeModal = this.closeModal.bind(this);
@@ -206,9 +216,19 @@ class ContactsListExtraFilters extends Component {
                 type: 'date',
             },
             energySupplier: {
-                name: 'Energie leverancier',
+                name: 'Primaire Energie leverancier',
                 type: 'dropdown',
                 dropDownOptions: this.props.energySuppliers,
+            },
+            didAgreeAvg: {
+                name: 'Akkoord privacybeleid',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            portalUser: {
+                name: 'Portal gebruiker actief',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
             },
         };
 
@@ -291,6 +311,7 @@ class ContactsListExtraFilters extends Component {
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}
                                         handleFilterValueChange={this.handleFilterValueChange}
+                                        contactType={this.state.contactType}
                                     />
                                 );
                             })

@@ -30,7 +30,6 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
 import InvoiceListDeleteItem from './InvoiceListDeleteItem';
 import ErrorModal from '../../../../components/modal/ErrorModal';
-import AdministrationDetailsAPI from '../../../../api/administration/AdministrationDetailsAPI';
 
 const initialState = {
     showSelectInvoicesToSend: false,
@@ -158,6 +157,7 @@ class InvoicesList extends Component {
         setTimeout(() => {
             const filters = filterHelper(this.props.invoicesFilters);
             const sorts = this.props.invoicesSorts;
+            // Pagination op 50
             const pagination = { limit: 50, offset: this.props.invoicesPagination.offset };
             const administrationId = this.props.administrationId;
             const onlyEmailInvoices = this.state.onlyEmailInvoices;
@@ -325,6 +325,7 @@ class InvoicesList extends Component {
 
     handlePageClick(data) {
         let page = data.selected;
+        // Pagination is 50
         let offset = Math.ceil(page * 50);
 
         this.props.setInvoicesPagination({ page, offset });
@@ -440,6 +441,7 @@ class InvoicesList extends Component {
             }
         }
 
+        let totalOrdersInProgressInvoices = 0;
         let totalInvoicesInProgress = 0;
         let totalInvoicesIsSending = 0;
         let totalInvoicesIsResending = 0;
@@ -447,11 +449,15 @@ class InvoicesList extends Component {
         let amountInProgress = 0;
         let inProgressStartText = null;
         let inProgressEndText = null;
+        let ordersInProgressInvoicesText = null;
         let inProgressText = null;
         let isSendingText = null;
         let isResendingText = null;
         let errorMakingText = null;
         if (this.props.totalsInfoAdministration) {
+            totalOrdersInProgressInvoices = this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
+                ? this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
+                : 0;
             totalInvoicesInProgress = this.props.totalsInfoAdministration.totalInvoicesInProgress
                 ? this.props.totalsInfoAdministration.totalInvoicesInProgress
                 : 0;
@@ -466,7 +472,11 @@ class InvoicesList extends Component {
                 : 0;
 
             amountInProgress +=
-                totalInvoicesErrorMaking + totalInvoicesInProgress + totalInvoicesIsResending + totalInvoicesIsSending;
+                totalOrdersInProgressInvoices +
+                totalInvoicesErrorMaking +
+                totalInvoicesInProgress +
+                totalInvoicesIsResending +
+                totalInvoicesIsSending;
 
             if (
                 amountInProgress > 0 &&
@@ -476,20 +486,27 @@ class InvoicesList extends Component {
                     this.props.filter == 'fout-verzenden-overboeken' ||
                     this.props.filter == 'verzonden')
             ) {
-                inProgressStartText = "Nota's die momenteel in de maak en/of verzonden worden:";
+                inProgressStartText = "Overzicht status bij het maken en verzenden nota's";
+                if (totalOrdersInProgressInvoices > 0) {
+                    ordersInProgressInvoicesText =
+                        "- Concept nota's die nu gemaakt worden van uit order: " + totalOrdersInProgressInvoices;
+                }
                 if (totalInvoicesInProgress > 0) {
-                    inProgressText = "- Nota's die nu gemaakt worden: " + totalInvoicesInProgress;
+                    inProgressText = "- Concept nota's die nu definitief gemaakt worden: " + totalInvoicesInProgress;
                 }
                 if (totalInvoicesIsSending > 0) {
-                    isSendingText = "- Nota's die nu verzonden worden: " + totalInvoicesIsSending;
+                    isSendingText =
+                        "- Definitieve nota's die nu verzonden (e-mail of PDF) worden: " + totalInvoicesIsSending;
                 }
                 if (totalInvoicesIsResending > 0) {
-                    isResendingText = "- Nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
+                    isResendingText =
+                        "- Definitieve nota's die nu opnieuw verzonden worden: " + totalInvoicesIsResending;
                 }
                 if (totalInvoicesErrorMaking > 0) {
-                    errorMakingText = '- Nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
+                    errorMakingText = '- Definitieve nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
                 }
-                inProgressEndText = 'Gebruik refresh/vernieuwen knop om voortgang van nota statussen te verversen.';
+                inProgressEndText =
+                    'Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om status overzicht te verversen.';
             }
         }
         return (
@@ -611,6 +628,11 @@ class InvoicesList extends Component {
                             <div className="alert alert-warning">
                                 {inProgressStartText}
                                 <br />
+                                {ordersInProgressInvoicesText ? (
+                                    <span>
+                                        {ordersInProgressInvoicesText} <br />
+                                    </span>
+                                ) : null}
                                 {inProgressText ? (
                                     <span>
                                         {inProgressText} <br />
@@ -692,6 +714,7 @@ class InvoicesList extends Component {
                         </DataTableBody>
                     </DataTable>
                     <div className="col-md-6 col-md-offset-3">
+                        {/*Pagination is 50*/}
                         <DataTablePagination
                             onPageChangeAction={this.handlePageClick}
                             totalRecords={meta.total}

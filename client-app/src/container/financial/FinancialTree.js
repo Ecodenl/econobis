@@ -161,7 +161,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/notas/fout-verzenden-incasso`}
                                     >
-                                        Fout verzenden - incasso nota's(
+                                        Opnieuw te verzenden - incasso nota's(
                                         {this.props.totalsInfoAdministration.totalInvoicesErrorSendingCollection})
                                     </Link>
                                 </NavText>
@@ -172,7 +172,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/notas/fout-verzenden-overboeken`}
                                     >
-                                        Fout verzenden - overboek nota's(
+                                        Opnieuw te verzenden - overboek nota's(
                                         {this.props.totalsInfoAdministration.totalInvoicesErrorSendingTransfer})
                                     </Link>
                                 </NavText>

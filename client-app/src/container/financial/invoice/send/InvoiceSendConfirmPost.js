@@ -122,7 +122,9 @@ class InvoiceSendConfirmPost extends Component {
 
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u alle nota's downloaden en doorzetten naar status verzonden?</span>
+                        <span>
+                            Wilt u alle nota's definitief maken, downloaden en doorzetten naar status verzonden?
+                        </span>
                     </div>
                 </div>
             </Modal>

@@ -95,7 +95,7 @@ abstract class RequestFilter
     protected function addFilter($field, $type = null, $data = null)
     {
         if (!in_array($field, $this->fields)) throw new RequestFilterException('Invalid field argument: ' . $field);
-        if (!is_null($type) && !in_array($type, $this->types)) throw new RequestFilterException('Invalid type argument');
+        if (!is_null($type) && !in_array($type, $this->types)) throw new RequestFilterException('Invalid type argument: ' . $type );
 
         if (is_null($type)) $type = $this->getDefaultTypeForField($field);
 

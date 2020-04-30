@@ -49,9 +49,14 @@ class TwinfieldInvoiceHelper
         $messages = [];
 
         // We controleren alle invoices met status exported of paid en met koppeling Twinfield
-        // todo Op den duur worden dit steeds meer invoices die hij moet checken.
-        //  wellicht moeten we een max periode terug in tijd afspreken. En wellicht dan h.m. correctie mogelijk maken voor oude betalingen.
-        foreach ($this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get() as $invoiceToBeChecked)
+        // Tenzij er een datum Synchroniseer betalingen vanaf is opgegeven. Dan alleen facturen die vanaf die datum zijn gemaakt.
+        $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
+        if($this->administration->date_sync_twinfield_payments){
+            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->where('created_by', '>=', $this->administration->date_sync_twinfield_payments)->get();
+        }else{
+            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
+        }
+        foreach ($invoicesToBeChecked as $invoiceToBeChecked)
         {
             if(!$invoiceToBeChecked->twinfield_number){
                 Log::error('Nota ' . $invoiceToBeChecked->id . ' met nummer ' . $invoiceToBeChecked->number . ' heeft status geexporteerd maar heeft geen Twinfield nummer.');

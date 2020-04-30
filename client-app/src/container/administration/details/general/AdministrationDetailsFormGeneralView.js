@@ -34,6 +34,8 @@ const AdministrationDetailsFormGeneralView = props => {
         twinfieldUsername,
         twinfieldOrganizationCode,
         twinfieldOfficeCode,
+        dateSyncTwinfieldContacts,
+        dateSyncTwinfieldPayments,
         usesVat,
         emailBccNotas,
     } = props.administrationDetails;
@@ -140,6 +142,13 @@ const AdministrationDetailsFormGeneralView = props => {
                         <div className="row">
                             <ViewText label={'Omgeving'} value={twinfieldOrganizationCode} />
                             <ViewText label={'Code'} value={twinfieldOfficeCode} />
+                        </div>
+                    )}
+
+                    {usesTwinfield == true && (
+                        <div className="row">
+                            <ViewText label={'Synchroniseer contacten vanaf'} value={dateSyncTwinfieldContacts} />
+                            <ViewText label={'Synchroniseer betalingen vanaf'} value={dateSyncTwinfieldPayments} />
                         </div>
                     )}
                 </PanelBody>

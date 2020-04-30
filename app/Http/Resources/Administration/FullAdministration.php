@@ -105,6 +105,8 @@ class FullAdministration extends Resource
                 'twinfieldOrganizationCode' => $this->twinfield_organization_code,
                 'twinfieldOfficeCode' => $this->twinfield_office_code,
                 'twinfieldIsValid' => $this->twinfield_is_valid,
+                'dateSyncTwinfieldContacts' => $this->date_sync_twinfield_contacts,
+                'dateSyncTwinfieldPayments' => $this->date_sync_twinfield_payments,
 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

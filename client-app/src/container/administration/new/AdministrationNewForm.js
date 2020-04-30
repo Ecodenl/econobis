@@ -17,6 +17,8 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import InputToggle from '../../../components/form/InputToggle';
 import ViewText from '../../../components/form/ViewText';
+import InputDate from "../../../components/form/InputDate";
+import moment from "moment";
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -57,6 +59,8 @@ class AdministrationNewForm extends Component {
                 twinfieldPassword: '',
                 twinfieldOrganizationCode: '',
                 twinfieldOfficeCode: '',
+                dateSyncTwinfieldContacts: '',
+                dateSyncTwinfieldPayments: '',
                 usesVat: true,
                 emailBccNotas: '',
             },
@@ -72,6 +76,8 @@ class AdministrationNewForm extends Component {
                 twinfieldPassword: false,
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
+                dateSyncTwinfieldContacts: false,
+                dateSyncTwinfieldPayments: false,
                 mailboxId: false,
                 emailBccNotas: false,
                 countryId: false,
@@ -137,6 +143,13 @@ class AdministrationNewForm extends Component {
                 ...this.state.administration,
                 [name]: value,
             },
+        });
+    };
+
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            [name]: value,
         });
     };
 
@@ -281,6 +294,8 @@ class AdministrationNewForm extends Component {
             data.append('twinfieldPassword', administration.twinfieldPassword);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
+            data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
+            data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
 
@@ -324,9 +339,14 @@ class AdministrationNewForm extends Component {
             twinfieldPassword,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
+            dateSyncTwinfieldContacts,
+            dateSyncTwinfieldPayments,
             usesVat,
             emailBccNotas,
         } = this.state.administration;
+
+        let disableBeforeDateSyncTwinfieldContacts = moment( moment().format('YYYY')+'-01-01').format('YYYY-01-01');
+        let disableBeforeDateSyncTwinfieldPayments = moment( moment().format('YYYY')+'-01-01').format('YYYY-01-01');
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -617,6 +637,24 @@ class AdministrationNewForm extends Component {
                                         onChangeAction={this.handleInputChange}
                                         error={this.state.errors.twinfieldOfficeCode}
                                         required={'required'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputDate
+                                        label="Synchroniseer contacten vanaf"
+                                        name={'dateSyncTwinfieldContacts'}
+                                        value={dateSyncTwinfieldContacts}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        disabledBefore={disableBeforeDateSyncTwinfieldContacts}
+                                        error={this.state.errors.dateSyncTwinfieldContacts}
+                                    />
+                                    <InputDate
+                                        label="Synchroniseer betalingen vanaf"
+                                        name={'dateSyncTwinfieldPayments'}
+                                        value={dateSyncTwinfieldPayments}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        disabledBefore={disableBeforeDateSyncTwinfieldPayments}
+                                        error={this.state.errors.dateSyncTwinfieldPayments}
                                     />
                                 </div>
                             </React.Fragment>

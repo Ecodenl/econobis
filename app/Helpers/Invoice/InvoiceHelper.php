@@ -5,6 +5,7 @@ namespace App\Helpers\Invoice;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceDocument;
+use App\Eco\Invoice\InvoiceNumber;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Invoice\InvoicesToSend;
@@ -394,14 +395,9 @@ class InvoiceHelper
 
         // indien geen preview, dan gaan nu definitief notanummer bepalen
         $currentYear = Carbon::now()->year;
-        // Haal laatst uitgedeelde notanummer op (binnen notajaar)
-        $lastInvoice = Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '!=', 0)->whereYear('created_at', '=', $currentYear)->orderBy('invoice_number', 'desc')->first();
 
-        $newInvoiceNumber = 1;
-        if($lastInvoice)
-        {
-            $newInvoiceNumber = $lastInvoice->invoice_number + 1;
-        }
+        // Haal new notanummer op (voor dit jaar en administratie)
+        $newInvoiceNumber = InvoiceHelper::newInvoiceNumber($currentYear, $invoice->administration_id);
 
         if(Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '=', $newInvoiceNumber)->whereYear('created_at', '=', $currentYear)->exists())
         {
@@ -549,4 +545,20 @@ class InvoiceHelper
             $invoice->save();
         }
     }
+
+    private static function newInvoiceNumber($year, $administrationId){
+
+        $invoiceNumber = InvoiceNumber::firstOrNew(
+            [
+                'number_type' => "invoice",
+                'number_year' => $year,
+                'administration_id' => $administrationId
+            ]
+        );
+        $invoiceNumber->last_used_number = ($invoiceNumber->last_used_number + 1);
+        $invoiceNumber->save();
+
+        return $invoiceNumber->last_used_number;
+    }
+
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+moment.locale('nl');
 import { connect } from 'react-redux';
 
 const AdministrationDetailsSepasView = props => {

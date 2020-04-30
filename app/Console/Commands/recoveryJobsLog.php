@@ -42,14 +42,15 @@ class recoveryJobsLog extends Command
         $searchField1 = "Maken en versturen";
         $searchField2 = "voltooid.";
 
-        $this->doRecoveryJobsLog($searchField1, $searchField2);
+//        $this->doRecoveryJobsLog($searchField1, $searchField2);
 
         $searchField1 = "Maken en versturen";
         $searchField2 = "mislukt.";
 
-        $this->doRecoveryJobsLog($searchField1, $searchField2);
-
-        dd('Einde Herstel foute JobsLog records.');
+//        $this->doRecoveryJobsLog($searchField1, $searchField2);
+//
+//        dd('Einde Herstel foute JobsLog records.');
+        dd('Herstel foute JobsLog records niet actief.');
     }
 
     /**

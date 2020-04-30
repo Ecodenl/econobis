@@ -67,10 +67,10 @@ class RevenueDetailsToolbar extends Component {
                                             </button>
                                             <ul className="dropdown-menu">
                                                 <li>
-                                                    <Link to={pdfLink}>PDF EM</Link>
+                                                    <Link to={pdfLink}>Ledenverklaring of productie specificatie</Link>
                                                 </li>
                                                 <li>
-                                                    <Link to={excelLink}>Excel EM</Link>
+                                                    <Link to={excelLink}>Opbrengstverdelingen deelnemers</Link>
                                                 </li>
                                             </ul>
                                         </div>

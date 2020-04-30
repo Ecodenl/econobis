@@ -25,6 +25,7 @@ class FinancialApp extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.params.id !== prevProps.params.id) {
             this.props.fetchAdministrationDetails(this.props.params.id);
+            this.fetchTotalsInfoAdministration(this.props.params.id);
         }
     }
 

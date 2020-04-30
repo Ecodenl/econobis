@@ -324,10 +324,15 @@ class ProjectRevenueController extends ApiController
         }
 
         if ($primaryAddress) {
+            $distribution->street = $primaryAddress->street;
+            $distribution->street_number = $primaryAddress->number;
+            $distribution->street_number_addition = $primaryAddress->addition;
             $distribution->address = $primaryAddress->present()
                 ->streetAndNumber();
             $distribution->postal_code = $primaryAddress->postal_code;
             $distribution->city = $primaryAddress->city;
+            $distribution->country = $primaryAddress->country_id ? $primaryAddress->country->name : '';
+
         }
 
         if($projectRevenue->participantProjectPayoutType) {
@@ -419,8 +424,7 @@ class ProjectRevenueController extends ApiController
     public function createEnergySupplierReport(
         Request $request,
         ProjectRevenue $projectRevenue,
-        DocumentTemplate $documentTemplate,
-        EnergySupplier $energySupplier
+        DocumentTemplate $documentTemplate
     )
     {
         $documentName = $request->input('documentName');
@@ -524,16 +528,23 @@ class ProjectRevenueController extends ApiController
 
 //        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");
 
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME' != 'local'))
+        {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-            $document->filename, $document->getDocumentGroup()->name);
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                $document->filename, $document->getDocumentGroup()->name);
+        }else{
+            $alfrescoResponse = null;
+        }
 
         $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
         $document->save();
 
         //delete file on server, still saved on alfresco.
-        Storage::disk('documents')->delete($document->filename);
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME' != 'local')) {
+            Storage::disk('documents')->delete($document->filename);
+        }
     }
 
     public function destroy(ProjectRevenue $projectRevenue)

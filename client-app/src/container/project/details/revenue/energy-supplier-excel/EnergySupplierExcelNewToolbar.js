@@ -25,7 +25,7 @@ class EnergySupplierExcelNewToolbar extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <h3 className="text-center table-title">Nieuw energieleverancier export naar Excel</h3>
+                                <h3 className="text-center table-title">Rapportage Energie Leverancier naar Excel</h3>
                             </div>
                             <div className="col-md-4" />
                         </PanelBody>

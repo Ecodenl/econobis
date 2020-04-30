@@ -45,10 +45,15 @@ class PortalSettingsFormGeneralEdit extends Component {
                 cooperativeName: false,
                 portalWebsite: false,
                 portalUrl: false,
+                // defaultTextColor: false,
                 backgroundColor: false,
+                backgroundTextColor: false,
                 backgroundImageColor: false,
+                backgroundImageTextColor: false,
                 backgroundSecondaryColor: false,
+                backgroundSecondaryTextColor: false,
                 buttonColor: false,
+                buttonTextColor: false,
                 responsibleUserId: false,
                 checkContactTaskResponsibleUserId: false,
                 checkContactTaskResponsibleTeamId: false,
@@ -128,20 +133,40 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.portalUrl = true;
             hasErrors = true;
         }
+        // if (validator.isEmpty(portalSettings.defaultTextColor)) {
+        //     errors.defaultTextColor = true;
+        //     hasErrors = true;
+        // }
         if (validator.isEmpty(portalSettings.backgroundColor)) {
             errors.backgroundColor = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettings.backgroundTextColor)) {
+            errors.backgroundTextColor = true;
             hasErrors = true;
         }
         if (validator.isEmpty(portalSettings.backgroundImageColor)) {
             errors.backgroundImageColor = true;
             hasErrors = true;
         }
+        if (validator.isEmpty(portalSettings.backgroundImageTextColor)) {
+            errors.backgroundImageTextColor = true;
+            hasErrors = true;
+        }
         if (validator.isEmpty(portalSettings.backgroundSecondaryColor)) {
             errors.backgroundSecondaryColor = true;
             hasErrors = true;
         }
+        if (validator.isEmpty(portalSettings.backgroundSecondaryTextColor)) {
+            errors.backgroundSecondaryTextColor = true;
+            hasErrors = true;
+        }
         if (validator.isEmpty(portalSettings.buttonColor)) {
             errors.buttonColor = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettings.buttonTextColor)) {
+            errors.buttonTextColor = true;
             hasErrors = true;
         }
         if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.responsibleUserId + '')) {
@@ -202,10 +227,15 @@ class PortalSettingsFormGeneralEdit extends Component {
         data.append('cooperativeName', portalSettings.cooperativeName ? portalSettings.cooperativeName : '');
         data.append('portalWebsite', portalSettings.portalWebsite ? portalSettings.portalWebsite : '');
         data.append('portalUrl', portalSettings.portalUrl);
+        // data.append('defaultTextColor', portalSettings.defaultTextColor);
         data.append('backgroundColor', portalSettings.backgroundColor);
+        data.append('backgroundTextColor', portalSettings.backgroundTextColor);
         data.append('backgroundImageColor', portalSettings.backgroundImageColor);
+        data.append('backgroundImageTextColor', portalSettings.backgroundImageTextColor);
         data.append('backgroundSecondaryColor', portalSettings.backgroundSecondaryColor);
+        data.append('backgroundSecondaryTextColor', portalSettings.backgroundSecondaryTextColor);
         data.append('buttonColor', portalSettings.buttonColor);
+        data.append('buttonTextColor', portalSettings.buttonTextColor);
         data.append('responsibleUserId', portalSettings.responsibleUserId ? portalSettings.responsibleUserId : '');
         data.append(
             'checkContactTaskResponsibleUserId',
@@ -223,7 +253,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             'emailTemplateNewAccountId',
             portalSettings.emailTemplateNewAccountId ? portalSettings.emailTemplateNewAccountId : ''
         );
-        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
+        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy);
         data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
 
         data.append('attachmentLogo', attachmentLogo);
@@ -250,10 +280,15 @@ class PortalSettingsFormGeneralEdit extends Component {
             cooperativeName,
             portalWebsite,
             portalUrl,
+            // defaultTextColor,
             backgroundColor,
+            backgroundTextColor,
             backgroundImageColor,
+            backgroundImageTextColor,
             backgroundSecondaryColor,
+            backgroundSecondaryTextColor,
             buttonColor,
+            buttonTextColor,
             responsibleUserId,
             checkContactTaskResponsible,
             contactResponsibleOwnerUserId,
@@ -298,6 +333,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 }
                                 style={{
                                     backgroundColor: backgroundImageColor,
+                                    color: backgroundImageTextColor,
                                     border: '1px solid #999',
                                     display: 'inline-block',
                                     padding: '1px',
@@ -343,6 +379,124 @@ class PortalSettingsFormGeneralEdit extends Component {
                             />
                         )}
 
+                        {/*<div className="row">*/}
+                        {/*<InputText*/}
+                        {/*label="Standaard tekst kleur"*/}
+                        {/*divSize={'col-sm-8'}*/}
+                        {/*name={'defaultTextColor'}*/}
+                        {/*value={defaultTextColor}*/}
+                        {/*onChangeAction={this.handleInputChange}*/}
+                        {/*readOnly={!this.manageTechnicalPortalSettings}*/}
+                        {/*required={'required'}*/}
+                        {/*error={this.state.errors.defaultTextColor}*/}
+                        {/*/>*/}
+                        {/*<span*/}
+                        {/*className="rc-color-picker-trigger"*/}
+                        {/*unselectable="unselectable"*/}
+                        {/*style={{*/}
+                        {/*backgroundColor: '#fff',*/}
+                        {/*color: defaultTextColor,*/}
+                        {/*border: '1px solid #999',*/}
+                        {/*display: 'inline-block',*/}
+                        {/*padding: '2px',*/}
+                        {/*borderRadius: '2px',*/}
+                        {/*width: '50px',*/}
+                        {/*height: '30px',*/}
+                        {/*boxShadow: '0 0 0 2px #fff inset',*/}
+                        {/*}}*/}
+                        {/*>Tekst</span>*/}
+                        {/*</div>*/}
+                        <div className="row">
+                            <InputText
+                                label="Login - achtergrond afbeelding kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundImageColor'}
+                                value={backgroundImageColor}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.backgroundImageColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    color: backgroundImageTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '50px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Tekst
+                            </span>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Login - achtergrond afbeelding tekst kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundImageTextColor'}
+                                value={backgroundImageTextColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.backgroundImageTextColor}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Login - veld achtergrond kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundSecondaryColor'}
+                                value={backgroundSecondaryColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.backgroundSecondaryColor}
+                            />
+                            <div
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    display: 'inline-block',
+                                }}
+                            >
+                                <span
+                                    className="rc-color-picker-trigger"
+                                    unselectable="unselectable"
+                                    style={{
+                                        backgroundColor: backgroundSecondaryColor,
+                                        color: backgroundSecondaryTextColor,
+                                        border: '1px solid #999',
+                                        display: 'inline-block',
+                                        padding: '2px',
+                                        borderRadius: '2px',
+                                        width: '50px',
+                                        height: '30px',
+                                        boxShadow: '0 0 0 2px #fff inset',
+                                    }}
+                                >
+                                    Tekst
+                                </span>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Login - veld tekst kleur"
+                                divSize={'col-sm-8'}
+                                name={'backgroundSecondaryTextColor'}
+                                value={backgroundSecondaryTextColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.backgroundSecondaryTextColor}
+                            />
+                        </div>
                         <div className="row">
                             <InputText
                                 label="Achtergrond kleur"
@@ -359,66 +513,29 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 unselectable="unselectable"
                                 style={{
                                     backgroundColor: backgroundColor,
+                                    color: backgroundTextColor,
                                     border: '1px solid #999',
                                     display: 'inline-block',
                                     padding: '2px',
                                     borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
+                                    width: '50px',
+                                    height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
-                            />
+                            >
+                                Tekst
+                            </span>
                         </div>
                         <div className="row">
                             <InputText
-                                label="Achtergrond afbeelding kleur"
+                                label="Achtergrond tekst kleur"
                                 divSize={'col-sm-8'}
-                                name={'backgroundImageColor'}
-                                value={backgroundImageColor}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.backgroundImageColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundImageColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Tweede achtergrondkleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundSecondaryColor'}
-                                value={backgroundSecondaryColor}
+                                name={'backgroundTextColor'}
+                                value={backgroundTextColor}
                                 onChangeAction={this.handleInputChange}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
-                                error={this.state.errors.backgroundSecondaryColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundSecondaryColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
+                                error={this.state.errors.backgroundTextColor}
                             />
                         </div>
                         <div className="row">
@@ -437,14 +554,29 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 unselectable="unselectable"
                                 style={{
                                     backgroundColor: buttonColor,
+                                    color: buttonTextColor,
                                     border: '1px solid #999',
                                     display: 'inline-block',
                                     padding: '2px',
                                     borderRadius: '2px',
-                                    width: '20px',
-                                    height: '20px',
+                                    width: '50px',
+                                    height: '30px',
                                     boxShadow: '0 0 0 2px #fff inset',
                                 }}
+                            >
+                                Tekst
+                            </span>
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Buttonknop tekst kleur"
+                                divSize={'col-sm-8'}
+                                name={'buttonTextColor'}
+                                value={buttonTextColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.buttonTextColor}
                             />
                         </div>
 

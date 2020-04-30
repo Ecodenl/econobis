@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 import validator from 'validator';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
 moment.locale('nl');
 
 class ParticipantsListItem extends Component {
@@ -33,7 +34,25 @@ class ParticipantsListItem extends Component {
     }
 
     render() {
-        const { id, contact, participationsDefinitive, uniqueMutationStatuses, dateRegister, project } = this.props;
+        const {
+            id,
+            contact,
+            participationsInteressed,
+            participationsOptioned,
+            participationsGranted,
+            participationsDefinitive,
+            amountInteressed,
+            amountOptioned,
+            amountGranted,
+            amountDefinitive,
+            uniqueMutationStatuses,
+            dateRegister,
+            project,
+        } = this.props;
+        const projectTypeCodeRef = project ? project.typeCodeRef : '';
+        const participantionsTotal =
+            participationsInteressed + participationsOptioned + participationsGranted + participationsDefinitive;
+        const amountTotal = amountInteressed + amountOptioned + amountGranted + amountDefinitive;
         const primaryAddress = contact.primaryAddress;
         let street = '';
         let number = '';
@@ -79,7 +98,11 @@ class ParticipantsListItem extends Component {
                 <td>{contact.primaryAddress ? contact.primaryAddress.postalCode : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.city : ''}</td>
                 <td>{project ? project.name : ''}</td>
-                <td>{participationsDefinitive ? participationsDefinitive : ''}</td>
+                {projectTypeCodeRef === 'loan' ? (
+                    <td>{amountTotal ? MoneyPresenter(amountTotal) : ''}</td>
+                ) : (
+                    <td>{participantionsTotal ? participantionsTotal : ''}</td>
+                )}
                 <td>{uniqueMutationStatuses.map(item => item.name).join(', ')}</td>
                 <td>{dateRegister ? moment(dateRegister).format('L') : ''}</td>
                 <td>

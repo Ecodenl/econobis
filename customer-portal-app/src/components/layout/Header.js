@@ -84,7 +84,7 @@ function Header({ location, history }) {
 
     return (
         <header>
-            <div className="header-deltaw">
+            <div className="header-portal">
                 <div className="profile-pic">
                     <PortalUserConsumer>
                         {({ currentSelectedContact }) => (
@@ -230,7 +230,7 @@ function Header({ location, history }) {
                         <Link
                             to={'/inschrijvingen-projecten'}
                             className={`nav-link w-nav-link w--nav-link-open ${
-                                location.pathname === '/' ? 'w--current' : ''
+                                location.pathname === '/inschrijvingen-projecten' ? 'w--current' : ''
                             }`}
                             onClick={closeMenu}
                         >

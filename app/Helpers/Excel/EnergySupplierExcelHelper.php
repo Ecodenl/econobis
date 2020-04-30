@@ -47,7 +47,13 @@ class EnergySupplierExcelHelper
                 $excel = $this->getOxxioExcel();
                 break;
             case '4':
-                $excel = $this->getNuonExcel();
+                $excel = $this->getVattenfallExcel();
+                break;
+            case '5':
+                $excel = $this->getEnergieVanOnsExcel();
+                break;
+            case '6':
+                $excel = $this->getUniformExcel();
                 break;
             default:
                 break;
@@ -105,14 +111,20 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
                     $rowData[] = $distribution->address;
-                    $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
-                        ? substr($distribution->postal_code, 0, 4) : '';
-                    $rowData[] = $distribution->postal_code_letters
-                        = strlen($distribution->postal_code) == 6
-                        ? substr($distribution->postal_code, 4)
-                        : (strlen($distribution->postal_code) == 7
-                            ? substr($distribution->postal_code, 5)
-                            : '');
+                    if($distribution->country != '' && $distribution->country != 'Nederland')
+                    {
+                        $rowData[] = $distribution->postal_code_numbers = $distribution->postal_code;
+                        $rowData[] = $distribution->postal_code_letters = '';
+                    }else{
+                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                            ? substr($distribution->postal_code, 0, 4) : '';
+                        $rowData[] = $distribution->postal_code_letters
+                            = strlen($distribution->postal_code) == 6
+                            ? substr($distribution->postal_code, 4)
+                            : (strlen($distribution->postal_code) == 7
+                                ? substr($distribution->postal_code, 5)
+                                : '');
+                    }
                     $rowData[] = $distribution->city;
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
                         ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
@@ -145,34 +157,10 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // FIX EAN codes
-        // Kolommen metcellen die we expliciet instellen met "text" format.
-//        $textColumns = [
-//            'H'
-//        ];
-//        foreach ($textColumns as $textColumnLetter) {
-//            foreach ($completeData as $key => $row) {
-//                if ($key == 0) continue; // Header overslaan
-//                $cellCode = $textColumnLetter . ($key + 1);
-//                $sheet->getStyle($cellCode)
-//                    ->getNumberFormat()
-//                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
-//
-//                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
-//
-//                $spreadsheet->getActiveSheet()->getCell($cellCode)
-//                    ->setValueExplicit(
-//                        $cellValue,
-//                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
-//                    );
-//            }
-//        }
-        // EINDE FIX EAN codes
-
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Z'; $col++) {
+        for ($col = 'A'; $col !== 'Y'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
@@ -249,27 +237,7 @@ class EnergySupplierExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        // FIX EAN codes
-        // Kolommen metcellen die we expliciet instellen met "text" format.
-//        $textColumns = [
-//            'E'
-//        ];
-//        foreach ($textColumns as $textColumnLetter) {
-//            foreach ($completeData as $key => $row) {
-//                if ($key == 0) continue; // Header overslaan
-//                $cellCode = $textColumnLetter . ($key + 1);
-//
-//                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
-//                $cell = $spreadsheet->getActiveSheet()->getCell($cellCode);
-//                $cell->setValueExplicit( $cellValue,\PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-//                $sheet->getStyle($cellCode)->getNumberFormat()->setFormatCode('#');
-//                $sheet->getStyle($cellCode)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-//
-//            }
-//        }
-        // EINDE FIX EAN codes
-
-        for ($col = 'A'; $col !== 'Z'; $col++) {
+        for ($col = 'A'; $col !== 'M'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
@@ -338,34 +306,10 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // FIX EAN codes
-        // Kolommen metcellen die we expliciet instellen met "text" format.
-//        $textColumns = [
-//            'H'
-//        ];
-//        foreach ($textColumns as $textColumnLetter) {
-//            foreach ($completeData as $key => $row) {
-//                if ($key == 0) continue; // Header overslaan
-//                $cellCode = $textColumnLetter . ($key + 1);
-//                $sheet->getStyle($cellCode)
-//                    ->getNumberFormat()
-//                    ->setFormatCode(NumberFormat::FORMAT_TEXT );
-//
-//                $cellValue = $spreadsheet->getActiveSheet()->getCell($cellCode)->getValue();
-//
-//                $spreadsheet->getActiveSheet()->getCell($cellCode)
-//                    ->setValueExplicit(
-//                        $cellValue,
-//                        \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING
-//                    );
-//            }
-//        }
-        // EINDE FIX EAN codes
-
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Z'; $col++) {
+        for ($col = 'A'; $col !== 'K'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
@@ -382,7 +326,7 @@ class EnergySupplierExcelHelper
         return $spreadsheet;
     }
 
-    private function getNuonExcel()
+    private function getVattenfallExcel()
     {
         $this->counter = 0;
 
@@ -456,10 +400,240 @@ class EnergySupplierExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'R'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
+
+        return $spreadsheet;
+    }
+
+    private function getEnergieVanOnsExcel()
+    {
+        $this->counter = 0;
+
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'Ref. nr. cooperatie';
+        $headerData[] = 'Aanspreektitel';
+        $headerData[] = 'Voornaam';
+        $headerData[] = 'Tussenvoegsel';
+        $headerData[] = 'Achternaam';
+        $headerData[] = 'Leverancier';
+        $headerData[] = 'Klant nr.';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'Huis nr. ( + toevoeging)';
+        $headerData[] = 'Plaats';
+        $headerData[] = 'Ean';
+        $headerData[] = 'Productie installatie';
+        $headerData[] = 'Aantal certificaten';
+        $headerData[] = 'Toegekende productie (in kWh) <<jaartal>>';
+        $headerData[] = 'Toegekende productie (in kWh) <<jaartal>>';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            foreach ($chunk as $distribution) {
+
+                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                    $rowData = [];
+                    $rowData[] = $distribution->contact->number;
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
+                        : '' : '';
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                    if($distribution->contact->type_id == 'organisation'){
+                        $rowData[] = $distribution->contact->full_name;
+                    }else{
+                        $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                    }
+                    $rowData[] = $distribution->energy_supplier_name;
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
+                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->postal_code;
+                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                    $rowData[] = $distribution->city;
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $this->projectRevenue->project->name;
+                    $rowData[] = $deliveredKwhPeriod->participations_quantity;
+                    $rowData[] = $deliveredKwhPeriod->delivered_kwh;
+                    $rowData[] = $deliveredKwhPeriod->delivered_kwh;
+
+                    $completeData[] = $rowData;
+                }
+            }
+
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'R'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
+
+        return $spreadsheet;
+    }
+
+    private function getUniformExcel()
+    {
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'Naam';
+        $headerData[] = 'Voorletters';
+        $headerData[] = 'Voornaam';
+        $headerData[] = 'Tussenvoegsel';
+        $headerData[] = 'Achternaam';
+        $headerData[] = 'Straat';
+        $headerData[] = 'Huisnummer';
+        $headerData[] = 'Adres';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'Postcode cijfers';
+        $headerData[] = 'Postcode letters';
+        $headerData[] = 'Woonplaats';
+        $headerData[] = 'Ean-code leveringsadres';
+        $headerData[] = 'Emailadres';
+        $headerData[] = 'Telefoonnummer';
+        $headerData[] = 'Startdatum';
+        $headerData[] = 'Stand op 31-12';
+        $headerData[] = 'Einddatum';
+        $headerData[] = 'Aantal kavels';
+        $headerData[] = 'Klantnr';
+        $headerData[] = 'Referentie';
+        $headerData[] = 'Opwek';
+        $headerData[] = 'Cooperatie';
+        $headerData[] = 'Project';
+        $headerData[] = 'Totale opwek';
+        $headerData[] = 'Project ean';
+        $headerData[] = 'Project ean net';
+        $headerData[] = 'Garantie van oorsprong';
+        $headerData[] = 'Aanwijzing belastingdienst';
+        $headerData[] = 'Nabijheids-tarief';
+        $headerData[] = 'Stroom Totaal';
+        $headerData[] = 'EB Korting Totaal Excl. BTW';
+        $headerData[] = 'Klant Ontvangt Excl. BTW';
+        $headerData[] = 'Klant Ontvangt Incl. BTW';
+        $headerData[] = 'EB <jaartal>';
+        $headerData[] = 'Afrekendatum';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'contact.person',
+                'contact.primaryEmailAddress',
+                'contact.primaryphoneNumber',
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            foreach ($chunk as $distribution) {
+
+                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                    $rowData = [];
+                    $rowData[] = $distribution->contact->full_name;
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->first_name : '';
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
+                    $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name : '';
+                    $rowData[] = $distribution->street;
+                    $rowData[] = $distribution->street_number_addition ? $distribution->street_number . '-' . $distribution->street_number_addition : $distribution->street_number;
+                    $rowData[] = $distribution->address;
+                    $rowData[] = $distribution->postal_code;
+                    if($distribution->country != '' && $distribution->country != 'Nederland')
+                    {
+                        $rowData[] = '';
+                        $rowData[] = '';
+                    }else {
+                        $rowData[] = $distribution->postal_code_numbers = strlen($distribution->postal_code) > 3
+                            ? substr($distribution->postal_code, 0, 4) : '';
+                        $rowData[] = $distribution->postal_code_letters
+                            = strlen($distribution->postal_code) == 6
+                            ? substr($distribution->postal_code, 4)
+                            : (strlen($distribution->postal_code) == 7
+                                ? substr($distribution->postal_code, 5)
+                                : '');
+                    }
+                    $rowData[] = $distribution->city;
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $distribution->contact->primaryEmailAddress
+                        ? $distribution->contact->primaryEmailAddress->email : '';
+                    $rowData[] = $distribution->contact->primaryphoneNumber
+                        ? $distribution->contact->primaryphoneNumber->number : '';
+                    $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
+                    $rowData[] = '';
+                    $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
+                    $rowData[] = $deliveredKwhPeriod->participations_quantity;
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
+                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->number;
+                    $rowData[] = $deliveredKwhPeriod->delivered_kwh;
+//                    $rowData[] = PortalSettings::get('cooperativeName') ? PortalSettings::get('cooperativeName') : \Config::get('app.APP_NAME');
+                    $rowData[] = \Config::get('app.name');
+                    $rowData[] = $this->projectRevenue->project->name;
+                    $rowData[] = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                    $rowData[] = $this->projectRevenue->project->ean;
+                    $rowData[] = $this->projectRevenue->project->ean_manager;
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+                    $rowData[] = '';
+
+                    $completeData[] = $rowData;
+                }
+            }
+
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
         // FIX EAN codes
         // Kolommen metcellen die we expliciet instellen met "text" format.
 //        $textColumns = [
-//            'L'
+//            'M', 'Z', 'AA'
 //        ];
 //        foreach ($textColumns as $textColumnLetter) {
 //            foreach ($completeData as $key => $row) {
@@ -483,13 +657,13 @@ class EnergySupplierExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Z'; $col++) {
+        for ($col = 'A'; $col !== 'AK'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:Z1')
+        $sheet->getStyle('A1:AJ1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

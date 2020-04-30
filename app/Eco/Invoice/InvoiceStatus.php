@@ -24,10 +24,10 @@ class InvoiceStatus extends EnumWithIdAndName
         //Also edit InvoiceObserver!
         return [
             new static('to-send', 'Te verzenden'),
-            new static('in-progress', 'Wordt gemaakt'),
+            new static('in-progress', 'Wordt definitief gemaakt'),
             new static('error-making', 'Fout bij maken'),
             new static('is-sending', 'Wordt verstuurd'),
-            new static('error-sending', 'Fout verzenden'),
+            new static('error-sending', 'Opnieuw te verzenden'),
             new static('is-resending', 'Wordt opnieuw verstuurd'),
             new static('sent', 'Verzonden'),
             new static('exported', 'Geboekt'),

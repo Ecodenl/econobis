@@ -54,7 +54,7 @@ const NewAccount = props => {
 
     return (
         <div className="authorization-container">
-            <Container fluid className="text-light">
+            <Container fluid className="authorization-text">
                 <Row className="justify-content-center align-content-start align-content-lg-center full-height p-2">
                     <Col xs="12" sm="6" md="4" lg="4" xl="4">
                         <img src="images/logo.png" alt="" className="image logo-container-small" />
@@ -64,16 +64,17 @@ const NewAccount = props => {
                         ) : (
                             <>
                                 <Row className="justify-content-center">
-                                    <h3 className={'text-light'}>Nieuw account</h3>
+                                    <h3 className={'authorization-text'}>Nieuw account</h3>
                                 </Row>
                                 <Row className="justify-content-center">
-                                    <p className={'text-light'}>Maak binnen 2 minuten een account aan.</p>
+                                    <p className={'authorization-text'}>Maak binnen 2 minuten een account aan.</p>
                                 </Row>
                                 <br />
                                 <Row className="justify-content-center">
                                     <ButtonToolbar toggle>
                                         <Col>
                                             <Button
+                                                className={'authorization-button'}
                                                 variant={
                                                     contactType === 'person'
                                                         ? 'primary fixed-height'
@@ -87,6 +88,7 @@ const NewAccount = props => {
                                         </Col>
                                         <Col>
                                             <Button
+                                                className={'authorization-button'}
                                                 variant={contactType === 'organisation' ? 'primary' : 'light'}
                                                 block
                                                 onClick={() => setContactType('organisation')}

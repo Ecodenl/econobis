@@ -19,12 +19,10 @@ class EnergySupplierReportNewApp extends Component {
             report: {
                 revenueId: props.params.revenueId,
                 templateId: '',
-                energySupplierId: '',
                 documentName: '',
             },
             errors: {
                 templateId: false,
-                energySupplierId: false,
                 documentName: false,
             },
         };
@@ -73,11 +71,6 @@ class EnergySupplierReportNewApp extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(report.energySupplierId + '')) {
-            errors.energySupplierId = true;
-            hasErrors = true;
-        }
-
         if (validator.isEmpty(report.documentName + '')) {
             errors.documentName = true;
             hasErrors = true;
@@ -86,14 +79,11 @@ class EnergySupplierReportNewApp extends Component {
         this.setState({ ...this.state, errors: errors });
 
         !hasErrors &&
-            ProjectRevenueAPI.createEnergySupplierReport(
-                report.revenueId,
-                report.templateId,
-                report.energySupplierId,
-                report.documentName
-            ).then(payload => {
-                hashHistory.push(`/documenten`);
-            });
+            ProjectRevenueAPI.createEnergySupplierReport(report.revenueId, report.templateId, report.documentName).then(
+                payload => {
+                    hashHistory.push(`/documenten`);
+                }
+            );
     };
 
     render() {

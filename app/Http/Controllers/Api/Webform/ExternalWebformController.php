@@ -43,6 +43,7 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskPropertyValue;
 use App\Eco\Task\TaskType;
+use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
@@ -160,7 +161,7 @@ class ExternalWebformController extends Controller
 
         $data = $this->getDataFromRequest($request);
 
-        $contact = $this->updateOrCreateContact($data['contact'], $webform);
+        $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], $webform);
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
         if ($this->address) {
             $intake = $this->addIntakeToAddress($this->address, $data['intake']);
@@ -170,13 +171,17 @@ class ExternalWebformController extends Controller
         }
         $participation = $this->addParticipationToContact($contact, $data['participation'], $webform);
         $order = $this->addOrderToContact($contact, $data['order']);
-        $this->addTaskToContact($contact, $data['task'], $webform, $intake, $participation, $order);
+        $this->addTaskToContact($contact, $data['responsible_ids'], $data['task'], $webform, $intake, $participation, $order);
     }
 
 
     protected function getDataFromRequest(Request $request)
     {
         $mapping = [
+            'responsible_ids' => [
+                'verantwoordelijke_gebruiker_id' => 'responsible_user_id',
+                'verantwoordelijke_team_id' => 'responsible_team_id',
+            ],
             'contact' => [
                 // Contact
                 'titel_id' => 'title_id',
@@ -288,12 +293,12 @@ class ExternalWebformController extends Controller
         }
 
         // Sanitize
-        $data['contact']['address_postal_code'] = str_replace(' ', '', $data['contact']['address_postal_code']);
+        $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code'])); ;
 
         return $data;
     }
 
-    protected function updateOrCreateContact(array $data, Webform $webform)
+    protected function updateOrCreateContact(array $responsibleIds, array $data, Webform $webform)
     {
         $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);
@@ -320,7 +325,7 @@ class ExternalWebformController extends Controller
                     $note .= "Plaats : " . $data['address_city'] . "\n";
                     $note .= "Landcode : " . $data['address_country_id'] . "\n";
                     $note .= "Controleer contactgegevens\n";
-                    $this->addTaskCheckContact($contact, $webform, $note);
+                    $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
                 case 'NET' :
                     $this->addEmailToContact($data, $contact);
@@ -329,7 +334,7 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Controleer contactgegevens\n";
-                    $this->addTaskCheckContact($contact, $webform, $note);
+                    $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
                 case 'CCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
@@ -343,7 +348,7 @@ class ExternalWebformController extends Controller
                     $note .= "Plaats : " . $data['address_city'] . "\n";
                     $note .= "Landcode : " . $data['address_country_id'] . "\n";
                     $note .= "Controleer contactgegevens\n";
-                    $this->addTaskCheckContact($contact, $webform, $note);
+                    $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
             }
         }
@@ -359,7 +364,7 @@ class ExternalWebformController extends Controller
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw contact " . $contact->full_name . " (".$contact->number.") aangemaakt op adres wat al voorkomt bij bestaande contact(en).\n";
                     $note .= "Controleer contactgegevens\n";
-                    $this->addTaskCheckContact($contact, $webform, $note);
+                    $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
             }
         }
@@ -605,8 +610,9 @@ class ExternalWebformController extends Controller
             // Er is voldoende adres data meegegeven om een adres te kunnen maken
 
             $address = $contact->addresses()
-                ->where('number', $data['address_number'])
                 ->where('postal_code', $data['address_postal_code'])
+                ->where('number', $data['address_number'])
+                ->where('addition', $data['address_addition'])
                 ->first();
 
             if (!$address) {
@@ -719,7 +725,7 @@ class ExternalWebformController extends Controller
             $iban = $this->checkIban($data['iban'], 'organisatie.');
             $contactOrganisation = Contact::create([
                 'type_id' => 'organisation',
-                'status_id' => 'none',
+                'status_id' => 'webform',
                 'iban' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'did_agree_avg' => (bool)$data['did_agree_avg'],
@@ -742,7 +748,7 @@ class ExternalWebformController extends Controller
 
             $contactPerson = Contact::create([
                 'type_id' => 'person',
-                'status_id' => 'none',
+                'status_id' => 'webform',
             ]);
 
             // Validatie op title_id
@@ -782,7 +788,7 @@ class ExternalWebformController extends Controller
         $iban = $this->checkIban($data['iban'], 'contactpersoon.');
         $contact = Contact::create([
             'type_id' => 'person',
-            'status_id' => 'none',
+            'status_id' => 'webform',
             'iban' => $iban,
             'iban_attn' => $data['iban_attn'],
             'did_agree_avg' => (bool)$data['did_agree_avg'],
@@ -909,8 +915,20 @@ class ExternalWebformController extends Controller
 
             // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
-            Auth::setUser(User::find($webform->responsible_user_id));
-            $this->log('responsible_user_id : ' . $webform->responsible_user_id);
+            $responsibleUser = User::find($webform->responsible_user_id);
+            if($responsibleUser){
+                Auth::setUser($responsibleUser);
+                $this->log('Deelname mutatie verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+            }else{
+                $responsibleTeam = Team::find($webform->responsible_team_id);
+                if($responsibleTeam && $responsibleTeam->users ){
+                    $teamFirstUser = $responsibleTeam->users->first();
+                    Auth::setUser($teamFirstUser);
+                    $this->log('Deelname mutatie verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+                }else{
+                    $this->log('Deelname mutatie verantwoordelijke gebruiker : onbekend');
+                }
+            }
 
             $ibanPayout = $this->checkIban($data['iban_payout'], 'participatie.');
             $projectTypeCodeRef = $project->projectType->code_ref;
@@ -1074,7 +1092,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addTaskToContact(Contact $contact, array $data, Webform $webform, Intake $intake = null, ParticipantProject $participation = null, Order $order = null)
+    protected function addTaskToContact(Contact $contact, array $responsibleIds, array $data, Webform $webform, Intake $intake = null, ParticipantProject $participation = null, Order $order = null)
     {
         // Default date planned finish
         $datePlannedFinish = null;
@@ -1140,6 +1158,20 @@ class ExternalWebformController extends Controller
             $this->log('Geen bekende waarde voor taak_type_id (' . $data['type_id'] . ') meegegeven, default naar ' . $taskTypeId . ' ' . $taskType->name . '.');
         }
 
+        if($responsibleIds['responsible_user_id']) {
+            $responsibleUserId = $responsibleIds['responsible_user_id'];
+            $responsibleTeamId = null;
+        }elseif($responsibleIds['responsible_team_id']) {
+            $responsibleUserId = null;
+            $responsibleTeamId = $responsibleIds['responsible_team_id'];
+        }else{
+            $responsibleUserId = $webform->responsible_user_id;
+            $responsibleTeamId = $webform->responsible_team_id;
+        }
+
+        $this->log('Taak verantwoordelijke gebruiker : ' . $responsibleUserId);
+        $this->log('Taak verantwoordelijke team : ' . $responsibleTeamId);
+
         $task = Task::create([
             'note' => $note,
             'type_id' => $taskTypeId,
@@ -1148,8 +1180,8 @@ class ExternalWebformController extends Controller
             'finished' => $data['finished'] ? (bool)$data['finished'] : false,
             'date_planned_start' => (new Carbon())->startOfDay(),
             'date_planned_finish' => $datePlannedFinish,
-            'responsible_user_id' => $webform->responsible_user_id,
-            'responsible_team_id' => $webform->responsible_team_id,
+            'responsible_user_id' => $responsibleUserId,
+            'responsible_team_id' => $responsibleTeamId,
             'intake_id' => $intake ? $intake->id : null,
             'project_id' => $participation ? $participation->project_id : null,
             'participation_project_id' => $participation ? $participation->id : null,
@@ -1158,9 +1190,10 @@ class ExternalWebformController extends Controller
 
         if($task->finished){
             $task->date_finished = Carbon::today();
-            $finished_by_user = User::find($webform->responsible_user_id);
+            $finished_by_user = User::find($responsibleIds['responsible_user_id'] ? $responsibleIds['responsible_user_id'] : $webform->responsible_user_id );
             $task->finished_by_id = $finished_by_user ? $finished_by_user->id : null;
             $task->save();
+            $this->log('Taak met id ' . $task->id . ' automatisch gereed op ' . Carbon::parse($task->finished)->format('d-m-Y') . ' door verantwoordelijke: ' . $finished_by_user->fullname);
         }
 
         $this->log('Taak met id ' . $task->id . ' aangemaakt.');
@@ -1177,11 +1210,22 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addTaskCheckContact(Contact $contact, Webform $webform, $note)
+    protected function addTaskCheckContact(array $responsibleIds, Contact $contact, Webform $webform, $note)
     {
         $taskTypeId = 6;
         $taskType = TaskType::find($taskTypeId);
         $this->log('Taak Controle contact met taak_type_id (default)' . $taskTypeId . ' ' . $taskType->name . ' aangemaakt.');
+
+        if($responsibleIds['responsible_user_id']) {
+            $responsibleUserId = $responsibleIds['responsible_user_id'];
+            $responsibleTeamId = null;
+        }elseif($responsibleIds['responsible_team_id']) {
+            $responsibleUserId = null;
+            $responsibleTeamId = $responsibleIds['responsible_team_id'];
+        }else{
+            $responsibleUserId = $webform->responsible_user_id;
+            $responsibleTeamId = $webform->responsible_team_id;
+        }
 
         $task = Task::create([
             'note' => $note,
@@ -1191,8 +1235,8 @@ class ExternalWebformController extends Controller
             'finished' => false,
             'date_planned_start' => (new Carbon())->startOfDay(),
             'date_planned_finish' => null,
-            'responsible_user_id' => $webform->responsible_user_id,
-            'responsible_team_id' => $webform->responsible_team_id,
+            'responsible_user_id' => $responsibleUserId,
+            'responsible_team_id' => $responsibleTeamId,
             'intake_id' => null,
             'project_id' => null,
             'participation_project_id' => null,

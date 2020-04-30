@@ -30,10 +30,15 @@ class PortalSettingsApp extends Component {
             '&keys[]=cooperativeName' +
             '&keys[]=portalWebsite' +
             '&keys[]=portalUrl' +
+            // '&keys[]=defaultTextColor' +
             '&keys[]=backgroundColor' +
+            '&keys[]=backgroundTextColor' +
             '&keys[]=backgroundImageColor' +
+            '&keys[]=backgroundImageTextColor' +
             '&keys[]=backgroundSecondaryColor' +
+            '&keys[]=backgroundSecondaryTextColor' +
             '&keys[]=buttonColor' +
+            '&keys[]=buttonTextColor' +
             '&keys[]=responsibleUserId' +
             '&keys[]=checkContactTaskResponsibleUserId' +
             '&keys[]=checkContactTaskResponsibleTeamId' +

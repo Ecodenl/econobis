@@ -6,6 +6,7 @@ import DataTableCustomFilterSelectNumber from './DataTableCustomFilterSelectNumb
 import DataTableCustomFilterSelectNumberOrString from './DataTableCustomFilterSelectNumberOrString';
 import DataTableCustomFilterSelectDropdown from './DataTableCustomFilterSelectDropdown';
 import DataTableCustomFilterSelectDate from './DataTableCustomFilterSelectDate';
+import DataTableCustomFilterSelectBoolean from './DataTableCustomFilterSelectBoolean';
 
 import moment from 'moment';
 import DataTableDateFilter from './DataTableDateFilter';
@@ -44,6 +45,7 @@ const DataTableCustomFilter = props => {
 
     const fieldList = Object.entries(fields).map(([key, value], i) => {
         if (key === 'dateStart' || key === 'dateFinish' || key === 'orderStatus') return;
+        if (props.contactType === 'organisation' && key === 'portalUser') return;
 
         return (
             <option key={i} value={key}>
@@ -108,6 +110,13 @@ const DataTableCustomFilter = props => {
                         readOnly={props.filter.readOnly}
                     />
                 )}
+                {fieldType === 'boolean' && (
+                    <DataTableCustomFilterSelectBoolean
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
                 {fieldType === 'dropdown' && (
                     <DataTableCustomFilterSelectDropdown
                         handleInputChange={handleInputChange}
@@ -127,6 +136,7 @@ const DataTableCustomFilter = props => {
                         handleInputChange={handleInputChange}
                         type={type}
                         readOnly={props.filter.readOnly}
+                        contactType={props.contactType}
                     />
                 )}
                 {fieldType === 'date' && (
@@ -137,51 +147,90 @@ const DataTableCustomFilter = props => {
                     />
                 )}
             </td>
-            {props.filter.comperator !== 'nl' && props.filter.comperator !== 'nnl' && (
-                <td className="col-md-4">
-                    {(fieldType === 'number' ||
-                        fieldType === 'string' ||
-                        fieldType === 'numberOrString' ||
-                        fieldType === 'stringWithoutNull') && (
-                        <input
-                            className={'form-control input-sm'}
-                            type="text"
-                            id="data"
-                            name="data"
-                            value={props.filter.data}
-                            onChange={handleInputChange}
-                            readOnly={props.filter.readOnly}
-                        />
-                    )}
-                    {(fieldType === 'dropdown' || fieldType === 'dropdownHas' || fieldType === 'dropdownRelations') && (
-                        <select
-                            className={`form-control input-sm`}
-                            id="data"
-                            name="data"
-                            value={props.filter.data}
-                            onChange={handleInputChange}
-                            disabled={props.filter.readOnly}
-                        >
-                            <option />
-                            {props.fields[props.filter.field].dropDownOptions.map(option => {
-                                return (
-                                    <option key={option.id} value={option.id}>
-                                        {option[optionName]}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    )}
-                    {fieldType === 'date' && (
-                        <DataTableDateFilter
-                            id="data"
-                            value={props.filter.data}
-                            onChangeAction={handleInputChangeDate}
-                            readOnly={props.filter.readOnly}
-                        />
-                    )}
-                </td>
-            )}
+            <td className="col-md-4">
+                {props.filter.type !== 'nl' && props.filter.type !== 'nnl' && (
+                    <React.Fragment>
+                        {(fieldType === 'number' ||
+                            fieldType === 'string' ||
+                            fieldType === 'numberOrString' ||
+                            fieldType === 'stringWithoutNull') && (
+                            <input
+                                className={'form-control input-sm'}
+                                type="text"
+                                id="data"
+                                name="data"
+                                value={props.filter.data}
+                                onChange={handleInputChange}
+                                readOnly={props.filter.readOnly}
+                            />
+                        )}
+                        {(fieldType === 'dropdown' || fieldType === 'dropdownHas') && (
+                            <select
+                                className={`form-control input-sm`}
+                                id="data"
+                                name="data"
+                                value={props.filter.data}
+                                onChange={handleInputChange}
+                                disabled={props.filter.readOnly}
+                            >
+                                <option value="">--Willekeurige waarde--</option>
+                                {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                    return (
+                                        <option key={option.id} value={option.id}>
+                                            {option[optionName]}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        )}
+                        {fieldType === 'boolean' && (
+                            <select
+                                className={`form-control input-sm`}
+                                id="data"
+                                name="data"
+                                value={props.filter.data}
+                                onChange={handleInputChange}
+                                disabled={props.filter.readOnly}
+                            >
+                                {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                    return (
+                                        <option key={option.id} value={option.id}>
+                                            {option[optionName]}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        )}
+                        {fieldType === 'dropdownRelations' && (
+                            <select
+                                className={`form-control input-sm`}
+                                id="data"
+                                name="data"
+                                value={props.filter.data}
+                                onChange={handleInputChange}
+                                disabled={props.filter.readOnly}
+                            >
+                                <option value="">--Willekeurige waarde--</option>
+                                {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                    return (
+                                        <option key={option.id} value={option.id}>
+                                            {option[optionName]}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        )}
+                        {fieldType === 'date' && (
+                            <DataTableDateFilter
+                                id="data"
+                                value={props.filter.data}
+                                onChangeAction={handleInputChangeDate}
+                                readOnly={props.filter.readOnly}
+                            />
+                        )}
+                    </React.Fragment>
+                )}
+            </td>
             {isCustomProductField || props.filter.readOnly ? (
                 <td />
             ) : (

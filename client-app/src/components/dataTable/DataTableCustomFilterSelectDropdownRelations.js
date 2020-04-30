@@ -9,10 +9,19 @@ const DataTableBody = props => {
             value={props.type}
             onChange={props.handleInputChange}
         >
-            <option value="rel">heeft</option>
-            <option value="nrel">heeft geen</option>
-            <option value="eq">is</option>
-            <option value="neq">is geen</option>
+            {props.contactType !== 'person' ? (
+                <React.Fragment>
+                    <option value="">--Maak keuze--</option>
+                    <option value="rel">heeft</option>
+                    <option value="nrel">heeft geen</option>
+                </React.Fragment>
+            ) : null}
+            {props.contactType !== 'organisation' ? (
+                <React.Fragment>
+                    <option value="eq">is</option>
+                    <option value="neq">is geen</option>
+                </React.Fragment>
+            ) : null}
         </select>
     );
 };

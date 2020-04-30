@@ -196,7 +196,7 @@ class Order extends Model
 
     public function getCanCreateInvoiceAttribute()
     {
-        if($this->status_id === 'concept' || $this->status_id === 'closed'){
+        if($this->status_id === 'concept' || $this->status_id === 'in-progress' || $this->status_id === 'closed'){
             return false;
         }
         if ($this->invoices()->where('status_id', 'to-send')->exists()) {

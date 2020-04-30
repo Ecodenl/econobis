@@ -122,7 +122,7 @@ class InvoiceSendConfirm extends Component {
                 )}
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u alle nota's verzenden?</span>
+                        <span>Wilt u alle nota's definitief maken en verzenden?</span>
                     </div>
                 </div>
             </Modal>

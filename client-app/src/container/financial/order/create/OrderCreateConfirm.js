@@ -40,14 +40,15 @@ class OrderCreateConfirm extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                         <span>
-                            Wilt u alle nota's ({this.props.amountOfOrders}) aanmaken? Let op. Nadat je op "maak nota's"
-                            hebt geklikt staan de nota's klaar om te verzenden. Je kunt geen wijzigingen aanmaken in de
-                            order. Dit kan pas weer, nadat de aangemaakte nota werkelijk is verzonden. Zorg er daarom
-                            voor dat je order juist is.
+                            Wilt u alle concept nota's ({this.props.amountOfOrders}) aanmaken? Let op. Nadat je op "maak
+                            concept nota's" hebt geklikt staan de concept nota's klaar om te verzenden. Je kunt geen
+                            wijzigingen aanmaken in de order. Dit kan pas weer, nadat de aangemaakte nota werkelijk is
+                            verzonden. Zorg er daarom voor dat je order juist is.
                             <br />
                             <br />
-                            De aangemaakte nota's komen in de map “Te verzenden - incasso nota's” of “Te verzenden –
-                            overboek nota's”. Vanuit deze mappen kun je de nota's echt verzenden.
+                            De aangemaakte concept nota's komen in de map “Te verzenden - incasso nota's” of “Te
+                            verzenden – overboek nota's”. Vanuit deze mappen kun je de nota's definitief maken en
+                            verzenden.
                             <br />
                             <br />
                             Deze orders gaan van de order map "Actief - te factureren orders" naar de order map “Actief

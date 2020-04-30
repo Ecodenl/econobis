@@ -41,6 +41,10 @@ class TwinfieldInvoiceHelper
     }
 
     public function processPaidInvoices(){
+        if(!$this->administration->uses_twinfield){
+            return "Deze administratie maakt geen gebruik van Twinfield.";
+        }
+
         set_time_limit(0);
         $browseDataApiConnector = new BrowseDataApiConnector($this->connection);
         //Deze function kan je gebruiken om te kijken wel browseDefinition fields er zijn voor een bepaald code

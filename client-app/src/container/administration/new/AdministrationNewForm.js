@@ -17,8 +17,8 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import InputToggle from '../../../components/form/InputToggle';
 import ViewText from '../../../components/form/ViewText';
-import InputDate from "../../../components/form/InputDate";
-import moment from "moment";
+import InputDate from '../../../components/form/InputDate';
+import moment from 'moment';
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -345,8 +345,8 @@ class AdministrationNewForm extends Component {
             emailBccNotas,
         } = this.state.administration;
 
-        let disableBeforeDateSyncTwinfieldContacts = moment( moment().format('YYYY')+'-01-01').format('YYYY-01-01');
-        let disableBeforeDateSyncTwinfieldPayments = moment( moment().format('YYYY')+'-01-01').format('YYYY-01-01');
+        let disableBeforeDateSyncTwinfieldContacts = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
+        let disableBeforeDateSyncTwinfieldPayments = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>

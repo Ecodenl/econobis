@@ -16,8 +16,8 @@ import axios from 'axios';
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
-import InputDate from "../../../../components/form/InputDate";
-import moment from "moment";
+import InputDate from '../../../../components/form/InputDate';
+import moment from 'moment';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -426,18 +426,20 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         } = this.state.administration;
 
         let disableBeforeDateSyncTwinfieldContacts = null;
-        if(dateSyncTwinfieldContacts)
-        {
-            disableBeforeDateSyncTwinfieldContacts = moment( moment(dateSyncTwinfieldContacts).format('YYYY')+'-01-01').format('YYYY-01-01');
-        }else{
-            disableBeforeDateSyncTwinfieldContacts = moment( moment().format('YYYY')+'-01-01').format('YYYY-01-01');
+        if (dateSyncTwinfieldContacts) {
+            disableBeforeDateSyncTwinfieldContacts = moment(
+                moment(dateSyncTwinfieldContacts).format('YYYY') + '-01-01'
+            ).format('YYYY-01-01');
+        } else {
+            disableBeforeDateSyncTwinfieldContacts = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
         }
-        let disableBeforeDateSyncTwinfieldPayments = null
-        if(dateSyncTwinfieldPayments)
-        {
-            disableBeforeDateSyncTwinfieldPayments = moment( moment(dateSyncTwinfieldPayments).format('YYYY')+'-01-01').format('YYYY-01-01');
-        }else{
-            disableBeforeDateSyncTwinfieldPayments = moment( moment().format('YYYY')+'-01-01').format('YYYY-01-01');
+        let disableBeforeDateSyncTwinfieldPayments = null;
+        if (dateSyncTwinfieldPayments) {
+            disableBeforeDateSyncTwinfieldPayments = moment(
+                moment(dateSyncTwinfieldPayments).format('YYYY') + '-01-01'
+            ).format('YYYY-01-01');
+        } else {
+            disableBeforeDateSyncTwinfieldPayments = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
         }
 
         return (
@@ -754,7 +756,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         error={this.state.errors.dateSyncTwinfieldPayments}
                                     />
                                 </div>
-
                             </React.Fragment>
                         )}
 

@@ -22,7 +22,7 @@ const ContactDetailsConclusionView = props => {
                     label={'Gemaakt door'}
                     value={
                         status
-                            ? status.name == 'Portal'
+                            ? status.id == 'portal' || status.id == 'webform'
                                 ? status.name
                                 : createdBy
                                 ? createdBy.fullName
@@ -31,7 +31,7 @@ const ContactDetailsConclusionView = props => {
                     }
                     link={
                         status
-                            ? status.name == 'Portal'
+                            ? status.id == 'portal' || status.id == 'webform'
                                 ? ''
                                 : createdBy
                                 ? 'gebruiker/' + createdBy.id

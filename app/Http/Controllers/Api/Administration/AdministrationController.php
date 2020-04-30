@@ -351,6 +351,7 @@ class AdministrationController extends ApiController
             'totalOrdersConcepts' => $administration->total_orders_concepts,
             'totalOrdersUpcoming' => $administration->total_orders_upcoming,
             'totalOrdersToCreateInvoices' => $administration->total_orders_to_create_invoices,
+            'totalOrdersInProgressInvoices' => $administration->total_orders_in_progress_invoices,
             'totalOrdersToSendInvoices' => $administration->total_orders_to_send_invoices,
             'totalOrdersClosed' => $administration->total_orders_closed,
 

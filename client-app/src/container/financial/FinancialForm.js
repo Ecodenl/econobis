@@ -19,7 +19,12 @@ const FinancialForm = ({
                 {type === 'orders' && (
                     <Panel>
                         <PanelBody>
-                            <OrdersList administrationId={administrationDetails.id} filter={filter} />
+                            <OrdersList
+                                administrationId={administrationDetails.id}
+                                filter={filter}
+                                fetchTotalsInfoAdministration={fetchTotalsInfoAdministration}
+                                totalsInfoAdministration={totalsInfoAdministration}
+                            />
                         </PanelBody>
                     </Panel>
                 )}

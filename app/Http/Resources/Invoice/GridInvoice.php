@@ -53,7 +53,7 @@ class GridInvoice extends Resource
             'status' =>  FullEnumWithIdAndName::make($this->getStatus()),
             'subStatus' => $this->sub_status,
             'usesTwinfield' => $this->administration->uses_twinfield,
-            'invoiceInTwinfield' => ($this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
+            'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
             'twinfieldNumber' => $this->twinfield_number,
 
             'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend'

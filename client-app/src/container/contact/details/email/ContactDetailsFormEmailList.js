@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ContactDetailFormEmailItem from './ContactDetailsFormEmailItem';
+import ContactDetailFormAddressItem from '../address/ContactDetailsFormAddressList';
 
 const ContactDetailsFormEmailList = props => {
     return (
@@ -16,7 +17,13 @@ const ContactDetailsFormEmailList = props => {
             </div>
             {props.emailAddresses.length > 0 ? (
                 props.emailAddresses.map(emailAddress => {
-                    return <ContactDetailFormEmailItem key={emailAddress.id} emailAddress={emailAddress} />;
+                    return (
+                        <ContactDetailFormEmailItem
+                            key={emailAddress.id}
+                            emailAddress={emailAddress}
+                            numberOfEmailAddresses={props.emailAddresses.length}
+                        />
+                    );
                 })
             ) : (
                 <div>Geen e-mailadressen bekend.</div>

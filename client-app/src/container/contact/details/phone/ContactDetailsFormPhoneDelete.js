@@ -9,6 +9,10 @@ const ContactDetailsPhoneDelete = props => {
         props.deletePhoneNumber(props.id);
         props.closeDeleteItemModal();
     };
+    let allowDelete = false;
+    if (!props.primary || (props.numberOfPhoneNumbers && props.numberOfPhoneNumbers === 1)) {
+        allowDelete = true;
+    }
 
     return (
         <Modal
@@ -16,16 +20,23 @@ const ContactDetailsPhoneDelete = props => {
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
-            showConfirmAction={!props.primary}
+            showConfirmAction={allowDelete}
             title="Verwijderen"
         >
             <p>
                 Verwijder telefoonnummer: <strong> {`${props.number}`} </strong>
             </p>
 
-            {props.primary && (
+            {props.primary && props.numberOfPhoneNumbers > 1 && (
                 <p className={'text-danger'}>
-                    <strong>Let op!</strong> Dit is een primair telefoonnummer en kan niet worden verwijderd.
+                    <strong>Fout!</strong> Dit is een primair telefoonnummer en kan niet worden verwijderd.
+                    <br />
+                    Maak eerst een ander e-mailadres primair.
+                </p>
+            )}
+            {props.primary && allowDelete && (
+                <p className={'text-danger'}>
+                    <strong>Let op!</strong> Dit is een primair telefoonnummer en enige telefoonnummer bij contact.
                 </p>
             )}
         </Modal>

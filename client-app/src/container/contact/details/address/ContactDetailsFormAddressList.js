@@ -19,7 +19,13 @@ const ContactDetailsFormAddressList = props => {
             </div>
             {props.addresses.length > 0 ? (
                 props.addresses.map(address => {
-                    return <ContactDetailFormAddressItem key={address.id} address={address} />;
+                    return (
+                        <ContactDetailFormAddressItem
+                            key={address.id}
+                            address={address}
+                            numberOfAddresses={props.addresses.length}
+                        />
+                    );
                 })
             ) : (
                 <div>Geen adres bekend.</div>

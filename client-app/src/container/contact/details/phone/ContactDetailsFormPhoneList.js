@@ -16,7 +16,13 @@ const ContactDetailsFormPhoneList = props => {
             </div>
             {props.phoneNumbers.length > 0 ? (
                 props.phoneNumbers.map(phoneNumber => {
-                    return <ContactDetailFormPhoneItem key={phoneNumber.id} phoneNumber={phoneNumber} />;
+                    return (
+                        <ContactDetailFormPhoneItem
+                            key={phoneNumber.id}
+                            phoneNumber={phoneNumber}
+                            numberOfPhoneNumbers={props.phoneNumbers.length}
+                        />
+                    );
                 })
             ) : (
                 <div>Geen telefoonnummers bekend.</div>

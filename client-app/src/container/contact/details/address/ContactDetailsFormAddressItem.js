@@ -175,7 +175,11 @@ class ContactDetailFormAddressItem extends Component {
                     />
                 )}
                 {this.state.showDelete && (
-                    <ContactDetailsFormAddressDelete closeDeleteItemModal={this.toggleDelete} {...this.props.address} />
+                    <ContactDetailsFormAddressDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        numberOfAddresses={this.props.numberOfAddresses}
+                        {...this.props.address}
+                    />
                 )}
             </div>
         );

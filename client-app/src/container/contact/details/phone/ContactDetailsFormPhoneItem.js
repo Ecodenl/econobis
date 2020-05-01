@@ -12,6 +12,7 @@ import {
 import ContactDetailsFormPhoneView from './ContactDetailsFormPhoneView';
 import ContactDetailsFormPhoneEdit from './ContactDetailsFormPhoneEdit';
 import ContactDetailsFormPhoneDelete from './ContactDetailsFormPhoneDelete';
+import ContactDetailsFormEmailDelete from '../email/ContactDetailsFormEmailItem';
 
 class ContactDetailFormPhoneItem extends Component {
     constructor(props) {
@@ -150,6 +151,7 @@ class ContactDetailFormPhoneItem extends Component {
                 {this.state.showDelete && (
                     <ContactDetailsFormPhoneDelete
                         closeDeleteItemModal={this.toggleDelete}
+                        numberOfPhoneNumbers={this.props.numberOfPhoneNumbers}
                         {...this.props.phoneNumber}
                     />
                 )}

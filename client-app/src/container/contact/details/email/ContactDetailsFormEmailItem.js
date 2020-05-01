@@ -12,6 +12,7 @@ import ContactDetailsFormEmailView from './ContactDetailsFormEmailView';
 import ContactDetailsFormEmailEdit from './ContactDetailsFormEmailEdit';
 import ContactDetailsFormEmailDelete from './ContactDetailsFormEmailDelete';
 import { isEqual } from 'lodash';
+import ContactDetailsFormAddressDelete from '../address/ContactDetailsFormAddressItem';
 
 class ContactDetailFormEmailItem extends Component {
     constructor(props) {
@@ -150,6 +151,7 @@ class ContactDetailFormEmailItem extends Component {
                 {this.state.showDelete && (
                     <ContactDetailsFormEmailDelete
                         closeDeleteItemModal={this.toggleDelete}
+                        numberOfEmailAddresses={this.props.numberOfEmailAddresses}
                         {...this.props.emailAddress}
                     />
                 )}

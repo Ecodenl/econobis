@@ -10,7 +10,7 @@ class ContactDetailsGroups extends Component {
     render() {
         return (
             <div>
-                <span className="h5 text-bold">Groepen</span>
+                <span className="h5">Groepen</span>
 
                 <div className="col-md-12">
                     <ContactDetailsGroupsList />

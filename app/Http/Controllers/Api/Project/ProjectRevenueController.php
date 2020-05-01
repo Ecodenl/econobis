@@ -528,7 +528,7 @@ class ProjectRevenueController extends ApiController
 
 //        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");
 
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME' != 'local'))
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local')
         {
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
@@ -542,7 +542,7 @@ class ProjectRevenueController extends ApiController
         $document->save();
 
         //delete file on server, still saved on alfresco.
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME' != 'local')) {
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
             Storage::disk('documents')->delete($document->filename);
         }
     }

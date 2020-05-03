@@ -93,17 +93,17 @@ class DocumentController extends Controller
             $time = Carbon::now();
 
             $name = '';
-            $document->contact && $name .= str_replace(' ', '', $document->contact->full_name) . '_';
-            $document->intake && $name .= $document->intake->contact->full_name . '_';
-            $document->contactGroup && $name .= str_replace(' ', '', $document->contactGroup->name) . '_';
+            $document->contact && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->contact->full_name)) . '_';
+            $document->intake && $name .= $this->translateToValidCharacterSet($document->intake->contact->full_name) . '_';
+            $document->contactGroup && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->contactGroup->name)) . '_';
             $document->opportunity && $name .= $document->opportunity->number . '_';
-            $document->housingFile && $name .= str_replace(' ', '', $document->housingFile->address->contact->full_name) . '_';
-            $document->campaign && $name .= str_replace(' ', '', $document->campaign->name) . '_';
-            $document->measure && $name .= str_replace(' ', '', $document->measure->name) . '_';
+            $document->housingFile && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->housingFile->address->contact->full_name)) . '_';
+            $document->campaign && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->campaign->name)) . '_';
+            $document->measure && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->measure->name)) . '_';
             $document->task && $name .= $document->task->id . '_';
-            $document->quotationRequest && $name .= str_replace(' ', '', $document->quotationRequest->organisation->contact->full_name) . '_';
-            $document->project && $name .= str_replace(' ', '', $document->project->name) . '_';
-            $document->participant && $name .= str_replace(' ', '', $document->participant->contact->full_name) . '_';
+            $document->quotationRequest && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->quotationRequest->organisation->contact->full_name)) . '_';
+            $document->project && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->project->name)) . '_';
+            $document->participant && $name .= str_replace(' ', '', $this->translateToValidCharacterSet($document->participant->contact->full_name)) . '_';
             $document->order && $name .= str_replace(' ', '', $document->order->number) . '_';
 
             //max length name 25
@@ -238,5 +238,13 @@ class DocumentController extends Controller
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
         return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+    }
+
+    protected function translateToValidCharacterSet($field){
+
+        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
     }
 }

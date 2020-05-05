@@ -55,6 +55,10 @@ class TwinfieldSalesTransactionHelper
     }
 
     public function createAllSalesTransactions(){
+        if(!$this->administration->uses_twinfield){
+            return "Deze administratie maakt geen gebruik van Twinfield.";
+        }
+
         set_time_limit(0);
 
         foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>=', '20190101')

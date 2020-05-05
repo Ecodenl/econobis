@@ -54,6 +54,9 @@ class TwinfieldCustomerHelper
     }
 
     public function createAllCustomers(){
+        if(!$this->administration->uses_twinfield){
+            return "Deze administratie maakt geen gebruik van Twinfield.";
+        }
         set_time_limit(0);
         $contacts = Contact::all();
 
@@ -63,6 +66,9 @@ class TwinfieldCustomerHelper
     }
 
     public function createCustomer(Contact $contact){
+        if(!$this->administration->uses_twinfield){
+            return "Deze administratie maakt geen gebruik van Twinfield.";
+        }
 // Check of Customer al bestaat in Twinfield. We doen hier nog niets mee.
 //        if( $this->checkIfCustomerNameExists($contact) )
 //        {

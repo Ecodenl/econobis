@@ -41,6 +41,10 @@ class TwinfieldInvoiceHelper
     }
 
     public function processPaidInvoices(){
+        if(!$this->administration->uses_twinfield){
+            return "Deze administratie maakt geen gebruik van Twinfield.";
+        }
+
         set_time_limit(0);
         $browseDataApiConnector = new BrowseDataApiConnector($this->connection);
         //Deze function kan je gebruiken om te kijken wel browseDefinition fields er zijn voor een bepaald code
@@ -49,9 +53,14 @@ class TwinfieldInvoiceHelper
         $messages = [];
 
         // We controleren alle invoices met status exported of paid en met koppeling Twinfield
-        // todo Op den duur worden dit steeds meer invoices die hij moet checken.
-        //  wellicht moeten we een max periode terug in tijd afspreken. En wellicht dan h.m. correctie mogelijk maken voor oude betalingen.
-        foreach ($this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get() as $invoiceToBeChecked)
+        // Tenzij er een datum Synchroniseer betalingen vanaf is opgegeven. Dan alleen facturen die vanaf die datum zijn gemaakt.
+        $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
+        if($this->administration->date_sync_twinfield_payments){
+            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->where('created_by', '>=', $this->administration->date_sync_twinfield_payments)->get();
+        }else{
+            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
+        }
+        foreach ($invoicesToBeChecked as $invoiceToBeChecked)
         {
             if(!$invoiceToBeChecked->twinfield_number){
                 Log::error('Nota ' . $invoiceToBeChecked->id . ' met nummer ' . $invoiceToBeChecked->number . ' heeft status geexporteerd maar heeft geen Twinfield nummer.');

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import ViewText from '../../../../components/form/ViewText';
-import moment from 'moment/moment';
+import moment from 'moment';
 moment.locale('nl');
 
 const IntakeDetailsFormConclusionView = props => {

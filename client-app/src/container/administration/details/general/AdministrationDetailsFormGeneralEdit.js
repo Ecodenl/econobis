@@ -16,6 +16,8 @@ import axios from 'axios';
 import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
+import InputDate from '../../../../components/form/InputDate';
+import moment from 'moment';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -52,6 +54,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             twinfieldPasswordChange,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
+            dateSyncTwinfieldContacts,
+            dateSyncTwinfieldPayments,
             usesVat,
             emailBccNotas,
         } = props.administrationDetails;
@@ -94,6 +98,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldPasswordChange: twinfieldPasswordChange ? twinfieldPasswordChange : false,
                 twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
+                dateSyncTwinfieldContacts: dateSyncTwinfieldContacts ? dateSyncTwinfieldContacts : '',
+                dateSyncTwinfieldPayments: dateSyncTwinfieldPayments ? dateSyncTwinfieldPayments : '',
                 usesVat: usesVat,
                 emailBccNotas: emailBccNotas ? emailBccNotas : '',
             },
@@ -109,6 +115,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 twinfieldPassword: false,
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
+                dateSyncTwinfieldContacts: false,
+                dateSyncTwinfieldPayments: false,
                 mailboxId: false,
                 emailBccNotas: false,
                 countryId: false,
@@ -173,6 +181,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 ...this.state.administration,
                 [name]: value,
             },
+        });
+    };
+
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            [name]: value,
         });
     };
 
@@ -363,6 +378,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             }
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
+            data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
+            data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
 
@@ -402,9 +419,28 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             twinfieldPasswordChange,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
+            dateSyncTwinfieldContacts,
+            dateSyncTwinfieldPayments,
             usesVat,
             emailBccNotas,
         } = this.state.administration;
+
+        let disableBeforeDateSyncTwinfieldContacts = null;
+        if (dateSyncTwinfieldContacts) {
+            disableBeforeDateSyncTwinfieldContacts = moment(
+                moment(dateSyncTwinfieldContacts).format('YYYY') + '-01-01'
+            ).format('YYYY-01-01');
+        } else {
+            disableBeforeDateSyncTwinfieldContacts = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
+        }
+        let disableBeforeDateSyncTwinfieldPayments = null;
+        if (dateSyncTwinfieldPayments) {
+            disableBeforeDateSyncTwinfieldPayments = moment(
+                moment(dateSyncTwinfieldPayments).format('YYYY') + '-01-01'
+            ).format('YYYY-01-01');
+        } else {
+            disableBeforeDateSyncTwinfieldPayments = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
+        }
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -700,6 +736,24 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         onChangeAction={this.handleInputChange}
                                         error={this.state.errors.twinfieldOfficeCode}
                                         required={'required'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputDate
+                                        label="Synchroniseer contacten vanaf"
+                                        name={'dateSyncTwinfieldContacts'}
+                                        value={dateSyncTwinfieldContacts}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        disabledBefore={disableBeforeDateSyncTwinfieldContacts}
+                                        error={this.state.errors.dateSyncTwinfieldContacts}
+                                    />
+                                    <InputDate
+                                        label="Synchroniseer betalingen vanaf"
+                                        name={'dateSyncTwinfieldPayments'}
+                                        value={dateSyncTwinfieldPayments}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        disabledBefore={disableBeforeDateSyncTwinfieldPayments}
+                                        error={this.state.errors.dateSyncTwinfieldPayments}
                                     />
                                 </div>
                             </React.Fragment>

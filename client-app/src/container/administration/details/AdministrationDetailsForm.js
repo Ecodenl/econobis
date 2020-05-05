@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 
 import AdministrationDetailsFormGeneral from './general/AdministrationDetailsFormGeneral';
 import AdministrationDetailsUsers from './administration-users/AdministrationDetailsUsers';
-import moment from 'moment/moment';
+import moment from 'moment';
 import AdministrationDetailsFormConclusion from './conclusion/AdministrationDetailsFormConclusion';
 import AdministrationDetailsSepas from './sepas/AdministrationDetailsSepas';
 import Panel from '../../../components/panel/Panel';

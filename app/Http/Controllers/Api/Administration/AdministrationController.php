@@ -95,6 +95,8 @@ class AdministrationController extends ApiController
             ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
             ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
             ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
+            ->string('dateSyncTwinfieldContacts')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_contacts')->next()
+            ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->get();
 
@@ -177,6 +179,8 @@ class AdministrationController extends ApiController
             ->string('twinfieldPassword')->whenMissing($administration->twinfield_password)->onEmpty($administration->twinfield_password)->alias('twinfield_password')->next()
             ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
             ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
+            ->string('dateSyncTwinfieldContacts')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_contacts')->next()
+            ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->get();
 
@@ -227,15 +231,16 @@ class AdministrationController extends ApiController
             $this->storeLogo($logo, $administration);
         }
 
-        //Als er twinfield gebruikt gaat worden, dan contacten aanmaken van notas vanaf 1-1-2019 (alleen doen in jaar 2019)
-        if($isUsesTwinfieldDirty && $administration->uses_twinfield && $administration->twinfield_is_valid)
+        //Als er twinfield gebruikt gaat worden, dan contacten aanmaken van notas vanaf opgegeven datum (en dan alleen doen in dat jaar)
+
+        if($isUsesTwinfieldDirty && $administration->uses_twinfield && $administration->twinfield_is_valid && $administration->date_sync_twinfield_contacts )
         {
-            if(Carbon::now()->year == 2019)
+            if(Carbon::now()->year == Carbon::parse($administration->date_sync_twinfield_contacts)->year)
             {
                 foreach ($administration->invoices()
                     ->whereNull('twinfield_number')
                     ->whereIn('status_id', ['sent', 'paid'])
-                    ->where('date_sent', '>=', '20190101')
+                    ->where('created_by', '>=', $administration->date_sync_twinfield_contacts)
                     ->get() as $invoice)
                 {
                     $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);

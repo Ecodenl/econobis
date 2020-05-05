@@ -38,12 +38,15 @@ class AddressObserver
 
         }
 
-        if($address->isDirty('street')
-            || $address->isDirty('number')
-            || $address->isDirty('addition')
-            || $address->isDirty('postal_code')
-            || $address->isDirty('city')
-            || $address->isDirty('country_id'))
+        if( $address->primary
+            && ($address->isDirty('primary')
+                || $address->isDirty('street')
+                || $address->isDirty('number')
+                || $address->isDirty('addition')
+                || $address->isDirty('postal_code')
+                || $address->isDirty('city')
+                || $address->isDirty('country_id') )
+        )
         {
             // Check if any project revenue distribution is present with status concept
             // If so, then change address

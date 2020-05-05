@@ -9,6 +9,10 @@ const ContactDetailsEmailDelete = props => {
         props.deleteEmailAddress(props.id);
         props.closeDeleteItemModal();
     };
+    let allowDelete = false;
+    if (!props.primary || (props.numberOfEmailAddresses && props.numberOfEmailAddresses === 1)) {
+        allowDelete = true;
+    }
 
     return (
         <Modal
@@ -16,15 +20,23 @@ const ContactDetailsEmailDelete = props => {
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
+            showConfirmAction={allowDelete}
             title="Verwijderen"
         >
             <p>
                 Verwijder e-mailadres: <strong> {`${props.email}`} </strong>
             </p>
 
-            {props.primary && (
+            {props.primary && props.numberOfEmailAddresses > 1 && (
                 <p className={'text-danger'}>
-                    <strong>Let op!</strong> Dit is een primair e-mailadres
+                    <strong>Fout!</strong> Dit is een primair e-mailadres en kan niet worden verwijderd.
+                    <br />
+                    Maak eerst een ander e-mailadres primair.
+                </p>
+            )}
+            {props.primary && allowDelete && (
+                <p className={'text-danger'}>
+                    <strong>Let op!</strong> Dit is een primair e-mailadres en enige e-mailadres bij contact.
                 </p>
             )}
         </Modal>

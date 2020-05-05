@@ -62,7 +62,7 @@ class ContactGroupDetailsApp extends Component {
                         </div>
                     )}
                 </div>
-                <Panel className="col-md-3">
+                <Panel className="col-md-3 harmonica">
                     <PanelBody>
                         <ContactGroupsDetailsHarmonica id={this.props.params.id} />
                     </PanelBody>

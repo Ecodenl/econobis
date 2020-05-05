@@ -17,7 +17,7 @@ const ContactDetailFormEmailView = props => {
                     <GetNameByIdHelper id={typeId} items={props.emailAddressTypes} />
                 </div>
                 <div className="col-sm-7">{email}</div>
-                <div className="col-sm-2">{primary ? <span className="h6 pull-right">Primair</span> : ''}</div>
+                <div className="col-sm-2">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons ? (

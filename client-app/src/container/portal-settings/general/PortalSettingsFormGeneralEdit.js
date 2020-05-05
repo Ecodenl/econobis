@@ -253,7 +253,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             'emailTemplateNewAccountId',
             portalSettings.emailTemplateNewAccountId ? portalSettings.emailTemplateNewAccountId : ''
         );
-        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy);
+        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
         data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
 
         data.append('attachmentLogo', attachmentLogo);

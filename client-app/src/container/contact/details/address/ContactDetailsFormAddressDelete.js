@@ -9,6 +9,10 @@ const ContactDetailsAddressDelete = props => {
         props.deleteAddress(props.id);
         props.closeDeleteItemModal();
     };
+    let allowDelete = false;
+    if (!props.primary || (props.numberOfAddresses && props.numberOfAddresses === 1)) {
+        allowDelete = true;
+    }
 
     return (
         <Modal
@@ -16,15 +20,23 @@ const ContactDetailsAddressDelete = props => {
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
+            showConfirmAction={allowDelete}
             title="Verwijderen"
         >
             <p>
                 Verwijder adres: <strong> {`${props.street} ${props.number}`} </strong>
             </p>
 
-            {props.primary && (
+            {props.primary && props.numberOfAddresses > 1 && (
                 <p className={'text-danger'}>
-                    <strong>Let op!</strong> Dit is een primair adres
+                    <strong>Fout!</strong> Dit is een primair adres en kan niet worden verwijderd.
+                    <br />
+                    Maak eerst een ander adres primair.
+                </p>
+            )}
+            {props.primary && allowDelete && (
+                <p className={'text-danger'}>
+                    <strong>Let op!</strong> Dit is een primair adres en enige adres bij contact.
                 </p>
             )}
         </Modal>

@@ -58,7 +58,11 @@ class ContactDetailsFormPortalUser extends Component {
                 </PanelHeader>
                 <PanelBody>
                     {!this.props.portalUser ? (
-                        <p>Niet geactiveerd</p>
+                        <div className="col-md-12">
+                            <div>
+                                <div>Niet geactiveerd</div>
+                            </div>
+                        </div>
                     ) : this.state.showEdit ? (
                         <ContactDetailsFormPortalUserEdit switchToView={this.switchToView} />
                     ) : (

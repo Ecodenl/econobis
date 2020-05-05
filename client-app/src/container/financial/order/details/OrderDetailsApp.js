@@ -33,7 +33,7 @@ class OrderDetailsApp extends Component {
                         <OrderDetailsForm />
                     </div>
                 </div>
-                <Panel className="col-md-3">
+                <Panel className="col-md-3 harmonica">
                     <PanelBody>
                         <OrderDetailsHarmonica />
                     </PanelBody>

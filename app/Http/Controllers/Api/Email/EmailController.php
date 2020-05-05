@@ -233,53 +233,55 @@ class EmailController
     public function send(Mailbox $mailbox, Request $request)
     {
         set_time_limit(0);
-            $sanitizedData = $this->getEmailData($request);
+        $sanitizedData = $this->getEmailData($request);
 
-            //add basic html tags for new emails
-            $sanitizedData['html_body']
-                = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-                . $sanitizedData['subject'] . '</title></head>'
-                . $sanitizedData['html_body'] . '</html>';
+        //add basic html tags for new emails
+        $sanitizedData['html_body']
+            = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+            . $sanitizedData['subject'] . '</title></head>'
+            . $sanitizedData['html_body'] . '</html>';
 
-            //Save as concept, if sending fails we still have the concept
-            $email = (new StoreConceptEmail($mailbox,
-                $sanitizedData))->handle();
+        //Save as concept, if sending fails we still have the concept
+        $email = (new StoreConceptEmail($mailbox,
+            $sanitizedData))->handle();
 
-            //Create relations with contact if needed
-            $this->createEmailContactRelations($email, $request);
+        //Create relations with contact if needed
+        $this->createEmailContactRelations($email, $request);
 
-            //Email attachments
-            $this->checkStorageDir($mailbox->id);
+        //Email attachments
+        $this->checkStorageDir($mailbox->id);
 
-            //get attachments
-            $attachments = $request->file('attachments')
-                ? $request->file('attachments') : [];
+        //get attachments
+        $attachments = $request->file('attachments')
+            ? $request->file('attachments') : [];
 
-            $this->storeEmailAttachments($attachments, $mailbox->id,
-                $email->id);
+        $this->storeEmailAttachments($attachments, $mailbox->id,
+            $email->id);
 
-            //old attachments(forward,reply etc.)
-            $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
+        //old attachments(forward,reply etc.)
+        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
 
-            //Gaat dit goed bij deleten attachment van oude mail?
-            foreach ($oldAttachments as $oldAttachment){
-                $oldAttachment = json_decode($oldAttachment);
-                $oldAttachment = EmailAttachment::find($oldAttachment->id);
-                $replicatedAttachment = $oldAttachment->replicate();
-                $replicatedAttachment->email_id = $email->id;
-                $replicatedAttachment->save();
-            }
+        //Gaat dit goed bij deleten attachment van oude mail?
+        foreach ($oldAttachments as $oldAttachment){
+            $oldAttachment = json_decode($oldAttachment);
+            $oldAttachment = EmailAttachment::find($oldAttachment->id);
+            $replicatedAttachment = $oldAttachment->replicate();
+            $replicatedAttachment->email_id = $email->id;
+            $replicatedAttachment->save();
+        }
 
         //if we send to group we save in a pivot because they can have alot of members
         if ($sanitizedData['contact_group_id']) {
             $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+            $contactIds = [];
             foreach ($contactGroup->all_contacts as $contact) {
                 if ($contact->primaryEmailAddress) {
                     $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-
-                    $email->contacts()->attach($contact->id);
+                    array_push($contactIds, $contact->id);
                 }
             }
+            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
+            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
         }
 
         $email->sent_by_user_id = Auth::id();
@@ -411,13 +413,15 @@ class EmailController
         //if we send to group we save in a pivot because they can have alot of members
         if ($sanitizedData['contact_group_id']) {
             $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+            $contactIds = [];
             foreach ($contactGroup->all_contacts as $contact) {
                 if ($contact->primaryEmailAddress) {
                     $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-
-                    $email->contacts()->attach($contact->id);
+                    array_push($contactIds, $contact->id);
                 }
             }
+            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
+            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
         }
 
         SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());

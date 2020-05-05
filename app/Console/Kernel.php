@@ -13,6 +13,7 @@ use App\Console\Commands\conversionParticipationsToMutationsDefault;
 use App\Console\Commands\conversionProjectRevenues;
 use App\Console\Commands\conversionProjects;
 use App\Console\Commands\conversionProjectRevenueDistribution;
+use App\Console\Commands\conversionPortalRegistrationCode;
 use App\Console\Commands\getAllEmail;
 use App\Console\Commands\processPaidInvoices;
 use App\Console\Commands\processWorkflowEmailCompleteTask;
@@ -54,6 +55,7 @@ class Kernel extends ConsoleKernel
         conversionParticipationsToMutationsDeltaWind::class,
         conversionParticipationsToMutationsLoanDiv100::class,
         conversionParticipationsToMutationsDefault::class,
+        conversionPortalRegistrationCode::class,
         recoveryJobsLog::class,
     ];
 

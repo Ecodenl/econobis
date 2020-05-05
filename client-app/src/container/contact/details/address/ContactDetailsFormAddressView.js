@@ -20,7 +20,7 @@ const ContactDetailFormAddressView = props => {
                 <div className="col-sm-2">{postalCode}</div>
                 <div className="col-sm-2">{city}</div>
                 <div className="col-sm-2">{country ? country.name : ''}</div>
-                <div className="col-sm-2">{primary ? <span className="h6 pull-right">Primair</span> : ''}</div>
+                <div className="col-sm-2">{primary ? <span className="pull-right">Primair</span> : ''}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons ? (

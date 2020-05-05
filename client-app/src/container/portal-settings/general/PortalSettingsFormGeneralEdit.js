@@ -169,15 +169,18 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.buttonTextColor = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.responsibleUserId)) {
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.responsibleUserId + '')) {
             errors.responsibleUserId = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.contactResponsibleOwnerUserId)) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            validator.isEmpty(portalSettings.contactResponsibleOwnerUserId + '')
+        ) {
             errors.contactResponsibleOwnerUserId = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.checkContactTaskResponsible)) {
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.checkContactTaskResponsible + '')) {
             errors.checkContactTaskResponsible = true;
             hasErrors = true;
         }
@@ -185,7 +188,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.emailTemplateNewAccountId)) {
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.emailTemplateNewAccountId + '')) {
             errors.emailTemplateNewAccountId = true;
             hasErrors = true;
         }
@@ -220,9 +223,9 @@ class PortalSettingsFormGeneralEdit extends Component {
 
         const data = new FormData();
 
-        data.append('portalName', portalSettings.portalName);
-        data.append('cooperativeName', portalSettings.cooperativeName);
-        data.append('portalWebsite', portalSettings.portalWebsite);
+        data.append('portalName', portalSettings.portalName ? portalSettings.portalName : '');
+        data.append('cooperativeName', portalSettings.cooperativeName ? portalSettings.cooperativeName : '');
+        data.append('portalWebsite', portalSettings.portalWebsite ? portalSettings.portalWebsite : '');
         data.append('portalUrl', portalSettings.portalUrl);
         // data.append('defaultTextColor', portalSettings.defaultTextColor);
         data.append('backgroundColor', portalSettings.backgroundColor);
@@ -233,12 +236,24 @@ class PortalSettingsFormGeneralEdit extends Component {
         data.append('backgroundSecondaryTextColor', portalSettings.backgroundSecondaryTextColor);
         data.append('buttonColor', portalSettings.buttonColor);
         data.append('buttonTextColor', portalSettings.buttonTextColor);
-        data.append('responsibleUserId', portalSettings.responsibleUserId);
-        data.append('checkContactTaskResponsibleUserId', portalSettings.checkContactTaskResponsibleUserId);
-        data.append('checkContactTaskResponsibleTeamId', portalSettings.checkContactTaskResponsibleTeamId);
-        data.append('contactResponsibleOwnerUserId', portalSettings.contactResponsibleOwnerUserId);
-        data.append('emailTemplateNewAccountId', portalSettings.emailTemplateNewAccountId);
-        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy);
+        data.append('responsibleUserId', portalSettings.responsibleUserId ? portalSettings.responsibleUserId : '');
+        data.append(
+            'checkContactTaskResponsibleUserId',
+            portalSettings.checkContactTaskResponsibleUserId ? portalSettings.checkContactTaskResponsibleUserId : ''
+        );
+        data.append(
+            'checkContactTaskResponsibleTeamId',
+            portalSettings.checkContactTaskResponsibleTeamId ? portalSettings.checkContactTaskResponsibleTeamId : ''
+        );
+        data.append(
+            'contactResponsibleOwnerUserId',
+            portalSettings.contactResponsibleOwnerUserId ? portalSettings.contactResponsibleOwnerUserId : ''
+        );
+        data.append(
+            'emailTemplateNewAccountId',
+            portalSettings.emailTemplateNewAccountId ? portalSettings.emailTemplateNewAccountId : ''
+        );
+        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
         data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
 
         data.append('attachmentLogo', attachmentLogo);

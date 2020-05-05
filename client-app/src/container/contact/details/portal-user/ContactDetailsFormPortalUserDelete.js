@@ -9,6 +9,10 @@ const ContactDetailsFormPortalUserDelete = props => {
         props.deletePortalUser(props.portalUser.id);
         props.closeDeleteItemModal();
     };
+    let allowDelete = false;
+    if (!props.primary || (props.numberOfEmailAddresses && props.numberOfEmailAddresses === 1)) {
+        allowDelete = true;
+    }
 
     return (
         <Modal

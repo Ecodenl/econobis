@@ -34,7 +34,7 @@ class CampaignDetailsApp extends Component {
                         <CampaignDetailsForm />
                     </div>
                 </div>
-                <Panel className="col-md-3">
+                <Panel className="col-md-3 harmonica">
                     <PanelBody>
                         <CampaignDetailsHarmonica id={this.props.params.id} />
                     </PanelBody>

@@ -455,7 +455,7 @@ class InvoiceHelper
     public static function setMailConfigByInvoice(Invoice $invoice)
     {
         // Standaard vanuit primaire mailbox mailen
-        $mailboxToSendFrom = Mailbox::where('primary', 1)->first();
+        $mailboxToSendFrom = Mailbox::getDefault();;
 
         // Als er een mailbox aan de administratie is gekoppeld, dan deze gebruiken
         if ($invoice->administration->mailbox) {

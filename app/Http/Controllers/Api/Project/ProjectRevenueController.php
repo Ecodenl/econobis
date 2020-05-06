@@ -816,7 +816,14 @@ class ProjectRevenueController extends ApiController
 
             //Make preview email
             if ($primaryEmailAddress) {
-                $this->setMailConfigByDistribution($distribution);
+                $mailbox = $this->setMailConfigByDistribution($distribution);
+                if ($mailbox) {
+                    $fromEmail = $mailbox->email;
+                    $fromName = $mailbox->name;
+                } else {
+                    $fromEmail = \Config::get('mail.from.address');
+                    $fromName = \Config::get('mail.from.name');
+                }
 
                 $email = Mail::to($primaryEmailAddress->email);
                 if (!$subject) {
@@ -864,15 +871,6 @@ class ProjectRevenueController extends ApiController
 
                 $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
                     $htmlBodyWithContactVariables);
-
-                $primaryMailbox = Mailbox::getDefault();
-                if ($primaryMailbox) {
-                    $fromEmail = $primaryMailbox->email;
-                    $fromName = $primaryMailbox->name;
-                } else {
-                    $fromEmail = \Config::get('mail.from.address');
-                    $fromName = \Config::get('mail.from.name');
-                }
 
                 return [
                     'from' => $fromEmail,
@@ -1098,10 +1096,10 @@ class ProjectRevenueController extends ApiController
                     $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
                         $htmlBodyWithContactVariables);
 
-                    $primaryMailbox = Mailbox::getDefault();
-                    if ($primaryMailbox) {
-                        $fromEmail = $primaryMailbox->email;
-                        $fromName = $primaryMailbox->name;
+                    $mailbox = $this->setMailConfigByDistribution($distribution);
+                    if ($mailbox) {
+                        $fromEmail = $mailbox->email;
+                        $fromName = $mailbox->name;
                     } else {
                         $fromEmail = \Config::get('mail.from.address');
                         $fromName = \Config::get('mail.from.name');
@@ -1164,7 +1162,7 @@ class ProjectRevenueController extends ApiController
     protected function setMailConfigByDistribution(ProjectRevenueDistribution $distribution)
     {
         // Standaard vanuit primaire mailbox mailen
-        $mailboxToSendFrom = Mailbox::where('primary', 1)->first();
+        $mailboxToSendFrom = Mailbox::getDefault();;
 
         // Als er een mailbox aan de administratie is gekoppeld, dan deze gebruiken
         $project = $distribution->revenue->project;
@@ -1177,6 +1175,7 @@ class ProjectRevenueController extends ApiController
         if ($mailboxToSendFrom) {
             (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
         }
+        return $mailboxToSendFrom;
     }
 
     protected function translateToValidCharacterSet($field){

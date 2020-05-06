@@ -633,11 +633,13 @@ class ParticipationProjectController extends ApiController
                 $htmlBodyWithContactVariables
                     = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                $primaryMailbox = Mailbox::getDefault();
-                if ($primaryMailbox) {
-                    $fromEmail = $primaryMailbox->email;
+                $mailbox = $this->setMailConfigByParticipant($participant);
+                if ($mailbox) {
+                    $fromEmail = $mailbox->email;
+                    $fromName = $mailbox->name;
                 } else {
                     $fromEmail = \Config::get('mail.from.address');
+                    $fromName = \Config::get('mail.from.name');
                 }
 
                 return [
@@ -755,9 +757,14 @@ class ParticipationProjectController extends ApiController
         //send email
         if($primaryEmailAddress){
             try{
-                // todo bij createParticipantRevenueReport wordt setMailConfigByDistribution gedaan
-                // moet hier dan ook niet zo iets als ssetMailConfigByParticipant komen?
-//                $this->setMailConfigByParticipant($participant);
+                $mailbox = $this->setMailConfigByParticipant($participant);
+                if ($mailbox) {
+                    $fromEmail = $mailbox->email;
+                    $fromName = $mailbox->name;
+                } else {
+                    $fromEmail = \Config::get('mail.from.address');
+                    $fromName = \Config::get('mail.from.name');
+                }
 
                 $email = Mail::to($primaryEmailAddress->email);
                 if(!$subject){
@@ -782,15 +789,6 @@ class ParticipationProjectController extends ApiController
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'mutaties', $participant->mutations);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables,'administratie', $project->administration);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
-
-                $primaryMailbox = Mailbox::getDefault();
-                if ($primaryMailbox) {
-                    $fromEmail = $primaryMailbox->email;
-                    $fromName = $primaryMailbox->name;
-                } else {
-                    $fromEmail = \Config::get('mail.from.address');
-                    $fromName = \Config::get('mail.from.name');
-                }
 
                 $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
                     $htmlBodyWithContactVariables, $document));
@@ -1014,6 +1012,25 @@ class ParticipationProjectController extends ApiController
 
         // Recalculate dependent data in project
         $participantMutation->participation->project->calculator()->run()->save();
+    }
+
+    protected function setMailConfigByParticipant(ParticipantProject $participantProject)
+    {
+        // Standaard vanuit primaire mailbox mailen
+        $mailboxToSendFrom = Mailbox::getDefault();;
+
+        // Als er een mailbox aan de administratie is gekoppeld, dan deze gebruiken
+        $project = $participantProject->project;
+
+        if ($project->administration && $project->administration->mailbox) {
+            $mailboxToSendFrom = $project->administration->mailbox;
+        }
+
+        // Configuratie instellen als er een mailbox is gevonden
+        if ($mailboxToSendFrom) {
+            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
+        }
+        return $mailboxToSendFrom;
     }
 
     protected function calculatePayoutHowLongInPossession(ParticipantProject $participantProject, $payoutPercentageTerminated)

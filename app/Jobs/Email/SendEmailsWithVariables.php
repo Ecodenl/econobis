@@ -61,9 +61,6 @@ class SendEmailsWithVariables implements ShouldQueue
             $jobLog->job_category_id = 'email';
             $jobLog->save();
         }
-
-        (new EmailHelper())->setConfigToMailbox($email->mailbox);
-
     }
 
     public function handle()
@@ -81,6 +78,8 @@ class SendEmailsWithVariables implements ShouldQueue
         $email = $this->email;
 
         $mailbox = $email->mailbox;
+
+        (new EmailHelper())->setConfigToMailbox($mailbox);
 
         //First see if the to's are contact, user or created option
         $emailsToContact = [];

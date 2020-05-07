@@ -1648,6 +1648,7 @@ class TemplateVariableHelper
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'taak', $document->task);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'project', $document->project);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'deelname', $document->participant);
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'mutaties', $document->participant->mutations);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', $document->order);
 
         //Als laatste verwijder alle niet bestaande tags

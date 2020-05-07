@@ -69,15 +69,22 @@ class CreateRevenueReport implements ShouldQueue
 
         if($result && $result['messages'])
         {
-            $value = 'Fout bij rapportage deelnemer '.$this->distributionFullName.' ('.$this->distributionId.'): '.implode(" ",$result['messages']);
+            foreach ($result['messages'] as $message) {
+                $value = 'Fout bij rapportage deelnemer '.$this->distributionFullName.' ('.$this->distributionId.'): '.$message;
+                $jobLog = new JobsLog();
+                $jobLog->value = $value;
+                $jobLog->user_id = $this->userId;
+                $jobLog->job_category_id = 'revenue';
+                $jobLog->save();
+            }
         }else{
             $value = 'Opbrengstverdeling deelnemer '.$this->distributionFullName.' ('.$this->distributionId.') rapportage gemaakt.';
+            $jobLog = new JobsLog();
+            $jobLog->value = $value;
+            $jobLog->user_id = $this->userId;
+            $jobLog->job_category_id = 'revenue';
+            $jobLog->save();
         }
-        $jobLog = new JobsLog();
-        $jobLog->value = $value;
-        $jobLog->user_id = $this->userId;
-        $jobLog->job_category_id = 'revenue';
-        $jobLog->save();
     }
 
     public function failed(\Exception $exception)

@@ -44,6 +44,7 @@ class ProjectFormEdit extends Component {
                 // countryId: false,
                 contactGroupIds: false,
             },
+            isSaving: false,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -182,11 +183,14 @@ class ProjectFormEdit extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        !hasErrors &&
+        if (!hasErrors) {
+            this.setState({ isSaving: true });
             ProjectDetailsAPI.updateProject(project.id, project).then(payload => {
+                this.setState({ isSaving: false });
                 this.props.fetchProject(project.id);
                 this.props.switchToView();
             });
+        }
     };
 
     handleContactGroupIds = selectedOption => {
@@ -370,6 +374,7 @@ class ProjectFormEdit extends Component {
                             onClickAction={this.handleSubmit}
                             type={'submit'}
                             value={'Submit'}
+                            loading={this.state.isSaving}
                         />
                     </div>
                 </PanelFooter>

@@ -53,6 +53,7 @@ class OpportunityController extends ApiController
             'createdBy',
             'updatedBy',
             'intake.contact',
+            'intake.campaign',
             'tasks',
             'notes',
             'documents',

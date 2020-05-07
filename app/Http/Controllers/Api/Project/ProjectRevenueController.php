@@ -1047,7 +1047,14 @@ class ProjectRevenueController extends ApiController
             //send email
             if ($primaryEmailAddress) {
                 try{
-                $this->setMailConfigByDistribution($distribution);
+                    $mailbox = $this->setMailConfigByDistribution($distribution);
+                    if ($mailbox) {
+                        $fromEmail = $mailbox->email;
+                        $fromName = $mailbox->name;
+                    } else {
+                        $fromEmail = \Config::get('mail.from.address');
+                        $fromName = \Config::get('mail.from.name');
+                    }
 
                     $email = Mail::to($primaryEmailAddress->email);
                     if (!$subject) {
@@ -1095,15 +1102,6 @@ class ProjectRevenueController extends ApiController
 
                     $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
                         $htmlBodyWithContactVariables);
-
-                    $mailbox = $this->setMailConfigByDistribution($distribution);
-                    if ($mailbox) {
-                        $fromEmail = $mailbox->email;
-                        $fromName = $mailbox->name;
-                    } else {
-                        $fromEmail = \Config::get('mail.from.address');
-                        $fromName = \Config::get('mail.from.name');
-                    }
 
                     $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
                         $htmlBodyWithContactVariables, $document));

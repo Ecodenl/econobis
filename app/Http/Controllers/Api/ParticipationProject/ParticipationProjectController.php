@@ -22,6 +22,7 @@ use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Settings\PortalSettings;

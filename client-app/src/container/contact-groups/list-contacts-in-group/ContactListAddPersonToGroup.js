@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import contactAPI from '../../../api/contact/ContactsAPI';
 import Modal from '../../../components/modal/Modal';
-import VirtualizedSelect from 'react-virtualized-select';
+import InputReactSelect from '../../../components/form/InputReactSelect';
 
 class ContactListAddPersonToGroup extends Component {
     constructor(props) {
@@ -49,24 +49,20 @@ class ContactListAddPersonToGroup extends Component {
             >
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="row">
-                        <div className="col-sm-6">Voeg bestaand contact toe</div>
-                        <div className="col-sm-6">
-                            <VirtualizedSelect
-                                id={'personId'}
-                                name={'personId'}
-                                value={this.state.personId}
-                                onChange={this.handleReactSelectChange}
-                                options={this.state.people}
-                                valueKey={'id'}
-                                labelKey={'fullName'}
-                                placeholder={''}
-                                noResultsText={'Geen resultaat gevonden'}
-                                multi={false}
-                                simpleValue
-                                removeSelected
-                                isLoading={this.state.peekLoading.people}
-                            />
-                        </div>
+                        <InputReactSelect
+                            label={'Voeg bestaand contact toe'}
+                            divSize={'col-sm-12'}
+                            size={'col-sm-6'}
+                            id={'personId'}
+                            name={'personId'}
+                            value={this.state.personId}
+                            onChangeAction={this.handleReactSelectChange}
+                            options={this.state.people}
+                            optionId={'id'}
+                            optionName={'fullName'}
+                            multi={false}
+                            isLoading={this.state.peekLoading.people}
+                        />
                     </div>
                 </form>
             </Modal>

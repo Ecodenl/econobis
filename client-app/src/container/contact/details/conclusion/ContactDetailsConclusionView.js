@@ -7,7 +7,6 @@ import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsConclusionView = props => {
     const { owner = {}, status = {}, updatedBy = {}, createdBy = {}, createdAt = {}, updatedAt = {} } = props.contact;
-    console.log(createdBy);
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
@@ -21,21 +20,15 @@ const ContactDetailsConclusionView = props => {
                 <ViewText
                     label={'Gemaakt door'}
                     value={
-                        status
-                            ? status.id == 'portal' || status.id == 'webform'
-                                ? status.name
-                                : 'Onbekend'
+                        status && (status.id == 'portal' || status.id == 'webform')
+                            ? status.name
                             : createdBy
                             ? createdBy.fullName
                             : 'Onbekend'
                     }
                     link={
-                        status
-                            ? status.id == 'portal' || status.id == 'webform'
-                                ? ''
-                                : createdBy
-                                ? 'gebruiker/' + createdBy.id
-                                : ''
+                        status && (status.id == 'portal' || status.id == 'webform')
+                            ? ''
                             : createdBy
                             ? 'gebruiker/' + createdBy.id
                             : ''

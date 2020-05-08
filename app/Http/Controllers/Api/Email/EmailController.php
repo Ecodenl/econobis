@@ -14,7 +14,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\Jobs\JobsLog;
+use App\Helpers\Settings\PortalSettings;
 use App\Jobs\Email\SendEmailsWithVariables;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
@@ -495,11 +495,19 @@ class EmailController
             $data['intakeId'] = null;
         }
 
+        $portalName = PortalSettings::get('portalName');
+        $cooperativeName = PortalSettings::get('cooperativeName');
+        $subject = $data['subject'];
+        if($subject){
+            $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
+            $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
+
+        }
         $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => $data['subject'] ?: 'Econobis',
+            'subject' => $subject ?: 'Econobis',
             'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],

@@ -234,6 +234,14 @@ class ProjectController extends ApiController
             }
 
             $project->requiresContactGroups()->sync($contactGroupIds);
+
+            foreach ($project->participantsProject as $participantProject){
+                // Herbereken de afhankelijke gegevens op het participantProject
+                $participantProject->calculator()->run()->save();
+            }
+            // Herbereken de afhankelijke gegevens op het project
+            $project->calculator()->run()->save();
+
         });
 
         return $this->show($project);

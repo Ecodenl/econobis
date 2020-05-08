@@ -301,6 +301,12 @@ class ParticipationProjectController extends ApiController
 
         $participantProject->save();
 
+        // Herbereken de afhankelijke gegevens op het participantProject
+        $participantProject->calculator()->run()->save();
+
+        // Herbereken de afhankelijke gegevens op het project
+        $participantProject->project->calculator()->run()->save();
+
         return $this->show($participantProject);
     }
 

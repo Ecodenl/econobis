@@ -66,6 +66,7 @@ class ParticipantFormEdit extends Component {
                 typeId: false,
                 ibanPayout: false,
             },
+            isSaving: false,
         };
     }
 
@@ -137,11 +138,14 @@ class ParticipantFormEdit extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        !hasErrors &&
+        if (!hasErrors) {
+            this.setState({ isSaving: true });
             ParticipantProjectDetailsAPI.updateParticipantProject(participation.id, participation).then(payload => {
+                this.setState({ isSaving: false });
                 this.props.fetchParticipantProjectDetails(participation.id);
                 this.props.switchToView();
             });
+        }
     };
 
     render() {
@@ -375,6 +379,7 @@ class ParticipantFormEdit extends Component {
                             onClickAction={this.handleSubmit}
                             type={'submit'}
                             value={'Submit'}
+                            loading={this.state.isSaving}
                         />
                     </div>
                 </PanelFooter>

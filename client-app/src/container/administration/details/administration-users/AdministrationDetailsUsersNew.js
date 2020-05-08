@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
-import AdministrationDetailsAPI from '../../../../api/administration/AdministrationDetailsAPI';
 import { addAdministrationUser } from '../../../../actions/administration/AdministrationDetailsActions';
 import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -59,6 +58,13 @@ class AdministrationDetailsUsersNew extends Component {
     }
 
     render() {
+        let administrationUsers = [];
+        if (this.props.usersExtraAdministration) {
+            administrationUsers = [...this.props.users, ...this.props.usersExtraAdministration];
+        } else {
+            administrationUsers = [...this.props.users];
+        }
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -74,7 +80,7 @@ class AdministrationDetailsUsersNew extends Component {
                                 label={'Gebruiker'}
                                 size={'col-sm-6'}
                                 name={'userId'}
-                                options={this.props.users}
+                                options={administrationUsers}
                                 optionName={'fullName'}
                                 value={this.state.userId}
                                 onChangeAction={this.handleInputChange}
@@ -108,6 +114,7 @@ const mapStateToProps = state => {
         administrationId: state.administrationDetails.id,
         administrationName: state.administrationDetails.name,
         users: state.systemData.users,
+        usersExtraAdministration: state.systemData.usersExtraAdministration,
     };
 };
 

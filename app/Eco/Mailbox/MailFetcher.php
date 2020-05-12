@@ -37,7 +37,14 @@ class MailFetcher
     public function fetchNew()
     {
         $mailIds = $this->imap->sortMails(SORTARRIVAL);
-
+//        try {
+//            // Get all emails (messages)
+//            // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
+//            $mailIds = $this->imap->searchMailbox('ALL');
+//        } catch(PhpImap\Exceptions\ConnectionException $ex) {
+//            echo "IMAP connection failed: " . $ex;
+//            die();
+//        }
         foreach($mailIds as $mailId){
             if(Email::whereMailboxId($this->mailbox->id)
                 ->whereImapId($mailId)

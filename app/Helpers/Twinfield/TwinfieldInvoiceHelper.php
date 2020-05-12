@@ -56,7 +56,7 @@ class TwinfieldInvoiceHelper
         // Tenzij er een datum Synchroniseer betalingen vanaf is opgegeven. Dan alleen facturen die vanaf die datum zijn gemaakt.
         $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
         if($this->administration->date_sync_twinfield_payments){
-            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->where('created_by', '>=', $this->administration->date_sync_twinfield_payments)->get();
+            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->where('created_at', '>=', $this->administration->date_sync_twinfield_payments)->get();
         }else{
             $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
         }

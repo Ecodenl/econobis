@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import moment from 'moment';
 
 const AdministrationDetailsFormGeneralView = props => {
     const {
@@ -39,6 +40,13 @@ const AdministrationDetailsFormGeneralView = props => {
         usesVat,
         emailBccNotas,
     } = props.administrationDetails;
+
+    // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
+    //     ? moment(dateSyncTwinfieldContacts).format('L')
+    //     : '';
+    // const dateSyncTwinfieldPaymentsView = dateSyncTwinfieldPayments
+    //     ? moment(dateSyncTwinfieldPayments).format('L')
+    //     : '';
 
     return (
         <div onClick={props.switchToEdit}>
@@ -147,8 +155,31 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     {usesTwinfield == true && (
                         <div className="row">
-                            <ViewText label={'Synchroniseer contacten vanaf'} value={dateSyncTwinfieldContacts} />
-                            <ViewText label={'Synchroniseer betalingen vanaf'} value={dateSyncTwinfieldPayments} />
+                            <ViewText
+                                label={
+                                    <span>
+                                        Synchroniseer contacten vanaf
+                                        <br />
+                                        <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                            Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in
+                                            Twinfield
+                                        </small>
+                                    </span>
+                                }
+                                value={dateSyncTwinfieldContacts ? moment(dateSyncTwinfieldContacts).format('L') : ''}
+                            />
+                            <ViewText
+                                label={
+                                    <span>
+                                        Synchroniseer betalingen vanaf
+                                        <br />
+                                        <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                            Nota aanmaakdatum vanaf wanneer betalingen opgehaald worden uit Twinfield
+                                        </small>
+                                    </span>
+                                }
+                                value={dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''}
+                            />
                         </div>
                     )}
                 </PanelBody>

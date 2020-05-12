@@ -240,7 +240,7 @@ class AdministrationController extends ApiController
                 foreach ($administration->invoices()
                     ->whereNull('twinfield_number')
                     ->whereIn('status_id', ['sent', 'paid'])
-                    ->where('created_by', '>=', $administration->date_sync_twinfield_contacts)
+                    ->where('created_at', '>=', $administration->date_sync_twinfield_contacts)
                     ->get() as $invoice)
                 {
                     $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);

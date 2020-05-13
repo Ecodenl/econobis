@@ -641,7 +641,16 @@ class AdministrationNewForm extends Component {
                                 </div>
                                 <div className="row">
                                     <InputDate
-                                        label="Synchroniseer contacten vanaf"
+                                        label={
+                                            <span>
+                                                Synchroniseer contacten vanaf
+                                                <br />
+                                                <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                                    Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in
+                                                    Twinfield
+                                                </small>
+                                            </span>
+                                        }
                                         name={'dateSyncTwinfieldContacts'}
                                         value={dateSyncTwinfieldContacts}
                                         onChangeAction={this.handleInputChangeDate}
@@ -649,7 +658,16 @@ class AdministrationNewForm extends Component {
                                         error={this.state.errors.dateSyncTwinfieldContacts}
                                     />
                                     <InputDate
-                                        label="Synchroniseer betalingen vanaf"
+                                        label={
+                                            <span>
+                                                Synchroniseer betalingen vanaf
+                                                <br />
+                                                <small style={{ color: '#ccc', fontWeight: 'normal' }}>
+                                                    Nota aanmaakdatum vanaf wanneer betalingen opgehaald worden uit
+                                                    Twinfield
+                                                </small>
+                                            </span>
+                                        }
                                         name={'dateSyncTwinfieldPayments'}
                                         value={dateSyncTwinfieldPayments}
                                         onChangeAction={this.handleInputChangeDate}

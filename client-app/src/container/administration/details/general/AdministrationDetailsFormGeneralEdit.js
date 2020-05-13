@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import validator from 'validator';
 
@@ -22,6 +23,11 @@ import moment from 'moment';
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
+
+        this.manageUsesTwinfield =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'info@xaris.nl'
+                ? true
+                : false;
 
         const {
             id,
@@ -687,10 +693,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
                                 onChangeAction={this.handleUsesTwinfieldChange}
+                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername) }
                             />
                         </div>
 
-                        {usesTwinfield == true && (
+                        {( usesTwinfield == true || !isEmpty(twinfieldUsername) ) && (
                             <React.Fragment>
                                 <div className="row">
                                     <InputText
@@ -699,6 +706,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={twinfieldUsername}
                                         onChangeAction={this.handleInputChange}
                                         required={'required'}
+                                        readOnly={usesTwinfield == false}
                                         error={this.state.errors.twinfieldUsername}
                                     />
                                     <InputText
@@ -707,8 +715,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={twinfieldPassword}
                                         placeholder="**********"
                                         onChangeAction={this.handleInputChange}
-                                        error={this.state.errors.twinfieldPassword}
                                         required={'required'}
+                                        readOnly={usesTwinfield == false}
+                                        error={this.state.errors.twinfieldPassword}
                                     />
                                 </div>
                                 <div className="row">
@@ -718,6 +727,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={twinfieldPasswordChange}
                                         onChangeAction={this.handleInputChange}
                                         className={'col-sm-push-6 col-sm-6'}
+                                        disabled={usesTwinfield == false}
                                     />
                                 </div>
                                 <div className="row">
@@ -727,6 +737,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={twinfieldOrganizationCode}
                                         onChangeAction={this.handleInputChange}
                                         required={'required'}
+                                        readOnly={usesTwinfield == false}
                                         error={this.state.errors.twinfieldOrganizationCode}
                                     />
                                     <InputText
@@ -734,8 +745,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         name={'twinfieldOfficeCode'}
                                         value={twinfieldOfficeCode}
                                         onChangeAction={this.handleInputChange}
-                                        error={this.state.errors.twinfieldOfficeCode}
                                         required={'required'}
+                                        readOnly={usesTwinfield == false}
+                                        error={this.state.errors.twinfieldOfficeCode}
                                     />
                                 </div>
                                 <div className="row">
@@ -754,6 +766,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={dateSyncTwinfieldContacts}
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldContacts}
+                                        readOnly={usesTwinfield == false}
                                         error={this.state.errors.dateSyncTwinfieldContacts}
                                     />
                                     <InputDate
@@ -771,6 +784,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={dateSyncTwinfieldPayments}
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldPayments}
+                                        readOnly={usesTwinfield == false}
                                         error={this.state.errors.dateSyncTwinfieldPayments}
                                     />
                                 </div>

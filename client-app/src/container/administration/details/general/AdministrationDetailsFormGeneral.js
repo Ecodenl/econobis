@@ -51,7 +51,7 @@ class AdministrationDetailsFormGeneral extends Component {
                 onMouseLeave={() => this.onDivLeave()}
             >
                 {this.state.showEdit && permissions.manageFinancial ? (
-                    <AdministrationDetailsFormGeneralEdit switchToView={this.switchToView} />
+                    <AdministrationDetailsFormGeneralEdit switchToView={this.switchToView } meDetails={this.props.meDetails} />
                 ) : (
                     <AdministrationDetailsFormGeneralView switchToEdit={this.switchToEdit} />
                 )}

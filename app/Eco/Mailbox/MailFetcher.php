@@ -51,8 +51,10 @@ class MailFetcher
 //        if(count($mailIds)>0){
 //            $mailIds = $this->imap->sortMails(SORTARRIVAL);
 //        }
+        rsort($mailIds);
 
 //        Log::info("mailIds b: " . implode(',', $mailIds));
+
         foreach($mailIds as $mailId){
             if(Email::whereMailboxId($this->mailbox->id)
                 ->whereImapId($mailId)

@@ -151,9 +151,8 @@ class MailFetcher
             $textHtml = $emailData->textHtml;
         } else {
             $textHtml = nl2br($emailData->textPlain);
-            $textHtml = utf8_encode($textHtml);
         }
-
+        $textHtml = utf8_encode($textHtml);
         $textHtml = $textHtml?: '';
 
         if(strlen($textHtml) > 250000){

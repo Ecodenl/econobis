@@ -13,6 +13,8 @@ import Panel from '../../../../components/panel/Panel';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
+import ViewText from "../../../../components/form/ViewText";
+import moment from "moment/moment";
 
 class MailboxDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -146,6 +148,8 @@ class MailboxDetailsFormGeneralEdit extends Component {
             imapPort,
             imapEncryption,
             imapInboxPrefix,
+            dateLastFetched,
+            imapIdLastFetched,
             username,
             password,
             usesMailgun,
@@ -329,6 +333,17 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.imapInboxPrefix}
                             />
+                        </div>
+                    </PanelBody>
+
+                    <PanelHeader>
+                        <span className="h5">Log</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <ViewText label={'Datum email laatst opgehaald'} value={dateLastFetched}
+                                      value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}/>
+                            <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
                         </div>
                     </PanelBody>
 

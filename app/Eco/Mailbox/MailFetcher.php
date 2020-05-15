@@ -64,6 +64,10 @@ class MailFetcher
         $dateTime = Carbon::now();
         Log::info("Datetime : " . $dateTime);
 
+//        if(count($mailIds)>0){
+//            $mailIds = $this->imap->sortMails(SORTARRIVAL);
+//        }
+        rsort($mailIds);
         $imapIdLastFetched = $this->mailbox->imap_id_last_fetched;
 
         if(!$imapIdLastFetched) {
@@ -95,6 +99,21 @@ class MailFetcher
                 set_time_limit(180);
                 $this->fetchEmail($mailId);
             }
+//        Log::info("mailIds b: " . implode(',', $mailIds));
+
+        foreach($mailIds as $mailId){
+            if(Email::whereMailboxId($this->mailbox->id)
+                ->whereImapId($mailId)
+                ->exists()){
+
+                // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
+                // Dus kunnen we helemaal stoppen met de loop
+                return;
+            }
+
+            // Als we hier komen is de mail blijkbaar nog niet eerder opgehaald, bij deze gaan doen
+            set_time_limit(180);
+            $this->fetchEmail($mailId);
         }
         $this->mailbox->date_last_fetched = $dateTime;
         $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
@@ -192,7 +211,9 @@ class MailFetcher
         } else {
             $textHtml = nl2br($emailData->textPlain);
         }
-
+        // todo This have not always the right effect on special characters in text.
+        // Check later how we can get this richt?? Maybe with json_encode ?
+        //        $textHtml = utf8_encode($textHtml);
         $textHtml = $textHtml?: '';
 
         if(strlen($textHtml) > 250000){
@@ -206,6 +227,18 @@ class MailFetcher
             $subject = substr($emailData->textHtml, 0, 249);
         }
 
+        try {
+            $dateSent = Carbon::parse( $emailData->date ) ;
+        } catch(\Exception $ex) {
+            try {
+                $dateSent = Carbon::parse( str_replace(" (GMT+02:00)", "", $emailData->date) );
+            } catch(\Exception $ex2) {
+                Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
+                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+                die();
+            }
+        }
+
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
             'from' => $emailData->fromAddress,
@@ -214,7 +247,7 @@ class MailFetcher
             'bcc' => array_keys($emailData->bcc),
             'subject' => $subject,
             'html_body' => $textHtml,
-            'date_sent' => $dateSend,
+            'date_sent' => $dateSent,
             'folder' => 'inbox',
             'imap_id' => $emailData->id,
             'message_id' => $emailData->messageId,

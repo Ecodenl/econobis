@@ -166,7 +166,17 @@ class MailFetcher
             $subject = substr($emailData->textHtml, 0, 249);
         }
 
-        $dateSend = Carbon::parse( $emailData->date);
+        try {
+            $dateSent = Carbon::parse( $emailData->date ) ;
+        } catch(\Exception $ex) {
+            try {
+                $dateSent = Carbon::createFromFormat( 'd-m-Y H:i:s e+', $emailData->date ) ;
+            } catch(\Exception $ex2) {
+                Log::error("Failed to retrieve date sent (" . $emailData->date . ")from email: " . $ex2->getMessage());
+                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+                die();
+            }
+        }
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
@@ -176,7 +186,7 @@ class MailFetcher
             'bcc' => array_keys($emailData->bcc),
             'subject' => $subject,
             'html_body' => $textHtml,
-            'date_sent' => $dateSend,
+            'date_sent' => $dateSent,
             'folder' => 'inbox',
             'imap_id' => $emailData->id,
             'message_id' => $emailData->messageId,

@@ -5,6 +5,7 @@ import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../components/panel/PanelBody';
+import moment from "moment/moment";
 
 const MailboxDetailsFormGeneralView = props => {
     const {
@@ -17,6 +18,8 @@ const MailboxDetailsFormGeneralView = props => {
         imapPort,
         imapEncryption,
         imapInboxPrefix,
+        dateLastFetched,
+        imapIdLastFetched,
         username,
         outgoingServerType,
         mailgunDomain,
@@ -93,6 +96,16 @@ const MailboxDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
+                    </div>
+                </PanelBody>
+                <PanelHeader>
+                    <span className="h5">Log</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Datum email laatst opgehaald'} value={dateLastFetched}
+                                  value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}/>
+                        <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
                     </div>
                 </PanelBody>
             </Panel>

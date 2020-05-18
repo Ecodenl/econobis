@@ -36,7 +36,7 @@ class MailFetcher
 
     public function fetchNew()
     {
-        Log::info("Check fetchNew");
+//        Log::info("Check fetchNew");
 
         // Get all emails (messages)
         // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
@@ -45,7 +45,7 @@ class MailFetcher
             try {
                 $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
                 $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
-                Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
+//                Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
             } catch(PhpImap\Exceptions\ConnectionException $ex) {
                 echo "IMAP connection failed: " . $ex;
                 die();
@@ -54,7 +54,7 @@ class MailFetcher
             try {
                 $dateLastFetched = Carbon::now()->format('Y-m-d');
                 $mailIds = $this->imap->searchMailbox('ALL');
-                Log::info("Search ALL : " . implode(',', $mailIds));
+//                Log::info("Search ALL : " . implode(',', $mailIds));
             } catch(PhpImap\Exceptions\ConnectionException $ex) {
                 echo "IMAP connection failed: " . $ex;
                 die();
@@ -62,7 +62,7 @@ class MailFetcher
         }
 
         $dateTime = Carbon::now();
-        Log::info("Datetime : " . $dateTime);
+//        Log::info("Datetime : " . $dateTime);
 
         $imapIdLastFetched = $this->mailbox->imap_id_last_fetched;
 
@@ -72,25 +72,28 @@ class MailFetcher
 
         if(count($mailIds) > 0){
             $firstMailId = $mailIds[0];
-            Log::info("firstMailId: " . $firstMailId);
+//            Log::info("firstMailId: " . $firstMailId);
 
             if( $dateLastFetched != $dateTime->format('Y-m-d') && $imapIdLastFetched>=$firstMailId ){
-                Log::info("RESET: imap Id < voor laatste imap id !!");
+//                Log::info("RESET: imap Id < voor laatste imap id !!");
             }else{
-                Log::info("Laatste imap Id voor fetch: " . $imapIdLastFetched);
+//                Log::info("Laatste imap Id voor fetch: " . $imapIdLastFetched);
 
                 $imapIdLastFetchedArrayId = array_search($imapIdLastFetched, $mailIds );
-                Log::info("imapIdLastFetchedArrayId: " . $imapIdLastFetchedArrayId);
+//                Log::info("imapIdLastFetchedArrayId: " . $imapIdLastFetchedArrayId);
                 if(false !== $imapIdLastFetchedArrayId){
                     $mailIds = array_slice($mailIds, $imapIdLastFetchedArrayId+1);
                 }
             }
-            Log::info("Mailids: " . implode(',', $mailIds) );
+//            Log::info("Mailids: " . implode(',', $mailIds) );
             if(count($mailIds) > 0){
                 $imapIdLastFetched = end($mailIds);
             }
-            Log::info("Laatste imap Id na fetch: " . $imapIdLastFetched);
+//            Log::info("Laatste imap Id na fetch: " . $imapIdLastFetched);
 
+            // we sort ids descending for processing, so when a fetch email failed, new emails still are being fetched.
+            rsort($mailIds);
+//            Log::info("Mailids: " . implode(',', $mailIds) );
             foreach($mailIds as $mailId){
                 set_time_limit(180);
                 $this->fetchEmail($mailId);
@@ -190,13 +193,13 @@ class MailFetcher
 
         if(Email::whereMailboxId($this->mailbox->id)
             ->whereImapId($mailId)
-            ->whereDateSent($dateSend)
+            ->whereDateSent($dateSent)
             ->exists()){
-            Log::info("Deze mail bestaat al met zelfde imap id (" . $mailId . ") en date sent (" . $dateSend . ") "  );
+//            Log::info("Deze mail bestaat al met zelfde imap id (" . $mailId . ") en date sent (" . $dateSent . ") "  );
             // Deze mail bestaat al
                 return;
         }
-        Log::info("Deze mail nieuw aanmaken met imap id (" . $mailId . ")" );
+//        Log::info("Deze mail nieuw aanmaken met imap id (" . $mailId . ")" );
 
         if ($emailData->textHtml) {
             $textHtml = $emailData->textHtml;

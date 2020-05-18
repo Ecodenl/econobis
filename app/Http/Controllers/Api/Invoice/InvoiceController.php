@@ -92,7 +92,7 @@ class InvoiceController extends ApiController
         $totalIds = $selectedInvoices->pluck("id");
 
         $totalPrice = 0;
-        foreach ($invoices as $invoice) {
+        foreach ($selectedInvoices as $invoice) {
             $totalPrice += $invoice->total_price_incl_vat_and_reduction;
         }
 

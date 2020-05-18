@@ -203,10 +203,12 @@ class MailFetcher
         } else {
             $textHtml = nl2br($emailData->textPlain);
         }
-        // todo This have not always the right effect on special characters in text.
-        // Check later how we can get this richt?? Maybe with json_encode ?
-        //        $textHtml = utf8_encode($textHtml);
         $textHtml = $textHtml?: '';
+        // when encoding isn't UTF-8 encode texthtml to utf8.
+        $currentEncodingTextHtml= mb_detect_encoding( $textHtml, 'UTF-8', true);
+        if(false === $currentEncodingTextHtml){
+            $textHtml = utf8_encode($textHtml);
+        }
 
         if(strlen($textHtml) > 250000){
             $textHtml = substr($emailData->textHtml, 0, 250000);

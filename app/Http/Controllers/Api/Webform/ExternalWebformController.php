@@ -305,11 +305,23 @@ class ExternalWebformController extends Controller
 
         if ($contact) {
             // Person of organisatie is gevonden, uitvoeren acties
-            // contactActie = "GEEN"
+            // contactActie = "GEEN" ->geen acties op contact naw of email
             // contactActie = "NAT" -> Nieuw adres + taak
             // contactActie = "NET" -> Nieuw emailadres + taak
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
+                case 'GEEN' :
+                    $address = $contact->addresses()
+                        ->where('postal_code', $data['address_postal_code'])
+                        ->where('number', $data['address_number'])
+                        ->where('addition', $data['address_addition'])
+                        ->first();
+                    if($address){
+                        $this->address = $address;
+                    }
+                    $this->addPhoneNumberToContact($data, $contact);
+                    $this->addContactToGroup($data, $contact);
+                    break;
                 case 'NAT' :
                     $this->addAddressToContact($data, $contact);
                     $this->addPhoneNumberToContact($data, $contact);
@@ -368,7 +380,6 @@ class ExternalWebformController extends Controller
                     break;
             }
         }
-
 
         return $contact;
     }
@@ -1139,15 +1150,12 @@ class ExternalWebformController extends Controller
         if ($this->contactGroup) {
             $contactGroupId = $this->contactGroup->id;
             $note .= "Contact is aan groep " . $this->contactGroup->name . " gekoppeld.\n\n";
-            $this->log('Contact is aan groep ' . $this->contactGroup->name . ' gekoppeld.');
         }elseif($this->contactGroups && $this->contactGroups->count() == 1 ){
             $contactGroupId = $this->contactGroups[0]->id;
             $note .= "Contact is aan groep " . $this->contactGroups[0]->name . " gekoppeld.\n\n";
-            $this->log('Contact is aan groep ' . $this->contactGroups[0]->name . ' gekoppeld.');
         }elseif($this->contactGroups && $this->contactGroups->count() > 1 )
             if ($this->contactGroups && $this->contactGroups->count() > 0) {
                 $note .= "Contact is aan meerdere groepen gekoppeld.\n\n";
-                $this->log('Contact is aan meerdere groepen gekoppeld.');
             }
 
         $taskTypeId = $data['type_id'];

@@ -37,38 +37,71 @@ class MailFetcher
     public function fetchNew()
     {
 //        Log::info("Check fetchNew");
-        try {
-            // Get all emails (messages)
-            // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-            $mailIds = $this->imap->searchMailbox('ALL');
-        } catch(PhpImap\Exceptions\ConnectionException $ex) {
-            echo "IMAP connection failed: " . $ex;
-            die();
-        }
-//        Log::info("mailIds aantal: " . count($mailIds));
-//        Log::info("mailIds a: " . implode(',', $mailIds));
 
-//        if(count($mailIds)>0){
-//            $mailIds = $this->imap->sortMails(SORTARRIVAL);
-//        }
-        rsort($mailIds);
-
-//        Log::info("mailIds b: " . implode(',', $mailIds));
-
-        foreach($mailIds as $mailId){
-            if(Email::whereMailboxId($this->mailbox->id)
-                ->whereImapId($mailId)
-                ->exists()){
-
-                // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
-                // Dus kunnen we helemaal stoppen met de loop
-                return;
+        // Get all emails (messages)
+        // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
+        if($this->mailbox->date_last_fetched)
+        {
+            try {
+                $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
+                $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
+//                Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
+            } catch(PhpImap\Exceptions\ConnectionException $ex) {
+                echo "IMAP connection failed: " . $ex;
+                die();
             }
-
-            // Als we hier komen is de mail blijkbaar nog niet eerder opgehaald, bij deze gaan doen
-            set_time_limit(180);
-            $this->fetchEmail($mailId);
+        }else{
+            try {
+                $dateLastFetched = Carbon::now()->format('Y-m-d');
+                $mailIds = $this->imap->searchMailbox('ALL');
+//                Log::info("Search ALL : " . implode(',', $mailIds));
+            } catch(PhpImap\Exceptions\ConnectionException $ex) {
+                echo "IMAP connection failed: " . $ex;
+                die();
+            }
         }
+
+        $dateTime = Carbon::now();
+//        Log::info("Datetime : " . $dateTime);
+
+        $imapIdLastFetched = $this->mailbox->imap_id_last_fetched;
+
+        if(!$imapIdLastFetched) {
+            $imapIdLastFetched = 0;
+        }
+
+        if(count($mailIds) > 0){
+            $firstMailId = $mailIds[0];
+//            Log::info("firstMailId: " . $firstMailId);
+
+            if( $dateLastFetched != $dateTime->format('Y-m-d') && $imapIdLastFetched>=$firstMailId ){
+//                Log::info("RESET: imap Id < voor laatste imap id !!");
+            }else{
+//                Log::info("Laatste imap Id voor fetch: " . $imapIdLastFetched);
+
+                $imapIdLastFetchedArrayId = array_search($imapIdLastFetched, $mailIds );
+//                Log::info("imapIdLastFetchedArrayId: " . $imapIdLastFetchedArrayId);
+                if(false !== $imapIdLastFetchedArrayId){
+                    $mailIds = array_slice($mailIds, $imapIdLastFetchedArrayId+1);
+                }
+            }
+//            Log::info("Mailids: " . implode(',', $mailIds) );
+            if(count($mailIds) > 0){
+                $imapIdLastFetched = end($mailIds);
+            }
+//            Log::info("Laatste imap Id na fetch: " . $imapIdLastFetched);
+
+            // we sort ids descending for processing, so when a fetch email failed, new emails still are being fetched.
+            rsort($mailIds);
+//            Log::info("Mailids: " . implode(',', $mailIds) );
+            foreach($mailIds as $mailId){
+                set_time_limit(180);
+                $this->fetchEmail($mailId);
+            }
+        }
+        $this->mailbox->date_last_fetched = $dateTime;
+        $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
+        $this->mailbox->save();
     }
 
     public function getImap()
@@ -146,6 +179,27 @@ class MailFetcher
     {
         $emailData = $this->imap->getMail($mailId);
 //        dd($emailData);
+        try {
+            $dateSent = Carbon::parse( $emailData->date ) ;
+        } catch(\Exception $ex) {
+            try {
+                $dateSent = Carbon::parse( str_replace(" (GMT+02:00)", "", $emailData->date) );
+            } catch(\Exception $ex2) {
+                Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
+                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+                die();
+            }
+        }
+
+        if(Email::whereMailboxId($this->mailbox->id)
+            ->whereImapId($mailId)
+            ->whereDateSent($dateSent)
+            ->exists()){
+//            Log::info("Deze mail bestaat al met zelfde imap id (" . $mailId . ") en date sent (" . $dateSent . ") "  );
+            // Deze mail bestaat al
+                return;
+        }
+//        Log::info("Deze mail nieuw aanmaken met imap id (" . $mailId . ")" );
 
         if ($emailData->textHtml) {
             $textHtml = $emailData->textHtml;
@@ -168,18 +222,6 @@ class MailFetcher
 
         if(strlen($subject) > 250){
             $subject = substr($emailData->textHtml, 0, 249);
-        }
-
-        try {
-            $dateSent = Carbon::parse( $emailData->date ) ;
-        } catch(\Exception $ex) {
-            try {
-                $dateSent = Carbon::parse( str_replace(" (GMT+02:00)", "", $emailData->date) );
-            } catch(\Exception $ex2) {
-                Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
-                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
-                die();
-            }
         }
 
         $email = new Email([

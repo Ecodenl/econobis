@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Project\Project;
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
@@ -57,10 +58,21 @@ class DeleteDocumentTemplate implements DeleteInterface
     public function canDelete()
     {
 
-        $documentNames = DocumentTemplate::where('base_template_id', $this->documentTemplate->id)->orWhere('header_id', $this->documentTemplate->id)->orWhere('footer_id', $this->documentTemplate->id)->pluck('name')->toArray();
-        if($documentNames){
-            abort('409','Ontkoppel eerst de volgende templates: ' . implode(', ', $documentNames));
+        $documentTemplateNames = DocumentTemplate::where('base_template_id', $this->documentTemplate->id)->orWhere('header_id', $this->documentTemplate->id)->orWhere('footer_id', $this->documentTemplate->id)->pluck('name')->toArray();
+        if($documentTemplateNames){
+            abort('409','Ontkoppel eerst de volgende templates: ' . implode(', ', $documentTemplateNames));
         }
+
+        $projectNames = Project::where('document_template_agreement_id', $this->documentTemplate->id)->pluck('name')->toArray();
+        if($projectNames){
+            abort('409','Ontkoppel template eerst in de volgende projecten: ' . implode(', ', $projectNames));
+        }
+
+//        $documentNames = Document::where('template_id', $this->documentTemplate->id)->pluck('number')->toArray();
+//        if($documentNames){
+//            abort('409','Template is gebruikt in de volgende documenten: ' . implode(', ', $documentNames));
+//        }
+
     }
 
     /** Deletes models recursive
@@ -83,10 +95,10 @@ class DeleteDocumentTemplate implements DeleteInterface
      */
     public function deleteRelations()
     {
-        foreach ($this->documentTemplate->documents as $document){
-            $document->template()->dissociate();
-            $document->save();
-        }
+//        foreach ($this->documentTemplate->documents as $document){
+//            $document->template()->dissociate();
+//            $document->save();
+//        }
     }
 
 

@@ -204,7 +204,9 @@ class MailFetcher
         if ($emailData->textHtml) {
             $textHtml = $emailData->textHtml;
         } else {
-            $textHtml = nl2br($emailData->textPlain);
+            if ($emailData->textPlain) {
+                $textHtml = nl2br($emailData->textPlain);
+            }
         }
         $textHtml = $textHtml?: '';
         // when encoding isn't UTF-8 encode texthtml to utf8.

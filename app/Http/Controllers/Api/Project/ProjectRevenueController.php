@@ -1039,7 +1039,7 @@ class ProjectRevenueController extends ApiController
                 $document->save();
             }
             catch (\Exception $e) {
-                Log::error('Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
                 array_push($messages, 'Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
             }
@@ -1107,9 +1107,9 @@ class ProjectRevenueController extends ApiController
                         $htmlBodyWithContactVariables, $document));
 
                 } catch (\Exception $e) {
-                    Log::error( 'Fout bij verzenden email naar ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                    Log::error( 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                     Log::error($e->getMessage());
-                    array_push($messages, 'Fout bij verzenden email naar ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                    array_push($messages, 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 }
 
             } else {

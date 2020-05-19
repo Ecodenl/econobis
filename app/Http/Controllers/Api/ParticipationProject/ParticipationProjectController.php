@@ -756,9 +756,9 @@ class ParticipationProjectController extends ApiController
             $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
         } catch (\Exception $e) {
-            Log::error('Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+            Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
             Log::error($e->getMessage());
-            array_push($messages, 'Fout bij maken rapport document voor ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+            array_push($messages, 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
         }
 
         //send email
@@ -800,9 +800,9 @@ class ParticipationProjectController extends ApiController
                 $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
                     $htmlBodyWithContactVariables, $document));
             } catch (\Exception $e) {
-                Log::error( 'Fout bij verzenden email naar ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                Log::error( 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
-                array_push($messages, 'Fout bij verzenden email naar ' . $primaryEmailAddress->email . ' (' . $contact->full_name . ')' );
+                array_push($messages, 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
             }
 
             //delete file on server, still saved on alfresco.

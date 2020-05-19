@@ -72,7 +72,7 @@ class Kernel extends ConsoleKernel
         $timeSetDaysLastReminder = (isset($this->getArrayTimeSetDaysLastReminder()[$appCoopName]) ? $this->getArrayTimeSetDaysLastReminder()[$appCoopName] : '01:50' );
         $timeSetDaysToExpire = (isset($this->getArrayTimeSetDaysToExpire()[$appCoopName]) ? $this->getArrayTimeSetDaysToExpire()[$appCoopName] : '03:50' );
 
-//        $schedule->command('email:getAllEmail')->everyFiveMinutes();
+//        $schedule->command('email:getAllEmail')->everyFiveMinutes()->between('06:00', '23.30');
         $schedule->command('email:checkMailboxes')->dailyAt('05:58');
         $schedule->command('email:checkMailboxes')->dailyAt('08:58');
         $schedule->command('email:checkMailboxes')->dailyAt('11:58');

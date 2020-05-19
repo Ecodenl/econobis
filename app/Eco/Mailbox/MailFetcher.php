@@ -185,6 +185,12 @@ class MailFetcher
             try {
                 $dateSentStrip = str_replace(" (GMT+01:00)", "", $emailData->date);
                 $dateSentStrip = str_replace(" (GMT+02:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+03:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+04:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+05:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+06:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+07:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+08:00)", "", $dateSentStrip);
                 $dateSentStrip = str_replace(" (West-Europa (standaardtijd))", "", $dateSentStrip);
                 $dateSent = Carbon::parse( $dateSentStrip );
             } catch(\Exception $ex2) {

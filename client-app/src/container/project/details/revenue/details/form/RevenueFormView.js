@@ -110,7 +110,7 @@ const RevenueFormView = props => {
                                 '€ ' +
                                     payoutKwh.toLocaleString('nl', {
                                         minimumFractionDigits: 3,
-                                        maximumFractionDigits: 3,
+                                        maximumFractionDigits: 4,
                                     })
                             }
                         />

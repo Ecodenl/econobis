@@ -202,6 +202,7 @@ class MailFetcher
                 $dateSentStrip = str_replace(" (GMT+08:00)", "", $dateSentStrip);
                 $dateSentStrip = str_replace(" (West-Europa (standaardtijd))", "", $dateSentStrip);
                 $dateSentStrip = str_replace(" (West-Europa (zomertijd))", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (W. Europe Daylight Time)", "", $dateSentStrip);
                 $dateSent = Carbon::parse( $dateSentStrip );
             } catch(\Exception $ex2) {
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
@@ -220,14 +221,19 @@ class MailFetcher
         }
 //        Log::info("Deze mail nieuw aanmaken met imap id (" . $mailId . ")" );
 
-        if ($emailData->textHtml) {
-            $textHtml = $emailData->textHtml;
-        } else {
-            if ($emailData->textPlain) {
-                $textHtml = nl2br($emailData->textPlain);
+        $textHtml = '';
+        try {
+            if ($emailData->textHtml) {
+                $textHtml = $emailData->textHtml;
             } else {
-                $textHtml = '';
+                if ($emailData->textPlain) {
+                    $textHtml = nl2br($emailData->textPlain);
+                }
             }
+        } catch(\Exception $ex) {
+            Log::error("Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
+            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+            return;
         }
         $textHtml = $textHtml?: '';
         // when encoding isn't UTF-8 encode texthtml to utf8.

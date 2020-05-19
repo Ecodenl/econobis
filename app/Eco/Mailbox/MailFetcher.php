@@ -49,6 +49,15 @@ class MailFetcher
             } catch(PhpImap\Exceptions\ConnectionException $ex) {
                 echo "IMAP connection failed: " . $ex;
                 die();
+            } catch(\Exceptions $ex2) {
+                try {
+                    $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
+                    $mailIds = $this->imap->searchMailbox('ALL');
+//                    Log::info("Search ALL : " . implode(',', $mailIds));
+                } catch(PhpImap\Exceptions\ConnectionException $ex) {
+                    echo "IMAP connection failed: " . $ex;
+                    die();
+                }
             }
         }else{
             try {
@@ -192,6 +201,7 @@ class MailFetcher
                 $dateSentStrip = str_replace(" (GMT+07:00)", "", $dateSentStrip);
                 $dateSentStrip = str_replace(" (GMT+08:00)", "", $dateSentStrip);
                 $dateSentStrip = str_replace(" (West-Europa (standaardtijd))", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (West-Europa (zomertijd))", "", $dateSentStrip);
                 $dateSent = Carbon::parse( $dateSentStrip );
             } catch(\Exception $ex2) {
                 Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
@@ -215,6 +225,8 @@ class MailFetcher
         } else {
             if ($emailData->textPlain) {
                 $textHtml = nl2br($emailData->textPlain);
+            } else {
+                $textHtml = '';
             }
         }
         $textHtml = $textHtml?: '';

@@ -62,8 +62,14 @@ class moveFilesFromEmailAttachments extends Command
             $fileFromFile = $prefixdir."temp".DIRECTORY_SEPARATOR.$filename;
             print_r( $fileFromFile ."\n");
             print_r( $attachment->filename ."\n");
-            Storage::disk('mail_attachments')->move($fileFromFile, $attachment->filename);
-            print_r("Emailattachment ". $attachment->id . " verplaatst.\n");
+            try{
+                Storage::disk('mail_attachments')->move($fileFromFile, $attachment->filename);
+                print_r("Emailattachment ". $attachment->id . " verplaatst.\n");
+            }catch (\Exception $e){
+                print_r("Emailattachment ". $attachment->id . " komt niet meer voor in temp.\n");
+                print_r("Error: ". $e->getMessage());
+                print_r( "\n");
+            }
         }
     }
 }

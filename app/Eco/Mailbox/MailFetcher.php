@@ -60,7 +60,7 @@ class MailFetcher
         } catch(PhpImap\Exceptions\ConnectionException $ex) {
             echo "IMAP connection failed: " . $ex;
             die();
-        } catch(\Exceptions $ex2) {
+        } catch(\Exception $ex2) {
             try {
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));

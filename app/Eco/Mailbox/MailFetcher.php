@@ -36,32 +36,32 @@ class MailFetcher
 
     public function fetchNew()
     {
-//        Log::info("Check fetchNew");
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
 
-        // Get all emails (messages)
-        // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-        if($this->mailbox->date_last_fetched)
-        {
-            try {
-                $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
-                $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
-//                Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
-            } catch(PhpImap\Exceptions\ConnectionException $ex) {
-                echo "IMAP connection failed: " . $ex;
-                die();
-            } catch(\Exceptions $ex2) {
-                try {
-                    $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
-                    $mailIds = $this->imap->searchMailbox('ALL');
-//                    Log::info("Search ALL : " . implode(',', $mailIds));
-                } catch(PhpImap\Exceptions\ConnectionException $ex) {
-                    echo "IMAP connection failed: " . $ex;
-                    die();
-                }
-            }
+        if($this->mailbox->date_last_fetched) {
+            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
         }else{
+            $dateLastFetched = Carbon::now()->format('Y-m-d');
+        }
+
+        $dateTime = Carbon::now();
+
+        if($this->mailbox->imap_id_last_fetched) {
+            $imapIdLastFetched = $this->mailbox->imap_id_last_fetched;
+        }else{
+            $imapIdLastFetched = 0;
+        }
+
+        try {
+            // Get all emails (messages)
+            // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
+            $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
+//            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
+        } catch(PhpImap\Exceptions\ConnectionException $ex) {
+            echo "IMAP connection failed: " . $ex;
+            die();
+        } catch(\Exceptions $ex2) {
             try {
-                $dateLastFetched = Carbon::now()->format('Y-m-d');
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
             } catch(PhpImap\Exceptions\ConnectionException $ex) {
@@ -70,40 +70,22 @@ class MailFetcher
             }
         }
 
-        $dateTime = Carbon::now();
-//        Log::info("Datetime : " . $dateTime);
-
-        $imapIdLastFetched = $this->mailbox->imap_id_last_fetched;
-
-        if(!$imapIdLastFetched) {
-            $imapIdLastFetched = 0;
-        }
-
         if(count($mailIds) > 0){
-            $firstMailId = $mailIds[0];
-//            Log::info("firstMailId: " . $firstMailId);
-
-            if( $dateLastFetched != $dateTime->format('Y-m-d') && $imapIdLastFetched>=$firstMailId ){
-//                Log::info("RESET: imap Id < voor laatste imap id !!");
-            }else{
-//                Log::info("Laatste imap Id voor fetch: " . $imapIdLastFetched);
-
-                $imapIdLastFetchedArrayId = array_search($imapIdLastFetched, $mailIds );
-//                Log::info("imapIdLastFetchedArrayId: " . $imapIdLastFetchedArrayId);
-                if(false !== $imapIdLastFetchedArrayId){
-                    $mailIds = array_slice($mailIds, $imapIdLastFetchedArrayId+1);
-                }
-            }
-//            Log::info("Mailids: " . implode(',', $mailIds) );
-            if(count($mailIds) > 0){
-                $imapIdLastFetched = end($mailIds);
-            }
-//            Log::info("Laatste imap Id na fetch: " . $imapIdLastFetched);
-
             // we sort ids descending for processing, so when a fetch email failed, new emails still are being fetched.
             rsort($mailIds);
 //            Log::info("Mailids: " . implode(',', $mailIds) );
+            $imapIdLastFetched = $mailIds[0];
+//            Log::info("Laatste imap Id : " . $imapIdLastFetched);
             foreach($mailIds as $mailId){
+                if(Email::whereMailboxId($this->mailbox->id)
+                    ->whereImapId($mailId)
+                    ->exists()){
+
+                    // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
+                    // Dus kunnen we helemaal stoppen met de loop
+                    break;
+                }
+
                 set_time_limit(180);
                 $this->fetchEmail($mailId);
             }
@@ -111,6 +93,7 @@ class MailFetcher
         $this->mailbox->date_last_fetched = $dateTime;
         $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
         $this->mailbox->save();
+
     }
 
     public function getImap()
@@ -210,16 +193,6 @@ class MailFetcher
                 die();
             }
         }
-
-        if(Email::whereMailboxId($this->mailbox->id)
-            ->whereImapId($mailId)
-            ->whereDateSent($dateSent)
-            ->exists()){
-//            Log::info("Deze mail bestaat al met zelfde imap id (" . $mailId . ") en date sent (" . $dateSent . ") "  );
-            // Deze mail bestaat al
-                return;
-        }
-//        Log::info("Deze mail nieuw aanmaken met imap id (" . $mailId . ")" );
 
         $textHtml = '';
         try {

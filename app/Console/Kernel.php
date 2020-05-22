@@ -69,8 +69,8 @@ class Kernel extends ConsoleKernel
     {
         $appCoopName =  \Config::get('app.APP_COOP_NAME');
 
-        $timeSetDaysLastReminder = (isset($this->getArrayTimeSetDaysLastReminder()[$appCoopName]) ? $this->getArrayTimeSetDaysLastReminder()[$appCoopName] : '01:50' );
-        $timeSetDaysToExpire = (isset($this->getArrayTimeSetDaysToExpire()[$appCoopName]) ? $this->getArrayTimeSetDaysToExpire()[$appCoopName] : '03:50' );
+        $timeSetDaysLastReminder = (isset($this->getArrayTimeSetDaysLastReminder()[$appCoopName]) ? $this->getArrayTimeSetDaysLastReminder()[$appCoopName] : '01:56' );
+        $timeSetDaysToExpire = (isset($this->getArrayTimeSetDaysToExpire()[$appCoopName]) ? $this->getArrayTimeSetDaysToExpire()[$appCoopName] : '03:56' );
 
         $schedule->command('email:getAllEmail')->everyFiveMinutes()->between('06:00', '23.30');
         $schedule->command('email:checkMailboxes')->dailyAt('05:58');
@@ -192,6 +192,15 @@ class Kernel extends ConsoleKernel
             'zpv' => '01:44',
             'zuiderlicht' => '01:45',
             'zutphenenergie' => '01:46',
+            'bestenergie' => '01:47',
+            'energiecooperatieoss' => '01:48',
+            'energiekebuurtschappen' => '01:49',
+            'ewec' => '01:50',
+            'fruitstadenergie' => '01:51',
+            'testzutphenenergie' => '01:52',
+            'watbeters' => '01:53',
+            'weespecoenergie' => '01:54',
+            'ecoburen' => '01:55',
         );
     }
     protected function getArrayTimeSetDaysToExpire()
@@ -299,6 +308,15 @@ class Kernel extends ConsoleKernel
             'zpv' => '03:44',
             'zuiderlicht' => '03:45',
             'zutphenenergie' => '03:46',
+            'bestenergie' => '03:47',
+            'energiecooperatieoss' => '03:48',
+            'energiekebuurtschappen' => '03:49',
+            'ewec' => '03:50',
+            'fruitstadenergie' => '03:51',
+            'testzutphenenergie' => '03:52',
+            'watbeters' => '03:53',
+            'weespecoenergie' => '03:54',
+            'ecoburen' => '03:55',
         );
     }
 

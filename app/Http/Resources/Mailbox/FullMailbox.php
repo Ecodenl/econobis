@@ -33,6 +33,8 @@ class FullMailbox extends Resource
             'imapPort' => $this->imap_port,
             'imapEncryption' => $this->imap_encryption,
             'imapInboxPrefix' => $this->imap_inbox_prefix,
+            'dateLastFetched' => $this->date_last_fetched,
+            'imapIdLastFetched' => $this->imap_id_last_fetched,
             'username' => $this->username,
             'password' => '',
             'createdAt' => $this->created_at,

@@ -36,39 +36,64 @@ class MailFetcher
 
     public function fetchNew()
     {
-//        Log::info("Check fetchNew");
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
+
+        if($this->mailbox->date_last_fetched) {
+            $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
+        }else{
+            $dateLastFetched = Carbon::now()->format('Y-m-d');
+        }
+
+        $dateTime = Carbon::now();
+
+        if($this->mailbox->imap_id_last_fetched) {
+            $imapIdLastFetched = $this->mailbox->imap_id_last_fetched;
+        }else{
+            $imapIdLastFetched = 0;
+        }
+
         try {
             // Get all emails (messages)
             // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-            $mailIds = $this->imap->searchMailbox('ALL');
+            $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
+//            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
         } catch(PhpImap\Exceptions\ConnectionException $ex) {
             echo "IMAP connection failed: " . $ex;
             die();
-        }
-//        Log::info("mailIds aantal: " . count($mailIds));
-//        Log::info("mailIds a: " . implode(',', $mailIds));
-
-//        if(count($mailIds)>0){
-//            $mailIds = $this->imap->sortMails(SORTARRIVAL);
-//        }
-        rsort($mailIds);
-
-//        Log::info("mailIds b: " . implode(',', $mailIds));
-
-        foreach($mailIds as $mailId){
-            if(Email::whereMailboxId($this->mailbox->id)
-                ->whereImapId($mailId)
-                ->exists()){
-
-                // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
-                // Dus kunnen we helemaal stoppen met de loop
-                return;
+        } catch(\Exception $ex2) {
+            try {
+                $mailIds = $this->imap->searchMailbox('ALL');
+//                Log::info("Search ALL : " . implode(',', $mailIds));
+            } catch(PhpImap\Exceptions\ConnectionException $ex) {
+                echo "IMAP connection failed: " . $ex;
+                die();
             }
-
-            // Als we hier komen is de mail blijkbaar nog niet eerder opgehaald, bij deze gaan doen
-            set_time_limit(180);
-            $this->fetchEmail($mailId);
         }
+
+        if(count($mailIds) > 0){
+            // we sort ids descending for processing, so when a fetch email failed, new emails still are being fetched.
+            rsort($mailIds);
+//            Log::info("Mailids: " . implode(',', $mailIds) );
+            $imapIdLastFetched = $mailIds[0];
+//            Log::info("Laatste imap Id : " . $imapIdLastFetched);
+            foreach($mailIds as $mailId){
+                if(Email::whereMailboxId($this->mailbox->id)
+                    ->whereImapId($mailId)
+                    ->exists()){
+
+                    // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
+                    // Dus kunnen we helemaal stoppen met de loop
+                    break;
+                }
+
+                set_time_limit(180);
+                $this->fetchEmail($mailId);
+            }
+        }
+        $this->mailbox->date_last_fetched = $dateTime;
+        $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
+        $this->mailbox->save();
+
     }
 
     public function getImap()
@@ -146,11 +171,42 @@ class MailFetcher
     {
         $emailData = $this->imap->getMail($mailId);
 //        dd($emailData);
+        try {
+            $dateSent = Carbon::parse( $emailData->date ) ;
+        } catch(\Exception $ex) {
+            try {
+                $dateSentStrip = str_replace(" (GMT+01:00)", "", $emailData->date);
+                $dateSentStrip = str_replace(" (GMT+02:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+03:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+04:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+05:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+06:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+07:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (GMT+08:00)", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (West-Europa (standaardtijd))", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (West-Europa (zomertijd))", "", $dateSentStrip);
+                $dateSentStrip = str_replace(" (W. Europe Daylight Time)", "", $dateSentStrip);
+                $dateSent = Carbon::parse( $dateSentStrip );
+            } catch(\Exception $ex2) {
+                Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
+                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
+                die();
+            }
+        }
 
-        if ($emailData->textHtml) {
-            $textHtml = $emailData->textHtml;
-        } else {
-            $textHtml = nl2br($emailData->textPlain);
+        $textHtml = '';
+        try {
+            if ($emailData->textHtml) {
+                $textHtml = $emailData->textHtml;
+            } else {
+                if ($emailData->textPlain) {
+                    $textHtml = nl2br($emailData->textPlain);
+                }
+            }
+        } catch(\Exception $ex) {
+            Log::error("Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
+            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+            return;
         }
         $textHtml = $textHtml?: '';
         // when encoding isn't UTF-8 encode texthtml to utf8.
@@ -168,18 +224,6 @@ class MailFetcher
 
         if(strlen($subject) > 250){
             $subject = substr($emailData->textHtml, 0, 249);
-        }
-
-        try {
-            $dateSent = Carbon::parse( $emailData->date ) ;
-        } catch(\Exception $ex) {
-            try {
-                $dateSent = Carbon::parse( str_replace(" (GMT+02:00)", "", $emailData->date) );
-            } catch(\Exception $ex2) {
-                Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
-                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
-                die();
-            }
         }
 
         $email = new Email([

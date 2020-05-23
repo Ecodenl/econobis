@@ -9,8 +9,12 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\Order;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
+use App\Eco\Task\TaskType;
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Settings\PortalSettings;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -63,6 +67,22 @@ class DeleteEmailTemplate implements DeleteInterface
      */
     public function canDelete()
     {
+        $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
+        if($emailTemplateNewAccountId == $this->emailTemplate->id){
+            array_push($this->errorMessage,'Ontkoppel deze template eerst in Portal instellingen bij "E-mail template Nieuwe account activeren"');
+        }
+        $taskTypesNames = TaskType::where('email_template_id_wf_expired_task', $this->emailTemplate->id)->orWhere('email_template_id_wf_completed_task', $this->emailTemplate->id)->pluck('name')->toArray();
+        if($taskTypesNames){
+            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende Taak types: ' . implode(', ', $taskTypesNames));
+        }
+        $quotationRequestStatusNames = QuotationRequestStatus::where('email_template_id_wf', $this->emailTemplate->id)->pluck('name')->toArray();
+        if($quotationRequestStatusNames){
+            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende Offerte verzoek statussen: ' . implode(', ', $quotationRequestStatusNames));
+        }
+        $opportunityStatusNames = OpportunityStatus::where('email_template_id_wf', $this->emailTemplate->id)->pluck('name')->toArray();
+        if($opportunityStatusNames){
+            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende kans statusen: ' . implode(', ', $opportunityStatusNames));
+        }
 
     }
 

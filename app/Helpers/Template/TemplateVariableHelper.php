@@ -1540,7 +1540,7 @@ class TemplateVariableHelper
                 return $model->iban_attn;
                 break;
             case 'iban':
-                return $model->iban;
+                return $model->IBAN;
                 break;
             default:
                 return '';

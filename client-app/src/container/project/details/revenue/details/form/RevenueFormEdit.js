@@ -73,7 +73,7 @@ class RevenueFormEdit extends Component {
                 payAmount: payAmount ? payAmount : '',
                 keyAmountFirstPercentage: keyAmountFirstPercentage ? keyAmountFirstPercentage : 0,
                 payPercentageValidFromKeyAmount: payPercentageValidFromKeyAmount ? payPercentageValidFromKeyAmount : '',
-                payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(4) : '',
+                payoutKwh: payoutKwh ? parseFloat(payoutKwh).toFixed(5) : '',
             },
             errors: {
                 categoryId: false,

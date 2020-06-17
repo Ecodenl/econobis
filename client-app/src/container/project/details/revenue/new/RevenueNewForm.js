@@ -251,7 +251,7 @@ const RevenueNew = props => {
                             name={'payoutKwh'}
                             value={
                                 payoutKwh &&
-                                payoutKwh.toLocaleString('nl', { minimumFractionDigits: 3, maximumFractionDigits: 4 })
+                                payoutKwh.toLocaleString('nl', { minimumFractionDigits: 3, maximumFractionDigits: 5 })
                             }
                             onChangeAction={props.handleInputChange}
                         />

@@ -308,6 +308,8 @@ class RevenueFormEdit extends Component {
             hasErrors = true;
         }
 
+        revenue.payoutKwh = revenue.payoutKwh ? parseFloat(revenue.payoutKwh).toFixed(5) : '';
+
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         if (!hasErrors) {

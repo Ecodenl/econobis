@@ -1539,6 +1539,9 @@ class TemplateVariableHelper
             case 'iban_tnv':
                 return $model->iban_attn;
                 break;
+            case 'iban':
+                return $model->IBAN;
+                break;
             default:
                 return '';
                 break;

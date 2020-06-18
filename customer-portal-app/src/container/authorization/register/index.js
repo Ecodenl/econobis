@@ -63,8 +63,8 @@ const Register = ({ location, match, login }) => {
                             <img src="images/logo.png" alt="" className="image logo-container" />
                             {showSuccessMessage ? (
                                 <>
-                                    <h3 className={'text-white'}>Je account is geactiveerd</h3>
-                                    <p className={'text-white'}>Je bent nu ingelogd</p>
+                                    <h3 className={'authorization-text'}>Je account is geactiveerd</h3>
+                                    <p className={'authorization-text'}>Je bent nu ingelogd</p>
                                     <ButtonText
                                         buttonText={'Ga verder'}
                                         onClickAction={toggleRedirect}
@@ -74,7 +74,7 @@ const Register = ({ location, match, login }) => {
                                 </>
                             ) : (
                                 <>
-                                    <h3 className={'text-white'}>Account activeren</h3>
+                                    <h3 className={'authorization-text'}>Account activeren</h3>
                                     <RegisterForm handleSubmit={handleSubmit} email={email} />
                                 </>
                             )}

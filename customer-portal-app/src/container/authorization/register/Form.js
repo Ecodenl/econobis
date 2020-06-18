@@ -30,7 +30,7 @@ const RegisterForm = ({ handleSubmit, email }) => (
         render={({ isSubmitting, errors, touched }) => (
             <Form>
                 <div className="mb-3">
-                    <p className={'text-white'}>
+                    <p className={'authorization-text'}>
                         Stel je wachtwoord in voor <strong>{email}</strong>. Daarna ben je direct ingelogd.
                     </p>
                 </div>
@@ -46,7 +46,7 @@ const RegisterForm = ({ handleSubmit, email }) => (
                                     placeholder={'Nieuw wachtwoord'}
                                     errors={errors}
                                     touched={touched}
-                                    classNameErrorMessage={'text-white'}
+                                    classNameErrorMessage={'authorization-text'}
                                 />
                             )}
                         />
@@ -64,7 +64,7 @@ const RegisterForm = ({ handleSubmit, email }) => (
                                     placeholder={'Herhaal nieuw wachtwoord'}
                                     errors={errors}
                                     touched={touched}
-                                    classNameErrorMessage={'text-white text-white mb-3'}
+                                    classNameErrorMessage={'authorization-text mb-3'}
                                 />
                             )}
                         />
@@ -72,7 +72,7 @@ const RegisterForm = ({ handleSubmit, email }) => (
                 </Row>
                 <Row>
                     <Col className="my-3">
-                        <small className={'text-white'}>
+                        <small className={'authorization-text'}>
                             Het wachtwoord moet minimaal 10 karakters lang zijn en moet minimaal 1 cijfer en 1
                             hoofdletter bevatten.
                         </small>

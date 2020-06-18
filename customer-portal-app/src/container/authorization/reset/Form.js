@@ -29,7 +29,7 @@ const ResetForm = ({ handleSubmit, email }) => (
         render={({ isSubmitting, errors, touched }) => (
             <Form>
                 <Row className="justify-content-center">
-                    <p className={'text-white'}>
+                    <p className={'authorization-text'}>
                         Stel een nieuw wachtwoord in voor <strong>{email}</strong>. Daarna ben je direct ingelogd.
                     </p>
                 </Row>
@@ -44,7 +44,7 @@ const ResetForm = ({ handleSubmit, email }) => (
                                 placeholder={'Nieuw wachtwoord'}
                                 errors={errors}
                                 touched={touched}
-                                classNameErrorMessage={'text-white'}
+                                classNameErrorMessage={'authorization-text'}
                             />
                         )}
                     />
@@ -60,13 +60,13 @@ const ResetForm = ({ handleSubmit, email }) => (
                                 placeholder={'Herhaal nieuw wachtwoord'}
                                 errors={errors}
                                 touched={touched}
-                                classNameErrorMessage={'text-white text-white mb-3'}
+                                classNameErrorMessage={'authorization-text mb-3'}
                             />
                         )}
                     />
                 </Row>
                 <Row className="justify-content-center">
-                    <small className={'text-white'}>
+                    <small className={'authorization-text'}>
                         Het wachtwoord moet minimaal 10 karakters lang zijn en moet minimaal 1 cijfer en 1 hoofdletter
                         bevatten.
                     </small>

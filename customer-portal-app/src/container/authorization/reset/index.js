@@ -59,10 +59,10 @@ const Reset = ({ location, match, login }) => {
                             {showSuccessMessage ? (
                                 <>
                                     <Row className="justify-content-center">
-                                        <h3 className={'text-white'}>Je wachtwoord is ingesteld</h3>
+                                        <h3 className={'authorization-text'}>Je wachtwoord is ingesteld</h3>
                                     </Row>
                                     <Row className="justify-content-center">
-                                        <p className={'text-white'}>Je bent nu ingelogd</p>
+                                        <p className={'authorization-text'}>Je bent nu ingelogd</p>
                                     </Row>
                                     <Row className="justify-content-center">
                                         <ButtonText
@@ -76,7 +76,7 @@ const Reset = ({ location, match, login }) => {
                             ) : (
                                 <>
                                     <Row className="justify-content-center">
-                                        <h3 className={'text-white'}>Wachtwoord wijzigen</h3>
+                                        <h3 className={'authorization-text'}>Wachtwoord wijzigen</h3>
                                     </Row>
                                     <ResetForm handleSubmit={handleSubmit} email={email} />
                                 </>

@@ -50,6 +50,10 @@
             font-weight: bold;
         }
 
+        .align-left {
+            text-align: left;
+        }
+
         .align-right {
             text-align: right;
         }
@@ -286,7 +290,7 @@
 
     <table cellpadding=0 cellspacing=0>
         <tr>
-            <th width="20%">Omschrijving</th>
+            <th class="align-left" width="20%">Omschrijving</th>
             <th class="align-right" width="10%">Prijs</th>
             <th class="align-right" width="10%">Aantal</th>
 
@@ -297,7 +301,7 @@
 
         @foreach($invoice->invoiceProducts as $invoiceProduct)
             <tr>
-                <td>{{ $invoiceProduct->description }}</td>
+                <td class="align-left">{{ $invoiceProduct->description }}</td>
                 <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($invoiceProduct->price, 2, ',', '.') }}</td>
                 <td class="align-right">{{ $invoiceProduct->amount }}</td>
                 <td class="align-right">@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>

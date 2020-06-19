@@ -293,7 +293,7 @@ class ExternalWebformController extends Controller
         }
 
         // Sanitize
-        $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code'])); ;
+        $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
 
         return $data;
     }
@@ -398,16 +398,16 @@ class ExternalWebformController extends Controller
 //        $this->log('Data address_number |' . $data['address_number'] . '|');
 //        $this->log('Data address_addition |' . $data['address_addition'] . '|');
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
-        if($data['address_postal_code'] && $data['address_number']) {
+        if($data['address_postal_code'] && $data['address_number'] && isset($data['address_addition'])) {
             $this->log('Er zijn adres gegevens meegegeven');
-            $contactAddressQuery = contact::whereHas('addresses', function ($query) use ($data) {
-                $query->where('postal_code', $data['address_postal_code'])
-                    ->where('number', $data['address_number'])
-                    ->where('addition', $data['address_addition']);
-            });
+            $contactAddressQuery = Contact::whereHas('addresses', function ($query) use ($data) {
+                    $query->where('postal_code', $data['address_postal_code'])
+                        ->where('number', $data['address_number'])
+                        ->where('addition', $data['address_addition']);
+                });
             // Niet gevonden op adres, check op email
             if ($contactAddressQuery->count() == 0) {
-                $contactEmailQuery = contact::whereHas('emailAddresses', function ($query) use ($data) {
+                $contactEmailQuery = Contact::whereHas('emailAddresses', function ($query) use ($data) {
                     $query->where('email', $data['email_address']);
                 });
                 // Gevonden op emailcontact. Adres bijwerken op 1e contact + taak.
@@ -468,9 +468,6 @@ class ExternalWebformController extends Controller
                         $query->where('first_name', $data['first_name'])
                             ->where('last_name', $data['last_name']);
                     });
-//                        ->orWhereHas('organisation', function ($query) use ($data) {
-//                            $query->where('name', 'like', $data['organisation_name']);
-//                        });
                     // Gevonden op adres, emailcontact en naam (voornaam + achternaam).
                     if ($contactNameQuery->count() > 0) {
                         $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
@@ -569,45 +566,45 @@ class ExternalWebformController extends Controller
         return null;
     }
 
-    protected function getContactByNameAndAddress(array $data)
-    {
-        // Kijken of er een persoon gematcht kan worden op basis van naam en adres
-        $person = Person::where('first_name', $data['first_name'])
-            ->where('last_name', $data['last_name'])
-            ->whereHas('contact', function ($query) use ($data) {
-                $query->whereHas('addresses', function ($query) use ($data) {
-                    $query->where('number', $data['address_number'])
-                        ->where('postal_code', $data['address_postal_code']);
-                });
-            })
-            ->first();
-
-        if ($person) {
-            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en adres');
-            return $person->contact;
-        } else {
-            $this->log('Geen persoon gevonden op basis van naam en adres');
-        }
-
-        // Er is geen persoon gevonden op basis van naam en email, kijken of er een organisatie matcht
-        $organisation = Organisation::where('name', $data['organisation_name'])
-            ->whereHas('contact', function ($query) use ($data) {
-                $query->whereHas('addresses', function ($query) use ($data) {
-                    $query->where('number', $data['address_number'])
-                        ->where('postal_code', $data['address_postal_code']);
-                });
-            })
-            ->first();
-
-        if ($organisation) {
-            $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en adres');
-            return $organisation->contact;
-        } else {
-            $this->log('Geen organisatie gevonden op basis van naam en adres');
-        }
-
-        return null;
-    }
+//    protected function getContactByNameAndAddress(array $data)
+//    {
+//        // Kijken of er een persoon gematcht kan worden op basis van naam en adres
+//        $person = Person::where('first_name', $data['first_name'])
+//            ->where('last_name', $data['last_name'])
+//            ->whereHas('contact', function ($query) use ($data) {
+//                $query->whereHas('addresses', function ($query) use ($data) {
+//                    $query->where('number', $data['address_number'])
+//                        ->where('postal_code', $data['address_postal_code']);
+//                });
+//            })
+//            ->first();
+//
+//        if ($person) {
+//            $this->log('Persoon ' . $person->contact->full_name . ' gevonden op basis van naam en adres');
+//            return $person->contact;
+//        } else {
+//            $this->log('Geen persoon gevonden op basis van naam en adres');
+//        }
+//
+//        // Er is geen persoon gevonden op basis van naam en email, kijken of er een organisatie matcht
+//        $organisation = Organisation::where('name', $data['organisation_name'])
+//            ->whereHas('contact', function ($query) use ($data) {
+//                $query->whereHas('addresses', function ($query) use ($data) {
+//                    $query->where('number', $data['address_number'])
+//                        ->where('postal_code', $data['address_postal_code']);
+//                });
+//            })
+//            ->first();
+//
+//        if ($organisation) {
+//            $this->log('Organisatie ' . $organisation->contact->full_name . ' gevonden op basis van naam en adres');
+//            return $organisation->contact;
+//        } else {
+//            $this->log('Geen organisatie gevonden op basis van naam en adres');
+//        }
+//
+//        return null;
+//    }
 
     /**
      * @param array $data

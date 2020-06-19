@@ -393,6 +393,12 @@ class ExternalWebformController extends Controller
     {
         $this->contactActie = "???";
 
+        if ($data['organisation_name']) {
+            $contactTypeId = 'organisation';
+        }else{
+            $contactTypeId = 'person';
+        }
+
 //        $this->log('Data emailadres |' . $data['email_address'] . '|');
 //        $this->log('Data address_postal_code |' . $data['address_postal_code'] . '|');
 //        $this->log('Data address_number |' . $data['address_number'] . '|');
@@ -400,16 +406,18 @@ class ExternalWebformController extends Controller
         // Kijken of er een persoon gematcht kan worden op basis van adres (postcode, huisnummer en huisnummer toevoeging)
         if($data['address_postal_code'] && $data['address_number'] && isset($data['address_addition'])) {
             $this->log('Er zijn adres gegevens meegegeven');
-            $contactAddressQuery = Contact::whereHas('addresses', function ($query) use ($data) {
+            $contactAddressQuery = Contact::where('type_id', $contactTypeId)
+                ->whereHas('addresses', function ($query) use ($data) {
                     $query->where('postal_code', $data['address_postal_code'])
                         ->where('number', $data['address_number'])
                         ->where('addition', $data['address_addition']);
                 });
             // Niet gevonden op adres, check op email
             if ($contactAddressQuery->count() == 0) {
-                $contactEmailQuery = Contact::whereHas('emailAddresses', function ($query) use ($data) {
-                    $query->where('email', $data['email_address']);
-                });
+                $contactEmailQuery = Contact::where('type_id', $contactTypeId)
+                    ->whereHas('emailAddresses', function ($query) use ($data) {
+                        $query->where('email', $data['email_address']);
+                    });
                 // Gevonden op emailcontact. Adres bijwerken op 1e contact + taak.
                 if ($contactEmailQuery->count() > 0) {
                     $this->log($contactEmailQuery->count() . ' contacten gevonden met emailadres '
@@ -437,13 +445,16 @@ class ExternalWebformController extends Controller
                 $this->log('Aantal gevonden op adres en emailadres ' . $data['email_address'] . ' : ' . $contactEmailQuery->count());
                 // Niet gevonden op email, check op 1e letter voornaam + achternaam (of naam in geval van organisatie)
                 if ($contactEmailQuery->count() == 0) {
-                    $contactNameQuery = $contactAddressQuery->whereHas('person', function ($query) use ($data) {
-                        $query->where('first_name', 'like', substr($data['first_name'], 0, 1))
-                            ->where('last_name', $data['last_name']);
-                    });
-//                        ->orWhereHas('organisation', function ($query) use ($data) {
-//                            $query->where('name', 'like', $data['organisation_name']);
-//                        });
+                    if ($data['organisation_name']) {
+                        $contactNameQuery = $contactEmailQuery->whereHas('organisation', function ($query) use ($data) {
+                            $query->where('name', 'like', $data['organisation_name']);
+                        });
+                    }else{
+                        $contactNameQuery = $contactEmailQuery->whereHas('person', function ($query) use ($data) {
+                            $query->where('first_name', $data['first_name'])
+                                ->where('last_name', $data['last_name']);
+                        });
+                    }
                     // Gevonden op adres maar niet op emailcontact. Wel op naam (voorletter + achternaam).
                     if ($contactNameQuery->count() > 0) {
                         $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
@@ -464,10 +475,16 @@ class ExternalWebformController extends Controller
                     }
                     // Ook gevonden op email, controle op voornaam en achternaam
                 } else {
-                    $contactNameQuery = $contactEmailQuery->whereHas('person', function ($query) use ($data) {
-                        $query->where('first_name', $data['first_name'])
-                            ->where('last_name', $data['last_name']);
-                    });
+                    if ($data['organisation_name']) {
+                        $contactNameQuery = $contactEmailQuery->whereHas('organisation', function ($query) use ($data) {
+                            $query->where('name', 'like', $data['organisation_name']);
+                        });
+                    }else{
+                        $contactNameQuery = $contactEmailQuery->whereHas('person', function ($query) use ($data) {
+                            $query->where('first_name', $data['first_name'])
+                                ->where('last_name', $data['last_name']);
+                        });
+                    }
                     // Gevonden op adres, emailcontact en naam (voornaam + achternaam).
                     if ($contactNameQuery->count() > 0) {
                         $this->log($contactNameQuery->count() . ' contacten gevonden op adres: ' . $data['address_postal_code']
@@ -754,38 +771,42 @@ class ExternalWebformController extends Controller
             ]);
             $this->log('Organisatie met id ' . $organisation->id . ' aangemaakt.');
 
-            $contactPerson = Contact::create([
-                'type_id' => 'person',
-                'status_id' => 'webform',
-            ]);
-
-            // Validatie op title_id
-
-            $person = Person::create([
-                'contact_id' => $contactPerson->id,
-                'title_id' => $titleValidator($data['title_id']),
-                'initials' => $data['initials'],
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'last_name_prefix' => $data['last_name_prefix'],
-                'organisation_id' => $organisation->id,
-                'date_of_birth' => $data['date_of_birth'] ?: null,
-            ]);
-
-            OccupationContact::create([
-                'occupation_id' => 14, // Relatie type "medewerker"
-                'primary_contact_id' => $organisation->contact_id,
-                'contact_id' => $person->contact_id,
-                'primary' => true,
-            ]);
-
-            $this->log('Persoon met id ' . $person->id . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
-
             // Overige gegevens aan organisation hangen
             $this->addAddressToContact($data, $contactOrganisation);
             $this->addEmailToContact($data, $contactOrganisation);
             $this->addPhoneNumberToContact($data, $contactOrganisation);
             $this->addContactToGroup($data, $contactOrganisation);
+
+            // Validatie op title_id
+
+            if ($data['first_name'] || $data['last_name']) {
+                $contactPerson = Contact::create([
+                    'type_id' => 'person',
+                    'status_id' => 'webform',
+                ]);
+
+                $person = Person::create([
+                    'contact_id' => $contactPerson->id,
+                    'title_id' => $titleValidator($data['title_id']),
+                    'initials' => $data['initials'],
+                    'first_name' => $data['first_name'],
+                    'last_name' => $data['last_name'],
+                    'last_name_prefix' => $data['last_name_prefix'],
+                    'organisation_id' => $organisation->id,
+                    'date_of_birth' => $data['date_of_birth'] ?: null,
+                ]);
+
+                OccupationContact::create([
+                    'occupation_id' => 14, // Relatie type "medewerker"
+                    'primary_contact_id' => $organisation->contact_id,
+                    'contact_id' => $person->contact_id,
+                    'primary' => true,
+                ]);
+
+                $this->log('Persoon met id ' . $person->id
+                    . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
+
+            }
 
             return $contactOrganisation;
         }

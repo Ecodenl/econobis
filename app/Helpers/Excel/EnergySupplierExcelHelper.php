@@ -70,7 +70,9 @@ class EnergySupplierExcelHelper
         $headerData[] = 'Naam';
         $headerData[] = 'Voorletters';
         $headerData[] = 'Tussenvoegsel';
-        $headerData[] = 'Adres';
+        $headerData[] = 'Straat';
+        $headerData[] = 'Huisnummer';
+        $headerData[] = 'Toevoeging';
         $headerData[] = 'Postcode cijfers';
         $headerData[] = 'Postcode letters';
         $headerData[] = 'Woonplaats';
@@ -110,7 +112,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->last_name_prefix : '';
-                    $rowData[] = $distribution->address;
+                    $rowData[] = $distribution->street ? $distribution->street : $distribution->address;
+                    $rowData[] = ($distribution->street && $distribution->street_number) ? $distribution->street_number : '';
+                    $rowData[] = ($distribution->street && $distribution->street_number_addition) ? $distribution->street_number_addition : '';
+
                     if($distribution->country != '' && $distribution->country != 'Nederland')
                     {
                         $rowData[] = $distribution->postal_code_numbers = $distribution->postal_code;

@@ -26,6 +26,7 @@ const ParticipantFormView = props => {
         ibanPayoutAttn,
         type,
         dateRegister,
+        dateTerminated,
         powerKwhConsumption,
         participationsReturnsTotal,
         participationsReturnsKwhTotal,
@@ -109,6 +110,12 @@ const ParticipantFormView = props => {
                     label={'Eerste ingangsdatum deelname'}
                     value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
                 />
+                {dateTerminated ? (
+                    <ViewText
+                        label={'Datum beeindiging deelname'}
+                        value={dateTerminated ? moment(dateTerminated).format('DD-MM-Y') : ''}
+                    />
+                ) : null}
             </div>
 
             {projectTypeCodeRef === 'obligation' ? (

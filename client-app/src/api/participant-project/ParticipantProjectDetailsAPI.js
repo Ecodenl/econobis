@@ -66,4 +66,9 @@ export default {
 
         return axiosInstance.post(requestUrl, payload);
     },
+    undoTerminateParticipantProject: (id, payload) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/undo-terminate`;
+
+        return axiosInstance.post(requestUrl, payload);
+    },
 };

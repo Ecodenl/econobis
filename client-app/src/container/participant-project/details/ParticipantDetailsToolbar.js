@@ -8,6 +8,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import ParticipantDetailsDelete from './ParticipantDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ParticipantDetailsTerminate from './ParticipantDetailsTerminate';
+import ParticipantDetailsUndoTerminate from './ParticipantDetailsUndoTerminate';
 
 class ParticipantDetailsToolbar extends Component {
     constructor(props) {
@@ -16,6 +17,7 @@ class ParticipantDetailsToolbar extends Component {
         this.state = {
             showDelete: false,
             showTerminate: false,
+            showUndoTerminate: false,
         };
     }
 
@@ -27,6 +29,10 @@ class ParticipantDetailsToolbar extends Component {
         this.setState({ showTerminate: !this.state.showTerminate });
     };
 
+    toggleUndoTerminate = () => {
+        this.setState({ showUndoTerminate: !this.state.showUndoTerminate });
+    };
+
     render() {
         const { participantProject, project = {} } = this.props;
 
@@ -36,6 +42,8 @@ class ParticipantDetailsToolbar extends Component {
             participantProject.participationsCurrent &&
             this.props.permissions.manageFinancial;
         isTransferable = participantProject.statusId == 2 ? isTransferable : false;
+
+        const projectTypeCodeRef = project && project.projectType ? project.projectType.codeRef : '';
 
         return (
             <div className="row">
@@ -51,11 +59,29 @@ class ParticipantDetailsToolbar extends Component {
                                     {this.props.permissions.manageParticipation && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                                     )}
-                                    <ButtonText
-                                        buttonText={`Beëindigen`}
-                                        onClickAction={this.toggleTerminate}
-                                        disabled={participantProject.dateTerminated}
-                                    />
+                                    {projectTypeCodeRef === 'capital' ||
+                                    projectTypeCodeRef === 'postalcode_link_capital' ? (
+                                        <ButtonText
+                                            buttonText={
+                                                participantProject.dateTerminated
+                                                    ? `Beëindiging ongedaan maken`
+                                                    : `Beëindigen`
+                                            }
+                                            onClickAction={
+                                                participantProject.dateTerminated
+                                                    ? this.toggleUndoTerminate
+                                                    : this.toggleTerminate
+                                            }
+                                            // disabled={participantProject.dateTerminated}
+                                        />
+                                    ) : (
+                                        <ButtonText
+                                            buttonText={`Beëindigen`}
+                                            onClickAction={this.toggleTerminate}
+                                            disabled={participantProject.dateTerminated}
+                                        />
+                                    )}
+
                                     {/*{isTransferable ? (*/}
                                     {/*    <ButtonText*/}
                                     {/*        buttonText={`Deelnames overdragen`}*/}
@@ -94,6 +120,13 @@ class ParticipantDetailsToolbar extends Component {
                     <ParticipantDetailsTerminate
                         participantProjectId={participantProject.id}
                         closeDeleteItemModal={this.toggleTerminate}
+                        projectTypeCodeRef={participantProject.project.projectType.codeRef}
+                    />
+                )}
+                {this.state.showUndoTerminate && (
+                    <ParticipantDetailsUndoTerminate
+                        participantProjectId={participantProject.id}
+                        closeDeleteItemModal={this.toggleUndoTerminate}
                         projectTypeCodeRef={participantProject.project.projectType.codeRef}
                     />
                 )}

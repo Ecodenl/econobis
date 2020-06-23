@@ -318,6 +318,7 @@ Route::namespace('Api')
         Route::post('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@update');
         Route::post('project/participant/{participantProject}/delete', 'ParticipationProject\ParticipationProjectController@destroy');
         Route::post('project/participant/{participantProject}/terminate', 'ParticipationProject\ParticipationProjectController@terminate');
+        Route::post('project/participant/{participantProject}/undo-terminate', 'ParticipationProject\ParticipationProjectController@undoTerminate');
 
         Route::get('project/grid', 'Project\ProjectController@grid');
         Route::get('project/peek', 'Project\ProjectController@peek');

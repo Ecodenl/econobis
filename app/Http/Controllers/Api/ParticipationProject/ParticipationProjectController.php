@@ -446,30 +446,32 @@ class ParticipationProjectController extends ApiController
         $checkText = 'Postcode check: ';
         $primaryAddress = $contact->primaryAddress;
         if(!$primaryAddress){
-            array_push($message, $checkText . 'Contact heeft geen primair adres.');
-            return false;
-        }
-        if(!$project->postal_code){
-            array_push($message, $checkText . 'Project heeft geen postcode.');
+            array_push($message, $checkText . 'Deelnemer heeft geen primair adres.');
             return false;
         }
         $postalCodeAreaContact = substr($primaryAddress->postal_code, 0 , 4);
         if(!($postalCodeAreaContact > 999 && $postalCodeAreaContact < 9999)){
-            array_push($message, $checkText . 'Contact heeft geen geldige postcode op zijn primaire adres.');
+            array_push($message, $checkText . 'Deelnemer heeft geen geldige postcode op zijn primaire adres.');
             return false;
         }
-        $postalCodeAreaProductionProject = substr($project->postal_code, 0 , 4);
-        if(!($postalCodeAreaProductionProject > 999 && $postalCodeAreaProductionProject < 9999)){
-            array_push($message, $checkText . 'Project heeft geen geldige postcode.');
+        if(!$project->postalcode_link){
+            array_push($message, $checkText . 'Project heeft geen deelnemende postcode(s) in postcoderoos.');
             return false;
         }
-        $validPostalAreas = PostalCodeLink::where('postalcode_main', $postalCodeAreaProductionProject)->pluck('postalcode_link')->toArray();
+
+        // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
+        if (strpos($project->postalcode_link, ',') !== false) {
+            $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
+            $validPostalAreas = explode(',', $projectPostalcodeLink);
+        }else{
+            $validPostalAreas = explode(' ', $project->postalcode_link);
+        }
         if(!$validPostalAreas){
-            array_push($message, $checkText . 'Project postcode heeft geen postcoderoos.');
+            array_push($message, $checkText . 'Project heeft geen geldige deelnemende postcode(s) in postcoderoos.');
             return false;
         }
         if(!in_array($postalCodeAreaContact, $validPostalAreas)){
-            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' niet gevonden in toegestane postcode(s): ' . implode(', ', $validPostalAreas) . '.');
+            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' van deelnemer niet gevonden in deelnemende postcode(s) in postcoderoos project: ' . implode(', ', $validPostalAreas) . '.');
             return false;
         }
     }

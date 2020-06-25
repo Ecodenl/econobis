@@ -432,6 +432,22 @@ class ParticipationProjectController extends ApiController
         });
     }
 
+    public function undoTerminate(ParticipantProject $participantProject, RequestInput $requestInput)
+    {
+        $this->authorize('manage', ParticipantProject::class);
+
+        $data = $requestInput
+            ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->next()
+            ->get();
+
+        // Set terminated date
+        $participantProject->date_terminated = $data['date_terminated'];
+
+        DB::transaction(function () use ($participantProject) {
+            $participantProject->save();
+        });
+    }
+
     public function peek()
     {
 
@@ -957,37 +973,43 @@ class ParticipationProjectController extends ApiController
      */
     protected function createMutationWithDrawal(ParticipantProject $participantProject, $mutationTypeWithDrawalId, $mutationStatusFinalId, $projectType): void
     {
-        $participantMutation = new ParticipantMutation();
-        $participantMutation->participation_id = $participantProject->id;
-        $participantMutation->type_id = $mutationTypeWithDrawalId;
-        $participantMutation->status_id = $mutationStatusFinalId;
-        $participantMutation->date_entry = $participantProject['date_terminated'];
-
         if ($projectType->code_ref == 'loan') {
-            $amountDefinitive = $participantProject->calculator()->amountDefinitive();
-
-            $participantMutation->amount = $amountDefinitive * -1;
-            $participantMutation->amount_final = $amountDefinitive * -1;
+            $amountOrParticipationsDefinitive = $participantProject->calculator()->amountDefinitive();
         } else {
-            $participationsDefinitive = $participantProject->calculator()->participationsDefinitive();
-
-            $participantMutation->quantity = $participationsDefinitive * -1;
-            $participantMutation->quantity_final = $participationsDefinitive * -1;
-
-            $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
-                ->where('date', '<=', $participantMutation->date_entry)
-                ->orderBy('date', 'desc')
-                ->value('book_worth');
-            $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
+            $amountOrParticipationsDefinitive = $participantProject->calculator()->participationsDefinitive();
         }
 
-        $participantMutation->save();
+        if ($amountOrParticipationsDefinitive != 0) {
+            $participantMutation = new ParticipantMutation();
+            $participantMutation->participation_id = $participantProject->id;
+            $participantMutation->type_id = $mutationTypeWithDrawalId;
+            $participantMutation->status_id = $mutationStatusFinalId;
+            $participantMutation->date_entry = $participantProject['date_terminated'];
 
-        // Herbereken de afhankelijke gegevens op het participantProject
-        $participantMutation->participation->calculator()->run()->save();
 
-        // Herbereken de afhankelijke gegevens op het project
-        $participantMutation->participation->project->calculator()->run()->save();
+            if ($projectType->code_ref == 'loan') {
+                $participantMutation->amount = $amountOrParticipationsDefinitive * -1;
+                $participantMutation->amount_final = $amountOrParticipationsDefinitive * -1;
+            } else {
+                $participantMutation->quantity = $amountOrParticipationsDefinitive * -1;
+                $participantMutation->quantity_final = $amountOrParticipationsDefinitive * -1;
+
+                $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+                    ->where('date', '<=', $participantMutation->date_entry)
+                    ->orderBy('date', 'desc')
+                    ->value('book_worth');
+                $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
+            }
+
+            $participantMutation->save();
+
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantMutation->participation->calculator()->run()->save();
+
+            // Herbereken de afhankelijke gegevens op het project
+            $participantMutation->participation->project->calculator()->run()->save();
+        }
+
     }
 
     /**

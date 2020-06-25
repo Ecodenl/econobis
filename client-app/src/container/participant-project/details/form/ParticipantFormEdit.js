@@ -38,6 +38,7 @@ class ParticipantFormEdit extends Component {
             typeId,
             powerKwhConsumption,
             dateRegister,
+            dateTerminated,
             participantInDefinitiveRevenue,
         } = props.participation;
 
@@ -60,6 +61,7 @@ class ParticipantFormEdit extends Component {
                     : this.props.participation.project.dateEntry
                     ? this.props.participation.project.dateEntry
                     : '',
+                dateTerminated: dateTerminated ? dateTerminated : '',
                 participantInDefinitiveRevenue: participantInDefinitiveRevenue ? participantInDefinitiveRevenue : true,
             },
             errors: {
@@ -160,6 +162,7 @@ class ParticipantFormEdit extends Component {
             typeId,
             powerKwhConsumption,
             dateRegister,
+            dateTerminated,
         } = this.state.participation;
 
         const {
@@ -336,6 +339,12 @@ class ParticipantFormEdit extends Component {
                         value={dateRegister ? moment(dateRegister).format('DD-MM-Y') : ''}
                         className={'col-sm-6 form-group'}
                     />
+                    {dateTerminated ? (
+                        <ViewText
+                            label={'Datum beeindiging deelname'}
+                            value={dateTerminated ? moment(dateTerminated).format('DD-MM-Y') : ''}
+                        />
+                    ) : null}
                 </div>
                 {projectTypeCodeRef === 'obligation' ? (
                     <ParticipantFormEditObligation

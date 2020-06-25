@@ -99,12 +99,14 @@
             display: inline-block;
             float: left;
             margin-left: 0px;
+            width: 50%;
         }
 
         .administration-info-table, .invoice-data-right-table {
             display: inline-block;
             float: right;
             margin-left: 400px;
+            width: 50%;
         }
 
         .clearfix::after {

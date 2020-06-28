@@ -231,9 +231,8 @@ class SendEmailsWithVariables implements ShouldQueue
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                     $amounfOfEmailsSend++;
 
-                    if ($amounfOfEmailsSend === 1) {
-                        $mergedHtmlBody = $htmlBodyWithContactVariables;
-                    }
+                    //  Bij groups email slaan we htmlbody met niet gevulde mergevelden op.
+                    $mergedHtmlBody = $saveHtmlBody;
 
                 } catch (\Exception $e) {
                     Log::error('Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar e-mailadres ' . $emailAddress->email);

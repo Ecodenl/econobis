@@ -43,4 +43,6 @@ export default [
     { id: 42, name: 'Energiebesteding' },
     { id: 43, name: 'GreenNL' },
     { id: 44, name: 'Hezelaer' },
+    { id: 45, name: 'Easyenergy' },
+    { id: 46, name: 'Dorpstroom' },
 ];

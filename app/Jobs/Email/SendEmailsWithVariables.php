@@ -112,6 +112,7 @@ class SendEmailsWithVariables implements ShouldQueue
 
         $amounfOfEmailsSend = 0;
         $mergedHtmlBody = $email->html_body;
+        $saveHtmlBody = $email->html_body;
 
         //First send emails to all emails
         if (!empty($emailsToEmailAddress)) {
@@ -230,9 +231,8 @@ class SendEmailsWithVariables implements ShouldQueue
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                     $amounfOfEmailsSend++;
 
-                    if ($amounfOfEmailsSend === 1) {
-                        $mergedHtmlBody = $htmlBodyWithContactVariables;
-                    }
+                    //  Bij groups email slaan we htmlbody met niet gevulde mergevelden op.
+                    $mergedHtmlBody = $saveHtmlBody;
 
                 } catch (\Exception $e) {
                     Log::error('Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar e-mailadres ' . $emailAddress->email);
@@ -255,11 +255,12 @@ class SendEmailsWithVariables implements ShouldQueue
 
         }
 
-        if ($amounfOfEmailsSend === 1) {
-            $email->html_body = $mergedHtmlBody;
-        }
+//        if ($amounfOfEmailsSend === 1) {
+//            $email->html_body = $mergedHtmlBody;
+//        }
 
         if ($didFinishEmail) {
+            $email->html_body = $mergedHtmlBody;
             $email->date_sent = new Carbon();
             $email->folder = 'sent';
             $email->save();

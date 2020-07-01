@@ -213,7 +213,7 @@ class TwinfieldCustomerHelper
         $customer_bank
             ->setDefault(true)
             ->setIban($contact->iban)
-            ->setAscription($contact->iban_attn ? $contact->iban_attn : substr($contact->full_name, 0, 40));
+            ->setAscription($contact->iban_attn ? substr($contact->iban_attn, 0, 40) : substr($contact->full_name, 0, 40));
 
         $customer->addBank($customer_bank);
     }

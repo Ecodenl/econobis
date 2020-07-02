@@ -15,11 +15,15 @@ import ParticipantSubmitHelper from './ParticipantSubmitHelper';
 import ParticipantValidateForm from './ParticipantValidateForm';
 import moment from 'moment';
 
+// const [showModal, setShowModal] = useState(false);
+// const [showModalValidate, setShowModalValidate] = useState(false);
+
 class ParticipantNewApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showModalValidate: false,
             showModal: false,
             modalText: [],
             modalRedirectTask: '',
@@ -194,27 +198,59 @@ class ParticipantNewApp extends Component {
         this.setState({ ...this.state, errors: validatedForm.errors });
 
         if (!validatedForm.hasErrors) {
-            const values = ParticipantSubmitHelper(participation, statusCodeRef, this.state.projectTypeCodeRef);
             this.setState({ isLoading: true });
+console.log(`test`);
+            const values = ParticipantSubmitHelper(participation, statusCodeRef, this.state.projectTypeCodeRef);
 
-            ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
+            // ParticipantProjectDetailsAPI.validateParticipantProject(participation.contactId, participation.projectId).then(payload => {
+            ParticipantProjectDetailsAPI.validateParticipantProject(values).then(payload => {
+                console.log(`test2`);
+                console.log(payload);
                 if (payload.data.message !== undefined && payload.data.message.length > 0) {
+                    // setShowModalValidate(true);
                     this.setState({
-                        showModal: true,
+                        showModalValidate: true,
                         modalText: payload.data.message,
                     });
-                    this.setState({
-                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
-                            participation.projectId
-                        }/deelnemer/${payload.data.id}`,
-                        modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
-                    });
                 } else {
-                    hashHistory.push(`/project/deelnemer/${payload.data.id}`);
+                    // setShowModalValidate(false);
+                    this.setState({
+                        showModalValidate: false,
+                    });
                 }
                 this.setState({ isLoading: false });
+
             });
         }
+    };
+
+    storeParticipantProject = () => {
+        const { participation } = this.state;
+        const status = this.props.participantMutationStatuses.find(
+            participantMutationStatuses => participantMutationStatuses.id == participation.statusId
+        );
+        const statusCodeRef = status ? status.codeRef : null;
+
+        const values = ParticipantSubmitHelper(participation, statusCodeRef, this.state.projectTypeCodeRef);
+
+        ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
+            if (payload.data.message !== undefined && payload.data.message.length > 0) {
+                // setShowModal(true);
+                this.setState({
+                    showModal: true,
+                    modalText: payload.data.message,
+                });
+                this.setState({
+                    modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
+                        participation.projectId
+                        }/deelnemer/${payload.data.id}`,
+                    modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
+                });
+            } else {
+                hashHistory.push(`/project/deelnemer/${payload.data.id}`);
+            }
+            this.setState({isLoading: false});
+        });
     };
 
     render() {
@@ -251,12 +287,22 @@ class ParticipantNewApp extends Component {
                     </div>
                 </div>
                 <div className="col-md-3" />
+                {this.state.showModalValidate && (
+                    <MultipleMessagesModal
+                        closeModal={this.state.showModalValidate=false}
+                        buttonCancelText={'Annuleren'}
+                        confirmAction={this.storeParticipantProject(values)}
+                        buttonConfirmText={'Maak deelname aan'}
+                    >
+                        {this.state.modalText}
+                    </MultipleMessagesModal>
+                )}
                 {this.state.showModal && (
                     <MultipleMessagesModal
                         closeModal={this.redirectParticipation}
-                        buttonCancelText={'Maak deelname aan'}
+                        buttonCancelText={'Annuleren'}
                         confirmAction={this.redirectTask}
-                        buttonConfirmText={'Maak deelname aan en maak taak aan'}
+                        buttonConfirmText={'Maak deelname aan'}
                     >
                         {this.state.modalText}
                     </MultipleMessagesModal>

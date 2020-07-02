@@ -310,6 +310,57 @@ class ParticipationProjectController extends ApiController
         return $this->show($participantProject);
     }
 
+    public function validateXXX(RequestInput $requestInput)
+    {
+        $this->authorize('manage', ParticipantProject::class);
+        // TODO clean up store inputs
+        $data = $requestInput
+            ->integer('contactId')->validate('required|exists:contacts,id')->alias('contact_id')->next()
+            ->integer('projectId')->validate('required|exists:projects,id')->alias('project_id')->next()
+            ->get();
+
+        $participantProject = new ParticipantProject();
+        $participantProject->fill($data);
+
+        $project = Project::find($participantProject->project_id);
+        $contact = Contact::find($participantProject->contact_id);
+
+        $message = [];
+
+        switch($project->projectType->code_ref) {
+            case 'postalcode_link_capital': //Postalcode link capital
+                $this->validatePostalCode($message, $project, $contact);
+                $this->validateEnergySupplier($message, $contact);
+                break;
+            default:
+                return null;
+                break;
+        }
+
+        return ['message' => $message];
+    }
+
+//    public function validateXXX($contactId, $projectId)
+//    {
+//        $project = Project::find($projectId);
+//        $contact = Contact::find($contactId);
+//
+//        $message = [];
+//
+//        switch($project->projectType->code_ref) {
+//            case 'postalcode_link_capital': //Postalcode link capital
+//                $this->validatePostalCode($message, $project, $contact);
+//                $this->validateEnergySupplier($message, $contact);
+//                break;
+//            default:
+//                return null;
+//                break;
+//        }
+//
+//        return ['message' => $message];
+//    }
+//
+
 //    public function transfer(RequestInput $requestInput)
 //    {
 //        $this->authorize('manage', ParticipantProject::class);

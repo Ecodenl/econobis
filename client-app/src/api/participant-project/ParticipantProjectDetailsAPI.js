@@ -32,14 +32,14 @@ export default {
     },
 
     // validateParticipantProject: (contactId, projectId) => {
-    validateParticipantProject: (data) => {
+    validateParticipantProject: data => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/validateXXX`;
-console.log(`vvvvv`);
-console.log(data);
-// console.log(contactId);
-// console.log(projectId);
-//         return axiosInstance.post(requestUrl, contactId, projectId);
-//         return axiosInstance.post(requestUrl, data);
+        console.log(`vvvvv`);
+        console.log(data);
+        // console.log(contactId);
+        // console.log(projectId);
+        //         return axiosInstance.post(requestUrl, contactId, projectId);
+        //         return axiosInstance.post(requestUrl, data);
         return '';
     },
 

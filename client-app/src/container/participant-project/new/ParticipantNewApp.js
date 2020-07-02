@@ -199,7 +199,7 @@ class ParticipantNewApp extends Component {
 
         if (!validatedForm.hasErrors) {
             this.setState({ isLoading: true });
-console.log(`test`);
+            console.log(`test`);
             const values = ParticipantSubmitHelper(participation, statusCodeRef, this.state.projectTypeCodeRef);
 
             // ParticipantProjectDetailsAPI.validateParticipantProject(participation.contactId, participation.projectId).then(payload => {
@@ -219,7 +219,6 @@ console.log(`test`);
                     });
                 }
                 this.setState({ isLoading: false });
-
             });
         }
     };
@@ -243,13 +242,13 @@ console.log(`test`);
                 this.setState({
                     modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
                         participation.projectId
-                        }/deelnemer/${payload.data.id}`,
+                    }/deelnemer/${payload.data.id}`,
                     modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
                 });
             } else {
                 hashHistory.push(`/project/deelnemer/${payload.data.id}`);
             }
-            this.setState({isLoading: false});
+            this.setState({ isLoading: false });
         });
     };
 
@@ -289,7 +288,7 @@ console.log(`test`);
                 <div className="col-md-3" />
                 {this.state.showModalValidate && (
                     <MultipleMessagesModal
-                        closeModal={this.state.showModalValidate=false}
+                        closeModal={(this.state.showModalValidate = false)}
                         buttonCancelText={'Annuleren'}
                         confirmAction={this.storeParticipantProject(values)}
                         buttonConfirmText={'Maak deelname aan'}

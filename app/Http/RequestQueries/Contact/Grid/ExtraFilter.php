@@ -432,10 +432,10 @@ class ExtraFilter extends RequestExtraFilter
                         // PS; Laravel's hasManyThrough werkt dmv een join.
                         // Aangezien order_product en orders allebei een date_start en date_end hebben
                         // hier de volledige veldnaam incl. tabelnaam opgeven voor filterveld.
-                        if($dateStartFilter['data']){
+                        if($dateStartFilter['data'] || $dateStartFilter['type'] == 'nl' || $dateStartFilter['type'] == 'nnl'){
                             static::applyFilter($query, 'order_product.date_start', $dateStartFilter['type'], $dateStartFilter['data']);
                         }
-                        if($dateFinishFilter['data']){
+                        if($dateFinishFilter['data'] || $dateFinishFilter['type'] == 'nl' || $dateFinishFilter['type'] == 'nnl'){
                             static::applyFilter($query, 'order_product.date_end', $dateFinishFilter['type'], $dateFinishFilter['data']);
                         }
                         if($orderStatusFilter['data']){

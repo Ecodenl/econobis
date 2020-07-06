@@ -962,12 +962,12 @@ class ParticipationProjectController extends ApiController
         $participantMutation->date_entry = $participantProject['date_terminated'];
 
         if ($projectType->code_ref == 'loan') {
-            $amountDefinitive = $participantProject->calculator()->amountDefinitive();
+            $amountDefinitive = $participantProject->calculator()->amountDefinitiveForTerminating();
 
             $participantMutation->amount = $amountDefinitive * -1;
             $participantMutation->amount_final = $amountDefinitive * -1;
         } else {
-            $participationsDefinitive = $participantProject->calculator()->participationsDefinitive();
+            $participationsDefinitive = $participantProject->calculator()->participationsDefinitiveForTerminating();
 
             $participantMutation->quantity = $participationsDefinitive * -1;
             $participantMutation->quantity_final = $participationsDefinitive * -1;

@@ -27,6 +27,10 @@ class ParticipantProjectCalculator
         }
         return $participationsCapitalWorth;
     }
+    public function participationsDefinitiveForTerminating()
+    {
+        return $this->participantProject->mutations()->where('status_id', 4)->sum('quantity');
+    }
     public function participationsDefinitive()
     {
         return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 4)->sum('quantity') : 0;
@@ -44,6 +48,10 @@ class ParticipantProjectCalculator
         return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 1)->sum('quantity') : 0;
     }
 
+    public function amountDefinitiveForTerminating()
+    {
+        return $this->participantProject->mutations()->where('status_id', 4)->sum('amount');
+    }
     public function amountDefinitive()
     {
         return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 4)->sum('amount') : 0;

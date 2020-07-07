@@ -707,9 +707,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
                                 onChangeAction={this.handleUsesTwinfieldChange}
-                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername) }
+                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername)}
                             />
-                            {( usesTwinfield == true || !isEmpty(twinfieldUsername) ) && (
+                            {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
                                 <InputText
                                     label="API connection type"
                                     name={'twinfieldConnectionType'}
@@ -721,7 +721,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             )}
                         </div>
 
-                        {( usesTwinfield == true || !isEmpty(twinfieldUsername) ) && (
+                        {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
                             <React.Fragment>
                                 <div className="row">
                                     <InputText

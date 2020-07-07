@@ -141,7 +141,16 @@ const AdministrationDetailsFormGeneralView = props => {
                     <div className="row">
                         <ViewText label={'Gebruikt Twinfield'} value={usesTwinfield ? 'Ja' : 'Nee'} />
                         {usesTwinfield == true && (
-                            <ViewText label={'API connection type'} value={twinfieldConnectionType==='webservice' ? 'Webservice' : twinfieldConnectionType==='openid' ? 'OAuth2' : ''} />
+                            <ViewText
+                                label={'API connection type'}
+                                value={
+                                    twinfieldConnectionType === 'webservice'
+                                        ? 'Webservice'
+                                        : twinfieldConnectionType === 'openid'
+                                        ? 'OAuth2'
+                                        : ''
+                                }
+                            />
                         )}
                     </div>
 

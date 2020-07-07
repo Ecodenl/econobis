@@ -55,9 +55,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             ibanAttn,
             mailboxId,
             usesTwinfield,
+            twinfieldConnectionType,
             twinfieldUsername,
             twinfieldPassword,
             twinfieldPasswordChange,
+            twinfieldClientId,
+            twinfieldClientSecret,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             dateSyncTwinfieldContacts,
@@ -99,9 +102,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 attachment: '',
                 mailboxId: mailboxId ? mailboxId : '',
                 usesTwinfield: usesTwinfield,
+                twinfieldConnectionType: twinfieldConnectionType ? twinfieldConnectionType : '',
                 twinfieldUsername: twinfieldUsername ? twinfieldUsername : '',
                 twinfieldPassword: twinfieldPassword ? twinfieldPassword : '',
                 twinfieldPasswordChange: twinfieldPasswordChange ? twinfieldPasswordChange : false,
+                twinfieldClientId: twinfieldClientId ? twinfieldClientId : '',
+                twinfieldClientSecret: twinfieldClientSecret ? twinfieldClientSecret : '',
                 twinfieldOrganizationCode: twinfieldOrganizationCode ? twinfieldOrganizationCode : '',
                 twinfieldOfficeCode: twinfieldOfficeCode ? twinfieldOfficeCode : '',
                 dateSyncTwinfieldContacts: dateSyncTwinfieldContacts ? dateSyncTwinfieldContacts : '',
@@ -119,6 +125,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 website: false,
                 twinfieldUsername: false,
                 twinfieldPassword: false,
+                twinfieldClientId: false,
+                twinfieldClientSecret: false,
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
                 dateSyncTwinfieldContacts: false,
@@ -377,11 +385,14 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('attachment', administration.attachment);
             data.append('mailboxId', administration.mailboxId);
             data.append('usesTwinfield', administration.usesTwinfield);
+            data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
             data.append('twinfieldUsername', administration.twinfieldUsername);
             // twinfield password alleen toevoegen indien ingevuld op scherm.
             if (administration.twinfieldPasswordChange) {
                 data.append('twinfieldPassword', administration.twinfieldPassword);
             }
+            data.append('twinfieldClientId', administration.twinfieldClientId);
+            data.append('twinfieldClientSecret', administration.twinfieldClientSecret);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
@@ -420,9 +431,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             ibanAttn,
             mailboxId,
             usesTwinfield,
+            twinfieldConnectionType,
             twinfieldUsername,
             twinfieldPassword,
             twinfieldPasswordChange,
+            twinfieldClientId,
+            twinfieldClientSecret,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             dateSyncTwinfieldContacts,
@@ -695,6 +709,16 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleUsesTwinfieldChange}
                                 disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername) }
                             />
+                            {( usesTwinfield == true || !isEmpty(twinfieldUsername) ) && (
+                                <InputText
+                                    label="API connection type"
+                                    name={'twinfieldConnectionType'}
+                                    value={twinfieldConnectionType}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.twinfieldUsername}
+                                />
+                            )}
                         </div>
 
                         {( usesTwinfield == true || !isEmpty(twinfieldUsername) ) && (
@@ -728,6 +752,26 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         onChangeAction={this.handleInputChange}
                                         className={'col-sm-push-6 col-sm-6'}
                                         disabled={usesTwinfield == false}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputText
+                                        label="Client Id"
+                                        name={'twinfieldClientId'}
+                                        value={twinfieldClientId}
+                                        onChangeAction={this.handleInputChange}
+                                        // required={'required'}
+                                        readOnly={usesTwinfield == false}
+                                        error={this.state.errors.twinfieldClientId}
+                                    />
+                                    <InputText
+                                        label="Client Secret"
+                                        name={'twinfieldClientSecret'}
+                                        value={twinfieldClientSecret}
+                                        onChangeAction={this.handleInputChange}
+                                        // required={'required'}
+                                        readOnly={usesTwinfield == false}
+                                        error={this.state.errors.twinfieldClientSecret}
                                     />
                                 </div>
                                 <div className="row">

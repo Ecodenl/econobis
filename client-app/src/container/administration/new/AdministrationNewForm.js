@@ -55,8 +55,11 @@ class AdministrationNewForm extends Component {
                 attachment: '',
                 mailboxId: '',
                 usesTwinfield: false,
+                twinfieldConnectionType: '',
                 twinfieldUsername: '',
                 twinfieldPassword: '',
+                twinfieldClientId: '',
+                twinfieldClientSecret: '',
                 twinfieldOrganizationCode: '',
                 twinfieldOfficeCode: '',
                 dateSyncTwinfieldContacts: '',
@@ -74,6 +77,8 @@ class AdministrationNewForm extends Component {
                 website: false,
                 twinfieldUsername: false,
                 twinfieldPassword: false,
+                twinfieldClientId: false,
+                twinfieldClientSecret: false,
                 twinfieldOrganizationCode: false,
                 twinfieldOfficeCode: false,
                 dateSyncTwinfieldContacts: false,
@@ -290,8 +295,11 @@ class AdministrationNewForm extends Component {
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('usesTwinfield', administration.usesTwinfield);
             data.append('attachment', administration.attachment);
+            data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
             data.append('twinfieldUsername', administration.twinfieldUsername);
             data.append('twinfieldPassword', administration.twinfieldPassword);
+            data.append('twinfieldClientId', administration.twinfieldClientId);
+            data.append('twinfieldClientSecret', administration.twinfieldClientSecret);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
@@ -335,8 +343,11 @@ class AdministrationNewForm extends Component {
             ibanAttn,
             mailboxId,
             usesTwinfield,
+            twinfieldConnectionType,
             twinfieldUsername,
             twinfieldPassword,
+            twinfieldClientId,
+            twinfieldClientSecret,
             twinfieldOrganizationCode,
             twinfieldOfficeCode,
             dateSyncTwinfieldContacts,
@@ -599,6 +610,16 @@ class AdministrationNewForm extends Component {
                                 value={usesTwinfield}
                                 onChangeAction={this.handleInputChange}
                             />
+                            {usesTwinfield == true && (
+                                <InputText
+                                    label="API connection type"
+                                    name={'twinfieldConnectionType'}
+                                    value={twinfieldConnectionType}
+                                    onChangeAction={this.handleInputChange}
+                                    required={'required'}
+                                    error={this.state.errors.twinfieldUsername}
+                                />
+                            )}
                         </div>
 
                         {usesTwinfield == true && (
@@ -619,6 +640,24 @@ class AdministrationNewForm extends Component {
                                         onChangeAction={this.handleInputChange}
                                         error={this.state.errors.twinfieldPassword}
                                         required={'required'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputText
+                                        label="Client Id"
+                                        name={'twinfieldClientId'}
+                                        value={twinfieldClientId}
+                                        onChangeAction={this.handleInputChange}
+                                        // required={'required'}
+                                        error={this.state.errors.twinfieldClientId}
+                                    />
+                                    <InputText
+                                        label="Client Secret"
+                                        name={'twinfieldClientSecret'}
+                                        value={twinfieldClientSecret}
+                                        onChangeAction={this.handleInputChange}
+                                        // required={'required'}
+                                        error={this.state.errors.twinfieldClientSecret}
                                     />
                                 </div>
                                 <div className="row">

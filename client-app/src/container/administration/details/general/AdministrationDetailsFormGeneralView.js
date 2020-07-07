@@ -32,7 +32,10 @@ const AdministrationDetailsFormGeneralView = props => {
         logoName,
         mailboxEmail,
         usesTwinfield,
+        twinfieldConnectionType,
         twinfieldUsername,
+        twinfieldClientId,
+        twinfieldClientSecret,
         twinfieldOrganizationCode,
         twinfieldOfficeCode,
         dateSyncTwinfieldContacts,
@@ -137,12 +140,22 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={'Gebruikt Twinfield'} value={usesTwinfield ? 'Ja' : 'Nee'} />
+                        {usesTwinfield == true && (
+                            <ViewText label={'API connection type'} value={twinfieldConnectionType==='webservice' ? 'Webservice' : twinfieldConnectionType==='openid' ? 'OAuth2' : ''} />
+                        )}
                     </div>
 
                     {usesTwinfield == true && (
                         <div className="row">
                             <ViewText label={'Gebruikersnaam'} value={twinfieldUsername} />
                             <ViewText label={'Wachtwoord'} value="**********" />
+                        </div>
+                    )}
+
+                    {usesTwinfield == true && (
+                        <div className="row">
+                            <ViewText label={'Client Id'} value={twinfieldClientId} />
+                            <ViewText label={'Client Secret'} value={twinfieldClientSecretId} />
                         </div>
                     )}
 

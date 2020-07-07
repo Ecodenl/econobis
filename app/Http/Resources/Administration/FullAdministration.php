@@ -101,8 +101,11 @@ class FullAdministration extends Resource
                 'canCreatePaymentInvoices' => $this->can_create_payment_invoices,
 
                 'usesTwinfield' => $this->uses_twinfield,
+                'twinfieldConnectionType' => $this->twinfield_connection_type,
                 'twinfieldUsername' => $this->twinfield_username,
                 'twinfieldPassword' => '',
+                'twinfieldClientId' => $this->twinfield_client_id,
+                'twinfieldClientSecret' => $this->twinfield_client_secret,
                 'twinfieldOrganizationCode' => $this->twinfield_organization_code,
                 'twinfieldOfficeCode' => $this->twinfield_office_code,
                 'twinfieldIsValid' => $this->twinfield_is_valid,

@@ -148,7 +148,7 @@ class Kernel extends ConsoleKernel
             'hilverzon' => '01:00',
             'hofvantwenteoprozen' => '01:01',
             'hoom' => '01:02',
-            'kennemerenergie (kennemerkracht)' => '01:03',
+            'kennemerkracht' => '01:03',
             'krammer' => '01:04',
             'leimuiden' => '01:05',
             'leudalenergie' => '01:06',
@@ -201,6 +201,9 @@ class Kernel extends ConsoleKernel
             'watbeters' => '01:53',
             'weespecoenergie' => '01:54',
             'ecoburen' => '01:55',
+            'goudsepanelen' => '01:56',
+            'om' => '01:57',
+            'opgewektdrimmelen' => '01:58',
         );
     }
     protected function getArrayTimeSetDaysToExpire()
@@ -264,7 +267,7 @@ class Kernel extends ConsoleKernel
             'hilverzon' => '03:00',
             'hofvantwenteoprozen' => '03:01',
             'hoom' => '03:02',
-            'kennemerenergie (kennemerkracht)' => '03:03',
+            'kennemerkracht' => '03:03',
             'krammer' => '03:04',
             'leimuiden' => '03:05',
             'leudalenergie' => '03:06',
@@ -317,6 +320,9 @@ class Kernel extends ConsoleKernel
             'watbeters' => '03:53',
             'weespecoenergie' => '03:54',
             'ecoburen' => '03:55',
+            'goudsepanelen' => '03:56',
+            'om' => '03:57',
+            'opgewektdrimmelen' => '03:58',
         );
     }
 

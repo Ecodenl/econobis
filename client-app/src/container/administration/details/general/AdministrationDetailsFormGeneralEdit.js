@@ -123,6 +123,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 IBAN: false,
                 email: false,
                 website: false,
+                twinfieldConnectionType: false,
                 twinfieldUsername: false,
                 twinfieldPassword: false,
                 twinfieldClientId: false,
@@ -299,14 +300,31 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         }
 
         if (administration.usesTwinfield) {
-            if (validator.isEmpty(administration.twinfieldUsername + '')) {
-                errors.twinfieldUsername = true;
+            if (validator.isEmpty(administration.twinfieldConnectionType + '')) {
+                errors.twinfieldConnectionType = true;
                 hasErrors = true;
             }
 
-            if (administration.twinfieldPasswordChange) {
-                if (validator.isEmpty(administration.twinfieldPassword + '')) {
-                    errors.twinfieldPassword = true;
+            if (administration.twinfieldConnectionType === 'webservice') {
+                if (validator.isEmpty(administration.twinfieldUsername + '')) {
+                    errors.twinfieldUsername = true;
+                    hasErrors = true;
+                }
+                if (administration.twinfieldPasswordChange) {
+                    if (validator.isEmpty(administration.twinfieldPassword + '')) {
+                        errors.twinfieldPassword = true;
+                        hasErrors = true;
+                    }
+                }
+            }
+            if (administration.twinfieldConnectionType === 'openid') {
+                if (validator.isEmpty(administration.twinfieldClientId + '')) {
+                    errors.twinfieldClientId = true;
+                    hasErrors = true;
+                }
+
+                if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
+                    errors.twinfieldClientSecret = true;
                     hasErrors = true;
                 }
             }
@@ -710,13 +728,17 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername)}
                             />
                             {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
-                                <InputText
-                                    label="API connection type"
+                                <InputSelect
+                                    label={'API connection type'}
+                                    id="twinfieldConnectionType"
+                                    size={'col-sm-6'}
                                     name={'twinfieldConnectionType'}
+                                    options={this.props.twinfieldConnectionTypes}
+                                    optionName={'name'}
                                     value={twinfieldConnectionType}
                                     onChangeAction={this.handleInputChange}
                                     required={'required'}
-                                    error={this.state.errors.twinfieldUsername}
+                                    error={this.state.errors.twinfieldConnectionType}
                                 />
                             )}
                         </div>
@@ -869,6 +891,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
+        twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         administrations: state.systemData.administrations,
         administrationDetails: state.administrationDetails,
     };

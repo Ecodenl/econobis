@@ -61,6 +61,7 @@ use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
 use App\Eco\Team\Team;
+use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\FullAdministration;
@@ -203,6 +204,7 @@ class SystemData extends Resource
             'taskTypes' => GenericResource::collection(TaskType::all()),
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'titles' => FullTitle::collection(Title::all()),
+            'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionTypeWithIdAndName::collection()),
             'users' => $users,
             'usersExtraAdministration' => $usersExtraAdministration,
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,

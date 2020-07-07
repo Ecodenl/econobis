@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Administration;
 
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\User\FullUser;
@@ -102,6 +103,7 @@ class FullAdministration extends Resource
 
                 'usesTwinfield' => $this->uses_twinfield,
                 'twinfieldConnectionType' => $this->twinfield_connection_type,
+                'twinfieldConnectionTypeWithIdAndName' => FullEnumWithIdAndName::make($this->getTwinfieldConnectionTypeWithIdAndName()),
                 'twinfieldUsername' => $this->twinfield_username,
                 'twinfieldPassword' => '',
                 'twinfieldClientId' => $this->twinfield_client_id,

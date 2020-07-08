@@ -382,7 +382,7 @@
             @if($invoice->order->contact->iban_attn) t.n.v. {{ $invoice->order->contact->iban_attn }}<br/>
             @elseif($invoice->order->contact->full_name) t.n.v. {{ $invoice->order->contact->full_name }}<br/>
             @else <br/> @endif
-                Incasso Mandaat ID (SEPA): {{ $invoice->order->number }}<br/>
+                Machtigingskenmerk: {{ $invoice->order->contact->collect_mandate_code }}<br/>
         </div>
     @elseif($invoice->payment_type_id == 'transfer' && $invoice->total_price_incl_vat_and_reduction < 0)
         <br/><br/>

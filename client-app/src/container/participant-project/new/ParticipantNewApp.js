@@ -254,9 +254,12 @@ class ParticipantNewApp extends Component {
                 {this.state.showModal && (
                     <MultipleMessagesModal
                         closeModal={this.redirectParticipation}
-                        buttonCancelText={'Maak deelname aan'}
+                        buttonCancelText={'Nee'}
                         confirmAction={this.redirectTask}
-                        buttonConfirmText={'Maak deelname aan en maak taak aan'}
+                        buttonConfirmText={'Ja'}
+                        closingText={
+                            'De deelname is aangemaakt, maar de gegevens zijn niet compleet. Wil je ook een taak aanmaken om je daar aan te herinneren ?'
+                        }
                     >
                         {this.state.modalText}
                     </MultipleMessagesModal>

@@ -13,10 +13,6 @@ class ParticipantProjectCalculator
         $this->participantProject = $participantProject;
     }
 
-    public function participationsDefinitive()
-    {
-        return $this->participantProject->mutations()->where('status_id', 4)->sum('quantity');
-    }
     public function participationsDefinitiveWorth()
     {
         return $this->participationsDefinitive() * $this->participantProject->project->currentBookWorth();
@@ -31,34 +27,46 @@ class ParticipantProjectCalculator
         }
         return $participationsCapitalWorth;
     }
+    public function participationsDefinitiveForTerminating()
+    {
+        return $this->participantProject->mutations()->where('status_id', 4)->sum('quantity');
+    }
+    public function participationsDefinitive()
+    {
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 4)->sum('quantity') : 0;
+    }
     public function participationsGranted()
     {
-        return $this->participantProject->mutations()->where('status_id', 3)->sum('quantity');
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 3)->sum('quantity') : 0;
     }
     public function participationsOptioned()
     {
-        return $this->participantProject->mutations()->where('status_id', 2)->sum('quantity');
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 2)->sum('quantity') : 0;
     }
     public function participationsInteressed()
     {
-        return $this->participantProject->mutations()->where('status_id', 1)->sum('quantity');
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 1)->sum('quantity') : 0;
     }
 
-    public function amountDefinitive()
+    public function amountDefinitiveForTerminating()
     {
         return $this->participantProject->mutations()->where('status_id', 4)->sum('amount');
     }
+    public function amountDefinitive()
+    {
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 4)->sum('amount') : 0;
+    }
     public function amountGranted()
     {
-        return $this->participantProject->mutations()->where('status_id', 3)->sum('amount');
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 3)->sum('amount') : 0;
     }
     public function amountOptioned()
     {
-        return $this->participantProject->mutations()->where('status_id', 2)->sum('amount');
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 2)->sum('amount') : 0;
     }
     public function amountInteressed()
     {
-        return $this->participantProject->mutations()->where('status_id', 1)->sum('amount');
+        return ($this->participantProject->date_terminated === null) ? $this->participantProject->mutations()->where('status_id', 1)->sum('amount') : 0;
     }
 
     public function run()

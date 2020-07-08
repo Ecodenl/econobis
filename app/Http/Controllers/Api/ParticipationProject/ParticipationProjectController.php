@@ -974,9 +974,9 @@ class ParticipationProjectController extends ApiController
     protected function createMutationWithDrawal(ParticipantProject $participantProject, $mutationTypeWithDrawalId, $mutationStatusFinalId, $projectType): void
     {
         if ($projectType->code_ref == 'loan') {
-            $amountOrParticipationsDefinitive = $participantProject->calculator()->amountDefinitive();
+            $amountOrParticipationsDefinitive = $participantProject->calculator()->amountDefinitiveForTerminating();
         } else {
-            $amountOrParticipationsDefinitive = $participantProject->calculator()->participationsDefinitive();
+            $amountOrParticipationsDefinitive = $participantProject->calculator()->participationsDefinitiveForTerminating();
         }
 
         if ($amountOrParticipationsDefinitive != 0) {

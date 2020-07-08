@@ -29,24 +29,35 @@ class TwinfieldHelper
      */
     public function __construct(Administration $administration)
     {
-//        $this->administration = $administration;
-//        $this->office = Office::fromCode($administration->twinfield_office_code);
-
-//        $token = null;
-//        if ($administration->twinfield_type_connection === "openid") {
-//            $provider = new OAuthProvider([
-//                'clientId' => $administration->twinfield_client_id,
-//                'clientSecret' => $administration->twinfield_client_secret,
-//                'redirectUri' => 'https://localhost:8080/'
-//            ]);
-//            $accessToken = $provider->getAccessToken("authorization_code", ["code" => $administration->twinfield_organization_code]);
-//            $refreshToken = $accessToken->getRefreshToken();
-//            $this->connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $refreshToken, $this->office);
-//        }else{
-//            $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
-//        }
-        $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
+        $this->administration = $administration;
         $this->office = Office::fromCode($administration->twinfield_office_code);
+
+        if ($administration->twinfield_connection_type === "openid") {
+        print_r($administration->twinfield_client_id . "\n");
+        print_r($administration->twinfield_client_secret . "\n");
+        print_r($administration->twinfield_connection_type . "\n");
+        print_r($administration->twinfield_organization_code . "\n");
+        print_r($administration->twinfield_office_code . "\n");
+            $provider = new OAuthProvider([
+                'clientId' => $administration->twinfield_client_id,
+                'clientSecret' => $administration->twinfield_client_secret,
+                'redirectUri' => 'https://test.econobis.nl/#/twinfield'
+            ]);
+            print_r($provider);
+            print_r( "\n");
+            die("even tot hier");
+            $accessToken = $provider->getAccessToken("authorization_code", ["code" => $administration->twinfield_office_code]);
+            $refreshToken = $accessToken->getRefreshToken();
+
+            print_r($accessToken);
+            print_r($refreshToken);
+            print_r( "\n");
+        die("even tot hier");
+
+            $this->connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $refreshToken, $this->office);
+        }else{
+            $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
+        }
     }
 
 

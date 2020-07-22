@@ -418,7 +418,7 @@ class ExtraFilter extends RequestExtraFilter
                 case 'neq':
                     $query->where(function ($query) use ($type, $data) {
                         $query->whereDoesntHave('orderProducts')
-                            ->orWhereHas('orderProducts', function ($query) use ($data) {
+                            ->orWhereDoesntHave('orderProducts', function ($query) use ($data) {
                                 $query->where('product_id', $data);
                             });
                     });

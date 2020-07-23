@@ -34,7 +34,7 @@ class TwinfieldHelper
 
         $this->administration = $administration;
         $this->office = Office::fromCode($administration->twinfield_office_code);
-        $this->redirectUri = Config::get('app.url') . '/api/twinfield';
+        $this->redirectUri = \Config::get('app.url') . '/api/twinfield';
 
         if ($administration->twinfield_connection_type === "openid") {
             $provider = new OAuthProvider([

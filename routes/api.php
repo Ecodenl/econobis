@@ -26,6 +26,8 @@ Route::namespace('Api')
 
         Route::get('/jobs', 'Job\JobController@getLastJobs');
 
+        Route::get('/twinfield', 'Twinfield\TwinfieldController@twinfield');
+
         Route::get('/me', 'User\UserController@me');
 
         Route::get('/system-data', 'SystemData\SystemDataController@get');

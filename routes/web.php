@@ -11,6 +11,8 @@
 |
 */
 
+Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
+
 // Welcome
 Route::get('/', 'HomeController@welcome');
 

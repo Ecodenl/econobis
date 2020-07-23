@@ -16,6 +16,7 @@ use PhpTwinfield\Exception;
 use PhpTwinfield\Office;
 use PhpTwinfield\Secure\Provider\OAuthProvider;
 use PhpTwinfield\Secure\WebservicesAuthentication;
+use Illuminate\Support\Facades\Storage;
 
 class TwinfieldHelper
 {
@@ -29,33 +30,50 @@ class TwinfieldHelper
      */
     public function __construct(Administration $administration)
     {
+
         $this->administration = $administration;
         $this->office = Office::fromCode($administration->twinfield_office_code);
 
         if ($administration->twinfield_connection_type === "openid") {
-        print_r($administration->twinfield_client_id . "\n");
-        print_r($administration->twinfield_client_secret . "\n");
-        print_r($administration->twinfield_connection_type . "\n");
-        print_r($administration->twinfield_organization_code . "\n");
-        print_r($administration->twinfield_office_code . "\n");
             $provider = new OAuthProvider([
                 'clientId' => $administration->twinfield_client_id,
                 'clientSecret' => $administration->twinfield_client_secret,
-                'redirectUri' => 'https://test.econobis.nl/#/twinfield'
+                'redirectUri' => 'http://localhost:8080/api/twinfield'
             ]);
-            print_r($provider);
-            print_r( "\n");
-            die("even tot hier");
-            $accessToken = $provider->getAccessToken("authorization_code", ["code" => $administration->twinfield_office_code]);
-            $refreshToken = $accessToken->getRefreshToken();
 
-            print_r($accessToken);
-            print_r($refreshToken);
-            print_r( "\n");
-        die("even tot hier");
+            if (!isset($_GET['code'])) {
 
-            $this->connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $refreshToken, $this->office);
+                // If we don't have an authorization code then get one
+                $authUrl = $provider->getAuthorizationUrl();
+                $_SESSION['oauth2state'] = $provider->getState();
+                //Storage::disk('local')->put('file.txt', $authUrl);
+                header('Location: '.$authUrl);
+                exit;
+
+            // Check given state against previously stored one to mitigate CSRF attack
+            } elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+                //Storage::disk('local')->put('file2.txt', 'Check given state against previously stored one to mitigate CSRF attack');
+                unset($_SESSION['oauth2state']);
+                exit('Invalid state');
+
+            } else {
+                //Storage::disk('local')->put('file3.txt', 'weer een stapje verder');
+                $accessToken = $provider->getAccessToken('authorization_code', [
+                    'code' => $_GET['code']
+                ]);
+
+                // We have an access token, which we may use in authenticated
+                // requests against the service provider's API.
+                //echo 'Access Token: ' . $accessToken->getToken() . "<br>";
+                //echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
+                //echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
+                //dd('Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired'));
+
+                $refreshToken = $accessToken->getRefreshToken();
+                $this->connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $refreshToken, $this->office);
+            }
         }else{
+            Storage::disk('local')->put('file.txt', 'hahah');
             $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
         }
     }

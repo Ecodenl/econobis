@@ -60,7 +60,11 @@ class ContactCSVHelper
                 // Addresses
                 if ($contact->addresses) {
                     foreach (AddressType::collection() as $type) {
-                        $address = $contact->addresses()->where('type_id', $type->id)->first();
+                        $address = $contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
+                        if(empty($address))
+                        {
+                            $address = $contact->addresses()->where('type_id', $type->id)->first();
+                        }
 
                         $addressArr = [];
 

@@ -22,6 +22,7 @@ class TwinfieldHelper
 {
     private $connection;
     private $office;
+    private $redirectUri;
 
     /**
      * TwinfieldHelper constructor.
@@ -33,12 +34,13 @@ class TwinfieldHelper
 
         $this->administration = $administration;
         $this->office = Office::fromCode($administration->twinfield_office_code);
+        $this->redirectUri = Config::get('app.url') . '/api/twinfield';
 
         if ($administration->twinfield_connection_type === "openid") {
             $provider = new OAuthProvider([
                 'clientId' => $administration->twinfield_client_id,
                 'clientSecret' => $administration->twinfield_client_secret,
-                'redirectUri' => 'http://localhost:8080/api/twinfield'
+                'redirectUri' => $this->redirectUri
             ]);
 
             if (!isset($_GET['code'])) {

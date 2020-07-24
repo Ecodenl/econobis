@@ -9,8 +9,8 @@ class TwinfieldController extends Controller
 {
     public function twinfield(Request $request)
     {
-//        $redirectUri = \Config::get('app.url') . '/api/twinfield';
-        $redirectUri = \Config::get('app.url') . '/twinfield';
+        //        $redirectUri = \Config::get('app.url_api') . '/api/twinfield';
+        $redirectUri = \Config::get('app.url_api') . '/twinfield';
         return view('twinfield', [
             'redirectUri' => $redirectUri,
         ]);

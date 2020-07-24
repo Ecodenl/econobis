@@ -27,8 +27,6 @@ if (!isset($_GET['code'])) {
 // Check given state against previously stored one to mitigate CSRF attack
 } elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
 
-    print_r("wel code: " . $_GET['code'] . "\n");
-
     if (isset($_SESSION['oauth2state'])) {
         unset($_SESSION['oauth2state']);
     }
@@ -46,31 +44,46 @@ if (!isset($_GET['code'])) {
 
         // We have an access token, which we may use in authenticated
         // requests against the service provider's API.
-        echo 'Access Token: ' . $accessToken->getToken() . "<br>";
-        echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
-        echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
-        echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
+//        echo 'Access Token: ' . $accessToken->getToken() . "<br>";
+//        echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
+//        echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
+//        echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
 
-        // Using the access token, we may look up details about the
-        // resource owner.
-        $resourceOwner = $provider->getResourceOwner($accessToken);
+        $refreshToken = $accessToken->getRefreshToken();
 
-        var_export($resourceOwner->toArray());
-
-        // The provider provides a way to get an authenticated API request for
-        // the service, using the access token; it returns an object conforming
-        // to Psr\Http\Message\RequestInterface.
-        $request = $provider->getAuthenticatedRequest(
-            'GET',
-            'http://brentertainment.com/oauth2/lockdin/resource',
-            $accessToken
-        );
 
     } catch (\Exception $e) {
 
+        echo 'Fout getAccessToken!' . "<br>";
         // Failed to get the access token or user details.
         exit($e->getMessage());
 
+    }
+
+    try {
+        $office = \PhpTwinfield\Office::fromCode("NLA000804");
+        $connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $refreshToken, $office);
+
+//        print_r($connection);
+        echo 'OpenIdConnection!' . "<br>";
+    } catch (\Exception $e) {
+
+        echo 'Fout OpenIdConnection!' . "<br>";
+        exit($e->getMessage());
+
+    }
+
+    try {
+        $officeApiConnector = new \PhpTwinfield\ApiConnectors\OfficeApiConnector($connection);
+//    print_r($officeApiConnector);
+        echo 'officeApiConnector!' . "<br>";
+
+        $listAllWithoutOfficeCode = $officeApiConnector->listAllWithoutOfficeCode();
+    print_r($listAllWithoutOfficeCode);
+
+    } catch (\Exception $e) {
+        echo 'Fout officeApiConnector->listAllWithoutOfficeCode!' . "<br>";
+        exit($e->getMessage());
     }
 
 }

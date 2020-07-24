@@ -364,18 +364,34 @@ class EmailController
         $emailAttachment->delete();
     }
 
-    public function updateConcept(Email $email, Request $request){
+    public function updateConcept(Email $email, RequestInput $requestInput){
 
-        $sanitizedData = $this->getEmailData($request);
+//        $sanitizedData = $this->getEmailData($request);
+//
+//        $email->to = $sanitizedData['to'];
+//        $email->cc = $sanitizedData['cc'];
+//        $email->bcc = $sanitizedData['bcc'];
+//        $email->subject = $sanitizedData['subject'];
+//        $email->html_body = $sanitizedData['html_body'];
+//        $email->sent_by_user_id = Auth::id();
+//        $email->save();
 
-        $email->to = $sanitizedData['to'];
-        $email->cc = $sanitizedData['cc'];
-        $email->bcc = $sanitizedData['bcc'];
-        $email->subject = $sanitizedData['subject'];
-        $email->html_body = $sanitizedData['html_body'];
-        $email->sent_by_user_id = Auth::id();
+        $data = $requestInput
+            ->string('to', 1000)->validate('required')->next()
+            ->string('cc', 1000)->next()
+            ->string('bcc', 1000)->next()
+            ->string('subject')->onEmpty(null)->next()
+            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->get();
+
+        $email->fill($data);
+        $email->to = json_decode($email->to);
+        $email->cc = json_decode($email->cc);
+        $email->bcc = json_decode($email->bcc);
+
         $email->save();
-        
+
+
         return $email;
     }
 

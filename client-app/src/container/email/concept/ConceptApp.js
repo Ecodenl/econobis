@@ -230,26 +230,26 @@ class ConceptApp extends Component {
         // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
-                email.to = email.to.split(',');
+                email.to = JSON.stringify(email.to.split(','));
             }
 
             if (email.cc.length > 0) {
-                email.cc = email.cc.split(',');
+                email.cc = JSON.stringify(email.cc.split(','));
             }
 
             if (email.bcc.length > 0) {
-                email.bcc = email.bcc.split(',');
+                email.bcc = JSON.stringify(email.bcc.split(','));
             }
-            const data = new FormData();
-
-            data.append('to', JSON.stringify(email.to));
-            data.append('cc', JSON.stringify(email.cc));
-            data.append('bcc', JSON.stringify(email.bcc));
-            data.append('subject', email.subject);
-            data.append('htmlBody', email.htmlBody);
+            // const data = new FormData();
+            //
+            // data.append('to', JSON.stringify(email.to));
+            // data.append('cc', JSON.stringify(email.cc));
+            // data.append('bcc', JSON.stringify(email.bcc));
+            // data.append('subject', email.subject);
+            // data.append('htmlBody', email.htmlBody);
 
             if (concept) {
-                EmailAPI.updateConcept(data, this.props.params.id)
+                EmailAPI.updateConcept(email, this.props.params.id)
                     .then(() => {
                         hashHistory.push(`/emails/concept`);
                     })
@@ -259,7 +259,7 @@ class ConceptApp extends Component {
             } else {
                 this.setButtonLoading();
 
-                EmailAPI.sendConcept(data, this.props.params.id)
+                EmailAPI.sendConcept(email, this.props.params.id)
                     .then(() => {
                         hashHistory.push(`/emails/sent`);
                     })

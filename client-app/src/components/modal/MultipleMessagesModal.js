@@ -2,7 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Modal = props => {
-    const { buttonClassName, buttonCancelText, buttonConfirmText, children, closeModal, confirmAction, title } = props;
+    const {
+        buttonClassName,
+        buttonCancelText,
+        buttonConfirmText,
+        children,
+        closeModal,
+        confirmAction,
+        title,
+        closingText,
+    } = props;
     return (
         <div className="modal">
             <div className="modal-dialog">
@@ -16,6 +25,7 @@ const Modal = props => {
                                 return <li key={i}>{child}</li>;
                             })}
                         </ul>
+                        <p>{closingText}</p>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-default" onClick={closeModal}>

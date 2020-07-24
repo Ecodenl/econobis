@@ -693,11 +693,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
                                 onChangeAction={this.handleUsesTwinfieldChange}
-                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername) }
+                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername)}
                             />
                         </div>
 
-                        {( usesTwinfield == true || !isEmpty(twinfieldUsername) ) && (
+                        {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
                             <React.Fragment>
                                 <div className="row">
                                     <InputText

@@ -385,9 +385,9 @@ class EmailController
             ->get();
 
         $email->fill($data);
-        $email->to = json_decode($email->to);
-        $email->cc = json_decode($email->cc);
-        $email->bcc = json_decode($email->bcc);
+        $email->to = $email->to ? json_decode($email->to) : [];
+        $email->cc = $email->cc ? json_decode($email->cc) : [];
+        $email->bcc = $email->bcc ? json_decode($email->bcc) : [];
 
         $email->save();
 

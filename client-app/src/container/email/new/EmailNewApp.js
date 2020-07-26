@@ -291,16 +291,16 @@ class EmailNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        function handleConceptAttachments(data, mailboxId, emailId) {
-            EmailAPI.newConceptAttachments(data, mailboxId, emailId)
+        function handleNewConcept2(data, mailboxId, emailId) {
+            EmailAPI.newConcept2(data, mailboxId, emailId)
                 .then(() => {
                     hashHistory.push(`/emails/concept`);
                 })
                 .catch(function (error) {
                 });
         }
-        function handleConceptAttachmentsAndSend(data, mailboxId, emailId) {
-            EmailAPI.newConceptAttachmentsAndSend(data, mailboxId, emailId)
+        function handleNewEmail(data, mailboxId, emailId) {
+            EmailAPI.newEmail(data, mailboxId, emailId)
                 .then(() => {
                     browserHistory.goBack();
                 })
@@ -311,26 +311,26 @@ class EmailNewApp extends Component {
 // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
-                email.to = JSON.stringify(email.to.split(','));
+                email.to = email.to.split(',');
             }
 
             if (email.cc.length > 0) {
-                email.cc = JSON.stringify(email.cc.split(','));
+                email.cc = email.cc.split(',');
             }
 
             if (email.bcc.length > 0) {
-                email.bcc = JSON.stringify(email.bcc.split(','));
+                email.bcc = email.bcc.split(',');
             }
             const data = new FormData();
             //
 
-            // data.append('to', JSON.stringify(email.to));
-            // data.append('cc', JSON.stringify(email.cc));
-            // data.append('bcc', JSON.stringify(email.bcc));
+            data.append('to', JSON.stringify(email.to));
+            data.append('cc', JSON.stringify(email.cc));
+            data.append('bcc', JSON.stringify(email.bcc));
             // data.append('subject', email.subject);
             // data.append('htmlBody', email.htmlBody);
-            // data.append('quotationRequestId', email.quotationRequestId);
-            // data.append('intakeId', email.intakeId);
+            data.append('quotationRequestId', email.quotationRequestId);
+            data.append('intakeId', email.intakeId);
             email.attachments.map((file, key) => {
                 data.append('attachments[' + key + ']', file);
             });
@@ -338,7 +338,7 @@ class EmailNewApp extends Component {
             if (concept) {
                 EmailAPI.newConcept(email, email.from)
                     .then( emailId => {
-                        handleConceptAttachments(data, email.from, emailId.data);
+                        handleNewConcept2(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});
             } else {
@@ -346,7 +346,7 @@ class EmailNewApp extends Component {
 
                 EmailAPI.newConcept(email, email.from)
                     .then( emailId  => {
-                        handleConceptAttachmentsAndSend(data, email.from, emailId.data);
+                        handleNewEmail(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});
             }

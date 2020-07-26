@@ -230,20 +230,17 @@ class EmailController
         return FullEmail::make($email);
     }
 
-    public function send(Mailbox $mailbox, Request $request)
+    public function send(Mailbox $mailbox, Email $email, Request $request)
     {
         set_time_limit(0);
         $sanitizedData = $this->getEmailData($request);
 
         //add basic html tags for new emails
-        $sanitizedData['html_body']
+        $email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $sanitizedData['subject'] . '</title></head>'
-            . $sanitizedData['html_body'] . '</html>';
-
-        //Save as concept, if sending fails we still have the concept
-        $email = (new StoreConceptEmail($mailbox,
-            $sanitizedData))->handle();
+            . $email->subject . '</title></head>'
+            . $email->html_body . '</html>';
+        $email->save();
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -257,74 +254,6 @@ class EmailController
 
         $this->storeEmailAttachments($attachments, $mailbox->id,
             $email->id);
-
-        //old attachments(forward,reply etc.)
-        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
-
-        //Gaat dit goed bij deleten attachment van oude mail?
-        foreach ($oldAttachments as $oldAttachment){
-            $oldAttachment = json_decode($oldAttachment);
-            $oldAttachment = EmailAttachment::find($oldAttachment->id);
-            $replicatedAttachment = $oldAttachment->replicate();
-            $replicatedAttachment->email_id = $email->id;
-            $replicatedAttachment->save();
-        }
-
-        //if we send to group we save in a pivot because they can have alot of members
-        if ($sanitizedData['contact_group_id']) {
-            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
-            $contactIds = [];
-            foreach ($contactGroup->all_contacts as $contact) {
-                if ($contact->primaryEmailAddress) {
-                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-                    array_push($contactIds, $contact->id);
-                }
-            }
-            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
-            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
-        }
-
-        $email->sent_by_user_id = Auth::id();
-        $email->save();
-
-        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
-    }
-
-    public function storeConcept(Mailbox $mailbox, RequestInput $requestInput)
-    {
-//        $sanitizedData = $this->getEmailData($request);
-
-        $data = $requestInput
-            ->string('to', 1000)->validate('required')->next()
-            ->string('cc', 1000)->next()
-            ->string('bcc', 1000)->next()
-            ->string('subject')->onEmpty(null)->next()
-            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
-            ->string('quotationRequestId')->onEmpty(null)->alias('quotation_request_id')->next()
-            ->string('intakeId')->onEmpty(null)->alias('intake_id')->next()
-            ->get();
-
-        $email = (new StoreConceptEmail($mailbox, $data))->handle();
-        return $email->id;
-    }
-
-    public function storeConceptAttachments(Mailbox $mailbox, Email $email, Request $request)
-    {
-        $this->checkStorageDir($mailbox->id);
-
-        //get attachments
-        $attachments = $request->file('attachments')
-            ? $request->file('attachments') : [];
-
-        $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
-    }
-
-    public function storeConceptAttachmentsAndSend(Mailbox $mailbox, Email $email, Request $request)
-    {
-        storeConceptAttachments($mailbox, $email, $request);
-
-        //Create relations with contact if needed
-        $this->createEmailContactRelations($email, $request);
 
         //old attachments(forward,reply etc.)
         $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
@@ -355,8 +284,32 @@ class EmailController
         $email->sent_by_user_id = Auth::id();
         $email->save();
 
-        SendEmailsWithVariables::dispatch($email, json_decode($email->to), Auth::id());
+        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
+    }
 
+    public function storeConcept(Mailbox $mailbox, RequestInput $requestInput)
+    {
+        $data = $requestInput
+            ->string('subject')->onEmpty(null)->next()
+            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->get();
+
+        $email = (new StoreConceptEmail($mailbox, $data))->handle();
+
+        return $email->id;
+    }
+
+    public function storeConcept2(Mailbox $mailbox, Email $email, Request $request)
+    {
+        $this->updateConcept2($email, $request);
+
+        $this->checkStorageDir($mailbox->id);
+
+        //get attachments
+        $attachments = $request->file('attachments')
+            ? $request->file('attachments') : [];
+
+        $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
     }
 
     public function peek(){
@@ -419,39 +372,35 @@ class EmailController
     }
 
     public function updateConcept(Email $email, RequestInput $requestInput){
-// todo Wim
-//        $sanitizedData = $this->getEmailData($request);
-//
-//        $email->to = $sanitizedData['to'];
-//        $email->cc = $sanitizedData['cc'];
-//        $email->bcc = $sanitizedData['bcc'];
-//        $email->subject = $sanitizedData['subject'];
-//        $email->html_body = $sanitizedData['html_body'];
-//        $email->sent_by_user_id = Auth::id();
-//        $email->save();
 
         $data = $requestInput
-            ->string('to', 1000)->validate('required')->next()
-            ->string('cc', 1000)->next()
-            ->string('bcc', 1000)->next()
             ->string('subject')->onEmpty(null)->next()
             ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
             ->get();
 
         $email->fill($data);
-        $email->to = $email->to ? json_decode($email->to) : [];
-        $email->cc = $email->cc ? json_decode($email->cc) : [];
-        $email->bcc = $email->bcc ? json_decode($email->bcc) : [];
 
         $email->save();
 
+        return $email->id;
+    }
+
+    public function updateConcept2(Email $email, Request $request){
+
+        $sanitizedData = $this->getEmailData($request);
+
+        $email->to = $sanitizedData['to'];
+        $email->cc = $sanitizedData['cc'];
+        $email->bcc = $sanitizedData['bcc'];
+        $email->sent_by_user_id = Auth::id();
+        $email->save();
 
         return $email;
     }
 
     public function sendConcept(Email $email, Request $request){
         set_time_limit(0);
-        $email = $this->updateConcept($email, $request);
+        $email = $this->updateConcept2($email, $request);
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -505,8 +454,6 @@ class EmailController
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
-            'subject' => '',
-            'htmlBody' => '',
             'quotationRequestId' => '',
             'intakeId' => '',
         ]);
@@ -565,20 +512,10 @@ class EmailController
             $data['intakeId'] = null;
         }
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
-        $subject = $data['subject'];
-        if($subject){
-            $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
-            $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
-
-        }
         $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => $subject ?: 'Econobis',
-            'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
             'contact_group_id' => $groupId ? $groupId : null

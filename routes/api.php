@@ -305,7 +305,6 @@ Route::namespace('Api')
         Route::get('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('project/participant', 'ParticipationProject\ParticipationProjectController@store');
         Route::post('project/participant/transfer', 'ParticipationProject\ParticipationProjectController@transfer');
-        Route::post('project/participant/validateXXX', 'ParticipationProject\ParticipationProjectController@validateXXX');
         Route::post('project/participant/create-participant-report/{documentTemplate}/{emailTemplate}', 'ParticipationProject\ParticipationProjectController@createParticipantReport');
         Route::post('project/participant/preview-email/{documentTemplate}/{emailTemplate}', 'ParticipationProject\ParticipationProjectController@previewEmail');
         Route::post('project/participant/preview-pdf/{documentTemplate}/{emailTemplate}', 'ParticipationProject\ParticipationProjectController@previewPDF');

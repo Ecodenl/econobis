@@ -31,18 +31,6 @@ export default {
         return axiosInstance.post(requestUrl, data);
     },
 
-    // validateParticipantProject: (contactId, projectId) => {
-    validateParticipantProject: data => {
-        const requestUrl = `${URL_PARTICIPANT_PROJECT}/validateXXX`;
-        console.log(`vvvvv`);
-        console.log(data);
-        // console.log(contactId);
-        // console.log(projectId);
-        //         return axiosInstance.post(requestUrl, contactId, projectId);
-        //         return axiosInstance.post(requestUrl, data);
-        return '';
-    },
-
     transferParticipation: data => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/transfer`;
 

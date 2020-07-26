@@ -290,12 +290,26 @@ class EmailController
         SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
     }
 
-    public function storeConcept(Mailbox $mailbox, Request $request)
+    public function storeConcept(Mailbox $mailbox, RequestInput $requestInput)
     {
-        $sanitizedData = $this->getEmailData($request);
+//        $sanitizedData = $this->getEmailData($request);
 
-        $email = (new StoreConceptEmail($mailbox, $sanitizedData))->handle();
+        $data = $requestInput
+            ->string('to', 1000)->validate('required')->next()
+            ->string('cc', 1000)->next()
+            ->string('bcc', 1000)->next()
+            ->string('subject')->onEmpty(null)->next()
+            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->string('quotationRequestId')->onEmpty(null)->alias('quotation_request_id')->next()
+            ->string('intakeId')->onEmpty(null)->alias('intake_id')->next()
+            ->get();
 
+        $email = (new StoreConceptEmail($mailbox, $data))->handle();
+        return $email->id;
+    }
+
+    public function storeConceptAttachments(Mailbox $mailbox, Email $email, Request $request)
+    {
         $this->checkStorageDir($mailbox->id);
 
         //get attachments
@@ -303,6 +317,46 @@ class EmailController
             ? $request->file('attachments') : [];
 
         $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
+    }
+
+    public function storeConceptAttachmentsAndSend(Mailbox $mailbox, Email $email, Request $request)
+    {
+        storeConceptAttachments($mailbox, $email, $request);
+
+        //Create relations with contact if needed
+        $this->createEmailContactRelations($email, $request);
+
+        //old attachments(forward,reply etc.)
+        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
+
+        //Gaat dit goed bij deleten attachment van oude mail?
+        foreach ($oldAttachments as $oldAttachment){
+            $oldAttachment = json_decode($oldAttachment);
+            $oldAttachment = EmailAttachment::find($oldAttachment->id);
+            $replicatedAttachment = $oldAttachment->replicate();
+            $replicatedAttachment->email_id = $email->id;
+            $replicatedAttachment->save();
+        }
+
+        //if we send to group we save in a pivot because they can have alot of members
+        if ($email->contact_group_id) {
+            $contactGroup = ContactGroup::find($email->contact_group_id);
+            $contactIds = [];
+            foreach ($contactGroup->all_contacts as $contact) {
+                if ($contact->primaryEmailAddress) {
+                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                    array_push($contactIds, $contact->id);
+                }
+            }
+            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
+            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
+        }
+
+        $email->sent_by_user_id = Auth::id();
+        $email->save();
+
+        SendEmailsWithVariables::dispatch($email, json_decode($email->to), Auth::id());
+
     }
 
     public function peek(){
@@ -365,7 +419,7 @@ class EmailController
     }
 
     public function updateConcept(Email $email, RequestInput $requestInput){
-
+// todo Wim
 //        $sanitizedData = $this->getEmailData($request);
 //
 //        $email->to = $sanitizedData['to'];

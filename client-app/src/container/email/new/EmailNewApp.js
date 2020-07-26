@@ -291,44 +291,62 @@ class EmailNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        // If no errors send form
+        function handleConceptAttachments(data, mailboxId, emailId) {
+            EmailAPI.newConceptAttachments(data, mailboxId, emailId)
+                .then(() => {
+                    hashHistory.push(`/emails/concept`);
+                })
+                .catch(function (error) {
+                });
+        }
+        function handleConceptAttachmentsAndSend(data, mailboxId, emailId) {
+            EmailAPI.newConceptAttachmentsAndSend(data, mailboxId, emailId)
+                .then(() => {
+                    browserHistory.goBack();
+                })
+                .catch(function (error) {
+                });
+        }
+
+// If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
-                email.to = email.to.split(',');
+                email.to = JSON.stringify(email.to.split(','));
             }
 
             if (email.cc.length > 0) {
-                email.cc = email.cc.split(',');
+                email.cc = JSON.stringify(email.cc.split(','));
             }
 
             if (email.bcc.length > 0) {
-                email.bcc = email.bcc.split(',');
+                email.bcc = JSON.stringify(email.bcc.split(','));
             }
             const data = new FormData();
+            //
 
-            data.append('to', JSON.stringify(email.to));
-            data.append('cc', JSON.stringify(email.cc));
-            data.append('bcc', JSON.stringify(email.bcc));
-            data.append('subject', email.subject);
-            data.append('htmlBody', email.htmlBody);
-            data.append('quotationRequestId', email.quotationRequestId);
-            data.append('intakeId', email.intakeId);
+            // data.append('to', JSON.stringify(email.to));
+            // data.append('cc', JSON.stringify(email.cc));
+            // data.append('bcc', JSON.stringify(email.bcc));
+            // data.append('subject', email.subject);
+            // data.append('htmlBody', email.htmlBody);
+            // data.append('quotationRequestId', email.quotationRequestId);
+            // data.append('intakeId', email.intakeId);
             email.attachments.map((file, key) => {
                 data.append('attachments[' + key + ']', file);
             });
 
             if (concept) {
-                EmailAPI.newConcept(data, email.from)
-                    .then(() => {
-                        hashHistory.push(`/emails/concept`);
+                EmailAPI.newConcept(email, email.from)
+                    .then( emailId => {
+                        handleConceptAttachments(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});
             } else {
                 this.setButtonLoading();
 
-                EmailAPI.newEmail(data, email.from)
-                    .then(() => {
-                        browserHistory.goBack();
+                EmailAPI.newConcept(email, email.from)
+                    .then( emailId  => {
+                        handleConceptAttachmentsAndSend(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});
             }

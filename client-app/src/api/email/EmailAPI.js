@@ -87,6 +87,22 @@ export default {
         return axios.post(requestUrl, email);
     },
 
+    newConceptAttachments: (emailAttachments, mailbox_id, email_id) => {
+        const requestUrl = `${URL_EMAIL}/concept/${mailbox_id}/${email_id}/store-attachments`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, emailAttachments);
+    },
+
+    newConceptAttachmentsAndSend: (emailAttachments, mailbox_id, email_id) => {
+        const requestUrl = `${URL_EMAIL}/send/${mailbox_id}/${email_id}/store-attachments-and-send`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.post(requestUrl, emailAttachments);
+    },
+
     downloadAttachment: id => {
         const requestUrl = `${URL_EMAIL}/email-attachment/${id}/download`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');

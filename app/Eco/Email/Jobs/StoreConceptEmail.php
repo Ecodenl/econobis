@@ -31,6 +31,10 @@ class StoreConceptEmail
     {
         $email = new Email($this->data);
 
+        $email->to = $email->to ? json_decode($email->to) : [];
+        $email->cc = $email->cc ? json_decode($email->cc) : [];
+        $email->bcc = $email->bcc ? json_decode($email->bcc) : [];
+
         $email->mailbox_id = $this->mailbox->id;
         $email->from = $this->mailbox->email;
         $email->folder = 'concept';

@@ -296,19 +296,17 @@ class EmailNewApp extends Component {
                 .then(() => {
                     hashHistory.push(`/emails/concept`);
                 })
-                .catch(function (error) {
-                });
+                .catch(function(error) {});
         }
         function handleNewEmail(data, mailboxId, emailId) {
             EmailAPI.newEmail(data, mailboxId, emailId)
                 .then(() => {
                     browserHistory.goBack();
                 })
-                .catch(function (error) {
-                });
+                .catch(function(error) {});
         }
 
-// If no errors send form
+        // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
                 email.to = email.to.split(',');
@@ -337,7 +335,7 @@ class EmailNewApp extends Component {
 
             if (concept) {
                 EmailAPI.newConcept(email, email.from)
-                    .then( emailId => {
+                    .then(emailId => {
                         handleNewConcept2(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});
@@ -345,7 +343,7 @@ class EmailNewApp extends Component {
                 this.setButtonLoading();
 
                 EmailAPI.newConcept(email, email.from)
-                    .then( emailId  => {
+                    .then(emailId => {
                         handleNewEmail(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});

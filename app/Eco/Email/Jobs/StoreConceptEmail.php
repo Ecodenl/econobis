@@ -12,7 +12,6 @@ namespace App\Eco\Email\Jobs;
 use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
 use App\Helpers\Settings\PortalSettings;
-use Illuminate\Support\Facades\Validator;
 
 class StoreConceptEmail
 {

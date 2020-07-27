@@ -232,8 +232,7 @@ class ConceptApp extends Component {
                 .then(() => {
                     hashHistory.push(`/emails/concept`);
                 })
-                .catch(function (error) {
-                });
+                .catch(function(error) {});
         }
 
         function handleSendConcept(data, emailId) {
@@ -241,11 +240,10 @@ class ConceptApp extends Component {
                 .then(() => {
                     hashHistory.push(`/emails/sent`);
                 })
-                .catch(function (error) {
-                });
+                .catch(function(error) {});
         }
 
-// If no errors send form
+        // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
                 email.to = email.to.split(',');

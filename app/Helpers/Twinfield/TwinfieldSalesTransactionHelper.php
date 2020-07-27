@@ -24,13 +24,16 @@ use PhpTwinfield\Exception as PhpTwinfieldException;
 use PhpTwinfield\Office;
 use PhpTwinfield\SalesTransaction;
 use PhpTwinfield\SalesTransactionLine;
+use PhpTwinfield\Secure\OpenIdConnectAuthentication;
+use PhpTwinfield\Secure\Provider\OAuthProvider;
 use PhpTwinfield\Secure\WebservicesAuthentication;
 
 class TwinfieldSalesTransactionHelper
 {
     private $connection;
-    private $office;
     private $administration;
+    private $office;
+    private $redirectUri;
     private $transactionApiConnector;
     private $currency;
     private $messages;
@@ -42,10 +45,24 @@ class TwinfieldSalesTransactionHelper
      */
     public function __construct(Administration $administration)
     {
-        $this->connection = new WebservicesAuthentication($administration->twinfield_username,
-            $administration->twinfield_password, $administration->twinfield_organization_code);
-        $this->office = Office::fromCode($administration->twinfield_office_code);
+
         $this->administration = $administration;
+        $this->office = Office::fromCode($administration->twinfield_office_code);
+        $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
+
+        if ($administration->twinfield_connection_type === "openid") {
+
+            $provider = new OAuthProvider([
+                'clientId'                => $administration ? $administration->twinfield_client_id : '',    // The client ID assigned to you by the provider
+                'clientSecret'            => $administration ? $administration->twinfield_client_secret : '',   // The client password assigned to you by the provider
+                'redirectUri'             => $this->redirectUri,
+            ]);
+            $this->connection = new OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $this->office);
+
+        }else{
+            $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
+        }
+
         $this->transactionApiConnector = new TransactionApiConnector($this->connection);
         $this->dagboekCode = config('services.twinfield.verkoop_dagboek_code');
         $this->currency = new Currency( config('services.twinfield.verkoop_default_currency') );
@@ -134,7 +151,7 @@ class TwinfieldSalesTransactionHelper
 
 //        dd("bye");
         //Salestransaction - Header XML maken
-        $twinfieldSalesTransaction = new \PhpTwinfield\SalesTransaction();
+        $twinfieldSalesTransaction = new SalesTransaction();
         $twinfieldSalesTransaction
             ->setDestiny(Destiny::TEMPORARY())
             ->setRaiseWarning(false )

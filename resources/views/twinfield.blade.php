@@ -6,6 +6,7 @@ session_start();
 //echo 'clientSecret: ' . $administration->twinfield_client_secret . "<br>";
 //echo 'redirectUri: ' . $redirectUri . "<br>";
 //echo 'officeCode: ' . $administration->twinfield_office_code . "<br>";
+//echo 'twinfieldRefreshToken: ' . ($administration ? $administration->twinfield_refresh_token : ''). "<br>";
 
 $provider = new PhpTwinfield\Secure\Provider\OAuthProvider([
     'clientId'                => $administration ? $administration->twinfield_client_id : '',    // The client ID assigned to you by the provider
@@ -14,8 +15,8 @@ $provider = new PhpTwinfield\Secure\Provider\OAuthProvider([
 ]);
 $office = \PhpTwinfield\Office::fromCode($administration ? $administration->twinfield_office_code : '' );
 
-// If we don't have an authorization code then get one
-if (empty($_SESSION['refreshTokenTwinfield'])) {
+// If we don't have an refresh token then get one
+if (empty($administration->twinfield_refresh_token)) {
 
     // If we don't have an authorization code then get one
     if (!isset($_GET['code'])) {
@@ -63,22 +64,30 @@ if (empty($_SESSION['refreshTokenTwinfield'])) {
             $refreshToken = $accessToken->getRefreshToken();
 
             // Get the refreshToken generated for you and store it to the session.
-            $_SESSION['refreshTokenTwinfield'] = $accessToken->getRefreshToken();;
-             echo 'refreshToken: ' . $_SESSION['refreshTokenTwinfield'] . "<br>";
+            $administration->twinfield_refresh_token = $accessToken->getRefreshToken();
+            $administration->save();
+            echo 'refreshToken: ' . $administration->twinfield_refresh_token . "<br>";
 
 
         } catch (\Exception $e) {
 
-            echo 'Fout getAccessToken!' . "<br>";
+            echo 'Fout getAccessToken/getRefreshToken !' . "<br>";
             // Failed to get the access token or user details.
+
+            if ($administration) {
+                $administration->twinfield_refresh_token = null;
+                $administration->save();
+            }
+
             exit($e->getMessage());
 
+            
         }
     }
 }
 
 try {
-    $connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $_SESSION['refreshTokenTwinfield'], $office);
+    $connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $office);
     echo 'OpenIdConnection!' . "<br>";
 } catch (\Exception $e) {
 
@@ -96,3 +105,4 @@ try {
     echo 'Fout officeApiConnector->listAllWithoutOfficeCode!' . "<br>";
     exit($e->getMessage());
 }
+

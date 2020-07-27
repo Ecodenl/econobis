@@ -24,6 +24,7 @@ use PhpTwinfield\Enums\Services;
 use PhpTwinfield\Exception as PhpTwinfieldException;
 use PhpTwinfield\Exception;
 use PhpTwinfield\Office;
+use PhpTwinfield\Secure\OpenIdConnectAuthentication;
 use PhpTwinfield\Secure\Provider\OAuthProvider;
 use PhpTwinfield\Secure\WebservicesAuthentication;
 use PhpTwinfield\Services\FinderService;
@@ -31,38 +32,41 @@ use PhpTwinfield\Services\FinderService;
 class TwinfieldCustomerHelper
 {
     private $connection;
-    private $office;
     private $administration;
+    private $office;
+    private $redirectUri;
     private $customerApiConnector;
 
     /**
      * TwinfieldCustomerHelper constructor.
      *
-     * @param Administration $administration, WebservicesAuthentication $webservicesAuthentication
+     * @param Administration $administration, $twinFieldConnection
      */
-    public function __construct(Administration $administration, $webservicesAuthentication)
+    public function __construct(Administration $administration, $twinFieldConnection)
     {
-//        $this->administration = $administration;
-//        $this->office = Office::fromCode($administration->twinfield_office_code);
+        $this->administration = $administration;
+        $this->office = Office::fromCode($administration->twinfield_office_code);
+        $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
 
         //Indien we al een connection hebben gemaakt (bijv. vanuit TwinfieldSalsTransaction), dan gebruiken we die, anders nieuwe maken.
-        if($webservicesAuthentication)
+        if($twinFieldConnection)
         {
-            $this->connection = $webservicesAuthentication;
+            $this->connection = $twinFieldConnection;
         }else{
-//            if ($typeConnection === "openid") {
-//                $provider = new OAuthProvider([
-//                    'clientId' => $administration->twinfield_client_id,
-//                    'clientSecret' => $administration->twinfield_client_secret,
-//                    'redirectUri' => 'https://localhost:8080/'
-//                ]);
-//                $accessToken = $provider->getAccessToken("authorization_code", ["code" => $administration->twinfield_organization_code]);
-//                $refreshToken = $accessToken->getRefreshToken();
-//                $this->connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $refreshToken, $this->office);
-//            }else{
+            if ($administration->twinfield_connection_type === "openid") {
+
+                $provider = new OAuthProvider([
+                    'clientId'                => $administration ? $administration->twinfield_client_id : '',    // The client ID assigned to you by the provider
+                    'clientSecret'            => $administration ? $administration->twinfield_client_secret : '',   // The client password assigned to you by the provider
+                    'redirectUri'             => $this->redirectUri,
+                ]);
+                $this->connection = new OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $this->office);
+
+            }else{
                 $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
-//            }
+            }
         }
+
         $this->customerApiConnector = new CustomerApiConnector($this->connection);
     }
 

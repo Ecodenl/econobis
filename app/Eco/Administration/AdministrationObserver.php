@@ -28,10 +28,16 @@ class AdministrationObserver
             $invoice->save();
         }
 
+        //TODO moet dit? Niet in eerste versie met Twinfield aanpassingen. We bekijken dit opnieuw in volgende sprint met Twinfield aanpassingen
         //Als er iets in de twinfield instelling veranderd is moeten we dit opnieuw synchroniseren
-        if(($administration->isDirty('twinfield_username') || $administration->isDirty('twinfield_organization_code') || $administration->isDirty('twinfield_office_code')) && $administration->twinfield_is_valid){
-
-            //TODO moet dit? Niet in eerste versie met Twinfield aanpassingen. We bekijken dit opnieuw in volgende sprint met Twinfield aanpassingen
+//        if(
+//            ($administration->isDirty('twinfield_connection_type')
+//                || $administration->isDirty('twinfield_username')
+//                || $administration->isDirty('twinfield_client_id')
+//                || $administration->isDirty('twinfield_organization_code')
+//                || $administration->isDirty('twinfield_office_code') )
+//            && $administration->twinfield_is_valid)
+//        {
 //            foreach ($administration->twinfieldNumbers as $twinfieldNumber) {
 //                $twinfieldNumber->delete();
 //            }
@@ -50,6 +56,6 @@ class AdministrationObserver
 //            //alle contacten als klanten in Twinfield zetten
 //            $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
 //            $twinfieldCustomerHelper->createAllCustomers();
-        }
+//        }
     }
 }

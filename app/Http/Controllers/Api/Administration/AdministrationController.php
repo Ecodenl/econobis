@@ -218,7 +218,13 @@ class AdministrationController extends ApiController
 
         if($administration->uses_twinfield) {
             $twinfieldHelper = new TwinfieldHelper($administration);
-            $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
+            try {
+                $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
+            }
+            catch(\Exception $e){
+                Log::error($e->getMessage());
+                $administration->twinfield_is_valid = 0;
+            }
         }else{
             $administration->twinfield_is_valid = 0;
         }

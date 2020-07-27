@@ -19,6 +19,7 @@ import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
+import { Link } from 'react-router';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -56,6 +57,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             mailboxId,
             usesTwinfield,
             twinfieldConnectionType,
+            twinfieldHasRefreshToken,
+            twinfieldRedirectUri,
             twinfieldUsername,
             twinfieldPassword,
             twinfieldPasswordChange,
@@ -103,6 +106,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 mailboxId: mailboxId ? mailboxId : '',
                 usesTwinfield: usesTwinfield,
                 twinfieldConnectionType: twinfieldConnectionType ? twinfieldConnectionType : '',
+                twinfieldHasRefreshToken: twinfieldHasRefreshToken ? twinfieldHasRefreshToken : '',
+                twinfieldRedirectUri: twinfieldRedirectUri ? twinfieldRedirectUri : '',
                 twinfieldUsername: twinfieldUsername ? twinfieldUsername : '',
                 twinfieldPassword: twinfieldPassword ? twinfieldPassword : '',
                 twinfieldPasswordChange: twinfieldPasswordChange ? twinfieldPasswordChange : false,
@@ -450,6 +455,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             mailboxId,
             usesTwinfield,
             twinfieldConnectionType,
+            twinfieldHasRefreshToken,
+            twinfieldRedirectUri,
             twinfieldUsername,
             twinfieldPassword,
             twinfieldPasswordChange,
@@ -854,6 +861,36 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         error={this.state.errors.dateSyncTwinfieldPayments}
                                     />
                                 </div>
+                                {twinfieldConnectionType === 'openid' && (
+                                    <div className="row">
+                                        <ViewText
+                                            className={'col-sm-6 form-group'}
+                                            label="Heeft refresh token?"
+                                            name={'twinfieldHasRefreshToken'}
+                                            value={twinfieldHasRefreshToken}
+                                        />
+                                        <ViewText
+                                            className={'col-sm-6 form-group'}
+                                            label="Haal nieuwe refresh token op"
+                                            name={'twinfieldRedirectUri'}
+                                            value={
+                                                <span>
+                                                    <a
+                                                        href={
+                                                            twinfieldRedirectUri +
+                                                            '?administrationId=' +
+                                                            this.state.administration.id
+                                                        }
+                                                        target={'_blank'}
+                                                        className={'link-underline'}
+                                                    >
+                                                        {twinfieldRedirectUri}
+                                                    </a>{' '}
+                                                </span>
+                                            }
+                                        />
+                                    </div>
+                                )}
                             </React.Fragment>
                         )}
 

@@ -33,6 +33,8 @@ const AdministrationDetailsFormGeneralView = props => {
         mailboxEmail,
         usesTwinfield,
         twinfieldConnectionTypeWithIdAndName,
+        twinfieldHasRefreshToken,
+        twinfieldRedirectUri,
         twinfieldUsername,
         twinfieldClientId,
         twinfieldClientSecret,
@@ -200,6 +202,12 @@ const AdministrationDetailsFormGeneralView = props => {
                                 }
                                 value={dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''}
                             />
+                        </div>
+                    )}
+                    {usesTwinfield == true && (
+                        <div className="row">
+                            <ViewText label={'Heeft refresh token?'} value={twinfieldHasRefreshToken} />
+                            <ViewText label={'Twinfield RedirectUri'} value={twinfieldRedirectUri} />
                         </div>
                     )}
                 </PanelBody>

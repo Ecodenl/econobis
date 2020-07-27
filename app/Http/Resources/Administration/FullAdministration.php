@@ -104,6 +104,8 @@ class FullAdministration extends Resource
                 'usesTwinfield' => $this->uses_twinfield,
                 'twinfieldConnectionType' => $this->twinfield_connection_type,
                 'twinfieldConnectionTypeWithIdAndName' => FullEnumWithIdAndName::make($this->getTwinfieldConnectionTypeWithIdAndName()),
+                'twinfieldHasRefreshToken' => (!empty($this->twinfield_refresh_token) ? 'Ja' : 'Nee'),
+                'twinfieldRedirectUri' => $this->uses_twinfield ? (\Config::get('app.url_api') . '/twinfield') : '',
                 'twinfieldUsername' => $this->twinfield_username,
                 'twinfieldPassword' => '',
                 'twinfieldClientId' => $this->twinfield_client_id,

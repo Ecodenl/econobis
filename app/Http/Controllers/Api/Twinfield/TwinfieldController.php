@@ -10,14 +10,19 @@ class TwinfieldController extends Controller
 {
     public function twinfield(Request $request)
     {
-        //        $redirectUri = \Config::get('app.url_api') . '/api/twinfield';
+        $administrationId = $request->input('administrationId');
         $redirectUri = \Config::get('app.url_api') . '/twinfield';
-        // todo voor test gebruiken we even administratie met client Id API00392
-        $administration = Administration::where('twinfield_client_id', 'API000392')->first();
-        return view('twinfield', [
-            'redirectUri' => $redirectUri,
-            'administration' => $administration,
-        ]);
+        if(!empty($administrationId)) {
+            $administration = Administration::find($administrationId);
+        }
+        if(!empty($administration) && $administration->uses_twinfield) {
+            return view('twinfield', [
+                'redirectUri' => $redirectUri,
+                'administration' => $administration,
+            ]);
+        } else {
+            return "Geen geldige administratie gevonden: " . $administrationId;
+        }
     }
 
 }

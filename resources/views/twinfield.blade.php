@@ -27,6 +27,9 @@ if (!isset($_GET['code'])) {
 // Check given state against previously stored one to mitigate CSRF attack
 } elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
 
+//    echo 'state: ' . (isset($_GET['state']) ? $_GET['state'] : '[leeg]') . "<br>";
+//    echo 'session oauth2state: ' . (isset($_SESSION['oauth2state']) ? $_SESSION['oauth2state'] : '[leeg]') . "<br>";
+
     if (isset($_SESSION['oauth2state'])) {
         unset($_SESSION['oauth2state']);
     }
@@ -35,8 +38,12 @@ if (!isset($_GET['code'])) {
 
 } else {
 
+//    echo 'state: ' . $_GET['state'] . "<br>";
+//    echo 'session oauth2state: ' . $_SESSION['oauth2state'] . "<br>";
     try {
 
+        echo 'code: ' . $_GET['code'] . "<br>";
+//        echo 'authorization_code: ' . $_POST["authorization_code"] . "<br>";
         // Try to get an access token using the authorization code grant.
         $accessToken = $provider->getAccessToken('authorization_code', [
             'code' => $_GET['code']
@@ -50,6 +57,7 @@ if (!isset($_GET['code'])) {
 //        echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
 
         $refreshToken = $accessToken->getRefreshToken();
+//        echo 'refreshToken: ' . $refreshToken . "<br>";
 
 
     } catch (\Exception $e) {

@@ -1,7 +1,17 @@
 <?php
 
+use App\Eco\Administration\Administration;
+
 session_start();
 
+if($administration && !isset($_SESSION['twinfieldAdministrationId'])){
+    $_SESSION['twinfieldAdministrationId'] = $administration->id;
+}
+if(!$administration && isset($_SESSION['twinfieldAdministrationId'])){
+    $administration = Administration::find($_SESSION['twinfieldAdministrationId']);
+}
+
+//echo 'twinfieldAdministrationId: ' . (isset($_SESSION['twinfieldAdministrationId']) ? $_SESSION['twinfieldAdministrationId'] : 'geen') . "<br>";
 //echo 'clientId: ' . $administration->twinfield_client_id . "<br>";
 //echo 'clientSecret: ' . $administration->twinfield_client_secret . "<br>";
 //echo 'redirectUri: ' . $redirectUri . "<br>";
@@ -86,23 +96,23 @@ if (empty($administration->twinfield_refresh_token)) {
     }
 }
 
-try {
-    $connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $office);
-    echo 'OpenIdConnection!' . "<br>";
-} catch (\Exception $e) {
+//try {
+//    $connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $office);
+//    echo 'OpenIdConnection!' . "<br>";
+//} catch (\Exception $e) {
+//
+//    echo 'Fout OpenIdConnection!' . "<br>";
+//    exit($e->getMessage());
+//
+//}
 
-    echo 'Fout OpenIdConnection!' . "<br>";
-    exit($e->getMessage());
-
-}
-
-try {
-    $officeApiConnector = new \PhpTwinfield\ApiConnectors\OfficeApiConnector($connection);
-    $listAllWithoutOfficeCode = $officeApiConnector->listAllWithoutOfficeCode();
-    print_r($listAllWithoutOfficeCode);
-
-} catch (\Exception $e) {
-    echo 'Fout officeApiConnector->listAllWithoutOfficeCode!' . "<br>";
-    exit($e->getMessage());
-}
+//try {
+//    $officeApiConnector = new \PhpTwinfield\ApiConnectors\OfficeApiConnector($connection);
+//    $listAllWithoutOfficeCode = $officeApiConnector->listAllWithoutOfficeCode();
+//    print_r($listAllWithoutOfficeCode);
+//
+//} catch (\Exception $e) {
+//    echo 'Fout officeApiConnector->listAllWithoutOfficeCode!' . "<br>";
+//    exit($e->getMessage());
+//}
 

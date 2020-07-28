@@ -874,19 +874,23 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                             label="Haal nieuwe refresh token op"
                                             name={'twinfieldRedirectUri'}
                                             value={
-                                                <span>
-                                                    <a
-                                                        href={
-                                                            twinfieldRedirectUri +
-                                                            '?administrationId=' +
-                                                            this.state.administration.id
-                                                        }
-                                                        target={'_blank'}
-                                                        className={'link-underline'}
-                                                    >
-                                                        {twinfieldRedirectUri}
-                                                    </a>{' '}
-                                                </span>
+                                                twinfieldHasRefreshToken === 'Nee' ? (
+                                                    <span>
+                                                        <a
+                                                            href={
+                                                                twinfieldRedirectUri +
+                                                                '?administrationId=' +
+                                                                this.state.administration.id
+                                                            }
+                                                            target={'_blank'}
+                                                            className={'link-underline'}
+                                                        >
+                                                            {twinfieldRedirectUri}
+                                                        </a>{' '}
+                                                    </span>
+                                                ) : (
+                                                    twinfieldRedirectUri
+                                                )
                                             }
                                         />
                                     </div>

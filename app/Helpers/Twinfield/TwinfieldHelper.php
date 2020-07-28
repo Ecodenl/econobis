@@ -21,6 +21,7 @@ use PhpTwinfield\Secure\WebservicesAuthentication;
 class TwinfieldHelper
 {
     private $connection;
+    private $administration;
     private $office;
     private $redirectUri;
 
@@ -31,6 +32,7 @@ class TwinfieldHelper
      */
     public function __construct(Administration $administration)
     {
+        $this->administration = $administration;
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
 
@@ -41,7 +43,11 @@ class TwinfieldHelper
                 'clientSecret'            => $administration ? $administration->twinfield_client_secret : '',   // The client password assigned to you by the provider
                 'redirectUri'             => $this->redirectUri,
             ]);
-            $this->connection = new OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $this->office);
+            if(!empty($administration->twinfield_refresh_token)){
+                $this->connection = new OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $this->office);
+            }else{
+                $this->connection = null;
+            }
 
         }else{
             $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);
@@ -54,6 +60,10 @@ class TwinfieldHelper
      */
     public function testConnection()
     {
+        if(empty($this->administration->twinfield_refresh_token)){
+            return false;
+        }
+
         $officeApiConnector = new OfficeApiConnector($this->connection);
 
         $result = true;

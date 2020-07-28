@@ -234,13 +234,16 @@ class EmailController
     {
         set_time_limit(0);
         $sanitizedData = $this->getEmailData($request);
+        $email->to = $sanitizedData['to'];
+        $email->cc = $sanitizedData['cc'];
+        $email->bcc = $sanitizedData['bcc'];
+        $email->contact_group_id = $sanitizedData['contact_group_id'];
 
         //add basic html tags for new emails
         $email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $email->subject . '</title></head>'
             . $email->html_body . '</html>';
-        $email->save();
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -392,7 +395,7 @@ class EmailController
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
-        $email->sent_by_user_id = Auth::id();
+        $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->save();
 
         return $email;
@@ -400,6 +403,7 @@ class EmailController
 
     public function sendConcept(Email $email, Request $request){
         set_time_limit(0);
+        $email->sent_by_user_id = Auth::id();
         $email = $this->updateConcept2($email, $request);
 
         //Create relations with contact if needed

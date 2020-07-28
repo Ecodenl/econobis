@@ -48,7 +48,11 @@ class TwinfieldInvoiceHelper
                 'clientSecret'            => $administration ? $administration->twinfield_client_secret : '',   // The client password assigned to you by the provider
                 'redirectUri'             => $this->redirectUri,
             ]);
-            $this->connection = new OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $this->office);
+            if(!empty($administration->twinfield_refresh_token)){
+                $this->connection = new OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $this->office);
+            }else{
+                $this->connection = null;
+            }
 
         }else{
             $this->connection = new WebservicesAuthentication($administration->twinfield_username, $administration->twinfield_password, $administration->twinfield_organization_code);

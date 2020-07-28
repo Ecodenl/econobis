@@ -275,6 +275,15 @@ class EmailAnswerApp extends Component {
                 email.bcc = email.bcc.split(',');
             }
 
+            const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
+            if (editor !== undefined) {
+                // console.log('hallo a');
+                // console.log(email.htmlBody);
+                email.htmlBody = editor.getContent({ format: 'raw' });
+            }
+            // console.log('hallo b');
+            // console.log(email.htmlBody);
+
             const data = new FormData();
 
             data.append('to', JSON.stringify(email.to));

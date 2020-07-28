@@ -230,20 +230,20 @@ class EmailController
         return FullEmail::make($email);
     }
 
-    public function send(Mailbox $mailbox, Request $request)
+    public function send(Mailbox $mailbox, Email $email, Request $request)
     {
         set_time_limit(0);
         $sanitizedData = $this->getEmailData($request);
+        $email->to = $sanitizedData['to'];
+        $email->cc = $sanitizedData['cc'];
+        $email->bcc = $sanitizedData['bcc'];
+        $email->contact_group_id = $sanitizedData['contact_group_id'];
 
         //add basic html tags for new emails
-        $sanitizedData['html_body']
+        $email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $sanitizedData['subject'] . '</title></head>'
-            . $sanitizedData['html_body'] . '</html>';
-
-        //Save as concept, if sending fails we still have the concept
-        $email = (new StoreConceptEmail($mailbox,
-            $sanitizedData))->handle();
+            . $email->subject . '</title></head>'
+            . $email->html_body . '</html>';
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -271,8 +271,8 @@ class EmailController
         }
 
         //if we send to group we save in a pivot because they can have alot of members
-        if ($sanitizedData['contact_group_id']) {
-            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+        if ($email->contact_group_id) {
+            $contactGroup = ContactGroup::find($email->contact_group_id);
             $contactIds = [];
             foreach ($contactGroup->all_contacts as $contact) {
                 if ($contact->primaryEmailAddress) {
@@ -290,11 +290,21 @@ class EmailController
         SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
     }
 
-    public function storeConcept(Mailbox $mailbox, Request $request)
+    public function storeConcept(Mailbox $mailbox, RequestInput $requestInput)
     {
-        $sanitizedData = $this->getEmailData($request);
+        $data = $requestInput
+            ->string('subject')->onEmpty(null)->next()
+            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->get();
 
-        $email = (new StoreConceptEmail($mailbox, $sanitizedData))->handle();
+        $email = (new StoreConceptEmail($mailbox, $data))->handle();
+
+        return $email->id;
+    }
+
+    public function storeConcept2(Mailbox $mailbox, Email $email, Request $request)
+    {
+        $this->updateConcept2($email, $request);
 
         $this->checkStorageDir($mailbox->id);
 
@@ -364,24 +374,37 @@ class EmailController
         $emailAttachment->delete();
     }
 
-    public function updateConcept(Email $email, Request $request){
+    public function updateConcept(Email $email, RequestInput $requestInput){
+
+        $data = $requestInput
+            ->string('subject')->onEmpty(null)->next()
+            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->get();
+
+        $email->fill($data);
+
+        $email->save();
+
+        return $email->id;
+    }
+
+    public function updateConcept2(Email $email, Request $request){
 
         $sanitizedData = $this->getEmailData($request);
 
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
-        $email->subject = $sanitizedData['subject'];
-        $email->html_body = $sanitizedData['html_body'];
-        $email->sent_by_user_id = Auth::id();
+        $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->save();
-        
+
         return $email;
     }
 
     public function sendConcept(Email $email, Request $request){
         set_time_limit(0);
-        $email = $this->updateConcept($email, $request);
+        $email->sent_by_user_id = Auth::id();
+        $email = $this->updateConcept2($email, $request);
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -435,8 +458,6 @@ class EmailController
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
-            'subject' => '',
-            'htmlBody' => '',
             'quotationRequestId' => '',
             'intakeId' => '',
         ]);
@@ -495,20 +516,10 @@ class EmailController
             $data['intakeId'] = null;
         }
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
-        $subject = $data['subject'];
-        if($subject){
-            $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
-            $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
-
-        }
         $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => $subject ?: 'Econobis',
-            'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
             'contact_group_id' => $groupId ? $groupId : null

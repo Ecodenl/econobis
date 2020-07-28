@@ -291,6 +291,21 @@ class EmailNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
+        function handleNewConcept2(data, mailboxId, emailId) {
+            EmailAPI.newConcept2(data, mailboxId, emailId)
+                .then(() => {
+                    hashHistory.push(`/emails/concept`);
+                })
+                .catch(function(error) {});
+        }
+        function handleNewEmail(data, mailboxId, emailId) {
+            EmailAPI.newEmail(data, mailboxId, emailId)
+                .then(() => {
+                    browserHistory.goBack();
+                })
+                .catch(function(error) {});
+        }
+
         // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
@@ -305,12 +320,13 @@ class EmailNewApp extends Component {
                 email.bcc = email.bcc.split(',');
             }
             const data = new FormData();
+            //
 
             data.append('to', JSON.stringify(email.to));
             data.append('cc', JSON.stringify(email.cc));
             data.append('bcc', JSON.stringify(email.bcc));
-            data.append('subject', email.subject);
-            data.append('htmlBody', email.htmlBody);
+            // data.append('subject', email.subject);
+            // data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
             data.append('intakeId', email.intakeId);
             email.attachments.map((file, key) => {
@@ -318,17 +334,17 @@ class EmailNewApp extends Component {
             });
 
             if (concept) {
-                EmailAPI.newConcept(data, email.from)
-                    .then(() => {
-                        hashHistory.push(`/emails/concept`);
+                EmailAPI.newConcept(email, email.from)
+                    .then(emailId => {
+                        handleNewConcept2(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});
             } else {
                 this.setButtonLoading();
 
-                EmailAPI.newEmail(data, email.from)
-                    .then(() => {
-                        browserHistory.goBack();
+                EmailAPI.newConcept(email, email.from)
+                    .then(emailId => {
+                        handleNewEmail(data, email.from, emailId.data);
                     })
                     .catch(function(error) {});
             }

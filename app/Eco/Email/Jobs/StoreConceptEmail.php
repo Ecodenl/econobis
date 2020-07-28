@@ -11,7 +11,7 @@ namespace App\Eco\Email\Jobs;
 
 use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
-use Illuminate\Support\Facades\Validator;
+use App\Helpers\Settings\PortalSettings;
 
 class StoreConceptEmail
 {
@@ -30,6 +30,15 @@ class StoreConceptEmail
     public function handle()
     {
         $email = new Email($this->data);
+
+        $portalName = PortalSettings::get('portalName');
+        $cooperativeName = PortalSettings::get('cooperativeName');
+        $subject = $email->subject;
+        if($subject){
+            $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
+            $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
+        }
+        $email->subject = $subject ?: 'Econobis';
 
         $email->mailbox_id = $this->mailbox->id;
         $email->from = $this->mailbox->email;

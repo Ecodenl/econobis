@@ -8,6 +8,7 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -111,6 +112,8 @@ class SendEmailsWithVariables implements ShouldQueue
         $ccBccSent = !$this->firstCall;
 
         $amounfOfEmailsSend = 0;
+        $mergedSubject = $email->subject;
+        $saveSubject = $email->subject;
         $mergedHtmlBody = $email->html_body;
         $saveHtmlBody = $email->html_body;
 
@@ -120,6 +123,15 @@ class SendEmailsWithVariables implements ShouldQueue
 
             ($this->ccs != []) ? $mail->cc($this->ccs) : null;
             ($this->bccs != []) ? $mail->bcc($this->bccs) : null;
+            if(!empty($email->subject) )
+            {
+                $subjectWithVariables = $email->subject;
+                $subjectWithVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithVariables, 'ik', Auth::user());
+
+            }else{
+                $subjectWithVariables = 'Econobis';
+            }
+
             $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($email->html_body, 'ik', Auth::user());
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
 
@@ -128,6 +140,7 @@ class SendEmailsWithVariables implements ShouldQueue
                 $amounfOfEmailsSend++;
 
                 if ($amounfOfEmailsSend === 1) {
+                    $mergedSubject = $subjectWithVariables;
                     $mergedHtmlBody = $htmlBodyWithVariables;
                 }
 
@@ -158,6 +171,20 @@ class SendEmailsWithVariables implements ShouldQueue
                     $this->ccs = [];
                     $this->bccs = [];
                 }
+                if(!empty($email->subject) )
+                {
+                    $subjectWithContactVariables = $email->subject;
+                    $subjectWithContactVariables = str_replace('{contactpersoon}', $emailAddress->contact->full_name, $subjectWithContactVariables);
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'contact', $emailAddress->contact);
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'ik', Auth::user());
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'portal' );
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'contacten_portal' );
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables,'cooperatie' );
+
+                }else{
+                    $subjectWithContactVariables = 'Econobis';
+                }
+
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
@@ -187,6 +214,7 @@ class SendEmailsWithVariables implements ShouldQueue
                     $amounfOfEmailsSend++;
 
                     if ($amounfOfEmailsSend === 1) {
+                        $mergedSubject = $subjectWithContactVariables;
                         $mergedHtmlBody = $htmlBodyWithContactVariables;
                     }
                 } catch (\Exception $e) {
@@ -219,6 +247,19 @@ class SendEmailsWithVariables implements ShouldQueue
                     $this->ccs = [];
                     $this->bccs = [];
                 }
+                if(!empty($email->subject) )
+                {
+                    $subjectWithContactVariables = $email->subject;
+                    $subjectWithContactVariables = str_replace('{contactpersoon}', $emailAddress->contact->full_name, $subjectWithContactVariables);
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'contact', $emailAddress->contact);
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'ik', Auth::user());
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'portal' );
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'contacten_portal' );
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables,'cooperatie' );
+
+                }else{
+                    $subjectWithContactVariables = 'Econobis';
+                }
 
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $emailAddress->contact);
@@ -232,6 +273,7 @@ class SendEmailsWithVariables implements ShouldQueue
                     $amounfOfEmailsSend++;
 
                     //  Bij groups email slaan we htmlbody met niet gevulde mergevelden op.
+                    $mergedSubject = $saveSubject;
                     $mergedHtmlBody = $saveHtmlBody;
 
                 } catch (\Exception $e) {
@@ -260,6 +302,7 @@ class SendEmailsWithVariables implements ShouldQueue
 //        }
 
         if ($didFinishEmail) {
+            $email->subject = $mergedSubject;
             $email->html_body = $mergedHtmlBody;
             $email->date_sent = new Carbon();
             $email->folder = 'sent';

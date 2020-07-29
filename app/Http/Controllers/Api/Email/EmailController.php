@@ -312,6 +312,18 @@ class EmailController
             ? $request->file('attachments') : [];
 
         $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
+
+        //old attachments(forward,reply etc.)
+        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
+
+        //Gaat dit goed bij deleten attachment van oude mail?
+        foreach ($oldAttachments as $oldAttachment){
+            $oldAttachment = json_decode($oldAttachment);
+            $oldAttachment = EmailAttachment::find($oldAttachment->id);
+            $replicatedAttachment = $oldAttachment->replicate();
+            $replicatedAttachment->email_id = $email->id;
+            $replicatedAttachment->save();
+        }
     }
 
     public function peek(){
@@ -392,6 +404,8 @@ class EmailController
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
+        $email->quotation_request_id = $sanitizedData['quotation_request_id'];
+        $email->intake_id = $sanitizedData['intake_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->save();
     }

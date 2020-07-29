@@ -338,7 +338,9 @@ class EmailNewApp extends Component {
                     .then(emailId => {
                         handleNewConcept2(data, email.from, emailId.data);
                     })
-                    .catch(function(error) {});
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             } else {
                 this.setButtonLoading();
 
@@ -346,7 +348,9 @@ class EmailNewApp extends Component {
                     .then(emailId => {
                         handleNewEmail(data, email.from, emailId.data);
                     })
-                    .catch(function(error) {});
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             }
         }
     }

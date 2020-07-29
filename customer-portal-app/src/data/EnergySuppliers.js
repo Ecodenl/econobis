@@ -45,4 +45,7 @@ export default [
     { id: 44, name: 'Hezelaer' },
     { id: 45, name: 'Easyenergy' },
     { id: 46, name: 'Dorpstroom' },
+    { id: 47, name: 'Welkom Energie' },
+    { id: 48, name: 'Qwint' },
+    { id: 49, name: 'Energie Zero' },
 ];

@@ -107,7 +107,7 @@ class EnergySupplierExcelHelper
 
             foreach ($chunk as $distribution) {
 
-                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
@@ -212,7 +212,7 @@ class EnergySupplierExcelHelper
 
             foreach ($chunk as $distribution) {
 
-                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
                     ++$this->counter;
                     $rowData[] = $this->counter;
@@ -287,7 +287,7 @@ class EnergySupplierExcelHelper
 
             foreach ($chunk as $distribution) {
 
-                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
                     $rowData[] = $this->projectRevenue->project->ean;
                     $rowData[] = $this->projectRevenue->project->ean_manager;
@@ -369,7 +369,7 @@ class EnergySupplierExcelHelper
 
             foreach ($chunk as $distribution) {
 
-                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
                     $rowData[] = $distribution->contact->number;
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
@@ -461,7 +461,7 @@ class EnergySupplierExcelHelper
 
             foreach ($chunk as $distribution) {
 
-                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
                     $rowData[] = $distribution->contact->number;
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->title ? $distribution->contact->person->title->name
@@ -570,7 +570,7 @@ class EnergySupplierExcelHelper
 
             foreach ($chunk as $distribution) {
 
-                foreach ($distribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
+                foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';

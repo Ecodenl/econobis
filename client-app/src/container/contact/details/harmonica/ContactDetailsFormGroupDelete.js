@@ -7,7 +7,6 @@ const ContactDetailsContactFromGroupDelete = props => {
         props.deleteContactFromGroup(props.group.pivot.contact_group_id, props.group.pivot.contact_id);
         props.closeDeleteItemModal();
     };
-
     return (
         <Modal
             buttonConfirmText="Verwijder"
@@ -17,7 +16,8 @@ const ContactDetailsContactFromGroupDelete = props => {
             title="Verwijderen"
         >
             <p className="modal-text">
-                Verwijder contact uit de groep <strong> {props.group.name} </strong>
+                Verwijder contact <strong> {props.contactFullName} </strong> uit groep{' '}
+                <strong> {props.group.name} </strong>
             </p>
         </Modal>
     );

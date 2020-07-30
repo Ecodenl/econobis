@@ -17,7 +17,7 @@ const ContactDetailsContactFromGroupDelete = props => {
             title="Verwijderen"
         >
             <p className="modal-text">
-                Verwijder groep: <strong> {props.group.name} </strong>
+                Verwijder contact uit de groep <strong> {props.group.name} </strong>
             </p>
         </Modal>
     );

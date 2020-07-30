@@ -10,6 +10,7 @@ namespace App\Helpers\Twinfield;
 
 
 use App\Eco\Administration\Administration;
+use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use Illuminate\Support\Facades\Log;
 use PhpTwinfield\ApiConnectors\OfficeApiConnector;
 use PhpTwinfield\Exception;
@@ -60,7 +61,7 @@ class TwinfieldHelper
      */
     public function testConnection()
     {
-        if(empty($this->administration->twinfield_refresh_token)){
+        if($this->administration->twinfield_connection_type === TwinfieldConnectionTypeWithIdAndName::OPENID && empty($this->administration->twinfield_refresh_token)){
             return false;
         }
 
@@ -72,6 +73,7 @@ class TwinfieldHelper
            $officeApiConnector->listAllWithoutOfficeCode();
         }
         catch(Exception $e){
+            Log::error("test b");
             Log::error($e->getMessage());
             $result = false;
         }

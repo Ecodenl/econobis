@@ -39,6 +39,8 @@ class EmailFormEdit extends Component {
             order,
             invoice,
             status,
+            removedBy,
+            dateRemoved,
         } = props.email;
         let responsible = '';
         if (responsibleUserId) {
@@ -199,10 +201,28 @@ class EmailFormEdit extends Component {
             folder,
             status,
             sentByUser,
+            removedBy,
+            dateRemoved,
         } = this.props.email;
 
         return (
             <div>
+                {folder === 'removed' ? (
+                    <React.Fragment>
+                        <div className="row">
+                            <ViewText
+                                label={'Verwijderd door'}
+                                value={removedBy ? removedBy.fullName : 'Onbekend'}
+                                link={removedBy ? 'gebruiker/' + removedBy.id : ''}
+                            />
+                            <ViewText
+                                label={'Datum verwijderd'}
+                                value={dateRemoved ? moment(dateRemoved).format('DD-MM-YYYY HH:mm') : ''}
+                            />
+                        </div>
+                        <hr />
+                    </React.Fragment>
+                ) : null}
                 <div className="row">
                     <ViewText label={'Van'} value={from} />
                     <ViewText

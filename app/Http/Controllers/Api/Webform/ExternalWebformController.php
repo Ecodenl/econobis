@@ -370,7 +370,25 @@ class ExternalWebformController extends Controller
             // contactActie = "NC"  -> Nieuw contact
             // contactActie = "NCT" -> Nieuw contact + taak
             $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
-            $contact = $this->addContact($data);
+
+            $ownerUserId = null;
+            if($responsibleIds['responsible_user_id']) {
+                $ownerUserId = $responsibleIds['responsible_user_id'];
+                $this->log('Eigenaar contact : ' . $ownerUserId);
+            }elseif($responsibleIds['responsible_team_id']) {
+                $ownerUserId = Team::find($responsibleIds['responsible_team_id'])->users->first()->id;
+                $this->log('Eigenaar contact ' . $ownerUserId . ' (1e van team : '
+                    . $responsibleIds['responsible_team_id'] . ')');
+            }elseif(!empty($webform->responsible_user_id)) {
+                $ownerUserId = $webform->responsible_user_id;
+                $this->log('Eigenaar contact (default webformulier) : ' . $ownerUserId);
+            }elseif(!empty($webform->responsible_team_id)) {
+                $ownerUserId = Team::find($webform->responsible_team_id)->users->first()->id;
+                $this->log('Eigenaar contact (default webformulier) ' . $ownerUserId . ' (1e van team : '
+                    . $webform->responsible_team_id . ')');
+            }
+
+            $contact = $this->addContact($data, $ownerUserId);
             switch($this->contactActie){
                 case 'NCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
@@ -802,7 +820,7 @@ class ExternalWebformController extends Controller
         $this->logs[] = $text;
     }
 
-    protected function addContact(array $data)
+    protected function addContact(array $data, $ownerUserId)
     {
         // Functie voor afvangen ongeldige waarden in title_id
         $titleValidator = function ($titleId) {
@@ -830,6 +848,7 @@ class ExternalWebformController extends Controller
                 'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
                 'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
                 'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
+                'owner_id' => $ownerUserId,
             ]);
 
             $organisation = Organisation::create([
@@ -853,6 +872,7 @@ class ExternalWebformController extends Controller
                 $contactPerson = Contact::create([
                     'type_id' => 'person',
                     'status_id' => 'webform',
+                    'owner_id' => $ownerUserId,
                 ]);
 
                 $person = Person::create([
@@ -897,6 +917,7 @@ class ExternalWebformController extends Controller
             'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
             'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
             'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
+            'owner_id' => $ownerUserId,
         ]);
 
         $lastName = $data['last_name'];

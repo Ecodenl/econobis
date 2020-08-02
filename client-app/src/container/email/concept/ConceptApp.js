@@ -73,6 +73,8 @@ class ConceptApp extends Component {
                     hasLoaded: true,
                 },
                 () => {
+                    // todo omzetten van to id`s naar emailadressen voor options
+                    // console.log("To: " + payload.to);
                     if (payload.contactGroupId) {
                         EmailAPI.fetchEmailGroup(payload.contactGroupId).then(name => {
                             let emailAddresses = this.state.emailAddresses;

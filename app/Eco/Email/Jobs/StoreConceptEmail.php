@@ -34,11 +34,11 @@ class StoreConceptEmail
         $portalName = PortalSettings::get('portalName');
         $cooperativeName = PortalSettings::get('cooperativeName');
         $subject = $email->subject;
-        if($subject){
+        if(!empty($subject)){
             $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
             $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
         }
-        $email->subject = $subject ?: 'Econobis';
+        $email->subject = !empty($subject) ? $subject : 'Econobis';
 
         $email->mailbox_id = $this->mailbox->id;
         $email->from = $this->mailbox->email;

@@ -233,11 +233,10 @@ class EmailController
     public function send(Mailbox $mailbox, Email $email, Request $request)
     {
         set_time_limit(0);
-        $sanitizedData = $this->getEmailData($request);
+        $sanitizedData = $this->getEmailData($request, true);
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
-        $email->contact_group_id = $sanitizedData['contact_group_id'];
 
         //add basic html tags for new emails
         $email->html_body
@@ -313,6 +312,18 @@ class EmailController
             ? $request->file('attachments') : [];
 
         $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
+
+        //old attachments(forward,reply etc.)
+        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
+
+        //Gaat dit goed bij deleten attachment van oude mail?
+        foreach ($oldAttachments as $oldAttachment){
+            $oldAttachment = json_decode($oldAttachment);
+            $oldAttachment = EmailAttachment::find($oldAttachment->id);
+            $replicatedAttachment = $oldAttachment->replicate();
+            $replicatedAttachment->email_id = $email->id;
+            $replicatedAttachment->save();
+        }
     }
 
     public function peek(){
@@ -392,70 +403,24 @@ class EmailController
     }
 
     public function updateConcept2(Email $email, Request $request){
-
-        $sanitizedData = $this->getEmailData($request);
-
+        $sanitizedData = $this->getEmailData($request, false);
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
+        $email->quotation_request_id = $sanitizedData['quotation_request_id'];
+        $email->intake_id = $sanitizedData['intake_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->save();
-
-        return $email;
     }
 
     public function sendConcept(Email $email, Request $request){
-        set_time_limit(0);
-        $email->sent_by_user_id = Auth::id();
-        $email = $this->updateConcept2($email, $request);
+        $mailbox = Mailbox::find($email->mailbox->id);
+        $this->send($mailbox, $email, $request);
 
-        //Create relations with contact if needed
-        $this->createEmailContactRelations($email, $request);
-
-        //Email attachments
-        $this->checkStorageDir($email->mailbox->id);
-
-        //get attachments
-        $attachments = $request->file('attachments')
-            ? $request->file('attachments') : [];
-
-        $this->storeEmailAttachments($attachments, $email->mailbox->id,
-            $email->id);
-
-        //old attachments(forward,reply etc.)
-        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
-
-        //Gaat dit goed bij deleten attachment van oude mail?
-        foreach ($oldAttachments as $oldAttachment){
-            $oldAttachment = json_decode($oldAttachment);
-            $oldAttachment = EmailAttachment::find($oldAttachment->id);
-            $replicatedAttachment = $oldAttachment->replicate();
-            $replicatedAttachment->email_id = $email->id;
-            $replicatedAttachment->save();
-        }
-
-        $sanitizedData = $this->getEmailData($request);
-
-        //if we send to group we save in a pivot because they can have alot of members
-        if ($sanitizedData['contact_group_id']) {
-            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
-            $contactIds = [];
-            foreach ($contactGroup->all_contacts as $contact) {
-                if ($contact->primaryEmailAddress) {
-                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-                    array_push($contactIds, $contact->id);
-                }
-            }
-            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
-            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
-        }
-
-        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
-        
         return FullEmail::make($email);
     }
 
-    public function getEmailData(Request $request, $withGroup = false){
+    public function getEmailData(Request $request, $forSend = false){
         //Get all basic mail info
         $data = $request->validate([
             'to' => 'required',
@@ -492,15 +457,19 @@ class EmailController
 
         foreach ($sendVariations as $sendVariation){
             foreach ($data[$sendVariation] as $emailData) {
-                if (is_numeric($emailData)){
+                if ($forSend && is_numeric($emailData)){
                     $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
+                }
+                if (!$forSend && is_numeric($emailData)){
+                    $emails[$sendVariation][] = $emailData;
                 }
                 else if(substr($emailData, 0, 7 ) === "@group_"){
                     $groupId = str_replace("@group_", "", $emailData);
                 }
                 else if(filter_var($emailData, FILTER_VALIDATE_EMAIL)){
                     $emails[$sendVariation][] = $emailData;
-            }}
+                }
+            }
         }
 
         if(!array_key_exists('quotationRequestId', $data)){

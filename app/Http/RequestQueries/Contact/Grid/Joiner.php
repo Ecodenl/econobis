@@ -19,7 +19,8 @@ class Joiner extends RequestJoiner
     {
         $query->leftJoin('email_addresses', function ($join) {
             $join->on('email_addresses.contact_id', '=', 'contacts.id')
-                ->where('email_addresses.primary', '=', 1);
+                ->where('email_addresses.primary', '=', 1)
+                ->whereNull('email_addresses.deleted_at');
         });
     }
 
@@ -27,7 +28,8 @@ class Joiner extends RequestJoiner
     {
         $query->leftJoin('phone_numbers', function ($join) {
             $join->on('phone_numbers.contact_id', '=', 'contacts.id')
-                ->where('phone_numbers.primary', '=', 1);
+                ->where('phone_numbers.primary', '=', 1)
+                ->whereNull('phone_numbers.deleted_at');
         });
     }
 
@@ -35,15 +37,15 @@ class Joiner extends RequestJoiner
     {
         $query->leftJoin('addresses', function ($join) {
             $join->on('addresses.contact_id', '=', 'contacts.id')
-                ->where('addresses.primary', '=', 1);
+                ->where('addresses.primary', '=', 1)
+                ->whereNull('addresses.deleted_at');
         });
     }
 
     protected function applyParticipationsJoin($query)
     {
         $query->leftJoin('participation_project', function ($join) {
-            $join->on('participation_project.contact_id', '=',
-                'contacts.id');
+            $join->on('participation_project.contact_id', '=', 'contacts.id');
         });
     }
 

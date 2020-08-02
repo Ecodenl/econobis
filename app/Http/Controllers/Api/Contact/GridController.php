@@ -91,10 +91,17 @@ class GridController extends Controller
                 return 'App\Eco\Contact\ContactStatus';
                 break;
             case 'occupation':
+            case 'occupationPrimary':
                 return 'App\Eco\Occupation\Occupation';
                 break;
             case 'opportunity':
                 return 'App\Eco\Measure\MeasureCategory';
+                break;
+            case 'country':
+                return 'App\Eco\Country\Country';
+                break;
+            case 'staticContactGroup':
+                return 'App\Eco\ContactGroup\ContactGroup';
                 break;
             case 'product':
                 return 'App\Eco\Product\Product';

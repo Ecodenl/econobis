@@ -26,7 +26,8 @@ class Joiner extends RequestJoiner
 
     protected function applyAddressesJoin($query)
     {
-        $query->join('addresses', 'participation_project.contact_id', '=', 'addresses.contact_id')->where('primary', true);
+        $query->join('addresses', 'participation_project.contact_id', '=', 'addresses.contact_id')->where('primary', true)
+            ->whereNull('addresses.deleted_at');
     }
 
     protected function applyEnergySuppliersJoin($query)

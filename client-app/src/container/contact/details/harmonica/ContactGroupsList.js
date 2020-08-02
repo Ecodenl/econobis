@@ -88,6 +88,7 @@ class ContactGroupsList extends Component {
                         closeDeleteItemModal={this.closeDeleteItemModal}
                         deleteContactFromGroup={this.deleteContactFromGroup}
                         group={this.state.group}
+                        contactFullName={this.props.contactFullName}
                     />
                 )}
             </div>
@@ -98,6 +99,7 @@ class ContactGroupsList extends Component {
 const mapStateToProps = state => {
     return {
         contactDetailsId: state.contactDetails.id,
+        contactFullName: state.contactDetails.fullName,
     };
 };
 

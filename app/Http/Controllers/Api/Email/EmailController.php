@@ -76,7 +76,7 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice', 'responsibleUser',
+        $email->load('contacts', 'attachments', 'closedBy', 'removedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice', 'responsibleUser',
             'responsibleTeam');
 
         return FullEmail::make($email);
@@ -367,8 +367,11 @@ class EmailController
 
     public function deleteEmailAttachment(EmailAttachment $emailAttachment)
     {
-        //delete real file
-        Storage::disk('mail_attachments')->delete($emailAttachment->filename);
+        //delete real file (only when count on filename is 1, otherwise this attachment is also in use in another email because of a reply or send through)
+        $countAttachment = EmailAttachment::where('filename', $emailAttachment->filename)->count();
+        if($countAttachment == 1){
+            Storage::disk('mail_attachments')->delete($emailAttachment->filename);
+        }
 
         //delete db record
         $emailAttachment->delete();
@@ -623,6 +626,14 @@ class EmailController
 
         if($folder != 'inbox' && $folder != 'sent' && $folder != 'removed'){
             abort(406, 'Map niet toegestaan.');
+        }
+        if($folder == 'removed'){
+            $email->removedBy()->associate(Auth::user());
+            $email->date_removed = new Carbon();
+        }
+        if($folder != 'removed'){
+            $email->removedBy()->dissociate();
+            $email->date_removed = null;
         }
 
         $email->folder = $folder;

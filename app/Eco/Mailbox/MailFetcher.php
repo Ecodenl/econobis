@@ -73,14 +73,18 @@ class MailFetcher
         if(count($mailIds) > 0){
             // we sort ids descending for processing, so when a fetch email failed, new emails still are being fetched.
             rsort($mailIds);
+//            Log::info("Laatste imap Id vooraf: " . $imapIdLastFetched );
 //            Log::info("Mailids: " . implode(',', $mailIds) );
-            $imapIdLastFetched = $mailIds[0];
-//            Log::info("Laatste imap Id : " . $imapIdLastFetched);
             foreach($mailIds as $mailId){
+//                Log::info("Imap Id : " . $mailId);
+                if($mailId <= $imapIdLastFetched){
+                    // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
+                    // Dus kunnen we helemaal stoppen met de loop
+                    break;
+                }
                 if(Email::whereMailboxId($this->mailbox->id)
                     ->whereImapId($mailId)
                     ->exists()){
-
                     // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
                     // Dus kunnen we helemaal stoppen met de loop
                     break;
@@ -89,6 +93,9 @@ class MailFetcher
                 set_time_limit(180);
                 $this->fetchEmail($mailId);
             }
+            $imapIdLastFetched = $mailIds[0];
+//            Log::info("Laatste imap Id achteraf: " . $imapIdLastFetched);
+
         }
         $this->mailbox->date_last_fetched = $dateTime;
         $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;

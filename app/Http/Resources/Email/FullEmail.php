@@ -65,12 +65,15 @@ class FullEmail extends Resource
             'attachments' => GenericResource::collection($this->whenLoaded('attachments')),
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
             'dateClosed' => $this->date_closed,
+            'dateRemoved' => $this->date_removed,
             'responsibleUserId' => $this->responsible_user_id,
             'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
             'responsibleTeamId' => $this->responsible_team_id,
             'responsibleTeam' => FullTeam::make($this->whenLoaded('responsibleTeam')),
             'closedById' => $this->closed_by_id,
             'closedBy' => FullUser::make($this->whenLoaded('closedBy')),
+            'removedById' => $this->closed_by_id,
+            'removedBy' => FullUser::make($this->whenLoaded('removedBy')),
             'contactGroupId' => $this->contact_group_id,
         ];
     }

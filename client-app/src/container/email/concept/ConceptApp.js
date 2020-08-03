@@ -108,6 +108,8 @@ class ConceptApp extends Component {
         let options = [];
 
         emailAddresses.map(emailAddress => {
+            if(!isNaN(emailAddress)) return;
+
             options.push({ id: emailAddress, name: emailAddress });
         });
 

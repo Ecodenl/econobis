@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\ParticipantProject\Grid;
 
 
 use App\Helpers\RequestQuery\RequestJoiner;
+use Illuminate\Support\Facades\DB;
 
 class Joiner extends RequestJoiner
 {
@@ -32,8 +33,12 @@ class Joiner extends RequestJoiner
 
     protected function applyEnergySuppliersJoin($query)
     {
-        $query->join('contact_energy_supplier', 'participation_project.contact_id', '=', 'contact_energy_supplier.contact_id')->where('is_current_supplier', true);
-        $query->join('energy_suppliers', 'contact_energy_supplier.energy_supplier_id', '=', 'energy_suppliers.id');
+        $query->leftJoin('contact_energy_supplier', function($join)
+        {
+            $join->on('participation_project.contact_id', '=', 'contact_energy_supplier.contact_id');
+            $join->on('contact_energy_supplier.is_current_supplier','=', DB::raw('1'));
+        });
+        $query->leftJoin('energy_suppliers', 'contact_energy_supplier.energy_supplier_id', '=', 'energy_suppliers.id');
     }
 
     protected function applyParticipantMutationsJoin($query)

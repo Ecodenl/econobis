@@ -162,7 +162,7 @@ const AdministrationDetailsFormGeneralView = props => {
                                 <ViewText label={'Code'} value={twinfieldOfficeCode} />
                             </div>
 
-                            {twinfieldConnectionType === 'webservice' &&(
+                            {twinfieldConnectionType === 'webservice' && (
                                 <div className="row">
                                     <ViewText label={'Gebruikersnaam'} value={twinfieldUsername} />
                                     <ViewText label={'Wachtwoord'} value="**********" />
@@ -195,7 +195,9 @@ const AdministrationDetailsFormGeneralView = props => {
                                             </small>
                                         </span>
                                     }
-                                    value={dateSyncTwinfieldContacts ? moment(dateSyncTwinfieldContacts).format('L') : ''}
+                                    value={
+                                        dateSyncTwinfieldContacts ? moment(dateSyncTwinfieldContacts).format('L') : ''
+                                    }
                                 />
                                 <ViewText
                                     label={
@@ -203,11 +205,14 @@ const AdministrationDetailsFormGeneralView = props => {
                                             Synchroniseer betalingen vanaf
                                             <br />
                                             <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                                Nota aanmaakdatum vanaf wanneer betalingen opgehaald worden uit Twinfield
+                                                Nota aanmaakdatum vanaf wanneer betalingen opgehaald worden uit
+                                                Twinfield
                                             </small>
                                         </span>
                                     }
-                                    value={dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''}
+                                    value={
+                                        dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''
+                                    }
                                 />
                             </div>
                         </React.Fragment>

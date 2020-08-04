@@ -754,57 +754,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             <React.Fragment>
                                 <div className="row">
                                     <InputText
-                                        label="Gebruikersnaam"
-                                        name={'twinfieldUsername'}
-                                        value={twinfieldUsername}
-                                        onChangeAction={this.handleInputChange}
-                                        required={'required'}
-                                        readOnly={usesTwinfield == false}
-                                        error={this.state.errors.twinfieldUsername}
-                                    />
-                                    <InputText
-                                        label="Wachtwoord"
-                                        name={'twinfieldPassword'}
-                                        value={twinfieldPassword}
-                                        placeholder="**********"
-                                        onChangeAction={this.handleInputChange}
-                                        required={'required'}
-                                        readOnly={usesTwinfield == false}
-                                        error={this.state.errors.twinfieldPassword}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputToggle
-                                        label={'Wijzig wachtwoord'}
-                                        name={'twinfieldPasswordChange'}
-                                        value={twinfieldPasswordChange}
-                                        onChangeAction={this.handleInputChange}
-                                        className={'col-sm-push-6 col-sm-6'}
-                                        disabled={usesTwinfield == false}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
-                                        label="Client Id"
-                                        name={'twinfieldClientId'}
-                                        value={twinfieldClientId}
-                                        onChangeAction={this.handleInputChange}
-                                        // required={'required'}
-                                        readOnly={usesTwinfield == false}
-                                        error={this.state.errors.twinfieldClientId}
-                                    />
-                                    <InputText
-                                        label="Client Secret"
-                                        name={'twinfieldClientSecret'}
-                                        value={twinfieldClientSecret}
-                                        onChangeAction={this.handleInputChange}
-                                        // required={'required'}
-                                        readOnly={usesTwinfield == false}
-                                        error={this.state.errors.twinfieldClientSecret}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
                                         label="Omgeving"
                                         name={'twinfieldOrganizationCode'}
                                         value={twinfieldOrganizationCode}
@@ -823,6 +772,97 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         error={this.state.errors.twinfieldOfficeCode}
                                     />
                                 </div>
+                                {twinfieldConnectionType === 'webservice' && (
+                                    <React.Fragment>
+                                        <div className="row">
+                                            <InputText
+                                                label="Gebruikersnaam"
+                                                name={'twinfieldUsername'}
+                                                value={twinfieldUsername}
+                                                onChangeAction={this.handleInputChange}
+                                                required={'required'}
+                                                readOnly={usesTwinfield == false}
+                                                error={this.state.errors.twinfieldUsername}
+                                            />
+                                            <InputText
+                                                label="Wachtwoord"
+                                                name={'twinfieldPassword'}
+                                                value={twinfieldPassword}
+                                                placeholder="**********"
+                                                onChangeAction={this.handleInputChange}
+                                                required={'required'}
+                                                readOnly={usesTwinfield == false}
+                                                error={this.state.errors.twinfieldPassword}
+                                            />
+                                        </div>
+                                        <div className="row">
+                                            <InputToggle
+                                                label={'Wijzig wachtwoord'}
+                                                name={'twinfieldPasswordChange'}
+                                                value={twinfieldPasswordChange}
+                                                onChangeAction={this.handleInputChange}
+                                                className={'col-sm-push-6 col-sm-6'}
+                                                disabled={usesTwinfield == false}
+                                            />
+                                        </div>
+                                    </React.Fragment>
+                                )}
+                                {twinfieldConnectionType === 'openid' && (
+                                    <React.Fragment>
+                                        <div className="row">
+                                            <InputText
+                                                label="Client Id"
+                                                name={'twinfieldClientId'}
+                                                value={twinfieldClientId}
+                                                onChangeAction={this.handleInputChange}
+                                                // required={'required'}
+                                                readOnly={usesTwinfield == false}
+                                                error={this.state.errors.twinfieldClientId}
+                                            />
+                                            <InputText
+                                                label="Client Secret"
+                                                name={'twinfieldClientSecret'}
+                                                value={twinfieldClientSecret}
+                                                onChangeAction={this.handleInputChange}
+                                                // required={'required'}
+                                                readOnly={usesTwinfield == false}
+                                                error={this.state.errors.twinfieldClientSecret}
+                                            />
+                                        </div>
+                                        <div className="row">
+                                            <ViewText
+                                                className={'col-sm-6 form-group'}
+                                                label="Heeft refresh token?"
+                                                name={'twinfieldHasRefreshToken'}
+                                                value={twinfieldHasRefreshToken}
+                                            />
+                                            <ViewText
+                                                className={'col-sm-6 form-group'}
+                                                label="Haal nieuwe refresh token op"
+                                                name={'twinfieldRedirectUri'}
+                                                value={
+                                                    twinfieldHasRefreshToken === 'Nee' ? (
+                                                        <span>
+                                                            <a
+                                                                href={
+                                                                    twinfieldRedirectUri +
+                                                                    '?administrationId=' +
+                                                                    this.state.administration.id
+                                                                }
+                                                                target={'_blank'}
+                                                                className={'link-underline'}
+                                                            >
+                                                                {twinfieldRedirectUri}
+                                                            </a>{' '}
+                                                        </span>
+                                                    ) : (
+                                                        twinfieldRedirectUri
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </React.Fragment>
+                                )}
                                 <div className="row">
                                     <InputDate
                                         label={
@@ -861,40 +901,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         error={this.state.errors.dateSyncTwinfieldPayments}
                                     />
                                 </div>
-                                {twinfieldConnectionType === 'openid' && (
-                                    <div className="row">
-                                        <ViewText
-                                            className={'col-sm-6 form-group'}
-                                            label="Heeft refresh token?"
-                                            name={'twinfieldHasRefreshToken'}
-                                            value={twinfieldHasRefreshToken}
-                                        />
-                                        <ViewText
-                                            className={'col-sm-6 form-group'}
-                                            label="Haal nieuwe refresh token op"
-                                            name={'twinfieldRedirectUri'}
-                                            value={
-                                                twinfieldHasRefreshToken === 'Nee' ? (
-                                                    <span>
-                                                        <a
-                                                            href={
-                                                                twinfieldRedirectUri +
-                                                                '?administrationId=' +
-                                                                this.state.administration.id
-                                                            }
-                                                            target={'_blank'}
-                                                            className={'link-underline'}
-                                                        >
-                                                            {twinfieldRedirectUri}
-                                                        </a>{' '}
-                                                    </span>
-                                                ) : (
-                                                    twinfieldRedirectUri
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                )}
                             </React.Fragment>
                         )}
 

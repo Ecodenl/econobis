@@ -41,14 +41,15 @@ if (empty($administration->twinfield_refresh_token)) {
         if (isset($_SESSION['oauth2state'])) {
             unset($_SESSION['oauth2state']);
         }
-
+        if (isset($_SESSION['twinfieldAdministrationId'])) {
+            unset($_SESSION['twinfieldAdministrationId']);
+        }
         exit('Invalid state');
 
     } else {
 
         try {
 
-            echo 'code: ' . $_GET['code'] . "<br>";
             // Try to get an access token using the authorization code grant.
             $accessToken = $provider->getAccessToken('authorization_code', [
                 'code' => $_GET['code']
@@ -61,7 +62,11 @@ if (empty($administration->twinfield_refresh_token)) {
             // Get the refreshToken generated for you and store it to the session.
             $administration->twinfield_refresh_token = $accessToken->getRefreshToken();
             $administration->save();
-            echo 'refreshToken: ' . $administration->twinfield_refresh_token . "<br>";
+//            echo 'refreshToken: ' . $administration->twinfield_refresh_token . "<br>";
+
+            if (isset($_SESSION['twinfieldAdministrationId'])) {
+                unset($_SESSION['twinfieldAdministrationId']);
+            }
             // Redirect the user to the administration URL.
             header('Location: ' . $administrationUrl . '/' . $administration->id);
             exit;
@@ -76,10 +81,18 @@ if (empty($administration->twinfield_refresh_token)) {
                 $administration->save();
             }
 
+            if (isset($_SESSION['twinfieldAdministrationId'])) {
+                unset($_SESSION['twinfieldAdministrationId']);
+            }
             exit($e->getMessage());
 
             
         }
     }
+}else{
+    if (isset($_SESSION['twinfieldAdministrationId'])) {
+        unset($_SESSION['twinfieldAdministrationId']);
+    }
+
 }
 

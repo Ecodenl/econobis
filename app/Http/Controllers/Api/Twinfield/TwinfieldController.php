@@ -11,6 +11,7 @@ class TwinfieldController extends Controller
     public function twinfield(Request $request)
     {
         $redirectUri = \Config::get('app.url_api') . '/twinfield';
+        $administrationUrl = \Config::get('app.url') . '/#/administratie';
 
         $administrationId = $request->input('administrationId');
         if(!empty($administrationId)) {
@@ -22,6 +23,7 @@ class TwinfieldController extends Controller
         return view('twinfield', [
             'redirectUri' => $redirectUri,
             'administration' => $administration,
+            'administrationUrl' => $administrationUrl,
         ]);
     }
 

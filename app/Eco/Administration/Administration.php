@@ -27,7 +27,8 @@ class Administration extends Model
 
     protected $encryptable = [
         'IBAN',
-        'twinfield_password'
+        'twinfield_password',
+        'twinfield_client_secret'
     ];
 
     //Per administratie heeft de contact een ander twinfield nummer

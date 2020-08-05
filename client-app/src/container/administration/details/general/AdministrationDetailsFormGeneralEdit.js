@@ -328,9 +328,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                     hasErrors = true;
                 }
 
-                if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
-                    errors.twinfieldClientSecret = true;
-                    hasErrors = true;
+                if (administration.twinfieldPasswordChange) {
+                    if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
+                        errors.twinfieldClientSecret = true;
+                        hasErrors = true;
+                    }
                 }
             }
 
@@ -411,11 +413,13 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
             data.append('twinfieldUsername', administration.twinfieldUsername);
             // twinfield password alleen toevoegen indien ingevuld op scherm.
-            if (administration.twinfieldPasswordChange) {
+            if (administration.twinfieldPasswordChange && administration.twinfieldConnectionType === 'webservice') {
                 data.append('twinfieldPassword', administration.twinfieldPassword);
             }
+            if (administration.twinfieldPasswordChange && administration.twinfieldConnectionType === 'openid') {
+                data.append('twinfieldClientSecret', administration.twinfieldClientSecret);
+            }
             data.append('twinfieldClientId', administration.twinfieldClientId);
-            data.append('twinfieldClientSecret', administration.twinfieldClientSecret);
             data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
@@ -732,7 +736,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
                                 onChangeAction={this.handleUsesTwinfieldChange}
-                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldUsername)}
+                                disabled={!this.manageUsesTwinfield
+                                && ((twinfieldConnectionType === 'webservice' && !isEmpty(twinfieldUsername))
+                                    || (twinfieldConnectionType === 'openid' && !isEmpty(twinfieldClientId)))
+                                }
                             />
                             {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
                                 <InputSelect
@@ -815,7 +822,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                                 name={'twinfieldClientId'}
                                                 value={twinfieldClientId}
                                                 onChangeAction={this.handleInputChange}
-                                                // required={'required'}
+                                                required={'required'}
                                                 readOnly={usesTwinfield == false}
                                                 error={this.state.errors.twinfieldClientId}
                                             />
@@ -823,10 +830,21 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                                 label="Client Secret"
                                                 name={'twinfieldClientSecret'}
                                                 value={twinfieldClientSecret}
+                                                placeholder="**********"
                                                 onChangeAction={this.handleInputChange}
-                                                // required={'required'}
+                                                required={'required'}
                                                 readOnly={usesTwinfield == false}
                                                 error={this.state.errors.twinfieldClientSecret}
+                                            />
+                                        </div>
+                                        <div className="row">
+                                            <InputToggle
+                                                label={'Wijzig client secret'}
+                                                name={'twinfieldPasswordChange'}
+                                                value={twinfieldPasswordChange}
+                                                onChangeAction={this.handleInputChange}
+                                                className={'col-sm-push-6 col-sm-6'}
+                                                disabled={usesTwinfield == false}
                                             />
                                         </div>
                                         <div className="row">
@@ -835,30 +853,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                                 label="Heeft refresh token?"
                                                 name={'twinfieldHasRefreshToken'}
                                                 value={twinfieldHasRefreshToken}
-                                            />
-                                            <ViewText
-                                                className={'col-sm-6 form-group'}
-                                                label="Haal nieuwe refresh token op"
-                                                name={'twinfieldRedirectUri'}
-                                                value={
-                                                    twinfieldHasRefreshToken === 'Nee' ? (
-                                                        <span>
-                                                            <a
-                                                                href={
-                                                                    twinfieldRedirectUri +
-                                                                    '?administrationId=' +
-                                                                    this.state.administration.id
-                                                                }
-                                                                target={'_blank'}
-                                                                className={'link-underline'}
-                                                            >
-                                                                {twinfieldRedirectUri}
-                                                            </a>{' '}
-                                                        </span>
-                                                    ) : (
-                                                        twinfieldRedirectUri
-                                                    )
-                                                }
                                             />
                                         </div>
                                     </React.Fragment>

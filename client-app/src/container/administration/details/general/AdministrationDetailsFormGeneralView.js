@@ -178,21 +178,27 @@ const AdministrationDetailsFormGeneralView = props => {
 
                                     <div className="row">
                                         <ViewText label={'Heeft refresh token?'} value={twinfieldHasRefreshToken} />
-                                        {twinfieldHasRefreshToken === "Nee" && (
+                                        {twinfieldHasRefreshToken === 'Nee' && (
                                             <ViewText
                                                 className={'col-sm-6 form-group'}
                                                 label="Haal nieuwe refresh token op"
                                                 name={'twinfieldRedirectUri'}
                                                 value={
                                                     <span>
-                                                        <a href={twinfieldRedirectUri + '?administrationId=' + props.administrationDetails.id}
-                                                           className={'link-underline'}
+                                                        <a
+                                                            href={
+                                                                twinfieldRedirectUri +
+                                                                '?administrationId=' +
+                                                                props.administrationDetails.id
+                                                            }
+                                                            className={'link-underline'}
                                                         >
                                                             {twinfieldRedirectUri}
                                                         </a>
                                                     </span>
                                                 }
-                                            />)}
+                                            />
+                                        )}
                                     </div>
                                 </React.Fragment>
                             )}

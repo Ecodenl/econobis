@@ -736,9 +736,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
                                 onChangeAction={this.handleUsesTwinfieldChange}
-                                disabled={!this.manageUsesTwinfield
-                                && ((twinfieldConnectionType === 'webservice' && !isEmpty(twinfieldUsername))
-                                    || (twinfieldConnectionType === 'openid' && !isEmpty(twinfieldClientId)))
+                                disabled={
+                                    !this.manageUsesTwinfield &&
+                                    ((twinfieldConnectionType === 'webservice' && !isEmpty(twinfieldUsername)) ||
+                                        (twinfieldConnectionType === 'openid' && !isEmpty(twinfieldClientId)))
                                 }
                             />
                             {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (

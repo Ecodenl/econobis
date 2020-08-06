@@ -183,7 +183,7 @@ class Invoice extends Model
     }
 
     public function getIbanAttribute(){
-        if($this->status_id === 'to-send' || $this->status_id === 'error-sending'){
+        if($this->status_id === null || $this->status_id === 'to-send' || $this->status_id === 'error-sending'){
             return $this->order->contact->iban;
         }
         else{
@@ -192,7 +192,7 @@ class Invoice extends Model
     }
 
     public function getSubjectAttribute(){
-        if($this->status_id === 'to-send' || $this->status_id === 'error-sending'){
+        if($this->status_id === null || $this->status_id === 'to-send' || $this->status_id === 'error-sending'){
             return $this->order->subject;
         }
         else{
@@ -201,7 +201,7 @@ class Invoice extends Model
     }
 
     public function getInvoiceTextAttribute(){
-        if($this->status_id === 'to-send' || $this->status_id === 'error-sending'){
+        if($this->status_id === null || $this->status_id === 'to-send' || $this->status_id === 'error-sending'){
             return $this->order->invoice_text;
         }
         else{

@@ -22,11 +22,11 @@ class AlterEmailRemoved extends Migration
             $table->dateTime('date_removed')->nullable()->default(null)->after('closed_by_id');
         });
 
-        $emails = Email::where('folder', 'removed')->get();
-        foreach ($emails as $email){
-            $email->date_removed = $email->updated_at;
-            $email->save();
-        }
+//        $emails = Email::where('folder', 'removed')->get();
+//        foreach ($emails as $email){
+//            $email->date_removed = $email->updated_at;
+//            $email->save();
+//        }
 
     }
 

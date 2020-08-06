@@ -179,8 +179,8 @@ class ContactImportHelper
         $houseNumberValidator = new Validator;
         $houseNumberValidator->optional('house_number', 'house_number', true)->integer();
 
-        $houseNumberAdditionValidator = new Validator;
-        $houseNumberAdditionValidator->optional('house_number_addition', 'house_number_addition', true)->alpha();
+//        $houseNumberAdditionValidator = new Validator;
+//        $houseNumberAdditionValidator->optional('house_number_addition', 'house_number_addition', true)->alpha();
 
         //prio 1 errors
         //aanspreektitel_id
@@ -206,12 +206,12 @@ class ContactImportHelper
             $prio = 1;
         };
 
-        if ($line[8] && !$houseNumberAdditionValidator->validate(['house_number_addition' => $line[8]])->isValid()) {
-            array_push($field, self::HEADERS[8]);
-            array_push($value, $line[8]);
-            array_push($message, 'Huisnummer toevoeging moet alfabetisch zijn.');
-            $prio = 1;
-        };
+//        if ($line[8] && !$houseNumberAdditionValidator->validate(['house_number_addition' => $line[8]])->isValid()) {
+//            array_push($field, self::HEADERS[8]);
+//            array_push($value, $line[8]);
+//            array_push($message, 'Huisnummer toevoeging moet alfabetisch zijn.');
+//            $prio = 1;
+//        };
 
         if (($line[5] || $line[6] || $line[7] || $line[9]) && (!$line[5] || !$line[6] || !$line[7] || !$line[9]) ) {
             array_push($field, 'Adres');

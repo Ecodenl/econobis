@@ -76,7 +76,7 @@ class EmailController
     }
 
     public function show(Email $email){
-        $email->load('contacts', 'attachments', 'closedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice', 'responsibleUser',
+        $email->load('contacts', 'attachments', 'closedBy', 'removedBy', 'intake', 'task', 'quotationRequest', 'measure', 'opportunity', 'order', 'invoice', 'responsibleUser',
             'responsibleTeam');
 
         return FullEmail::make($email);
@@ -230,20 +230,19 @@ class EmailController
         return FullEmail::make($email);
     }
 
-    public function send(Mailbox $mailbox, Request $request)
+    public function send(Mailbox $mailbox, Email $email, Request $request)
     {
         set_time_limit(0);
-        $sanitizedData = $this->getEmailData($request);
+        $sanitizedData = $this->getEmailData($request, true);
+        $email->to = $sanitizedData['to'];
+        $email->cc = $sanitizedData['cc'];
+        $email->bcc = $sanitizedData['bcc'];
 
         //add basic html tags for new emails
-        $sanitizedData['html_body']
+        $email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $sanitizedData['subject'] . '</title></head>'
-            . $sanitizedData['html_body'] . '</html>';
-
-        //Save as concept, if sending fails we still have the concept
-        $email = (new StoreConceptEmail($mailbox,
-            $sanitizedData))->handle();
+            . $email->subject . '</title></head>'
+            . $email->html_body . '</html>';
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -271,8 +270,8 @@ class EmailController
         }
 
         //if we send to group we save in a pivot because they can have alot of members
-        if ($sanitizedData['contact_group_id']) {
-            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
+        if ($email->contact_group_id) {
+            $contactGroup = ContactGroup::find($email->contact_group_id);
             $contactIds = [];
             foreach ($contactGroup->all_contacts as $contact) {
                 if ($contact->primaryEmailAddress) {
@@ -290,11 +289,21 @@ class EmailController
         SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
     }
 
-    public function storeConcept(Mailbox $mailbox, Request $request)
+    public function storeConcept(Mailbox $mailbox, RequestInput $requestInput)
     {
-        $sanitizedData = $this->getEmailData($request);
+        $data = $requestInput
+            ->string('subject')->onEmpty(null)->next()
+            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->get();
 
-        $email = (new StoreConceptEmail($mailbox, $sanitizedData))->handle();
+        $email = (new StoreConceptEmail($mailbox, $data))->handle();
+
+        return $email->id;
+    }
+
+    public function storeConcept2(Mailbox $mailbox, Email $email, Request $request)
+    {
+        $this->updateConcept2($email, $request);
 
         $this->checkStorageDir($mailbox->id);
 
@@ -303,6 +312,18 @@ class EmailController
             ? $request->file('attachments') : [];
 
         $this->storeEmailAttachments($attachments, $mailbox->id, $email->id);
+
+        //old attachments(forward,reply etc.)
+        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
+
+        //Gaat dit goed bij deleten attachment van oude mail?
+        foreach ($oldAttachments as $oldAttachment){
+            $oldAttachment = json_decode($oldAttachment);
+            $oldAttachment = EmailAttachment::find($oldAttachment->id);
+            $replicatedAttachment = $oldAttachment->replicate();
+            $replicatedAttachment->email_id = $email->id;
+            $replicatedAttachment->save();
+        }
     }
 
     public function peek(){
@@ -357,86 +378,54 @@ class EmailController
 
     public function deleteEmailAttachment(EmailAttachment $emailAttachment)
     {
-        //delete real file
-        Storage::disk('mail_attachments')->delete($emailAttachment->filename);
+        //delete real file (only when count on filename is 1, otherwise this attachment is also in use in another email because of a reply or send through)
+        $countAttachment = EmailAttachment::where('filename', $emailAttachment->filename)->count();
+        if($countAttachment == 1){
+            Storage::disk('mail_attachments')->delete($emailAttachment->filename);
+        }
 
         //delete db record
         $emailAttachment->delete();
     }
 
-    public function updateConcept(Email $email, Request $request){
+    public function updateConcept(Email $email, RequestInput $requestInput){
 
-        $sanitizedData = $this->getEmailData($request);
+        $data = $requestInput
+            ->string('subject')->onEmpty(null)->next()
+            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->get();
 
+        $email->fill($data);
+
+        $email->save();
+
+        return $email->id;
+    }
+
+    public function updateConcept2(Email $email, Request $request){
+        $sanitizedData = $this->getEmailData($request, false);
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
-        $email->subject = $sanitizedData['subject'];
-        $email->html_body = $sanitizedData['html_body'];
-        $email->sent_by_user_id = Auth::id();
+        $email->quotation_request_id = $sanitizedData['quotation_request_id'];
+        $email->intake_id = $sanitizedData['intake_id'];
+        $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->save();
-        
-        return $email;
     }
 
     public function sendConcept(Email $email, Request $request){
-        set_time_limit(0);
-        $email = $this->updateConcept($email, $request);
+        $mailbox = Mailbox::find($email->mailbox->id);
+        $this->send($mailbox, $email, $request);
 
-        //Create relations with contact if needed
-        $this->createEmailContactRelations($email, $request);
-
-        //Email attachments
-        $this->checkStorageDir($email->mailbox->id);
-
-        //get attachments
-        $attachments = $request->file('attachments')
-            ? $request->file('attachments') : [];
-
-        $this->storeEmailAttachments($attachments, $email->mailbox->id,
-            $email->id);
-
-        //old attachments(forward,reply etc.)
-        $oldAttachments = $request->input('oldAttachments') ? $request->input('oldAttachments') : [];
-
-        //Gaat dit goed bij deleten attachment van oude mail?
-        foreach ($oldAttachments as $oldAttachment){
-            $oldAttachment = json_decode($oldAttachment);
-            $oldAttachment = EmailAttachment::find($oldAttachment->id);
-            $replicatedAttachment = $oldAttachment->replicate();
-            $replicatedAttachment->email_id = $email->id;
-            $replicatedAttachment->save();
-        }
-
-        $sanitizedData = $this->getEmailData($request);
-
-        //if we send to group we save in a pivot because they can have alot of members
-        if ($sanitizedData['contact_group_id']) {
-            $contactGroup = ContactGroup::find($sanitizedData['contact_group_id']);
-            $contactIds = [];
-            foreach ($contactGroup->all_contacts as $contact) {
-                if ($contact->primaryEmailAddress) {
-                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-                    array_push($contactIds, $contact->id);
-                }
-            }
-            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
-            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
-        }
-
-        SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
-        
         return FullEmail::make($email);
     }
 
-    public function getEmailData(Request $request, $withGroup = false){
+    public function getEmailData(Request $request, $forSend = false){
         //Get all basic mail info
         $data = $request->validate([
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
-            'subject' => '',
-            'htmlBody' => '',
             'quotationRequestId' => '',
             'intakeId' => '',
         ]);
@@ -468,15 +457,19 @@ class EmailController
 
         foreach ($sendVariations as $sendVariation){
             foreach ($data[$sendVariation] as $emailData) {
-                if (is_numeric($emailData)){
+                if ($forSend && is_numeric($emailData)){
                     $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
+                }
+                if (!$forSend && is_numeric($emailData)){
+                    $emails[$sendVariation][] = $emailData;
                 }
                 else if(substr($emailData, 0, 7 ) === "@group_"){
                     $groupId = str_replace("@group_", "", $emailData);
                 }
                 else if(filter_var($emailData, FILTER_VALIDATE_EMAIL)){
                     $emails[$sendVariation][] = $emailData;
-            }}
+                }
+            }
         }
 
         if(!array_key_exists('quotationRequestId', $data)){
@@ -495,20 +488,10 @@ class EmailController
             $data['intakeId'] = null;
         }
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
-        $subject = $data['subject'];
-        if($subject){
-            $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
-            $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
-
-        }
         $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
-            'subject' => $subject ?: 'Econobis',
-            'html_body' => $data['htmlBody'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
             'contact_group_id' => $groupId ? $groupId : null
@@ -612,6 +595,14 @@ class EmailController
 
         if($folder != 'inbox' && $folder != 'sent' && $folder != 'removed'){
             abort(406, 'Map niet toegestaan.');
+        }
+        if($folder == 'removed'){
+            $email->removedBy()->associate(Auth::user());
+            $email->date_removed = new Carbon();
+        }
+        if($folder != 'removed'){
+            $email->removedBy()->dissociate();
+            $email->date_removed = null;
         }
 
         $email->folder = $folder;

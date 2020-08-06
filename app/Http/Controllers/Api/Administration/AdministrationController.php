@@ -189,7 +189,7 @@ class AdministrationController extends ApiController
             ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
             ->string('twinfieldPassword')->whenMissing($administration->twinfield_password)->onEmpty($administration->twinfield_password)->alias('twinfield_password')->next()
             ->string('twinfieldClientId')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_id')->next()
-            ->string('twinfieldClientSecret')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_secret')->next()
+            ->string('twinfieldClientSecret')->whenMissing($administration->twinfield_client_secret)->onEmpty($administration->twinfield_client_secret)->alias('twinfield_client_secret')->next()
             ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
             ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
             ->string('dateSyncTwinfieldContacts')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_contacts')->next()

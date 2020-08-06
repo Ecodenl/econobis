@@ -150,6 +150,9 @@ class TemplateVariableHelper
             case 'Order':
                 return TemplateVariableHelper::getOrderVar($model, $varname);
                 break;
+            case 'Invoice':
+                return TemplateVariableHelper::getInvoiceVar($model, $varname);
+                break;
             case 'Administration':
                 return TemplateVariableHelper::getAdministrationVar($model, $varname);
                 break;
@@ -1435,10 +1438,10 @@ class TemplateVariableHelper
                 return $model->subject;
                 break;
             case 'prijs':
-                return $model->total_price_incl_vat;
+                return number_format($model->total_price_incl_vat, 2, ',', '');
                 break;
             case 'prijs_per_jaar':
-                return $model->total_price_incl_vat_per_year;
+                return number_format($model->total_price_incl_vat_per_year, 2, ',', '');
                 break;
             case 'datum_aangevraagd':
                 return $model->date_requested ? Carbon::parse($model->date_requested)->format('d/m/Y') : null;
@@ -1500,6 +1503,35 @@ class TemplateVariableHelper
                 break;
             case 'contact_plaats':
                 return optional($model->contact->primaryAddress)->city;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getInvoiceVar($model, $varname){
+        switch ($varname) {
+            case 'nummer':
+                return $model->number;
+                break;
+            case 'betreft':
+                return $model->subject;
+                break;
+            case 'iban':
+                return $model->order->contact->iban;
+                break;
+            case 'iban_tnv':
+                return $model->order->contact->iban_attn;
+                break;
+            case 'totaal_incl_btw':
+                return number_format($model->total_price_incl_vat_and_reduction, 2, ',', '');
+                break;
+            case 'datum':
+                if( $model->invoice_number == 0){
+                    return "Nog niet bekend";
+                }
+                return $model->date_sent ? Carbon::parse($model->date_sent)->formatLocalized('%e %B %Y') : null;
                 break;
             default:
                 return '';
@@ -1656,6 +1688,8 @@ class TemplateVariableHelper
             $html = TemplateVariableHelper::replaceTemplateVariables($html, 'mutaties', $document->participant->mutations);
         }
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'order', $document->order);
+        // Er bestaat nog geen relatie tussen document en invoice
+//        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'nota', $document->invoice);
 
         //Als laatste verwijder alle niet bestaande tags
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);

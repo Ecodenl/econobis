@@ -27,6 +27,7 @@ class Email extends Model
     protected $casts = [
         'date_sent' => 'datetime',
         'date_closed' => 'datetime',
+        'date_removed' => 'datetime',
         'to' => 'array',
         'cc' => 'array',
         'bcc' => 'array',
@@ -48,6 +49,11 @@ class Email extends Model
     }
 
     public function closedBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function removedBy()
     {
         return $this->belongsTo(User::class);
     }

@@ -261,6 +261,37 @@ class EmailAnswerApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
+        function handleNewConcept2(data, mailboxId, emailId, oldEmailId) {
+            EmailAPI.newConcept2(data, mailboxId, emailId)
+                .then(() => {
+                    //close the email we reply/forward
+                    if (oldEmailId) {
+                        EmailAPI.setStatus(oldEmailId, 'closed').then(() => {
+                            hashHistory.push(`/emails/inbox`);
+                        });
+                    } else {
+                        hashHistory.push(`/emails/concept`);
+                    }
+                })
+                .catch(function(error) {});
+        }
+        function handleNewEmail(data, mailboxId, emailId, oldEmailId) {
+            EmailAPI.newEmail(data, mailboxId, emailId)
+                .then(() => {
+                    //close the email we reply/forward
+                    if (oldEmailId) {
+                        EmailAPI.setStatus(oldEmailId, 'closed').then(() => {
+                            hashHistory.push(`/emails/inbox`);
+                        });
+                    } else {
+                        hashHistory.push(`/emails/inbox`);
+                    }
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
+
         // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
@@ -275,13 +306,22 @@ class EmailAnswerApp extends Component {
                 email.bcc = email.bcc.split(',');
             }
 
+            const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
+            if (editor !== undefined) {
+                // console.log('hallo a');
+                // console.log(email.htmlBody);
+                email.htmlBody = editor.getContent({ format: 'raw' });
+            }
+            // console.log('hallo b');
+            // console.log(email.htmlBody);
+
             const data = new FormData();
 
             data.append('to', JSON.stringify(email.to));
             data.append('cc', JSON.stringify(email.cc));
             data.append('bcc', JSON.stringify(email.bcc));
-            data.append('subject', email.subject);
-            data.append('htmlBody', email.htmlBody);
+            // data.append('subject', email.subject);
+            // data.append('htmlBody', email.htmlBody);
             data.append('oldEmailId', this.state.oldEmailId);
             if (email.attachments) {
                 email.attachments.map((file, key) => {
@@ -294,23 +334,19 @@ class EmailAnswerApp extends Component {
             }
 
             if (concept) {
-                EmailAPI.newConcept(data, email.mailboxId)
-                    .then(() => {
-                        hashHistory.push(`/emails/concept`);
+                EmailAPI.newConcept(email, email.mailboxId)
+                    .then(emailId => {
+                        handleNewConcept2(data, email.mailboxId, emailId.data, this.state.oldEmailId);
                     })
-                    .catch(function(error) {});
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             } else {
                 this.setButtonLoading();
-                EmailAPI.newEmail(data, email.mailboxId)
-                    .then(() => {
-                        //close the email we reply/forward
-                        if (this.state.oldEmailId) {
-                            EmailAPI.setStatus(this.state.oldEmailId, 'closed').then(() => {
-                                hashHistory.push(`/emails/inbox`);
-                            });
-                        } else {
-                            hashHistory.push(`/emails/inbox`);
-                        }
+
+                EmailAPI.newConcept(email, email.mailboxId)
+                    .then(emailId => {
+                        handleNewEmail(data, email.mailboxId, emailId.data, this.state.oldEmailId);
                     })
                     .catch(function(error) {
                         console.log(error);

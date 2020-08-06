@@ -36,10 +36,28 @@ const EmailFormView = props => {
         status,
         closedBy,
         dateClosed,
+        removedBy,
+        dateRemoved,
     } = props.email;
 
     return (
         <div>
+            {folder === 'removed' ? (
+                <React.Fragment>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText
+                            label={'Verwijderd door'}
+                            value={removedBy ? removedBy.fullName : 'Onbekend'}
+                            link={removedBy ? 'gebruiker/' + removedBy.id : ''}
+                        />
+                        <ViewText
+                            label={'Datum verwijderd'}
+                            value={dateRemoved ? moment(dateRemoved).format('DD-MM-YYYY HH:mm') : ''}
+                        />
+                    </div>
+                    <hr />
+                </React.Fragment>
+            ) : null}
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Van'} value={from} />
                 <ViewText

@@ -180,7 +180,7 @@ class OrderController extends ApiController
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
             ->integer('costCenterId')->onEmpty(null)->whenMissing(null)->alias('cost_center_id')->next()
-            ->integer('amount')->validate('required')->next()
+            ->double('amount')->validate('required')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()
             ->date('dateStart')->validate('required')->alias('date_start')->next()
@@ -300,7 +300,7 @@ class OrderController extends ApiController
         $data = $input
             ->string('productId')->validate('required|exists:products,id')->alias('product_id')->next()
             ->string('orderId')->validate('required|exists:orders,id')->alias('order_id')->next()
-            ->integer('amount')->validate('required')->next()
+            ->double('amount')->validate('required')->next()
             ->integer('costCenterId')->onEmpty(null)->whenMissing(null)->alias('cost_center_id')->next()
             ->numeric('amountReduction')->onEmpty(null)->whenMissing(null)->alias('amount_reduction')->next()
             ->numeric('percentageReduction')->onEmpty(null)->whenMissing(null)->alias('percentage_reduction')->next()

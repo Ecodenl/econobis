@@ -73,6 +73,8 @@ class ConceptApp extends Component {
                     hasLoaded: true,
                 },
                 () => {
+                    // todo omzetten van to id`s naar emailadressen voor options
+                    // console.log("To: " + payload.to);
                     if (payload.contactGroupId) {
                         EmailAPI.fetchEmailGroup(payload.contactGroupId).then(name => {
                             let emailAddresses = this.state.emailAddresses;
@@ -106,6 +108,8 @@ class ConceptApp extends Component {
         let options = [];
 
         emailAddresses.map(emailAddress => {
+            if (!isNaN(emailAddress)) return;
+
             options.push({ id: emailAddress, name: emailAddress });
         });
 
@@ -227,6 +231,22 @@ class ConceptApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
+        function handleUpdateConcept2(data, emailId) {
+            EmailAPI.updateConcept2(data, emailId)
+                .then(() => {
+                    hashHistory.push(`/emails/concept`);
+                })
+                .catch(function(error) {});
+        }
+
+        function handleSendConcept(data, emailId) {
+            EmailAPI.sendConcept(data, emailId)
+                .then(() => {
+                    hashHistory.push(`/emails/sent`);
+                })
+                .catch(function(error) {});
+        }
+
         // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
@@ -245,13 +265,13 @@ class ConceptApp extends Component {
             data.append('to', JSON.stringify(email.to));
             data.append('cc', JSON.stringify(email.cc));
             data.append('bcc', JSON.stringify(email.bcc));
-            data.append('subject', email.subject);
-            data.append('htmlBody', email.htmlBody);
+            // data.append('subject', email.subject);
+            // data.append('htmlBody', email.htmlBody);
 
             if (concept) {
-                EmailAPI.updateConcept(data, this.props.params.id)
-                    .then(() => {
-                        hashHistory.push(`/emails/concept`);
+                EmailAPI.updateConcept(email, this.props.params.id)
+                    .then(emailId => {
+                        handleUpdateConcept2(data, emailId.data);
                     })
                     .catch(function(error) {
                         console.log(error);
@@ -259,9 +279,9 @@ class ConceptApp extends Component {
             } else {
                 this.setButtonLoading();
 
-                EmailAPI.sendConcept(data, this.props.params.id)
-                    .then(() => {
-                        hashHistory.push(`/emails/sent`);
+                EmailAPI.updateConcept(email, this.props.params.id)
+                    .then(emailId => {
+                        handleSendConcept(data, emailId.data);
                     })
                     .catch(function(error) {
                         console.log(error);

@@ -10,14 +10,6 @@ if($administration && !isset($_SESSION['twinfieldAdministrationId'])){
 if(!$administration && isset($_SESSION['twinfieldAdministrationId'])){
     $administration = Administration::find($_SESSION['twinfieldAdministrationId']);
 }
-
-//echo 'twinfieldAdministrationId: ' . (isset($_SESSION['twinfieldAdministrationId']) ? $_SESSION['twinfieldAdministrationId'] : 'geen') . "<br>";
-//echo 'clientId: ' . $administration->twinfield_client_id . "<br>";
-//echo 'clientSecret: ' . $administration->twinfield_client_secret . "<br>";
-//echo 'redirectUri: ' . $redirectUri . "<br>";
-//echo 'officeCode: ' . $administration->twinfield_office_code . "<br>";
-//echo 'twinfieldRefreshToken: ' . ($administration ? $administration->twinfield_refresh_token : ''). "<br>";
-
 $provider = new PhpTwinfield\Secure\Provider\OAuthProvider([
     'clientId'                => $administration ? $administration->twinfield_client_id : '',    // The client ID assigned to you by the provider
     'clientSecret'            => $administration ? $administration->twinfield_client_secret : '',   // The client password assigned to you by the provider
@@ -46,28 +38,22 @@ if (empty($administration->twinfield_refresh_token)) {
     // Check given state against previously stored one to mitigate CSRF attack
     } elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
 
-        //    echo 'state: ' . (isset($_GET['state']) ? $_GET['state'] : '[leeg]') . "<br>";
-        //    echo 'session oauth2state: ' . (isset($_SESSION['oauth2state']) ? $_SESSION['oauth2state'] : '[leeg]') . "<br>";
-
         if (isset($_SESSION['oauth2state'])) {
             unset($_SESSION['oauth2state']);
         }
-
+        if (isset($_SESSION['twinfieldAdministrationId'])) {
+            unset($_SESSION['twinfieldAdministrationId']);
+        }
         exit('Invalid state');
 
     } else {
 
-        //    echo 'state: ' . $_GET['state'] . "<br>";
-        //    echo 'session oauth2state: ' . $_SESSION['oauth2state'] . "<br>";
         try {
 
-            echo 'code: ' . $_GET['code'] . "<br>";
-            //        echo 'authorization_code: ' . $_POST["authorization_code"] . "<br>";
             // Try to get an access token using the authorization code grant.
             $accessToken = $provider->getAccessToken('authorization_code', [
                 'code' => $_GET['code']
             ]);
-            echo 'accessToken: ' . $accessToken . "<br>";
 
             // We have an access token, which we may use in authenticated
             // requests against the service provider's API.
@@ -76,8 +62,14 @@ if (empty($administration->twinfield_refresh_token)) {
             // Get the refreshToken generated for you and store it to the session.
             $administration->twinfield_refresh_token = $accessToken->getRefreshToken();
             $administration->save();
-            echo 'refreshToken: ' . $administration->twinfield_refresh_token . "<br>";
+//            echo 'refreshToken: ' . $administration->twinfield_refresh_token . "<br>";
 
+            if (isset($_SESSION['twinfieldAdministrationId'])) {
+                unset($_SESSION['twinfieldAdministrationId']);
+            }
+            // Redirect the user to the administration URL.
+            header('Location: ' . $administrationUrl . '/' . $administration->id);
+            exit;
 
         } catch (\Exception $e) {
 
@@ -89,30 +81,18 @@ if (empty($administration->twinfield_refresh_token)) {
                 $administration->save();
             }
 
+            if (isset($_SESSION['twinfieldAdministrationId'])) {
+                unset($_SESSION['twinfieldAdministrationId']);
+            }
             exit($e->getMessage());
 
             
         }
     }
+}else{
+    if (isset($_SESSION['twinfieldAdministrationId'])) {
+        unset($_SESSION['twinfieldAdministrationId']);
+    }
+
 }
-
-//try {
-//    $connection = new \PhpTwinfield\Secure\OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $office);
-//    echo 'OpenIdConnection!' . "<br>";
-//} catch (\Exception $e) {
-//
-//    echo 'Fout OpenIdConnection!' . "<br>";
-//    exit($e->getMessage());
-//
-//}
-
-//try {
-//    $officeApiConnector = new \PhpTwinfield\ApiConnectors\OfficeApiConnector($connection);
-//    $listAllWithoutOfficeCode = $officeApiConnector->listAllWithoutOfficeCode();
-//    print_r($listAllWithoutOfficeCode);
-//
-//} catch (\Exception $e) {
-//    echo 'Fout officeApiConnector->listAllWithoutOfficeCode!' . "<br>";
-//    exit($e->getMessage());
-//}
 

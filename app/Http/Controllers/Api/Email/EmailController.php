@@ -237,6 +237,7 @@ class EmailController
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
+        $email->contact_group_id = $sanitizedData['contact_group_id'];
 
         //add basic html tags for new emails
         $email->html_body

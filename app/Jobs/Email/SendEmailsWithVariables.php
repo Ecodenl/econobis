@@ -191,8 +191,9 @@ class SendEmailsWithVariables implements ShouldQueue
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'contacten_portal' );
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables,'cooperatie' );
-                //todo dit moet nog getest worden, maar zie nog niet wanneer je een email hebt met deze relaties voordat er gemaild wordt ?!
-                //todo ik zie alleen mogelijkheid tot maken van deze relaties nadat er gemaild is
+                if ($email->intake) {
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake', $email->intake);
+                }
                 if ($email->quotationRequest) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
                 }

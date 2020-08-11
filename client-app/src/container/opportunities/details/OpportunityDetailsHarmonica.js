@@ -50,9 +50,7 @@ class OpportunityDetailsHarmonica extends Component {
     newNote() {
         if (this.props.opportunityDetails.intake) {
             hashHistory.push(
-                `/taak/nieuw/afgehandeld/kans/${this.props.id}/contact/${
-                    this.props.opportunityDetails.intake.contact.id
-                }`
+                `/taak/nieuw/afgehandeld/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
             );
         } else {
             hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}`);
@@ -61,9 +59,7 @@ class OpportunityDetailsHarmonica extends Component {
 
     newDocument(type) {
         hashHistory.push(
-            `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/contact/${
-                this.props.opportunityDetails.intake.contact.id
-            }`
+            `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
         );
     }
 

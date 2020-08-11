@@ -67,7 +67,10 @@ class deleteFloatingAttachmentFiles extends Command
 
         foreach (Storage::files('mails/' . $directory) as $filename) {
             $filenameInMailbox = str_replace("mails/", "", $filename);
-            $filenameInMailbox = str_replace("/", "\\", $filenameInMailbox);
+            if(DIRECTORY_SEPARATOR == "\\"){
+                $filenameInMailbox = str_replace("/inbox/", "\\inbox\\", $filenameInMailbox);
+                $filenameInMailbox = str_replace("/outbox/", "\\outbox/", $filenameInMailbox);
+            }
             $checkAttachement = EmailAttachment::where('filename', $filenameInMailbox)->exists();
             if (!$checkAttachement) {
                 Storage::delete($filename);

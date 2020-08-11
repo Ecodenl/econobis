@@ -7,21 +7,21 @@ use App\Http\Controllers\Api\Email\EmailController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class deleteOldEmail19052020 extends Command
+class deleteEmailDefinitiveWithLog extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'email:deleteOldEmail19052020';
+    protected $signature = 'email:deleteEmailDefinitiveWithLog';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Verwijder oude email ingelezen op 19-5-2020.';
+    protected $description = 'Verwijder email (soft deleted) definitief.';
 
     /**
      * Create a new command instance.
@@ -40,30 +40,31 @@ class deleteOldEmail19052020 extends Command
      */
     public function handle()
     {
-        $this->doDeleteOldEmail19052020();
-        dd('Einde Verwijder oude email ingelezen op 19-5-2020.');
+        $this->doDeleteEmailDefinitive();
+        dd('Einde Verwijder email (soft deleted) definitief.');
     }
 
     /**
      *
      * @return array
      */
-    public function doDeleteOldEmail19052020()
+    public function doDeleteEmailDefinitive()
     {
-        $dateDeleteBefore = Carbon::parse('2020-05-01')->format('Y-m-d');
-        $dateCreatedAt = Carbon::parse('2020-05-19')->format('Y-m-d');
-        print_r("Start Verwijder oude email ingelezen op 19-5-2020 met date sent voor: " . $dateDeleteBefore . ".\n");
-        $emails = Email::whereDate('created_at', $dateCreatedAt)->whereDate('date_sent', '<', $dateDeleteBefore)->get();
+        $dateDeleteBefore = Carbon::parse('now')->subMonth(3)->format('Y-m-d');
+        print_r("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore . "\n");
+        $emails = Email::withTrashed()->where('deleted_at', '<', $dateDeleteBefore)->get();
         $emailController =  new EmailController();
         foreach ($emails as $email){
             $attachments = $email->attachments;
             foreach ($attachments as $attachment) {
-                print_r("Emailattachment ". $attachment->id . " verwijderd.\n");
                 $emailController->deleteEmailAttachment($attachment);
-                $attachment->delete();
+                print_r("Emailattachment ". $attachment->id . " verwijderd.\n");
             }
-            $email->delete();
-            print_r("Email ". $email->id . " verwijderd.\n");
+            $email->contacts()->detach();
+            $email->groupEmailAddresses()->detach();
+            $email->forceDelete();
+            print_r("Email ". $email->id . " verwijderd (date deleted_at: " . $email->deleted_at . ")\n");
         }
     }
+
 }

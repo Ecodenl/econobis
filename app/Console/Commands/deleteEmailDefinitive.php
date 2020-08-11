@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Eco\Email\Email;
-use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Api\Email\EmailController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -58,15 +57,11 @@ class deleteEmailDefinitive extends Command
         foreach ($emails as $email){
             $attachments = $email->attachments;
             foreach ($attachments as $attachment) {
-                $countAttachment = EmailAttachment::where('filename', $attachment->filename)->count();
-//                print_r("Aantal attachement met dezelfde filename: " . $countAttachment . "\n");
                 $emailController->deleteEmailAttachment($attachment);
-                print_r("Emailattachment ". $attachment->id . " verwijderd.\n");
             }
             $email->contacts()->detach();
             $email->groupEmailAddresses()->detach();
             $email->forceDelete();
-            print_r("Email ". $email->id . " verwijderd (date deleted_at: " . $email->deleted_at . ")\n");
         }
     }
 

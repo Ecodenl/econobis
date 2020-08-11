@@ -63,23 +63,30 @@ class checkFloatingAttachmentFiles extends Command
      */
     private function checkForFloatingAttachmentFiles(Mailbox $mailbox, string $inOfOutbox)
     {
-        $directory = 'mailbox_'.$mailbox->id.'/'.$inOfOutbox;
+        $directory = 'mailbox_' . $mailbox->id . DIRECTORY_SEPARATOR . $inOfOutbox;
 
         foreach (Storage::files('mails/' . $directory) as $filename) {
+            // mails/mailbox_2/inbox/2313a1edada0aad3d6900067ca74c85f.bin
+            //       mailbox_2\inbox\2313a1edada0aad3d6900067ca74c85f.bin
+            // mails/mailbox_2/outbox/F07Q7aqYtWAM5JIzjJES9EKzVCIyCRVwZqaDMf8o.pdf
+            //       mailbox_2\outbox/F07Q7aqYtWAM5JIzjJES9EKzVCIyCRVwZqaDMf8o.pdf
+            //
+            // mails/mailbox_2/inbox/2313a1edada0aad3d6900067ca74c85f.bin
+            //       mailbox_2/inbox/2313a1edada0aad3d6900067ca74c85f.bin
+            // mails/mailbox_2/outbox/F07Q7aqYtWAM5JIzjJES9EKzVCIyCRVwZqaDMf8o.pdf
+            //       mailbox_2/outbox/F07Q7aqYtWAM5JIzjJES9EKzVCIyCRVwZqaDMf8o.pdf
             $filenameInMailbox = str_replace("mails/", "", $filename);
-            $filenameInMailbox = str_replace("/", "\\", $filenameInMailbox);
+            if(DIRECTORY_SEPARATOR == "\\"){
+                $filenameInMailbox = str_replace("/inbox/", "\\inbox\\", $filenameInMailbox);
+                $filenameInMailbox = str_replace("/outbox/", "\\outbox/", $filenameInMailbox);
+            }
             $checkAttachement = EmailAttachment::where('filename', $filenameInMailbox)->exists();
             if (!$checkAttachement) {
                 print_r("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - ");
                 print_r("Filenaam: " . $filenameInMailbox . " niet in EmailAttachment\n");
-
-//                    Storage::delete($filename);
-                // $file = Storage::get($filename);
-                // do whatever with $file;
-
             } else {
-//                print_r("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - ");
-//                print_r("Filenaam: " . $filenameInMailbox . " wel in EmailAttachment\n");
+//                    print_r("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - ");
+//                    print_r("Filenaam: " . $filenameInMailbox . " wel in EmailAttachment\n");
 
             }
         }

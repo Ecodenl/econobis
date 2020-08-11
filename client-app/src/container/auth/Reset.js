@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { hashHistory } from 'react-router';
 import passwordValidator from '../../helpers/PasswordValidator';
+import { isEmpty } from 'lodash';
 
 class Reset extends Component {
     constructor(props) {
@@ -21,9 +22,11 @@ class Reset extends Component {
 
         const url = `${URL_API}/api/password/reset`;
         if (!passwordValidator(password)) {
-            this.setState({ passwordError: true });
+            this.setState({ passwordError: true, passwordError2: false });
         } else if (!passwordValidator(password_confirmation)) {
-            this.setState({ passwordError: true });
+            this.setState({ passwordError: true, passwordError2: false });
+        } else if (password != password_confirmation) {
+            this.setState({ passwordError: false, passwordError2: true });
         } else {
             axios
                 .post(url, {
@@ -33,15 +36,31 @@ class Reset extends Component {
                     password_confirmation,
                 })
                 .then(response => {
-                    this.setState({ err: false, passwordError: false });
-                    setTimeout(() => {
-                        hashHistory.push('/login');
-                    }, 2000);
+                    if (isEmpty(response.data)) {
+                        this.setState({ err: false, errMessage: '', passwordError: false, passwordError2: false });
+                        setTimeout(() => {
+                            hashHistory.push('/login');
+                        }, 2000);
+                    } else {
+                        // console.log(response.data);
+                        this.setState({
+                            err: true,
+                            errMessage: response.data,
+                            passwordError: false,
+                            passwordError2: false,
+                        });
+                    }
                 })
                 .catch(error => {
+                    // console.log(error);
                     this.refs.password.value = '';
                     this.refs.confirm.value = '';
-                    this.setState({ err: true, passwordError: false });
+                    this.setState({
+                        err: true,
+                        errMessage: 'Onbekende fout bij wijzigen wachtwoord',
+                        passwordError: false,
+                        passwordError2: false,
+                    });
                 });
         }
     }
@@ -57,7 +76,16 @@ class Reset extends Component {
         let passwordMsg = passwordError
             ? 'Het wachtwoord moet minimaal 8 karakters lang zijn en moet minimaal 1 cijfer en 1 hoofdletter bevatten.'
             : null;
-        let msg = !error ? 'Wachtwoord successvol gewijzigd' : 'Wachtwoorden komen niet overeen.';
+        let passwordError2 = this.state.passwordError2;
+        let passwordMsg2 = passwordError2 ? 'Wachtwoorden komen niet overeen.' : null;
+        let msg = '';
+        if (!error) {
+            msg = 'Wachtwoord successvol gewijzigd';
+        } else if (this.state.errMessage === 'passwords.token') {
+            msg = 'Wachtwoord reset link is niet geldig of verlopen.';
+        } else {
+            msg = 'Onbekende fout bij wijzigen wachtwoord';
+        }
         let name = !error ? 'alert alert-success' : 'alert alert-danger';
         return (
             <div>
@@ -76,6 +104,11 @@ class Reset extends Component {
                                         {passwordMsg != null && (
                                             <div className="alert alert-danger" role="alert">
                                                 {passwordMsg}
+                                            </div>
+                                        )}
+                                        {passwordMsg2 != null && (
+                                            <div className="alert alert-danger" role="alert">
+                                                {passwordMsg2}
                                             </div>
                                         )}
                                     </div>

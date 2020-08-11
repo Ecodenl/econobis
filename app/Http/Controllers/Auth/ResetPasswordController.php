@@ -12,6 +12,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
@@ -87,12 +88,15 @@ class ResetPasswordController extends Controller
             $this->resetPassword($user, $password);
         }
         );
+        $errorMessage = "";
+        // If the password was successfully reset, we will redirect the user back to
+        // the application's home authenticated view. If there is an error we can
+        // redirect them back to where they came from with their error message.
+        if($response == Password::PASSWORD_RESET){
+            $user = User::where('email', $request->input('email'))->first();
 
-        $user = User::where('email', $request->input('email'))->first();
-
-        $didCreateAlfrescoAccount = false;
-
-        if(!$user->has_alfresco_account){
+            $didCreateAlfrescoAccount = false;
+            if(!$user->has_alfresco_account){
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
             if(!$alfrescoHelper->checkIfAccountExists($user)) {
                 $alfrescoHelper->createNewAccount($user, $request->input('password'));
@@ -103,15 +107,16 @@ class ResetPasswordController extends Controller
                 $alfrescoHelper->assignUserToPrivateSite($user->email);
                 $user->has_alfresco_account = 1;
             }
+            }
+            $user->save();
+            $this->sendResetResponse($didCreateAlfrescoAccount, $user);
+        }else{
+            Log::info('Response: ' . $response . '.' );
+            $errorMessage = $response;
+            $this->sendResetFailedResponse($request, $response);
         }
-        $user->save();
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        return $response == Password::PASSWORD_RESET
-            ? $this->sendResetResponse($didCreateAlfrescoAccount, $user)
-            : $this->sendResetFailedResponse($request, $response);
+        return $errorMessage;
     }
 
     //redirect is handled by react, we send succes e-mail

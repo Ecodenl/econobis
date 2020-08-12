@@ -46,7 +46,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(QuotationRequestDetailsApp);
+export default connect(null, mapDispatchToProps)(QuotationRequestDetailsApp);

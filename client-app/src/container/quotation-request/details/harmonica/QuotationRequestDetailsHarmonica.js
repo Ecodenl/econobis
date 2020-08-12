@@ -22,7 +22,9 @@ class HousingFileDetailsHarmonica extends Component {
     }
 
     newEmail() {
-        hashHistory.push(`/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisation.contactId}`);
+        hashHistory.push(
+            `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisation.contactId}`
+        );
     }
 
     newDocument(type) {

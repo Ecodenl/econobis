@@ -1,36 +1,36 @@
 (window.webpackJsonp = window.webpackJsonp || []).push([
-  [83],
+  [82],
   {
-    1545: function(e, t, a) {
+    1444: function(e, t, a) {
       "use strict";
       a.r(t);
-      var n = a(10),
-        l = a.n(n),
-        s = a(25),
-        o = a.n(s),
-        c = a(24),
-        i = a.n(c),
-        r = a(26),
-        m = a.n(r),
-        d = a(27),
+      var n = a(11),
+        o = a.n(n),
+        l = a(24),
+        s = a.n(l),
+        c = a(25),
+        r = a.n(c),
+        i = a(22),
+        m = a.n(i),
+        d = a(26),
         u = a.n(d),
-        h = a(21),
+        h = a(27),
         p = a.n(h),
-        g = a(28),
-        b = a.n(g),
+        f = a(16),
+        g = a.n(f),
         v = a(6),
-        f = a.n(v),
+        b = a.n(v),
         E = a(0),
         N = a.n(E),
-        w = a(689),
-        y = a.n(w),
-        C = a(197),
-        A = a(682),
-        k = a(33),
-        I = a(146),
-        S = a(704),
-        j = a.n(S),
-        T = Object(k.b)(function(e) {
+        y = a(697),
+        w = a.n(y),
+        C = a(198),
+        A = a(690),
+        k = a(32),
+        I = a(148),
+        S = a(711),
+        R = a.n(S),
+        j = Object(k.b)(function(e) {
           return { permissions: e.meDetails.permissions };
         })(function(e) {
           var t = e.attachment,
@@ -53,7 +53,7 @@
                 onClick: function() {
                   return (function(e, t) {
                     I.a.downloadAttachment(e).then(function(e) {
-                      j()(e.data, t);
+                      R()(e.data, t);
                     });
                   })(a, n);
                 },
@@ -77,8 +77,8 @@
             )
           );
         }),
-        L = a(98),
-        x = function(e) {
+        L = a(100),
+        T = function(e) {
           return N.a.createElement(
             L.a,
             {
@@ -95,43 +95,70 @@
             },
             N.a.createElement("p", null, "Wil je deze bijlage verwijderen?")
           );
-        },
-        O = (function(e) {
-          function t(e) {
-            var a;
+        };
+      function x(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              (a = m()(this, u()(t).call(this, e))),
-              f()(p()(a), "onLineEnter", function() {
-                a.setState({
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = g()(e);
+          if (t) {
+            var o = g()(this).constructor;
+            a = Reflect.construct(n, arguments, o);
+          } else a = n.apply(this, arguments);
+          return p()(this, a);
+        };
+      }
+      var D = (function(e) {
+          u()(a, e);
+          var t = x(a);
+          function a(e) {
+            var n;
+            return (
+              s()(this, a),
+              (n = t.call(this, e)),
+              b()(m()(n), "onLineEnter", function() {
+                n.setState({
                   showActionButtons: !0,
                   highlightLine: "highlight-line"
                 });
               }),
-              f()(p()(a), "onLineLeave", function() {
-                a.setState({ showActionButtons: !1, highlightLine: "" });
+              b()(m()(n), "onLineLeave", function() {
+                n.setState({ showActionButtons: !1, highlightLine: "" });
               }),
-              f()(p()(a), "toggleDelete", function() {
-                a.setState({ showDelete: !a.state.showDelete });
+              b()(m()(n), "toggleDelete", function() {
+                n.setState({ showDelete: !n.state.showDelete });
               }),
-              (a.state = {
+              (n.state = {
                 showActionButtons: !1,
                 highlightLine: "",
                 showDelete: !1
               }),
-              a
+              n
             );
           }
           return (
-            b()(t, e),
-            i()(t, [
+            r()(a, [
               {
                 key: "render",
                 value: function() {
                   return N.a.createElement(
                     "div",
                     null,
-                    N.a.createElement(T, {
+                    N.a.createElement(j, {
                       highlightLine: this.state.highlightLine,
                       showActionButtons: this.state.showActionButtons,
                       onLineEnter: this.onLineEnter,
@@ -140,7 +167,7 @@
                       attachment: this.props.attachment
                     }),
                     this.state.showDelete &&
-                      N.a.createElement(x, {
+                      N.a.createElement(T, {
                         toggleDelete: this.toggleDelete,
                         attachment: this.props.attachment,
                         deleteAttachment: this.props.deleteAttachment
@@ -149,10 +176,10 @@
                 }
               }
             ]),
-            t
+            a
           );
         })(E.Component),
-        B = function(e) {
+        O = function(e) {
           var t = e.attachments;
           return N.a.createElement(
             "div",
@@ -165,7 +192,7 @@
             ),
             t.length > 0
               ? t.map(function(t) {
-                  return N.a.createElement(O, {
+                  return N.a.createElement(D, {
                     key: t.name,
                     attachment: t,
                     deleteAttachment: e.deleteAttachment
@@ -173,23 +200,47 @@
                 })
               : N.a.createElement("div", null, "Geen bijlages bekend.")
           );
-        },
-        D = a(770).default,
-        q = (function(e) {
-          function t(e) {
-            var a;
+        };
+      function B(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              ((a = m()(this, u()(t).call(this, e))).state = {
-                error: !1,
-                errorMaxSize: !1
-              }),
-              a
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = g()(e);
+          if (t) {
+            var o = g()(this).constructor;
+            a = Reflect.construct(n, arguments, o);
+          } else a = n.apply(this, arguments);
+          return p()(this, a);
+        };
+      }
+      var q = a(771).default,
+        P = (function(e) {
+          u()(a, e);
+          var t = B(a);
+          function a(e) {
+            var n;
+            return (
+              s()(this, a),
+              ((n = t.call(this, e)).state = { error: !1, errorMaxSize: !1 }),
+              n
             );
           }
           return (
-            b()(t, e),
-            i()(t, [
+            r()(a, [
               {
                 key: "onDropAccepted",
                 value: function(e) {
@@ -216,7 +267,7 @@
                       "div",
                       { className: "upload-file-content" },
                       N.a.createElement(
-                        D,
+                        q,
                         {
                           className: "dropzone",
                           onDropAccepted: this.onDropAccepted.bind(this),
@@ -252,27 +303,54 @@
                 }
               }
             ]),
-            t
+            a
           );
         })(E.Component),
-        R = a(683),
-        M = a(690),
-        P = (function(e) {
-          function t(e) {
-            var a;
+        M = a(691),
+        z = a(698);
+      function U(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              (a = m()(this, u()(t).call(this, e))),
-              f()(p()(a), "toggleShowNew", function() {
-                a.setState({ showNew: !a.state.showNew });
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = g()(e);
+          if (t) {
+            var o = g()(this).constructor;
+            a = Reflect.construct(n, arguments, o);
+          } else a = n.apply(this, arguments);
+          return p()(this, a);
+        };
+      }
+      var F = (function(e) {
+          u()(a, e);
+          var t = U(a);
+          function a(e) {
+            var n;
+            return (
+              s()(this, a),
+              (n = t.call(this, e)),
+              b()(m()(n), "toggleShowNew", function() {
+                n.setState({ showNew: !n.state.showNew });
               }),
-              (a.state = { showNew: !1 }),
-              a
+              (n.state = { showNew: !1 }),
+              n
             );
           }
           return (
-            b()(t, e),
-            i()(t, [
+            r()(a, [
               {
                 key: "render",
                 value: function() {
@@ -280,7 +358,7 @@
                     "div",
                     null,
                     N.a.createElement(
-                      M.a,
+                      z.a,
                       null,
                       N.a.createElement(
                         "span",
@@ -300,12 +378,12 @@
                       )
                     ),
                     N.a.createElement(
-                      R.a,
+                      M.a,
                       null,
                       N.a.createElement(
                         "div",
                         { className: "col-md-12" },
-                        N.a.createElement(B, {
+                        N.a.createElement(O, {
                           attachments: this.props.attachments,
                           deleteAttachment: this.props.deleteAttachment
                         })
@@ -314,7 +392,7 @@
                         "div",
                         { className: "col-md-12 margin-10-top" },
                         this.state.showNew &&
-                          N.a.createElement(q, {
+                          N.a.createElement(P, {
                             toggleShowNew: this.toggleShowNew,
                             addAttachment: this.props.addAttachment
                           })
@@ -324,35 +402,35 @@
                 }
               }
             ]),
-            t
+            a
           );
         })(E.Component),
-        z = Object(k.b)(function(e) {
+        G = Object(k.b)(function(e) {
           return { permissions: e.meDetails.permissions };
-        })(P),
-        F = a(733),
-        G = a(831),
-        U =
-          (a(687),
-          a(8),
+        })(F),
+        V = a(737),
+        J = a(825),
+        _ =
+          (a(695),
+          a(7),
           function(e) {
             var t = e.email,
               a = e.emailAddresses,
               n = e.errors,
-              l = e.hasLoaded,
-              s = (e.handleSubmit, e.handleToIds),
-              o = e.handleCcIds,
+              o = e.hasLoaded,
+              l = (e.handleSubmit, e.handleToIds),
+              s = e.handleCcIds,
               c = e.handleBccIds,
-              i = e.handleInputChange,
-              r = e.handleTextChange,
+              r = e.handleInputChange,
+              i = e.handleTextChange,
               m = t.from,
               d = t.to,
               u = t.cc,
               h = t.bcc,
               p = t.subject,
-              g = t.htmlBody;
+              f = t.htmlBody;
             return N.a.createElement(
-              R.a,
+              M.a,
               null,
               N.a.createElement(
                 "div",
@@ -379,13 +457,13 @@
               N.a.createElement(
                 "div",
                 { className: "row" },
-                N.a.createElement(G.a, {
+                N.a.createElement(J.a, {
                   label: "Aan selecteren",
                   name: "to",
                   value: d,
                   options: a,
                   optionName: "name",
-                  onChangeAction: s,
+                  onChangeAction: l,
                   allowCreate: !0,
                   required: "required",
                   error: n.to
@@ -394,20 +472,20 @@
               N.a.createElement(
                 "div",
                 { className: "row" },
-                N.a.createElement(G.a, {
+                N.a.createElement(J.a, {
                   label: "Cc selecteren",
                   name: "cc",
                   value: u,
                   options: a,
                   optionName: "name",
-                  onChangeAction: o,
+                  onChangeAction: s,
                   error: n.to
                 })
               ),
               N.a.createElement(
                 "div",
                 { className: "row" },
-                N.a.createElement(G.a, {
+                N.a.createElement(J.a, {
                   label: "Bcc selecteren",
                   name: "bcc",
                   value: h,
@@ -445,7 +523,7 @@
                         ),
                         name: "subject",
                         value: p,
-                        onChange: i
+                        onChange: r
                       })
                     )
                   )
@@ -460,49 +538,49 @@
                   N.a.createElement(
                     "div",
                     { className: "row" },
-                    l &&
-                      N.a.createElement(F.a, {
+                    o &&
+                      N.a.createElement(V.a, {
                         label: "Tekst",
-                        value: g,
-                        onChangeAction: r
+                        value: f,
+                        onChangeAction: i
                       })
                   )
                 )
               )
             );
           }),
-        V = function(e) {
+        K = function(e) {
           var t = e.email,
             a = e.emailAddresses,
             n = e.errors,
-            l = e.hasLoaded,
-            s = e.handleSubmit,
-            o = e.handleToIds,
+            o = e.hasLoaded,
+            l = e.handleSubmit,
+            s = e.handleToIds,
             c = e.handleCcIds,
-            i = e.handleBccIds,
-            r = e.handleInputChange,
+            r = e.handleBccIds,
+            i = e.handleInputChange,
             m = e.handleTextChange,
             d = e.addAttachment,
             u = e.deleteAttachment;
           return N.a.createElement(
             "form",
-            { className: "form-horizontal", onSubmit: s },
+            { className: "form-horizontal", onSubmit: l },
             N.a.createElement(
               A.a,
               null,
-              N.a.createElement(U, {
+              N.a.createElement(_, {
                 email: t,
                 emailAddresses: a,
                 errors: n,
-                hasLoaded: l,
-                handleSubmit: s,
-                handleToIds: o,
+                hasLoaded: o,
+                handleSubmit: l,
+                handleToIds: s,
                 handleCcIds: c,
-                handleBccIds: i,
-                handleInputChange: r,
+                handleBccIds: r,
+                handleInputChange: i,
                 handleTextChange: m
               }),
-              N.a.createElement(z, {
+              N.a.createElement(G, {
                 attachments: t.attachments,
                 deleteAttachment: u,
                 addAttachment: d
@@ -510,10 +588,10 @@
             )
           );
         },
-        J = a(4),
-        _ = a(685),
-        K = a(684),
-        H = function(e) {
+        H = a(4),
+        W = a(693),
+        Q = a(692),
+        X = function(e) {
           var t = e.handleSubmit,
             a = e.loading,
             n = e.removeEmail;
@@ -529,21 +607,21 @@
                   className: "btn-group margin-small margin-10-right",
                   role: "group"
                 },
-                N.a.createElement(_.a, {
+                N.a.createElement(W.a, {
                   iconName: "glyphicon-arrow-left",
-                  onClickAction: J.e.goBack
+                  onClickAction: H.e.goBack
                 })
               ),
               N.a.createElement(
                 "div",
                 { className: "btn-group margin-small", role: "group" },
-                N.a.createElement(K.a, {
+                N.a.createElement(Q.a, {
                   buttonText: "Opslaan",
                   onClickAction: function(e) {
                     t(e, !0);
                   }
                 }),
-                N.a.createElement(K.a, {
+                N.a.createElement(Q.a, {
                   buttonText: "Verstuur e-mail",
                   onClickAction: t,
                   loading: a,
@@ -556,7 +634,7 @@
                   className: "btn-group margin-small margin-10-left",
                   role: "group"
                 },
-                N.a.createElement(_.a, {
+                N.a.createElement(W.a, {
                   iconName: "glyphicon-trash",
                   onClickAction: n
                 })
@@ -574,8 +652,8 @@
             N.a.createElement("div", { className: "col-md-4" })
           );
         },
-        W = a(213);
-      function Q(e, t) {
+        Y = a(215);
+      function Z(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -587,16 +665,16 @@
         }
         return a;
       }
-      function X(e) {
+      function $(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? Q(Object(a), !0).forEach(function(t) {
-                f()(e, t, a[t]);
+            ? Z(Object(a), !0).forEach(function(t) {
+                b()(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : Q(Object(a)).forEach(function(t) {
+            : Z(Object(a)).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -606,16 +684,44 @@
         }
         return e;
       }
-      var Y = (function(e) {
-        function t(e) {
-          var a;
+      function ee(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
+            return (
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = g()(e);
+          if (t) {
+            var o = g()(this).constructor;
+            a = Reflect.construct(n, arguments, o);
+          } else a = n.apply(this, arguments);
+          return p()(this, a);
+        };
+      }
+      var te = (function(e) {
+        u()(a, e);
+        var t = ee(a);
+        function a(e) {
+          var n;
           return (
-            o()(this, t),
-            (a = m()(this, u()(t).call(this, e))),
-            f()(p()(a), "setButtonLoading", function() {
-              a.setState({ buttonLoading: !0 });
+            s()(this, a),
+            (n = t.call(this, e)),
+            b()(m()(n), "setButtonLoading", function() {
+              n.setState({ buttonLoading: !0 });
             }),
-            (a.state = {
+            (n.state = {
               buttonLoading: !1,
               emailAddresses: [],
               email: {
@@ -631,58 +737,61 @@
               errors: { to: !1, subject: !1 },
               hasLoaded: !1
             }),
-            (a.handleInputChange = a.handleInputChange.bind(p()(a))),
-            (a.handleToIds = a.handleToIds.bind(p()(a))),
-            (a.handleCcIds = a.handleCcIds.bind(p()(a))),
-            (a.handleBccIds = a.handleBccIds.bind(p()(a))),
-            (a.handleTextChange = a.handleTextChange.bind(p()(a))),
-            (a.addAttachment = a.addAttachment.bind(p()(a))),
-            (a.deleteAttachment = a.deleteAttachment.bind(p()(a))),
-            (a.handleSubmit = a.handleSubmit.bind(p()(a))),
-            (a.removeEmail = a.removeEmail.bind(p()(a))),
-            a
+            (n.handleInputChange = n.handleInputChange.bind(m()(n))),
+            (n.handleToIds = n.handleToIds.bind(m()(n))),
+            (n.handleCcIds = n.handleCcIds.bind(m()(n))),
+            (n.handleBccIds = n.handleBccIds.bind(m()(n))),
+            (n.handleTextChange = n.handleTextChange.bind(m()(n))),
+            (n.addAttachment = n.addAttachment.bind(m()(n))),
+            (n.deleteAttachment = n.deleteAttachment.bind(m()(n))),
+            (n.handleSubmit = n.handleSubmit.bind(m()(n))),
+            (n.removeEmail = n.removeEmail.bind(m()(n))),
+            n
           );
         }
         return (
-          b()(t, e),
-          i()(t, [
+          r()(a, [
             {
               key: "componentDidMount",
               value: function() {
                 var e = this;
-                W.a.fetchEmailAddressessPeek().then(function(t) {
+                Y.a.fetchEmailAddressessPeek().then(function(t) {
                   e.setState({
                     emailAddresses: [].concat(
-                      l()(e.state.emailAddresses),
-                      l()(t)
+                      o()(e.state.emailAddresses),
+                      o()(t)
                     )
                   });
                 }),
                   I.a.fetchEmail(this.props.params.id).then(function(t) {
                     var a = e.createExtraOptions(t.to, t.cc, t.bcc);
                     e.setState(
-                      X({}, e.state, {
-                        email: {
-                          id: t.id,
-                          from: t.from,
-                          mailboxId: t.mailboxId,
-                          to: t.to ? t.to.join(",") : "",
-                          cc: t.cc ? t.cc.join(",") : "",
-                          bcc: t.bcc ? t.bcc.join(",") : "",
-                          subject: t.subject ? t.subject : "",
-                          htmlBody: t.htmlBody ? t.htmlBody : "",
-                          attachments: t.attachments ? t.attachments : "",
-                          quotationRequestId: t.quotationRequestId
-                            ? t.quotationRequestId
-                            : "6",
-                          intakeId: t.intakeId ? t.intakeId : ""
-                        },
-                        emailAddresses: [].concat(
-                          l()(e.state.emailAddresses),
-                          l()(a)
-                        ),
-                        hasLoaded: !0
-                      }),
+                      $(
+                        $({}, e.state),
+                        {},
+                        {
+                          email: {
+                            id: t.id,
+                            from: t.from,
+                            mailboxId: t.mailboxId,
+                            to: t.to ? t.to.join(",") : "",
+                            cc: t.cc ? t.cc.join(",") : "",
+                            bcc: t.bcc ? t.bcc.join(",") : "",
+                            subject: t.subject ? t.subject : "",
+                            htmlBody: t.htmlBody ? t.htmlBody : "",
+                            attachments: t.attachments ? t.attachments : "",
+                            quotationRequestId: t.quotationRequestId
+                              ? t.quotationRequestId
+                              : "6",
+                            intakeId: t.intakeId ? t.intakeId : ""
+                          },
+                          emailAddresses: [].concat(
+                            o()(e.state.emailAddresses),
+                            o()(a)
+                          ),
+                          hasLoaded: !0
+                        }
+                      ),
                       function() {
                         t.contactGroupId &&
                           I.a
@@ -693,13 +802,21 @@
                                 id: "@group_" + t.contactGroupId,
                                 name: a
                               });
-                              var l = "@group_" + t.contactGroupId;
-                              t.to.length > 0 && (l = l + "," + t.to.join(",")),
+                              var o = "@group_" + t.contactGroupId;
+                              t.to.length > 0 && (o = o + "," + t.to.join(",")),
                                 e.setState(
-                                  X({}, e.state, {
-                                    emailAddresses: n,
-                                    email: X({}, e.state.email, { to: l })
-                                  })
+                                  $(
+                                    $({}, e.state),
+                                    {},
+                                    {
+                                      emailAddresses: n,
+                                      email: $(
+                                        $({}, e.state.email),
+                                        {},
+                                        { to: o }
+                                      )
+                                    }
+                                  )
                                 );
                             });
                       }
@@ -711,12 +828,12 @@
               key: "createExtraOptions",
               value: function(e, t, a) {
                 var n = Object(C.union)(e, t, a),
-                  l = [];
+                  o = [];
                 return (
                   n.map(function(e) {
-                    isNaN(e) && l.push({ id: e, name: e });
+                    isNaN(e) && o.push({ id: e, name: e });
                   }),
-                  l
+                  o
                 );
               }
             },
@@ -727,9 +844,11 @@
                   a = "checkbox" === t.type ? t.checked : t.value,
                   n = t.name;
                 this.setState(
-                  X({}, this.state, {
-                    email: X({}, this.state.email, f()({}, n, a))
-                  })
+                  $(
+                    $({}, this.state),
+                    {},
+                    { email: $($({}, this.state.email), {}, b()({}, n, a)) }
+                  )
                 );
               }
             },
@@ -737,9 +856,11 @@
               key: "handleToIds",
               value: function(e) {
                 this.setState(
-                  X({}, this.state, {
-                    email: X({}, this.state.email, { to: e })
-                  })
+                  $(
+                    $({}, this.state),
+                    {},
+                    { email: $($({}, this.state.email), {}, { to: e }) }
+                  )
                 );
               }
             },
@@ -747,9 +868,11 @@
               key: "handleCcIds",
               value: function(e) {
                 this.setState(
-                  X({}, this.state, {
-                    email: X({}, this.state.email, { cc: e })
-                  })
+                  $(
+                    $({}, this.state),
+                    {},
+                    { email: $($({}, this.state.email), {}, { cc: e }) }
+                  )
                 );
               }
             },
@@ -757,9 +880,11 @@
               key: "handleBccIds",
               value: function(e) {
                 this.setState(
-                  X({}, this.state, {
-                    email: X({}, this.state.email, { bcc: e })
-                  })
+                  $(
+                    $({}, this.state),
+                    {},
+                    { email: $($({}, this.state.email), {}, { bcc: e }) }
+                  )
                 );
               }
             },
@@ -767,11 +892,17 @@
               key: "handleTextChange",
               value: function(e) {
                 this.setState(
-                  X({}, this.state, {
-                    email: X({}, this.state.email, {
-                      htmlBody: e.target.getContent({ format: "raw" })
-                    })
-                  })
+                  $(
+                    $({}, this.state),
+                    {},
+                    {
+                      email: $(
+                        $({}, this.state.email),
+                        {},
+                        { htmlBody: e.target.getContent({ format: "raw" }) }
+                      )
+                    }
+                  )
                 );
               }
             },
@@ -785,11 +916,17 @@
                 }),
                   I.a.storeAttachment(this.state.email.id, a).then(function(e) {
                     t.setState(
-                      X({}, t.state, {
-                        email: X({}, t.state.email, {
-                          attachments: e.data.data
-                        })
-                      })
+                      $(
+                        $({}, t.state),
+                        {},
+                        {
+                          email: $(
+                            $({}, t.state.email),
+                            {},
+                            { attachments: e.data.data }
+                          )
+                        }
+                      )
                     );
                   });
               }
@@ -800,15 +937,23 @@
                 var a = this;
                 I.a.deleteAttachment(t).then(function() {
                   a.setState(
-                    X({}, a.state, {
-                      email: X({}, a.state.email, {
-                        attachments: a.state.email.attachments.filter(function(
-                          t
-                        ) {
-                          return t.name !== e;
-                        })
-                      })
-                    })
+                    $(
+                      $({}, a.state),
+                      {},
+                      {
+                        email: $(
+                          $({}, a.state.email),
+                          {},
+                          {
+                            attachments: a.state.email.attachments.filter(
+                              function(t) {
+                                return t.name !== e;
+                              }
+                            )
+                          }
+                        )
+                      }
+                    )
                   );
                 });
               }
@@ -823,29 +968,29 @@
                 e.preventDefault();
                 var a = this.state.email,
                   n = {},
-                  l = !1;
-                function s(e, t) {
+                  o = !1;
+                function l(e, t) {
                   I.a
                     .updateConcept2(e, t)
                     .then(function() {
-                      J.f.push("/emails/concept");
+                      H.f.push("/emails/concept");
                     })
                     .catch(function(e) {});
                 }
-                function o(e, t) {
+                function s(e, t) {
                   I.a
                     .sendConcept(e, t)
                     .then(function() {
-                      J.f.push("/emails/sent");
+                      H.f.push("/emails/sent");
                     })
                     .catch(function(e) {});
                 }
                 if (
-                  (y.a.isEmpty(a.to) && ((n.to = !0), (l = !0)),
-                  y.a.isEmpty("" + a.from) && ((n.from = !0), (l = !0)),
-                  y.a.isEmpty("" + a.subject) && ((n.subject = !0), (l = !0)),
-                  this.setState(X({}, this.state, { errors: n })),
-                  !l)
+                  (w.a.isEmpty(a.to) && ((n.to = !0), (o = !0)),
+                  w.a.isEmpty("" + a.from) && ((n.from = !0), (o = !0)),
+                  w.a.isEmpty("" + a.subject) && ((n.subject = !0), (o = !0)),
+                  this.setState($($({}, this.state), {}, { errors: n })),
+                  !o)
                 ) {
                   a.to.length > 0 && (a.to = a.to.split(",")),
                     a.cc.length > 0 && (a.cc = a.cc.split(",")),
@@ -860,7 +1005,7 @@
                       ? I.a
                           .updateConcept(a, this.props.params.id)
                           .then(function(e) {
-                            s(c, e.data);
+                            l(c, e.data);
                           })
                           .catch(function(e) {
                             console.log(e);
@@ -869,7 +1014,7 @@
                         I.a
                           .updateConcept(a, this.props.params.id)
                           .then(function(e) {
-                            o(c, e.data);
+                            s(c, e.data);
                           })
                           .catch(function(e) {
                             console.log(e);
@@ -881,7 +1026,7 @@
               key: "removeEmail",
               value: function() {
                 I.a.deleteEmail(this.props.params.id).then(function() {
-                  J.e.goBack();
+                  H.e.goBack();
                 });
               }
             },
@@ -901,9 +1046,9 @@
                         A.a,
                         null,
                         N.a.createElement(
-                          R.a,
+                          M.a,
                           { className: "panel-small" },
-                          N.a.createElement(H, {
+                          N.a.createElement(X, {
                             loading: this.state.buttonLoading,
                             handleSubmit: this.handleSubmit,
                             removeEmail: this.removeEmail
@@ -914,7 +1059,7 @@
                     N.a.createElement(
                       "div",
                       { className: "col-md-12 margin-10-top" },
-                      N.a.createElement(V, {
+                      N.a.createElement(K, {
                         email: this.state.email,
                         emailAddresses: this.state.emailAddresses,
                         errors: this.state.errors,
@@ -935,28 +1080,28 @@
               }
             }
           ]),
-          t
+          a
         );
       })(E.Component);
-      t.default = Y;
+      t.default = te;
     },
-    682: function(e, t, a) {
+    690: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(14),
-        o = a.n(s),
+        o = a.n(n),
+        l = a(8),
+        s = a.n(l),
         c = function(e) {
           var t = e.children,
             a = e.className,
             n = e.onMouseEnter,
-            s = e.onMouseLeave;
-          return l.a.createElement(
+            l = e.onMouseLeave;
+          return o.a.createElement(
             "div",
             {
               className: "panel panel-default ".concat(a),
               onMouseEnter: n,
-              onMouseLeave: s
+              onMouseLeave: l
             },
             t
           );
@@ -967,70 +1112,70 @@
         onMouseLeave: function() {}
       }),
         (c.propTypes = {
-          className: o.a.string,
-          onMouseEnter: o.a.func,
-          onMouseLeave: o.a.func
+          className: s.a.string,
+          onMouseEnter: s.a.func,
+          onMouseLeave: s.a.func
         }),
         (t.a = c);
     },
-    683: function(e, t, a) {
+    691: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(14),
-        o = a.n(s),
+        o = a.n(n),
+        l = a(8),
+        s = a.n(l),
         c = function(e) {
           var t = e.className,
             a = e.children;
-          return l.a.createElement(
+          return o.a.createElement(
             "div",
             { className: "panel-body ".concat(t) },
             a
           );
         };
       (c.defaultProps = { className: "" }),
-        (c.propTypes = { className: o.a.string }),
+        (c.propTypes = { className: s.a.string }),
         (t.a = c);
     },
-    684: function(e, t, a) {
+    692: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(14),
-        o = a.n(s),
+        o = a.n(n),
+        l = a(8),
+        s = a.n(l),
         c = function(e) {
           var t = e.buttonClassName,
             a = e.buttonText,
             n = e.onClickAction,
-            s = e.type,
-            o = e.value,
+            l = e.type,
+            s = e.value,
             c = e.loading,
-            i = e.loadText,
-            r = e.disabled;
+            r = e.loadText,
+            i = e.disabled;
           return c
-            ? l.a.createElement(
+            ? o.a.createElement(
                 "button",
                 {
-                  type: s,
+                  type: l,
                   className: "btn btn-sm btn-loading ".concat(t),
-                  value: o,
+                  value: s,
                   disabled: c
                 },
-                l.a.createElement("span", {
+                o.a.createElement("span", {
                   className:
                     "glyphicon glyphicon-refresh glyphicon-refresh-animate"
                 }),
                 " ",
-                i
+                r
               )
-            : l.a.createElement(
+            : o.a.createElement(
                 "button",
                 {
-                  type: s,
+                  type: l,
                   className: "btn btn-sm ".concat(t),
                   onClick: n,
-                  value: o,
-                  disabled: r
+                  value: s,
+                  disabled: i
                 },
                 a
               );
@@ -1044,39 +1189,39 @@
         disabled: !1
       }),
         (c.propTypes = {
-          buttonClassName: o.a.string,
-          buttonText: o.a.string.isRequired,
-          onClickAction: o.a.func,
-          type: o.a.string,
-          value: o.a.string,
-          loading: o.a.bool,
-          loadText: o.a.string,
-          disabled: o.a.bool
+          buttonClassName: s.a.string,
+          buttonText: s.a.string.isRequired,
+          onClickAction: s.a.func,
+          type: s.a.string,
+          value: s.a.string,
+          loading: s.a.bool,
+          loadText: s.a.string,
+          disabled: s.a.bool
         }),
         (t.a = c);
     },
-    685: function(e, t, a) {
+    693: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(14),
-        o = a.n(s),
+        o = a.n(n),
+        l = a(8),
+        s = a.n(l),
         c = function(e) {
           var t = e.buttonClassName,
             a = e.iconName,
             n = e.onClickAction,
-            s = e.title,
-            o = e.disabled;
-          return l.a.createElement(
+            l = e.title,
+            s = e.disabled;
+          return o.a.createElement(
             "button",
             {
               type: "button",
               className: "btn ".concat(t),
               onClick: n,
-              disabled: o,
-              title: s
+              disabled: s,
+              title: l
             },
-            l.a.createElement("span", { className: "glyphicon ".concat(a) })
+            o.a.createElement("span", { className: "glyphicon ".concat(a) })
           );
         };
       (c.defaultProps = {
@@ -1085,65 +1230,65 @@
         disabled: !1
       }),
         (c.propTypes = {
-          buttonClassName: o.a.string,
-          iconName: o.a.string.isRequired,
-          onClickAction: o.a.func,
-          title: o.a.string,
-          disabled: o.a.bool
+          buttonClassName: s.a.string,
+          iconName: s.a.string.isRequired,
+          onClickAction: s.a.func,
+          title: s.a.string,
+          disabled: s.a.bool
         }),
         (t.a = c);
     },
-    687: function(e, t, a) {
+    695: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(4),
-        o = a(14),
-        c = a.n(o),
-        i = function(e) {
+        o = a.n(n),
+        l = a(4),
+        s = a(8),
+        c = a.n(s),
+        r = function(e) {
           var t = e.label,
             a = e.className,
             n = e.id,
-            o = e.value,
+            s = e.value,
             c = e.link,
-            i = e.hidden;
+            r = e.hidden;
           return c.length > 0
-            ? l.a.createElement(
+            ? o.a.createElement(
                 "div",
-                { className: a, style: i ? { display: "none" } : {} },
-                l.a.createElement(
+                { className: a, style: r ? { display: "none" } : {} },
+                o.a.createElement(
                   "label",
                   { htmlFor: n, className: "col-sm-6" },
                   t
                 ),
-                l.a.createElement(
+                o.a.createElement(
                   "div",
                   { className: "col-sm-6", id: n, onClick: null },
-                  l.a.createElement(
-                    s.b,
+                  o.a.createElement(
+                    l.b,
                     { to: c, className: "link-underline" },
-                    o
+                    s
                   )
                 )
               )
-            : l.a.createElement(
+            : o.a.createElement(
                 "div",
-                { className: a, style: i ? { display: "none" } : {} },
-                l.a.createElement(
+                { className: a, style: r ? { display: "none" } : {} },
+                o.a.createElement(
                   "label",
                   { htmlFor: n, className: "col-sm-6" },
                   t
                 ),
-                l.a.createElement("div", { className: "col-sm-6", id: n }, o)
+                o.a.createElement("div", { className: "col-sm-6", id: n }, s)
               );
         };
-      (i.defaultProps = {
+      (r.defaultProps = {
         className: "col-sm-6",
         value: "",
         link: "",
         hidden: !1
       }),
-        (i.propTypes = {
+        (r.propTypes = {
           label: c.a.oneOfType([c.a.string, c.a.object]).isRequired,
           className: c.a.string,
           id: c.a.string,
@@ -1151,34 +1296,39 @@
           link: c.a.string,
           hidden: c.a.bool
         }),
-        (t.a = i);
+        (t.a = r);
     },
-    690: function(e, t, a) {
+    698: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(14),
-        o = a.n(s),
+        o = a.n(n),
+        l = a(8),
+        s = a.n(l),
         c = function(e) {
           var t = e.className,
             a = e.children;
-          return l.a.createElement(
+          return o.a.createElement(
             "div",
             { className: "panel-heading ".concat(t) },
             a
           );
         };
       (c.defaultProps = { className: "" }),
-        (c.propTypes = { className: o.a.string }),
+        (c.propTypes = { className: s.a.string }),
         (t.a = c);
     },
-    704: function(e, t) {
-      e.exports = function(e, t, a) {
-        var n = new Blob([e], { type: a || "application/octet-stream" });
+    711: function(e, t) {
+      e.exports = function(e, t, a, n) {
+        var o = new Blob(void 0 !== n ? [n, e] : [e], {
+          type: a || "application/octet-stream"
+        });
         if (void 0 !== window.navigator.msSaveBlob)
-          window.navigator.msSaveBlob(n, t);
+          window.navigator.msSaveBlob(o, t);
         else {
-          var l = window.URL.createObjectURL(n),
+          var l =
+              window.URL && window.URL.createObjectURL
+                ? window.URL.createObjectURL(o)
+                : window.webkitURL.createObjectURL(o),
             s = document.createElement("a");
           (s.style.display = "none"),
             (s.href = l),
@@ -1186,21 +1336,20 @@
             void 0 === s.download && s.setAttribute("target", "_blank"),
             document.body.appendChild(s),
             s.click(),
-            document.body.removeChild(s),
-            window.URL.revokeObjectURL(l);
+            setTimeout(function() {
+              document.body.removeChild(s), window.URL.revokeObjectURL(l);
+            }, 200);
         }
       };
     },
-    733: function(e, t, a) {
+    737: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(14),
-        o = a.n(s),
+        o = a.n(n),
+        l = a(8),
+        s = a.n(l),
         c =
-          (a(750),
-          a(751),
-          a(752),
+          (a(752),
           a(753),
           a(754),
           a(755),
@@ -1209,27 +1358,29 @@
           a(758),
           a(759),
           a(760),
-          a(769)),
-        i = function(e) {
+          a(761),
+          a(762),
+          a(770)),
+        r = function(e) {
           var t = e.label,
             a = e.value,
             n = e.onChangeAction;
-          return l.a.createElement(
+          return o.a.createElement(
             "div",
             null,
-            l.a.createElement(
+            o.a.createElement(
               "div",
               { className: "col-sm-3" },
-              l.a.createElement(
+              o.a.createElement(
                 "label",
                 { htmlFor: "quotationText", className: "col-sm-12" },
                 t
               )
             ),
-            l.a.createElement(
+            o.a.createElement(
               "div",
               { className: "col-sm-9" },
-              l.a.createElement(c.a, {
+              o.a.createElement(c.a, {
                 initialValue: a,
                 init: {
                   branding: !1,
@@ -1249,63 +1400,63 @@
             )
           );
         };
-      (i.defaultProps = { value: "", errorMessage: "" }),
-        (i.propTypes = {
-          label: o.a.string.isRequired,
-          type: o.a.string,
-          id: o.a.string,
-          placeholder: o.a.string,
-          value: o.a.string,
-          onChangeAction: o.a.func
+      (r.defaultProps = { value: "", errorMessage: "" }),
+        (r.propTypes = {
+          label: s.a.string.isRequired,
+          type: s.a.string,
+          id: s.a.string,
+          placeholder: s.a.string,
+          value: s.a.string,
+          onChangeAction: s.a.func
         }),
-        (t.a = i);
+        (t.a = r);
     },
-    831: function(e, t, a) {
+    825: function(e, t, a) {
       "use strict";
       var n = a(0),
-        l = a.n(n),
-        s = a(14),
-        o = a.n(s),
-        c = a(707),
-        i =
-          (a(708),
+        o = a.n(n),
+        l = a(8),
+        s = a.n(l),
+        c = a(714),
+        r =
+          (a(715),
           function(e) {
             var t = e.label,
               a = (e.className, e.size),
               n = e.id,
-              s = e.name,
-              o = e.value,
-              i = e.options,
-              r = e.optionId,
+              l = e.name,
+              s = e.value,
+              r = e.options,
+              i = e.optionId,
               m = e.optionName,
               d = e.onChangeAction,
               u = e.required,
               h = (e.allowCreate, e.error);
-            return l.a.createElement(
+            return o.a.createElement(
               "div",
               { className: "form-group col-sm-12" },
-              l.a.createElement(
+              o.a.createElement(
                 "div",
                 { className: "row" },
-                l.a.createElement(
+                o.a.createElement(
                   "div",
                   { className: "col-sm-3" },
-                  l.a.createElement(
+                  o.a.createElement(
                     "label",
                     { htmlFor: n, className: "col-sm-12 ".concat(u) },
                     t
                   )
                 ),
-                l.a.createElement(
+                o.a.createElement(
                   "div",
                   { className: "".concat(a) },
-                  l.a.createElement(c.a.Creatable, {
+                  o.a.createElement(c.a.Creatable, {
                     id: n,
-                    name: s,
-                    value: o,
+                    name: l,
+                    value: s,
                     onChange: d,
-                    options: i,
-                    valueKey: r,
+                    options: r,
+                    valueKey: i,
                     labelKey: m,
                     placeholder: "",
                     noResultsText: "Geen resultaat gevonden",
@@ -1321,7 +1472,7 @@
               )
             );
           });
-      (i.defaultProps = {
+      (r.defaultProps = {
         allowCreate: !1,
         className: "",
         size: "col-sm-6",
@@ -1332,24 +1483,24 @@
         error: !1,
         value: ""
       }),
-        (i.propTypes = {
-          allowCreate: o.a.bool,
-          label: o.a.string.isRequired,
-          className: o.a.string,
-          size: o.a.string,
-          id: o.a.string,
-          name: o.a.string.isRequired,
-          options: o.a.array,
-          optionId: o.a.string,
-          optionName: o.a.string,
-          value: o.a.string,
-          onChangeAction: o.a.func,
-          onBlurAction: o.a.func,
-          required: o.a.string,
-          readOnly: o.a.bool,
-          error: o.a.bool
+        (r.propTypes = {
+          allowCreate: s.a.bool,
+          label: s.a.string.isRequired,
+          className: s.a.string,
+          size: s.a.string,
+          id: s.a.string,
+          name: s.a.string.isRequired,
+          options: s.a.array,
+          optionId: s.a.string,
+          optionName: s.a.string,
+          value: s.a.string,
+          onChangeAction: s.a.func,
+          onBlurAction: s.a.func,
+          required: s.a.string,
+          readOnly: s.a.bool,
+          error: s.a.bool
         }),
-        (t.a = i);
+        (t.a = r);
     }
   }
 ]);

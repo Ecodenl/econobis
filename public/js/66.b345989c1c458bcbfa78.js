@@ -1,33 +1,33 @@
 (window.webpackJsonp = window.webpackJsonp || []).push([
-  [65],
+  [66],
   {
-    1534: function(e, t, a) {
+    1432: function(e, t, a) {
       "use strict";
       a.r(t);
-      var n = a(25),
-        o = a.n(n),
-        r = a(24),
-        s = a.n(r),
+      var n = a(24),
+        r = a.n(n),
+        o = a(25),
+        s = a.n(o),
         l = a(26),
         i = a.n(l),
         c = a(27),
         u = a.n(c),
-        m = a(28),
+        m = a(16),
         d = a.n(m),
-        p = a(0),
-        f = a.n(p),
-        h = a(33),
-        g = function(e) {
+        f = a(0),
+        p = a.n(f),
+        h = a(32),
+        v = function(e) {
           return { type: "FETCH_QUOTATION_REQUEST_DETAILS", payload: e };
         },
-        v = a(21),
-        E = a.n(v),
+        g = a(22),
+        E = a.n(g),
         b = a(6),
-        N = a.n(b),
-        y = a(4),
-        q = a(685),
-        w = a(98),
-        D = Object(h.b)(null, function(e) {
+        y = a.n(b),
+        N = a(4),
+        D = a(693),
+        R = a(100),
+        q = Object(h.b)(null, function(e) {
           return {
             deleteQuotationRequest: function(t) {
               e(
@@ -38,8 +38,8 @@
             }
           };
         })(function(e) {
-          return f.a.createElement(
-            w.a,
+          return p.a.createElement(
+            R.a,
             {
               buttonConfirmText: "Verwijder",
               buttonClassName: "btn-danger",
@@ -51,41 +51,68 @@
               },
               title: "Verwijderen"
             },
-            f.a.createElement(
+            p.a.createElement(
               "p",
               null,
               "Verwijder offerteverzoek: ",
-              f.a.createElement("strong", null, " ", "".concat(e.id), " ")
+              p.a.createElement("strong", null, " ", "".concat(e.id), " ")
             )
           );
         }),
-        k = a(682),
-        O = a(683),
-        C = (function(e) {
-          function t(e) {
-            var a;
+        w = a(690),
+        k = a(691);
+      function O(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              (a = i()(this, u()(t).call(this, e))),
-              N()(E()(a), "toggleDelete", function() {
-                a.setState({ showDelete: !a.state.showDelete });
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      var C = (function(e) {
+          i()(a, e);
+          var t = O(a);
+          function a(e) {
+            var n;
+            return (
+              r()(this, a),
+              (n = t.call(this, e)),
+              y()(E()(n), "toggleDelete", function() {
+                n.setState({ showDelete: !n.state.showDelete });
               }),
-              N()(E()(a), "sendMail", function() {
-                y.f.push(
+              y()(E()(n), "sendMail", function() {
+                N.f.push(
                   "/email/nieuw/offerteverzoek/"
-                    .concat(a.props.quotationRequestDetails.id, "/")
+                    .concat(n.props.quotationRequestDetails.id, "/")
                     .concat(
-                      a.props.quotationRequestDetails.organisation.contactId
+                      n.props.quotationRequestDetails.organisation.contactId
                     )
                 );
               }),
-              (a.state = { showDelete: !1 }),
-              a
+              (n.state = { showDelete: !1 }),
+              n
             );
           }
           return (
-            d()(t, e),
-            s()(t, [
+            s()(a, [
               {
                 key: "render",
                 value: function() {
@@ -93,48 +120,48 @@
                     t = void 0 === e ? {} : e,
                     a = t.measure,
                     n = void 0 === a ? {} : a,
-                    o = t.intake,
-                    r = void 0 === o ? {} : o,
+                    r = t.intake,
+                    o = void 0 === r ? {} : r,
                     s = n.name || "",
-                    l = r && r.contact ? r.contact.fullName : "",
-                    i = r.fullAddress || "";
-                  return f.a.createElement(
+                    l = o && o.contact ? o.contact.fullName : "",
+                    i = o.fullAddress || "";
+                  return p.a.createElement(
                     "div",
                     { className: "row" },
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "col-sm-12" },
-                      f.a.createElement(
-                        k.a,
+                      p.a.createElement(
+                        w.a,
                         null,
-                        f.a.createElement(
-                          O.a,
+                        p.a.createElement(
+                          k.a,
                           { className: "panel-small" },
-                          f.a.createElement(
+                          p.a.createElement(
                             "div",
                             { className: "col-md-2" },
-                            f.a.createElement(
+                            p.a.createElement(
                               "div",
                               { className: "btn-group", role: "group" },
-                              f.a.createElement(q.a, {
+                              p.a.createElement(D.a, {
                                 iconName: "glyphicon-arrow-left",
-                                onClickAction: y.e.goBack
+                                onClickAction: N.e.goBack
                               }),
                               this.props.permissions.manageQuotationRequest &&
-                                f.a.createElement(q.a, {
+                                p.a.createElement(D.a, {
                                   iconName: "glyphicon-trash",
                                   onClickAction: this.toggleDelete
                                 }),
-                              f.a.createElement(q.a, {
+                              p.a.createElement(D.a, {
                                 iconName: "glyphicon-envelope",
                                 onClickAction: this.sendMail
                               })
                             )
                           ),
-                          f.a.createElement(
+                          p.a.createElement(
                             "div",
                             { className: "col-md-8" },
-                            f.a.createElement(
+                            p.a.createElement(
                               "h4",
                               { className: "text-center" },
                               "Offerteverzoek "
@@ -143,12 +170,12 @@
                                 .concat(i)
                             )
                           ),
-                          f.a.createElement("div", { className: "col-md-2" })
+                          p.a.createElement("div", { className: "col-md-2" })
                         )
                       )
                     ),
                     this.state.showDelete &&
-                      f.a.createElement(D, {
+                      p.a.createElement(q, {
                         closeDeleteItemModal: this.toggleDelete,
                         id: this.props.id
                       })
@@ -156,28 +183,28 @@
                 }
               }
             ]),
-            t
+            a
           );
-        })(p.Component),
+        })(f.Component),
         S = Object(h.b)(function(e) {
           return {
             quotationRequestDetails: e.quotationRequestDetails,
             permissions: e.meDetails.permissions
           };
         })(C),
-        R = a(197),
-        A = a(8),
-        T = a.n(A),
-        L = a(189),
-        j = a(740),
-        z = a(688),
-        P = a(684),
-        I = a(686),
-        M = a(691),
-        x = a(729),
-        B = a(689),
-        V = a.n(B);
-      function F(e, t) {
+        A = a(198),
+        T = a(7),
+        L = a.n(T),
+        P = a(190),
+        j = a(744),
+        z = a(696),
+        x = a(692),
+        I = a(694),
+        M = a(699),
+        B = a(734),
+        V = a(697),
+        F = a.n(V);
+      function Q(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -189,16 +216,16 @@
         }
         return a;
       }
-      function Q(e) {
+      function W(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? F(Object(a), !0).forEach(function(t) {
-                N()(e, t, a[t]);
+            ? Q(Object(a), !0).forEach(function(t) {
+                y()(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : F(Object(a)).forEach(function(t) {
+            : Q(Object(a)).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -208,52 +235,84 @@
         }
         return e;
       }
-      T.a.locale("nl");
-      var W = (function(e) {
-          function t(e) {
-            var a;
-            o()(this, t),
-              (a = i()(this, u()(t).call(this, e))),
-              N()(E()(a), "handleInputChange", function(e) {
+      function U(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
+            return (
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      L.a.locale("nl");
+      var _ = (function(e) {
+          i()(a, e);
+          var t = U(a);
+          function a(e) {
+            var n;
+            r()(this, a),
+              (n = t.call(this, e)),
+              y()(E()(n), "handleInputChange", function(e) {
                 var t = e.target,
-                  n = "checkbox" === t.type ? t.checked : t.value,
-                  o = t.name;
-                a.setState(
-                  Q({}, a.state, {
-                    quotationRequest: Q(
-                      {},
-                      a.state.quotationRequest,
-                      N()({}, o, n)
-                    )
-                  })
+                  a = "checkbox" === t.type ? t.checked : t.value,
+                  r = t.name;
+                n.setState(
+                  W(
+                    W({}, n.state),
+                    {},
+                    {
+                      quotationRequest: W(
+                        W({}, n.state.quotationRequest),
+                        {},
+                        y()({}, r, a)
+                      )
+                    }
+                  )
                 );
               }),
-              N()(E()(a), "handleSubmit", function(e) {
+              y()(E()(n), "handleSubmit", function(e) {
                 e.preventDefault();
-                var t = a.state.quotationRequest,
-                  n = {},
-                  o = !1;
-                V.a.isEmpty(t.statusId + "") && ((n.status = !0), (o = !0)),
-                  V.a.isEmpty(t.organisationId + "") &&
-                    ((n.organisation = !0), (o = !0)),
-                  a.setState(Q({}, a.state, { errors: n })),
-                  !o &&
-                    L.a.updateQuotationRequest(t).then(function(e) {
-                      a.props.fetchQuotationRequestDetails(t.id),
-                        a.props.switchToView();
+                var t = n.state.quotationRequest,
+                  a = {},
+                  r = !1;
+                F.a.isEmpty(t.statusId + "") && ((a.status = !0), (r = !0)),
+                  F.a.isEmpty(t.organisationId + "") &&
+                    ((a.organisation = !0), (r = !0)),
+                  n.setState(W(W({}, n.state), {}, { errors: a })),
+                  !r &&
+                    P.a.updateQuotationRequest(t).then(function(e) {
+                      n.props.fetchQuotationRequestDetails(t.id),
+                        n.props.switchToView();
                     });
               });
-            var n = e.quotationRequestDetails,
-              r = n.id,
-              s = n.organisation,
-              l = n.dateRecorded,
-              c = n.status,
-              m = n.datePlannedToSendWfEmailStatus,
-              d = n.dateReleased,
-              p = n.quotationText,
-              f = n.opportunity;
+            var o = e.quotationRequestDetails,
+              s = o.id,
+              l = o.organisation,
+              i = o.dateRecorded,
+              c = o.status,
+              u = o.datePlannedToSendWfEmailStatus,
+              m = o.dateReleased,
+              d = o.quotationText,
+              f = o.opportunity;
             return (
-              (a.state = {
+              (n.state = {
                 opportunity: {
                   fullName: f.intake ? f.intake.contact.fullName : "",
                   fullAddress: f.intake ? f.intake.fullAddress : "",
@@ -268,25 +327,24 @@
                 },
                 organisations: [],
                 quotationRequest: {
-                  id: r,
+                  id: s,
                   opportunityId: f.id,
-                  organisationId: s.id,
-                  dateRecorded: l || "",
+                  organisationId: l.id,
+                  dateRecorded: i || "",
                   statusId: c.id,
                   statusUsesWf: !!c && c.usesWf,
-                  datePlannedToSendWfEmailStatus: m ? T()(m).format("L") : "",
-                  dateReleased: d || "",
-                  quotationText: p || ""
+                  datePlannedToSendWfEmailStatus: u ? L()(u).format("L") : "",
+                  dateReleased: m || "",
+                  quotationText: d || ""
                 },
                 errors: { organisation: !1, status: !1 }
               }),
-              (a.handleInputChangeDate = a.handleInputChangeDate.bind(E()(a))),
-              a
+              (n.handleInputChangeDate = n.handleInputChangeDate.bind(E()(n))),
+              n
             );
           }
           return (
-            d()(t, e),
-            s()(t, [
+            s()(a, [
               {
                 key: "componentWillMount",
                 value: function() {
@@ -300,13 +358,17 @@
                 key: "handleInputChangeDate",
                 value: function(e, t) {
                   this.setState(
-                    Q({}, this.state, {
-                      quotationRequest: Q(
-                        {},
-                        this.state.quotationRequest,
-                        N()({}, t, e)
-                      )
-                    })
+                    W(
+                      W({}, this.state),
+                      {},
+                      {
+                        quotationRequest: W(
+                          W({}, this.state.quotationRequest),
+                          {},
+                          y()({}, t, e)
+                        )
+                      }
+                    )
                   );
                 }
               },
@@ -317,8 +379,8 @@
                     t = e.organisationId,
                     a = e.dateRecorded,
                     n = e.statusId,
-                    o = e.statusUsesWf,
-                    r = e.datePlannedToSendWfEmailStatus,
+                    r = e.statusUsesWf,
+                    o = e.datePlannedToSendWfEmailStatus,
                     s = e.dateReleased,
                     l = e.quotationText,
                     i = this.state.opportunity,
@@ -326,16 +388,16 @@
                     u = i.fullAddress,
                     m = i.measureNames,
                     d = i.measureCategoryName;
-                  return f.a.createElement(
+                  return p.a.createElement(
                     "form",
                     {
                       className: "form-horizontal",
                       onSubmit: this.handleSubmit
                     },
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "row" },
-                      f.a.createElement(z.a, {
+                      p.a.createElement(z.a, {
                         label: "Organisatie",
                         size: "col-sm-6",
                         name: "organisationId",
@@ -345,7 +407,7 @@
                         required: "required",
                         error: this.state.errors.organisation
                       }),
-                      f.a.createElement(I.a, {
+                      p.a.createElement(I.a, {
                         label: "Verzoek voor",
                         name: "fullName",
                         value: c,
@@ -353,17 +415,17 @@
                         readOnly: !0
                       })
                     ),
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "row" },
-                      f.a.createElement(I.a, {
+                      p.a.createElement(I.a, {
                         label: "Adres voor",
                         name: "address",
                         value: u,
                         onChange: function() {},
                         readOnly: !0
                       }),
-                      f.a.createElement(I.a, {
+                      p.a.createElement(I.a, {
                         label: "Maatregel - categorie",
                         name: "measureCategory",
                         value: d,
@@ -371,17 +433,17 @@
                         readOnly: !0
                       })
                     ),
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "row" },
-                      f.a.createElement(I.a, {
+                      p.a.createElement(I.a, {
                         label: "Maatregel - specifiek",
                         name: "measure",
                         value: m,
                         onChange: function() {},
                         readOnly: !0
                       }),
-                      f.a.createElement(M.a, {
+                      p.a.createElement(M.a, {
                         label: "Datum opname",
                         size: "col-sm-6",
                         name: "dateRecorded",
@@ -389,10 +451,10 @@
                         onChangeAction: this.handleInputChangeDate
                       })
                     ),
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "row" },
-                      f.a.createElement(z.a, {
+                      p.a.createElement(z.a, {
                         label: "Offerte status",
                         size: "col-sm-6",
                         name: "statusId",
@@ -402,20 +464,20 @@
                         required: "required",
                         error: this.state.errors.status
                       }),
-                      o
-                        ? f.a.createElement(I.a, {
+                      r
+                        ? p.a.createElement(I.a, {
                             label: "Datum workflow email",
                             name: "datePlannedToSendWfEmailStatus",
-                            value: r,
+                            value: o,
                             onChange: function() {},
                             readOnly: !0
                           })
                         : ""
                     ),
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "row" },
-                      f.a.createElement(M.a, {
+                      p.a.createElement(M.a, {
                         label: "Offerte uitgebracht",
                         size: "col-sm-6",
                         name: "dateReleased",
@@ -423,23 +485,23 @@
                         onChangeAction: this.handleInputChangeDate
                       })
                     ),
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "row" },
-                      f.a.createElement(x.a, {
+                      p.a.createElement(B.a, {
                         label: "Offerte omschrijving",
                         name: "quotationText",
                         value: l,
                         onChangeAction: this.handleInputChange
                       })
                     ),
-                    f.a.createElement(
+                    p.a.createElement(
                       "div",
                       { className: "panel-footer" },
-                      f.a.createElement(
+                      p.a.createElement(
                         "div",
                         { className: "pull-right btn-group", role: "group" },
-                        f.a.createElement(P.a, {
+                        p.a.createElement(x.a, {
                           buttonText: "Opslaan",
                           onClickAction: this.handleSubmit
                         })
@@ -449,10 +511,10 @@
                 }
               }
             ]),
-            t
+            a
           );
-        })(p.Component),
-        U = Object(h.b)(
+        })(f.Component),
+        G = Object(h.b)(
           function(e) {
             return {
               quotationRequestStatus: e.systemData.quotationRequestStatus,
@@ -462,145 +524,172 @@
           function(e) {
             return {
               fetchQuotationRequestDetails: function(t) {
-                e(g(t));
+                e(v(t));
               }
             };
           }
-        )(W),
-        _ = a(687);
-      T.a.locale("nl");
-      var G = Object(h.b)(function(e) {
-          return { quotationRequestDetails: e.quotationRequestDetails };
-        })(function(e) {
-          var t = e.quotationRequestDetails,
-            a = t.organisation,
-            n = t.dateRecorded,
-            o = t.status,
-            r = t.datePlannedToSendWfEmailStatus,
-            s = t.dateReleased,
-            l = t.quotationText,
-            i = t.opportunity;
-          return f.a.createElement(
+        )(_),
+        Y = a(695);
+      L.a.locale("nl");
+      var J = Object(h.b)(function(e) {
+        return { quotationRequestDetails: e.quotationRequestDetails };
+      })(function(e) {
+        var t = e.quotationRequestDetails,
+          a = t.organisation,
+          n = t.dateRecorded,
+          r = t.status,
+          o = t.datePlannedToSendWfEmailStatus,
+          s = t.dateReleased,
+          l = t.quotationText,
+          i = t.opportunity;
+        return p.a.createElement(
+          "div",
+          { onClick: e.switchToEdit },
+          p.a.createElement(
             "div",
-            { onClick: e.switchToEdit },
-            f.a.createElement(
-              "div",
-              { className: "row" },
-              f.a.createElement(_.a, {
-                label: "Organisatie",
-                value: a && a.name,
-                link: a ? "contact/" + a.contact.id : ""
-              }),
-              f.a.createElement(_.a, {
-                label: "Verzoek voor",
-                value: i.intake && i.intake.contact.fullName
-              })
-            ),
-            f.a.createElement(
-              "div",
-              { className: "row" },
-              f.a.createElement(_.a, {
-                label: "Organisatie contactpersoon",
-                value: a.contact.contactPerson
-                  ? a.contact.contactPerson.contact.fullName
-                  : "",
-                link: a.contact.contactPerson
-                  ? "contact/" + a.contact.contactPerson.contact.id
-                  : ""
-              })
-            ),
-            f.a.createElement(
-              "div",
-              { className: "row" },
-              f.a.createElement(_.a, {
-                label: "Adres voor",
-                value: i.intake && i.intake.fullAddress
-              }),
-              f.a.createElement(_.a, {
-                label: "Maatregel categorie",
-                value: i.measureCategory && i.measureCategory.name
-              })
-            ),
-            f.a.createElement(
-              "div",
-              { className: "row" },
-              f.a.createElement(_.a, {
-                label: "Maatregelen specifiek",
-                value:
-                  i.measures &&
-                  i.measures
-                    .map(function(e) {
-                      return e.name;
-                    })
-                    .join(", ")
-              }),
-              f.a.createElement(_.a, {
-                label: "Datum opname",
-                value: n ? T()(n).format("L") : ""
-              })
-            ),
-            f.a.createElement(
-              "div",
-              { className: "row" },
-              f.a.createElement(_.a, {
-                label: "Offerte status",
-                value: o && o.name
-              }),
-              o && o.usesWf
-                ? f.a.createElement(_.a, {
-                    label: "Datum workflow email",
-                    value: r ? T()(r).format("L") : ""
-                  })
+            { className: "row" },
+            p.a.createElement(Y.a, {
+              label: "Organisatie",
+              value: a && a.name,
+              link: a ? "contact/" + a.contact.id : ""
+            }),
+            p.a.createElement(Y.a, {
+              label: "Verzoek voor",
+              value: i.intake && i.intake.contact.fullName
+            })
+          ),
+          p.a.createElement(
+            "div",
+            { className: "row" },
+            p.a.createElement(Y.a, {
+              label: "Organisatie contactpersoon",
+              value: a.contact.contactPerson
+                ? a.contact.contactPerson.contact.fullName
                 : "",
-              ";"
-            ),
-            f.a.createElement(
+              link: a.contact.contactPerson
+                ? "contact/" + a.contact.contactPerson.contact.id
+                : ""
+            })
+          ),
+          p.a.createElement(
+            "div",
+            { className: "row" },
+            p.a.createElement(Y.a, {
+              label: "Adres voor",
+              value: i.intake && i.intake.fullAddress
+            }),
+            p.a.createElement(Y.a, {
+              label: "Maatregel categorie",
+              value: i.measureCategory && i.measureCategory.name
+            })
+          ),
+          p.a.createElement(
+            "div",
+            { className: "row" },
+            p.a.createElement(Y.a, {
+              label: "Maatregelen specifiek",
+              value:
+                i.measures &&
+                i.measures
+                  .map(function(e) {
+                    return e.name;
+                  })
+                  .join(", ")
+            }),
+            p.a.createElement(Y.a, {
+              label: "Datum opname",
+              value: n ? L()(n).format("L") : ""
+            })
+          ),
+          p.a.createElement(
+            "div",
+            { className: "row" },
+            p.a.createElement(Y.a, {
+              label: "Offerte status",
+              value: r && r.name
+            }),
+            r && r.usesWf
+              ? p.a.createElement(Y.a, {
+                  label: "Datum workflow email",
+                  value: o ? L()(o).format("L") : ""
+                })
+              : "",
+            ";"
+          ),
+          p.a.createElement(
+            "div",
+            { className: "row" },
+            p.a.createElement(Y.a, {
+              label: "Offerte uitgebracht",
+              value: s ? L()(s).format("L") : ""
+            })
+          ),
+          p.a.createElement(
+            "div",
+            { className: "row" },
+            p.a.createElement(
               "div",
-              { className: "row" },
-              f.a.createElement(_.a, {
-                label: "Offerte uitgebracht",
-                value: s ? T()(s).format("L") : ""
-              })
-            ),
-            f.a.createElement(
-              "div",
-              { className: "row" },
-              f.a.createElement(
-                "div",
-                { className: "col-sm-3" },
-                f.a.createElement(
-                  "label",
-                  { htmlFor: "quotationText", className: "col-sm-12" },
-                  "Offerte omschrijving"
-                )
-              ),
-              f.a.createElement(
-                "div",
-                { className: "col-sm-9", id: "quotationText" },
-                l
+              { className: "col-sm-3" },
+              p.a.createElement(
+                "label",
+                { htmlFor: "quotationText", className: "col-sm-12" },
+                "Offerte omschrijving"
               )
+            ),
+            p.a.createElement(
+              "div",
+              { className: "col-sm-9", id: "quotationText" },
+              l
             )
-          );
-        }),
-        Y = (function(e) {
-          function t(e) {
-            var a;
+          )
+        );
+      });
+      function H(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              (a = i()(this, u()(t).call(this, e))),
-              N()(E()(a), "switchToEdit", function() {
-                a.setState({ showEdit: !0 });
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      var Z = (function(e) {
+          i()(a, e);
+          var t = H(a);
+          function a(e) {
+            var n;
+            return (
+              r()(this, a),
+              (n = t.call(this, e)),
+              y()(E()(n), "switchToEdit", function() {
+                n.setState({ showEdit: !0 });
               }),
-              N()(E()(a), "switchToView", function() {
-                a.setState({ showEdit: !1, activeDiv: "" });
+              y()(E()(n), "switchToView", function() {
+                n.setState({ showEdit: !1, activeDiv: "" });
               }),
-              (a.state = { showEdit: !1, activeDiv: "" }),
-              a
+              (n.state = { showEdit: !1, activeDiv: "" }),
+              n
             );
           }
           return (
-            d()(t, e),
-            s()(t, [
+            s()(a, [
               {
                 key: "onDivEnter",
                 value: function() {
@@ -617,8 +706,8 @@
                 key: "render",
                 value: function() {
                   var e = this;
-                  return f.a.createElement(
-                    k.a,
+                  return p.a.createElement(
+                    w.a,
                     {
                       className: this.state.activeDiv,
                       onMouseEnter: function() {
@@ -628,18 +717,18 @@
                         return e.onDivLeave();
                       }
                     },
-                    f.a.createElement(
-                      O.a,
+                    p.a.createElement(
+                      k.a,
                       null,
-                      f.a.createElement(
+                      p.a.createElement(
                         "div",
                         { className: "col-md-12" },
                         this.state.showEdit &&
                           this.props.permissions.manageQuotationRequest
-                          ? f.a.createElement(U, {
+                          ? p.a.createElement(G, {
                               switchToView: this.switchToView
                             })
-                          : f.a.createElement(G, {
+                          : p.a.createElement(J, {
                               switchToEdit: this.switchToEdit
                             })
                       )
@@ -648,84 +737,111 @@
                 }
               }
             ]),
-            t
+            a
           );
-        })(p.Component),
-        J = Object(h.b)(function(e) {
+        })(f.Component),
+        K = Object(h.b)(function(e) {
           return { permissions: e.meDetails.permissions };
-        }, null)(Y);
-      T.a.locale("nl");
-      var H = Object(h.b)(function(e) {
+        }, null)(Z);
+      L.a.locale("nl");
+      var X = Object(h.b)(function(e) {
           return { quotationRequestDetails: e.quotationRequestDetails };
         })(function(e) {
           var t = e.quotationRequestDetails,
             a = t.createdAt,
             n = t.updatedAt,
-            o = t.updatedBy,
-            r = t.createdBy;
-          return f.a.createElement(
+            r = t.updatedBy,
+            o = t.createdBy;
+          return p.a.createElement(
             "div",
             null,
-            f.a.createElement(
+            p.a.createElement(
               "div",
               { className: "row" },
-              f.a.createElement(_.a, {
+              p.a.createElement(Y.a, {
                 label: "Gemaakt door",
-                value: r ? r.fullName : "Onbekend",
-                link: r ? "gebruiker/" + r.id : ""
-              }),
-              f.a.createElement(_.a, {
-                label: "Laatste update door",
                 value: o ? o.fullName : "Onbekend",
                 link: o ? "gebruiker/" + o.id : ""
+              }),
+              p.a.createElement(Y.a, {
+                label: "Laatste update door",
+                value: r ? r.fullName : "Onbekend",
+                link: r ? "gebruiker/" + r.id : ""
               })
             ),
-            f.a.createElement(
+            p.a.createElement(
               "div",
               { className: "row" },
-              f.a.createElement(_.a, {
+              p.a.createElement(Y.a, {
                 label: "Gemaakt op",
-                value: a ? T()(a).format("L") : "Onbekend"
+                value: a ? L()(a).format("L") : "Onbekend"
               }),
-              f.a.createElement(_.a, {
+              p.a.createElement(Y.a, {
                 label: "Laatste update op",
-                value: n ? T()(n).format("L") : "Onbekend"
+                value: n ? L()(n).format("L") : "Onbekend"
               })
             )
           );
         }),
-        Z = a(690),
-        K = function(e) {
-          return f.a.createElement(
-            k.a,
+        $ = a(698),
+        ee = function(e) {
+          return p.a.createElement(
+            w.a,
             null,
-            f.a.createElement(
-              Z.a,
+            p.a.createElement(
+              $.a,
               null,
-              f.a.createElement(
+              p.a.createElement(
                 "span",
                 { className: "h5 text-bold" },
                 "Afsluiting gegevens"
               )
             ),
-            f.a.createElement(
-              O.a,
+            p.a.createElement(
+              k.a,
               null,
-              f.a.createElement(
+              p.a.createElement(
                 "div",
                 { className: "col-md-12" },
-                f.a.createElement(H, null)
+                p.a.createElement(X, null)
               )
             )
           );
-        },
-        X = (function(e) {
-          function t(e) {
-            return o()(this, t), i()(this, u()(t).call(this, e));
+        };
+      function te(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
+            return (
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      var ae = (function(e) {
+          i()(a, e);
+          var t = te(a);
+          function a(e) {
+            return r()(this, a), t.call(this, e);
           }
           return (
-            d()(t, e),
-            s()(t, [
+            s()(a, [
               {
                 key: "render",
                 value: function() {
@@ -736,70 +852,97 @@
                       ? (e = "Fout bij het ophalen van offerteverzoek.")
                       : this.props.isLoading
                       ? (e = "Gegevens aan het laden.")
-                      : Object(R.isEmpty)(this.props.quotationRequestDetails)
+                      : Object(A.isEmpty)(this.props.quotationRequestDetails)
                       ? (e = "Geen offerteverzoek gevonden!")
                       : (t = !1),
                     t
-                      ? f.a.createElement("div", null, e)
-                      : f.a.createElement(
+                      ? p.a.createElement("div", null, e)
+                      : p.a.createElement(
                           "div",
                           null,
-                          f.a.createElement(J, null),
-                          f.a.createElement(K, null)
+                          p.a.createElement(K, null),
+                          p.a.createElement(ee, null)
                         )
                   );
                 }
               }
             ]),
-            t
+            a
           );
-        })(p.Component),
-        $ = Object(h.b)(function(e) {
+        })(f.Component),
+        ne = Object(h.b)(function(e) {
           return {
             quotationRequestDetails: e.quotationRequestDetails,
             isLoading: e.loadingData.isLoading,
             hasError: e.loadingData.hasError
           };
-        }, null)(X),
-        ee = (function(e) {
-          function t(e) {
-            var a;
+        }, null)(ae);
+      function re(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              (a = i()(this, u()(t).call(this, e))),
-              N()(E()(a), "openItem", function(e) {
-                y.f.push("/document/".concat(e));
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      var oe = (function(e) {
+          i()(a, e);
+          var t = re(a);
+          function a(e) {
+            var n;
+            return (
+              r()(this, a),
+              (n = t.call(this, e)),
+              y()(E()(n), "openItem", function(e) {
+                N.f.push("/document/".concat(e));
               }),
-              (a.state = { relatedDocuments: "" }),
-              a
+              (n.state = { relatedDocuments: "" }),
+              n
             );
           }
           return (
-            d()(t, e),
-            s()(t, [
+            s()(a, [
               {
                 key: "render",
                 value: function() {
                   var e = this,
                     t = this.props.relatedDocuments;
-                  return f.a.createElement(
+                  return p.a.createElement(
                     "div",
                     null,
                     "" == t &&
-                      f.a.createElement(
+                      p.a.createElement(
                         "div",
                         null,
                         "Geen documenten gevonden."
                       ),
                     "" != t &&
-                      f.a.createElement(
+                      p.a.createElement(
                         "table",
                         { className: "table harmonica-table" },
-                        f.a.createElement(
+                        p.a.createElement(
                           "tbody",
                           null,
                           t.map(function(t, a) {
-                            return f.a.createElement(
+                            return p.a.createElement(
                               "tr",
                               {
                                 onClick: function() {
@@ -807,12 +950,12 @@
                                 },
                                 key: a
                               },
-                              f.a.createElement(
+                              p.a.createElement(
                                 "td",
                                 { className: "col-xs-5 clickable" },
-                                T()(t.createdAt).format("L")
+                                L()(t.createdAt).format("L")
                               ),
-                              f.a.createElement(
+                              p.a.createElement(
                                 "td",
                                 { className: "col-xs-6 clickable" },
                                 t.filename
@@ -825,57 +968,57 @@
                 }
               }
             ]),
-            t
+            a
           );
-        })(p.Component),
-        te = Object(h.b)(function(e) {
+        })(f.Component),
+        se = Object(h.b)(function(e) {
           return {
             relatedDocuments: e.quotationRequestDetails.relatedDocuments
           };
-        })(ee),
-        ae = Object(h.b)(function(e) {
+        })(oe),
+        le = Object(h.b)(function(e) {
           return { permissions: e.meDetails.permissions };
         }, null)(function(e) {
           var t = e.toggleShowList,
             a = e.showDocumentsList,
             n = e.newDocument,
-            o = e.documentCount,
-            r = e.permissions;
-          return f.a.createElement(
-            k.a,
+            r = e.documentCount,
+            o = e.permissions;
+          return p.a.createElement(
+            w.a,
             { className: "harmonica-button" },
-            f.a.createElement(
-              O.a,
+            p.a.createElement(
+              k.a,
               null,
-              f.a.createElement(
+              p.a.createElement(
                 "div",
                 { className: "col-sm-10", onClick: t, role: "button" },
-                f.a.createElement(
+                p.a.createElement(
                   "span",
                   null,
                   "DOCUMENTEN ",
-                  f.a.createElement("span", { className: "badge" }, o)
+                  p.a.createElement("span", { className: "badge" }, r)
                 )
               ),
-              f.a.createElement(
+              p.a.createElement(
                 "div",
                 { className: "col-sm-2" },
-                r.createDocument &&
-                  f.a.createElement(
+                o.createDocument &&
+                  p.a.createElement(
                     "div",
                     { className: "pull-right" },
-                    f.a.createElement("span", {
+                    p.a.createElement("span", {
                       className: "glyphicon glyphicon-plus glyphicon-white",
                       "data-toggle": "dropdown",
                       role: "button"
                     }),
-                    f.a.createElement(
+                    p.a.createElement(
                       "ul",
                       { className: "dropdown-menu" },
-                      f.a.createElement(
+                      p.a.createElement(
                         "li",
                         null,
-                        f.a.createElement(
+                        p.a.createElement(
                           "a",
                           {
                             className: "btn",
@@ -886,10 +1029,10 @@
                           "Maak document"
                         )
                       ),
-                      f.a.createElement(
+                      p.a.createElement(
                         "li",
                         null,
-                        f.a.createElement(
+                        p.a.createElement(
                           "a",
                           {
                             className: "btn",
@@ -903,52 +1046,79 @@
                     )
                   )
               ),
-              f.a.createElement(
+              p.a.createElement(
                 "div",
                 { className: "col-sm-12" },
-                a && f.a.createElement(te, null)
+                a && p.a.createElement(se, null)
               )
             )
           );
-        }),
-        ne = (function(e) {
-          function t(e) {
-            var a;
+        });
+      function ie(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              (a = i()(this, u()(t).call(this, e))),
-              N()(E()(a), "openItem", function(e) {
-                y.f.push("/email/".concat(e));
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      var ce = (function(e) {
+          i()(a, e);
+          var t = ie(a);
+          function a(e) {
+            var n;
+            return (
+              r()(this, a),
+              (n = t.call(this, e)),
+              y()(E()(n), "openItem", function(e) {
+                N.f.push("/email/".concat(e));
               }),
-              (a.state = { relatedOpportunities: "" }),
-              a
+              (n.state = { relatedOpportunities: "" }),
+              n
             );
           }
           return (
-            d()(t, e),
-            s()(t, [
+            s()(a, [
               {
                 key: "render",
                 value: function() {
                   var e = this,
                     t = this.props.relatedEmailsSent;
-                  return f.a.createElement(
+                  return p.a.createElement(
                     "div",
                     null,
                     "" == t &&
-                      f.a.createElement("div", null, "Geen e-mails gevonden."),
+                      p.a.createElement("div", null, "Geen e-mails gevonden."),
                     "" != t &&
-                      f.a.createElement(
+                      p.a.createElement(
                         "table",
                         { className: "table harmonica-table" },
-                        f.a.createElement(
+                        p.a.createElement(
                           "tbody",
                           null,
                           t.map(function(t, a) {
-                            return f.a.createElement(
+                            return p.a.createElement(
                               "tr",
                               { key: a },
-                              f.a.createElement(
+                              p.a.createElement(
                                 "td",
                                 {
                                   className: "col-xs-4 clickable",
@@ -956,9 +1126,9 @@
                                     return e.openItem(t.id);
                                   }
                                 },
-                                T()(t.date_sent).format("L")
+                                L()(t.date_sent).format("L")
                               ),
-                              f.a.createElement(
+                              p.a.createElement(
                                 "td",
                                 {
                                   className: "col-xs-8 clickable",
@@ -976,55 +1146,55 @@
                 }
               }
             ]),
-            t
+            a
           );
-        })(p.Component),
-        oe = Object(h.b)(function(e) {
+        })(f.Component),
+        ue = Object(h.b)(function(e) {
           return {
             relatedEmailsSent: e.quotationRequestDetails.relatedEmailsSent
           };
-        })(ne),
-        re = function(e) {
+        })(ce),
+        me = function(e) {
           var t = e.toggleShowList,
             a = e.showEmailsSentList,
             n = e.newEmail,
-            o = e.emailSentCount;
-          return f.a.createElement(
-            k.a,
+            r = e.emailSentCount;
+          return p.a.createElement(
+            w.a,
             { className: "harmonica-button" },
-            f.a.createElement(
-              O.a,
+            p.a.createElement(
+              k.a,
               null,
-              f.a.createElement(
+              p.a.createElement(
                 "div",
                 { className: "col-sm-10", onClick: t, role: "button" },
-                f.a.createElement(
+                p.a.createElement(
                   "span",
                   { onClick: t, className: "" },
                   "E-MAIL VERZONDEN ",
-                  f.a.createElement("span", { className: "badge" }, o)
+                  p.a.createElement("span", { className: "badge" }, r)
                 )
               ),
-              f.a.createElement(
+              p.a.createElement(
                 "div",
                 { className: "col-sm-2" },
-                f.a.createElement(
+                p.a.createElement(
                   "a",
                   { role: "button", className: "pull-right", onClick: n },
-                  f.a.createElement("span", {
+                  p.a.createElement("span", {
                     className: "glyphicon glyphicon-plus glyphicon-white"
                   })
                 )
               ),
-              f.a.createElement(
+              p.a.createElement(
                 "div",
                 { className: "col-sm-12" },
-                a && f.a.createElement(oe, null)
+                a && p.a.createElement(ue, null)
               )
             )
           );
         };
-      function se(e, t) {
+      function de(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -1036,16 +1206,16 @@
         }
         return a;
       }
-      function le(e) {
+      function fe(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? se(Object(a), !0).forEach(function(t) {
-                N()(e, t, a[t]);
+            ? de(Object(a), !0).forEach(function(t) {
+                y()(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : se(Object(a)).forEach(function(t) {
+            : de(Object(a)).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -1055,27 +1225,54 @@
         }
         return e;
       }
-      var ie = (function(e) {
-          function t(e) {
-            var a;
+      function pe(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
             return (
-              o()(this, t),
-              ((a = i()(this, u()(t).call(this, e))).state = {
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      var he = (function(e) {
+          i()(a, e);
+          var t = pe(a);
+          function a(e) {
+            var n;
+            return (
+              r()(this, a),
+              ((n = t.call(this, e)).state = {
                 toggleShowList: { documents: !1, emailsSent: !1 }
               }),
-              (a.newDocument = a.newDocument.bind(E()(a))),
-              (a.newEmail = a.newEmail.bind(E()(a))),
-              (a.toggleShowList = a.toggleShowList.bind(E()(a))),
-              a
+              (n.newDocument = n.newDocument.bind(E()(n))),
+              (n.newEmail = n.newEmail.bind(E()(n))),
+              (n.toggleShowList = n.toggleShowList.bind(E()(n))),
+              n
             );
           }
           return (
-            d()(t, e),
-            s()(t, [
+            s()(a, [
               {
                 key: "newEmail",
                 value: function() {
-                  y.f.push(
+                  N.f.push(
                     "/email/nieuw/offerteverzoek/"
                       .concat(this.props.id, "/")
                       .concat(
@@ -1088,7 +1285,7 @@
               {
                 key: "newDocument",
                 value: function(e) {
-                  y.f.push(
+                  N.f.push(
                     "/document/nieuw/"
                       .concat(e, "/offerteverzoek/")
                       .concat(this.props.id)
@@ -1099,13 +1296,17 @@
                 key: "toggleShowList",
                 value: function(e) {
                   this.setState(
-                    le({}, this.state, {
-                      toggleShowList: le(
-                        {},
-                        this.state.toggleShowList,
-                        N()({}, e, !this.state.toggleShowList[e])
-                      )
-                    })
+                    fe(
+                      fe({}, this.state),
+                      {},
+                      {
+                        toggleShowList: fe(
+                          fe({}, this.state.toggleShowList),
+                          {},
+                          y()({}, e, !this.state.toggleShowList[e])
+                        )
+                      }
+                    )
                   );
                 }
               },
@@ -1113,10 +1314,10 @@
                 key: "render",
                 value: function() {
                   var e = this;
-                  return f.a.createElement(
+                  return p.a.createElement(
                     "div",
                     { className: "col-md-12 margin-10-top" },
-                    f.a.createElement(re, {
+                    p.a.createElement(me, {
                       toggleShowList: function() {
                         return e.toggleShowList("emailsSent");
                       },
@@ -1125,7 +1326,7 @@
                       emailSentCount: this.props.quotationRequestDetails
                         .emailSentCount
                     }),
-                    f.a.createElement(ae, {
+                    p.a.createElement(le, {
                       toggleShowList: function() {
                         return e.toggleShowList("documents");
                       },
@@ -1138,89 +1339,116 @@
                 }
               }
             ]),
-            t
+            a
           );
-        })(p.Component),
-        ce = Object(h.b)(function(e) {
+        })(f.Component),
+        ve = Object(h.b)(function(e) {
           return {
             quotationRequestDetails: e.quotationRequestDetails,
             permissions: e.meDetails.permissions
           };
-        })(ie),
-        ue = (function(e) {
-          function t(e) {
-            return o()(this, t), i()(this, u()(t).call(this, e));
+        })(he);
+      function ge(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
+            return (
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
           }
-          return (
-            d()(t, e),
-            s()(t, [
-              {
-                key: "componentWillMount",
-                value: function() {
-                  this.props.fetchQuotationRequestDetails(this.props.params.id);
-                }
-              },
-              {
-                key: "render",
-                value: function() {
-                  return f.a.createElement(
-                    "div",
-                    { className: "row" },
-                    f.a.createElement(
-                      "div",
-                      { className: "col-md-9" },
-                      f.a.createElement(
-                        "div",
-                        { className: "col-md-12" },
-                        f.a.createElement(S, { id: this.props.params.id })
-                      ),
-                      f.a.createElement(
-                        "div",
-                        { className: "col-md-12" },
-                        f.a.createElement($, null)
-                      )
-                    ),
-                    f.a.createElement(
-                      k.a,
-                      { className: "col-md-3 harmonica" },
-                      f.a.createElement(
-                        O.a,
-                        null,
-                        f.a.createElement(ce, { id: this.props.params.id })
-                      )
-                    )
-                  );
-                }
+        })();
+        return function() {
+          var a,
+            n = d()(e);
+          if (t) {
+            var r = d()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return u()(this, a);
+        };
+      }
+      var Ee = (function(e) {
+        i()(a, e);
+        var t = ge(a);
+        function a(e) {
+          return r()(this, a), t.call(this, e);
+        }
+        return (
+          s()(a, [
+            {
+              key: "componentWillMount",
+              value: function() {
+                this.props.fetchQuotationRequestDetails(this.props.params.id);
               }
-            ]),
-            t
-          );
-        })(p.Component);
+            },
+            {
+              key: "render",
+              value: function() {
+                return p.a.createElement(
+                  "div",
+                  { className: "row" },
+                  p.a.createElement(
+                    "div",
+                    { className: "col-md-9" },
+                    p.a.createElement(
+                      "div",
+                      { className: "col-md-12" },
+                      p.a.createElement(S, { id: this.props.params.id })
+                    ),
+                    p.a.createElement(
+                      "div",
+                      { className: "col-md-12" },
+                      p.a.createElement(ne, null)
+                    )
+                  ),
+                  p.a.createElement(
+                    w.a,
+                    { className: "col-md-3 harmonica" },
+                    p.a.createElement(
+                      k.a,
+                      null,
+                      p.a.createElement(ve, { id: this.props.params.id })
+                    )
+                  )
+                );
+              }
+            }
+          ]),
+          a
+        );
+      })(f.Component);
       t.default = Object(h.b)(null, function(e) {
         return {
           fetchQuotationRequestDetails: function(t) {
-            e(g(t));
+            e(v(t));
           }
         };
-      })(ue);
+      })(Ee);
     },
-    682: function(e, t, a) {
+    690: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.children,
             a = e.className,
             n = e.onMouseEnter,
-            r = e.onMouseLeave;
-          return o.a.createElement(
+            o = e.onMouseLeave;
+          return r.a.createElement(
             "div",
             {
               className: "panel panel-default ".concat(a),
               onMouseEnter: n,
-              onMouseLeave: r
+              onMouseLeave: o
             },
             t
           );
@@ -1237,16 +1465,16 @@
         }),
         (t.a = l);
     },
-    683: function(e, t, a) {
+    691: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.className,
             a = e.children;
-          return o.a.createElement(
+          return r.a.createElement(
             "div",
             { className: "panel-body ".concat(t) },
             a
@@ -1256,41 +1484,41 @@
         (l.propTypes = { className: s.a.string }),
         (t.a = l);
     },
-    684: function(e, t, a) {
+    692: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.buttonClassName,
             a = e.buttonText,
             n = e.onClickAction,
-            r = e.type,
+            o = e.type,
             s = e.value,
             l = e.loading,
             i = e.loadText,
             c = e.disabled;
           return l
-            ? o.a.createElement(
+            ? r.a.createElement(
                 "button",
                 {
-                  type: r,
+                  type: o,
                   className: "btn btn-sm btn-loading ".concat(t),
                   value: s,
                   disabled: l
                 },
-                o.a.createElement("span", {
+                r.a.createElement("span", {
                   className:
                     "glyphicon glyphicon-refresh glyphicon-refresh-animate"
                 }),
                 " ",
                 i
               )
-            : o.a.createElement(
+            : r.a.createElement(
                 "button",
                 {
-                  type: r,
+                  type: o,
                   className: "btn btn-sm ".concat(t),
                   onClick: n,
                   value: s,
@@ -1319,28 +1547,28 @@
         }),
         (t.a = l);
     },
-    685: function(e, t, a) {
+    693: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.buttonClassName,
             a = e.iconName,
             n = e.onClickAction,
-            r = e.title,
+            o = e.title,
             s = e.disabled;
-          return o.a.createElement(
+          return r.a.createElement(
             "button",
             {
               type: "button",
               className: "btn ".concat(t),
               onClick: n,
               disabled: s,
-              title: r
+              title: o
             },
-            o.a.createElement("span", { className: "glyphicon ".concat(a) })
+            r.a.createElement("span", { className: "glyphicon ".concat(a) })
           );
         };
       (l.defaultProps = {
@@ -1357,17 +1585,17 @@
         }),
         (t.a = l);
     },
-    686: function(e, t, a) {
+    694: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.label,
             a = e.type,
             n = e.className,
-            r = e.size,
+            o = e.size,
             s = e.id,
             l = e.placeholder,
             i = e.name,
@@ -1375,32 +1603,32 @@
             u = e.onClickAction,
             m = e.onChangeAction,
             d = e.onBlurAction,
-            p = e.required,
-            f = e.readOnly,
+            f = e.required,
+            p = e.readOnly,
             h = e.maxLength,
-            g = e.error,
-            v = e.min,
+            v = e.error,
+            g = e.min,
             E = e.max,
             b = e.step,
-            N = e.errorMessage,
-            y = e.divSize,
-            q = e.divClassName,
-            w = e.autoComplete;
-          return o.a.createElement(
+            y = e.errorMessage,
+            N = e.divSize,
+            D = e.divClassName,
+            R = e.autoComplete;
+          return r.a.createElement(
             "div",
-            { className: "form-group ".concat(y, " ").concat(q) },
-            o.a.createElement(
+            { className: "form-group ".concat(N, " ").concat(D) },
+            r.a.createElement(
               "label",
-              { htmlFor: s, className: "col-sm-6 ".concat(p) },
+              { htmlFor: s, className: "col-sm-6 ".concat(f) },
               t
             ),
-            o.a.createElement(
+            r.a.createElement(
               "div",
-              { className: "".concat(r) },
-              o.a.createElement("input", {
+              { className: "".concat(o) },
+              r.a.createElement("input", {
                 type: a,
                 className:
-                  "form-control input-sm ".concat(n) + (g ? "has-error" : ""),
+                  "form-control input-sm ".concat(n) + (v ? "has-error" : ""),
                 id: s,
                 placeholder: l,
                 name: i,
@@ -1408,23 +1636,23 @@
                 onClick: u,
                 onChange: m,
                 onBlur: d,
-                readOnly: f,
+                readOnly: p,
                 maxLength: h,
-                min: v,
+                min: g,
                 max: E,
-                autoComplete: w,
+                autoComplete: R,
                 step: b
               })
             ),
-            g &&
-              o.a.createElement(
+            v &&
+              r.a.createElement(
                 "div",
                 { className: "col-sm-offset-6 col-sm-6" },
-                o.a.createElement(
+                r.a.createElement(
                   "span",
                   { className: "has-error-message" },
                   " ",
-                  N
+                  y
                 )
               )
           );
@@ -1476,12 +1704,12 @@
         }),
         (t.a = l);
     },
-    687: function(e, t, a) {
+    695: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(4),
-        s = a(14),
+        r = a.n(n),
+        o = a(4),
+        s = a(8),
         l = a.n(s),
         i = function(e) {
           var t = e.label,
@@ -1491,33 +1719,33 @@
             l = e.link,
             i = e.hidden;
           return l.length > 0
-            ? o.a.createElement(
+            ? r.a.createElement(
                 "div",
                 { className: a, style: i ? { display: "none" } : {} },
-                o.a.createElement(
+                r.a.createElement(
                   "label",
                   { htmlFor: n, className: "col-sm-6" },
                   t
                 ),
-                o.a.createElement(
+                r.a.createElement(
                   "div",
                   { className: "col-sm-6", id: n, onClick: null },
-                  o.a.createElement(
-                    r.b,
+                  r.a.createElement(
+                    o.b,
                     { to: l, className: "link-underline" },
                     s
                   )
                 )
               )
-            : o.a.createElement(
+            : r.a.createElement(
                 "div",
                 { className: a, style: i ? { display: "none" } : {} },
-                o.a.createElement(
+                r.a.createElement(
                   "label",
                   { htmlFor: n, className: "col-sm-6" },
                   t
                 ),
-                o.a.createElement("div", { className: "col-sm-6", id: n }, s)
+                r.a.createElement("div", { className: "col-sm-6", id: n }, s)
               );
         };
       (i.defaultProps = {
@@ -1536,17 +1764,17 @@
         }),
         (t.a = i);
     },
-    688: function(e, t, a) {
+    696: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.label,
             a = e.className,
             n = e.size,
-            r = e.id,
+            o = e.id,
             s = e.name,
             l = e.value,
             i = e.options,
@@ -1554,55 +1782,55 @@
             u = e.onBlurAction,
             m = e.required,
             d = e.error,
-            p = e.errorMessage,
-            f = e.optionValue,
+            f = e.errorMessage,
+            p = e.optionValue,
             h = e.optionName,
-            g = e.readOnly,
-            v = e.placeholder,
+            v = e.readOnly,
+            g = e.placeholder,
             E = e.divClassName,
             b = e.emptyOption;
-          return o.a.createElement(
+          return r.a.createElement(
             "div",
             { className: "form-group ".concat(n, " ").concat(E) },
-            o.a.createElement(
+            r.a.createElement(
               "label",
-              { htmlFor: r, className: "col-sm-6 ".concat(m) },
+              { htmlFor: o, className: "col-sm-6 ".concat(m) },
               t
             ),
-            o.a.createElement(
+            r.a.createElement(
               "div",
               { className: "col-sm-6" },
-              o.a.createElement(
+              r.a.createElement(
                 "select",
                 {
                   className:
                     "form-control input-sm ".concat(a) + (d && " has-error"),
-                  id: r,
+                  id: o,
                   name: s,
                   value: l,
                   onChange: c,
                   onBlur: u,
-                  readOnly: g
+                  readOnly: v
                 },
-                b && o.a.createElement("option", { value: "" }, v),
+                b && r.a.createElement("option", { value: "" }, g),
                 i.map(function(e) {
-                  return o.a.createElement(
+                  return r.a.createElement(
                     "option",
-                    { key: e[f], value: e[f] },
+                    { key: e[p], value: e[p] },
                     e[h]
                   );
                 })
               )
             ),
             d &&
-              o.a.createElement(
+              r.a.createElement(
                 "div",
                 { className: "col-sm-offset-6 col-sm-6" },
-                o.a.createElement(
+                r.a.createElement(
                   "span",
                   { className: "has-error-message" },
                   " ",
-                  p
+                  f
                 )
               )
           );
@@ -1642,16 +1870,16 @@
         }),
         (t.a = l);
     },
-    690: function(e, t, a) {
+    698: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.className,
             a = e.children;
-          return o.a.createElement(
+          return r.a.createElement(
             "div",
             { className: "panel-heading ".concat(t) },
             a
@@ -1661,72 +1889,99 @@
         (l.propTypes = { className: s.a.string }),
         (t.a = l);
     },
-    691: function(e, t, a) {
+    699: function(e, t, a) {
       "use strict";
-      var n = a(25),
-        o = a.n(n),
-        r = a(24),
-        s = a.n(r),
-        l = a(26),
+      var n = a(24),
+        r = a.n(n),
+        o = a(25),
+        s = a.n(o),
+        l = a(22),
         i = a.n(l),
-        c = a(27),
+        c = a(26),
         u = a.n(c),
-        m = a(21),
+        m = a(27),
         d = a.n(m),
-        p = a(28),
-        f = a.n(p),
+        f = a(16),
+        p = a.n(f),
         h = a(6),
-        g = a.n(h),
-        v = a(0),
-        E = a.n(v),
-        b = a(14),
-        N = a.n(b),
-        y = a(700),
-        q = a.n(y),
-        w = a(701),
-        D = a.n(w),
-        k = a(8),
-        O = a.n(k);
-      O.a.locale("nl");
+        v = a.n(h),
+        g = a(0),
+        E = a.n(g),
+        b = a(8),
+        y = a.n(b),
+        N = a(707),
+        D = a.n(N),
+        R = a(708),
+        q = a.n(R),
+        w = a(7),
+        k = a.n(w);
+      function O(e) {
+        var t = (function() {
+          if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+          if (Reflect.construct.sham) return !1;
+          if ("function" == typeof Proxy) return !0;
+          try {
+            return (
+              Date.prototype.toString.call(
+                Reflect.construct(Date, [], function() {})
+              ),
+              !0
+            );
+          } catch (e) {
+            return !1;
+          }
+        })();
+        return function() {
+          var a,
+            n = p()(e);
+          if (t) {
+            var r = p()(this).constructor;
+            a = Reflect.construct(n, arguments, r);
+          } else a = n.apply(this, arguments);
+          return d()(this, a);
+        };
+      }
+      k.a.locale("nl");
       var C = (function(e) {
-        function t(e) {
-          var a;
+        u()(a, e);
+        var t = O(a);
+        function a(e) {
+          var n;
           return (
-            o()(this, t),
-            (a = i()(this, u()(t).call(this, e))),
-            g()(d()(a), "validateDate", function(e) {
-              var t = O()(e.target.value, "DD-MM-YYYY", !0),
-                n = !1;
-              t.isValid() || "" === e.target.value || (n = !0),
-                a.props.disabledBefore &&
-                  t.isBefore(a.props.disabledBefore) &&
-                  (n = !0),
-                a.props.disabledAfter &&
-                  t.isAfter(a.props.disabledAfter) &&
-                  (n = !0),
-                a.setState({ errorDateFormat: n });
+            r()(this, a),
+            (n = t.call(this, e)),
+            v()(i()(n), "validateDate", function(e) {
+              var t = k()(e.target.value, "DD-MM-YYYY", !0),
+                a = !1;
+              t.isValid() || "" === e.target.value || (a = !0),
+                n.props.disabledBefore &&
+                  t.isBefore(n.props.disabledBefore) &&
+                  (a = !0),
+                n.props.disabledAfter &&
+                  t.isAfter(n.props.disabledAfter) &&
+                  (a = !0),
+                n.setState({ errorDateFormat: a });
             }),
-            g()(d()(a), "onDateChange", function(e) {
-              var t = e ? O()(e).format("Y-MM-DD") : "",
-                n = !1;
+            v()(i()(n), "onDateChange", function(e) {
+              var t = e ? k()(e).format("Y-MM-DD") : "",
+                a = !1;
               t &&
-                a.props.disabledBefore &&
-                O()(t).isBefore(a.props.disabledBefore) &&
-                (n = !0),
+                n.props.disabledBefore &&
+                k()(t).isBefore(n.props.disabledBefore) &&
+                (a = !0),
                 t &&
-                  a.props.disabledAfter &&
-                  O()(t).isAfter(a.props.disabledAfter) &&
-                  (n = !0),
-                a.setState({ errorDateFormat: n }),
-                !n && a.props.onChangeAction(t, a.props.name);
+                  n.props.disabledAfter &&
+                  k()(t).isAfter(n.props.disabledAfter) &&
+                  (a = !0),
+                n.setState({ errorDateFormat: a }),
+                !a && n.props.onChangeAction(t, n.props.name);
             }),
-            (a.state = { errorDateFormat: !1 }),
-            a
+            (n.state = { errorDateFormat: !1 }),
+            n
           );
         }
         return (
-          f()(t, e),
-          s()(t, [
+          s()(a, [
             {
               key: "render",
               value: function() {
@@ -1734,8 +1989,8 @@
                   t = e.label,
                   a = e.className,
                   n = e.size,
-                  o = e.divSize,
-                  r = e.id,
+                  r = e.divSize,
+                  o = e.id,
                   s = e.value,
                   l = e.required,
                   i = e.readOnly,
@@ -1743,38 +1998,38 @@
                   u = e.error,
                   m = e.errorMessage,
                   d = e.disabledBefore,
-                  p = e.disabledAfter,
-                  f = s ? O()(s).format("L") : "",
+                  f = e.disabledAfter,
+                  p = s ? k()(s).format("L") : "",
                   h = {};
                 return (
                   d && (h.before = new Date(d)),
-                  p && (h.after = new Date(p)),
+                  f && (h.after = new Date(f)),
                   E.a.createElement(
                     "div",
-                    { className: "form-group ".concat(o) },
+                    { className: "form-group ".concat(r) },
                     E.a.createElement(
                       "div",
                       null,
                       E.a.createElement(
                         "label",
-                        { htmlFor: r, className: "col-sm-6 ".concat(l) },
+                        { htmlFor: o, className: "col-sm-6 ".concat(l) },
                         t
                       )
                     ),
                     E.a.createElement(
                       "div",
                       { className: "".concat(n) },
-                      E.a.createElement(q.a, {
-                        id: r,
-                        value: f,
-                        formatDate: w.formatDate,
-                        parseDate: w.parseDate,
+                      E.a.createElement(D.a, {
+                        id: o,
+                        value: p,
+                        formatDate: R.formatDate,
+                        parseDate: R.parseDate,
                         onDayChange: this.onDateChange,
                         dayPickerProps: {
                           showWeekNumbers: !0,
                           locale: "nl",
                           firstDayOfWeek: 1,
-                          localeUtils: D.a,
+                          localeUtils: q.a,
                           disabledDays: h
                         },
                         inputProps: {
@@ -1810,9 +2065,9 @@
               }
             }
           ]),
-          t
+          a
         );
-      })(v.Component);
+      })(g.Component);
       (C.defaultProps = {
         className: "",
         size: "col-sm-6",
@@ -1826,35 +2081,35 @@
         disabledAfter: null
       }),
         (C.propTypes = {
-          label: N.a.string.isRequired,
-          type: N.a.string,
-          className: N.a.string,
-          size: N.a.string,
-          divSize: N.a.string,
-          id: N.a.string,
-          name: N.a.string,
-          value: N.a.oneOfType([N.a.string, N.a.object]),
-          onChangeAction: N.a.func,
-          required: N.a.string,
-          readOnly: N.a.bool,
-          error: N.a.bool,
-          errorMessage: N.a.string,
-          disabledBefore: N.a.string,
-          disabledAfter: N.a.string
+          label: y.a.string.isRequired,
+          type: y.a.string,
+          className: y.a.string,
+          size: y.a.string,
+          divSize: y.a.string,
+          id: y.a.string,
+          name: y.a.string,
+          value: y.a.oneOfType([y.a.string, y.a.object]),
+          onChangeAction: y.a.func,
+          required: y.a.string,
+          readOnly: y.a.bool,
+          error: y.a.bool,
+          errorMessage: y.a.string,
+          disabledBefore: y.a.string,
+          disabledAfter: y.a.string
         }),
         (t.a = C);
     },
-    729: function(e, t, a) {
+    734: function(e, t, a) {
       "use strict";
       var n = a(0),
-        o = a.n(n),
-        r = a(14),
-        s = a.n(r),
+        r = a.n(n),
+        o = a(8),
+        s = a.n(o),
         l = function(e) {
           var t = e.label,
             a = e.size,
             n = e.sizeLabel,
-            r = e.sizeInput,
+            o = e.sizeInput,
             s = e.id,
             l = e.name,
             i = e.value,
@@ -1862,25 +2117,25 @@
             u = e.required,
             m = e.error,
             d = e.rows;
-          return o.a.createElement(
+          return r.a.createElement(
             "div",
             { className: "form-group ".concat(a) },
-            o.a.createElement(
+            r.a.createElement(
               "div",
               { className: "row" },
-              o.a.createElement(
+              r.a.createElement(
                 "div",
                 { className: n },
-                o.a.createElement(
+                r.a.createElement(
                   "label",
                   { htmlFor: s, className: "col-sm-12 ".concat(u) },
                   t
                 )
               ),
-              o.a.createElement(
+              r.a.createElement(
                 "div",
-                { className: r },
-                o.a.createElement("textarea", {
+                { className: o },
+                r.a.createElement("textarea", {
                   name: l,
                   value: i,
                   onChange: c,
@@ -1915,18 +2170,18 @@
         }),
         (t.a = l);
     },
-    740: function(e, t, a) {
+    744: function(e, t, a) {
       "use strict";
       var n = a(2),
-        o = a.n(n),
-        r = "".concat(URL_API, "/api/organisation");
+        r = a.n(n),
+        o = "".concat(URL_API, "/api/organisation");
       t.a = {
         newOrganisation: function(e) {
-          var t = "".concat(r),
+          var t = "".concat(o),
             a = "Bearer " + localStorage.getItem("access_token");
           return (
-            (o.a.defaults.headers.common.Authorization = a),
-            o.a
+            (r.a.defaults.headers.common.Authorization = a),
+            r.a
               .post(t, e)
               .then(function(e) {
                 return e.data.data;
@@ -1937,18 +2192,18 @@
           );
         },
         updateOrganisation: function(e) {
-          var t = "".concat(r, "/").concat(e.id),
+          var t = "".concat(o, "/").concat(e.id),
             a = "Bearer " + localStorage.getItem("access_token");
           return (
-            (o.a.defaults.headers.common.Authorization = a), o.a.post(t, e)
+            (r.a.defaults.headers.common.Authorization = a), r.a.post(t, e)
           );
         },
         getOrganisationPeek: function() {
-          var e = "".concat(r, "/peek"),
+          var e = "".concat(o, "/peek"),
             t = "Bearer " + localStorage.getItem("access_token");
           return (
-            (o.a.defaults.headers.common.Authorization = t),
-            o.a
+            (r.a.defaults.headers.common.Authorization = t),
+            r.a
               .get(e)
               .then(function(e) {
                 return e.data.data;

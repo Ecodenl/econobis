@@ -170,6 +170,7 @@ abstract class RequestQuery
         $this->joiner->resetProcessedJoins();
 
         $this->applyFilter($query);
+        $this->applyExtraFilter($query);
         $this->applySort($query);
 
         return $query;

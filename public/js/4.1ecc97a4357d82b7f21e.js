@@ -498,25 +498,28 @@
           },
           le = function(e, t) {
             t.find("#style").each(function(n) {
-              var r = Q(function(t) {
-                return re(e, t);
-              }, B(
-                {
-                  src: "",
-                  alt: "",
-                  title: "",
-                  width: "",
-                  height: "",
-                  class: "",
-                  style: "",
-                  caption: !1,
-                  hspace: "",
-                  vspace: "",
-                  border: "",
-                  borderStyle: ""
+              var r = Q(
+                function(t) {
+                  return re(e, t);
                 },
-                t.toJSON()
-              ));
+                B(
+                  {
+                    src: "",
+                    alt: "",
+                    title: "",
+                    width: "",
+                    height: "",
+                    class: "",
+                    style: "",
+                    caption: !1,
+                    hspace: "",
+                    vspace: "",
+                    border: "",
+                    borderStyle: ""
+                  },
+                  t.toJSON()
+                )
+              );
               n.value(r);
             });
           },
@@ -28036,17 +28039,12 @@
                                   ? (function(t, n) {
                                       u.removeByUri(t.src),
                                         m(t.src, n),
-                                        e
-                                          .$(t)
-                                          .attr({
-                                            src: gl(e)
-                                              ? n + "?" + new Date().getTime()
-                                              : n,
-                                            "data-mce-src": e.convertURL(
-                                              n,
-                                              "src"
-                                            )
-                                          });
+                                        e.$(t).attr({
+                                          src: gl(e)
+                                            ? n + "?" + new Date().getTime()
+                                            : n,
+                                          "data-mce-src": e.convertURL(n, "src")
+                                        });
                                     })(o, t.url)
                                   : t.error && vp.uploadError(e, t.error),
                                 { element: o, status: t.status }

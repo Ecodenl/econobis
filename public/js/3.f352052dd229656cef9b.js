@@ -1374,11 +1374,11 @@
           return (
             !a(e) &&
             "function" == typeof t.ArrayBuffer &&
-              ("function" == typeof ArrayBuffer.isView
-                ? ArrayBuffer.isView(e)
-                : !!e &&
-                  (e instanceof DataView ||
-                    !!(e.buffer && e.buffer instanceof ArrayBuffer)))
+            ("function" == typeof ArrayBuffer.isView
+              ? ArrayBuffer.isView(e)
+              : !!e &&
+                (e instanceof DataView ||
+                  !!(e.buffer && e.buffer instanceof ArrayBuffer)))
           );
         }
         var f = (e.exports = b),
@@ -44424,8 +44424,8 @@
                               "closed" !== t._state &&
                               "errored" !== t._state &&
                               !0 !== e._closeRequested &&
-                                !1 !== e._started &&
-                                  ((!0 === B(t) && V(t) > 0) || he(e) > 0)
+                              !1 !== e._started &&
+                              ((!0 === B(t) && V(t) > 0) || he(e) > 0)
                             );
                           })(e) &&
                           (!0 !== e._pulling
@@ -44831,9 +44831,10 @@
                             return (
                               "readable" === t._state &&
                               !0 !== e._closeRequested &&
-                                !1 !== e._started &&
-                                  ((!0 === Z(t) && V(t) > 0) ||
-                                    (!0 === Y(t) && X(t) > 0) || Te(e) > 0)
+                              !1 !== e._started &&
+                              ((!0 === Z(t) && V(t) > 0) ||
+                                (!0 === Y(t) && X(t) > 0) ||
+                                Te(e) > 0)
                             );
                           })(e) &&
                           (!0 !== e._pulling
@@ -75888,7 +75889,8 @@
             return (
               void 0 !== this._readableState &&
               void 0 !== this._writableState &&
-              this._readableState.destroyed && this._writableState.destroyed
+              this._readableState.destroyed &&
+              this._writableState.destroyed
             );
           },
           set: function(e) {

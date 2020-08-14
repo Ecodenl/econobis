@@ -3971,7 +3971,7 @@
                 ("(" === (r = r || "()")[0]
                   ? this.isAfter(i, n)
                   : !this.isBefore(i, n)) &&
-                  (")" === r[1] ? this.isBefore(o, n) : !this.isAfter(o, n))
+                (")" === r[1] ? this.isBefore(o, n) : !this.isAfter(o, n))
               );
             }),
             (yn.isSame = function(e, t) {
@@ -7022,7 +7022,8 @@
           return (
             ("undefined" == typeof navigator ||
               "ReactNative" !== navigator.product) &&
-            "undefined" != typeof window && "undefined" != typeof document
+            "undefined" != typeof window &&
+            "undefined" != typeof document
           );
         },
         forEach: l,
@@ -10969,7 +10970,8 @@ object-assign
               -1 === e.indexOf("Mobile Safari") ||
               -1 !== e.indexOf("Chrome") ||
               -1 !== e.indexOf("Windows Phone")) &&
-            window.history && "pushState" in window.history
+            window.history &&
+            "pushState" in window.history
           );
         }),
         (t.supportsGoWithoutReloadUsingHash = function() {
@@ -15804,7 +15806,9 @@ object-assign
                   null != e &&
                   !Xa(e)
                 ) ||
-                U.test(e) || !z.test(e) || (null != t && e in me(t))
+                U.test(e) ||
+                !z.test(e) ||
+                (null != t && e in me(t))
               );
             }
             function lo(e) {
@@ -19810,7 +19814,7 @@ object-assign
                 ((H = u),
                 0 < C &&
                   void 0 !== (M = a(2, z, H, n, T, E, R, d, f, d)) &&
-                    0 === (z = M).length)
+                  0 === (z = M).length)
               )
                 return $ + z + U;
               if (((z = H.join(",") + "{" + z + "}"), 0 != x * Y)) {
@@ -19833,7 +19837,7 @@ object-assign
           return (
             0 < C &&
               void 0 !== (s = a(-2, d, u, u, T, E, d.length, 0, 0, 0)) &&
-                (d = s),
+              (d = s),
             "",
             (Y = 0),
             (E = T = 1),
@@ -34260,8 +34264,8 @@ object-assign
           ? 0 === i.type
           : !r &&
             2 < t.length &&
-              ("o" === t[0] || "O" === t[0]) &&
-              ("n" === t[1] || "N" === t[1])) ||
+            ("o" === t[0] || "O" === t[0]) &&
+            ("n" === t[1] || "N" === t[1])) ||
           ((function(e, t, n, r) {
             if (
               null == t ||
@@ -36020,7 +36024,8 @@ object-assign
           ? e.shouldComponentUpdate(r, o, a)
           : !t.prototype ||
               !t.prototype.isPureReactComponent ||
-              !nn(n, r) || !nn(i, o);
+              !nn(n, r) ||
+              !nn(i, o);
       }
       function ci(e, t, n) {
         var r = !1,
@@ -37143,7 +37148,7 @@ object-assign
                   0 == (1 & t.mode) &&
                     (a = null !== t.memoizedState ? t.child.child : t.child) !==
                       r.child &&
-                      (i.child = a),
+                    (i.child = a),
                   (r = i.sibling = Gr(u, n, u.expirationTime)),
                   (n = i),
                   (i.childExpirationTime = 0),
@@ -38273,7 +38278,7 @@ object-assign
             var t = ka.alternate;
             null !== t &&
               null !== (t = t.ref) &&
-                ("function" == typeof t ? t(null) : (t.current = null));
+              ("function" == typeof t ? t(null) : (t.current = null));
           }
           switch (14 & e) {
             case 2:
@@ -38398,8 +38403,8 @@ object-assign
           }
           128 & n &&
             null !== (i = ka.ref) &&
-              ((o = ka.stateNode),
-              "function" == typeof i ? i(o) : (i.current = o)),
+            ((o = ka.stateNode),
+            "function" == typeof i ? i(o) : (i.current = o)),
             512 & n && (Ea = e),
             (ka = ka.nextEffect);
         }
@@ -38847,11 +38852,11 @@ object-assign
                       !s &&
                       a &&
                       null !== (o = o.child.sibling) &&
-                        (null !== (l = t.firstEffect)
-                          ? ((t.firstEffect = o), (o.nextEffect = l))
-                          : ((t.firstEffect = t.lastEffect = o),
-                            (o.nextEffect = null)),
-                        (o.effectTag = 8)),
+                      (null !== (l = t.firstEffect)
+                        ? ((t.firstEffect = o), (o.nextEffect = l))
+                        : ((t.firstEffect = t.lastEffect = o),
+                          (o.nextEffect = null)),
+                      (o.effectTag = 8)),
                     (s || a) && (t.effectTag |= 4);
                   break;
                 case 7:

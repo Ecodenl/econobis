@@ -6,4 +6,5 @@ export default [
     { id: 5, name: 'De heer of mevrouw' },
     { id: 6, name: 'De heren' },
     { id: 7, name: 'De dames' },
+    { id: 8, name: 'Erven' },
 ];

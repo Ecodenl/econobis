@@ -68,7 +68,7 @@ class ConceptApp extends Component {
                         subject: payload.subject ? payload.subject : '',
                         htmlBody: payload.htmlBody ? payload.htmlBody : '',
                         attachments: payload.attachments ? payload.attachments : '',
-                        quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '6',
+                        quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '',
                         intakeId: payload.intakeId ? payload.intakeId : '',
                     },
                     emailAddresses: [...this.state.emailAddresses, ...extraOptions],

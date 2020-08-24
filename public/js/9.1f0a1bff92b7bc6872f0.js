@@ -1307,9 +1307,7 @@
             null != t &&
             !o(t)
           ) ||
-          i.test(t) ||
-          !u.test(t) ||
-          (null != n && t in Object(n))
+          i.test(t) || !u.test(t) || (null != n && t in Object(n))
         );
       };
     },

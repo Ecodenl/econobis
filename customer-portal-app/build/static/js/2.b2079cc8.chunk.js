@@ -7125,7 +7125,9 @@
                             var n = typeof e;
                             return (
                                 !('number' != n && 'symbol' != n && 'boolean' != n && null != e && !Ka(e)) ||
-                                V.test(e) || !Y.test(e) || (null != t && e in he(t))
+                                V.test(e) ||
+                                !Y.test(e) ||
+                                (null != t && e in he(t))
                             );
                         }
                         function li(e) {
@@ -9717,7 +9719,8 @@
                             ('ReactNative' !== navigator.product &&
                                 'NativeScript' !== navigator.product &&
                                 'NS' !== navigator.product)) &&
-                        'undefined' !== typeof window && 'undefined' !== typeof document
+                        'undefined' !== typeof window &&
+                        'undefined' !== typeof document
                     );
                 },
                 forEach: l,
@@ -14277,7 +14280,8 @@
                                 -1 === e.indexOf('Mobile Safari') ||
                                 -1 !== e.indexOf('Chrome') ||
                                 -1 !== e.indexOf('Windows Phone')) &&
-                            window.history && 'pushState' in window.history
+                            window.history &&
+                            'pushState' in window.history
                         );
                     })(),
                     o = !(-1 === window.navigator.userAgent.indexOf('Trident')),
@@ -15422,7 +15426,8 @@
                                 u = a.component,
                                 l = a.render;
                             (Array.isArray(s) && 0 === s.length && (s = null), 'function' === typeof s) &&
-                                void 0 === (s = s(i)) && (s = null);
+                                void 0 === (s = s(i)) &&
+                                (s = null);
                             return o.a.createElement(
                                 x.Provider,
                                 { value: i },
@@ -16196,7 +16201,9 @@
             function a(e, t) {
                 return (
                     !(!e || !t) &&
-                    e.getDate() === t.getDate() && e.getMonth() === t.getMonth() && e.getFullYear() === t.getFullYear()
+                    e.getDate() === t.getDate() &&
+                    e.getMonth() === t.getMonth() &&
+                    e.getFullYear() === t.getFullYear()
                 );
             }
             function s(e, t) {
@@ -18048,7 +18055,9 @@
                 var n = typeof e;
                 return (
                     !('number' != n && 'symbol' != n && 'boolean' != n && null != e && !o(e)) ||
-                    a.test(e) || !i.test(e) || (null != t && e in Object(t))
+                    a.test(e) ||
+                    !i.test(e) ||
+                    (null != t && e in Object(t))
                 );
             };
         },
@@ -27920,7 +27929,7 @@
                                 (o = Kr(r, r.pendingProps)),
                                 0 === (1 & t.mode) &&
                                     (a = null !== t.memoizedState ? t.child.child : t.child) !== r.child &&
-                                        (o.child = a),
+                                    (o.child = a),
                                 (r = o.sibling = Kr(s, n, s.expirationTime)),
                                 (n = o),
                                 (o.childExpirationTime = 0),
@@ -29044,7 +29053,8 @@
                         }
                     }
                     128 & n &&
-                        null !== (o = Sa.ref) && ((i = Sa.stateNode), 'function' === typeof o ? o(i) : (o.current = i)),
+                        null !== (o = Sa.ref) &&
+                        ((i = Sa.stateNode), 'function' === typeof o ? o(i) : (o.current = i)),
                         512 & n && (Ca = e),
                         (Sa = Sa.nextEffect);
                 }
@@ -29458,10 +29468,10 @@
                                             !u &&
                                             a &&
                                             null !== (i = i.child.sibling) &&
-                                                (null !== (l = t.firstEffect)
-                                                    ? ((t.firstEffect = i), (i.nextEffect = l))
-                                                    : ((t.firstEffect = t.lastEffect = i), (i.nextEffect = null)),
-                                                (i.effectTag = 8)),
+                                            (null !== (l = t.firstEffect)
+                                                ? ((t.firstEffect = i), (i.nextEffect = l))
+                                                : ((t.firstEffect = t.lastEffect = i), (i.nextEffect = null)),
+                                            (i.effectTag = 8)),
                                         (u || a) && (t.effectTag |= 4);
                                     break;
                                 case 7:
@@ -31479,12 +31489,12 @@
                             ? isFinite(e)
                             : !('array' != t || !(e instanceof Array || (Array.isArray && Array.isArray(e)))) ||
                                   ('null' == t && null === e) ||
-                                      (t == typeof e && null !== e) ||
-                                      ('object' == t && e === Object(e)) ||
-                                      d
-                                          .call(e)
-                                          .slice(8, -1)
-                                          .toLowerCase() == t;
+                                  (t == typeof e && null !== e) ||
+                                  ('object' == t && e === Object(e)) ||
+                                  d
+                                      .call(e)
+                                      .slice(8, -1)
+                                      .toLowerCase() == t;
                     }
                     function T(e, t) {
                         for (var n = 0, r = e.length; n < r; n++) if (e[n] === t) return e.push(e.splice(n, 1)[0]);

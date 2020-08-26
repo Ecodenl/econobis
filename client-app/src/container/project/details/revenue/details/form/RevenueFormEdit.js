@@ -423,7 +423,9 @@ class RevenueFormEdit extends Component {
                             (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation')
                                 ? project.dateInterestBearing
                                 : category.codeRef === 'redemptionEuro'
-                                ? project.dateInterestBearingRedemption
+                                ? moment(project.dateInterestBearingRedemption)
+                                    .add(-1, 'year')
+                                    .format('Y-MM-DD')
                                 : category.codeRef === 'revenueKwh'
                                 ? project.dateInterestBearingKwh
                                 : ''
@@ -444,6 +446,10 @@ class RevenueFormEdit extends Component {
                                       .add(1, 'year')
                                       .add(6, 'month')
                                       .format('Y-MM-DD')
+                                : category.codeRef === 'redemptionEuro'
+                                ? moment(dateBegin)
+                                    .add(1, 'year')
+                                    .format('Y-MM-DD')
                                 : moment(dateBegin)
                                       .endOf('year')
                                       .format('Y-MM-DD')

@@ -146,31 +146,32 @@ class ProjectRevenueDistributionCalculator
             }
         }
 
-        $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
-        $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
-
-        if (!$dateBegin || !$dateEnd) return 0;
-
-        $daysOfPeriod = $dateEnd->diffInDays($dateBegin);
-
         if ($this->projectRevenueDistribution->revenue->pay_amount) {
             $payout = $this->projectRevenueDistribution->revenue->pay_amount;
             if($payout > $participationValue ) {
                 $payout = $participationValue;
             }
+        }elseif($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
+                $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100;
         }else{
-            // If key amount first percentage is filled and is greater participationValue, then split calculation with the two percentages
-            if ($this->projectRevenueDistribution->revenue->key_amount_first_percentage && $participationValue > $this->projectRevenueDistribution->revenue->key_amount_first_percentage) {
-                $payoutTillKeyAmount = ($this->projectRevenueDistribution->revenue->key_amount_first_percentage * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
-                $payoutAboveKeyAmount = (($participationValue - $this->projectRevenueDistribution->revenue->key_amount_first_percentage) * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
+            $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
 
-                $payout = $payoutTillKeyAmount + $payoutAboveKeyAmount;
-            } else {
-                $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            if (!$dateBegin || !$dateEnd){
+                $payout = 0;
+            }else{
+                $daysOfPeriod = $dateEnd->diffInDays($dateBegin);
+                // If key amount first percentage is filled and is greater participationValue, then split calculation with the two percentages
+                if ($this->projectRevenueDistribution->revenue->key_amount_first_percentage && $participationValue > $this->projectRevenueDistribution->revenue->key_amount_first_percentage) {
+                    $payoutTillKeyAmount = ($this->projectRevenueDistribution->revenue->key_amount_first_percentage * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+                    $payoutAboveKeyAmount = (($participationValue - $this->projectRevenueDistribution->revenue->key_amount_first_percentage) * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+
+                    $payout = $payoutTillKeyAmount + $payoutAboveKeyAmount;
+                } else {
+                    $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+                }
             }
-
         }
-
 
         if($this->projectTypeCodeRef !== 'loan') {
             $payout = floatval( number_format($payout, 2, '.', '') ) * $amount;

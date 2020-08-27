@@ -545,7 +545,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueDistributionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDistributionForm);

@@ -68,6 +68,8 @@ const RevenueFormView = props => {
                         <span>
                             Begin periode
                             {project &&
+                            !confirmed &&
+                            project.dateInterestBearingRedemption &&
                             category.codeRef === 'redemptionEuro' &&
                             moment(dateBegin).format('Y-MM-DD') <
                                 moment(project.dateInterestBearingRedemption).format('Y-MM-DD') ? (

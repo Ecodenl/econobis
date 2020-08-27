@@ -71,7 +71,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsApp);

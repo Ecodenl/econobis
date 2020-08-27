@@ -266,22 +266,31 @@ class RevenueDistributionForm extends Component {
                 return;
             } else {
                 // this.createPaymentInvoices();
-                const $variableDateText = ("redemptionEuro" === this.props.projectRevenue.category.codeRef
-                    ? "aflossingsdatum"
-                    : "uitkeringsdatum");
+                const $variableDateText =
+                    'redemptionEuro' === this.props.projectRevenue.category.codeRef
+                        ? 'aflossingsdatum'
+                        : 'uitkeringsdatum';
                 this.setState({
                     showModal: true,
                     modalText:
-                        'De ' + $variableDateText + ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.\n' +
-                        'In een eventueel te maken Sepa betaalbestand wordt dit de datum waarop het bedrag van jouw rekening wordt afgeschreven, als je het Sepa betaalbestand hebt aangeboden bij je bank. Als je dus een ' + $variableDateText + ' gebruikt, die voor of op de huidige datum ligt, dan kan je het Sepa bestand dus niet gebruiken.\n' +
+                        'De ' +
+                        $variableDateText +
+                        ' wordt de datum die bij de mutatie komt te staan in de deelname overzichten van de deelnemers.\n' +
+                        'In een eventueel te maken Sepa betaalbestand wordt dit de datum waarop het bedrag van jouw rekening wordt afgeschreven, als je het Sepa betaalbestand hebt aangeboden bij je bank. Als je dus een ' +
+                        $variableDateText +
+                        ' gebruikt, die voor of op de huidige datum ligt, dan kan je het Sepa bestand dus niet gebruiken.\n' +
                         '\n' +
-                        'Weet je zeker dat je de goede ' + $variableDateText + ' hebt gekozen ?',
+                        'Weet je zeker dat je de goede ' +
+                        $variableDateText +
+                        ' hebt gekozen ?',
                     modalText2:
                         moment(this.state.datePayout).format('YYYY-MM-DD') <
                         moment()
                             .nextBusinessDay()
                             .format('YYYY-MM-DD')
-                            ? 'Gekozen ' + $variableDateText + ' (' +
+                            ? 'Gekozen ' +
+                              $variableDateText +
+                              ' (' +
                               moment(this.state.datePayout).format('L') +
                               ') ligt voor volgende werkdag!'
                             : '',
@@ -548,7 +557,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueDistributionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDistributionForm);

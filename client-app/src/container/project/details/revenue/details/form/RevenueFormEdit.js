@@ -424,8 +424,8 @@ class RevenueFormEdit extends Component {
                                 ? project.dateInterestBearing
                                 : category.codeRef === 'redemptionEuro'
                                 ? moment(project.dateInterestBearingRedemption)
-                                    .add(-1, 'year')
-                                    .format('Y-MM-DD')
+                                      .add(-1, 'year')
+                                      .format('Y-MM-DD')
                                 : category.codeRef === 'revenueKwh'
                                 ? project.dateInterestBearingKwh
                                 : ''
@@ -448,8 +448,8 @@ class RevenueFormEdit extends Component {
                                       .format('Y-MM-DD')
                                 : category.codeRef === 'redemptionEuro'
                                 ? moment(dateBegin)
-                                    .add(1, 'year')
-                                    .format('Y-MM-DD')
+                                      .add(1, 'year')
+                                      .format('Y-MM-DD')
                                 : moment(dateBegin)
                                       .endOf('year')
                                       .format('Y-MM-DD')
@@ -742,7 +742,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueFormEdit);

@@ -48,7 +48,7 @@ const RevenueFormView = props => {
                 <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} />
             </div>
 
-            {(category.codeRef === 'revenueEuro' || category.codeRef === 'redemptionEuro') ? (
+            {category.codeRef === 'revenueEuro' || category.codeRef === 'redemptionEuro' ? (
                 <div className="row" onClick={props.switchToEdit}>
                     {project.projectType.codeRef === 'obligation' ? (
                         <ViewText

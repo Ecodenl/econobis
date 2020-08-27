@@ -262,6 +262,21 @@ class RevenueNewApp extends Component {
             errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
             hasErrors = true;
         }
+        if (
+            !hasErrors &&
+            category.codeRef === 'redemptionEuro' &&
+            moment(revenue.dateBegin).format('Y-MM-DD') <
+                moment(revenue.dateEnd)
+                    .add(-1, 'year')
+                    .add(1, 'day')
+                    .format('Y-MM-DD')
+        ) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Aflossingperiode mag maximaal 1 jaar zijn.';
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Aflossingperiode mag maximaal 1 jaar zijn.';
+            hasErrors = true;
+        }
 
         if (revenue.distributionTypeId === 'inPossessionOf') {
             if (validator.isEmpty(revenue.dateReference + '')) {
@@ -326,7 +341,6 @@ class RevenueNewApp extends Component {
                 hasErrors = true;
             }
         }
-
         if (
             (!validator.isEmpty(revenue.payPercentage + '') ||
                 revenue.keyAmountFirstPercentage != 0 ||

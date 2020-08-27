@@ -242,6 +242,21 @@ class RevenueFormEdit extends Component {
             errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
             hasErrors = true;
         }
+        if (
+            !hasErrors &&
+            this.props.revenue.category.codeRef === 'redemptionEuro' &&
+            moment(revenue.dateBegin).format('Y-MM-DD') <
+                moment(revenue.dateEnd)
+                    .add(-1, 'year')
+                    .add(1, 'day')
+                    .format('Y-MM-DD')
+        ) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Aflossingperiode mag maximaal 1 jaar zijn.';
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Aflossingperiode mag maximaal 1 jaar zijn.';
+            hasErrors = true;
+        }
 
         if (revenue.distributionTypeId === 'inPossessionOf') {
             if (validator.isEmpty(revenue.dateReference + '')) {
@@ -299,7 +314,6 @@ class RevenueFormEdit extends Component {
             const accountPayoutTypeId = this.props.participantProjectPayoutTypes.find(
                 participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
             ).id;
-
             if (revenue.revenue < 0 && revenue.payoutTypeId == accountPayoutTypeId) {
                 errors.payoutTypeId = true;
                 errorMessage.payoutTypeId =
@@ -429,6 +443,7 @@ class RevenueFormEdit extends Component {
                                 Begin periode
                                 {project &&
                                 !confirmed &&
+                                project.dateInterestBearingRedemption &&
                                 category.codeRef === 'redemptionEuro' &&
                                 moment(dateBegin).format('Y-MM-DD') <
                                     moment(project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
@@ -476,10 +491,12 @@ class RevenueFormEdit extends Component {
                                 ? moment(dateBegin)
                                       .add(1, 'year')
                                       .add(6, 'month')
+                                      .add(-1, 'day')
                                       .format('Y-MM-DD')
                                 : category.codeRef === 'redemptionEuro'
                                 ? moment(dateBegin)
                                       .add(1, 'year')
+                                      .add(-1, 'day')
                                       .format('Y-MM-DD')
                                 : moment(dateBegin)
                                       .endOf('year')

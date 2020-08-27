@@ -107,6 +107,7 @@ const RevenueNew = props => {
                         <span>
                             Begin periode
                             {props.project &&
+                            props.project.dateInterestBearingRedemption &&
                             category.codeRef === 'redemptionEuro' &&
                             moment(dateBegin).format('Y-MM-DD') <
                                 moment(props.project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
@@ -154,10 +155,12 @@ const RevenueNew = props => {
                             ? moment(dateBegin)
                                   .add(1, 'year')
                                   .add(6, 'month')
+                                  .add(-1, 'day')
                                   .format('Y-MM-DD')
                             : category.codeRef === 'redemptionEuro'
                             ? moment(dateBegin)
                                   .add(1, 'year')
+                                  .add(-1, 'day')
                                   .format('Y-MM-DD')
                             : moment(dateBegin)
                                   .endOf('year')

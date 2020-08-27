@@ -424,7 +424,25 @@ class RevenueFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={'Begin periode'}
+                        label={
+                            <span>
+                                Begin periode
+                                {project &&
+                                !confirmed &&
+                                category.codeRef === 'redemptionEuro' &&
+                                moment(dateBegin).format('Y-MM-DD') <
+                                    moment(project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
+                                    <React.Fragment>
+                                        <br />
+                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                            Let op de begin periode ligt voor de eind periode van de vorige aflossing.
+                                        </small>
+                                    </React.Fragment>
+                                ) : (
+                                    ''
+                                )}
+                            </span>
+                        }
                         name={'dateBegin'}
                         value={dateBegin}
                         onChangeAction={this.handleInputChangeDate}

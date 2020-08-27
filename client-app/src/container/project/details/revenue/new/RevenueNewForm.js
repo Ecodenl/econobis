@@ -103,7 +103,24 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputDate
-                    label={'Begin periode'}
+                    label={
+                        <span>
+                            Begin periode
+                            {props.project &&
+                            category.codeRef === 'redemptionEuro' &&
+                            moment(dateBegin).format('Y-MM-DD') <
+                                moment(props.project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
+                                <React.Fragment>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Let op de begin periode ligt voor de eind periode van de vorige aflossing.
+                                    </small>
+                                </React.Fragment>
+                            ) : (
+                                ''
+                            )}
+                        </span>
+                    }
                     name={'dateBegin'}
                     value={dateBegin}
                     onChangeAction={props.handleInputChangeDate}

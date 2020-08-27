@@ -63,7 +63,27 @@ const RevenueFormView = props => {
             ) : null}
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Begin periode'} value={dateBegin ? moment(dateBegin).format('L') : ''} />
+                <ViewText
+                    label={
+                        <span>
+                            Begin periode
+                            {project &&
+                            category.codeRef === 'redemptionEuro' &&
+                            moment(dateBegin).format('Y-MM-DD') <
+                                moment(project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
+                                <React.Fragment>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Let op de begin periode ligt voor de eind periode van de vorige aflossing.
+                                    </small>
+                                </React.Fragment>
+                            ) : (
+                                ''
+                            )}
+                        </span>
+                    }
+                    value={dateBegin ? moment(dateBegin).format('L') : ''}
+                />
                 <ViewText label={'Eind periode'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
             </div>
 

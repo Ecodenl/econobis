@@ -233,6 +233,7 @@ class RevenueFormEdit extends Component {
         if (
             !hasErrors &&
             this.props.revenue.category.codeRef !== 'revenueKwh' &&
+            this.props.revenue.category.codeRef !== 'redemptionEuro' &&
             moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
         ) {
             errors.dateBegin = true;
@@ -257,6 +258,18 @@ class RevenueFormEdit extends Component {
             if (revenue.payAmount + '' < 0) {
                 errors.payAmount = true;
                 errorMessage.payAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
+        if (!validator.isEmpty(revenue.payPercentage + '')) {
+            if (revenue.payPercentage + '' < 0) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet negatief zijn.';
+                hasErrors = true;
+            }
+            if (this.props.revenue.category.codeRef === 'redemptionEuro' && revenue.payPercentage + '' > 100) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet meer dan 100% zijn.';
                 hasErrors = true;
             }
         }
@@ -592,6 +605,7 @@ class RevenueFormEdit extends Component {
                                         value={payPercentage}
                                         onChangeAction={this.handleInputChange}
                                         error={this.state.errors.payPercentage}
+                                        errorMessage={this.state.errorMessage.payPercentage}
                                     />
                                     <InputText
                                         type={'number'}
@@ -666,6 +680,8 @@ class RevenueFormEdit extends Component {
                                         name={'payPercentage'}
                                         value={payPercentage}
                                         onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.payPercentage}
+                                        errorMessage={this.state.errorMessage.payPercentage}
                                     />
                                     <InputText
                                         type={'number'}

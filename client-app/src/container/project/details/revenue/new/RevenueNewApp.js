@@ -253,6 +253,7 @@ class RevenueNewApp extends Component {
         if (
             !hasErrors &&
             category.codeRef !== 'revenueKwh' &&
+            category.codeRef !== 'redemptionEuro' &&
             moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
         ) {
             errors.dateBegin = true;
@@ -277,6 +278,18 @@ class RevenueNewApp extends Component {
             if (revenue.payAmount + '' < 0) {
                 errors.payAmount = true;
                 errorMessage.payAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
+        if (!validator.isEmpty(revenue.payPercentage + '')) {
+            if (revenue.payPercentage + '' < 0) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet negatief zijn.';
+                hasErrors = true;
+            }
+            if (category.codeRef === 'redemptionEuro' && revenue.payPercentage + '' > 100) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet meer dan 100% zijn.';
                 hasErrors = true;
             }
         }

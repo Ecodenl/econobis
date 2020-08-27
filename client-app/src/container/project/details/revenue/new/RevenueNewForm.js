@@ -115,7 +115,9 @@ const RevenueNew = props => {
                         (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation')
                             ? props.project.dateInterestBearing
                             : category.codeRef === 'redemptionEuro'
-                            ? props.project.dateInterestBearingRedemption
+                            ? moment(props.project.dateInterestBearingRedemption)
+                                  .add(-1, 'year')
+                                  .format('Y-MM-DD')
                             : category.codeRef === 'revenueKwh'
                             ? props.project.dateInterestBearingKwh
                             : ''
@@ -135,6 +137,10 @@ const RevenueNew = props => {
                             ? moment(dateBegin)
                                   .add(1, 'year')
                                   .add(6, 'month')
+                                  .format('Y-MM-DD')
+                            : category.codeRef === 'redemptionEuro'
+                            ? moment(dateBegin)
+                                  .add(1, 'year')
                                   .format('Y-MM-DD')
                             : moment(dateBegin)
                                   .endOf('year')
@@ -276,6 +282,7 @@ const RevenueNew = props => {
                                     value={payPercentage}
                                     onChangeAction={props.handleInputChange}
                                     error={props.errors.payPercentage}
+                                    errorMessage={props.errorMessage.payPercentage}
                                 />
                                 <InputText
                                     type={'number'}
@@ -350,6 +357,8 @@ const RevenueNew = props => {
                                     name={'payPercentage'}
                                     value={payPercentage}
                                     onChangeAction={props.handleInputChange}
+                                    error={props.errors.payPercentage}
+                                    errorMessage={props.errorMessage.payPercentage}
                                 />
                                 <InputText
                                     type={'number'}

@@ -82,7 +82,10 @@ class Reset extends Component {
         if (!error) {
             msg = 'Wachtwoord successvol gewijzigd';
         } else if (this.state.errMessage === 'passwords.token') {
-            msg = 'Wachtwoord reset link is niet geldig of verlopen.';
+            msg =
+                'Er is helaas iets fout gegaan met de activeringslink om je wachtwoord te resetten. \n' +
+                'Wij adviseren je om via het inlogscherm met de link ‘Wachtwoord vergeten?’ een nieuw activeringslink aan te vragen. \n' +
+                'Mocht het probleem zich blijven voordoen, neem dan contact op met Econobis.\n';
         } else {
             msg = 'Onbekende fout bij wijzigen wachtwoord';
         }

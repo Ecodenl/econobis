@@ -103,7 +103,25 @@ const RevenueNew = props => {
 
             <div className="row">
                 <InputDate
-                    label={'Begin periode'}
+                    label={
+                        <span>
+                            Begin periode
+                            {props.project &&
+                            props.project.dateInterestBearingRedemption &&
+                            category.codeRef === 'redemptionEuro' &&
+                            moment(dateBegin).format('Y-MM-DD') <
+                                moment(props.project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
+                                <React.Fragment>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Let op de begin periode ligt voor de eind periode van de vorige aflossing.
+                                    </small>
+                                </React.Fragment>
+                            ) : (
+                                ''
+                            )}
+                        </span>
+                    }
                     name={'dateBegin'}
                     value={dateBegin}
                     onChangeAction={props.handleInputChangeDate}
@@ -115,7 +133,9 @@ const RevenueNew = props => {
                         (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation')
                             ? props.project.dateInterestBearing
                             : category.codeRef === 'redemptionEuro'
-                            ? props.project.dateInterestBearingRedemption
+                            ? moment(props.project.dateInterestBearingRedemption)
+                                  .add(-1, 'year')
+                                  .format('Y-MM-DD')
                             : category.codeRef === 'revenueKwh'
                             ? props.project.dateInterestBearingKwh
                             : ''
@@ -135,6 +155,12 @@ const RevenueNew = props => {
                             ? moment(dateBegin)
                                   .add(1, 'year')
                                   .add(6, 'month')
+                                  .add(-1, 'day')
+                                  .format('Y-MM-DD')
+                            : category.codeRef === 'redemptionEuro'
+                            ? moment(dateBegin)
+                                  .add(1, 'year')
+                                  .add(-1, 'day')
                                   .format('Y-MM-DD')
                             : moment(dateBegin)
                                   .endOf('year')
@@ -276,6 +302,7 @@ const RevenueNew = props => {
                                     value={payPercentage}
                                     onChangeAction={props.handleInputChange}
                                     error={props.errors.payPercentage}
+                                    errorMessage={props.errorMessage.payPercentage}
                                 />
                                 <InputText
                                     type={'number'}
@@ -350,6 +377,8 @@ const RevenueNew = props => {
                                     name={'payPercentage'}
                                     value={payPercentage}
                                     onChangeAction={props.handleInputChange}
+                                    error={props.errors.payPercentage}
+                                    errorMessage={props.errorMessage.payPercentage}
                                 />
                                 <InputText
                                     type={'number'}

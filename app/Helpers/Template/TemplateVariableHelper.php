@@ -313,6 +313,22 @@ class TemplateVariableHelper
             case 'iban_tnv':
                 return $model->iban_attn;
                 break;
+            case 'partner_voornaam':
+                if($model->type_id == 'person'){
+                    return $model->person->first_name_partner;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'partner_achternaam':
+                if($model->type_id == 'person'){
+                    return $model->person->last_name_partner;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return '';
+                }
+                break;
             case 'portal_registratie_link':
                 if($model->portal_registration_code)
                 {
@@ -651,6 +667,22 @@ class TemplateVariableHelper
                 break;
             case 'contact_iban_tnv':
                 return $model->contact->iban_attn;
+                break;
+            case 'contact_partner_voornaam':
+                if($model->contact->type_id == 'person'){
+                    return $model->contact->person->first_name_partner;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'contact_partner_achternaam':
+                if($model->contact->type_id == 'person'){
+                    return $model->contact->person->last_name_partner;
+                }
+                elseif($model->type_id == 'organisation'){
+                    return '';
+                }
                 break;
             case 'contact_telefoonnummer':
                 return optional(optional($model->contact)->primaryphoneNumber)->number;

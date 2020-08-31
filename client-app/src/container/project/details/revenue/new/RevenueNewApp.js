@@ -253,12 +253,28 @@ class RevenueNewApp extends Component {
         if (
             !hasErrors &&
             category.codeRef !== 'revenueKwh' &&
+            category.codeRef !== 'redemptionEuro' &&
             moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
         ) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
+            hasErrors = true;
+        }
+        if (
+            !hasErrors &&
+            category.codeRef === 'redemptionEuro' &&
+            moment(revenue.dateBegin).format('Y-MM-DD') <
+                moment(revenue.dateEnd)
+                    .add(-1, 'year')
+                    .add(1, 'day')
+                    .format('Y-MM-DD')
+        ) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Aflossingperiode mag maximaal 1 jaar zijn.';
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Aflossingperiode mag maximaal 1 jaar zijn.';
             hasErrors = true;
         }
 
@@ -277,6 +293,18 @@ class RevenueNewApp extends Component {
             if (revenue.payAmount + '' < 0) {
                 errors.payAmount = true;
                 errorMessage.payAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
+        if (!validator.isEmpty(revenue.payPercentage + '')) {
+            if (revenue.payPercentage + '' < 0) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet negatief zijn.';
+                hasErrors = true;
+            }
+            if (category.codeRef === 'redemptionEuro' && revenue.payPercentage + '' > 100) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet meer dan 100% zijn.';
                 hasErrors = true;
             }
         }
@@ -313,7 +341,6 @@ class RevenueNewApp extends Component {
                 hasErrors = true;
             }
         }
-
         if (
             (!validator.isEmpty(revenue.payPercentage + '') ||
                 revenue.keyAmountFirstPercentage != 0 ||

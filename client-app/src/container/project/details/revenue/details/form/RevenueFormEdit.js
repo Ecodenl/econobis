@@ -233,12 +233,28 @@ class RevenueFormEdit extends Component {
         if (
             !hasErrors &&
             this.props.revenue.category.codeRef !== 'revenueKwh' &&
+            this.props.revenue.category.codeRef !== 'redemptionEuro' &&
             moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
         ) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Jaaroverschrijdende perioden niet toegestaan.';
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Jaaroverschrijdende perioden niet toegestaan.';
+            hasErrors = true;
+        }
+        if (
+            !hasErrors &&
+            this.props.revenue.category.codeRef === 'redemptionEuro' &&
+            moment(revenue.dateBegin).format('Y-MM-DD') <
+                moment(revenue.dateEnd)
+                    .add(-1, 'year')
+                    .add(1, 'day')
+                    .format('Y-MM-DD')
+        ) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Aflossingperiode mag maximaal 1 jaar zijn.';
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Aflossingperiode mag maximaal 1 jaar zijn.';
             hasErrors = true;
         }
 
@@ -257,6 +273,18 @@ class RevenueFormEdit extends Component {
             if (revenue.payAmount + '' < 0) {
                 errors.payAmount = true;
                 errorMessage.payAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
+        if (!validator.isEmpty(revenue.payPercentage + '')) {
+            if (revenue.payPercentage + '' < 0) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet negatief zijn.';
+                hasErrors = true;
+            }
+            if (this.props.revenue.category.codeRef === 'redemptionEuro' && revenue.payPercentage + '' > 100) {
+                errors.payPercentage = true;
+                errorMessage.payPercentage = 'Percentage mag niet meer dan 100% zijn.';
                 hasErrors = true;
             }
         }
@@ -286,7 +314,6 @@ class RevenueFormEdit extends Component {
             const accountPayoutTypeId = this.props.participantProjectPayoutTypes.find(
                 participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
             ).id;
-
             if (revenue.revenue < 0 && revenue.payoutTypeId == accountPayoutTypeId) {
                 errors.payoutTypeId = true;
                 errorMessage.payoutTypeId =
@@ -411,7 +438,26 @@ class RevenueFormEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label={'Begin periode'}
+                        label={
+                            <span>
+                                Begin periode
+                                {project &&
+                                !confirmed &&
+                                project.dateInterestBearingRedemption &&
+                                category.codeRef === 'redemptionEuro' &&
+                                moment(dateBegin).format('Y-MM-DD') <
+                                    moment(project.dateInterestBearingRedemption).format('Y-MM-DD') ? (
+                                    <React.Fragment>
+                                        <br />
+                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                            Let op de begin periode ligt voor de eind periode van de vorige aflossing.
+                                        </small>
+                                    </React.Fragment>
+                                ) : (
+                                    ''
+                                )}
+                            </span>
+                        }
                         name={'dateBegin'}
                         value={dateBegin}
                         onChangeAction={this.handleInputChangeDate}
@@ -423,7 +469,9 @@ class RevenueFormEdit extends Component {
                             (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation')
                                 ? project.dateInterestBearing
                                 : category.codeRef === 'redemptionEuro'
-                                ? project.dateInterestBearingRedemption
+                                ? moment(project.dateInterestBearingRedemption)
+                                      .add(-1, 'year')
+                                      .format('Y-MM-DD')
                                 : category.codeRef === 'revenueKwh'
                                 ? project.dateInterestBearingKwh
                                 : ''
@@ -443,6 +491,12 @@ class RevenueFormEdit extends Component {
                                 ? moment(dateBegin)
                                       .add(1, 'year')
                                       .add(6, 'month')
+                                      .add(-1, 'day')
+                                      .format('Y-MM-DD')
+                                : category.codeRef === 'redemptionEuro'
+                                ? moment(dateBegin)
+                                      .add(1, 'year')
+                                      .add(-1, 'day')
                                       .format('Y-MM-DD')
                                 : moment(dateBegin)
                                       .endOf('year')
@@ -586,6 +640,7 @@ class RevenueFormEdit extends Component {
                                         value={payPercentage}
                                         onChangeAction={this.handleInputChange}
                                         error={this.state.errors.payPercentage}
+                                        errorMessage={this.state.errorMessage.payPercentage}
                                     />
                                     <InputText
                                         type={'number'}
@@ -660,6 +715,8 @@ class RevenueFormEdit extends Component {
                                         name={'payPercentage'}
                                         value={payPercentage}
                                         onChangeAction={this.handleInputChange}
+                                        error={this.state.errors.payPercentage}
+                                        errorMessage={this.state.errorMessage.payPercentage}
                                     />
                                     <InputText
                                         type={'number'}
@@ -736,7 +793,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueFormEdit);

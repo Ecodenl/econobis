@@ -17,7 +17,7 @@
         "laracasts/presenter": "^0.2.1",
         "laravel/framework": "^6.0",
         "laravel/helpers": "^1.1",
-        "laravel/passport": "^8.3",
+        "laravel/passport": "^9.3",
         "laravel/tinker": "~1.0",
         "league/oauth2-client": "^2.4",
         "particle/validator": "^2.3",

@@ -149,7 +149,7 @@ const RevenueFormView = props => {
                         {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
                             <React.Fragment>
                                 <div>
-                                    <ViewText label={'Uitkering %'} value={payPercentage && payPercentage + '%'} />
+                                    <ViewText label={'Uitkering (rente) %'} value={payPercentage && payPercentage + '%'} />
                                     <ViewText
                                         label={
                                             project.projectType.codeRef === 'loan'
@@ -182,7 +182,7 @@ const RevenueFormView = props => {
                         <div className="row">
                             <ViewText
                                 type={'number'}
-                                label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                label={<React.Fragment>Uitkering (rente) % vanaf bedrag</React.Fragment>}
                                 value={payPercentageValidFromKeyAmount && payPercentageValidFromKeyAmount + '%'}
                             />
                         </div>

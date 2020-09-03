@@ -297,7 +297,7 @@ const RevenueNew = props => {
                             <div className="row">
                                 <InputText
                                     type={'number'}
-                                    label={'Uitkering %'}
+                                    label={'Uitkering (rente) %'}
                                     name={'payPercentage'}
                                     value={payPercentage}
                                     onChangeAction={props.handleInputChange}
@@ -335,7 +335,7 @@ const RevenueNew = props => {
                                 <div className="row">
                                     <InputText
                                         type={'number'}
-                                        label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                        label={<React.Fragment>Uitkering (rente) % vanaf bedrag</React.Fragment>}
                                         name={'payPercentageValidFromKeyAmount'}
                                         value={payPercentageValidFromKeyAmount}
                                         onChangeAction={props.handleInputChange}

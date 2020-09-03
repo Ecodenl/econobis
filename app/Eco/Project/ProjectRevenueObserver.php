@@ -27,7 +27,10 @@ class ProjectRevenueObserver
             if($projectRevenue->category->code_ref == 'revenueEuro') {
                 $project->date_interest_bearing = Carbon::parse($projectRevenue->date_end)->addDay();
             }elseif($projectRevenue->category->code_ref == 'redemptionEuro') {
-                    $project->date_interest_bearing_redemption = Carbon::parse($projectRevenue->date_end)->addDay();
+                $newDateInterestBearingRedemption = Carbon::parse($projectRevenue->date_end)->addDay();
+                if($project->date_interest_bearing_redemption == null || $newDateInterestBearingRedemption > Carbon::parse($project->date_interest_bearing_redemption) ){
+                    $project->date_interest_bearing_redemption = $newDateInterestBearingRedemption;
+                }
             }elseif($projectRevenue->category->code_ref == 'revenueKwh'){
                 $project->date_interest_bearing_kwh = Carbon::parse($projectRevenue->date_end)->addDay();
                 if($projectRevenue->kwh_end_high <> 0)

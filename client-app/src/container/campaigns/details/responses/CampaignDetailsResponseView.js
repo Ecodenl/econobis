@@ -12,7 +12,7 @@ const CampaignDetailsResponseView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div onClick={() => hashHistory.push(`/contact/${id}`)}>
+            <div onClick={() => hashHistory.push(`/contact/${contact.id}`)}>
                 <div className="col-sm-1">{contact ? contact.number : ''}</div>
                 <div className="col-sm-1">{contact ? contact.type.name : ''}</div>
                 <div className="col-sm-2">{contact ? contact.fullName : ''}</div>

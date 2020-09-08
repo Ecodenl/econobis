@@ -43,6 +43,6 @@ class Joiner extends RequestJoiner
 
     protected function applyParticipantMutationsJoin($query)
     {
-        $query->join('participant_mutations', 'participation_project.id', '=', 'participant_mutations.participation_id');
+        $query->leftJoin('participant_mutations', 'participation_project.id', '=', 'participant_mutations.participation_id');
     }
 }

@@ -28,7 +28,8 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         $query = ParticipantProject::query()
-            ->select('participation_project.*');
+            ->select('participation_project.*')
+            ->distinct(true);
 
         // The operation of below is not working. For now the code outcommented, so that the count is working after setting extra filter
         //If the request is called from the production project we catch the projectId filter. This will avoid errors with 'or' and 'and' filters.

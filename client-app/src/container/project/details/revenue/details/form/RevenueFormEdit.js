@@ -635,7 +635,7 @@ class RevenueFormEdit extends Component {
                                 <div className="row">
                                     <InputText
                                         type={'number'}
-                                        label={'Uitkering %'}
+                                        label={'Uitkering (rente) %'}
                                         name={'payPercentage'}
                                         value={payPercentage}
                                         onChangeAction={this.handleInputChange}
@@ -673,7 +673,7 @@ class RevenueFormEdit extends Component {
                                     <div className="row">
                                         <InputText
                                             type={'number'}
-                                            label={<React.Fragment>Uitkering % vanaf bedrag</React.Fragment>}
+                                            label={<React.Fragment>Uitkering (rente) % vanaf bedrag</React.Fragment>}
                                             name={'payPercentageValidFromKeyAmount'}
                                             value={payPercentageValidFromKeyAmount}
                                             onChangeAction={this.handleInputChange}

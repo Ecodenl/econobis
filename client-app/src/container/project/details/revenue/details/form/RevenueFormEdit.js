@@ -215,16 +215,28 @@ class RevenueFormEdit extends Component {
             errors.categoryId = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(revenue.dateBegin + '')) {
+        if (this.props.revenue.category.codeRef !== 'redemptionEuro' && validator.isEmpty(revenue.dateBegin + '')) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Verplicht';
             hasErrors = true;
         }
-        if (validator.isEmpty(revenue.dateEnd + '')) {
+        if (this.props.revenue.category.codeRef !== 'redemptionEuro' && validator.isEmpty(revenue.dateEnd + '')) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Verplicht';
             hasErrors = true;
         }
+        if (this.props.revenue.category.codeRef === 'redemptionEuro' && !revenue.dateBegin && revenue.dateEnd) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Begin periode moet ook ingevuld worden als Eind periode ingevuld is.';
+            hasErrors = true;
+        }
+        if (this.props.revenue.category.codeRef === 'redemptionEuro' && revenue.dateBegin && !revenue.dateEnd) {
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Eind periode moet ook ingevuld worden als Begin periode ingevuld is.';
+            hasErrors = true;
+        }
+
+
         if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';

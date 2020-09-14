@@ -954,13 +954,27 @@ class ExternalWebformController extends Controller
             $this->log('Er is een energie leverancier meegegeven');
 
             $energySupplier = EnergySupplier::find($data['energy_supplier_id']);
-            if (!$energySupplier) $this->error('Ongeldige waarde voor energie leverancier meegegeven.');
+            if (!$energySupplier) {
+                $this->error('Ongeldige waarde voor energie leverancier meegegeven.');
+            }
 
             $contactEnergySupplierType = ContactEnergySupplierType::find($data['contact_energy_supply_type_id']);
-            if (!$contactEnergySupplierType) $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
+            if (!$contactEnergySupplierType) {
+                $this->error('Ongeldige waarde voor energie leverancier type meegegeven.');
+            }
 
-            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
-            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
+//            $contactEnergySupplierStatus = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
+//            if (!$contactEnergySupplierStatus) $this->error('Ongeldige waarde voor energie leverancier status meegegeven.');
+            $contactEnergySupplierStatusId = null;
+            if ($data['energy_supplier_id'] != '' && $data['contact_energy_supply_status_id'] != '') {
+                $contactEnergySupplierStatus
+                    = ContactEnergySupplierStatus::find($data['contact_energy_supply_status_id']);
+                if (!$contactEnergySupplierStatus) {
+                    $this->log('Ongeldige waarde voor energie leverancier status meegegeven. Default naar null');
+                }else{
+                    $contactEnergySupplierStatusId = $contactEnergySupplierStatus->id;
+                }
+            }
 
             if (ContactEnergySupplier::where('contact_id', $contact->id)->where('energy_supplier_id', $energySupplier->id)->exists()) {
                 $this->log('Koppeling met energieleverancier ' . $energySupplier->name . ' bestaat al; niet opnieuw aangemaakt.');
@@ -974,7 +988,7 @@ class ExternalWebformController extends Controller
                 'contact_energy_supply_type_id' => $contactEnergySupplierType->id,
                 'member_since' => $data['member_since'] ?: null,
                 'ean_electricity' => $data['ean_electricity'],
-                'contact_energy_supply_status_id' => $contactEnergySupplierStatus->id,
+                'contact_energy_supply_status_id' => $contactEnergySupplierStatusId,
                 'is_current_supplier' => (bool)$data['is_current_supplier'],
             ]);
 

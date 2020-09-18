@@ -223,6 +223,11 @@ class InvoiceHelper
 
         $user = Auth::user();
 
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'ik', $user);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $invoice->order->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
+
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'ik', $user);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $invoice->order->contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
@@ -327,11 +332,15 @@ class InvoiceHelper
 
         $user = Auth::user();
 
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
-            'ik', $user);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'ik', $user);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $invoice->order->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
 
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
-            'contact', $invoice->order->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'ik', $user);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $invoice->order->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'nota', $invoice);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 

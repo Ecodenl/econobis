@@ -125,7 +125,7 @@ const RevenueNew = props => {
                     name={'dateBegin'}
                     value={dateBegin}
                     onChangeAction={props.handleInputChangeDate}
-                    required={'required'}
+                    required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
                     error={props.errors.dateBegin}
                     errorMessage={props.errorMessage.dateBegin}
                     disabledBefore={
@@ -146,7 +146,7 @@ const RevenueNew = props => {
                     name={'dateEnd'}
                     value={dateEnd}
                     onChangeAction={props.handleInputChangeDate}
-                    required={'required'}
+                    required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
                     error={props.errors.dateEnd}
                     errorMessage={props.errorMessage.dateEnd}
                     disabledBefore={dateBegin}

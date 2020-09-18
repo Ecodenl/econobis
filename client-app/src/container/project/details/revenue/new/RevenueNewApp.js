@@ -234,17 +234,28 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
 
-        if (!revenue.dateBegin) {
+        if (category.codeRef !== 'redemptionEuro' && !revenue.dateBegin) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Verplicht';
             hasErrors = true;
         }
-
-        if (!revenue.dateEnd) {
+        if (category.codeRef !== 'redemptionEuro' && !revenue.dateEnd) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Verplicht';
             hasErrors = true;
         }
+        if (category.codeRef === 'redemptionEuro' && !revenue.dateBegin && revenue.dateEnd) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Begin periode moet ook ingevuld worden als Eind periode ingevuld is.';
+            hasErrors = true;
+        }
+        if (category.codeRef === 'redemptionEuro' && revenue.dateBegin && !revenue.dateEnd) {
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Eind periode moet ook ingevuld worden als Begin periode ingevuld is.';
+            hasErrors = true;
+        }
+
+
         if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';

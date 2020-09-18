@@ -344,6 +344,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                                             value={invoiceText}
                                             onChange={this.handleInputChange}
                                             className="form-control input-sm"
+                                            maxLength="1000"
                                         />
                                     </div>
                                 </div>

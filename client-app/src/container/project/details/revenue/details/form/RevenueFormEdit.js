@@ -473,7 +473,7 @@ class RevenueFormEdit extends Component {
                         name={'dateBegin'}
                         value={dateBegin}
                         onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
+                        required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
                         error={this.state.errors.dateBegin}
                         errorMessage={this.state.errorMessage.dateBegin}
                         disabledBefore={
@@ -494,7 +494,7 @@ class RevenueFormEdit extends Component {
                         name={'dateEnd'}
                         value={dateEnd}
                         onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
+                        required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
                         error={this.state.errors.dateEnd}
                         errorMessage={this.state.errorMessage.dateEnd}
                         disabledBefore={dateBegin}

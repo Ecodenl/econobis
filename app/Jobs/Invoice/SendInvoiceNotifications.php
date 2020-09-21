@@ -48,7 +48,7 @@ class SendInvoiceNotifications implements ShouldQueue
 
     public function handle()
     {
-        InvoiceHelper::sendNotification($this->invoice);
+        InvoiceHelper::sendNotification($this->invoice, $this->userId);
 
         $jobLog = new JobsLog();
         $jobLog->value = 'Herinnering nota ('.$this->invoice->number.') naar '.$this->contactInfo['contactPerson'].' ('.$this->invoice->order->contact_id.') verstuurd.';

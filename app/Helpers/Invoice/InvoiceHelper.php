@@ -11,6 +11,7 @@ use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Invoice\InvoicesToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
+use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
@@ -269,25 +270,25 @@ class InvoiceHelper
         return $invoice;
     }
 
-    public static function sendNotification(Invoice $invoice)
+    public static function sendNotification(Invoice $invoice, $userId)
     {
         $orderController = new OrderController();
         $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
 
         if ($invoice->date_reminder_3) {
-            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice);
+            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateExhortation, $invoice, $userId);
             $invoice->date_exhortation = Carbon::today();
             $invoice->email_exhortation = $contactInfo['email'];
         } elseif ($invoice->date_reminder_2) {
-            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
+            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
             $invoice->date_reminder_3 = Carbon::today();
             $invoice->email_reminder_3 = $contactInfo['email'];
         } elseif ($invoice->date_reminder_1) {
-            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
+            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
             $invoice->date_reminder_2 = Carbon::today();
             $invoice->email_reminder_2 = $contactInfo['email'];
         } else {
-            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice);
+            InvoiceHelper::sendNotificationEmail($invoice->order->emailTemplateReminder, $invoice, $userId);
             $invoice->date_reminder_1 = Carbon::today();
             $invoice->email_reminder_1 = $contactInfo['email'];
         }
@@ -297,7 +298,7 @@ class InvoiceHelper
         return $invoice;
     }
 
-    public static function sendNotificationEmail(EmailTemplate $emailTemplate = null, Invoice $invoice)
+    public static function sendNotificationEmail(EmailTemplate $emailTemplate = null, Invoice $invoice, $userId)
     {
         self::setMailConfigByInvoice($invoice);
 
@@ -325,7 +326,7 @@ class InvoiceHelper
             $htmlBody = $emailTemplate->html_body;
         }
 
-        $user = Auth::user();
+        $user = User::find($userId);
 
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
             'ik', $user);

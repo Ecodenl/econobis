@@ -11,6 +11,7 @@ import InputDate from '../../../components/form/InputDate';
 import ButtonText from '../../../components/button/ButtonText';
 import InputToggle from '../../../components/form/InputToggle';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 
 class ContactGroupNewForm extends Component {
     constructor(props) {
@@ -99,6 +100,7 @@ class ContactGroupNewForm extends Component {
         // If no errors send form
         !hasErrors &&
             ContactGroupAPI.newContactGroup(contactGroup).then(payload => {
+                this.props.fetchSystemData();
                 hashHistory.push('/contact-groep/' + payload.id);
             });
     };
@@ -333,6 +335,12 @@ class ContactGroupNewForm extends Component {
     }
 }
 
+const mapDispatchToProps = dispatch => ({
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
+    },
+});
+
 const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
@@ -340,4 +348,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactGroupNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupNewForm);

@@ -242,7 +242,7 @@ class InvoiceController extends ApiController
 
     public function sendNotificationPost(Invoice $invoice)
     {
-        InvoiceHelper::sendNotification($invoice);
+        InvoiceHelper::sendNotification($invoice, Auth::id());
 
         $filePath = Storage::disk('administrations')->getDriver()
             ->getAdapter()->applyPathPrefix($invoice->document->filename);
@@ -267,7 +267,7 @@ class InvoiceController extends ApiController
 
         $merger = new Merger;
         foreach ($invoices as $invoice) {
-            InvoiceHelper::sendNotification($invoice);
+            InvoiceHelper::sendNotification($invoice, Auth::id());
 
             if ($invoice->document) {
                 $filePath = Storage::disk('administrations')->getDriver()

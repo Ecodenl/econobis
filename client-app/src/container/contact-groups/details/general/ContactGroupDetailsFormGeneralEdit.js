@@ -11,6 +11,7 @@ import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputSelect from '../../../../components/form/InputSelect';
+import {fetchSystemData} from "../../../../actions/general/SystemDataActions";
 
 class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -109,6 +110,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         !hasErrors &&
             ContactGroupAPI.updateContactGroup(contactGroup).then(payload => {
                 this.props.updateContactGroupDetails(payload);
+                this.props.fetchSystemData();
                 this.props.switchToView();
             });
     };
@@ -398,9 +400,13 @@ const mapStateToProps = state => {
     };
 };
 
+
 const mapDispatchToProps = dispatch => ({
     updateContactGroupDetails: payload => {
         dispatch(updateContactGroupDetails(payload));
+    },
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
     },
 });
 

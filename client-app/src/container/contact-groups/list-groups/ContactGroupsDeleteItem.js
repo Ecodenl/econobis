@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContactGroup } from '../../../actions/contact/ContactGroupsActions';
+import {fetchSystemData} from "../../../actions/general/SystemDataActions";
 
 const ContactGroupsDeleteItem = props => {
     const confirmAction = () => {
         props.deleteContactGroup(props.id, props.resetContactGroupsFilters);
+        props.fetchSystemData();
         props.closeDeleteItemModal();
     };
 
@@ -26,6 +28,9 @@ const ContactGroupsDeleteItem = props => {
 const mapDispatchToProps = dispatch => ({
     deleteContactGroup: (id, reloadData) => {
         dispatch(deleteContactGroup(id, reloadData));
+    },
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
     },
 });
 

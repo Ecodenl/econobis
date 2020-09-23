@@ -253,7 +253,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 label="Gebruikt mailgun"
                                 name={'usesMailgun'}
                                 value={usesMailgun}
-                                onChangeAction={this.handleInputUsesMailgun}
+                                onChangeAction={thisf.handleInputUsesMailgun}
                                 required={'required'}
                             />
                         </div>

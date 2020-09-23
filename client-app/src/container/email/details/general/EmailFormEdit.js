@@ -256,7 +256,7 @@ class EmailFormEdit extends Component {
                         <ViewText
                             label={'Contacten'}
                             value={<ButtonText
-                                    buttonClassName={'btn-default'}
+                                    buttonClassName={'btn-success btn-padding-small'}
                                     buttonText={'Toon contacten (' + contactIds.split(',').length + ')'}
                                     onClickAction={this.props.toggleShowContacten}
                                 />}
@@ -285,12 +285,14 @@ class EmailFormEdit extends Component {
                 {manyContacts && this.props.showContacten &&
                 <div className="row" onClick={this.props.toggleShowContacten}>
                     <ViewText label={''}
+                              className={'form-group col-sm-6' }
                               value={<ButtonText
-                                  buttonClassName={'btn-default'}
-                                  buttonText={'Sluit contacten'}
+                                  buttonClassName={'btn-success btn-padding-small'}
+                                  buttonText={'Verberg contacten'}
                                   onClickAction={this.props.toggleShowContacten}
                               />}
                     />
+                    <div className="form-group col-md-6" />
                 </div>
                 }
 

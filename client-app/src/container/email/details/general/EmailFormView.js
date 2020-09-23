@@ -92,7 +92,7 @@ const EmailFormView = props => {
                     label={'Contacten'}
                     value={(manyContacts && !props.showContacten) ? (
                         <ButtonText
-                            buttonClassName={'btn-default'}
+                            buttonClassName={'btn-success btn-padding-small'}
                             buttonText={'Toon contacten (' + contacts.length + ')'}
                             onClickAction={props.toggleShowContacten}
                         />
@@ -117,11 +117,12 @@ const EmailFormView = props => {
             <div className="row" onClick={props.toggleShowContacten}>
                 <ViewText label={''}
                     value={<ButtonText
-                        buttonClassName={'btn-default'}
-                        buttonText={'Sluit contacten'}
+                        buttonClassName={'btn-success btn-padding-small'}
+                        buttonText={'Verberg contacten'}
                         onClickAction={props.toggleShowContacten}
                     />}
                 />
+                <div className="col-md-6" />
             </div>
             }
 

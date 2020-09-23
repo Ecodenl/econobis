@@ -205,6 +205,8 @@ class EmailFormEdit extends Component {
             dateRemoved,
         } = this.props.email;
 
+        const maxContactsToShowDirectly = 5;
+        const manyContacts = contactIds.split(',').length > maxContactsToShowDirectly;
         return (
             <div>
                 {folder === 'removed' ? (
@@ -250,15 +252,26 @@ class EmailFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    <InputReactSelect
-                        label={'Contact'}
-                        name={'contactIds'}
-                        options={this.state.contacts}
-                        value={contactIds}
-                        onChangeAction={this.handleContactIds}
-                        optionName={'fullName'}
-                        isLoading={this.state.peekLoading.contacts}
-                    />
+                    {(manyContacts && !this.props.showContacten) ? (
+                        <ViewText
+                            label={'Contacten'}
+                            value={<ButtonText
+                                    buttonClassName={'btn-default'}
+                                    buttonText={'Toon contacten (' + contactIds.split(',').length + ')'}
+                                    onClickAction={this.props.toggleShowContacten}
+                                />}
+                        />
+                    ) : (
+                        <InputReactSelect
+                            label={'Contact'}
+                            name={'contactIds'}
+                            options={this.state.contacts}
+                            value={contactIds}
+                            onChangeAction={this.handleContactIds}
+                            optionName={'fullName'}
+                            isLoading={this.state.peekLoading.contacts}
+                        />
+                     )}
                     <InputSelect
                         label={'Intake'}
                         size={'col-sm-6'}
@@ -268,6 +281,18 @@ class EmailFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
+
+                {manyContacts && this.props.showContacten &&
+                <div className="row" onClick={this.props.toggleShowContacten}>
+                    <ViewText label={''}
+                              value={<ButtonText
+                                  buttonClassName={'btn-default'}
+                                  buttonText={'Sluit contacten'}
+                                  onClickAction={this.props.toggleShowContacten}
+                              />}
+                    />
+                </div>
+                }
 
                 <div className="row">
                     <InputSelect

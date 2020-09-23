@@ -13,6 +13,7 @@ class EmailFormGeneral extends Component {
 
         this.state = {
             showEdit: false,
+            showContacten: false,
             activeDiv: '',
         };
     }
@@ -27,6 +28,12 @@ class EmailFormGeneral extends Component {
         this.setState({
             showEdit: false,
             activeDiv: '',
+        });
+    };
+
+    toggleShowContacten = () => {
+        this.setState({
+            showContacten: !this.state.showContacten,
         });
     };
 
@@ -53,9 +60,9 @@ class EmailFormGeneral extends Component {
             >
                 <PanelBody>
                     {this.state.showEdit /*&& this.props.permissions.manageOpportunity*/ ? (
-                        <EmailFormEdit switchToView={this.switchToView} />
+                        <EmailFormEdit switchToView={this.switchToView} showContacten={this.state.showContacten} toggleShowContacten={this.toggleShowContacten} />
                     ) : (
-                        <EmailFormView switchToEdit={this.switchToEdit} />
+                        <EmailFormView switchToEdit={this.switchToEdit} showContacten={this.state.showContacten} toggleShowContacten={this.toggleShowContacten} />
                     )}
                 </PanelBody>
             </Panel>

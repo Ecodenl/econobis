@@ -73,6 +73,8 @@ class SepaPaymentHelper
         foreach($this->invoices as $invoice){
             $totalOpen += $invoice->revenueDistribution->payout;
         }
+        $totalOpen = floatval(number_format(($totalOpen), 2, '.', ''));
+
         $xml = '';
 
         $xml .= "<?xml version=\"1.0\" encoding=\"utf-8\"?>";

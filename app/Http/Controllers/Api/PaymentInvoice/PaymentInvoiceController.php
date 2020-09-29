@@ -29,6 +29,7 @@ class PaymentInvoiceController extends ApiController
         foreach($invoices as $invoice){
             $totalPrice += $invoice->revenueDistribution->payout;
         }
+        $totalPrice = floatval(number_format(($totalPrice), 2, '.', ''));
 
         return GridPaymentInvoice::collection($invoices)
             ->additional([

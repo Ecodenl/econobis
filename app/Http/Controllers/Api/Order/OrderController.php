@@ -344,9 +344,19 @@ class OrderController extends ApiController
                 ];
         });
 
+        $contactPerson = '';
+        if ($contact->type_id == 'person') {
+            $initials = $contact->person->initials;
+            $prefix = $contact->person->last_name_prefix;
+            $contactInitialsOrFirstName = $initials ? $initials : $contact->person->first_name;
+            $contactPerson = $prefix ? ($contactInitialsOrFirstName . ' ' . $prefix . ' ' . $contact->person->last_name) : $contactInitialsOrFirstName . ' ' . $contact->person->last_name;
+        } elseif ($contact->type_id == 'organisation') {
+            $contactPerson = $contact->full_name;
+        }
+
         $contactInfo = [
             'email' => 'Geen e-mail bekend',
-            'contactPerson' => $contact->full_name,
+            'contactPerson' => $contactPerson,
             'iban' => $contact->iban,
             'ibanAttn' => $contact->iban_attn,
             'collectMandate' => $contact->is_collect_mandate,

@@ -64,12 +64,11 @@ class DocumentTemplatesList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Nummer'} width={'20%'} />
+                            <DataTableHeadTitle title={'Template'} width={'40%'} />
+                            <DataTableHeadTitle title={'Type'} width={'10%'} />
                             <DataTableHeadTitle title={'Datum'} width={'30%'} />
-                            <DataTableHeadTitle title={'Template'} width={'30%'} />
-                            <DataTableHeadTitle title={'Type'} width={'8%'} />
-                            <DataTableHeadTitle title={'Actief'} width={'7%'} />
-                            <DataTableHeadTitle title={''} width={'5%'} />
+                            <DataTableHeadTitle title={'Actief'} width={'10%'} />
+                            <DataTableHeadTitle title={''} width={'10%'} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>

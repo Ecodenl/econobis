@@ -42,10 +42,9 @@ class DocumentTemplatesItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{number}</td>
-                <td>{createdAt ? moment(createdAt).format('L') : 'Onbekend'}</td>
                 <td>{name}</td>
                 <td>{documentGroup ? documentGroup.name : 'Onbekend'}</td>
+                <td>{createdAt ? moment(createdAt).format('L') : 'Onbekend'}</td>
                 <td>{active ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons ? (

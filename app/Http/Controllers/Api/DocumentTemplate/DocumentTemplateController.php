@@ -29,7 +29,7 @@ class DocumentTemplateController extends Controller
     {
         $this->authorize('view', DocumentTemplate::class);
 
-        $documentTemplates = $requestQuery->get();
+        $documentTemplates = $requestQuery->get()->sortBy('name');
 
         return GridDocumentTemplate::collection($documentTemplates)
             ->additional(['meta' => [

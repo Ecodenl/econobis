@@ -260,8 +260,7 @@ class FinancialTree extends Component {
                                         className="financial-tree-link"
                                         to={`financieel/${this.props.id}/uitkering-notas/verzonden`}
                                     >
-                                        Verzonden({this.props.administrationDetails.totalPaymentInvoicesSent}) | (
-                                        {this.props.totalsInfoAdministration.totalPaymentInvoicesSent})
+                                        Verzonden({this.props.totalsInfoAdministration.totalPaymentInvoicesSent})
                                     </Link>
                                 </NavText>
                             </Nav>

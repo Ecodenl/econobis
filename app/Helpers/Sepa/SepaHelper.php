@@ -80,6 +80,7 @@ class SepaHelper
                 $amountOfInvoices--;
             }
         }
+        $totalOpen = floatval(number_format(($totalOpen), 2, '.', ''));
 
         if(!$dateCollection){
             $dateCollection = Carbon::now()->nextWeekday()->format('Y-m-d');

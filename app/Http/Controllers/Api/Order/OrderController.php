@@ -344,19 +344,9 @@ class OrderController extends ApiController
                 ];
         });
 
-        $contactPerson = '';
-        if ($contact->type_id == 'person') {
-            $initials = $contact->person->initials;
-            $prefix = $contact->person->last_name_prefix;
-            $contactInitialsOrFirstName = $initials ? $initials : $contact->person->first_name;
-            $contactPerson = $prefix ? ($contactInitialsOrFirstName . ' ' . $prefix . ' ' . $contact->person->last_name) : $contactInitialsOrFirstName . ' ' . $contact->person->last_name;
-        } elseif ($contact->type_id == 'organisation') {
-            $contactPerson = $contact->full_name;
-        }
-
         $contactInfo = [
             'email' => 'Geen e-mail bekend',
-            'contactPerson' => $contactPerson,
+            'contactPerson' => $contact->full_name,
             'iban' => $contact->iban,
             'ibanAttn' => $contact->iban_attn,
             'collectMandate' => $contact->is_collect_mandate,
@@ -376,7 +366,17 @@ class OrderController extends ApiController
             }
 
             if($contact->contactPerson()->exists()){
-                $contactInfo['contactPerson'] = $contact->contactPerson->contact->full_name;
+                $contactPerson = '';
+                if ($contact->contactPerson->contact->type_id == 'person') {
+                    $initials = $contact->contactPerson->contact->person->initials;
+                    $prefix = $contact->contactPerson->contact->person->last_name_prefix;
+                    $contactInitialsOrFirstName = $initials ? $initials : $contact->contactPerson->contact->person->first_name;
+                    $contactPerson = $prefix ? ($contactInitialsOrFirstName . ' ' . $prefix . ' ' . $contact->contactPerson->contact->person->last_name) : $contactInitialsOrFirstName . ' ' . $contact->contactPerson->contact->person->last_name;
+                } elseif ($contact->contactPerson->contact->type_id == 'organisation') {
+                    $contactPerson = $contact->contactPerson->contact->full_name;
+                }
+
+                $contactInfo['contactPerson'] = $contactPerson;
                 $contactInfo['iban'] = $contact->contactPerson->contact->iban;
                 $contactInfo['ibanAttn'] = $contact->contactPerson->contact->iban_attn;
             }

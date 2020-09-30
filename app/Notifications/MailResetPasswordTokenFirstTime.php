@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use Config;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -52,7 +53,8 @@ class MailResetPasswordTokenFirstTime extends Notification
             ->line("Voordat je met Econobis kunt gaan werken, moet je een wachtwoord aanmaken.")
             ->line("Klik op de knop om je wachtwoord in te stellen.")
             ->action('Stel wachtwoord in', url('/#/wachtwoord-wijzig', [$this->token, $this->email]))
-            ->line('Nadat je succesvol je wachtwoord hebt ingesteld, ontvang je van ons een e-mail ter bevestiging.');
+            ->line('Nadat je succesvol je wachtwoord hebt ingesteld, ontvang je van ons een e-mail ter bevestiging.')
+            ->line('De link om je wachtwoord opnieuw in te stellen is maar ' . Config::get('auth.passwords.users.expire'). ' minuten geldig en kan maar één keer worden gebruikt. Als je link verlopen is, vraag dan een nieuwe aan. Als je meerdere keren een link hebt aangevraagd, gebruik dan de link in de meest recente e-mail.');
     }
 
 }

@@ -24,7 +24,7 @@ class EmailTemplateController
 
     public function grid()
     {
-        $emailTemplates = EmailTemplate::with('createdBy')->get();
+        $emailTemplates = EmailTemplate::with('createdBy')->orderBy('name')->get();
 
         return GridEmailTemplate::collection($emailTemplates);
     }

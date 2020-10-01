@@ -45,7 +45,7 @@ class MailResetPasswordToken extends Notification
             ->line("Wil je je wachtwoord wijzigen? Klik dan op de knop Wijzig wachtwoord.")
             ->action('Wijzig wachtwoord', url('/portal/#/wachtwoord-wijzigen', [$this->token, $this->email]))
             ->line('Als je je wachtwoord niet wilt wijzigen, dan hoef je geen actie te ondernemen.')
-            ->line('De link om je wachtwoord opnieuw in te stellen is maar ' . Config::get('auth.passwords.portal.expire'). ' minuten geldig en kan maar één keer worden gebruikt. Als je link verlopen is, vraag dan een nieuwe aan. Als je meerdere keren een link hebt aangevraagd, gebruik dan de link in de meest recente e-mail.');
+            ->line('De link om je wachtwoord opnieuw in te stellen is <strong>' . Config::get('auth.passwords.portal.expire'). ' minuten geldig</strong> en kan maar één keer worden gebruikt. Als je link verlopen is, vraag dan een nieuwe aan. Als je meerdere keren een link hebt aangevraagd, gebruik dan de link in de meest recente e-mail.');
 
     }
 

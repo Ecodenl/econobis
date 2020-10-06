@@ -45,7 +45,9 @@ class PortalSettingsApp extends Component {
             '&keys[]=contactResponsibleOwnerUserId' +
             '&keys[]=emailTemplateNewAccountId' +
             '&keys[]=linkPrivacyPolicy' +
-            '&keys[]=showNewAtCooperativeLink';
+            '&keys[]=showNewAtCooperativeLink' +
+            '&keys[]=pcrPowerKwhConsumptionPercentage' +
+            '&keys[]=pcrGeneratingCapacityOneSolorPanel';
         PortalSettingsAPI.fetchPortalSettings(keys)
             .then(payload => {
                 this.setState({
@@ -53,6 +55,7 @@ class PortalSettingsApp extends Component {
                     portalSettings: {
                         ...payload.data,
                         showNewAtCooperativeLink: payload.data.showNewAtCooperativeLink == 'true',
+                        pcrPowerKwhConsumptionPercentage: payload.data.pcrPowerKwhConsumptionPercentage * 100,
                     },
                 });
             })

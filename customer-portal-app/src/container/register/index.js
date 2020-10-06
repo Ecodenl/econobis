@@ -105,7 +105,9 @@ function RegisterProject({ match, currentSelectedContact }) {
                 '&keys[]=portalUrl' +
                 '&keys[]=responsibleUserId' +
                 '&keys[]=checkContactTaskResponsibleUserId' +
-                '&keys[]=linkPrivacyPolicy';
+                '&keys[]=linkPrivacyPolicy' +
+                '&keys[]=pcrPowerKwhConsumptionPercentage' +
+                '&keys[]=pcrGeneratingCapacityOneSolorPanel';
             PortalSettingsAPI.fetchPortalSettings(keys)
                 .then(payload => {
                     setPortalSettings({ ...payload.data });

@@ -62,6 +62,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                 emailTemplateNewAccountId: false,
                 linkPrivacyPolicy: false,
                 showNewAtCooperativeLink: false,
+                pcrPowerKwhConsumptionPercentage: false,
+                pcrGeneratingCapacityOneSolorPanel: false,
             },
         };
 
@@ -188,6 +190,14 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage)) {
+            errors.pcrPowerKwhConsumptionPercentage = true;
+            hasErrors = true;
+        }
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)) {
+            errors.pcrGeneratingCapacityOneSolorPanel = true;
+            hasErrors = true;
+        }
         if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.emailTemplateNewAccountId + '')) {
             errors.emailTemplateNewAccountId = true;
             hasErrors = true;
@@ -255,6 +265,8 @@ class PortalSettingsFormGeneralEdit extends Component {
         );
         data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
         data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
+        data.append('pcrPowerKwhConsumptionPercentage', portalSettings.pcrPowerKwhConsumptionPercentage ? (parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100) : 0);
+        data.append('pcrGeneratingCapacityOneSolorPanel', portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0);
 
         data.append('attachmentLogo', attachmentLogo);
         data.append('attachmentFavicon', attachmentFavicon);
@@ -295,6 +307,8 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplateNewAccountId,
             linkPrivacyPolicy,
             showNewAtCooperativeLink,
+            pcrPowerKwhConsumptionPercentage,
+            pcrGeneratingCapacityOneSolorPanel,
         } = this.state.portalSettings;
 
         const logoUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
@@ -651,6 +665,32 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={!this.manageTechnicalPortalSettings ? 'required' : ''}
                                 error={this.state.errors.linkPrivacyPolicy}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Advies % te dekken jaarlijks verbruik zonnepanelen"
+                                type={'number'}
+                                min={0}
+                                max={100}
+                                divSize={'col-sm-8'}
+                                name={'pcrPowerKwhConsumptionPercentage'}
+                                value={pcrPowerKwhConsumptionPercentage}
+                                onChangeAction={this.handleInputChange}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                error={this.state.errors.pcrPowerKwhConsumptionPercentage}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Opbrengstcapaciteit van 1 zonnepaneel"
+                                type={'number'}
+                                divSize={'col-sm-8'}
+                                name={'pcrGeneratingCapacityOneSolorPanel'}
+                                value={pcrGeneratingCapacityOneSolorPanel}
+                                onChangeAction={this.handleInputChange}
+                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                error={this.state.errors.pcrGeneratingCapacityOneSolorPanel}
                             />
                         </div>
                         <div className="row">

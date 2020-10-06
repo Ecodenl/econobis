@@ -13,7 +13,7 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepOnePcr({ next, project, initialContact, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepOnePcr({ portalSettings, next, project, initialContact, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .typeError('Alleen nummers')
@@ -41,8 +41,10 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
     });
 
-    const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
-    const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
+    // const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
+    const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = portalSettings['pcrPowerKwhConsumptionPercentage'];
+    // const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = 250;
+    const PCR_GENERATING_CAPACITY_ONE_SOLAR_PANEL = portalSettings['pcrGeneratingCapacityOneSolorPanel'];
 
     function calculateEstimatedGeneratedNumberOfKwh(values) {
         return values.pcrNumberOfSolarPanels
@@ -308,7 +310,7 @@ function StepOnePcr({ next, project, initialContact, initialRegisterValues, hand
                             <Row>
                                 <Col xs={12} md={6}>
                                     <p>
-                                        We adviseren tot 80% van je jaarlijks verbruik minus de jaarlijkse opbrengsten
+                                        We adviseren tot {(PCR_POWER_KWH_CONSUMPTION_PERCENTAGE*100)}% van je jaarlijks verbruik minus de jaarlijkse opbrengsten
                                         (in jouw geval {powerKwhConsumption} kWh) te dekken met participaties. In het
                                         veld hier direct onder is voor je uitgerekend hoeveel participaties dat zijn.
                                         Het is een advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je

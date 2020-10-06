@@ -146,6 +146,8 @@ class SettingController
             'emailTemplateNewAccountId',
             'linkPrivacyPolicy',
             'showNewAtCooperativeLink',
+            'pcrPowerKwhConsumptionPercentage',
+            'pcrGeneratingCapacityOneSolorPanel',
         ]);
     }
 

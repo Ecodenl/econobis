@@ -1625,6 +1625,8 @@ class TemplateVariableHelper
     public static function getPortalVar($varname){
         $portalUrl = PortalSettings::get('portalUrl');
         $portalName = PortalSettings::get('portalName');
+        $pcrPowerKwhConsumptionPercentage = PortalSettings::get('pcrPowerKwhConsumptionPercentage');
+        $pcrGeneratingCapacityOneSolorPanel = PortalSettings::get('pcrGeneratingCapacityOneSolorPanel');
 
         switch ($varname) {
             case 'url':
@@ -1632,6 +1634,12 @@ class TemplateVariableHelper
                 break;
             case 'naam':
                 return $portalName;
+                break;
+            case 'advies_percentage_dekking_zonnepanelen':
+                return $pcrPowerKwhConsumptionPercentage;
+                break;
+            case 'capaciteit_van_een_zonnepaneel':
+                return $pcrGeneratingCapacityOneSolorPanel;
                 break;
             default:
                 return '';

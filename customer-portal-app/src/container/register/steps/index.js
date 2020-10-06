@@ -53,6 +53,7 @@ function Steps({
                 case 'postalcode_link_capital':
                     return (
                         <StepOnePcr
+                            portalSettings={portalSettings}
                             next={next}
                             project={project}
                             initialContact={initialContact}

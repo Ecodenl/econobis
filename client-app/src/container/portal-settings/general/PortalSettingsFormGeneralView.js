@@ -27,6 +27,8 @@ const PortalSettingsFormGeneralView = ({
     emailTemplateNewAccount,
     linkPrivacyPolicy,
     showNewAtCooperativeLink,
+    pcrPowerKwhConsumptionPercentage,
+    pcrGeneratingCapacityOneSolorPanel,
     switchToEdit,
     imageHash,
 }) => {
@@ -289,6 +291,22 @@ const PortalSettingsFormGeneralView = ({
                             label={'Privacybeleid link'}
                             divSize={'col-sm-8'}
                             value={linkPrivacyPolicy}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Advies % te dekken jaarlijks verbruik zonnepanelen'}
+                            divSize={'col-sm-8'}
+                            value={pcrPowerKwhConsumptionPercentage}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Opbrengstcapaciteit van 1 zonnepaneel'}
+                            divSize={'col-sm-8'}
+                            value={pcrGeneratingCapacityOneSolorPanel}
                             className={'col-sm-8 form-group'}
                         />
                     </div>

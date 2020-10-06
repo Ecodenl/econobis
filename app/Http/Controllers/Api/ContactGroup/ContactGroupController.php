@@ -218,7 +218,11 @@ class ContactGroupController extends Controller
             $contactGroup->contacts()->sync($dynamicContacts->get());
         }
         else if($contactGroup->composed_of === 'participants'){
-            $contactGroup->participants()->sync($dynamicContacts->get());
+            // Als we een dynamische groep statisch maken die was samengesteld uit participants, dan zetten we deze om naar samengesteld uit contacts.
+            // Daarna kan deze statische groep ook gebruikt worden in filter statische groep bij contacten.
+//            $contactGroup->participants()->sync($dynamicContacts->get());
+            $contactGroup->contacts()->attach($dynamicContacts->get()->pluck("contact_id"));
+            $contactGroup->composed_of = 'contacts';
         }
 
     }

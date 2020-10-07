@@ -48,23 +48,25 @@ class Filter extends RequestFilter
                 case 'upcoming':
                     $query->where('orders.status_id', 'active')
                         ->whereDoesntHave('invoices', function ($q) {
-                            $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
-                                })
+                            $q->where(function ($q2) {
+                                $q2->where('orders.collection_frequency_id', 'once')
+                                    ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                            });
+                        })
                         ->where(function ($q) {
                             $q->whereNull('orders.date_next_invoice')
                                 ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
                         });
-                    //todo nog opschonen
-//                    print_r("test upcoming orders");
-//                    print_r($query->toSql());
-//                    die();
                     return false;
                     break;
                 case 'create':
                     $query->where('orders.status_id', 'active')
                     ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
                     ->whereDoesntHave('invoices', function ($q) {
-                        $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                        $q->where(function ($q2) {
+                            $q2->where('orders.collection_frequency_id', 'once')
+                                ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                        });
                     });
                     return false;
                     break;

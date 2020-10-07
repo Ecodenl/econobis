@@ -34,6 +34,11 @@ class ContactEnergySupplierController extends ApiController
                 $primaryContactEnergySupplier->is_current_supplier = false;
                 $primaryContactEnergySupplier->save();
             }
+        }else{
+            // when this is the first energysupllier, make it default always current
+            if (!ContactEnergySupplier::where('contact_id', $data['contact_id'])->exists()) {
+                $data['is_current_supplier'] = true;
+            }
         }
 
         $contactEnergySupplier = new ContactEnergySupplier();

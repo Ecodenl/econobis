@@ -346,7 +346,7 @@ class OrderController extends ApiController
 
         $contactInfo = [
             'email' => 'Geen e-mail bekend',
-            'contactPerson' => $contact->full_name,
+            'contactPerson' => null,
             'iban' => $contact->iban,
             'ibanAttn' => $contact->iban_attn,
             'collectMandate' => $contact->is_collect_mandate,

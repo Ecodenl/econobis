@@ -134,7 +134,10 @@ class Administration extends Model
                     ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
             })
             ->whereDoesntHave('invoices', function ($q) {
-                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                $q->where(function ($q2) {
+                    $q2->where('orders.collection_frequency_id', 'once')
+                        ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                });
             })->count();
     }
 
@@ -144,7 +147,10 @@ class Administration extends Model
             ->where('orders.status_id', 'active')
             ->where('orders.date_next_invoice', '<=', Carbon::today()->addDays(14))
             ->whereDoesntHave('invoices', function ($q) {
-                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                $q->where(function ($q2) {
+                    $q2->where('orders.collection_frequency_id', 'once')
+                        ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                });
             })->count();
     }
 

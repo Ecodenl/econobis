@@ -55,6 +55,9 @@ class EnergySupplierExcelHelper
             case '6':
                 $excel = $this->getUniformExcel();
                 break;
+            case '7':
+                $excel = $this->getOmExcel();
+                break;
             default:
                 break;
         }
@@ -669,6 +672,85 @@ class EnergySupplierExcelHelper
         }
 
         $sheet->getStyle('A1:AJ1')
+            ->applyFromArray([
+                'font' => [
+                    'bold' => true,
+                ],
+
+            ]);
+
+        return $spreadsheet;
+    }
+
+    private function getOmExcel()
+    {
+        $this->counter = 0;
+
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'Volgnr';
+        $headerData[] = 'KlantNaam';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'KlantNummer';
+        $headerData[] = 'EanCode';
+        $headerData[] = 'OntvangstDatum';
+        $headerData[] = 'BeginDatum';
+        $headerData[] = 'EindDatum';
+        $headerData[] = 'Aantal participaties';
+        $headerData[] = 'Verwachte opbrengst';
+        $headerData[] = 'ProductieHoeveelheid';
+        $headerData[] = 'BestandsNaam';
+        $headerData[] = 'EanAdres installatie';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->distributions->chunk(500) as $chunk) {
+            $chunk->load([
+                'revenue',
+                'contact.primaryContactEnergySupplier',
+            ]);
+
+            foreach ($chunk as $distribution) {
+
+                foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
+                    $rowData = [];
+                    ++$this->counter;
+                    $rowData[] = $this->counter;
+                    $rowData[] = $distribution->contact->full_name;
+                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
+                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
+                        ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = $this->formatDate(new Carbon('now'));
+                    $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
+                    $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
+                    $rowData[] = $deliveredKwhPeriod->participations_quantity;
+                    $rowData[] = '';
+                    $rowData[] = $deliveredKwhPeriod->delivered_kwh;
+                    $rowData[] = $this->fileName;
+                    $rowData[] = $this->projectRevenue->project->ean;
+
+                    $completeData[] = $rowData;
+                }
+            }
+
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        for ($col = 'A'; $col !== 'M'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('A1:Z1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

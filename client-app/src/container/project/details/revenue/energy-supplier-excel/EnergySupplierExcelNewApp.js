@@ -38,6 +38,7 @@ class EnergySupplierExcelNewApp extends Component {
         templates.push({ id: 4, name: 'Vattenfall' });
         templates.push({ id: 5, name: 'Energie VanOns' });
         templates.push({ id: 6, name: 'Uniform' });
+        templates.push({ id: 7, name: 'OM' });
 
         this.setState({
             templates: templates,

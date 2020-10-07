@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Webform;
 
 
 use App\Eco\Address\Address;
+use App\Eco\Address\AddressType;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
@@ -196,6 +197,7 @@ class ExternalWebformController extends Controller
                 'btw_nr' => 'vat_number',
                 'website' => 'website',
                 // Address
+                'adres_type_id' => 'address_type_id',
                 'adres_straat' => 'address_street',
                 'adres_huisnummer' => 'address_number',
                 'adres_toevoeging' => 'address_addition',
@@ -328,6 +330,7 @@ class ExternalWebformController extends Controller
                     $this->addContactToGroup($data, $contact);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
+                    $note .= "Adres type : " . $addressType = AddressType::get($data['address_type_id'])->name . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";
@@ -351,6 +354,7 @@ class ExternalWebformController extends Controller
                 case 'CCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Gegevens contact met emailadres " . $data['email_address'] . " (".$contact->number.") gevonden bij op basis van e-mail maar zonder goede match op NAW.\n";
+                    $note .= "Adres type : " . $addressType = AddressType::get($data['address_type_id'])->name . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";
@@ -375,14 +379,14 @@ class ExternalWebformController extends Controller
             if($responsibleIds['responsible_user_id']) {
                 $ownerUserId = $responsibleIds['responsible_user_id'];
                 $this->log('Eigenaar contact : ' . $ownerUserId);
-            }elseif($responsibleIds['responsible_team_id']) {
+            }elseif($responsibleIds['responsible_team_id'] && Team::find($responsibleIds['responsible_team_id'])) {
                 $ownerUserId = Team::find($responsibleIds['responsible_team_id'])->users->first()->id;
                 $this->log('Eigenaar contact ' . $ownerUserId . ' (1e van team : '
                     . $responsibleIds['responsible_team_id'] . ')');
             }elseif(!empty($webform->responsible_user_id)) {
                 $ownerUserId = $webform->responsible_user_id;
                 $this->log('Eigenaar contact (default webformulier) : ' . $ownerUserId);
-            }elseif(!empty($webform->responsible_team_id)) {
+            }elseif(!empty($webform->responsible_team_id) && Team::find($webform->responsible_team_id)) {
                 $ownerUserId = Team::find($webform->responsible_team_id)->users->first()->id;
                 $this->log('Eigenaar contact (default webformulier) ' . $ownerUserId . ' (1e van team : '
                     . $webform->responsible_team_id . ')');
@@ -729,8 +733,24 @@ class ExternalWebformController extends Controller
                 ->first();
 
             if (!$address) {
-                // Adres met deze gegevens bestaat nog niet, adres toevoegen met type "postadres"
+                // Adres met deze gegevens bestaat nog niet, adres toevoegen met binnenkomende type of anders default "postadres"
                 $this->log('Er bestaat nog geen adres met dit huisnummer en postcode; adres aanmaken');
+
+                // Validatie op addresstype
+                if ($data['address_type_id'] != '') {
+                    try {
+                        $addressType = AddressType::get($data['address_type_id']);
+                        $addressTypeId = $data['address_type_id'];
+                        $this->log('Adres type ingesteld op: ' . $addressType->name . ' (' . $addressTypeId . ')');
+                    } catch (\Exception $e) {
+                        $addressTypeId = 'postal';
+                        $this->log('Ongeldige waarde in adres_type_id (' . $data['address_type_id'] . ') , default naar "Post"');
+                    }
+                } else {
+                    $addressTypeId = 'postal';
+                    $this->log('Er is geen waarde voor adres type meegegeven, default naar "Post"');
+                }
+
 
                 // Validatie op countrycode
                 if ($data['address_country_id'] != '') {
@@ -743,7 +763,7 @@ class ExternalWebformController extends Controller
 
                 $address = Address::create([
                     'contact_id' => $contact->id,
-                    'type_id' => 'postal',
+                    'type_id' => $addressTypeId,
                     'street' => $data['address_street'],
                     'number' => $data['address_number'],
                     'city' => $data['address_city'],
@@ -1345,7 +1365,7 @@ class ExternalWebformController extends Controller
     {
         $taskTypeId = 6;
         $taskType = TaskType::find($taskTypeId);
-        $this->log('Taak Controle contact met taak_type_id (default)' . $taskTypeId . ' ' . $taskType->name . ' aangemaakt.');
+        $this->log('Taak Controle contact met taak_type_id (default) ' . $taskTypeId . ' ' . $taskType->name . ' aanmaken.');
 
         if($responsibleIds['responsible_user_id']) {
             $responsibleUserId = $responsibleIds['responsible_user_id'];

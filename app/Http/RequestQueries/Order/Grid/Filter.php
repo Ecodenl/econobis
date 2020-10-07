@@ -54,6 +54,10 @@ class Filter extends RequestFilter
                             $q->whereNull('orders.date_next_invoice')
                                 ->orWhere('orders.date_next_invoice', '>', Carbon::today()->addDays(14));
                         });
+                    //todo nog opschonen
+//                    print_r("test upcoming orders");
+//                    print_r($query->toSql());
+//                    die();
                     return false;
                     break;
                 case 'create':

@@ -730,7 +730,8 @@ class EnergySupplierExcelHelper
                     $rowData[] = '';
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;
                     $rowData[] = $this->fileName;
-                    $rowData[] = $this->projectRevenue->project->ean;
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
 
                     $completeData[] = $rowData;
                 }

@@ -305,6 +305,20 @@ class ExternalWebformController extends Controller
         $contact = $this->getContactByAddressAndEmail($data);
         $this->log('Actie: ' . $this->contactActie);
 
+        if ($data['address_type_id'] != '') {
+            try {
+                $addressType = AddressType::get($data['address_type_id']);
+                $addressTypeId = $data['address_type_id'];
+                $this->log('Adres type ingesteld op: ' . $addressType->name . ' (' . $addressTypeId . ')');
+            } catch (\Exception $e) {
+                $addressTypeId = 'postal';
+                $this->log('Ongeldige waarde in adres_type_id (' . $data['address_type_id'] . ') , default naar "Post"');
+            }
+        } else {
+            $addressTypeId = 'postal';
+            $this->log('Er is geen waarde voor adres type meegegeven, default naar "Post"');
+        }
+
         if ($contact) {
             // Person of organisatie is gevonden, uitvoeren acties
             // contactActie = "GEEN" ->geen acties op contact naw of email
@@ -330,7 +344,7 @@ class ExternalWebformController extends Controller
                     $this->addContactToGroup($data, $contact);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
-                    $note .= "Adres type : " . $addressType = AddressType::get($data['address_type_id'])->name . "\n";
+                    $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";
@@ -354,7 +368,7 @@ class ExternalWebformController extends Controller
                 case 'CCT' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Gegevens contact met emailadres " . $data['email_address'] . " (".$contact->number.") gevonden bij op basis van e-mail maar zonder goede match op NAW.\n";
-                    $note .= "Adres type : " . $addressType = AddressType::get($data['address_type_id'])->name . "\n";
+                    $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
                     $note .= "Voornaam : " . $data['first_name'] . "\n";
                     $note .= "Achternaam : " . $data['last_name'] . "\n";
                     $note .= "Straat : " . $data['address_street'] . "\n";

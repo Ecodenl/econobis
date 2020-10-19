@@ -266,13 +266,6 @@ class OrderNewForm extends Component {
             hasErrors = true;
         }
 
-        if (order.IBAN !== null && !validator.isEmpty(order.IBAN + '')) {
-            if (!ibantools.isValidIBAN(order.IBAN)) {
-                errors.IBAN = true;
-                hasErrors = true;
-            }
-        }
-
         this.setState({ errors });
 
         // If no errors send form

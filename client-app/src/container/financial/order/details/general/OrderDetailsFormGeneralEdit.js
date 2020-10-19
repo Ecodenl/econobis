@@ -207,13 +207,6 @@ class OrderDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (!validator.isEmpty(order.IBAN + '')) {
-            if (!ibantools.isValidIBAN(order.IBAN)) {
-                errors.IBAN = true;
-                hasErrors = true;
-            }
-        }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form

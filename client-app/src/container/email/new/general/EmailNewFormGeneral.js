@@ -7,6 +7,7 @@ import InputMultiSelectCreate from '../../../../components/form/InputMultiSelect
 
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
+import InputText from "../../../../components/form/InputText";
 
 const EmailNewFormGeneral = ({
     email,
@@ -23,6 +24,8 @@ const EmailNewFormGeneral = ({
     handleTextChange,
 }) => {
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
+    // todo wim: groupId toevoegen:
+    // const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, groupId } = email;
 
     return (
         <Panel>
@@ -70,6 +73,52 @@ const EmailNewFormGeneral = ({
                         required={'required'}
                         error={errors.to}
                     />
+
+                    {/*todo wim: groupId toevoegen:*/}
+                    {/*{groupId ? (*/}
+                        {/*<InputText*/}
+                            {/*label={*/}
+                                {/*<span>*/}
+                                    {/*Groep*/}
+                                        {/*<br />*/}
+                                        {/*<small style={{ color: 'red', fontWeight: 'normal' }}>*/}
+                                            {/*Contacten in groep krijgen elk een aparte email*/}
+                                        {/*</small>*/}
+                                {/*</span>}*/}
+                            {/*name={'to'}*/}
+                            {/*value={groupId}*/}
+                            {/*readOnly={true}*/}
+                        {/*/>*/}
+                    {/*) : (*/}
+                        {/*<InputMultiSelectCreate*/}
+                            {/*label={*/}
+                                {/*<span>*/}
+                                    {/*Aan selecteren*/}
+                                    {/*{(to + '').split(',').length > 1 ? (*/}
+                                        {/*<React.Fragment>*/}
+                                            {/*<br />*/}
+                                            {/*<small style={{ color: 'red', fontWeight: 'normal' }}>*/}
+                                                {/*Meer dan 1 geselecteerd.*/}
+                                            {/*</small>*/}
+                                            {/*<br />*/}
+                                            {/*<small style={{ color: 'red', fontWeight: 'normal' }}>*/}
+                                                {/*Samenvoegvelden contact niet mogelijk.*/}
+                                            {/*</small>*/}
+                                        {/*</React.Fragment>*/}
+                                    {/*) : (*/}
+                                        {/*''*/}
+                                    {/*)}*/}
+                                {/*</span>}*/}
+                            {/*name={'to'}*/}
+                            {/*value={to}*/}
+                            {/*options={emailAddresses}*/}
+                            {/*optionName={'name'}*/}
+                            {/*onChangeAction={handleToIds}*/}
+                            {/*allowCreate={true}*/}
+                            {/*required={'required'}*/}
+                            {/*error={errors.to}*/}
+                        {/*/>*/}
+                    {/*)}*/}
                 </div>
                 <div className="row">
                     <InputMultiSelectCreate

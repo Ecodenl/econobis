@@ -95,6 +95,8 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];
+//        todo wim: dit moet replyTyp worden
+//        $email->status = 'concept-reply';
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -135,6 +137,8 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = $cc;
         $email->bcc = [];
+//        todo wim: dit moet replyTyp worden
+//        $email->status = 'concept-reply-all';
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -154,6 +158,8 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];
+//        todo wim: dit moet replyTyp worden
+//        $email->status = 'concept-forward';
 
         return FullEmail::make($email);
     }
@@ -406,6 +412,8 @@ class EmailController
     }
 
     public function updateConcept2(Email $email, Request $request){
+//        todo wim: testen straks van replyTyp
+        //print_r($email); die();
         $sanitizedData = $this->getEmailData($request, false);
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
@@ -539,10 +547,14 @@ class EmailController
             }
         }
 
+//        todo wim: dit moet obv replyType gedaan worden
         //ook contacten van oude email
+        //van oude email alleen the from
         if($request->input('oldEmailId')){
             $oldEmail = Email::find($request->input('oldEmailId'));
             $oldEmailContactIds = $oldEmail->contacts()->pluck('contacts.id')->toArray();
+//            $oldEmailContactIds = EmailAddress::where('email', $oldEmail->from)
+//                ->pluck('contact_id')->toArray();
         }
 
         $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));

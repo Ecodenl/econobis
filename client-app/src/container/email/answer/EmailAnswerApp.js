@@ -92,6 +92,8 @@ class EmailAnswerApp extends Component {
                 oldEmailId: payload.id,
                 originalHtmlBody: payload.htmlBody ? payload.htmlBody : '',
                 email: {
+                    // todo wim: dit moet replyTyp worden
+                    // statusId: payload.statusId,
                     mailboxId: payload.mailboxId,
                     to: payload.to ? payload.to.join(',') : '',
                     cc: payload.cc ? payload.cc.join(',') : '',

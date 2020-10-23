@@ -252,6 +252,12 @@ class TemplateVariableHelper
             case 'energieleverancier_ean_elektra':
                 return optional($model->primaryContactEnergySupplier)->ean_electricity;
                 break;
+            case 'energieleverancier_klant_sinds':
+                return optional($model->primaryContactEnergySupplier)->member_since ? Carbon::parse(optional($model->primaryContactEnergySupplier)->member_since)->format('d/m/Y') : null;;
+                break;
+            case 'energieleverancier_mogelijke_overstap':
+                return optional($model->primaryContactEnergySupplier)->switch_date ? Carbon::parse(optional($model->primaryContactEnergySupplier)->switch_date)->format('d/m/Y') : null;;
+                break;
             case 'kvk':
                 if($model->type_id == 'organisation'){
                     $kvk = $model->organisation->chamber_of_commerce_number;

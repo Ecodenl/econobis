@@ -37,6 +37,7 @@ class EmailNewApp extends Component {
                 quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
                 intakeId: props.params.intakeId ? props.params.intakeId : '',
                 replyTypeId: props.params.replyTypeId ? props.params.replyTypeId : '',
+                oldEmailId: '',
             },
             errors: {
                 from: false,

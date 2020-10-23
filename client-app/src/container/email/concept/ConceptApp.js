@@ -70,6 +70,8 @@ class ConceptApp extends Component {
                         attachments: payload.attachments ? payload.attachments : '',
                         quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '',
                         intakeId: payload.intakeId ? payload.intakeId : '',
+                        replyTypeId: payload.replyTypeId ? payload.replyTypeId : '',
+                        oldEmailId: payload.oldEmailId ? payload.oldEmailId : '',
                     },
                     emailAddresses: [...this.state.emailAddresses, ...extraOptions],
                     hasLoaded: true,
@@ -271,6 +273,8 @@ class ConceptApp extends Component {
             // data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
             data.append('intakeId', email.intakeId);
+            data.append('replyTypeId', email.replyTypeId);
+            data.append('oldEmailId', email.oldEmailId);
 
             if (concept) {
                 EmailAPI.updateConcept(email, this.props.params.id)

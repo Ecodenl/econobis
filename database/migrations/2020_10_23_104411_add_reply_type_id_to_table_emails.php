@@ -15,6 +15,7 @@ class AddReplyTypeIdToTableEmails extends Migration
     {
         Schema::table('emails', function(Blueprint $table) {
             $table->string('reply_type_id')->nullable(true);
+            $table->unsignedInteger('old_email_id')->nullable(true);
         });
     }
 
@@ -27,6 +28,7 @@ class AddReplyTypeIdToTableEmails extends Migration
     {
         Schema::table('emails', function(Blueprint $table) {
             $table->dropColumn('reply_type_id');
+            $table->dropColumn('old_email_id');
         });
     }
 }

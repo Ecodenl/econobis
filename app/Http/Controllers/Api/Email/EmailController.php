@@ -96,6 +96,7 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
         $email->reply_type_id = 'reply';
+        $email->old_email_id = $email->id;
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -137,6 +138,7 @@ class EmailController
         $email->cc = $cc;
         $email->bcc = [];
         $email->reply_type_id = 'reply-all';
+        $email->old_email_id = $email->id;
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -157,6 +159,7 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
         $email->reply_type_id = 'forward';
+        $email->old_email_id = $email->id;
 
         return FullEmail::make($email);
     }
@@ -179,6 +182,7 @@ class EmailController
             ->integer('responsibleUserId')->validate('nullable|exists:users,id')->whenMissing(null)->onEmpty(null)->alias('responsible_user_id')->next()
             ->integer('responsibleTeamId')->validate('nullable|exists:teams,id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
             ->string('replyTypeId')->validate('nullable')->whenMissing(null)->onEmpty(null)->alias('reply_type_id')->next()
+            ->integer('oldEmailId')->validate('nullable|exists:emails,id')->whenMissing(null)->onEmpty(null)->alias('old_email_id')->next()
             ->get();
 
         $email->fill($data);
@@ -245,6 +249,7 @@ class EmailController
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->reply_type_id = $sanitizedData['reply_type_id'];
+        $email->old_email_id = $sanitizedData['old_email_id'];
 
         //add basic html tags for new emails
         $email->html_body
@@ -419,6 +424,7 @@ class EmailController
         $email->intake_id = $sanitizedData['intake_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->reply_type_id = $sanitizedData['reply_type_id'];
+        $email->old_email_id = $sanitizedData['old_email_id'];
         $email->save();
     }
 
@@ -438,6 +444,7 @@ class EmailController
             'quotationRequestId' => '',
             'intakeId' => '',
             'replyTypeId' => 'string',
+            'oldEmailId' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -489,6 +496,13 @@ class EmailController
             $data['replyTypeId'] = null;
         }
 
+        if(!array_key_exists('oldEmailId', $data)){
+            $data['oldEmailId'] = null;
+        }
+        if($data['oldEmailId'] == ''){
+            $data['oldEmailId'] = null;
+        }
+
         if(!array_key_exists('quotationRequestId', $data)){
             $data['quotationRequestId'] = null;
         }
@@ -510,6 +524,7 @@ class EmailController
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
             'reply_type_id' => $data['replyTypeId'],
+            'old_email_id' => $data['oldEmailId'],
             'contact_group_id' => $groupId ? $groupId : null
         ];
 
@@ -552,14 +567,16 @@ class EmailController
             }
         }
 
-//        todo wim: dit moet obv replyType gedaan worden
-        //ook contacten van oude email
-        //van oude email alleen the from
-        if($request->input('oldEmailId')){
-            $oldEmail = Email::find($request->input('oldEmailId'));
-            $oldEmailContactIds = $oldEmail->contacts()->pluck('contacts.id')->toArray();
+        // todo wim: dit kan nog anders worden
+        // Also contacts from old email ?
+        if($email->old_email_id){
+            // Only for replytype is 'reply' or 'reply-all'
+            if($email->reply_type_id == 'reply' || $email->reply_type_id == 'reply-all' ){
+                $oldEmail = Email::find($email->old_email_id);
+                $oldEmailContactIds = $oldEmail->contacts()->pluck('contacts.id')->toArray();
 //            $oldEmailContactIds = EmailAddress::where('email', $oldEmail->from)
 //                ->pluck('contact_id')->toArray();
+            }
         }
 
         $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));

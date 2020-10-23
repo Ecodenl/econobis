@@ -27,6 +27,7 @@ class EmailAnswerApp extends Component {
                 from: '',
                 mailboxId: '',
                 replyTypeId: '',
+                oldEmailId: '',
                 to: '',
                 cc: '',
                 bcc: '',
@@ -95,6 +96,7 @@ class EmailAnswerApp extends Component {
                 email: {
                     mailboxId: payload.mailboxId,
                     replyTypeId: payload.replyTypeId ? payload.replyTypeId : '',
+                    oldEmailId: payload.id ? payload.id : '',
                     to: payload.to ? payload.to.join(',') : '',
                     cc: payload.cc ? payload.cc.join(',') : '',
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
@@ -321,6 +323,7 @@ class EmailAnswerApp extends Component {
             // data.append('subject', email.subject);
             // data.append('htmlBody', email.htmlBody);
             data.append('oldEmailId', this.state.oldEmailId);
+            // data.append('oldEmailId', email.replyTypeId);
             data.append('replyTypeId', email.replyTypeId);
             if (email.attachments) {
                 email.attachments.map((file, key) => {

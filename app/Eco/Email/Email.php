@@ -31,6 +31,7 @@ class Email extends Model
         'to' => 'array',
         'cc' => 'array',
         'bcc' => 'array',
+        'replyTypeId' => 'string',
     ];
 
     public function mailbox()

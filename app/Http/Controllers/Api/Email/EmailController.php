@@ -95,8 +95,7 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];
-//        todo wim: dit moet replyTyp worden
-//        $email->status = 'concept-reply';
+        $email->reply_type_id = 'reply';
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -137,8 +136,7 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = $cc;
         $email->bcc = [];
-//        todo wim: dit moet replyTyp worden
-//        $email->status = 'concept-reply-all';
+        $email->reply_type_id = 'reply-all';
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -158,8 +156,7 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];
-//        todo wim: dit moet replyTyp worden
-//        $email->status = 'concept-forward';
+        $email->reply_type_id = 'forward';
 
         return FullEmail::make($email);
     }
@@ -181,6 +178,7 @@ class EmailController
             ->integer('invoiceId')->validate('exists:invoices,id')->onEmpty(null)->alias('invoice_id')->next()
             ->integer('responsibleUserId')->validate('nullable|exists:users,id')->whenMissing(null)->onEmpty(null)->alias('responsible_user_id')->next()
             ->integer('responsibleTeamId')->validate('nullable|exists:teams,id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
+            ->string('replyTypeId')->validate('nullable')->whenMissing(null)->onEmpty(null)->alias('reply_type_id')->next()
             ->get();
 
         $email->fill($data);
@@ -246,12 +244,13 @@ class EmailController
         $email->intake_id = $sanitizedData['intake_id'];
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
+        $email->reply_type_id = $sanitizedData['reply_type_id'];
 
         //add basic html tags for new emails
         $email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $email->subject . '</title></head>'
-            . $email->html_body . '</html>';
+            . $email->subject . '</title></head><body>'
+            . $email->html_body . '</body></html>';
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -302,7 +301,7 @@ class EmailController
     {
         $data = $requestInput
             ->string('subject')->onEmpty(null)->next()
-            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->string('htmlBody')->onEmpty('')->alias('html_body')->next()
             ->get();
 
         $email = (new StoreConceptEmail($mailbox, $data))->handle();
@@ -412,8 +411,6 @@ class EmailController
     }
 
     public function updateConcept2(Email $email, Request $request){
-//        todo wim: testen straks van replyTyp
-        //print_r($email); die();
         $sanitizedData = $this->getEmailData($request, false);
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
@@ -421,6 +418,7 @@ class EmailController
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->intake_id = $sanitizedData['intake_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
+        $email->reply_type_id = $sanitizedData['reply_type_id'];
         $email->save();
     }
 
@@ -439,6 +437,7 @@ class EmailController
             'bcc' => '',
             'quotationRequestId' => '',
             'intakeId' => '',
+            'replyTypeId' => 'string',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -483,10 +482,16 @@ class EmailController
             }
         }
 
+        if(!array_key_exists('replyTypeId', $data)){
+            $data['replyTypeId'] = null;
+        }
+        if($data['replyTypeId'] == ''){
+            $data['replyTypeId'] = null;
+        }
+
         if(!array_key_exists('quotationRequestId', $data)){
             $data['quotationRequestId'] = null;
         }
-
         if($data['quotationRequestId'] == ''){
             $data['quotationRequestId'] = null;
         }
@@ -494,7 +499,6 @@ class EmailController
         if(!array_key_exists('intakeId', $data)){
             $data['intakeId'] = null;
         }
-
         if($data['intakeId'] == ''){
             $data['intakeId'] = null;
         }
@@ -505,6 +509,7 @@ class EmailController
             'bcc' => $emails['bcc'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
+            'reply_type_id' => $data['replyTypeId'],
             'contact_group_id' => $groupId ? $groupId : null
         ];
 

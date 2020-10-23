@@ -26,6 +26,7 @@ class EmailAnswerApp extends Component {
             email: {
                 from: '',
                 mailboxId: '',
+                replyTypeId: '',
                 to: '',
                 cc: '',
                 bcc: '',
@@ -92,9 +93,8 @@ class EmailAnswerApp extends Component {
                 oldEmailId: payload.id,
                 originalHtmlBody: payload.htmlBody ? payload.htmlBody : '',
                 email: {
-                    // todo wim: dit moet replyTyp worden
-                    // statusId: payload.statusId,
                     mailboxId: payload.mailboxId,
+                    replyTypeId: payload.replyTypeId ? payload.replyTypeId : '',
                     to: payload.to ? payload.to.join(',') : '',
                     cc: payload.cc ? payload.cc.join(',') : '',
                     bcc: payload.bcc ? payload.bcc.join(',') : '',
@@ -310,12 +310,8 @@ class EmailAnswerApp extends Component {
 
             const editor = window.tinymce.EditorManager.get('tinyMCEUpdateable');
             if (editor !== undefined) {
-                // console.log('hallo a');
-                // console.log(email.htmlBody);
                 email.htmlBody = editor.getContent({ format: 'raw' });
             }
-            // console.log('hallo b');
-            // console.log(email.htmlBody);
 
             const data = new FormData();
 
@@ -325,6 +321,7 @@ class EmailAnswerApp extends Component {
             // data.append('subject', email.subject);
             // data.append('htmlBody', email.htmlBody);
             data.append('oldEmailId', this.state.oldEmailId);
+            data.append('replyTypeId', email.replyTypeId);
             if (email.attachments) {
                 email.attachments.map((file, key) => {
                     if (file.id) {

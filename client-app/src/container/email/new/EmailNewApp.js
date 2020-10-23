@@ -36,8 +36,7 @@ class EmailNewApp extends Component {
                 attachments: [],
                 quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
                 intakeId: props.params.intakeId ? props.params.intakeId : '',
-                // todo wim: groupId toevoegen:
-                // groupId: props.params.groupId ? props.params.groupId : '',
+                replyTypeId: props.params.replyTypeId ? props.params.replyTypeId : '',
             },
             errors: {
                 from: false,

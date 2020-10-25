@@ -33,6 +33,7 @@ class Email extends Model
         'bcc' => 'array',
         'replyTypeId' => 'string',
         'oldEmailId' => 'integer',
+        'contactGroupId' => 'integer',
     ];
 
     public function mailbox()

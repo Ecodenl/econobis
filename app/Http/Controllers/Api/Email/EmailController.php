@@ -165,7 +165,7 @@ class EmailController
     }
 
     public function getEmailGroup(ContactGroup $contactGroup){
-        return $contactGroup->name . '(' . $contactGroup->all_contacts->count() . ')';
+        return $contactGroup->name . ' (' . $contactGroup->all_contacts->count() . ')';
     }
 
     public function update(Email $email, RequestInput $input, Request $request)
@@ -181,8 +181,6 @@ class EmailController
             ->integer('invoiceId')->validate('exists:invoices,id')->onEmpty(null)->alias('invoice_id')->next()
             ->integer('responsibleUserId')->validate('nullable|exists:users,id')->whenMissing(null)->onEmpty(null)->alias('responsible_user_id')->next()
             ->integer('responsibleTeamId')->validate('nullable|exists:teams,id')->whenMissing(null)->onEmpty(null)->alias('responsible_team_id')->next()
-            ->string('replyTypeId')->validate('nullable')->whenMissing(null)->onEmpty(null)->alias('reply_type_id')->next()
-            ->integer('oldEmailId')->validate('nullable|exists:emails,id')->whenMissing(null)->onEmpty(null)->alias('old_email_id')->next()
             ->get();
 
         $email->fill($data);
@@ -405,7 +403,7 @@ class EmailController
 
         $data = $requestInput
             ->string('subject')->onEmpty(null)->next()
-            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->string('htmlBody')->onEmpty('')->alias('html_body')->next()
             ->get();
 
         $email->fill($data);
@@ -445,6 +443,7 @@ class EmailController
             'intakeId' => '',
             'replyTypeId' => 'string',
             'oldEmailId' => '',
+            'contactGroupId' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -455,10 +454,14 @@ class EmailController
         //1,2, fren.dehaan@xaris.nl, @group_1, 3, rob.rollenberg@xaris.nl
 
         $emails = [];
-        $groupId = null;
-        $sendVariations = ['to'];
+        $contactGroupId = null;
+
+        $sendVariations = [];
         $emails['to'] = [];
 
+        if ($data['to'] != '') {
+            array_push($sendVariations, 'to');
+        }
         if ($data['cc'] != '') {
             array_push($sendVariations, 'cc');
         }
@@ -472,19 +475,18 @@ class EmailController
             $emails['bcc'] = [];
         }
 
-        foreach ($sendVariations as $sendVariation){
-            foreach ($data[$sendVariation] as $emailData) {
-                if ($forSend && is_numeric($emailData)){
-                    $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
-                }
-                if (!$forSend && is_numeric($emailData)){
-                    $emails[$sendVariation][] = $emailData;
-                }
-                else if(substr($emailData, 0, 7 ) === "@group_"){
-                    $groupId = str_replace("@group_", "", $emailData);
-                }
-                else if(filter_var($emailData, FILTER_VALIDATE_EMAIL)){
-                    $emails[$sendVariation][] = $emailData;
+        if(!empty($sendVariations)){
+            foreach ($sendVariations as $sendVariation){
+                foreach ($data[$sendVariation] as $emailData) {
+                    if ($forSend && is_numeric($emailData)){
+                        $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
+                    }
+                    if (!$forSend && is_numeric($emailData)){
+                        $emails[$sendVariation][] = $emailData;
+                    }
+                    else if(filter_var($emailData, FILTER_VALIDATE_EMAIL)){
+                        $emails[$sendVariation][] = $emailData;
+                    }
                 }
             }
         }
@@ -501,6 +503,13 @@ class EmailController
         }
         if($data['oldEmailId'] == ''){
             $data['oldEmailId'] = null;
+        }
+
+        if(!array_key_exists('contactGroupId', $data)){
+            $data['contactGroupId'] = null;
+        }
+        if($data['contactGroupId'] == ''){
+            $data['contactGroupId'] = null;
         }
 
         if(!array_key_exists('quotationRequestId', $data)){
@@ -525,7 +534,7 @@ class EmailController
             'intake_id' => $data['intakeId'],
             'reply_type_id' => $data['replyTypeId'],
             'old_email_id' => $data['oldEmailId'],
-            'contact_group_id' => $groupId ? $groupId : null
+            'contact_group_id' => $data['contactGroupId'],
         ];
 
         return $sanitizedData;
@@ -550,7 +559,11 @@ class EmailController
         //to, cc, bcc example data:
         //1,2, fren.dehaan@xaris.nl, 3, rob.rollenberg@xaris.nl
 
-        $sendVariations = ['to'];
+        $sendVariations = [];
+
+        if ($data['to'] != '') {
+            array_push($sendVariations, 'to');
+        }
         if ($data['cc'] != '') {
             array_push($sendVariations, 'cc');
         }
@@ -558,11 +571,13 @@ class EmailController
             array_push($sendVariations, 'bcc');
         }
 
-        foreach ($sendVariations as $sendVariation) {
-            foreach ($data[$sendVariation] as $emailData) {
-                if (is_numeric($emailData)) {
-                    $contactId = EmailAddress::find($emailData)->contact_id;
-                    array_push($contactIds, $contactId);
+        if(!empty($sendVariations)) {
+            foreach ($sendVariations as $sendVariation) {
+                foreach ($data[$sendVariation] as $emailData) {
+                    if (is_numeric($emailData)) {
+                        $contactId = EmailAddress::find($emailData)->contact_id;
+                        array_push($contactIds, $contactId);
+                    }
                 }
             }
         }

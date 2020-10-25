@@ -6,6 +6,7 @@ import ConceptFormGeneral from './general/ConceptFormGeneral';
 
 const ConceptNewForm = ({
     email,
+    contactGroupName,
     emailAddresses,
     errors,
     hasLoaded,
@@ -23,6 +24,7 @@ const ConceptNewForm = ({
             <Panel>
                 <ConceptFormGeneral
                     email={email}
+                    contactGroupName={contactGroupName}
                     emailAddresses={emailAddresses}
                     errors={errors}
                     hasLoaded={hasLoaded}

@@ -5,6 +5,7 @@ import EmailNewFormGeneral from './general/EmailNewFormGeneral';
 
 const EmailNewForm = ({
     email,
+    contactGroupName,
     mailboxAddresses,
     emailAddresses,
     emailTemplates,
@@ -20,14 +21,12 @@ const EmailNewForm = ({
     addAttachment,
     deleteAttachment,
 }) => {
-    // todo wim
-    // console.log("hallo2?");
-    // console.log(email);
 
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <EmailNewFormGeneral
                 email={email}
+                contactGroupName={contactGroupName}
                 emailAddresses={emailAddresses}
                 mailboxAddresses={mailboxAddresses}
                 emailTemplates={emailTemplates}

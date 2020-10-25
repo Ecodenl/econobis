@@ -59,7 +59,7 @@ class ContactGroupsListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons && permissions.manageGroup && !isUsedInComposedGroup ? (
-                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
+                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name, type.id)}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>
                     ) : (

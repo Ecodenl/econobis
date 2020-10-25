@@ -20,6 +20,10 @@ const EmailNewForm = ({
     addAttachment,
     deleteAttachment,
 }) => {
+    // todo wim
+    // console.log("hallo2?");
+    // console.log(email);
+
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <EmailNewFormGeneral

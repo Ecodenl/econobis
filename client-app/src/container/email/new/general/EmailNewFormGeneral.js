@@ -7,7 +7,7 @@ import InputMultiSelectCreate from '../../../../components/form/InputMultiSelect
 
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
-import InputText from "../../../../components/form/InputText";
+// import InputText from "../../../../components/form/InputText";
 
 const EmailNewFormGeneral = ({
     email,
@@ -26,6 +26,9 @@ const EmailNewFormGeneral = ({
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
     // todo wim: groupId toevoegen:
     // const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, groupId } = email;
+// console.log(groupId);
+//     console.log("hallo3?");
+//     console.log(email);
 
     return (
         <Panel>

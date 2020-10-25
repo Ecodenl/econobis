@@ -38,6 +38,7 @@ class EmailNewApp extends Component {
                 intakeId: props.params.intakeId ? props.params.intakeId : '',
                 replyTypeId: props.params.replyTypeId ? props.params.replyTypeId : '',
                 oldEmailId: '',
+                // groupId: '',
             },
             errors: {
                 from: false,
@@ -46,6 +47,9 @@ class EmailNewApp extends Component {
             },
         };
 
+        //todo wim
+        // console.log("hallo?");
+        // console.log(this.state.email);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleFromIds = this.handleFromIds.bind(this);
         this.handleEmailTemplates = this.handleEmailTemplates.bind(this);

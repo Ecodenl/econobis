@@ -95,6 +95,8 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];
+        $email->reply_type_id = 'reply';
+        $email->old_email_id = $email->id;
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -135,6 +137,8 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = $cc;
         $email->bcc = [];
+        $email->reply_type_id = 'reply-all';
+        $email->old_email_id = $email->id;
 
         $email->html_body = '<p></p><p>Oorspronkelijk bericht:</p> ' . $email->html_body;
 
@@ -154,12 +158,14 @@ class EmailController
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];
+        $email->reply_type_id = 'forward';
+        $email->old_email_id = $email->id;
 
         return FullEmail::make($email);
     }
 
     public function getEmailGroup(ContactGroup $contactGroup){
-        return $contactGroup->name . '(' . $contactGroup->all_contacts->count() . ')';
+        return $contactGroup->name . ' (' . $contactGroup->all_contacts->count() . ')';
     }
 
     public function update(Email $email, RequestInput $input, Request $request)
@@ -240,12 +246,14 @@ class EmailController
         $email->intake_id = $sanitizedData['intake_id'];
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
+        $email->reply_type_id = $sanitizedData['reply_type_id'];
+        $email->old_email_id = $sanitizedData['old_email_id'];
 
         //add basic html tags for new emails
         $email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $email->subject . '</title></head>'
-            . $email->html_body . '</html>';
+            . $email->subject . '</title></head><body>'
+            . $email->html_body . '</body></html>';
 
         //Create relations with contact if needed
         $this->createEmailContactRelations($email, $request);
@@ -296,7 +304,7 @@ class EmailController
     {
         $data = $requestInput
             ->string('subject')->onEmpty(null)->next()
-            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->string('htmlBody')->onEmpty('')->alias('html_body')->next()
             ->get();
 
         $email = (new StoreConceptEmail($mailbox, $data))->handle();
@@ -395,7 +403,7 @@ class EmailController
 
         $data = $requestInput
             ->string('subject')->onEmpty(null)->next()
-            ->string('htmlBody')->onEmpty(null)->alias('html_body')->next()
+            ->string('htmlBody')->onEmpty('')->alias('html_body')->next()
             ->get();
 
         $email->fill($data);
@@ -413,6 +421,8 @@ class EmailController
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->intake_id = $sanitizedData['intake_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
+        $email->reply_type_id = $sanitizedData['reply_type_id'];
+        $email->old_email_id = $sanitizedData['old_email_id'];
         $email->save();
     }
 
@@ -431,6 +441,9 @@ class EmailController
             'bcc' => '',
             'quotationRequestId' => '',
             'intakeId' => '',
+            'replyTypeId' => 'string',
+            'oldEmailId' => '',
+            'contactGroupId' => '',
         ]);
 
         $data['to'] = json_decode($data['to']);
@@ -441,10 +454,14 @@ class EmailController
         //1,2, fren.dehaan@xaris.nl, @group_1, 3, rob.rollenberg@xaris.nl
 
         $emails = [];
-        $groupId = null;
-        $sendVariations = ['to'];
+        $contactGroupId = null;
+
+        $sendVariations = [];
         $emails['to'] = [];
 
+        if ($data['to'] != '') {
+            array_push($sendVariations, 'to');
+        }
         if ($data['cc'] != '') {
             array_push($sendVariations, 'cc');
         }
@@ -458,27 +475,46 @@ class EmailController
             $emails['bcc'] = [];
         }
 
-        foreach ($sendVariations as $sendVariation){
-            foreach ($data[$sendVariation] as $emailData) {
-                if ($forSend && is_numeric($emailData)){
-                    $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
-                }
-                if (!$forSend && is_numeric($emailData)){
-                    $emails[$sendVariation][] = $emailData;
-                }
-                else if(substr($emailData, 0, 7 ) === "@group_"){
-                    $groupId = str_replace("@group_", "", $emailData);
-                }
-                else if(filter_var($emailData, FILTER_VALIDATE_EMAIL)){
-                    $emails[$sendVariation][] = $emailData;
+        if(!empty($sendVariations)){
+            foreach ($sendVariations as $sendVariation){
+                foreach ($data[$sendVariation] as $emailData) {
+                    if ($forSend && is_numeric($emailData)){
+                        $emails[$sendVariation][] = EmailAddress::find($emailData)->email;
+                    }
+                    if (!$forSend && is_numeric($emailData)){
+                        $emails[$sendVariation][] = $emailData;
+                    }
+                    else if(filter_var($emailData, FILTER_VALIDATE_EMAIL)){
+                        $emails[$sendVariation][] = $emailData;
+                    }
                 }
             }
+        }
+
+        if(!array_key_exists('replyTypeId', $data)){
+            $data['replyTypeId'] = null;
+        }
+        if($data['replyTypeId'] == ''){
+            $data['replyTypeId'] = null;
+        }
+
+        if(!array_key_exists('oldEmailId', $data)){
+            $data['oldEmailId'] = null;
+        }
+        if($data['oldEmailId'] == ''){
+            $data['oldEmailId'] = null;
+        }
+
+        if(!array_key_exists('contactGroupId', $data)){
+            $data['contactGroupId'] = null;
+        }
+        if($data['contactGroupId'] == ''){
+            $data['contactGroupId'] = null;
         }
 
         if(!array_key_exists('quotationRequestId', $data)){
             $data['quotationRequestId'] = null;
         }
-
         if($data['quotationRequestId'] == ''){
             $data['quotationRequestId'] = null;
         }
@@ -486,7 +522,6 @@ class EmailController
         if(!array_key_exists('intakeId', $data)){
             $data['intakeId'] = null;
         }
-
         if($data['intakeId'] == ''){
             $data['intakeId'] = null;
         }
@@ -497,7 +532,9 @@ class EmailController
             'bcc' => $emails['bcc'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
-            'contact_group_id' => $groupId ? $groupId : null
+            'reply_type_id' => $data['replyTypeId'],
+            'old_email_id' => $data['oldEmailId'],
+            'contact_group_id' => $data['contactGroupId'],
         ];
 
         return $sanitizedData;
@@ -522,7 +559,11 @@ class EmailController
         //to, cc, bcc example data:
         //1,2, fren.dehaan@xaris.nl, 3, rob.rollenberg@xaris.nl
 
-        $sendVariations = ['to'];
+        $sendVariations = [];
+
+        if ($data['to'] != '') {
+            array_push($sendVariations, 'to');
+        }
         if ($data['cc'] != '') {
             array_push($sendVariations, 'cc');
         }
@@ -530,19 +571,27 @@ class EmailController
             array_push($sendVariations, 'bcc');
         }
 
-        foreach ($sendVariations as $sendVariation) {
-            foreach ($data[$sendVariation] as $emailData) {
-                if (is_numeric($emailData)) {
-                    $contactId = EmailAddress::find($emailData)->contact_id;
-                    array_push($contactIds, $contactId);
+        if(!empty($sendVariations)) {
+            foreach ($sendVariations as $sendVariation) {
+                foreach ($data[$sendVariation] as $emailData) {
+                    if (is_numeric($emailData)) {
+                        $contactId = EmailAddress::find($emailData)->contact_id;
+                        array_push($contactIds, $contactId);
+                    }
                 }
             }
         }
 
-        //ook contacten van oude email
-        if($request->input('oldEmailId')){
-            $oldEmail = Email::find($request->input('oldEmailId'));
-            $oldEmailContactIds = $oldEmail->contacts()->pluck('contacts.id')->toArray();
+        // todo wim: dit kan nog anders worden
+        // Also contacts from old email ?
+        if($email->old_email_id){
+            // Only for replytype is 'reply' or 'reply-all'
+            if($email->reply_type_id == 'reply' || $email->reply_type_id == 'reply-all' ){
+                $oldEmail = Email::find($email->old_email_id);
+                $oldEmailContactIds = $oldEmail->contacts()->pluck('contacts.id')->toArray();
+//            $oldEmailContactIds = EmailAddress::where('email', $oldEmail->from)
+//                ->pluck('contact_id')->toArray();
+            }
         }
 
         $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));

@@ -27,6 +27,7 @@ class ConceptApp extends Component {
                 htmlBody: '',
                 attachments: [],
             },
+            contactGroupName: '',
             errors: {
                 to: false,
                 subject: false,
@@ -70,6 +71,9 @@ class ConceptApp extends Component {
                         attachments: payload.attachments ? payload.attachments : '',
                         quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '',
                         intakeId: payload.intakeId ? payload.intakeId : '',
+                        replyTypeId: payload.replyTypeId ? payload.replyTypeId : '',
+                        oldEmailId: payload.oldEmailId ? payload.oldEmailId : '',
+                        contactGroupId: payload.contactGroupId ? payload.contactGroupId : '',
                     },
                     emailAddresses: [...this.state.emailAddresses, ...extraOptions],
                     hasLoaded: true,
@@ -79,23 +83,8 @@ class ConceptApp extends Component {
                     // console.log("To: " + payload.to);
                     if (payload.contactGroupId) {
                         EmailAPI.fetchEmailGroup(payload.contactGroupId).then(name => {
-                            let emailAddresses = this.state.emailAddresses;
-
-                            emailAddresses.push({ id: '@group_' + payload.contactGroupId, name: name });
-
-                            let toString = '@group_' + payload.contactGroupId;
-
-                            if (payload.to.length > 0) {
-                                toString = toString + ',' + payload.to.join(',');
-                            }
-
                             this.setState({
-                                ...this.state,
-                                emailAddresses: emailAddresses,
-                                email: {
-                                    ...this.state.email,
-                                    to: toString,
-                                },
+                                contactGroupName: name,
                             });
                         });
                     }
@@ -216,9 +205,11 @@ class ConceptApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(email.to)) {
-            errors.to = true;
-            hasErrors = true;
+        if (validator.isEmpty('' + email.contactGroupId)) {
+            if (validator.isEmpty(email.to)) {
+                errors.to = true;
+                hasErrors = true;
+            }
         }
 
         if (validator.isEmpty('' + email.from)) {
@@ -271,6 +262,9 @@ class ConceptApp extends Component {
             // data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
             data.append('intakeId', email.intakeId);
+            data.append('replyTypeId', email.replyTypeId);
+            data.append('oldEmailId', email.oldEmailId);
+            data.append('contactGroupId', email.contactGroupId);
 
             if (concept) {
                 EmailAPI.updateConcept(email, this.props.params.id)
@@ -319,6 +313,7 @@ class ConceptApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <ConceptForm
                             email={this.state.email}
+                            contactGroupName={this.state.contactGroupName}
                             emailAddresses={this.state.emailAddresses}
                             errors={this.state.errors}
                             hasLoaded={this.state.hasLoaded}

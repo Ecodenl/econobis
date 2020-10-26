@@ -36,7 +36,11 @@ class EmailNewApp extends Component {
                 attachments: [],
                 quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
                 intakeId: props.params.intakeId ? props.params.intakeId : '',
+                replyTypeId: props.params.replyTypeId ? props.params.replyTypeId : '',
+                oldEmailId: '',
+                contactGroupId: props.params.contactGroupId ? props.params.contactGroupId : '',
             },
+            contactGroupName: '',
             errors: {
                 from: false,
                 to: false,
@@ -68,30 +72,19 @@ class EmailNewApp extends Component {
                 });
             });
         }
+        if (this.props.params.contactGroupId) {
+            EmailAPI.fetchEmailGroup(this.props.params.contactGroupId).then(payload => {
+                this.setState({
+                    contactGroupName: payload,
+                });
+            });
+        }
 
         EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
             this.setState(
                 {
                     emailAddresses: payload,
                 },
-                () => {
-                    if (this.props.params.groupId && this.props.params.type) {
-                        EmailAPI.fetchEmailGroup(this.props.params.groupId).then(payload => {
-                            let emailAddresses = this.state.emailAddresses;
-
-                            emailAddresses.push({ id: '@group_' + this.props.params.groupId, name: payload });
-
-                            this.setState({
-                                ...this.state,
-                                emailAddresses: emailAddresses,
-                                email: {
-                                    ...this.state.email,
-                                    [this.props.params.type]: '@group_' + this.props.params.groupId,
-                                },
-                            });
-                        });
-                    }
-                }
             );
         });
 
@@ -274,9 +267,11 @@ class EmailNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty('' + email.to)) {
-            errors.to = true;
-            hasErrors = true;
+        if (validator.isEmpty('' + email.contactGroupId)) {
+            if (validator.isEmpty('' + email.to)) {
+                errors.to = true;
+                hasErrors = true;
+            }
         }
 
         if (validator.isEmpty('' + email.from)) {
@@ -329,6 +324,7 @@ class EmailNewApp extends Component {
             // data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
             data.append('intakeId', email.intakeId);
+            data.append('contactGroupId', email.contactGroupId);
             email.attachments.map((file, key) => {
                 data.append('attachments[' + key + ']', file);
             });
@@ -374,6 +370,7 @@ class EmailNewApp extends Component {
                     <div className="col-md-12">
                         <EmailNewForm
                             email={this.state.email}
+                            contactGroupName={this.state.contactGroupName}
                             emailAddresses={this.state.emailAddresses}
                             mailboxAddresses={this.state.mailboxAddresses}
                             emailTemplates={this.state.emailTemplates}

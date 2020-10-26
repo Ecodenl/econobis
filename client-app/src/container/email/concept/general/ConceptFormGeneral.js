@@ -5,9 +5,11 @@ import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import InputMultiSelectCreate from '../../../../components/form/InputMultiSelectCreate';
 import ViewText from '../../../../components/form/ViewText';
 import moment from 'moment/moment';
+import InputText from "../../../../components/form/InputText";
 
 const ConceptFormGeneral = ({
     email,
+    contactGroupName,
     emailAddresses,
     errors,
     hasLoaded,
@@ -18,7 +20,7 @@ const ConceptFormGeneral = ({
     handleInputChange,
     handleTextChange,
 }) => {
-    const { from, to, cc, bcc, subject, htmlBody } = email;
+    const { from, to, cc, bcc, subject, htmlBody, contactGroupId } = email;
 
     return (
         <PanelBody>
@@ -35,17 +37,33 @@ const ConceptFormGeneral = ({
                 </div>
             </div>
             <div className="row">
-                <InputMultiSelectCreate
-                    label="Aan selecteren"
-                    name={'to'}
-                    value={to}
-                    options={emailAddresses}
-                    optionName={'name'}
-                    onChangeAction={handleToIds}
-                    allowCreate={true}
-                    required={'required'}
-                    error={errors.to}
-                />
+                {contactGroupId ? (
+                    <InputText
+                        label={
+                            <span>
+                                    Groep
+                                        <br />
+                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                            Contacten in groep krijgen elk een aparte email
+                                        </small>
+                                </span>}
+                        name={'contactGroupName'}
+                        value={contactGroupName}
+                        readOnly={true}
+                    />
+                ) : (
+                    <InputMultiSelectCreate
+                        label="Aan selecteren"
+                        name={'to'}
+                        value={to}
+                        options={emailAddresses}
+                        optionName={'name'}
+                        onChangeAction={handleToIds}
+                        allowCreate={true}
+                        required={'required'}
+                        error={errors.to}
+                    />
+                )}
             </div>
             <div className="row">
                 <InputMultiSelectCreate

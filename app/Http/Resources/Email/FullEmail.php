@@ -65,6 +65,8 @@ class FullEmail extends Resource
             'measure' => FullMeasure::make($this->whenLoaded('measure')),
             'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
             'attachments' => GenericResource::collection($this->whenLoaded('attachments')),
+            'replyTypeId' => $this->reply_type_id,
+            'oldEmailId' => $this->old_email_id,
             'status' => FullEnumWithIdAndName::make($this->getStatus()),
             'dateClosed' => $this->date_closed,
             'dateRemoved' => $this->date_removed,

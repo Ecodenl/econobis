@@ -23,7 +23,7 @@ class UserDetailsToolbar extends Component {
     };
 
     render() {
-        const { id, name, numberOfContacts = 0, composedOf } = this.props.contactGroup;
+        const { id, name, type, numberOfContacts = 0, composedOf } = this.props.contactGroup;
         let composedOfType = '';
         if (composedOf === 'contacts') {
             composedOfType = '(Contacten)';
@@ -68,7 +68,7 @@ class UserDetailsToolbar extends Component {
                     </Panel>
                 </div>
                 {this.state.showDelete && (
-                    <ContactGroupDetailsDelete closeDeleteItemModal={this.toggleDelete} name={name} id={id} />
+                    <ContactGroupDetailsDelete closeDeleteItemModal={this.toggleDelete} name={name} id={id} contactGroupType={type.id}/>
                 )}
             </div>
         );

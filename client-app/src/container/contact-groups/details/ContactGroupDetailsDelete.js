@@ -25,7 +25,9 @@ const ContactGroupDetailsDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder groep: <strong> {props.name} </strong>
+            {props.contactGroupType === 'static'
+                ? <span>Je gaat een statische groep verwijderen. Deze groep kan je niet meer herstellen. Weet je zeker dat de deze statische groep <strong>{props.name}</strong> wilt verwijderen?</span>
+                : <span>Verwijder groep: <strong>{props.name}</strong></span>}
         </Modal>
     );
 };

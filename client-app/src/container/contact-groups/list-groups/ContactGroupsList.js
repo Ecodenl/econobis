@@ -19,6 +19,7 @@ class ContactGroupsList extends Component {
             deleteItem: {
                 id: '',
                 name: '',
+                contactGroupType: '',
             },
         };
     }
@@ -31,7 +32,7 @@ class ContactGroupsList extends Component {
         }
     };
 
-    showDeleteItemModal = (id, name) => {
+    showDeleteItemModal = (id, name, contactGroupType) => {
         this.setState({
             ...this.state,
             showDeleteItem: true,
@@ -39,6 +40,7 @@ class ContactGroupsList extends Component {
                 ...this.state.deleteItem,
                 id: id,
                 name: name,
+                contactGroupType: contactGroupType,
             },
         });
     };
@@ -51,6 +53,7 @@ class ContactGroupsList extends Component {
                 ...this.state.deleteItem,
                 id: '',
                 name: '',
+                contactGroupType: '',
             },
         });
     };

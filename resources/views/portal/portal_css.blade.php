@@ -158,6 +158,14 @@ color: var(--main-primary-rgba-text-color);
 
 }
 
+.header-portal .bm-burger-bars {
+background-color: var(--main-primary-rgba-text-color) !important;
+}
+
+.header-portal .dropdown-toggle{
+color: var(--main-primary-rgba-text-color) !important;
+}
+
 /* ----------------- INPUT STYLING -----------------*/
 .has-error {
 border: 1px solid var(--main-warning-color) !important;

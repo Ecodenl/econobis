@@ -49,7 +49,7 @@ const EmailNewFormGeneral = ({
                                     Groep
                                         <br />
                                         <small style={{ color: 'red', fontWeight: 'normal' }}>
-                                            Contacten in groep krijgen elk een aparte email
+                                            Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet de e-mail adressen van anderen. Samenvoegvelden werken.
                                         </small>
                                 </span>}
                             name={'contactGroupName'}
@@ -89,7 +89,7 @@ const EmailNewFormGeneral = ({
                 </div>
                 <div className="row">
                     <InputMultiSelectCreate
-                        label="Cc selecteren"
+                        label={contactGroupId ? "Extra contacten" : "Cc selecteren"}
                         name={'cc'}
                         value={cc}
                         options={emailAddresses}
@@ -97,16 +97,18 @@ const EmailNewFormGeneral = ({
                         onChangeAction={handleCcIds}
                     />
                 </div>
-                <div className="row">
-                    <InputMultiSelectCreate
-                        label="Bcc selecteren"
-                        name={'bcc'}
-                        value={bcc}
-                        options={emailAddresses}
-                        optionName={'name'}
-                        onChangeAction={handleBccIds}
-                    />
-                </div>
+                {!contactGroupId ? (
+                    <div className="row">
+                        <InputMultiSelectCreate
+                            label="Bcc selecteren"
+                            name={'bcc'}
+                            value={bcc}
+                            options={emailAddresses}
+                            optionName={'name'}
+                            onChangeAction={handleBccIds}
+                        />
+                    </div>
+                ) : ( null )}
                 <div className="row">
                     <InputMultiSelect
                         label="Template"

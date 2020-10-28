@@ -35,6 +35,7 @@ class PortalSettingsApp extends Component {
             '&keys[]=backgroundTextColor' +
             '&keys[]=backgroundImageColor' +
             '&keys[]=backgroundImageTextColor' +
+            '&keys[]=headerPortalIconColor' +
             '&keys[]=backgroundSecondaryColor' +
             '&keys[]=backgroundSecondaryTextColor' +
             '&keys[]=buttonColor' +

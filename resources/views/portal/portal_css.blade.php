@@ -4,6 +4,7 @@
 --main-primary-text-color: {{ $store->get('backgroundTextColor', '#fff') }};
 --main-primary-rgba: {{ $store->get('backgroundImageColor', 'rgba(3, 75, 140, 0.9)') }};
 --main-primary-rgba-text-color: {{ $store->get('backgroundImageTextColor', '#333') }};
+--main-header-portal-icon-color: {{ $store->get('headerPortalIconColor', '#fff') }};
 --main-secondary-color: {{ $store->get('backgroundSecondaryColor', '#3898EC') }};
 --main-secondary-text-color: {{ $store->get('backgroundSecondaryTextColor', '#fff') }};
 --button-primary-color: {{ $store->get('buttonColor', '#3898EC') }};
@@ -156,6 +157,14 @@ background-size: auto, cover;
 background-repeat: repeat, no-repeat;
 color: var(--main-primary-rgba-text-color);
 
+}
+
+.header-portal .bm-burger-bars {
+background-color: var(--main-header-portal-icon-color) !important;
+}
+
+.header-portal .dropdown-toggle{
+color: var(--main-header-portal-icon-color) !important;
 }
 
 /* ----------------- INPUT STYLING -----------------*/

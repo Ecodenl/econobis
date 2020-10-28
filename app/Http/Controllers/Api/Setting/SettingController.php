@@ -135,6 +135,7 @@ class SettingController
             'backgroundTextColor',
             'backgroundImageColor',
             'backgroundImageTextColor',
+            'headerPortalIconColor',
             'backgroundSecondaryColor',
             'backgroundSecondaryTextColor',
             'buttonColor',

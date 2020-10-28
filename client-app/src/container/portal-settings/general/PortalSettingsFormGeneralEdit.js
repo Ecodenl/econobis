@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { FaUser } from 'react-icons/fa';
 import validator from 'validator';
 import moment from 'moment';
 moment.locale('nl');
@@ -50,6 +51,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 backgroundTextColor: false,
                 backgroundImageColor: false,
                 backgroundImageTextColor: false,
+                headerPortalIconColor: false,
                 backgroundSecondaryColor: false,
                 backgroundSecondaryTextColor: false,
                 buttonColor: false,
@@ -155,6 +157,10 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.backgroundImageTextColor = true;
             hasErrors = true;
         }
+        if (validator.isEmpty(portalSettings.headerPortalIconColor)) {
+            errors.headerPortalIconColor = true;
+            hasErrors = true;
+        }
         if (validator.isEmpty(portalSettings.backgroundSecondaryColor)) {
             errors.backgroundSecondaryColor = true;
             hasErrors = true;
@@ -242,6 +248,7 @@ class PortalSettingsFormGeneralEdit extends Component {
         data.append('backgroundTextColor', portalSettings.backgroundTextColor);
         data.append('backgroundImageColor', portalSettings.backgroundImageColor);
         data.append('backgroundImageTextColor', portalSettings.backgroundImageTextColor);
+        data.append('headerPortalIconColor', portalSettings.headerPortalIconColor);
         data.append('backgroundSecondaryColor', portalSettings.backgroundSecondaryColor);
         data.append('backgroundSecondaryTextColor', portalSettings.backgroundSecondaryTextColor);
         data.append('buttonColor', portalSettings.buttonColor);
@@ -297,6 +304,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             backgroundTextColor,
             backgroundImageColor,
             backgroundImageTextColor,
+            headerPortalIconColor,
             backgroundSecondaryColor,
             backgroundSecondaryTextColor,
             buttonColor,
@@ -422,7 +430,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                         {/*</div>*/}
                         <div className="row">
                             <InputText
-                                label="Login - achtergrond afbeelding kleur"
+                                label="Login/Header - achtergrond afbeelding kleur"
                                 divSize={'col-sm-8'}
                                 name={'backgroundImageColor'}
                                 value={backgroundImageColor}
@@ -451,7 +459,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Login - achtergrond afbeelding tekst kleur"
+                                label="Login/Header - achtergrond afbeelding tekst kleur"
                                 divSize={'col-sm-8'}
                                 name={'backgroundImageTextColor'}
                                 value={backgroundImageTextColor}
@@ -460,6 +468,36 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.backgroundImageTextColor}
                             />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Header - menu/poppetje kleur"
+                                divSize={'col-sm-8'}
+                                name={'headerPortalIconColor'}
+                                value={headerPortalIconColor}
+                                onChangeAction={this.handleInputChange}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
+                                error={this.state.errors.headerPortalIconColor}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: backgroundImageColor,
+                                    color: headerPortalIconColor,
+                                    textAlign: 'center',
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '4px',
+                                    borderRadius: '2px',
+                                    width: '50px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                = <FaUser />
+                            </span>
                         </div>
                         <div className="row">
                             <InputText

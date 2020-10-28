@@ -4,6 +4,7 @@ import ViewText from '../../../components/form/ViewText';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import Image from 'react-bootstrap/es/Image';
+import { FaUser } from 'react-icons/fa';
 
 const PortalSettingsFormGeneralView = ({
     portalName,
@@ -15,6 +16,7 @@ const PortalSettingsFormGeneralView = ({
     backgroundTextColor,
     backgroundImageColor,
     backgroundImageTextColor,
+    headerPortalIconColor,
     backgroundSecondaryColor,
     backgroundSecondaryTextColor,
     buttonColor,
@@ -109,7 +111,7 @@ const PortalSettingsFormGeneralView = ({
                     {/*</div>*/}
                     <div className="row">
                         <ViewText
-                            label={'Login - achtergrond afbeelding kleur'}
+                            label={'Login/Header - achtergrond afbeelding kleur'}
                             divSize={'col-sm-8'}
                             value={backgroundImageColor}
                             className={'col-sm-8 form-group'}
@@ -134,11 +136,37 @@ const PortalSettingsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Login - achtergrond afbeelding tekst kleur'}
+                            label={'Login/Header - achtergrond afbeelding tekst kleur'}
                             divSize={'col-sm-8'}
                             value={backgroundImageTextColor}
                             className={'col-sm-8 form-group'}
                         />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Header - menu/poppetje kleur'}
+                            divSize={'col-sm-8'}
+                            value={headerPortalIconColor}
+                            className={'col-sm-8 form-group'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: backgroundImageColor,
+                                color: headerPortalIconColor,
+                                textAlign: 'center',
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '4px',
+                                borderRadius: '2px',
+                                width: '50px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >
+                            = <FaUser />
+                        </span>
                     </div>
                     <div className="row">
                         <ViewText

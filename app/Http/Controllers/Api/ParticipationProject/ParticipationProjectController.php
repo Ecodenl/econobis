@@ -1070,6 +1070,7 @@ class ParticipationProjectController extends ApiController
         $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
         $dateBegin = $participantProject->project->date_interest_bearing ? new Carbon($participantProject->project->date_interest_bearing) : null;
         $dateEnd = new Carbon($participantProject->date_terminated);
+        $daysOfYear = $this->daysOfYear($dateBegin, $dateEnd);
 
         if (!$dateEnd) return 0;
 
@@ -1094,7 +1095,7 @@ class ParticipationProjectController extends ApiController
             }
 
             if($dateEntry > $dateEnd) $mutationValue = 0;
-            $payout += ($mutationValue * $payoutPercentageTerminated) / 100 / ($dateEntry->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            $payout += ($mutationValue * $payoutPercentageTerminated) / 100 / $daysOfYear * $daysOfPeriod;
         }
 
         return number_format($payout, 2, '.', '');
@@ -1106,6 +1107,60 @@ class ParticipationProjectController extends ApiController
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
+    }
+
+    /**
+     * @param string $dateBegin
+     * @param string $dateEnd
+     */
+    protected function daysOfYear(string $dateBegin, string $dateEnd)
+    {
+        $dateBeginIsLeapYear = $dateBegin->isLeapYear();
+        $dateEndIsLeapYear = $dateEnd->isLeapYear();
+
+//  jaar startdatum = jaar einddatum?
+//      =>	Ja	jaar startdatum leapyear?
+//      	=>	Ja	29-2-jaar startdatum > startdatum en < eindatum
+//          	=>	Ja	leapperiode
+//				=>	Nee	geen leapperiode
+//			=>	nee	geen leapperiode
+//
+//    	=>	Nee	jaar startdatum leapyear?
+//        	=>	Ja	29-2-jaar startdatum > startdatum en < eindatum
+//          	=>	Ja	leapperiode
+//				=>	Nee	geen leapperiode
+//			=>	Nee	jaar einddatum leapyear?
+//          	=>	Ja	29-2-jaar einddatum > startdatum en < eindatum
+//                  =>	Ja	leapperiode
+//					=>	Nee	geen leapperiode
+//				=>	nee 	geen leapperiode
+
+        $hasPeriod29February = false;
+        if ($dateBegin->year == $dateEnd->year) {
+            // Period is not cross-annual period
+            if ($dateBeginIsLeapYear) {
+                $date29February = Carbon::createFromDate($dateBegin->year, 2, 29);
+                if ($date29February->between($dateBegin, $dateEnd)) {
+                    $hasPeriod29February = true;
+                }
+            }
+        } else {
+            // Period is cross-annual period
+            if ($dateBeginIsLeapYear) {
+                $date29February = Carbon::createFromDate($dateBegin->year, 2, 29);
+                if ($date29February->between($dateBegin, $dateEnd)) {
+                    $hasPeriod29February = true;
+                }
+            } else {
+                if ($dateEndIsLeapYear) {
+                    $date29February = Carbon::createFromDate($dateEnd->year, 2, 29);
+                    if ($date29February->between($dateBegin, $dateEnd)) {
+                        $hasPeriod29February = true;
+                    }
+                }
+            }
+        }
+        return $hasPeriod29February ? 366 : 365;
     }
 
 }

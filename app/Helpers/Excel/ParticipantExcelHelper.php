@@ -119,29 +119,30 @@ class ParticipantExcelHelper
 
         $headerData[93] = 'Type mutatie';
         $headerData[94] = 'Status';
-        $headerData[95] = 'Aantal interesse';
-        $headerData[96] = 'Bedrag interesse';
-        $headerData[97] = 'Datum interesse';
-        $headerData[98] = 'Datum log interesse';
-        $headerData[99] = 'Aantal ingeschreven';
-        $headerData[100] = 'Bedrag ingeschreven';
-        $headerData[101] = 'Datum ingeschreven';
-        $headerData[102] = 'Datum log ingeschreven';
-        $headerData[103] = 'Aantal toegekend';
-        $headerData[104] = 'Bedrag toegekend';
-        $headerData[105] = 'Datum toegekend';
-        $headerData[106] = 'Datum log toegekend';
-        $headerData[107] = 'Aantal definitief';
-        $headerData[108] = 'Bedrag definitief';
-        $headerData[109] = 'Ingangsdatum';
-        $headerData[110] = 'Log Ingangsdatum';
-        $headerData[111] = 'Opbrengst';
-        $headerData[112] = 'Betaaldatum';
-        $headerData[113] = 'Boekstuk';
-        $headerData[114] = 'Uitgekeerd op';
-        $headerData[115] = 'Opbrengst kWh';
-        $headerData[116] = 'kWh';
-        $headerData[117] = 'Indicatie teruggave EB';
+        $headerData[95] = 'Deelname status';
+        $headerData[96] = 'Aantal interesse';
+        $headerData[97] = 'Bedrag interesse';
+        $headerData[98] = 'Datum interesse';
+        $headerData[99] = 'Datum log interesse';
+        $headerData[100] = 'Aantal ingeschreven';
+        $headerData[101] = 'Bedrag ingeschreven';
+        $headerData[102] = 'Datum ingeschreven';
+        $headerData[103] = 'Datum log ingeschreven';
+        $headerData[104] = 'Aantal toegekend';
+        $headerData[105] = 'Bedrag toegekend';
+        $headerData[106] = 'Datum toegekend';
+        $headerData[107] = 'Datum log toegekend';
+        $headerData[108] = 'Aantal definitief';
+        $headerData[109] = 'Bedrag definitief';
+        $headerData[110] = 'Ingangsdatum';
+        $headerData[111] = 'Log Ingangsdatum';
+        $headerData[112] = 'Opbrengst';
+        $headerData[113] = 'Betaaldatum';
+        $headerData[114] = 'Boekstuk';
+        $headerData[115] = 'Uitgekeerd op';
+        $headerData[116] = 'Opbrengst kWh';
+        $headerData[117] = 'kWh';
+        $headerData[118] = 'Indicatie teruggave EB';
 
         $completeData[] = $headerData;
 
@@ -363,21 +364,20 @@ class ParticipantExcelHelper
 
                 $rowData[93] = "";
                 $rowData[94] = "";
-                $rowData[95] = $participant->participations_interessed;
-                $rowData[96] = $participant->amount_interessed;
-                $rowData[97] = "";
+                $rowData[96] = $participant->participations_interessed;
+                $rowData[97] = $participant->amount_interessed;
                 $rowData[98] = "";
-                $rowData[99] = $participant->participations_optioned;
-                $rowData[100] = $participant->amount_optioned;
-                $rowData[101] = "";
+                $rowData[99] = "";
+                $rowData[100] = $participant->participations_optioned;
+                $rowData[101] = $participant->amount_optioned;
                 $rowData[102] = "";
-                $rowData[103] = $participant->participations_granted;
-                $rowData[104] = $participant->amount_granted;
-                $rowData[105] = "";
+                $rowData[103] = "";
+                $rowData[104] = $participant->participations_granted;
+                $rowData[105] = $participant->amount_granted;
                 $rowData[106] = "";
-                $rowData[107] = $participant->participations_definitive;
-                $rowData[108] = $participant->amount_definitive;
-                $rowData[109] = "";
+                $rowData[107] = "";
+                $rowData[108] = $participant->participations_definitive;
+                $rowData[109] = $participant->amount_definitive;
                 $rowData[110] = "";
                 $rowData[111] = "";
                 $rowData[112] = "";
@@ -386,6 +386,7 @@ class ParticipantExcelHelper
                 $rowData[115] = "";
                 $rowData[116] = "";
                 $rowData[117] = "";
+                $rowData[118] = "";
 
                 foreach ($participant->mutations as $mutation) {
                     $rowData[1] = $mutation->id;
@@ -406,50 +407,50 @@ class ParticipantExcelHelper
 
                     if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' || $mutationType->code_ref === 'withDrawal' )
                     {
-                        $rowData[95] = $mutation->quantity_interest;
-                        $rowData[96] = $mutation->amount_interest;
-                        $rowData[97] = $mutation->date_interest ? Carbon::parse($mutation->date_interest)->format('d-m-Y') : "";
-                        $rowData[98] = $logInterestDateTime;
-                        $rowData[99] = $mutation->quantity_option;
-                        $rowData[100] = $mutation->amount_option;
-                        $rowData[101] = $mutation->date_option ? Carbon::parse($mutation->date_option)->format('d-m-Y') : "";
-                        $rowData[102] = $logOptionDateTime;
-                        $rowData[103] = $mutation->quantity_granted;
-                        $rowData[104] = $mutation->amount_granted;
-                        $rowData[105] = $mutation->date_granted ? Carbon::parse($mutation->date_granted)->format('d-m-Y') : "";
-                        $rowData[106] = $logGrantedDateTime;
-                        $rowData[107] = $mutation->quantity_final;
-                        $rowData[108] = $mutation->amount_final;
-                        $rowData[109] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
-                        $rowData[110] = $logFinalDateTime;
-                        $rowData[111] = "";
+                        $rowData[96] = $mutation->quantity_interest;
+                        $rowData[97] = $mutation->amount_interest;
+                        $rowData[98] = $mutation->date_interest ? Carbon::parse($mutation->date_interest)->format('d-m-Y') : "";
+                        $rowData[99] = $logInterestDateTime;
+                        $rowData[100] = $mutation->quantity_option;
+                        $rowData[101] = $mutation->amount_option;
+                        $rowData[102] = $mutation->date_option ? Carbon::parse($mutation->date_option)->format('d-m-Y') : "";
+                        $rowData[103] = $logOptionDateTime;
+                        $rowData[104] = $mutation->quantity_granted;
+                        $rowData[105] = $mutation->amount_granted;
+                        $rowData[106] = $mutation->date_granted ? Carbon::parse($mutation->date_granted)->format('d-m-Y') : "";
+                        $rowData[107] = $logGrantedDateTime;
+                        $rowData[108] = $mutation->quantity_final;
+                        $rowData[109] = $mutation->amount_final;
+                        $rowData[110] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
+                        $rowData[111] = $logFinalDateTime;
                         $rowData[112] = "";
                         $rowData[113] = "";
                         $rowData[114] = "";
                         $rowData[115] = "";
                         $rowData[116] = "";
                         $rowData[117] = "";
+                        $rowData[118] = "";
                     }
 
                     if($mutationType->code_ref === 'result')
                     {
-                        $rowData[111] = $mutation->returns;
-                        $rowData[112] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
-                        $rowData[113] = $mutation->entry;
-                        $rowData[114] = $mutation->paid_on;
-                        $rowData[115] = "";
+                        $rowData[112] = $mutation->returns;
+                        $rowData[113] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
+                        $rowData[114] = $mutation->entry;
+                        $rowData[115] = $mutation->paid_on;
                         $rowData[116] = "";
                         $rowData[117] = "";
+                        $rowData[118] = "";
                     }
                     if($mutationType->code_ref === 'energyTaxRefund')
                     {
-                        $rowData[111] = "";
                         $rowData[112] = "";
                         $rowData[113] = "";
                         $rowData[114] = "";
-                        $rowData[115] = $mutation->payout_kwh_price;
-                        $rowData[116] = $mutation->payout_kwh;
-                        $rowData[117] = $mutation->indication_of_restitution_energy_tax;
+                        $rowData[115] = "";
+                        $rowData[116] = $mutation->payout_kwh_price;
+                        $rowData[117] = $mutation->payout_kwh;
+                        $rowData[118] = $mutation->indication_of_restitution_energy_tax;
                     }
 
                     $completeData[] = $rowData;

@@ -364,6 +364,7 @@ class ParticipantExcelHelper
 
                 $rowData[93] = "";
                 $rowData[94] = "";
+                $rowData[95] = $participant->getUniqueMutationStatusesAttribute();
                 $rowData[96] = $participant->participations_interessed;
                 $rowData[97] = $participant->amount_interessed;
                 $rowData[98] = "";

@@ -64,6 +64,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 emailTemplateNewAccountId: false,
                 linkPrivacyPolicy: false,
                 showNewAtCooperativeLink: false,
+                newAtCooperativeLinkText: false,
                 pcrPowerKwhConsumptionPercentage: false,
                 pcrGeneratingCapacityOneSolorPanel: false,
             },
@@ -200,7 +201,10 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.pcrPowerKwhConsumptionPercentage = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)
+        ) {
             errors.pcrGeneratingCapacityOneSolorPanel = true;
             hasErrors = true;
         }
@@ -272,8 +276,17 @@ class PortalSettingsFormGeneralEdit extends Component {
         );
         data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
         data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
-        data.append('pcrPowerKwhConsumptionPercentage', portalSettings.pcrPowerKwhConsumptionPercentage ? (parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100) : 0);
-        data.append('pcrGeneratingCapacityOneSolorPanel', portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0);
+        data.append('newAtCooperativeLinkText', portalSettings.newAtCooperativeLinkText);
+        data.append(
+            'pcrPowerKwhConsumptionPercentage',
+            portalSettings.pcrPowerKwhConsumptionPercentage
+                ? parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100
+                : 0
+        );
+        data.append(
+            'pcrGeneratingCapacityOneSolorPanel',
+            portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0
+        );
 
         data.append('attachmentLogo', attachmentLogo);
         data.append('attachmentFavicon', attachmentFavicon);
@@ -315,6 +328,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplateNewAccountId,
             linkPrivacyPolicy,
             showNewAtCooperativeLink,
+            newAtCooperativeLinkText,
             pcrPowerKwhConsumptionPercentage,
             pcrGeneratingCapacityOneSolorPanel,
         } = this.state.portalSettings;
@@ -686,13 +700,25 @@ class PortalSettingsFormGeneralEdit extends Component {
 
                         <div className="row">
                             <InputToggle
-                                label="Nieuw bij, aanmelden mogelijk"
+                                label="Nieuwe contacten kunnen account aanmaken"
                                 divSize={'col-sm-8'}
                                 name={'showNewAtCooperativeLink'}
                                 value={showNewAtCooperativeLink}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
+
+                        {showNewAtCooperativeLink ? (
+                            <div className="row">
+                                <InputText
+                                    label="Tekst voor het aanmaken nieuw account"
+                                    divSize={'col-sm-8'}
+                                    name={'newAtCooperativeLinkText'}
+                                    value={newAtCooperativeLinkText}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            </div>
+                        ) : null}
 
                         <div className="row">
                             <InputText
@@ -797,7 +823,4 @@ class PortalSettingsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(PortalSettingsFormGeneralEdit);
+export default connect(null, mapDispatchToProps)(PortalSettingsFormGeneralEdit);

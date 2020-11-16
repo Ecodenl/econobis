@@ -29,6 +29,7 @@ const PortalSettingsFormGeneralView = ({
     emailTemplateNewAccount,
     linkPrivacyPolicy,
     showNewAtCooperativeLink,
+    newAtCooperativeLinkText,
     pcrPowerKwhConsumptionPercentage,
     pcrGeneratingCapacityOneSolorPanel,
     switchToEdit,
@@ -308,12 +309,22 @@ const PortalSettingsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Nieuw bij, aanmelden mogelijk'}
+                            label={'Nieuwe contacten kunnen account aanmaken'}
                             divSize={'col-sm-8'}
                             value={showNewAtCooperativeLink ? 'Ja' : 'Nee'}
                             className={'col-sm-8 form-group'}
                         />
                     </div>
+                    {showNewAtCooperativeLink ? (
+                        <div className="row">
+                            <ViewText
+                                label={'Tekst voor het aanmaken nieuw account'}
+                                divSize={'col-sm-8'}
+                                value={newAtCooperativeLinkText}
+                                className={'col-sm-8 form-group'}
+                            />
+                        </div>
+                    ) : null}
                     <div className="row">
                         <ViewText
                             label={'Privacybeleid link'}

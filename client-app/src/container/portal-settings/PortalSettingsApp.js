@@ -47,6 +47,7 @@ class PortalSettingsApp extends Component {
             '&keys[]=emailTemplateNewAccountId' +
             '&keys[]=linkPrivacyPolicy' +
             '&keys[]=showNewAtCooperativeLink' +
+            '&keys[]=newAtCooperativeLinkText' +
             '&keys[]=pcrPowerKwhConsumptionPercentage' +
             '&keys[]=pcrGeneratingCapacityOneSolorPanel';
         PortalSettingsAPI.fetchPortalSettings(keys)

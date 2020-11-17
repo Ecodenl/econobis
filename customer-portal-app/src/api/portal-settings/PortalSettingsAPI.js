@@ -18,4 +18,9 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+    fetchNewAtCooperativeLinkText: () => {
+        const requestUrl = `${URL_PORTAL_SETTINGS}/new-at-cooperative-link-text`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

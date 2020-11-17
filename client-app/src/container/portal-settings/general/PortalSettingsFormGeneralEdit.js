@@ -715,8 +715,26 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     divSize={'col-sm-8'}
                                     name={'newAtCooperativeLinkText'}
                                     value={newAtCooperativeLinkText}
+                                    maxLength={255}
                                     onChangeAction={this.handleInputChange}
                                 />
+                                {/*<span*/}
+                                {/*className="rc-color-picker-trigger"*/}
+                                {/*unselectable="unselectable"*/}
+                                {/*style={{*/}
+                                {/*backgroundColor: backgroundImageColor,*/}
+                                {/*color: backgroundImageTextColor,*/}
+                                {/*border: '1px solid #999',*/}
+                                {/*display: 'inline-block',*/}
+                                {/*padding: '2px',*/}
+                                {/*borderRadius: '2px',*/}
+                                {/*width: '300px',*/}
+                                {/*height: 'auto',*/}
+                                {/*boxShadow: '0 0 0 2px #fff inset',*/}
+                                {/*}}*/}
+                                {/*>*/}
+                                {/*{newAtCooperativeLinkText.replace('{cooperatie_naam}', cooperativeName)}*/}
+                                {/*</span>*/}
                             </div>
                         ) : null}
 

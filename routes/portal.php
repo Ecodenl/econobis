@@ -5,6 +5,7 @@ use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
 Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
+Route::get('setting/new-at-cooperative-link-text', 'Setting\PortalSettingController@getNewAtCooperativeLinkText');
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
@@ -27,6 +28,8 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
+
+        Route::get('/contact/{contact}/{project}/check-in-member-group', 'Contact\ContactController@checkInMemberGroup');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\' . JoryController::class . '@multiple');

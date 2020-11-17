@@ -134,6 +134,11 @@ class ContactController extends ApiController
         return $documentBody;
     }
 
+    public function checkInMemberGroup(Contact $contact, Project $project, Request $request)
+    {
+        return $contact->groups()->where('id', $project->question_about_membership_group_id)->exists();
+    }
+
     protected function updatePerson($contact, Request $request)
     {
         $person = $contact->person;

@@ -29,6 +29,14 @@ const ProjectFormViewGeneral = ({
     emailTemplateAgreement,
     linkAgreeTerms,
     linkUnderstandInfo,
+    showQuestionAboutMembership,
+    questionAboutMembershipGroup,
+    textIsMember,
+    textIsNoMember,
+    textBecomeMember,
+    memberGroup,
+    textBecomeNoMember,
+    noMemberGroup,
 }) => (
     <React.Fragment>
         <h4>Algemeen</h4>
@@ -121,6 +129,47 @@ const ProjectFormViewGeneral = ({
                 value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
             />
         </div>
+
+        <hr />
+        <div className="row">
+            <ViewText label={'Vragen over lid worden aan of uit?'} value={showQuestionAboutMembership ? 'Ja' : 'Nee'} />
+        </div>
+        {showQuestionAboutMembership == true && (
+            <>
+                <div className={'row'}>
+                    <ViewText
+                        label={'Leden groep'}
+                        value={questionAboutMembershipGroup ? questionAboutMembershipGroup.name : ''}
+                    />
+                </div>
+                <hr />
+                <div className={'row'}>
+                    <ViewText label={'Regel tekst bij leden'} value={textIsMember} />
+                </div>
+                <hr />
+                <div className={'row'}>
+                    <ViewText label={'Regel tekst bij niet leden'} value={textIsNoMember} />
+                </div>
+                <div className={'row'}>
+                    <ViewText label={'Keuzetekst (1) bij niet leden'} value={textBecomeMember} />
+                </div>
+                <div className={'row'}>
+                    <ViewText
+                        label={'Contacten die keuze 1 maken toevoegen aan'}
+                        value={memberGroup ? memberGroup.name : ''}
+                    />
+                </div>
+                <div className={'row'}>
+                    <ViewText label={'Keuzetekst (2) bij niet leden'} value={textBecomeNoMember} />
+                </div>
+                <div className={'row'}>
+                    <ViewText
+                        label={'Contacten die keuze 2 maken toevoegen aan'}
+                        value={noMemberGroup ? noMemberGroup.name : ''}
+                    />
+                </div>
+            </>
+        )}
     </React.Fragment>
 );
 

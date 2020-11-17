@@ -1,4 +1,5 @@
 import axiosInstance from '../default-setup/AxiosInstance';
+import moment from '../project/ProjectAPI';
 
 export default {
     fetchContact: function(id) {
@@ -127,7 +128,17 @@ export default {
                             ],
                             rlt: {
                                 project: {
-                                    fld: ['id', 'name', 'dateEnd', 'linkUnderstandInfo'],
+                                    fld: [
+                                        'id',
+                                        'name',
+                                        'dateEnd',
+                                        'linkUnderstandInfo',
+                                        'showQuestionAboutMembership',
+                                        'textIsMember',
+                                        'textIsNoMember',
+                                        'textBecomeMember',
+                                        'textBecomeNoMember',
+                                    ],
                                     rlt: { projectType: { fld: ['id', 'codeRef'] } },
                                 },
                             },
@@ -148,5 +159,11 @@ export default {
         const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/preview-document`;
 
         return axiosInstance.post(requestUrl, registerValues);
+    },
+
+    fetchContactBelongsToQuestionAboutMembershipGroup: (contactId, projectId) => {
+        const requestUrl = `/contact/${contactId}/${projectId}/check-in-member-group`;
+        console.log('hier dan??');
+        return axiosInstance.post(requestUrl);
     },
 };

@@ -57,6 +57,14 @@ const ProjectFormView = props => {
         emailTemplateAgreement,
         linkAgreeTerms,
         linkUnderstandInfo,
+        showQuestionAboutMembership,
+        questionAboutMembershipGroup,
+        textIsMember,
+        textIsNoMember,
+        textBecomeMember,
+        memberGroup,
+        textBecomeNoMember,
+        noMemberGroup,
     } = props.project;
     return (
         <section
@@ -87,6 +95,14 @@ const ProjectFormView = props => {
                 emailTemplateAgreement={emailTemplateAgreement}
                 linkAgreeTerms={linkAgreeTerms}
                 linkUnderstandInfo={linkUnderstandInfo}
+                showQuestionAboutMembership={showQuestionAboutMembership}
+                questionAboutMembershipGroup={questionAboutMembershipGroup}
+                textIsMember={textIsMember}
+                textIsNoMember={textIsNoMember}
+                textBecomeMember={textBecomeMember}
+                memberGroup={memberGroup}
+                textBecomeNoMember={textBecomeNoMember}
+                noMemberGroup={noMemberGroup}
             />
 
             {projectType && projectType.codeRef === 'loan' ? (

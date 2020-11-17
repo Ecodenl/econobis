@@ -32,7 +32,7 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                 }}
                 initialValues={initialRegisterValues}
             >
-                {({ handleSubmit, touched, errors }) => (
+                {({ handleSubmit, touched, errors, setFieldValue }) => (
                     <>
                         <Form>
                             <Row>
@@ -109,6 +109,55 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                                     />
                                 </Col>
                             </Row>
+                            {project.showQuestionAboutMembership ? (
+                                <>
+                                    <Row>
+                                        <Col xs={12} md={10}>
+                                            <p>{project.textIsNoMember}</p>
+                                        </Col>
+                                    </Row>
+
+                                    <Row>
+                                        <Col xs={12} md={10}>
+                                            <Field
+                                                name="choiceMembership"
+                                                render={({ field }) => (
+                                                    <>
+                                                        <div className="form-check">
+                                                            <label className="radio-inline">
+                                                                <input
+                                                                    type="radio"
+                                                                    {...field}
+                                                                    id="choice_membership_yes"
+                                                                    checked={field.value === 'A'}
+                                                                    value={'A'}
+                                                                    onChange={() =>
+                                                                        setFieldValue('choiceMembership', 'A')
+                                                                    }
+                                                                />
+                                                                &nbsp;{project.textBecomeMember}
+                                                            </label>
+                                                            <label className="radio-inline">
+                                                                <input
+                                                                    type="radio"
+                                                                    {...field}
+                                                                    id="choice_membership_no"
+                                                                    checked={field.value === 'B'}
+                                                                    value={'B'}
+                                                                    onChange={() => {
+                                                                        setFieldValue('choiceMembership', 'B');
+                                                                    }}
+                                                                />
+                                                                &nbsp;{project.textBecomeNoMember}
+                                                            </label>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </>
+                            ) : null}
                             <Row>
                                 <Col xs={12} md={10}>
                                     <ButtonGroup aria-label="Steps" className="float-right">

@@ -18,6 +18,7 @@ import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultC
 import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
+import ProjectFormViewGeneral from '../view/ProjectFormView';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -245,6 +246,14 @@ class ProjectFormEdit extends Component {
             emailTemplates,
             linkAgreeTerms,
             linkUnderstandInfo,
+            showQuestionAboutMembership,
+            questionAboutMembershipGroupId,
+            textIsMember,
+            textIsNoMember,
+            textBecomeMember,
+            memberGroupId,
+            textBecomeNoMember,
+            noMemberGroupId,
         } = this.state.project;
         const {
             participationsDefinitive,
@@ -297,6 +306,14 @@ class ProjectFormEdit extends Component {
                     emailTemplates={this.state.emailTemplates}
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
+                    showQuestionAboutMembership={showQuestionAboutMembership}
+                    questionAboutMembershipGroupId={questionAboutMembershipGroupId}
+                    textIsMember={textIsMember}
+                    textIsNoMember={textIsNoMember}
+                    textBecomeMember={textBecomeMember}
+                    memberGroupId={memberGroupId}
+                    textBecomeNoMember={textBecomeNoMember}
+                    noMemberGroupId={noMemberGroupId}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (
@@ -396,7 +413,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProjectFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectFormEdit);

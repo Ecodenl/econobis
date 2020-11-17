@@ -17,7 +17,11 @@ class PortalSettingController extends Controller
     }
     protected function getNewAtCooperativeLinkText()
     {
-        return PortalSettings::get('newAtCooperativeLinkText') ? PortalSettings::get('newAtCooperativeLinkText') : false;
+        $cooperativeName = PortalSettings::get('cooperativeName');
+        $newAtCooperativeLinkText =  PortalSettings::get('newAtCooperativeLinkText') ? PortalSettings::get('newAtCooperativeLinkText') : '';
+        $newAtCooperativeLinkText = str_replace('{cooperatie_naam}', $cooperativeName, $newAtCooperativeLinkText);
+
+        return !empty($newAtCooperativeLinkText) ? $newAtCooperativeLinkText : false;
     }
 
 

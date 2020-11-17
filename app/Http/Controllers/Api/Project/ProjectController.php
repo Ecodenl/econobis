@@ -62,6 +62,9 @@ class ProjectController extends ApiController
             'requiresContactGroups',
             'documentTemplateAgreement',
             'emailTemplateAgreement',
+            'questionAboutMembershipGroup',
+            'memberGroup',
+            'noMemberGroup',
         ]);
 
         $project->relatedEmailsInbox = $this->getRelatedEmails($project->id, 'inbox');
@@ -112,6 +115,14 @@ class ProjectController extends ApiController
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
+            ->boolean('showQuestionAboutMembership')->alias('show_question_about_membership')->next()
+            ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()
+            ->string('textIsMember')->alias('text_is_member')->next()
+            ->string('textIsNoMember')->alias('text_is_no_member')->next()
+            ->string('textBecomeMember')->alias('text_become_member')->next()
+            ->integer('memberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('member_group_id')->next()
+            ->string('textBecomeNoMember')->alias('text_become_no_member')->next()
+            ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
             ->get();
 
         $project = new Project();
@@ -190,6 +201,14 @@ class ProjectController extends ApiController
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
+            ->boolean('showQuestionAboutMembership')->alias('show_question_about_membership')->next()
+            ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()
+            ->string('textIsMember')->alias('text_is_member')->next()
+            ->string('textIsNoMember')->alias('text_is_no_member')->next()
+            ->string('textBecomeMember')->alias('text_become_member')->next()
+            ->integer('memberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('member_group_id')->next()
+            ->string('textBecomeNoMember')->alias('text_become_no_member')->next()
+            ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
             ->get();
 
         $project->fill($data);

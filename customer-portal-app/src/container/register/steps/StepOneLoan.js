@@ -17,15 +17,11 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
     const validationSchema = Yup.object({
         amountOptioned: Yup.string()
             .required('Verplicht')
-            .test(
-                'amountOptioned',
-                'Minimum van ' + project.minAmountLoan + ' nodig',
-                value => value.replace(',', '.') >= project.minAmountLoan
+            .test('amountOptioned', 'Minimum van ' + project.minAmountLoan + ' nodig', value =>
+                value ? value.replace(',', '.') : 0 >= project.minAmountLoan
             )
-            .test(
-                'amountOptioned',
-                'Maximum van ' + project.maxAmountLoan + ' bereikt',
-                value => value.replace(',', '.') <= project.maxAmountLoan
+            .test('amountOptioned', 'Maximum van ' + project.maxAmountLoan + ' bereikt', value =>
+                value ? value.replace(',', '.') : 0 <= project.maxAmountLoan
             )
             .matches(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/, 'Fout bedrag'),
     });

@@ -45,6 +45,14 @@ const ProjectFormEditGeneral = ({
     emailTemplates,
     linkAgreeTerms,
     linkUnderstandInfo,
+    showQuestionAboutMembership,
+    questionAboutMembershipGroupId,
+    textIsMember,
+    textIsNoMember,
+    textBecomeMember,
+    memberGroupId,
+    textBecomeNoMember,
+    noMemberGroupId,
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
@@ -270,6 +278,98 @@ const ProjectFormEditGeneral = ({
                     error={errors.emailTemplateAgreementId}
                 />
             </div>
+
+            <hr />
+            <div className="row">
+                <InputToggle
+                    label={'Vragen over lid worden aan of uit?'}
+                    name={'showQuestionAboutMembership'}
+                    value={showQuestionAboutMembership}
+                    onChangeAction={handleInputChange}
+                />
+            </div>
+            {showQuestionAboutMembership == true && (
+                <>
+                    <div className={'row'}>
+                        <InputReactSelect
+                            label="Leden groep"
+                            name={'questionAboutMembershipGroupId'}
+                            options={contactGroups}
+                            value={questionAboutMembershipGroupId}
+                            onChangeAction={handleReactSelectChange}
+                            multi={false}
+                            required={'required'}
+                            error={errors.questionAboutMembershipGroupId}
+                        />
+                    </div>
+                    <hr />
+                    <div className={'row'}>
+                        <InputText
+                            label="Regel tekst bij leden"
+                            name={'textIsMember'}
+                            value={textIsMember}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textIsMember}
+                        />
+                    </div>
+                    <hr />
+                    <div className={'row'}>
+                        <InputText
+                            label="Regel tekst bij niet leden"
+                            name={'textIsNoMember'}
+                            value={textIsNoMember}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textIsNoMember}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputText
+                            label="Keuzetekst (1) bij niet leden"
+                            name={'textBecomeMember'}
+                            value={textBecomeMember}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textBecomeMember}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputReactSelect
+                            label="Contacten die keuze 1 maken toevoegen aan"
+                            name={'memberGroupId'}
+                            options={contactGroups}
+                            value={memberGroupId}
+                            onChangeAction={handleReactSelectChange}
+                            multi={false}
+                            required={'required'}
+                            error={errors.memberGroupId}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputText
+                            label="Keuzetekst (2) bij niet leden"
+                            name={'textBecomeNoMember'}
+                            value={textBecomeNoMember}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textBecomeNoMember}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputReactSelect
+                            label="Contacten die keuze 2 maken toevoegen aan"
+                            name={'noMemberGroupId'}
+                            options={contactGroups}
+                            value={noMemberGroupId}
+                            onChangeAction={handleReactSelectChange}
+                            multi={false}
+                            required={'required'}
+                            error={errors.noMemberGroupId}
+                        />
+                    </div>
+                </>
+            )}
         </React.Fragment>
     );
 };

@@ -19,6 +19,7 @@ export default props => {
 
     const [cooperativeName, setCooperativeName] = useState('');
     const [showNewAtCooperativeLink, setShowNewAtCooperativeLink] = useState(false);
+    const [newAtCooperativeLinkText, setNewAtCooperativeLinkText] = useState(false);
 
     useEffect(() => {
         (function callFetchCooperativeName() {
@@ -42,6 +43,17 @@ export default props => {
                     // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                 });
         })();
+
+        (function callFetchNewAtCooperativeLinkText() {
+            PortalSettingsAPI.fetchNewAtCooperativeLinkText()
+                .then(payload => {
+                    setNewAtCooperativeLinkText(payload.data);
+                })
+                .catch(error => {
+                    // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                });
+        })();
+
     }, []);
 
     function handleSubmit(values, actions, login) {
@@ -102,8 +114,7 @@ export default props => {
                                                         href={'/#/nieuw-account'}
                                                         className="authorization-link"
                                                         target="_blank"
-                                                    >
-                                                        Nieuw bij {cooperativeName}?
+                                                    >{newAtCooperativeLinkText}
                                                     </a>
                                                 </Row>
                                             ) : null}

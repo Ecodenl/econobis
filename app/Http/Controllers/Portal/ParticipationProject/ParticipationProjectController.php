@@ -262,6 +262,7 @@ class ParticipationProjectController extends Controller
             'date_did_accept_agreement' => $today,
             'did_understand_info' => (bool)$request->didUnderstandInfo,
             'date_did_understand_info'  => $today,
+            'choice_membership' => $request->choiceMembership,
             'power_kwh_consumption' => $powerKwhConsumption,
         ]);
 

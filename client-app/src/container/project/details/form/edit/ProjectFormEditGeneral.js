@@ -37,6 +37,7 @@ const ProjectFormEditGeneral = ({
     hasPaymentInvoices,
     users,
     contactGroups,
+    staticContactGroups,
     errors,
     amountOfParticipants,
     documentTemplateAgreementId,
@@ -338,7 +339,7 @@ const ProjectFormEditGeneral = ({
                         <InputReactSelect
                             label="Contacten die keuze 1 maken toevoegen aan"
                             name={'memberGroupId'}
-                            options={contactGroups}
+                            options={staticContactGroups}
                             value={memberGroupId}
                             onChangeAction={handleReactSelectChange}
                             multi={false}
@@ -360,7 +361,7 @@ const ProjectFormEditGeneral = ({
                         <InputReactSelect
                             label="Contacten die keuze 2 maken toevoegen aan"
                             name={'noMemberGroupId'}
-                            options={contactGroups}
+                            options={staticContactGroups}
                             value={noMemberGroupId}
                             onChangeAction={handleReactSelectChange}
                             multi={false}

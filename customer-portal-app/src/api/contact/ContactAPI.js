@@ -161,9 +161,8 @@ export default {
         return axiosInstance.post(requestUrl, registerValues);
     },
 
-    fetchContactBelongsToQuestionAboutMembershipGroup: (contactId, projectId) => {
+    fetchContactBelongsToMembershipGroup: function(contactId, projectId) {
         const requestUrl = `/contact/${contactId}/${projectId}/check-in-member-group`;
-        console.log('hier dan??');
-        return axiosInstance.post(requestUrl);
+        return axiosInstance.get(requestUrl);
     },
 };

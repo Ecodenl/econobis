@@ -31,7 +31,6 @@ class ParticipantProjectJoryResource extends JoryResource
         $this->field('deleted_at')->filterable()->sortable();
         $this->field('did_accept_agreement')->filterable()->sortable();
         $this->field('did_understand_info')->filterable()->sortable();
-        $this->field('choice_membership')->filterable()->sortable();
         $this->field('gifted_by_contact_id')->filterable()->sortable();
         $this->field('iban_payout')->filterable()->sortable();
         $this->field('iban_payout_attn')->filterable()->sortable();

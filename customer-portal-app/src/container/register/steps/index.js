@@ -14,6 +14,7 @@ function Steps({
     previous,
     next,
     project,
+    belongsToMembershipGroup,
     initialRegisterValues,
     handleSubmitRegisterValues,
     initialContact,
@@ -80,6 +81,7 @@ function Steps({
             return (
                 <StepThree
                     project={project}
+                    belongsToMembershipGroup={belongsToMembershipGroup}
                     previous={previous}
                     next={next}
                     initialRegisterValues={initialRegisterValues}

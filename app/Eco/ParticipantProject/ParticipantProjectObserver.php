@@ -97,7 +97,6 @@ class ParticipantProjectObserver
         if($participantProject->isDirty('did_understand_info') && $participantProject->did_understand_info ) {
             $participantProject->date_did_understand_info = Carbon::now();
         }
-        //todo hier aanmaken contact/groep koppeling als choice_membership is bepaald.
 
 
     }

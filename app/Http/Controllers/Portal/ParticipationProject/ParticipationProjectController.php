@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Portal\ParticipationProject;
 
 
 use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -23,6 +24,7 @@ use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
+use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -120,14 +122,15 @@ class ParticipationProjectController extends Controller
             . 'documents/' . $document->filename));
         file_put_contents($filePath, $pdf);
 
-        $alfrescoHelper = new AlfrescoHelper(Config::get('app.ALFRESCO_COOP_USERNAME'),
-            Config::get('app.ALFRESCO_COOP_PASSWORD'));
+        if(Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            $alfrescoHelper = new AlfrescoHelper(Config::get('app.ALFRESCO_COOP_USERNAME'),
+                Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-            $document->filename, $document->getDocumentGroup()->name);
-
-        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-        $document->save();
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                $document->filename, $document->getDocumentGroup()->name);
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            $document->save();
+        }
 
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
         // Voor zekerheid hierna weer even Auth user herstellen met portal user
@@ -209,7 +212,9 @@ class ParticipationProjectController extends Controller
         }
 
         //delete file on server, still saved on alfresco.
-        Storage::disk('documents')->delete($document->filename);
+        if(Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            Storage::disk('documents')->delete($document->filename);
+        }
 
     }
 
@@ -323,6 +328,29 @@ class ParticipationProjectController extends Controller
         // Recalculate dependent data in project
         $participantMutation->participation->project->calculator()->run()->save();
 
+        $contactGroupController = new ContactGroupController();
+        // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
+        switch ($participation->choice_membership) {
+            case 1:
+                // koppel aan member_group_id
+                $contactGroupMember = ContactGroup::find($project->member_group_id);
+                $contactGroupPivotExists = $contact->groups()->where('id', $project->member_group_id)->exists();
+                if($contactGroupMember && !$contactGroupPivotExists){
+                    $contactGroupController->addContact($contactGroupMember, $contact);
+                }
+                break;
+            case 2:
+                // koppel aan no_member_group_id
+                $contactGroupNoMember = ContactGroup::find($project->no_member_group_id);
+                $contactGroupPivotExists = $contact->groups()->where('id', $project->no_member_group_id)->exists();
+                if($contactGroupNoMember && !$contactGroupPivotExists){
+                    $contactGroupController->addContact($contactGroupNoMember, $contact);
+                }
+                break;
+            default:
+                // no action
+                break;
+        }
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
         // Voor zekerheid hierna weer even Auth user herstellen met portal user
         Auth::setUser($portalUser);

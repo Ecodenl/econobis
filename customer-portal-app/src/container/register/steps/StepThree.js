@@ -8,7 +8,14 @@ import Col from 'react-bootstrap/Col';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepThree({ project, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepThree({
+    project,
+    belongsToMembershipGroup,
+    previous,
+    next,
+    initialRegisterValues,
+    handleSubmitRegisterValues,
+}) {
     const validationSchema = Yup.object({
         didAcceptAgreement: Yup.bool().test(
             'didAcceptAgreement',
@@ -113,49 +120,54 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                                 <>
                                     <Row>
                                         <Col xs={12} md={10}>
-                                            <p>{project.textIsNoMember}</p>
+                                            <p>
+                                                {belongsToMembershipGroup
+                                                    ? project.textIsMember
+                                                    : project.textIsNoMember}
+                                            </p>
                                         </Col>
                                     </Row>
-
-                                    <Row>
-                                        <Col xs={12} md={10}>
-                                            <Field
-                                                name="choiceMembership"
-                                                render={({ field }) => (
-                                                    <>
-                                                        <div className="form-check">
-                                                            <label className="radio-inline">
-                                                                <input
-                                                                    type="radio"
-                                                                    {...field}
-                                                                    id="choice_membership_yes"
-                                                                    checked={field.value === 'A'}
-                                                                    value={'A'}
-                                                                    onChange={() =>
-                                                                        setFieldValue('choiceMembership', 'A')
-                                                                    }
-                                                                />
-                                                                &nbsp;{project.textBecomeMember}
-                                                            </label>
-                                                            <label className="radio-inline">
-                                                                <input
-                                                                    type="radio"
-                                                                    {...field}
-                                                                    id="choice_membership_no"
-                                                                    checked={field.value === 'B'}
-                                                                    value={'B'}
-                                                                    onChange={() => {
-                                                                        setFieldValue('choiceMembership', 'B');
-                                                                    }}
-                                                                />
-                                                                &nbsp;{project.textBecomeNoMember}
-                                                            </label>
-                                                        </div>
-                                                    </>
-                                                )}
-                                            />
-                                        </Col>
-                                    </Row>
+                                    {!belongsToMembershipGroup ? (
+                                        <Row>
+                                            <Col xs={12} md={10}>
+                                                <Field
+                                                    name="choiceMembership"
+                                                    render={({ field }) => (
+                                                        <>
+                                                            <div className="form-check">
+                                                                <label className="radio-inline">
+                                                                    <input
+                                                                        type="radio"
+                                                                        {...field}
+                                                                        id="choice_membership_yes"
+                                                                        checked={field.value === 1}
+                                                                        value={1}
+                                                                        onChange={() =>
+                                                                            setFieldValue('choiceMembership', 1)
+                                                                        }
+                                                                    />
+                                                                    &nbsp;{project.textBecomeMember}
+                                                                </label>
+                                                                <label className="radio-inline">
+                                                                    <input
+                                                                        type="radio"
+                                                                        {...field}
+                                                                        id="choice_membership_no"
+                                                                        checked={field.value === 2}
+                                                                        value={2}
+                                                                        onChange={() => {
+                                                                            setFieldValue('choiceMembership', 2);
+                                                                        }}
+                                                                    />
+                                                                    &nbsp;{project.textBecomeNoMember}
+                                                                </label>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    ) : null}
                                 </>
                             ) : null}
                             <Row>

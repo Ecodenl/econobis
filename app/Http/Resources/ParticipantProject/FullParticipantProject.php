@@ -36,7 +36,6 @@ class FullParticipantProject extends Resource
                 'dateDidAcceptAgreement' => $this->date_did_accept_agreement,
                 'didUnderstandInfo' => $this->did_understand_info,
                 'dateDidUnderstandInfo' => $this->date_did_understand_info,
-                'choiceMembership' => $this->choice_membership,
                 'giftedByContactId' => $this->gifted_by_contact_id,
                 'giftedByContact' => FullContact::make($this->whenLoaded('giftedByContact')),
                 'ibanPayout' => $this->iban_payout,

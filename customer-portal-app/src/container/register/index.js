@@ -23,7 +23,7 @@ function RegisterProject({ match, currentSelectedContact }) {
         amountOptioned: 0,
         didAcceptAgreement: false,
         didUnderstandInfo: false,
-        choiceMembership: 'A',
+        choiceMembership: 0,
     };
 
     const initialPcrValues = {
@@ -42,7 +42,7 @@ function RegisterProject({ match, currentSelectedContact }) {
     const [isLoading, setLoading] = useState(true);
     const [isSucces, setSucces] = useState(false);
     const [isRegistered, setRegistered] = useState(false);
-    const [belongsToQuestionAboutMembershipGroup, setBelongsToQuestionAboutMembershipGroup] = useState(false);
+    const [belongsToMembershipGroup, setBelongsToMembershipGroup] = useState(false);
 
     useEffect(() => {
         if (currentSelectedContact.id) {
@@ -50,9 +50,13 @@ function RegisterProject({ match, currentSelectedContact }) {
                 setLoading(true);
 
                 axios
-                    .all([ProjectAPI.fetchProject(match.params.id), ContactAPI.fetchContact(currentSelectedContact.id)])
+                    .all([
+                        ProjectAPI.fetchProject(match.params.id),
+                        ContactAPI.fetchContact(currentSelectedContact.id),
+                        ContactAPI.fetchContactBelongsToMembershipGroup(currentSelectedContact.id, match.params.id),
+                    ])
                     .then(
-                        axios.spread((payloadProject, payloadContact) => {
+                        axios.spread((payloadProject, payloadContact, payloadMembership) => {
                             const contact = payloadContact.data.data;
                             const project = payloadProject.data.data;
                             // console.log(project);
@@ -60,7 +64,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                             const contactData = rebaseContact(contact);
                             setContact(contactData);
                             callFetchContactProjects();
-                            // callFetchContactBelongsToQuestionAboutMembershipGroup();
+
+                            setBelongsToMembershipGroup(payloadMembership.data);
 
                             if (
                                 project &&
@@ -79,6 +84,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     ...registerValues,
                                     projectId: match.params.id,
                                     contactId: currentSelectedContact.id,
+                                    choiceMembership: payloadMembership.data ? 0 : 1,
                                     ...initialPcrValues,
                                     pcrPostalCode,
                                 });
@@ -87,6 +93,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     ...registerValues,
                                     projectId: match.params.id,
                                     contactId: currentSelectedContact.id,
+                                    choiceMembership: payloadMembership.data ? 0 : 1,
                                 });
                             }
 
@@ -136,23 +143,6 @@ function RegisterProject({ match, currentSelectedContact }) {
                 }
             })
             .catch(error => {
-                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                setLoading(false);
-            });
-    }
-
-    function callFetchContactBelongsToQuestionAboutMembershipGroup() {
-        console.log('hello 1');
-
-        ProjectAPI.fetchContactBelongsToQuestionAboutMembershipGroup(currentSelectedContact.id, match.params.id)
-            .then(payload => {
-                console.log('hello 2');
-                console.log(payload);
-
-                setBelongsToQuestionAboutMembershipGroup(payload.data.data);
-            })
-            .catch(error => {
-                console.log('hello 3');
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                 setLoading(false);
             });
@@ -240,6 +230,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <MasterForm
                             portalSettings={portalSettings}
                             project={project}
+                            belongsToMembershipGroup={belongsToMembershipGroup}
                             initialRegisterValues={registerValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                             // initialAdditionalPcrValues={additionalPcrValues}

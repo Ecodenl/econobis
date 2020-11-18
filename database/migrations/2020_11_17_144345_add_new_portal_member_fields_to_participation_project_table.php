@@ -14,7 +14,7 @@ class AddNewPortalMemberFieldsToParticipationProjectTable extends Migration
     public function up()
     {
         Schema::table('participation_project', function (Blueprint $table) {
-            $table->string('choice_membership', 1)->nullable()->default(null)->after('date_did_understand_info');
+            $table->tinyInteger('choice_membership')->nullable()->default(null)->after('date_did_understand_info');
         });
     }
 

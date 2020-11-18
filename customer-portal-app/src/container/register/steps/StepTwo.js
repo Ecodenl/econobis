@@ -78,7 +78,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                     handleSubmitContactValues(values, actions, next);
                 }}
                 render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
-                    console.log(errors);
+                    // console.log(errors);
                     return (
                         <Form>
                             {/* If contact is person */}

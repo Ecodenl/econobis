@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 import validator from 'validator';
+import { isEmpty } from 'lodash';
 
 import ButtonText from '../../../../../components/button/ButtonText';
 import PanelFooter from '../../../../../components/panel/PanelFooter';
@@ -18,7 +19,7 @@ import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultC
 import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
-import ProjectFormViewGeneral from '../view/ProjectFormView';
+import PortalSettingsAPI from '../../../../../api/portal-settings/PortalSettingsAPI';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ class ProjectFormEdit extends Component {
 
         this.state = {
             contactGroups: [],
+            staticContactGroups: [],
             emailTemplates: [],
             documentTemplates: [],
             project: {
@@ -52,8 +54,37 @@ class ProjectFormEdit extends Component {
     }
 
     componentDidMount() {
+        if (this.state.project && !this.state.project.showQuestionAboutMembership) {
+            const keys = '?keys[]=cooperativeName';
+            PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
+                let cooperatie_naam = payload.data.cooperativeName;
+                this.setState({
+                    project: {
+                        ...this.state.project,
+                        textIsMember: isEmpty(this.state.project.textIsMember)
+                            ? 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten'
+                            : this.state.project.textIsMember,
+                        textIsNoMember: isEmpty(this.state.project.textIsNoMember)
+                            ? 'Ik ben geen lid van ' + cooperatie_naam
+                            : this.state.project.textIsNoMember,
+                        textBecomeMember: isEmpty(this.state.project.textBecomeMember)
+                            ? 'Ik wil lid worden van ' + cooperatie_naam + ' en betaal daarom geen inschrijfkosten'
+                            : this.state.project.textBecomeMember,
+                        textBecomeNoMember: isEmpty(this.state.project.textBecomeNoMember)
+                            ? 'Ik ben en word geen lid van ' + cooperatie_naam + ' en betaal inschrijfkosten'
+                            : this.state.project.textBecomeNoMember,
+                    },
+                });
+            });
+        }
+
         ContactGroupAPI.peekContactGroups().then(payload => {
+            console.log(payload);
             this.setState({ contactGroups: payload });
+        });
+        ContactGroupAPI.peekStaticContactGroups().then(payload => {
+            console.log(payload);
+            this.setState({ staticContactGroups: payload });
         });
         EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState({ emailTemplates: payload });
@@ -136,6 +167,37 @@ class ProjectFormEdit extends Component {
         if (validator.isEmpty('' + project.administrationId)) {
             errors.administrationId = true;
             hasErrors = true;
+        }
+
+        if (project.showQuestionAboutMembership) {
+            if (!project.questionAboutMembershipGroupId) {
+                errors.questionAboutMembershipGroupId = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textIsMember)) {
+                errors.textIsMember = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textIsNoMember)) {
+                errors.textIsNoMember = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textBecomeMember)) {
+                errors.textBecomeMember = true;
+                hasErrors = true;
+            }
+            if (!project.memberGroupId) {
+                errors.memberGroupId = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textBecomeNoMember)) {
+                errors.textBecomeNoMember = true;
+                hasErrors = true;
+            }
+            if (!project.noMemberGroupId) {
+                errors.noMemberGroupId = true;
+                hasErrors = true;
+            }
         }
 
         // todo projects doesn't have a countryId field yet
@@ -299,6 +361,7 @@ class ProjectFormEdit extends Component {
                     handleReactSelectChange={this.handleReactSelectChange}
                     errors={this.state.errors}
                     contactGroups={this.state.contactGroups}
+                    staticContactGroups={this.state.staticContactGroups}
                     amountOfParticipants={amountOfParticipants}
                     documentTemplateAgreementId={documentTemplateAgreementId}
                     documentTemplates={this.state.documentTemplates}
@@ -413,4 +476,7 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectFormEdit);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProjectFormEdit);

@@ -315,6 +315,26 @@ class Contact extends Model
         return null;
     }
 
+    public function getAllStaticAndDynamicGroups()
+    {
+        //statische groepen
+        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
+
+        //dynamische groepen
+        $dynamicGroups = ContactGroup::where('type_id', 'dynamic')->get();
+
+        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
+            foreach ($dynamicGroup->all_contacts as $dynamic_contact){
+                if($dynamic_contact->id === $this->id){
+                    return true;
+                }
+            }
+            return false;
+        })->pluck('id')->toArray();
+
+        return array_merge($staticGroups, $dynamicGroupsForContact);
+    }
+
     public function getVisibleGroups(){
 
         //statische groepen

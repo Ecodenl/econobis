@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 function MasterForm({
     portalSettings,
     project,
+    belongsToMembershipGroup,
     initialRegisterValues,
     handleSubmitRegisterValues,
     initialContact,
@@ -42,6 +43,7 @@ function MasterForm({
                 previous={previous}
                 next={next}
                 project={project}
+                belongsToMembershipGroup={belongsToMembershipGroup}
                 initialRegisterValues={initialRegisterValues}
                 handleSubmitRegisterValues={handleSubmitRegisterValues}
                 initialContact={initialContact}

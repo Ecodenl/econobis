@@ -332,7 +332,7 @@ class ParticipantExcelHelper
                 $rowData[61] = $participant->date_did_understand_info;
                 $rowData[62] = $participant->power_kwh_consumption;
                 $rowData[63] = $participant->iban_payout;
-                $rowData[64] = $participant->iban_attn;
+                $rowData[64] = $participant->iban_payout_attn;
                 $rowData[65] = $participant->iban_contact;
                 $rowData[66] = $participant->iban_attn_contact;
                 $rowData[67] = $participant->date_register;

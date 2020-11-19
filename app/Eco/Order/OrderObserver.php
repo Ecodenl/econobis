@@ -36,6 +36,7 @@ class OrderObserver
             $invoiceToSend->invoice_text = $order->invoice_text;
             $invoiceToSend->save();
             foreach ($invoiceToSend->invoiceProducts as $invoiceProductToSend) {
+                $priceNumberOfDecimals = 2;
                 $price = 0;
                 if ($invoiceProductToSend->product->currentPrice) {
 
@@ -46,6 +47,7 @@ class OrderObserver
                         continue;
                     }
 
+                    $priceNumberOfDecimals = $invoiceProductToSend->product->currentPrice->price_number_of_decimals;
                     $price = $invoiceProductToSend->product->currentPrice->price;
                     $priceInclVat = $invoiceProductToSend->product->currentPrice->price_incl_vat;
 
@@ -88,6 +90,7 @@ class OrderObserver
                     }
                 }
 
+                $invoiceProductToSend->price_number_of_decimals = $priceNumberOfDecimals;
                 $invoiceProductToSend->price = $price;
                 $invoiceProductToSend->price_incl_vat = $priceInclVat;
                 $invoiceProductToSend->save();

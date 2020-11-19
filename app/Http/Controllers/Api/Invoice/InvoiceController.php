@@ -579,7 +579,9 @@ class InvoiceController extends ApiController
         $invoice = Invoice::find($data['invoice_id']);
 
         $price = 0;
+        $priceNumberOfDecimals = 2;
         if ($product->currentPrice) {
+            $priceNumberOfDecimals = $product->currentPrice->price_number_of_decimals;
             if ($product->currentPrice->has_variable_price) {
                 $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
             } else {
@@ -617,6 +619,7 @@ class InvoiceController extends ApiController
             }
         }
 
+        $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
         $invoiceProduct->price = $price;
         $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
         $invoiceProduct->product_code = $product->code;
@@ -670,8 +673,10 @@ class InvoiceController extends ApiController
             $priceHistory->product_id = $product->id;
             $priceHistory->save();
 
+            $priceNumberOfDecimals = 2;
             $price = 0;
             if ($product->currentPrice) {
+                $priceNumberOfDecimals = $product->currentPrice->price_number_of_decimals;
                 $price = $product->currentPrice->price;
 
                 switch ($product->invoice_frequency_id) {
@@ -706,6 +711,7 @@ class InvoiceController extends ApiController
             }
 
             $invoiceProduct->product_id = $product->id;
+            $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
             $invoiceProduct->price = $price;
             $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $product->code;

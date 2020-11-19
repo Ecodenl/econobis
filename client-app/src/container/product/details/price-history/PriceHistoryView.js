@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment/moment';
 
 const PriceHistoryView = props => {
-    const { id, dateStart, price, vatPercentage, priceInclVat } = props.price;
+    const { id, dateStart, priceNumberOfDecimals, price, vatPercentage, priceInclVat } = props.price;
 
     return (
         <div
@@ -20,7 +20,7 @@ const PriceHistoryView = props => {
                         ? '€' +
                           price.toLocaleString('nl', {
                               minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
+                              maximumFractionDigits: priceNumberOfDecimals,
                           })
                         : ''}
                 </div>
@@ -34,7 +34,7 @@ const PriceHistoryView = props => {
                         ? '€' +
                           priceInclVat.toLocaleString('nl', {
                               minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
+                              maximumFractionDigits: priceNumberOfDecimals,
                           })
                         : ''}
                 </div>

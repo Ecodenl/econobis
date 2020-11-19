@@ -19,6 +19,7 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         this.state = {
             errorMessage: false,
+            priceNumberOfDecimals: 2,
             price: '0',
             totalPrice: '0',
             orderProduct: {
@@ -40,6 +41,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                     ? this.props.orderDetails.collectionFrequencyId
                     : 'once',
                 vatPercentage: '',
+                priceNumberOfDecimals: 2,
                 price: '',
                 ledgerId: '',
                 costCenterId: '',
@@ -49,6 +51,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
+                priceNumberOfDecimals: false,
                 price: false,
                 datePeriodStartFirstInvoice: false,
                 ledgerId: false,
@@ -82,7 +85,7 @@ class OrderProductsFormNewProductOneTime extends Component {
         let vatPercentage = selectedLedger.vatCode && selectedLedger.vatCode.percentage;
 
         let price;
-
+//todo dit moet anders!!!
         if (vatPercentage == '9') {
             price = this.state.product.price * 1.09;
         } else if (vatPercentage == '21') {
@@ -193,6 +196,7 @@ class OrderProductsFormNewProductOneTime extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+//todo dit moet anders!!!
         let price;
 
         if (this.state.product.vatPercentage == '9') {
@@ -212,6 +216,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                     [name]: value,
                 },
             },
+            // this.updatePrice
             this.updatePrice
         );
     };
@@ -222,7 +227,7 @@ class OrderProductsFormNewProductOneTime extends Component {
         const name = target.name;
 
         let price;
-
+//todo dit moet anders!!!
         if (value == '9') {
             price = this.state.product.price * 1.09;
         } else if (value == '21') {
@@ -242,6 +247,22 @@ class OrderProductsFormNewProductOneTime extends Component {
             },
             this.updatePrice
         );
+    };
+
+    handleBlurProductPrice = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+    //     this.setState({
+    //         ...this.state,
+    //         price: parseFloat(value).toFixed(this.state.priceNumberOfDecimals),
+    //         product: {
+    //             ...this.state.product,
+    //             price: parseFloat(price).toFixed(this.state.priceNumberOfDecimals),
+    //         }
+    //
+    // });
     };
 
     updatePrice = () => {
@@ -265,8 +286,14 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         this.setState({
             ...this.state,
+            // price: parseFloat(price).toFixed(this.state.priceNumberOfDecimals),
             price: parseFloat(price).toFixed(2),
             totalPrice: parseFloat(totalPrice).toFixed(2),
+            // product:  {
+            //     ...this.state.product,
+            //     price: parseFloat(price).toFixed(this.state.priceNumberOfDecimals),
+            //     totalPrice: parseFloat(totalPrice).toFixed(2),
+            // },
         });
     };
 
@@ -411,7 +438,15 @@ class OrderProductsFormNewProductOneTime extends Component {
             dateEnd,
             datePeriodStartFirstInvoice,
         } = this.state.orderProduct;
-        const { description, durationId, vatPercentage, price, ledgerId, costCenterId } = this.state.product;
+        const {
+            description,
+            durationId,
+            vatPercentage,
+            priceNumberOfDecimals,
+            price,
+            ledgerId,
+            costCenterId,
+        } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -433,6 +468,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 max={'1000000'}
                                 value={price}
                                 onChangeAction={this.handleInputChangeProductPrice}
+                                // onBlurAction={this.handleBlurProductPrice}
                                 required={'required'}
                                 error={this.state.errors.price}
                             />
@@ -454,6 +490,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 <InputReactSelect
                                     label={'Grootboek'}
                                     name={'ledgerId'}
+                                    id={'ledgerId'}
                                     options={this.props.ledgers}
                                     optionName={'description'}
                                     value={ledgerId}

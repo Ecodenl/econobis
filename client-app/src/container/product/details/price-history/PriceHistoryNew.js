@@ -20,6 +20,7 @@ class PriceHistoryNew extends Component {
                 productId: props.productId,
                 dateStart: '',
                 inputInclVat: false,
+                priceNumberOfDecimals: 2,
                 price: '',
                 priceInclVat: '',
                 vatPercentage: props.ledger ? props.ledger.vatCode && props.ledger.vatCode.percentage : null,
@@ -27,6 +28,7 @@ class PriceHistoryNew extends Component {
             },
             errors: {
                 dateStart: false,
+                priceNumberOfDecimals: false,
                 price: false,
                 priceInclVat: false,
             },
@@ -72,7 +74,7 @@ class PriceHistoryNew extends Component {
             ...this.state,
             priceHistory: {
                 ...this.state.priceHistory,
-                [name]: parseFloat(value).toFixed(2),
+                [name]: parseFloat(value).toFixed(this.state.priceHistory.priceNumberOfDecimals),
             },
         });
     };
@@ -94,7 +96,7 @@ class PriceHistoryNew extends Component {
                 ...this.state,
                 priceHistory: {
                     ...this.state.priceHistory,
-                    price: parseFloat(price).toFixed(2),
+                    price: parseFloat(price).toFixed(this.state.priceHistory.priceNumberOfDecimals),
                 },
             });
         } else {
@@ -103,7 +105,7 @@ class PriceHistoryNew extends Component {
                 ...this.state,
                 priceHistory: {
                     ...this.state.priceHistory,
-                    priceInclVat: parseFloat(priceInclVat).toFixed(2),
+                    priceInclVat: parseFloat(priceInclVat).toFixed(this.state.priceHistory.priceNumberOfDecimals),
                 },
             });
         }
@@ -149,6 +151,7 @@ class PriceHistoryNew extends Component {
         const {
             dateStart,
             inputInclVat,
+            priceNumberOfDecimals,
             price,
             priceInclVat,
             vatPercentage,
@@ -205,6 +208,20 @@ class PriceHistoryNew extends Component {
                                 onChangeAction={this.props.usesTwinfield ? null : this.handleInputChange}
                                 placeholder={'Geen'}
                                 readOnly={this.props.usesTwinfield}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label={'Aantal decimalen'}
+                                type="number"
+                                min={'2'}
+                                max={'6'}
+                                name={'priceNumberOfDecimals'}
+                                value={priceNumberOfDecimals}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.priceNumberOfDecimals}
                             />
                         </div>
 

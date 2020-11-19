@@ -31,8 +31,10 @@ class ProductObserver
                     $invoiceProductToSend->twinfield_ledger_code = $product->ledger->twinfield_ledger_code;
                 }
 
+                $priceNumberOfDecimals = 2;
                 $price = 0;
                 if ($product->currentPrice) {
+                    $priceNumberOfDecimals = $product->currentPrice->price_number_of_decimals;
                     $price = $product->currentPrice->price;
                     $priceInclVat = $product->currentPrice->price_incl_vat;
 
@@ -75,6 +77,7 @@ class ProductObserver
                     }
                 }
 
+                $invoiceProductToSend->price_number_of_decimals = $priceNumberOfDecimals;
                 $invoiceProductToSend->price = $price;
                 $invoiceProductToSend->price_incl_vat = $priceInclVat;
 

@@ -19,6 +19,7 @@ class OrderProductsFormNewProduct extends Component {
 
         this.state = {
             errorMessage: false,
+            priceNumberOfDecimals: 2,
             price: '0',
             totalPrice: '0',
             orderProduct: {
@@ -40,6 +41,7 @@ class OrderProductsFormNewProduct extends Component {
                     ? this.props.orderDetails.collectionFrequencyId
                     : 'once',
                 vatPercentage: '',
+                priceNumberOfDecimals: 2,
                 price: '',
                 ledgerId: '',
                 costCenterId: '',
@@ -51,6 +53,7 @@ class OrderProductsFormNewProduct extends Component {
                 dateEnd: false,
                 code: false,
                 name: false,
+                priceNumberOfDecimals: false,
                 price: false,
                 datePeriodStartFirstInvoice: false,
                 ledgerId: false,
@@ -83,7 +86,7 @@ class OrderProductsFormNewProduct extends Component {
         let vatPercentage = selectedLedger.vatCode && selectedLedger.vatCode.percentage;
 
         let price;
-
+//todo dit moet anders!!!
         if (vatPercentage == '9') {
             price = this.state.product.price * 1.09;
         } else if (vatPercentage == '21') {
@@ -194,6 +197,7 @@ class OrderProductsFormNewProduct extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+//todo dit moet anders!!!
         let price;
 
         if (this.state.product.vatPercentage == '9') {
@@ -213,6 +217,7 @@ class OrderProductsFormNewProduct extends Component {
                     [name]: value,
                 },
             },
+            // this.updatePrice
             this.updatePrice
         );
     };
@@ -223,7 +228,7 @@ class OrderProductsFormNewProduct extends Component {
         const name = target.name;
 
         let price;
-
+//todo dit moet anders!!!
         if (value == '9') {
             price = this.state.product.price * 1.09;
         } else if (value == '21') {
@@ -243,6 +248,22 @@ class OrderProductsFormNewProduct extends Component {
             },
             this.updatePrice
         );
+    };
+
+    handleBlurProductPrice = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+    //     this.setState({
+    //         ...this.state,
+    //         price: parseFloat(value).toFixed(this.state.priceNumberOfDecimals),
+    //         product: {
+    //             ...this.state.product,
+    //             price: parseFloat(price).toFixed(this.state.priceNumberOfDecimals),
+    //         }
+    //
+    // });
     };
 
     updatePrice = () => {
@@ -266,8 +287,14 @@ class OrderProductsFormNewProduct extends Component {
 
         this.setState({
             ...this.state,
+            // price: parseFloat(price).toFixed(this.state.priceNumberOfDecimals),
             price: parseFloat(price).toFixed(2),
             totalPrice: parseFloat(totalPrice).toFixed(2),
+            // product:  {
+            //     ...this.state.product,
+            //     price: parseFloat(price).toFixed(this.state.priceNumberOfDecimals),
+            //     totalPrice: parseFloat(totalPrice).toFixed(2),
+            // },
         });
     };
 
@@ -369,7 +396,9 @@ class OrderProductsFormNewProduct extends Component {
             hasErrors = true;
         }
 
+        // console.log("prijs a1: " + this.state.product.price);
         const { product } = this.state;
+        // console.log("prijs a2: " + this.state.product.price);
 
         let productCodeNotUnique = false;
         this.props.products.map(
@@ -426,6 +455,8 @@ class OrderProductsFormNewProduct extends Component {
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
+        // console.log("prijs b: " + this.state.product.price);
+
         // If no errors send form
         !hasErrors &&
             OrderDetailsAPI.newProductAndOrderProduct(orderProduct, product).then(payload => {
@@ -449,6 +480,7 @@ class OrderProductsFormNewProduct extends Component {
             name,
             durationId,
             vatPercentage,
+            priceNumberOfDecimals,
             price,
             ledgerId,
             costCenterId,
@@ -492,6 +524,7 @@ class OrderProductsFormNewProduct extends Component {
                                 max={'1000000'}
                                 value={price}
                                 onChangeAction={this.handleInputChangeProductPrice}
+                                // onBlurAction={this.handleBlurProductPrice}
                                 required={'required'}
                                 error={this.state.errors.price}
                             />

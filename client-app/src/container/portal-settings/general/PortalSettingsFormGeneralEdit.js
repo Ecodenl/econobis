@@ -197,7 +197,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage)) {
+        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage + '')) {
             errors.pcrPowerKwhConsumptionPercentage = true;
             hasErrors = true;
         }

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
+import ViewTextLong from "../../../../../components/form/ViewTextLong";
 
 const ProjectFormViewGeneral = ({
     name,
@@ -112,19 +113,19 @@ const ProjectFormViewGeneral = ({
 
         <h4>Contacten portal instellingen</h4>
         <div className="row">
-            <ViewText label={'Voorwaarden link'} value={linkAgreeTerms} />
+            <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
         </div>
         <div className="row">
-            <ViewText label={'Projectinformatie link'} value={linkUnderstandInfo} />
+            <ViewTextLong label={'Projectinformatie link'} value={linkUnderstandInfo} />
         </div>
         <div className="row">
-            <ViewText
+            <ViewTextLong
                 label={'Document template inschrijfformulier'}
                 value={documentTemplateAgreement ? documentTemplateAgreement.name : ''}
             />
         </div>
         <div className="row">
-            <ViewText
+            <ViewTextLong
                 label={'Email template inschrijfbevestiging'}
                 value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
             />
@@ -137,33 +138,33 @@ const ProjectFormViewGeneral = ({
         {showQuestionAboutMembership == true && (
             <>
                 <div className={'row'}>
-                    <ViewText
+                    <ViewTextLong
                         label={'Leden groep'}
                         value={questionAboutMembershipGroup ? questionAboutMembershipGroup.name : ''}
                     />
                 </div>
                 <hr />
                 <div className={'row'}>
-                    <ViewText label={'Regel tekst bij leden'} value={textIsMember} />
+                    <ViewTextLong label={'Regel tekst bij leden'} value={textIsMember} />
                 </div>
                 <hr />
                 <div className={'row'}>
-                    <ViewText label={'Regel tekst bij niet leden'} value={textIsNoMember} />
+                    <ViewTextLong label={'Regel tekst bij niet leden'} value={textIsNoMember} />
                 </div>
                 <div className={'row'}>
-                    <ViewText label={'Keuzetekst (1) bij niet leden'} value={textBecomeMember} />
+                    <ViewTextLong label={'Keuzetekst (1) bij niet leden'} value={textBecomeMember} />
                 </div>
                 <div className={'row'}>
-                    <ViewText
+                    <ViewTextLong
                         label={'Contacten die keuze 1 maken toevoegen aan'}
                         value={memberGroup ? memberGroup.name : ''}
                     />
                 </div>
                 <div className={'row'}>
-                    <ViewText label={'Keuzetekst (2) bij niet leden'} value={textBecomeNoMember} />
+                    <ViewTextLong label={'Keuzetekst (2) bij niet leden'} value={textBecomeNoMember} />
                 </div>
                 <div className={'row'}>
-                    <ViewText
+                    <ViewTextLong
                         label={'Contacten die keuze 2 maken toevoegen aan'}
                         value={noMemberGroup ? noMemberGroup.name : ''}
                     />

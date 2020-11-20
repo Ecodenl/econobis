@@ -7,6 +7,8 @@ import InputToggle from '../../../../../components/form/InputToggle';
 import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
 import ViewText from '../../../../../components/form/ViewText';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
+import InputTextLong from "../../../../../components/form/InputTextLong";
+import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 
 const ProjectFormEditGeneral = ({
     name,
@@ -238,7 +240,7 @@ const ProjectFormEditGeneral = ({
             <h4>Contacten portal instellingen</h4>
 
             <div className="row">
-                <InputText
+                <InputTextLong
                     label="Voorwaarden link"
                     name={'linkAgreeTerms'}
                     value={linkAgreeTerms}
@@ -247,7 +249,7 @@ const ProjectFormEditGeneral = ({
                 />
             </div>
             <div className="row">
-                <InputText
+                <InputTextLong
                     label="Projectinformatie link"
                     name={'linkUnderstandInfo'}
                     value={linkUnderstandInfo}
@@ -256,7 +258,7 @@ const ProjectFormEditGeneral = ({
                 />
             </div>
             <div className="row">
-                <InputReactSelect
+                <InputReactSelectLong
                     label="Document template inschrijfformulier"
                     name={'documentTemplateAgreementId'}
                     options={documentTemplates}
@@ -268,7 +270,7 @@ const ProjectFormEditGeneral = ({
                 />
             </div>
             <div className="row">
-                <InputReactSelect
+                <InputReactSelectLong
                     label="E-mail template inschrijfbevestiging"
                     name={'emailTemplateAgreementId'}
                     options={emailTemplates}
@@ -292,7 +294,7 @@ const ProjectFormEditGeneral = ({
             {showQuestionAboutMembership == true && (
                 <>
                     <div className={'row'}>
-                        <InputReactSelect
+                        <InputReactSelectLong
                             label="Leden groep"
                             name={'questionAboutMembershipGroupId'}
                             options={contactGroups}
@@ -305,7 +307,7 @@ const ProjectFormEditGeneral = ({
                     </div>
                     <hr />
                     <div className={'row'}>
-                        <InputText
+                        <InputTextLong
                             label="Regel tekst bij leden"
                             name={'textIsMember'}
                             value={textIsMember}
@@ -317,7 +319,7 @@ const ProjectFormEditGeneral = ({
                     </div>
                     <hr />
                     <div className={'row'}>
-                        <InputText
+                        <InputTextLong
                             label="Regel tekst bij niet leden"
                             name={'textIsNoMember'}
                             value={textIsNoMember}
@@ -328,7 +330,7 @@ const ProjectFormEditGeneral = ({
                         />
                     </div>
                     <div className={'row'}>
-                        <InputText
+                        <InputTextLong
                             label="Keuzetekst (1) bij niet leden"
                             name={'textBecomeMember'}
                             value={textBecomeMember}
@@ -339,7 +341,7 @@ const ProjectFormEditGeneral = ({
                         />
                     </div>
                     <div className={'row'}>
-                        <InputReactSelect
+                        <InputReactSelectLong
                             label="Contacten die keuze 1 maken toevoegen aan"
                             name={'memberGroupId'}
                             options={staticContactGroups}
@@ -351,18 +353,18 @@ const ProjectFormEditGeneral = ({
                         />
                     </div>
                     <div className={'row'}>
-                        <InputText
+                        <InputTextLong
                             label="Keuzetekst (2) bij niet leden"
                             name={'textBecomeNoMember'}
-                            maxLength="191"
                             value={textBecomeNoMember}
+                            maxLength="191"
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textBecomeNoMember}
                         />
                     </div>
                     <div className={'row'}>
-                        <InputReactSelect
+                        <InputReactSelectLong
                             label="Contacten die keuze 2 maken toevoegen aan"
                             name={'noMemberGroupId'}
                             options={staticContactGroups}

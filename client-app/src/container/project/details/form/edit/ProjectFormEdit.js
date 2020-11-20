@@ -79,11 +79,9 @@ class ProjectFormEdit extends Component {
         }
 
         ContactGroupAPI.peekContactGroups().then(payload => {
-            console.log(payload);
             this.setState({ contactGroups: payload });
         });
         ContactGroupAPI.peekStaticContactGroups().then(payload => {
-            console.log(payload);
             this.setState({ staticContactGroups: payload });
         });
         EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {

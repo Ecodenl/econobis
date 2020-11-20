@@ -17,6 +17,7 @@ const InputReactSelectLong = props => {
         multi,
         error,
         isLoading,
+        disabled,
     } = props;
 
     const onChange = selectedOption => {
@@ -47,6 +48,7 @@ const InputReactSelectLong = props => {
                             removeSelected
                             className={error ? ' has-error' : ''}
                             isLoading={isLoading}
+                            disabled={disabled}
                         />
                     </div>
                 </div>
@@ -58,7 +60,7 @@ InputReactSelectLong.defaultProps = {
     className: '',
     optionId: 'id',
     optionName: 'name',
-    readOnly: false,
+    disabled: false,
     required: '',
     error: false,
     value: '',
@@ -78,7 +80,7 @@ InputReactSelectLong.propTypes = {
     onChangeAction: PropTypes.func,
     onBlurAction: PropTypes.func,
     required: PropTypes.string,
-    readOnly: PropTypes.bool,
+    disabled: PropTypes.bool,
     error: PropTypes.bool,
     multi: PropTypes.bool,
     isLoading: PropTypes.bool,

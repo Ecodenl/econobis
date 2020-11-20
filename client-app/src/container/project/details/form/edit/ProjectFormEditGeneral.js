@@ -11,6 +11,7 @@ import InputTextLong from "../../../../../components/form/InputTextLong";
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 
 const ProjectFormEditGeneral = ({
+    permissions,
     name,
     code,
     description,
@@ -246,6 +247,7 @@ const ProjectFormEditGeneral = ({
                     value={linkAgreeTerms}
                     onChangeAction={handleInputChange}
                     error={errors.linkAgreeTerms}
+                    readOnly={!permissions.managePortalSettings}
                 />
             </div>
             <div className="row">
@@ -255,6 +257,7 @@ const ProjectFormEditGeneral = ({
                     value={linkUnderstandInfo}
                     onChangeAction={handleInputChange}
                     error={errors.linkUnderstandInfo}
+                    readOnly={!permissions.managePortalSettings}
                 />
             </div>
             <div className="row">
@@ -267,6 +270,7 @@ const ProjectFormEditGeneral = ({
                     // isLoading={peekLoading.documentTemplates}
                     multi={false}
                     error={errors.documentTemplateAgreementId}
+                    disabled={!permissions.managePortalSettings}
                 />
             </div>
             <div className="row">
@@ -279,6 +283,7 @@ const ProjectFormEditGeneral = ({
                     // isLoading={peekLoading.emailTemplates}
                     multi={false}
                     error={errors.emailTemplateAgreementId}
+                    disabled={!permissions.managePortalSettings}
                 />
             </div>
 
@@ -289,6 +294,7 @@ const ProjectFormEditGeneral = ({
                     name={'showQuestionAboutMembership'}
                     value={showQuestionAboutMembership}
                     onChangeAction={handleInputChange}
+                    disabled={!permissions.managePortalSettings}
                 />
             </div>
             {showQuestionAboutMembership == true && (
@@ -303,6 +309,7 @@ const ProjectFormEditGeneral = ({
                             multi={false}
                             required={'required'}
                             error={errors.questionAboutMembershipGroupId}
+                            disabled={!permissions.managePortalSettings}
                         />
                     </div>
                     <hr />
@@ -315,6 +322,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textIsMember}
+                            readOnly={!permissions.managePortalSettings}
                         />
                     </div>
                     <hr />
@@ -327,6 +335,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textIsNoMember}
+                            readOnly={!permissions.managePortalSettings}
                         />
                     </div>
                     <div className={'row'}>
@@ -338,6 +347,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textBecomeMember}
+                            readOnly={!permissions.managePortalSettings}
                         />
                     </div>
                     <div className={'row'}>
@@ -350,6 +360,7 @@ const ProjectFormEditGeneral = ({
                             multi={false}
                             required={'required'}
                             error={errors.memberGroupId}
+                            disabled={!permissions.managePortalSettings}
                         />
                     </div>
                     <div className={'row'}>
@@ -361,6 +372,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textBecomeNoMember}
+                            readOnly={!permissions.managePortalSettings}
                         />
                     </div>
                     <div className={'row'}>
@@ -373,6 +385,7 @@ const ProjectFormEditGeneral = ({
                             multi={false}
                             required={'required'}
                             error={errors.noMemberGroupId}
+                            disabled={!permissions.managePortalSettings}
                         />
                     </div>
                 </>
@@ -385,6 +398,7 @@ const mapStateToProps = state => {
     return {
         projectStatuses: state.systemData.projectStatus,
         administrations: state.meDetails.administrations,
+        permissions: state.meDetails.permissions,
         users: state.systemData.users,
     };
 };

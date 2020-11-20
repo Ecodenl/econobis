@@ -19,6 +19,7 @@ const InputReactSelect = props => {
         multi,
         error,
         isLoading,
+        disabled,
     } = props;
 
     const onChange = selectedOption => {
@@ -46,6 +47,7 @@ const InputReactSelect = props => {
                     removeSelected
                     className={error ? ' has-error' : ''}
                     isLoading={isLoading}
+                    disabled={disabled}
                 />
             </div>
         </div>
@@ -58,7 +60,7 @@ InputReactSelect.defaultProps = {
     divSize: 'col-sm-6',
     optionId: 'id',
     optionName: 'name',
-    readOnly: false,
+    disabled: false,
     required: '',
     error: false,
     value: '',
@@ -80,7 +82,7 @@ InputReactSelect.propTypes = {
     onChangeAction: PropTypes.func,
     onBlurAction: PropTypes.func,
     required: PropTypes.string,
-    readOnly: PropTypes.bool,
+    disabled: PropTypes.bool,
     error: PropTypes.bool,
     multi: PropTypes.bool,
     isLoading: PropTypes.bool,

@@ -57,24 +57,41 @@ class ProjectFormEdit extends Component {
         if (this.state.project && !this.state.project.showQuestionAboutMembership) {
             const keys = '?keys[]=cooperativeName';
             PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
-                let cooperatie_naam = payload.data.cooperativeName;
+                let varTextIsMember;
+                let varTextIsNoMember = '';
+                let varTextBecomeMember = '';
+                let varTextBecomeNoMember = '';
+                if (payload.data.cooperativeName){
+                    let cooperatie_naam = payload.data.cooperativeName;
+                    varTextIsMember = 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten';
+                    varTextIsNoMember = 'Ik ben geen lid van ' + cooperatie_naam;
+                    varTextBecomeMember = 'Ik wil lid worden van ' + cooperatie_naam + ' en betaal daarom geen inschrijfkosten';
+                    varTextBecomeNoMember = 'Ik ben en word geen lid van ' + cooperatie_naam + ' en betaal inschrijfkosten';
+                } else {
+                    varTextIsMember = 'Ik ben lid en ik betaal geen inschrijfkosten';
+                    varTextIsNoMember = 'Ik ben geen lid';
+                    varTextBecomeMember = 'Ik wil lid worden en betaal daarom geen inschrijfkosten';
+                    varTextBecomeNoMember = 'Ik wil geen lid wordenen betaal inschrijfkosten';
+                }
+
                 this.setState({
                     project: {
                         ...this.state.project,
                         textIsMember: isEmpty(this.state.project.textIsMember)
-                            ? 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten'
+                            ? varTextIsMember
                             : this.state.project.textIsMember,
                         textIsNoMember: isEmpty(this.state.project.textIsNoMember)
-                            ? 'Ik ben geen lid van ' + cooperatie_naam
+                            ? varTextIsNoMember
                             : this.state.project.textIsNoMember,
                         textBecomeMember: isEmpty(this.state.project.textBecomeMember)
-                            ? 'Ik wil lid worden van ' + cooperatie_naam + ' en betaal daarom geen inschrijfkosten'
+                            ? varTextBecomeMember
                             : this.state.project.textBecomeMember,
                         textBecomeNoMember: isEmpty(this.state.project.textBecomeNoMember)
-                            ? 'Ik ben en word geen lid van ' + cooperatie_naam + ' en betaal inschrijfkosten'
+                            ? varTextBecomeNoMember
                             : this.state.project.textBecomeNoMember,
-                    },
+                    }
                 });
+
             });
         }
 

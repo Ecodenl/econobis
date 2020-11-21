@@ -44,10 +44,6 @@ export default {
                         'linkAgreeTerms',
                         'linkUnderstandInfo',
                         'showQuestionAboutMembership',
-                        'textIsMember',
-                        'textIsNoMember',
-                        'textBecomeMember',
-                        'textBecomeNoMember',
                     ],
                     rlt: {
                         projectType: { fld: ['id', 'codeRef'] },

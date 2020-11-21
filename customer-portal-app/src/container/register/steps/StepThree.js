@@ -8,14 +8,7 @@ import Col from 'react-bootstrap/Col';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepThree({
-    project,
-    belongsToMembershipGroup,
-    previous,
-    next,
-    initialRegisterValues,
-    handleSubmitRegisterValues,
-}) {
+function StepThree({ project, contactProjectData, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         didAcceptAgreement: Yup.bool().test(
             'didAcceptAgreement',
@@ -121,13 +114,13 @@ function StepThree({
                                     <Row>
                                         <Col xs={12} md={10}>
                                             <p>
-                                                {belongsToMembershipGroup
-                                                    ? project.textIsMember
-                                                    : project.textIsNoMember}
+                                                {contactProjectData.belongsToMembershipGroup
+                                                    ? contactProjectData.textIsMemberMerged
+                                                    : contactProjectData.textIsNoMemberMerged}
                                             </p>
                                         </Col>
                                     </Row>
-                                    {!belongsToMembershipGroup ? (
+                                    {!contactProjectData.belongsToMembershipGroup ? (
                                         <Row>
                                             <Col xs={12} md={10}>
                                                 <Field
@@ -146,7 +139,7 @@ function StepThree({
                                                                             setFieldValue('choiceMembership', 1)
                                                                         }
                                                                     />
-                                                                    &nbsp;{project.textBecomeMember}
+                                                                    &nbsp;{contactProjectData.textBecomeMemberMerged}
                                                                 </label>
                                                                 <label className="radio-inline">
                                                                     <input
@@ -159,7 +152,7 @@ function StepThree({
                                                                             setFieldValue('choiceMembership', 2);
                                                                         }}
                                                                     />
-                                                                    &nbsp;{project.textBecomeNoMember}
+                                                                    &nbsp;{contactProjectData.textBecomeNoMemberMerged}
                                                                 </label>
                                                             </div>
                                                         </>

@@ -22,6 +22,7 @@ use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
+use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Rules\EnumExists;
 use Carbon\Carbon;
@@ -134,25 +135,47 @@ class ContactController extends ApiController
         return $documentBody;
     }
 
-    public function checkInMemberGroup(Contact $contact, Project $project)
+    public function getContactProjectData(Contact $contact, Project $project)
     {
-        $result = in_array( $project->question_about_membership_group_id, $contact->getAllStaticAndDynamicGroups() );
+        $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllStaticAndDynamicGroups() );
+
+        $textIsMemberMerged = $project->text_is_member;
+        $textIsMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textIsMemberMerged, 'contact', $contact);
+        $textIsMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textIsMemberMerged, 'ik', Auth::user());
+        $textIsMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textIsMemberMerged,'portal' );
+        $textIsMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textIsMemberMerged,'contacten_portal' );
+        $textIsMemberMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textIsMemberMerged,'cooperatie' );
+
+        $textIsNoMemberMerged = $project->text_is_no_member;
+        $textIsNoMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textIsNoMemberMerged, 'contact', $contact);
+        $textIsNoMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textIsNoMemberMerged, 'ik', Auth::user());
+        $textIsNoMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textIsNoMemberMerged,'portal' );
+        $textIsNoMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textIsNoMemberMerged,'contacten_portal' );
+        $textIsNoMemberMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textIsNoMemberMerged,'cooperatie' );
+
+        $textBecomeMemberMerged = $project->text_become_member;
+        $textBecomeMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textBecomeMemberMerged, 'contact', $contact);
+        $textBecomeMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textBecomeMemberMerged, 'ik', Auth::user());
+        $textBecomeMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textBecomeMemberMerged,'portal' );
+        $textBecomeMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textBecomeMemberMerged,'contacten_portal' );
+        $textBecomeMemberMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textBecomeMemberMerged,'cooperatie' );
+
+        $textBecomeNoMemberMerged = $project->text_become_no_member;
+        $textBecomeNoMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textBecomeNoMemberMerged, 'contact', $contact);
+        $textBecomeNoMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textBecomeNoMemberMerged, 'ik', Auth::user());
+        $textBecomeNoMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textBecomeNoMemberMerged,'portal' );
+        $textBecomeNoMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textBecomeNoMemberMerged,'contacten_portal' );
+        $textBecomeNoMemberMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textBecomeNoMemberMerged,'cooperatie' );
+
+        $result = [
+            "belongsToMembershipGroup" => $belongsToMembershipGroup,
+            "textIsMemberMerged" => $textIsMemberMerged,
+            "textIsNoMemberMerged" => $textIsNoMemberMerged,
+            "textBecomeMemberMerged" => $textBecomeMemberMerged,
+            "textBecomeNoMemberMerged" => $textBecomeNoMemberMerged,
+            ];
         return response()->json($result);
     }
-//    public function getContactProjectData(Contact $contact, Project $project)
-//    {
-//        $textIsMemberMerged = $project->text_is_member;
-//        $textIsNoMemberMerged = $project->text_is_no_member;
-//        $textBecomeMemberMerged = $project->text_become_member;
-//        $textBecomeNoMemberMerged = $project->text_become_no_member;
-//        $result = [
-//            "textIsMemberMerged" => $textIsMemberMerged,
-//            "textIsNoMemberMerged" => $textIsNoMemberMerged,
-//            "textBecomeMemberMerged" => $textBecomeMemberMerged,
-//            "textBecomeNoMemberMerged" => $textBecomeNoMemberMerged,
-//            ];
-//        return response()->json($result);
-//    }
 
     protected function updatePerson($contact, Request $request)
     {

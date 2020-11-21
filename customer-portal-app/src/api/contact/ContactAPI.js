@@ -128,17 +128,7 @@ export default {
                             ],
                             rlt: {
                                 project: {
-                                    fld: [
-                                        'id',
-                                        'name',
-                                        'dateEnd',
-                                        'linkUnderstandInfo',
-                                        'showQuestionAboutMembership',
-                                        'textIsMember',
-                                        'textIsNoMember',
-                                        'textBecomeMember',
-                                        'textBecomeNoMember',
-                                    ],
+                                    fld: ['id', 'name', 'dateEnd', 'linkUnderstandInfo', 'showQuestionAboutMembership'],
                                     rlt: { projectType: { fld: ['id', 'codeRef'] } },
                                 },
                             },
@@ -161,8 +151,8 @@ export default {
         return axiosInstance.post(requestUrl, registerValues);
     },
 
-    fetchContactBelongsToMembershipGroup: function(contactId, projectId) {
-        const requestUrl = `/contact/${contactId}/${projectId}/check-in-member-group`;
+    fetchContactProjectData: function(contactId, projectId) {
+        const requestUrl = `/contact/${contactId}/${projectId}/contact-project-data`;
         return axiosInstance.get(requestUrl);
     },
 };

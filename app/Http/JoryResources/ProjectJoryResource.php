@@ -48,10 +48,6 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_agree_terms')->filterable()->sortable();
         $this->field('link_understand_info')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
-        $this->field('text_is_member')->filterable()->sortable();
-        $this->field('text_is_no_member')->filterable()->sortable();
-        $this->field('text_become_member')->filterable()->sortable();
-        $this->field('text_become_no_member')->filterable()->sortable();
         // Relations
         $this->relation('projectType');
     }

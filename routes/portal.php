@@ -30,7 +30,7 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
 
-        Route::get('/contact/{contact}/{project}/check-in-member-group', 'Contact\ContactController@checkInMemberGroup');
+        Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\' . JoryController::class . '@multiple');

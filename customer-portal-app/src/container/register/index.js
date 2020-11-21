@@ -42,7 +42,7 @@ function RegisterProject({ match, currentSelectedContact }) {
     const [isLoading, setLoading] = useState(true);
     const [isSucces, setSucces] = useState(false);
     const [isRegistered, setRegistered] = useState(false);
-    const [belongsToMembershipGroup, setBelongsToMembershipGroup] = useState(false);
+    const [contactProjectData, setContactProjectData] = useState({});
 
     useEffect(() => {
         if (currentSelectedContact.id) {
@@ -53,19 +53,18 @@ function RegisterProject({ match, currentSelectedContact }) {
                     .all([
                         ProjectAPI.fetchProject(match.params.id),
                         ContactAPI.fetchContact(currentSelectedContact.id),
-                        ContactAPI.fetchContactBelongsToMembershipGroup(currentSelectedContact.id, match.params.id),
+                        ContactAPI.fetchContactProjectData(currentSelectedContact.id, match.params.id),
                     ])
                     .then(
-                        axios.spread((payloadProject, payloadContact, payloadMembership) => {
+                        axios.spread((payloadProject, payloadContact, payloadContactProjectData) => {
                             const contact = payloadContact.data.data;
                             const project = payloadProject.data.data;
-                            // console.log(project);
                             setProject(project);
                             const contactData = rebaseContact(contact);
                             setContact(contactData);
                             callFetchContactProjects();
 
-                            setBelongsToMembershipGroup(payloadMembership.data);
+                            setContactProjectData(payloadContactProjectData.data);
 
                             if (
                                 project &&
@@ -84,7 +83,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     ...registerValues,
                                     projectId: match.params.id,
                                     contactId: currentSelectedContact.id,
-                                    choiceMembership: payloadMembership.data ? 0 : 1,
+                                    choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
                                     ...initialPcrValues,
                                     pcrPostalCode,
                                 });
@@ -93,7 +92,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     ...registerValues,
                                     projectId: match.params.id,
                                     contactId: currentSelectedContact.id,
-                                    choiceMembership: payloadMembership.data ? 0 : 1,
+                                    choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
                                 });
                             }
 
@@ -230,11 +229,9 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <MasterForm
                             portalSettings={portalSettings}
                             project={project}
-                            belongsToMembershipGroup={belongsToMembershipGroup}
+                            contactProjectData={contactProjectData}
                             initialRegisterValues={registerValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
-                            // initialAdditionalPcrValues={additionalPcrValues}
-                            // handleSubmitAdditionalPcrValues={handleSubmitAdditionalPcrValues}
                             initialContact={contact}
                             handleSubmitContactValues={handleSubmitContactValues}
                             setSucces={setSucces}

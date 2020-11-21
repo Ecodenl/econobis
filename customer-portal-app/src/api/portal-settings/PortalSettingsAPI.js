@@ -8,6 +8,11 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+    fetchPortalActive: () => {
+        const requestUrl = `${URL_PORTAL_SETTINGS}/portal-active`;
+
+        return axiosInstance.get(requestUrl);
+    },
     fetchCooperativeName: () => {
         const requestUrl = `${URL_PORTAL_SETTINGS}/cooperative-name`;
 

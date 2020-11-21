@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import PortalSettingsFormGeneralEdit from './PortalSettingsFormGeneralEdit';
 import PortalSettingsFormGeneralView from './PortalSettingsFormGeneralView';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
+import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 
 class PortalSettingsFormGeneral extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class PortalSettingsFormGeneral extends Component {
 
         this.state = {
             emailTemplates: [],
+            staticContactGroups: [],
             imageHash: Date.now(),
             showEdit: false,
             activeDiv: '',
@@ -23,7 +25,14 @@ class PortalSettingsFormGeneral extends Component {
                 emailTemplates: payload,
             });
         });
+        this.fetchStaticContactGroups();
     }
+
+    fetchStaticContactGroups = () => {
+        ContactGroupAPI.peekStaticContactGroups().then(payload => {
+            this.setState({ staticContactGroups: payload });
+        });
+    };
 
     switchToEdit = () => {
         this.setState({
@@ -79,6 +88,24 @@ class PortalSettingsFormGeneral extends Component {
                 emailTemplate => emailTemplate.id == this.props.portalSettings.emailTemplateNewAccountId
             );
         }
+        this.props.portalSettings.defaultContactGroupMember = '';
+        if (
+            this.props.portalSettings.defaultContactGroupMemberId &&
+            this.props.portalSettings.defaultContactGroupMemberId != 0
+        ) {
+            this.props.portalSettings.defaultContactGroupMember = this.state.staticContactGroups.find(
+                contactGroup => contactGroup.id == this.props.portalSettings.defaultContactGroupMemberId
+            );
+        }
+        this.props.portalSettings.defaultContactGroupNoMember = '';
+        if (
+            this.props.portalSettings.defaultContactGroupNoMemberId &&
+            this.props.portalSettings.defaultContactGroupNoMemberId != 0
+        ) {
+            this.props.portalSettings.defaultContactGroupNoMember = this.state.staticContactGroups.find(
+                contactGroup => contactGroup.id == this.props.portalSettings.defaultContactGroupNoMemberId
+            );
+        }
 
         this.props.portalSettings.checkContactTaskResponsible = '';
         this.props.portalSettings.checkContactTaskResponsibleUser = null;
@@ -113,7 +140,9 @@ class PortalSettingsFormGeneral extends Component {
                     <PortalSettingsFormGeneralEdit
                         portalSettings={this.props.portalSettings}
                         emailTemplates={this.state.emailTemplates}
+                        staticContactGroups={this.state.staticContactGroups}
                         switchToView={this.switchToView}
+                        fetchStaticContactGroups={this.fetchStaticContactGroups}
                         imageHash={this.state.imageHash}
                         updateState={this.props.updateState}
                         users={this.props.users}
@@ -134,6 +163,8 @@ class PortalSettingsFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
+        emailTemplates: state.emailTemplates,
+        staticContactGroups: state.staticContactGroups,
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
         teams: state.systemData.teams,

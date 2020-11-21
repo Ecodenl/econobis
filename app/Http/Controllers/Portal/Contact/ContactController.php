@@ -139,6 +139,20 @@ class ContactController extends ApiController
         $result = in_array( $project->question_about_membership_group_id, $contact->getAllStaticAndDynamicGroups() );
         return response()->json($result);
     }
+//    public function getContactProjectData(Contact $contact, Project $project)
+//    {
+//        $textIsMemberMerged = $project->text_is_member;
+//        $textIsNoMemberMerged = $project->text_is_no_member;
+//        $textBecomeMemberMerged = $project->text_become_member;
+//        $textBecomeNoMemberMerged = $project->text_become_no_member;
+//        $result = [
+//            "textIsMemberMerged" => $textIsMemberMerged,
+//            "textIsNoMemberMerged" => $textIsNoMemberMerged,
+//            "textBecomeMemberMerged" => $textBecomeMemberMerged,
+//            "textBecomeNoMemberMerged" => $textBecomeNoMemberMerged,
+//            ];
+//        return response()->json($result);
+//    }
 
     protected function updatePerson($contact, Request $request)
     {

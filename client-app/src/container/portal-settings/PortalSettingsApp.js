@@ -26,11 +26,11 @@ class PortalSettingsApp extends Component {
     callFetchPortalSettings = () => {
         this.setState({ isLoading: true, hasError: false });
         const keys =
-            '?keys[]=portalName' +
+            '?keys[]=portalActive' +
+            '&keys[]=portalName' +
             '&keys[]=cooperativeName' +
             '&keys[]=portalWebsite' +
             '&keys[]=portalUrl' +
-            // '&keys[]=defaultTextColor' +
             '&keys[]=backgroundColor' +
             '&keys[]=backgroundTextColor' +
             '&keys[]=backgroundImageColor' +
@@ -48,6 +48,8 @@ class PortalSettingsApp extends Component {
             '&keys[]=linkPrivacyPolicy' +
             '&keys[]=showNewAtCooperativeLink' +
             '&keys[]=newAtCooperativeLinkText' +
+            '&keys[]=defaultContactGroupMemberId' +
+            '&keys[]=defaultContactGroupNoMemberId' +
             '&keys[]=pcrPowerKwhConsumptionPercentage' +
             '&keys[]=pcrGeneratingCapacityOneSolorPanel';
         PortalSettingsAPI.fetchPortalSettings(keys)
@@ -67,7 +69,13 @@ class PortalSettingsApp extends Component {
     };
 
     updateState = portalSettings => {
-        this.setState({ portalSettings });
+        this.setState({
+            portalSettings: {
+                ...portalSettings,
+                showNewAtCooperativeLink: portalSettings.showNewAtCooperativeLink == 'true',
+                pcrPowerKwhConsumptionPercentage: portalSettings.pcrPowerKwhConsumptionPercentage * 100,
+            },
+        });
     };
 
     render() {

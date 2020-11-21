@@ -17,6 +17,8 @@ class ContactGroupObserver
     public function creating(ContactGroup $contactGroup)
     {
         $userId = Auth::id();
-        $contactGroup->created_by_id = $userId;
+        if($userId){
+            $contactGroup->created_by_id = $userId;
+        }
     }
 }

@@ -7,11 +7,11 @@ import Image from 'react-bootstrap/es/Image';
 import { FaUser } from 'react-icons/fa';
 
 const PortalSettingsFormGeneralView = ({
+    portalActive,
     portalName,
     cooperativeName,
     portalWebsite,
     portalUrl,
-    // defaultTextColor,
     backgroundColor,
     backgroundTextColor,
     backgroundImageColor,
@@ -30,6 +30,8 @@ const PortalSettingsFormGeneralView = ({
     linkPrivacyPolicy,
     showNewAtCooperativeLink,
     newAtCooperativeLinkText,
+    defaultContactGroupMember,
+    defaultContactGroupNoMember,
     pcrPowerKwhConsumptionPercentage,
     pcrGeneratingCapacityOneSolorPanel,
     switchToEdit,
@@ -279,6 +281,14 @@ const PortalSettingsFormGeneralView = ({
                     <hr />
                     <div className="row">
                         <ViewText
+                            label={'Contacten portal actief'}
+                            divSize={'col-sm-8'}
+                            value={portalActive ? 'Ja' : 'Nee'}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
                             label={'Verantwoordelijke portal'}
                             divSize={'col-sm-8'}
                             value={responsibleUser ? responsibleUser.fullName : ''}
@@ -342,6 +352,22 @@ const PortalSettingsFormGeneralView = ({
                             {/*</span>*/}
                         </div>
                     ) : null}
+                    <div className="row">
+                        <ViewText
+                            label={'Standaard contact groep lid worden'}
+                            divSize={'col-sm-8'}
+                            value={defaultContactGroupMember ? defaultContactGroupMember.name : ''}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Standaard contact groep geen lid worden'}
+                            divSize={'col-sm-8'}
+                            value={defaultContactGroupNoMember ? defaultContactGroupNoMember.name : ''}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
                     <div className="row">
                         <ViewText
                             label={'Privacybeleid link'}

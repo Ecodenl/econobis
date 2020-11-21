@@ -55,43 +55,61 @@ class ProjectFormEdit extends Component {
 
     componentDidMount() {
         if (this.state.project && !this.state.project.showQuestionAboutMembership) {
-            const keys = '?keys[]=cooperativeName';
+            const keys =
+                '?keys[]=cooperativeName' +
+                '&keys[]=defaultContactGroupMemberId' +
+                '&keys[]=defaultContactGroupNoMemberId';
             PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
-                let varTextIsMember;
-                let varTextIsNoMember = '';
-                let varTextBecomeMember = '';
-                let varTextBecomeNoMember = '';
-                if (payload.data.cooperativeName){
+                let defaultTextIsMember;
+                let defaultTextIsNoMember = '';
+                let defaultTextBecomeMember = '';
+                let defaultTextBecomeNoMember = '';
+                let defaultContactGroupMemberId = null;
+                let defaultContactGroupNoMemberId = null;
+                if (payload.data.cooperativeName) {
                     let cooperatie_naam = payload.data.cooperativeName;
-                    varTextIsMember = 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten';
-                    varTextIsNoMember = 'Ik ben geen lid van ' + cooperatie_naam;
-                    varTextBecomeMember = 'Ik wil lid worden van ' + cooperatie_naam + ' en betaal daarom geen inschrijfkosten';
-                    varTextBecomeNoMember = 'Ik ben en word geen lid van ' + cooperatie_naam + ' en betaal inschrijfkosten';
+                    defaultTextIsMember = 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten';
+                    defaultTextIsNoMember = 'Ik ben geen lid van ' + cooperatie_naam;
+                    defaultTextBecomeMember =
+                        'Ik wil lid worden van ' + cooperatie_naam + ' en betaal daarom geen inschrijfkosten';
+                    defaultTextBecomeNoMember =
+                        'Ik ben en word geen lid van ' + cooperatie_naam + ' en betaal inschrijfkosten';
                 } else {
-                    varTextIsMember = 'Ik ben lid en ik betaal geen inschrijfkosten';
-                    varTextIsNoMember = 'Ik ben geen lid';
-                    varTextBecomeMember = 'Ik wil lid worden en betaal daarom geen inschrijfkosten';
-                    varTextBecomeNoMember = 'Ik wil geen lid wordenen betaal inschrijfkosten';
+                    defaultTextIsMember = 'Ik ben lid en ik betaal geen inschrijfkosten';
+                    defaultTextIsNoMember = 'Ik ben geen lid';
+                    defaultTextBecomeMember = 'Ik wil lid worden en betaal daarom geen inschrijfkosten';
+                    defaultTextBecomeNoMember = 'Ik wil geen lid wordenen betaal inschrijfkosten';
                 }
+                defaultContactGroupMemberId = payload.data.defaultContactGroupMemberId
+                    ? payload.data.defaultContactGroupMemberId
+                    : null;
+                defaultContactGroupNoMemberId = payload.data.defaultContactGroupNoMemberId
+                    ? payload.data.defaultContactGroupNoMemberId
+                    : null;
 
                 this.setState({
                     project: {
                         ...this.state.project,
                         textIsMember: isEmpty(this.state.project.textIsMember)
-                            ? varTextIsMember
+                            ? defaultTextIsMember
                             : this.state.project.textIsMember,
                         textIsNoMember: isEmpty(this.state.project.textIsNoMember)
-                            ? varTextIsNoMember
+                            ? defaultTextIsNoMember
                             : this.state.project.textIsNoMember,
                         textBecomeMember: isEmpty(this.state.project.textBecomeMember)
-                            ? varTextBecomeMember
+                            ? defaultTextBecomeMember
                             : this.state.project.textBecomeMember,
                         textBecomeNoMember: isEmpty(this.state.project.textBecomeNoMember)
-                            ? varTextBecomeNoMember
+                            ? defaultTextBecomeNoMember
                             : this.state.project.textBecomeNoMember,
-                    }
+                        memberGroupId: isEmpty(this.state.project.memberGroupId)
+                            ? defaultContactGroupMemberId
+                            : this.state.project.memberGroupId,
+                        noMemberGroupId: isEmpty(this.state.project.noMemberGroupId)
+                            ? defaultContactGroupNoMemberId
+                            : this.state.project.noMemberGroupId,
+                    },
                 });
-
             });
         }
 

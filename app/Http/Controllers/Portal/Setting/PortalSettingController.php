@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 
 class PortalSettingController extends Controller
 {
+    protected function getPortalActive()
+    {
+        return PortalSettings::get('portalActive');
+    }
     protected function getCooperativeName()
     {
         return PortalSettings::get('cooperativeName');

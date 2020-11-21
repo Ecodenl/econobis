@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Setting\SettingController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
+Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
 Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
 Route::get('setting/new-at-cooperative-link-text', 'Setting\PortalSettingController@getNewAtCooperativeLinkText');

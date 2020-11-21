@@ -17,15 +17,15 @@ export default props => {
     const [redirectToReferrer, toggleRedirect] = useState(false);
     let { from } = props.location.state || { from: { pathname: '/gegevens' } };
 
-    const [cooperativeName, setCooperativeName] = useState('');
+    const [portalActive, setPortalActive] = useState(false);
     const [showNewAtCooperativeLink, setShowNewAtCooperativeLink] = useState(false);
     const [newAtCooperativeLinkText, setNewAtCooperativeLinkText] = useState(false);
 
     useEffect(() => {
-        (function callFetchCooperativeName() {
-            PortalSettingsAPI.fetchCooperativeName()
+        (function callFetchPortalActive() {
+            PortalSettingsAPI.fetchPortalActive()
                 .then(payload => {
-                    setCooperativeName(payload.data);
+                    setPortalActive(payload.data);
                     setIsLoading(false);
                 })
                 .catch(error => {
@@ -53,7 +53,6 @@ export default props => {
                     // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                 });
         })();
-
     }, []);
 
     function handleSubmit(values, actions, login) {
@@ -85,15 +84,15 @@ export default props => {
                                 <Col xs="12" sm="6" md="4" lg="3" xl="2">
                                     <img src="images/logo.png" alt="" className="image logo-container" />
 
-                                    {!isLoading && !cooperativeName ? (
+                                    {!portalActive ? (
                                         <React.Fragment>
                                             <Row className="justify-content-center">
                                                 <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                                    Deze applicatie is nog niet gereed voor gebruik!
+                                                    Deze applicatie kan op dit moment niet gebruikt worden.
                                                 </Alert>
                                             </Row>
                                         </React.Fragment>
-                                    ) : (
+                                    ) : !isLoading ? (
                                         <React.Fragment>
                                             <LoginForm handleSubmit={handleSubmit} login={login} />
                                             {showError ? (
@@ -114,12 +113,13 @@ export default props => {
                                                         href={'/#/nieuw-account'}
                                                         className="authorization-link"
                                                         target="_blank"
-                                                    >{newAtCooperativeLinkText}
+                                                    >
+                                                        {newAtCooperativeLinkText}
                                                     </a>
                                                 </Row>
                                             ) : null}
                                         </React.Fragment>
-                                    )}
+                                    ) : null}
                                 </Col>
                             </Row>
                         </Container>

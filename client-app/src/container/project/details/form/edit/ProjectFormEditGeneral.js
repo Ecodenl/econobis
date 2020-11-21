@@ -7,7 +7,7 @@ import InputToggle from '../../../../../components/form/InputToggle';
 import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
 import ViewText from '../../../../../components/form/ViewText';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
-import InputTextLong from "../../../../../components/form/InputTextLong";
+import InputTextLong from '../../../../../components/form/InputTextLong';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 
 const ProjectFormEditGeneral = ({

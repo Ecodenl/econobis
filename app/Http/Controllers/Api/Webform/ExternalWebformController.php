@@ -27,6 +27,7 @@ use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Order\Order;
+use App\Eco\Order\OrderCollectionFrequency;
 use App\Eco\Order\OrderPaymentType;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Order\OrderStatus;
@@ -259,6 +260,8 @@ class ExternalWebformController extends Controller
                 'order_iban_tnv' => 'iban_attn',
                 'order_betaalwijze_id' => 'payment_type_id',
                 'order_status_id' => 'status_id',
+                'order_nota_frequentie_id' => 'collection_frequency_id',
+                'order_volgende_nota_datum' => 'date_next_invoice',
                 'order_begindatum' => 'date_start',
                 'order_aanvraagdatum' => 'date_requested',
             ],
@@ -1430,6 +1433,12 @@ class ExternalWebformController extends Controller
                 $statusId = 'concept';
             }
 
+            $collectionFrequencyId = $data['collection_frequency_id'];
+            if (!OrderCollectionFrequency::exists($collectionFrequencyId)) {
+                $this->log('Geen bekende waarde voor order frequentie meegegeven, default naar once.');
+                $collectionFrequencyId = 'once';
+            }
+
             $paymentTypeId = $data['payment_type_id'];
             if (!OrderPaymentType::exists($paymentTypeId)) {
                 $this->log('Geen bekende waarde voor betaalwijze meegegeven, default naar betaalwijze van product.');
@@ -1438,17 +1447,24 @@ class ExternalWebformController extends Controller
 
             $iban = $this->checkIban($data['iban'], 'order.');
 
-            $dateStart = Carbon::make($data['date_start']);
-            if (!$dateStart) {
-                $this->log('Geen bekende startdatum meegegeven voor product, default naar datum van vandaag.');
-                $dateStart = new Carbon();
+            $dateNextInvoice = Carbon::make($data['date_next_invoice']);
+            if (!$dateNextInvoice) {
+                $this->log('Geen bekende volgende nota datum meegegeven voor order, default naar geen datum.');
+                $dateNextInvoice = new Carbon();
             }
 
             $dateRequested = Carbon::make($data['date_requested']);
             if (!$dateRequested) {
-                $this->log('Geen bekende aanvraag datum meegegeven voor product, default naar datum van vandaag.');
+                $this->log('Geen bekende aanvraag datum meegegeven voor order, default naar datum van vandaag.');
                 $dateRequested = new Carbon();
             }
+
+            $dateStart = Carbon::make($data['date_start']);
+            if (!$dateStart) {
+                $this->log('Geen bekende startdatum meegegeven voor orderproduct, default naar datum van vandaag.');
+                $dateStart = new Carbon();
+            }
+
 
             $order = Order::create([
                 'contact_id' => $contact->id,
@@ -1459,7 +1475,8 @@ class ExternalWebformController extends Controller
                 'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
-                'collection_frequency_id' => 'once',
+                '$date_next_invoice' => $dateNextInvoice,
+                'collection_frequency_id' => $collectionFrequencyId,
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');

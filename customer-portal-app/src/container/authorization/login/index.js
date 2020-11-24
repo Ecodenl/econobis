@@ -19,7 +19,7 @@ export default props => {
 
     const [portalActive, setPortalActive] = useState(false);
     const [showNewAtCooperativeLink, setShowNewAtCooperativeLink] = useState(false);
-    const [newAtCooperativeLinkText, setNewAtCooperativeLinkText] = useState(false);
+    const [newAtCooperativeLinkText, setNewAtCooperativeLinkText] = useState('');
 
     useEffect(() => {
         (function callFetchPortalActive() {

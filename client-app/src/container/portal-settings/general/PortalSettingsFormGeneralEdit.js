@@ -372,6 +372,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                     this.props.switchToView();
                 })
                 .catch(error => {
+                    console.log(error);
                     alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
                 });
     };
@@ -923,7 +924,4 @@ class PortalSettingsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(PortalSettingsFormGeneralEdit);
+export default connect(null, mapDispatchToProps)(PortalSettingsFormGeneralEdit);

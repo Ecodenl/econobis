@@ -1475,7 +1475,7 @@ class ExternalWebformController extends Controller
                 'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
-                '$date_next_invoice' => $dateNextInvoice,
+                'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
             ]);
 

@@ -514,13 +514,13 @@ class TemplateVariableHelper
                 return $model->date_planned_start ? Carbon::parse($model->date_planned_start)->format('d/m/Y') : null;
                 break;
             case 'begin_tijd':
-                return $model->start_time_planned ? Carbon::parse($model->start_time_planned)->format('HH:mm') : null;
+                return $model->start_time_planned ? Carbon::parse($model->start_time_planned)->format('H:i') : null;
                 break;
             case 'einddatum':
                 return $model->date_planned_finish ? Carbon::parse($model->date_planned_finish)->format('d/m/Y') : null;
                 break;
             case 'eind_tijd':
-                return $model->end_time_planned ? Carbon::parse($model->end_time_planned)->format('HH:mm') : null;
+                return $model->end_time_planned ? Carbon::parse($model->end_time_planned)->format('H:i') : null;
                 break;
             case 'afgehandeld':
                 return $model->finished ? 'Ja' : 'Nee';

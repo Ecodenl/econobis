@@ -244,6 +244,7 @@ class EmailController
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
         $email->intake_id = $sanitizedData['intake_id'];
+        $email->task_id = $sanitizedData['task_id'];
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->reply_type_id = $sanitizedData['reply_type_id'];
@@ -420,6 +421,7 @@ class EmailController
         $email->bcc = $sanitizedData['bcc'];
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->intake_id = $sanitizedData['intake_id'];
+        $email->task_id = $sanitizedData['task_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->reply_type_id = $sanitizedData['reply_type_id'];
         $email->old_email_id = $sanitizedData['old_email_id'];
@@ -441,6 +443,7 @@ class EmailController
             'bcc' => '',
             'quotationRequestId' => '',
             'intakeId' => '',
+            'taskId' => '',
             'replyTypeId' => 'string',
             'oldEmailId' => '',
             'contactGroupId' => '',
@@ -526,12 +529,20 @@ class EmailController
             $data['intakeId'] = null;
         }
 
+        if(!array_key_exists('taskId', $data)){
+            $data['taskId'] = null;
+        }
+        if($data['taskId'] == ''){
+            $data['taskId'] = null;
+        }
+
         $sanitizedData = [
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
+            'task_id' => $data['taskId'],
             'reply_type_id' => $data['replyTypeId'],
             'old_email_id' => $data['oldEmailId'],
             'contact_group_id' => $data['contactGroupId'],

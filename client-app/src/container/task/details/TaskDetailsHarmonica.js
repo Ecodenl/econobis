@@ -14,11 +14,11 @@ class TaskDetailsHarmonica extends Component {
 
         this.state = {
             toggleShowList: {
+                documents: false,
                 tasks: false,
                 notes: false,
                 emailsInbox: false,
                 emailsSent: false,
-                documents: false,
             },
         };
 
@@ -49,12 +49,12 @@ class TaskDetailsHarmonica extends Component {
         });
     }
 
-    newEmail = () => {
-        hashHistory.push(`/email/nieuw`);
-    };
-
     newDocument = type => {
         hashHistory.push(`/document/nieuw/${type}/taak/${this.props.taskDetails.id}`);
+    };
+
+    newEmail = () => {
+        hashHistory.push(`/email/nieuw/taak/${this.props.taskDetails.id}/contact/${this.props.taskDetails.contact.id}`);
     };
 
     render() {
@@ -104,7 +104,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TaskDetailsHarmonica);
+export default connect(mapStateToProps, null)(TaskDetailsHarmonica);

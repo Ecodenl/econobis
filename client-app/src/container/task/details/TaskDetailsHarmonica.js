@@ -54,7 +54,13 @@ class TaskDetailsHarmonica extends Component {
     };
 
     newEmail = () => {
-        hashHistory.push(`/email/nieuw/taak/${this.props.taskDetails.id}/contact/${this.props.taskDetails.contact.id}`);
+        if (this.props.taskDetails.contact) {
+            hashHistory.push(
+                `/email/nieuw/taak/${this.props.taskDetails.id}/contact/${this.props.taskDetails.contact.id}`
+            );
+        } else {
+            hashHistory.push(`/email/nieuw/taak/${this.props.taskDetails.id}`);
+        }
     };
 
     render() {

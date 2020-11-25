@@ -433,8 +433,50 @@ class ParticipantExcelHelper
                         $rowData[118] = "";
                     }
 
+                    if($mutationType->code_ref === 'redemption')
+                    {
+                        $rowData[96] = "";
+                        $rowData[97] = "";
+                        $rowData[98] = "";
+                        $rowData[99] = "";
+                        $rowData[100] = "";
+                        $rowData[101] = "";
+                        $rowData[102] = "";
+                        $rowData[103] = "";
+                        $rowData[104] = "";
+                        $rowData[105] = "";
+                        $rowData[106] = "";
+                        $rowData[107] = "";
+                        $rowData[108] = $mutation->quantity_final;
+                        $rowData[109] = $mutation->amount_final;
+                        $rowData[110] = $mutation->date_entry ? Carbon::parse($mutation->date_entry)->format('d-m-Y') : "";
+                        $rowData[111] = $logFinalDateTime;
+                        $rowData[112] = "";
+                        $rowData[113] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
+                        $rowData[114] = $mutation->entry;
+                        $rowData[115] = $mutation->paid_on;
+                        $rowData[116] = "";
+                        $rowData[117] = "";
+                        $rowData[118] = "";
+                    }
                     if($mutationType->code_ref === 'result')
                     {
+                        $rowData[96] = "";
+                        $rowData[97] = "";
+                        $rowData[98] = "";
+                        $rowData[99] = "";
+                        $rowData[100] = "";
+                        $rowData[101] = "";
+                        $rowData[102] = "";
+                        $rowData[103] = "";
+                        $rowData[104] = "";
+                        $rowData[105] = "";
+                        $rowData[106] = "";
+                        $rowData[107] = "";
+                        $rowData[108] = "";
+                        $rowData[109] = "";
+                        $rowData[110] = "";
+                        $rowData[111] = "";
                         $rowData[112] = $mutation->returns;
                         $rowData[113] = $mutation->date_payment ? Carbon::parse($mutation->date_payment)->format('d-m-Y') : "";
                         $rowData[114] = $mutation->entry;
@@ -445,6 +487,22 @@ class ParticipantExcelHelper
                     }
                     if($mutationType->code_ref === 'energyTaxRefund')
                     {
+                        $rowData[96] = "";
+                        $rowData[97] = "";
+                        $rowData[98] = "";
+                        $rowData[99] = "";
+                        $rowData[100] = "";
+                        $rowData[101] = "";
+                        $rowData[102] = "";
+                        $rowData[103] = "";
+                        $rowData[104] = "";
+                        $rowData[105] = "";
+                        $rowData[106] = "";
+                        $rowData[107] = "";
+                        $rowData[108] = "";
+                        $rowData[109] = "";
+                        $rowData[110] = "";
+                        $rowData[111] = "";
                         $rowData[112] = "";
                         $rowData[113] = "";
                         $rowData[114] = "";

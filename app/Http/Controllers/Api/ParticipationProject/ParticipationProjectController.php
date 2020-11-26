@@ -289,6 +289,7 @@ class ParticipationProjectController extends ApiController
             ->date('dateDidAcceptAgreement')->validate('date')->alias('date_did_accept_agreement')->next()
             ->boolean('didUnderstandInfo')->alias('did_understand_info')->next()
             ->date('dateDidUnderstandInfo')->validate('date')->alias('date_did_understand_info')->next()
+            ->integer('choiceMembership')->onEmpty(null)->alias('choice_membership')->next()
             ->integer('giftedByContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('gifted_by_contact_id')->next()
             ->string('ibanPayout')->alias('iban_payout')->next()
             ->integer('legalRepContactId')->validate('nullable|exists:contacts,id')->onEmpty(null)->alias('legal_rep_contact_id')->next()

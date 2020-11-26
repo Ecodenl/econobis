@@ -118,6 +118,18 @@ class Project extends Model
         return $this->belongsTo(EmailTemplate::class, 'email_template_agreement_id');
     }
 
+    public function questionAboutMembershipGroup(){
+        return $this->belongsTo(ContactGroup::class, 'question_about_membership_group_id');
+    }
+
+    public function memberGroup(){
+        return $this->belongsTo(ContactGroup::class, 'member_group_id');
+    }
+
+    public function noMemberGroup(){
+        return $this->belongsTo(ContactGroup::class, 'no_member_group_id');
+    }
+
     public function getCurrentParticipations(){
         $participants = $this->participantsProject()->get();
 

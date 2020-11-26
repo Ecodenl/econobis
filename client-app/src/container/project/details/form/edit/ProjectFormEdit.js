@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 import validator from 'validator';
+import { isEmpty } from 'lodash';
 
 import ButtonText from '../../../../../components/button/ButtonText';
 import PanelFooter from '../../../../../components/panel/PanelFooter';
@@ -18,6 +19,7 @@ import ProjectFormDefaultCapital from '../../../form-default/ProjectFormDefaultC
 import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/ProjectFormDefaultPostalcodeLinkCapital';
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
+import PortalSettingsAPI from '../../../../../api/portal-settings/PortalSettingsAPI';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -25,6 +27,7 @@ class ProjectFormEdit extends Component {
 
         this.state = {
             contactGroups: [],
+            staticContactGroups: [],
             emailTemplates: [],
             documentTemplates: [],
             project: {
@@ -51,8 +54,70 @@ class ProjectFormEdit extends Component {
     }
 
     componentDidMount() {
+        if (this.state.project && !this.state.project.showQuestionAboutMembership) {
+            const keys =
+                '?keys[]=cooperativeName' +
+                '&keys[]=defaultContactGroupMemberId' +
+                '&keys[]=defaultContactGroupNoMemberId';
+            PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
+                let defaultTextIsMember;
+                let defaultTextIsNoMember = '';
+                let defaultTextBecomeMember = '';
+                let defaultTextBecomeNoMember = '';
+                let defaultContactGroupMemberId = null;
+                let defaultContactGroupNoMemberId = null;
+                if (payload.data.cooperativeName) {
+                    let cooperatie_naam = payload.data.cooperativeName;
+                    defaultTextIsMember = 'Ik ben lid van ' + cooperatie_naam + ' en ik betaal geen inschrijfkosten';
+                    defaultTextIsNoMember = 'Ik ben geen lid van ' + cooperatie_naam;
+                    defaultTextBecomeMember =
+                        'Ik wil lid worden van ' + cooperatie_naam + ' en betaal daarom geen inschrijfkosten';
+                    defaultTextBecomeNoMember =
+                        'Ik ben en word geen lid van ' + cooperatie_naam + ' en betaal inschrijfkosten';
+                } else {
+                    defaultTextIsMember = 'Ik ben lid en ik betaal geen inschrijfkosten';
+                    defaultTextIsNoMember = 'Ik ben geen lid';
+                    defaultTextBecomeMember = 'Ik wil lid worden en betaal daarom geen inschrijfkosten';
+                    defaultTextBecomeNoMember = 'Ik wil geen lid wordenen betaal inschrijfkosten';
+                }
+                defaultContactGroupMemberId = payload.data.defaultContactGroupMemberId
+                    ? payload.data.defaultContactGroupMemberId
+                    : null;
+                defaultContactGroupNoMemberId = payload.data.defaultContactGroupNoMemberId
+                    ? payload.data.defaultContactGroupNoMemberId
+                    : null;
+
+                this.setState({
+                    project: {
+                        ...this.state.project,
+                        textIsMember: isEmpty(this.state.project.textIsMember)
+                            ? defaultTextIsMember
+                            : this.state.project.textIsMember,
+                        textIsNoMember: isEmpty(this.state.project.textIsNoMember)
+                            ? defaultTextIsNoMember
+                            : this.state.project.textIsNoMember,
+                        textBecomeMember: isEmpty(this.state.project.textBecomeMember)
+                            ? defaultTextBecomeMember
+                            : this.state.project.textBecomeMember,
+                        textBecomeNoMember: isEmpty(this.state.project.textBecomeNoMember)
+                            ? defaultTextBecomeNoMember
+                            : this.state.project.textBecomeNoMember,
+                        memberGroupId: isEmpty(this.state.project.memberGroupId)
+                            ? defaultContactGroupMemberId
+                            : this.state.project.memberGroupId,
+                        noMemberGroupId: isEmpty(this.state.project.noMemberGroupId)
+                            ? defaultContactGroupNoMemberId
+                            : this.state.project.noMemberGroupId,
+                    },
+                });
+            });
+        }
+
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
+        });
+        ContactGroupAPI.peekStaticContactGroups().then(payload => {
+            this.setState({ staticContactGroups: payload });
         });
         EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState({ emailTemplates: payload });
@@ -135,6 +200,37 @@ class ProjectFormEdit extends Component {
         if (validator.isEmpty('' + project.administrationId)) {
             errors.administrationId = true;
             hasErrors = true;
+        }
+
+        if (project.showQuestionAboutMembership) {
+            if (!project.questionAboutMembershipGroupId) {
+                errors.questionAboutMembershipGroupId = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textIsMember)) {
+                errors.textIsMember = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textIsNoMember)) {
+                errors.textIsNoMember = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textBecomeMember)) {
+                errors.textBecomeMember = true;
+                hasErrors = true;
+            }
+            if (!project.memberGroupId) {
+                errors.memberGroupId = true;
+                hasErrors = true;
+            }
+            if (validator.isEmpty('' + project.textBecomeNoMember)) {
+                errors.textBecomeNoMember = true;
+                hasErrors = true;
+            }
+            if (!project.noMemberGroupId) {
+                errors.noMemberGroupId = true;
+                hasErrors = true;
+            }
         }
 
         // todo projects doesn't have a countryId field yet
@@ -245,6 +341,14 @@ class ProjectFormEdit extends Component {
             emailTemplates,
             linkAgreeTerms,
             linkUnderstandInfo,
+            showQuestionAboutMembership,
+            questionAboutMembershipGroupId,
+            textIsMember,
+            textIsNoMember,
+            textBecomeMember,
+            memberGroupId,
+            textBecomeNoMember,
+            noMemberGroupId,
         } = this.state.project;
         const {
             participationsDefinitive,
@@ -290,6 +394,7 @@ class ProjectFormEdit extends Component {
                     handleReactSelectChange={this.handleReactSelectChange}
                     errors={this.state.errors}
                     contactGroups={this.state.contactGroups}
+                    staticContactGroups={this.state.staticContactGroups}
                     amountOfParticipants={amountOfParticipants}
                     documentTemplateAgreementId={documentTemplateAgreementId}
                     documentTemplates={this.state.documentTemplates}
@@ -297,6 +402,14 @@ class ProjectFormEdit extends Component {
                     emailTemplates={this.state.emailTemplates}
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
+                    showQuestionAboutMembership={showQuestionAboutMembership}
+                    questionAboutMembershipGroupId={questionAboutMembershipGroupId}
+                    textIsMember={textIsMember}
+                    textIsNoMember={textIsNoMember}
+                    textBecomeMember={textBecomeMember}
+                    memberGroupId={memberGroupId}
+                    textBecomeNoMember={textBecomeNoMember}
+                    noMemberGroupId={noMemberGroupId}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (

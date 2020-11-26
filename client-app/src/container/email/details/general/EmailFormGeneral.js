@@ -60,9 +60,17 @@ class EmailFormGeneral extends Component {
             >
                 <PanelBody>
                     {this.state.showEdit /*&& this.props.permissions.manageOpportunity*/ ? (
-                        <EmailFormEdit switchToView={this.switchToView} showContacten={this.state.showContacten} toggleShowContacten={this.toggleShowContacten} />
+                        <EmailFormEdit
+                            switchToView={this.switchToView}
+                            showContacten={this.state.showContacten}
+                            toggleShowContacten={this.toggleShowContacten}
+                        />
                     ) : (
-                        <EmailFormView switchToEdit={this.switchToEdit} showContacten={this.state.showContacten} toggleShowContacten={this.toggleShowContacten} />
+                        <EmailFormView
+                            switchToEdit={this.switchToEdit}
+                            showContacten={this.state.showContacten}
+                            toggleShowContacten={this.toggleShowContacten}
+                        />
                     )}
                 </PanelBody>
             </Panel>

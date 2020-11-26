@@ -613,7 +613,6 @@ class EnergySupplierExcelHelper
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->contact->number;
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;
-//                    $rowData[] = PortalSettings::get('cooperativeName') ? PortalSettings::get('cooperativeName') : \Config::get('app.APP_NAME');
                     $rowData[] = \Config::get('app.name');
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);

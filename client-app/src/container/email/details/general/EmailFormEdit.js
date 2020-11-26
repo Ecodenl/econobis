@@ -252,14 +252,16 @@ class EmailFormEdit extends Component {
                 </div>
 
                 <div className="row">
-                    {(manyContacts && !this.props.showContacten) ? (
+                    {manyContacts && !this.props.showContacten ? (
                         <ViewText
                             label={'Contacten'}
-                            value={<ButtonText
+                            value={
+                                <ButtonText
                                     buttonClassName={'btn-success btn-padding-small'}
                                     buttonText={'Toon contacten (' + contactIds.split(',').length + ')'}
                                     onClickAction={this.props.toggleShowContacten}
-                                />}
+                                />
+                            }
                         />
                     ) : (
                         <InputReactSelect
@@ -271,7 +273,7 @@ class EmailFormEdit extends Component {
                             optionName={'fullName'}
                             isLoading={this.state.peekLoading.contacts}
                         />
-                     )}
+                    )}
                     <InputSelect
                         label={'Intake'}
                         size={'col-sm-6'}
@@ -282,19 +284,22 @@ class EmailFormEdit extends Component {
                     />
                 </div>
 
-                {manyContacts && this.props.showContacten &&
-                <div className="row" onClick={this.props.toggleShowContacten}>
-                    <ViewText label={''}
-                              className={'form-group col-sm-6' }
-                              value={<ButtonText
-                                  buttonClassName={'btn-success btn-padding-small'}
-                                  buttonText={'Verberg contacten'}
-                                  onClickAction={this.props.toggleShowContacten}
-                              />}
-                    />
-                    <div className="form-group col-md-6" />
-                </div>
-                }
+                {manyContacts && this.props.showContacten && (
+                    <div className="row" onClick={this.props.toggleShowContacten}>
+                        <ViewText
+                            label={''}
+                            className={'form-group col-sm-6'}
+                            value={
+                                <ButtonText
+                                    buttonClassName={'btn-success btn-padding-small'}
+                                    buttonText={'Verberg contacten'}
+                                    onClickAction={this.props.toggleShowContacten}
+                                />
+                            }
+                        />
+                        <div className="form-group col-md-6" />
+                    </div>
+                )}
 
                 <div className="row">
                     <InputSelect

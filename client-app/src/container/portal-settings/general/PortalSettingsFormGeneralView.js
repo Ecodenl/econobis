@@ -7,11 +7,11 @@ import Image from 'react-bootstrap/es/Image';
 import { FaUser } from 'react-icons/fa';
 
 const PortalSettingsFormGeneralView = ({
+    portalActive,
     portalName,
     cooperativeName,
     portalWebsite,
     portalUrl,
-    // defaultTextColor,
     backgroundColor,
     backgroundTextColor,
     backgroundImageColor,
@@ -29,6 +29,9 @@ const PortalSettingsFormGeneralView = ({
     emailTemplateNewAccount,
     linkPrivacyPolicy,
     showNewAtCooperativeLink,
+    newAtCooperativeLinkText,
+    defaultContactGroupMember,
+    defaultContactGroupNoMember,
     pcrPowerKwhConsumptionPercentage,
     pcrGeneratingCapacityOneSolorPanel,
     switchToEdit,
@@ -278,6 +281,14 @@ const PortalSettingsFormGeneralView = ({
                     <hr />
                     <div className="row">
                         <ViewText
+                            label={'Contacten portal actief'}
+                            divSize={'col-sm-8'}
+                            value={portalActive ? 'Ja' : 'Nee'}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
                             label={'Verantwoordelijke portal'}
                             divSize={'col-sm-8'}
                             value={responsibleUser ? responsibleUser.fullName : ''}
@@ -308,9 +319,52 @@ const PortalSettingsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Nieuw bij, aanmelden mogelijk'}
+                            label={'Nieuwe contacten kunnen account aanmaken'}
                             divSize={'col-sm-8'}
                             value={showNewAtCooperativeLink ? 'Ja' : 'Nee'}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    {showNewAtCooperativeLink ? (
+                        <div className="row">
+                            <ViewText
+                                label={'Tekst voor het aanmaken nieuw account'}
+                                divSize={'col-sm-8'}
+                                value={newAtCooperativeLinkText}
+                                className={'col-sm-8 form-group'}
+                            />
+                            {/*<span*/}
+                            {/*className="rc-color-picker-trigger"*/}
+                            {/*unselectable="unselectable"*/}
+                            {/*style={{*/}
+                            {/*backgroundColor: backgroundImageColor,*/}
+                            {/*color: backgroundImageTextColor,*/}
+                            {/*border: '1px solid #999',*/}
+                            {/*display: 'inline-block',*/}
+                            {/*padding: '2px',*/}
+                            {/*borderRadius: '2px',*/}
+                            {/*width: '300px',*/}
+                            {/*height: 'auto',*/}
+                            {/*boxShadow: '0 0 0 2px #fff inset',*/}
+                            {/*}}*/}
+                            {/*>*/}
+                            {/*{newAtCooperativeLinkText.replace('{cooperatie_naam}', cooperativeName)}*/}
+                            {/*</span>*/}
+                        </div>
+                    ) : null}
+                    <div className="row">
+                        <ViewText
+                            label={'Standaard contact groep lid worden'}
+                            divSize={'col-sm-8'}
+                            value={defaultContactGroupMember ? defaultContactGroupMember.name : ''}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Standaard contact groep geen lid worden'}
+                            divSize={'col-sm-8'}
+                            value={defaultContactGroupNoMember ? defaultContactGroupNoMember.name : ''}
                             className={'col-sm-8 form-group'}
                         />
                     </div>

@@ -35,6 +35,9 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplates: {
                 ...props.emailTemplates,
             },
+            staticContactGroups: {
+                ...props.staticContactGroups,
+            },
             attachmentLogo: '',
             filenameLogo: 'logo.png',
             newLogo: false,
@@ -42,11 +45,11 @@ class PortalSettingsFormGeneralEdit extends Component {
             filenameFavicon: 'favicon.ico',
             newFavicon: false,
             errors: {
+                portalActive: false,
                 portalName: false,
                 cooperativeName: false,
                 portalWebsite: false,
                 portalUrl: false,
-                // defaultTextColor: false,
                 backgroundColor: false,
                 backgroundTextColor: false,
                 backgroundImageColor: false,
@@ -64,6 +67,9 @@ class PortalSettingsFormGeneralEdit extends Component {
                 emailTemplateNewAccountId: false,
                 linkPrivacyPolicy: false,
                 showNewAtCooperativeLink: false,
+                newAtCooperativeLinkText: false,
+                defaultContactGroupMemberId: false,
+                defaultContactGroupNoMemberId: false,
                 pcrPowerKwhConsumptionPercentage: false,
                 pcrGeneratingCapacityOneSolorPanel: false,
             },
@@ -137,10 +143,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.portalUrl = true;
             hasErrors = true;
         }
-        // if (validator.isEmpty(portalSettings.defaultTextColor)) {
-        //     errors.defaultTextColor = true;
-        //     hasErrors = true;
-        // }
         if (validator.isEmpty(portalSettings.backgroundColor)) {
             errors.backgroundColor = true;
             hasErrors = true;
@@ -177,46 +179,103 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.buttonTextColor = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.responsibleUserId + '')) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.responsibleUserId + '')
+        ) {
             errors.responsibleUserId = true;
             hasErrors = true;
         }
         if (
             !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
             validator.isEmpty(portalSettings.contactResponsibleOwnerUserId + '')
         ) {
             errors.contactResponsibleOwnerUserId = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.checkContactTaskResponsible + '')) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.checkContactTaskResponsible + '')
+        ) {
             errors.checkContactTaskResponsible = true;
+            hasErrors = true;
+        }
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.newAtCooperativeLinkText)
+        ) {
+            errors.newAtCooperativeLinkText = true;
+            hasErrors = true;
+        }
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.defaultContactGroupMemberId + '')
+        ) {
+            errors.defaultContactGroupMemberId = true;
+            hasErrors = true;
+        }
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.defaultContactGroupNoMemberId + '')
+        ) {
+            errors.defaultContactGroupNoMemberId = true;
             hasErrors = true;
         }
         if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.linkPrivacyPolicy)) {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage)) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage + '')
+        ) {
             errors.pcrPowerKwhConsumptionPercentage = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)
+        ) {
             errors.pcrGeneratingCapacityOneSolorPanel = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.emailTemplateNewAccountId + '')) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.emailTemplateNewAccountId + '')
+        ) {
             errors.emailTemplateNewAccountId = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.portalName)) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.portalName)
+        ) {
             errors.portalName = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.cooperativeName)) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.cooperativeName)
+        ) {
             errors.cooperativeName = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.portalWebsite)) {
+        if (
+            !this.manageTechnicalPortalSettings &&
+            portalSettings.portalActive &&
+            validator.isEmpty(portalSettings.portalWebsite)
+        ) {
             errors.portalWebsite = true;
             hasErrors = true;
         }
@@ -239,11 +298,11 @@ class PortalSettingsFormGeneralEdit extends Component {
 
         const data = new FormData();
 
+        data.append('portalActive', portalSettings.portalActive ? portalSettings.portalActive : false);
         data.append('portalName', portalSettings.portalName ? portalSettings.portalName : '');
         data.append('cooperativeName', portalSettings.cooperativeName ? portalSettings.cooperativeName : '');
         data.append('portalWebsite', portalSettings.portalWebsite ? portalSettings.portalWebsite : '');
         data.append('portalUrl', portalSettings.portalUrl);
-        // data.append('defaultTextColor', portalSettings.defaultTextColor);
         data.append('backgroundColor', portalSettings.backgroundColor);
         data.append('backgroundTextColor', portalSettings.backgroundTextColor);
         data.append('backgroundImageColor', portalSettings.backgroundImageColor);
@@ -271,9 +330,32 @@ class PortalSettingsFormGeneralEdit extends Component {
             portalSettings.emailTemplateNewAccountId ? portalSettings.emailTemplateNewAccountId : ''
         );
         data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
-        data.append('showNewAtCooperativeLink', portalSettings.showNewAtCooperativeLink);
-        data.append('pcrPowerKwhConsumptionPercentage', portalSettings.pcrPowerKwhConsumptionPercentage ? (parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100) : 0);
-        data.append('pcrGeneratingCapacityOneSolorPanel', portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0);
+        data.append(
+            'showNewAtCooperativeLink',
+            portalSettings.showNewAtCooperativeLink ? portalSettings.showNewAtCooperativeLink : false
+        );
+        data.append(
+            'newAtCooperativeLinkText',
+            portalSettings.newAtCooperativeLinkText ? portalSettings.newAtCooperativeLinkText : ''
+        );
+        data.append(
+            'defaultContactGroupMemberId',
+            portalSettings.defaultContactGroupMemberId ? portalSettings.defaultContactGroupMemberId : ''
+        );
+        data.append(
+            'defaultContactGroupNoMemberId',
+            portalSettings.defaultContactGroupNoMemberId ? portalSettings.defaultContactGroupNoMemberId : ''
+        );
+        data.append(
+            'pcrPowerKwhConsumptionPercentage',
+            portalSettings.pcrPowerKwhConsumptionPercentage
+                ? parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100
+                : 0
+        );
+        data.append(
+            'pcrGeneratingCapacityOneSolorPanel',
+            portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0
+        );
 
         data.append('attachmentLogo', attachmentLogo);
         data.append('attachmentFavicon', attachmentFavicon);
@@ -284,22 +366,24 @@ class PortalSettingsFormGeneralEdit extends Component {
         !hasErrors &&
             PortalSettingsAPI.updatePortalSettings(data)
                 .then(payload => {
-                    this.props.updateState(portalSettings);
+                    this.props.updateState(payload.data);
                     this.props.fetchSystemData();
+                    this.props.fetchStaticContactGroups();
                     this.props.switchToView();
                 })
                 .catch(error => {
+                    console.log(error);
                     alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
                 });
     };
 
     render() {
         const {
+            portalActive,
             portalName,
             cooperativeName,
             portalWebsite,
             portalUrl,
-            // defaultTextColor,
             backgroundColor,
             backgroundTextColor,
             backgroundImageColor,
@@ -315,6 +399,9 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplateNewAccountId,
             linkPrivacyPolicy,
             showNewAtCooperativeLink,
+            newAtCooperativeLinkText,
+            defaultContactGroupMemberId,
+            defaultContactGroupNoMemberId,
             pcrPowerKwhConsumptionPercentage,
             pcrGeneratingCapacityOneSolorPanel,
         } = this.state.portalSettings;
@@ -401,33 +488,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                             />
                         )}
 
-                        {/*<div className="row">*/}
-                        {/*<InputText*/}
-                        {/*label="Standaard tekst kleur"*/}
-                        {/*divSize={'col-sm-8'}*/}
-                        {/*name={'defaultTextColor'}*/}
-                        {/*value={defaultTextColor}*/}
-                        {/*onChangeAction={this.handleInputChange}*/}
-                        {/*readOnly={!this.manageTechnicalPortalSettings}*/}
-                        {/*required={'required'}*/}
-                        {/*error={this.state.errors.defaultTextColor}*/}
-                        {/*/>*/}
-                        {/*<span*/}
-                        {/*className="rc-color-picker-trigger"*/}
-                        {/*unselectable="unselectable"*/}
-                        {/*style={{*/}
-                        {/*backgroundColor: '#fff',*/}
-                        {/*color: defaultTextColor,*/}
-                        {/*border: '1px solid #999',*/}
-                        {/*display: 'inline-block',*/}
-                        {/*padding: '2px',*/}
-                        {/*borderRadius: '2px',*/}
-                        {/*width: '50px',*/}
-                        {/*height: '30px',*/}
-                        {/*boxShadow: '0 0 0 2px #fff inset',*/}
-                        {/*}}*/}
-                        {/*>Tekst</span>*/}
-                        {/*</div>*/}
                         <div className="row">
                             <InputText
                                 label="Login/Header - achtergrond afbeelding kleur"
@@ -635,6 +695,15 @@ class PortalSettingsFormGeneralEdit extends Component {
                         <hr />
 
                         <div className="row">
+                            <InputToggle
+                                label="Contacten portal actief"
+                                divSize={'col-sm-8'}
+                                name={'portalActive'}
+                                value={portalActive}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
                             <InputReactSelect
                                 label="Verantwoordelijke portal"
                                 divSize={'col-sm-8'}
@@ -643,7 +712,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.responsibleUserId}
                                 multi={false}
                             />
@@ -657,7 +726,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.contactResponsibleOwnerUserId}
                                 multi={false}
                             />
@@ -679,14 +748,14 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 ]}
                                 value={checkContactTaskResponsible}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.checkContactTaskResponsible}
                             />
                         </div>
 
                         <div className="row">
                             <InputToggle
-                                label="Nieuw bij, aanmelden mogelijk"
+                                label="Nieuwe contacten kunnen account aanmaken"
                                 divSize={'col-sm-8'}
                                 name={'showNewAtCooperativeLink'}
                                 value={showNewAtCooperativeLink}
@@ -694,6 +763,64 @@ class PortalSettingsFormGeneralEdit extends Component {
                             />
                         </div>
 
+                        {showNewAtCooperativeLink ? (
+                            <div className="row">
+                                <InputText
+                                    label="Tekst voor het aanmaken nieuw account"
+                                    divSize={'col-sm-8'}
+                                    name={'newAtCooperativeLinkText'}
+                                    value={newAtCooperativeLinkText}
+                                    maxLength={255}
+                                    onChangeAction={this.handleInputChange}
+                                    required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                    error={this.state.errors.newAtCooperativeLinkText}
+                                />
+                                {/*<span*/}
+                                {/*className="rc-color-picker-trigger"*/}
+                                {/*unselectable="unselectable"*/}
+                                {/*style={{*/}
+                                {/*backgroundColor: backgroundImageColor,*/}
+                                {/*color: backgroundImageTextColor,*/}
+                                {/*border: '1px solid #999',*/}
+                                {/*display: 'inline-block',*/}
+                                {/*padding: '2px',*/}
+                                {/*borderRadius: '2px',*/}
+                                {/*width: '300px',*/}
+                                {/*height: 'auto',*/}
+                                {/*boxShadow: '0 0 0 2px #fff inset',*/}
+                                {/*}}*/}
+                                {/*>*/}
+                                {/*{newAtCooperativeLinkText.replace('{cooperatie_naam}', cooperativeName)}*/}
+                                {/*</span>*/}
+                            </div>
+                        ) : null}
+
+                        <div className="row">
+                            <InputReactSelect
+                                label="Standaard contact groep lid worden"
+                                divSize={'col-sm-8'}
+                                name={'defaultContactGroupMemberId'}
+                                value={defaultContactGroupMemberId}
+                                options={this.props.staticContactGroups}
+                                onChangeAction={this.handleReactSelectChange}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                error={this.state.errors.defaultContactGroupMemberId}
+                                multi={false}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label="Standaard contact groep geen lid worden"
+                                divSize={'col-sm-8'}
+                                name={'defaultContactGroupNoMemberId'}
+                                value={defaultContactGroupNoMemberId}
+                                options={this.props.staticContactGroups}
+                                onChangeAction={this.handleReactSelectChange}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                error={this.state.errors.defaultContactGroupNoMemberId}
+                                multi={false}
+                            />
+                        </div>
                         <div className="row">
                             <InputText
                                 label="Privacybeleid link"
@@ -701,7 +828,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'linkPrivacyPolicy'}
                                 value={linkPrivacyPolicy}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.linkPrivacyPolicy}
                             />
                         </div>
@@ -715,7 +842,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'pcrPowerKwhConsumptionPercentage'}
                                 value={pcrPowerKwhConsumptionPercentage}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.pcrPowerKwhConsumptionPercentage}
                             />
                         </div>
@@ -727,7 +854,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'pcrGeneratingCapacityOneSolorPanel'}
                                 value={pcrGeneratingCapacityOneSolorPanel}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.pcrGeneratingCapacityOneSolorPanel}
                             />
                         </div>
@@ -739,7 +866,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={emailTemplateNewAccountId}
                                 options={this.props.emailTemplates}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.emailTemplateNewAccountId}
                                 multi={false}
                             />
@@ -751,7 +878,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'portalName'}
                                 value={portalName}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.portalName}
                             />
                         </div>
@@ -762,7 +889,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'cooperativeName'}
                                 value={cooperativeName}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.cooperativeName}
                             />
                         </div>
@@ -773,7 +900,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'portalWebsite'}
                                 value={portalWebsite}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings ? 'required' : ''}
+                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
                                 error={this.state.errors.portalWebsite}
                             />
                         </div>
@@ -797,7 +924,4 @@ class PortalSettingsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(PortalSettingsFormGeneralEdit);
+export default connect(null, mapDispatchToProps)(PortalSettingsFormGeneralEdit);

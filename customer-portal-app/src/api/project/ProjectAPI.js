@@ -43,8 +43,11 @@ export default {
                         'postalcodeLink',
                         'linkAgreeTerms',
                         'linkUnderstandInfo',
+                        'showQuestionAboutMembership',
                     ],
-                    rlt: { projectType: { fld: ['id', 'codeRef'] } },
+                    rlt: {
+                        projectType: { fld: ['id', 'codeRef'] },
+                    },
                 },
             },
         });

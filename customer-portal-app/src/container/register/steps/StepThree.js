@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepThree({ project, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepThree({ project, contactProjectData, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         didAcceptAgreement: Yup.bool().test(
             'didAcceptAgreement',
@@ -32,7 +32,7 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                 }}
                 initialValues={initialRegisterValues}
             >
-                {({ handleSubmit, touched, errors }) => (
+                {({ handleSubmit, touched, errors, setFieldValue }) => (
                     <>
                         <Form>
                             <Row>
@@ -109,6 +109,60 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                                     />
                                 </Col>
                             </Row>
+                            {project.showQuestionAboutMembership ? (
+                                <>
+                                    <Row>
+                                        <Col xs={12} md={10}>
+                                            <p>
+                                                {contactProjectData.belongsToMembershipGroup
+                                                    ? contactProjectData.textIsMemberMerged
+                                                    : contactProjectData.textIsNoMemberMerged}
+                                            </p>
+                                        </Col>
+                                    </Row>
+                                    {!contactProjectData.belongsToMembershipGroup ? (
+                                        <Row>
+                                            <Col xs={12} md={10}>
+                                                <Field
+                                                    name="choiceMembership"
+                                                    render={({ field }) => (
+                                                        <>
+                                                            <div className="form-check">
+                                                                <label className="radio-inline">
+                                                                    <input
+                                                                        type="radio"
+                                                                        {...field}
+                                                                        id="choice_membership_yes"
+                                                                        checked={field.value === 1}
+                                                                        value={1}
+                                                                        onChange={() =>
+                                                                            setFieldValue('choiceMembership', 1)
+                                                                        }
+                                                                    />
+                                                                    &nbsp;{contactProjectData.textBecomeMemberMerged}
+                                                                </label>
+                                                                <label className="radio-inline">
+                                                                    <input
+                                                                        type="radio"
+                                                                        {...field}
+                                                                        id="choice_membership_no"
+                                                                        checked={field.value === 2}
+                                                                        value={2}
+                                                                        onChange={() => {
+                                                                            setFieldValue('choiceMembership', 2);
+                                                                        }}
+                                                                    />
+                                                                    &nbsp;{contactProjectData.textBecomeNoMemberMerged}
+                                                                </label>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    ) : null}
+                                </>
+                            ) : null}
                             <Row>
                                 <Col xs={12} md={10}>
                                     <ButtonGroup aria-label="Steps" className="float-right">

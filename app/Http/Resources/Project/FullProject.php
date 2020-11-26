@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Project;
 
 use App\Http\Resources\Administration\FullAdministration;
+use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
@@ -104,6 +105,18 @@ class FullProject extends Resource
                 'emailTemplateAgreement' => FullEmailTemplate::make($this->whenLoaded('emailTemplateAgreement')),
                 'linkAgreeTerms' => $this->link_agree_terms,
                 'linkUnderstandInfo' => $this->link_understand_info,
+                'showQuestionAboutMembership' => $this->show_question_about_membership,
+                'questionAboutMembershipGroupId' => $this->question_about_membership_group_id,
+                'questionAboutMembershipGroup' => FullContactGroup::make($this->whenLoaded('questionAboutMembershipGroup')),
+                'textIsMember' => $this->text_is_member,
+                'textIsNoMember' => $this->text_is_no_member,
+                'textBecomeMember' => $this->text_become_member,
+                'memberGroupId' => $this->member_group_id,
+                'memberGroup' => FullContactGroup::make($this->whenLoaded('memberGroup')),
+                'textBecomeNoMember' => $this->text_become_no_member,
+                'noMemberGroupId' => $this->no_member_group_id,
+                'noMemberGroup' => FullContactGroup::make($this->whenLoaded('noMemberGroup')),
+
             ];
     }
 }

@@ -7,8 +7,11 @@ import InputToggle from '../../../../../components/form/InputToggle';
 import InputMultiSelect from '../../../../../components/form/InputMultiSelect';
 import ViewText from '../../../../../components/form/ViewText';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
+import InputTextLong from '../../../../../components/form/InputTextLong';
+import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 
 const ProjectFormEditGeneral = ({
+    permissions,
     name,
     code,
     description,
@@ -37,6 +40,7 @@ const ProjectFormEditGeneral = ({
     hasPaymentInvoices,
     users,
     contactGroups,
+    staticContactGroups,
     errors,
     amountOfParticipants,
     documentTemplateAgreementId,
@@ -45,6 +49,14 @@ const ProjectFormEditGeneral = ({
     emailTemplates,
     linkAgreeTerms,
     linkUnderstandInfo,
+    showQuestionAboutMembership,
+    questionAboutMembershipGroupId,
+    textIsMember,
+    textIsNoMember,
+    textBecomeMember,
+    memberGroupId,
+    textBecomeNoMember,
+    noMemberGroupId,
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
@@ -229,25 +241,27 @@ const ProjectFormEditGeneral = ({
             <h4>Contacten portal instellingen</h4>
 
             <div className="row">
-                <InputText
+                <InputTextLong
                     label="Voorwaarden link"
                     name={'linkAgreeTerms'}
                     value={linkAgreeTerms}
                     onChangeAction={handleInputChange}
                     error={errors.linkAgreeTerms}
+                    readOnly={!permissions.managePortalSettings}
                 />
             </div>
             <div className="row">
-                <InputText
+                <InputTextLong
                     label="Projectinformatie link"
                     name={'linkUnderstandInfo'}
                     value={linkUnderstandInfo}
                     onChangeAction={handleInputChange}
                     error={errors.linkUnderstandInfo}
+                    readOnly={!permissions.managePortalSettings}
                 />
             </div>
             <div className="row">
-                <InputReactSelect
+                <InputReactSelectLong
                     label="Document template inschrijfformulier"
                     name={'documentTemplateAgreementId'}
                     options={documentTemplates}
@@ -256,10 +270,11 @@ const ProjectFormEditGeneral = ({
                     // isLoading={peekLoading.documentTemplates}
                     multi={false}
                     error={errors.documentTemplateAgreementId}
+                    disabled={!permissions.managePortalSettings}
                 />
             </div>
             <div className="row">
-                <InputReactSelect
+                <InputReactSelectLong
                     label="E-mail template inschrijfbevestiging"
                     name={'emailTemplateAgreementId'}
                     options={emailTemplates}
@@ -268,8 +283,113 @@ const ProjectFormEditGeneral = ({
                     // isLoading={peekLoading.emailTemplates}
                     multi={false}
                     error={errors.emailTemplateAgreementId}
+                    disabled={!permissions.managePortalSettings}
                 />
             </div>
+
+            <hr />
+            <div className="row">
+                <InputToggle
+                    label={'Vragen over lid worden aan of uit?'}
+                    name={'showQuestionAboutMembership'}
+                    value={showQuestionAboutMembership}
+                    onChangeAction={handleInputChange}
+                    disabled={!permissions.managePortalSettings}
+                />
+            </div>
+            {showQuestionAboutMembership == true && (
+                <>
+                    <div className={'row'}>
+                        <InputReactSelectLong
+                            label="Leden groep"
+                            name={'questionAboutMembershipGroupId'}
+                            options={contactGroups}
+                            value={questionAboutMembershipGroupId}
+                            onChangeAction={handleReactSelectChange}
+                            multi={false}
+                            required={'required'}
+                            error={errors.questionAboutMembershipGroupId}
+                            disabled={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    <hr />
+                    <div className={'row'}>
+                        <InputTextLong
+                            label="Regel tekst bij leden"
+                            name={'textIsMember'}
+                            value={textIsMember}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textIsMember}
+                            readOnly={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    <hr />
+                    <div className={'row'}>
+                        <InputTextLong
+                            label="Regel tekst bij niet leden"
+                            name={'textIsNoMember'}
+                            value={textIsNoMember}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textIsNoMember}
+                            readOnly={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputTextLong
+                            label="Keuzetekst (1) bij niet leden"
+                            name={'textBecomeMember'}
+                            value={textBecomeMember}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textBecomeMember}
+                            readOnly={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputReactSelectLong
+                            label="Contacten die keuze 1 maken toevoegen aan"
+                            name={'memberGroupId'}
+                            options={staticContactGroups}
+                            value={memberGroupId}
+                            onChangeAction={handleReactSelectChange}
+                            multi={false}
+                            required={'required'}
+                            error={errors.memberGroupId}
+                            disabled={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputTextLong
+                            label="Keuzetekst (2) bij niet leden"
+                            name={'textBecomeNoMember'}
+                            value={textBecomeNoMember}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textBecomeNoMember}
+                            readOnly={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputReactSelectLong
+                            label="Contacten die keuze 2 maken toevoegen aan"
+                            name={'noMemberGroupId'}
+                            options={staticContactGroups}
+                            value={noMemberGroupId}
+                            onChangeAction={handleReactSelectChange}
+                            multi={false}
+                            required={'required'}
+                            error={errors.noMemberGroupId}
+                            disabled={!permissions.managePortalSettings}
+                        />
+                    </div>
+                </>
+            )}
         </React.Fragment>
     );
 };
@@ -278,6 +398,7 @@ const mapStateToProps = state => {
     return {
         projectStatuses: state.systemData.projectStatus,
         administrations: state.meDetails.administrations,
+        permissions: state.meDetails.permissions,
         users: state.systemData.users,
     };
 };

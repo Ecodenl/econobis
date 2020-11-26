@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Api\Setting;
 
 
+use App\Eco\ContactGroup\ContactGroup;
 use App\Jobs\Portal\GeneratePortalCss;
 use Config;
 use Exception;
@@ -45,6 +46,28 @@ class SettingController
     public function store(Request $request)
     {
         $store = $this->getStore();
+        if(empty($store->get('portalUrl'))){
+            if(empty($request['defaultContactGroupMemberId'])){
+                $contactGroupMember = new ContactGroup();
+                $contactGroupMember->type_id = 'static';
+                $contactGroupMember->composed_of = 'contacts';
+                $contactGroupMember->name =  'Wil lid worden op basis van inschrijving.';
+                $contactGroupMember->description = '';
+                $contactGroupMember->dynamic_filter_type = 'and';
+                $contactGroupMember->save();
+                $request['defaultContactGroupMemberId'] = $contactGroupMember->id;
+            }
+            if(empty($request['defaultContactGroupNoMemberId'])){
+                $contactGroupNoMember = new ContactGroup();
+                $contactGroupNoMember->type_id = 'static';
+                $contactGroupNoMember->composed_of = 'contacts';
+                $contactGroupNoMember->name =  'Wil geen lid worden op basis van inschrijving en betaald.';
+                $contactGroupNoMember->description = '';
+                $contactGroupNoMember->dynamic_filter_type = 'and';
+                $contactGroupNoMember->save();
+                $request['defaultContactGroupNoMemberId'] = $contactGroupNoMember->id;
+            }
+        }
 
         $keyValues = $this->getWhitelistedKeyValues($request);
 
@@ -96,7 +119,7 @@ class SettingController
             }
 
         }
-
+        return $store->all();
     }
 
     protected function getWhitelistedKeyValues(Request $request): array
@@ -126,11 +149,11 @@ class SettingController
     protected function isWhiteListed($key): bool
     {
         return in_array($key, [
+            'portalActive',
             'portalName',
             'cooperativeName',
             'portalWebsite',
             'portalUrl',
-//            'defaultTextColor',
             'backgroundColor',
             'backgroundTextColor',
             'backgroundImageColor',
@@ -147,8 +170,11 @@ class SettingController
             'emailTemplateNewAccountId',
             'linkPrivacyPolicy',
             'showNewAtCooperativeLink',
+            'newAtCooperativeLinkText',
             'pcrPowerKwhConsumptionPercentage',
             'pcrGeneratingCapacityOneSolorPanel',
+            'defaultContactGroupMemberId',
+            'defaultContactGroupNoMemberId',
         ]);
     }
 

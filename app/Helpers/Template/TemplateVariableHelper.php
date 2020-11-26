@@ -527,9 +527,9 @@ class TemplateVariableHelper
                 break;
             case 'verantwoordelijke':
                 if($model->responsible_user_id) {
-                    return optional($model->responsibleUser)->fullName;
+                    return optional($model->responsibleUser)->present()->fullName;
                 }elseif($model->responsible_team_id) {
-                    return optional($model->responsibleTeam)->fullName;
+                    return optional($model->responsibleTeam)->name;
                 }else{
                     return '';
                 }
@@ -538,7 +538,7 @@ class TemplateVariableHelper
                 return $model->date_finished ? Carbon::parse($model->date_finished)->format('d/m/Y') : null;
                 break;
             case 'afgerond_door':
-                return optional($model->finishedBy)->fullName;
+                return optional($model->finishedBy)->present()->fullName;
                 break;
             default:
                 return '';

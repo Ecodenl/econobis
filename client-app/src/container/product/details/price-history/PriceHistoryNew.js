@@ -162,18 +162,25 @@ class PriceHistoryNew extends Component {
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
-                        <div className={'row'}>
-                            {this.props.hasVariablePrice === 'none' && (
+                        {this.props.hasVariablePrice === 'none' && (
+                            <div className={'row'}>
                                 <InputToggle
                                     label={'Variabele prijs'}
                                     name={'hasVariablePrice'}
                                     value={hasVariablePrice}
                                     onChangeAction={this.handleInputChange}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
 
                         <div className="row">
+                            <InputText
+                                label={'Productcode'}
+                                id={'code'}
+                                name={'code'}
+                                value={this.props.productCode}
+                                readOnly={true}
+                            />
                             <InputText
                                 label={'Product'}
                                 id={'name'}
@@ -181,6 +188,9 @@ class PriceHistoryNew extends Component {
                                 value={this.props.productName}
                                 readOnly={true}
                             />
+                        </div>
+
+                        <div className="row">
                             <InputDate
                                 label="Startdatum"
                                 name="dateStart"
@@ -188,15 +198,6 @@ class PriceHistoryNew extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                                 required={'required'}
                                 error={this.state.errors.dateStart}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputToggle
-                                label={'Invoer inclusief BTW'}
-                                name={'inputInclVat'}
-                                value={inputInclVat}
-                                onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
                                 label={'BTW percentage'}
@@ -212,6 +213,12 @@ class PriceHistoryNew extends Component {
                         </div>
 
                         <div className="row">
+                            <InputToggle
+                                label={'Invoer inclusief BTW'}
+                                name={'inputInclVat'}
+                                value={inputInclVat}
+                                onChangeAction={this.handleInputChange}
+                            />
                             <InputText
                                 label={'Aantal decimalen'}
                                 type="number"
@@ -264,7 +271,6 @@ class PriceHistoryNew extends Component {
                                                 type={'number'}
                                                 min={'0'}
                                                 max={'1000000'}
-                                                step={'0.01'}
                                                 value={priceInclVat}
                                                 onChangeAction={this.handleInputChange}
                                                 onBlurAction={this.handleBlurProductPrice}
@@ -281,7 +287,6 @@ class PriceHistoryNew extends Component {
                                                 type={'number'}
                                                 min={'0'}
                                                 max={'1000000'}
-                                                step={'0.01'}
                                                 value={price}
                                                 onChangeAction={this.handleInputChange}
                                                 onBlurAction={this.handleBlurProductPrice}
@@ -326,6 +331,7 @@ const mapStateToProps = state => {
     return {
         productId: state.productDetails.id,
         productName: state.productDetails.name,
+        productCode: state.productDetails.code,
         hasVariablePrice: state.productDetails.hasVariablePrice,
         ledger: state.productDetails.ledger,
         users: state.systemData.users,

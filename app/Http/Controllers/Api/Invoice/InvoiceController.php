@@ -635,7 +635,6 @@ class InvoiceController extends ApiController
         $this->authorize('manage', Invoice::class);
 
         $productData = $request->input('product');
-
         $product = new Product();
         $product->is_one_time = $productData['isOneTime'];
         $product->name = $productData['name'];
@@ -648,7 +647,10 @@ class InvoiceController extends ApiController
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
+        $priceHistory->input_incl_vat = $productData['inputInclVat'];
+        $priceHistory->price_number_of_decimals = $productData['priceNumberOfDecimals'];
         $priceHistory->price = $productData['price'];
+        $priceHistory->price_incl_vat = $productData['priceInclVat'];
         $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
 
         $invoiceProductData = $request->input('invoiceProduct');

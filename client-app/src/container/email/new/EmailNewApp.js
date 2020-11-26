@@ -36,6 +36,7 @@ class EmailNewApp extends Component {
                 attachments: [],
                 quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
                 intakeId: props.params.intakeId ? props.params.intakeId : '',
+                taskId: props.params.taskId ? props.params.taskId : '',
                 replyTypeId: props.params.replyTypeId ? props.params.replyTypeId : '',
                 oldEmailId: '',
                 contactGroupId: props.params.contactGroupId ? props.params.contactGroupId : '',
@@ -81,11 +82,9 @@ class EmailNewApp extends Component {
         }
 
         EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
-            this.setState(
-                {
-                    emailAddresses: payload,
-                },
-            );
+            this.setState({
+                emailAddresses: payload,
+            });
         });
 
         MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
@@ -324,6 +323,7 @@ class EmailNewApp extends Component {
             // data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
             data.append('intakeId', email.intakeId);
+            data.append('taskId', email.taskId);
             data.append('contactGroupId', email.contactGroupId);
             email.attachments.map((file, key) => {
                 data.append('attachments[' + key + ']', file);

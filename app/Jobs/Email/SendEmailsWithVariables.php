@@ -194,6 +194,9 @@ class SendEmailsWithVariables implements ShouldQueue
                 if ($email->intake) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake', $email->intake);
                 }
+                if ($email->task) {
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'taak', $email->task);
+                }
                 if ($email->quotationRequest) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
                 }

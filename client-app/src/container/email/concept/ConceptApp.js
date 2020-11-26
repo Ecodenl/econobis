@@ -71,6 +71,7 @@ class ConceptApp extends Component {
                         attachments: payload.attachments ? payload.attachments : '',
                         quotationRequestId: payload.quotationRequestId ? payload.quotationRequestId : '',
                         intakeId: payload.intakeId ? payload.intakeId : '',
+                        taskId: payload.taskId ? payload.taskId : '',
                         replyTypeId: payload.replyTypeId ? payload.replyTypeId : '',
                         oldEmailId: payload.oldEmailId ? payload.oldEmailId : '',
                         contactGroupId: payload.contactGroupId ? payload.contactGroupId : '',
@@ -262,6 +263,7 @@ class ConceptApp extends Component {
             // data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
             data.append('intakeId', email.intakeId);
+            data.append('taskId', email.taskId);
             data.append('replyTypeId', email.replyTypeId);
             data.append('oldEmailId', email.oldEmailId);
             data.append('contactGroupId', email.contactGroupId);

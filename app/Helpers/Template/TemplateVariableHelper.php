@@ -145,7 +145,7 @@ class TemplateVariableHelper
                 return '';
                 break;
             case 'Task':
-                return '';
+                return TemplateVariableHelper::getTaskVar($model, $varname);
                 break;
             case 'Order':
                 return TemplateVariableHelper::getOrderVar($model, $varname);
@@ -477,6 +477,68 @@ class TemplateVariableHelper
                 break;
             case 'gemaakt_op':
                 return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+
+    public static function getTaskVar($model, $varname){
+        switch ($varname) {
+            case 'contact_naam':
+                return optional($model->contact)->full_name;
+                break;
+//            case 'contact_adres':
+//                return optional(optional($model->contact)->primaryAddress)->street . ' ' . optional(optional($model->contact)->primaryAddress)->number . optional(optional($model->contact)->primaryAddress)->addition;
+//                break;
+//            case 'contact_postcode':
+//                return optional(optional($model->contact)->primaryAddress)->postal_code;
+//                break;
+//            case 'contact_plaats':
+//                return optional(optional($model->contact)->primaryAddress)->city;
+//                break;
+            case 'contact_email':
+                return optional(optional($model->contact)->primaryEmailAddress)->email;
+                break;
+            case 'contact_telefoonnummer':
+                return optional(optional($model->contact)->primaryphoneNumber)->number;
+                break;
+            case 'type':
+                return $model->type->name;
+                break;
+            case 'notitie':
+                return $model->note;
+                break;
+            case 'datum_afhandelen':
+                return $model->date_planned_start ? Carbon::parse($model->date_planned_start)->format('d/m/Y') : null;
+                break;
+            case 'begin_tijd':
+                return $model->start_time_planned ? Carbon::parse($model->start_time_planned)->format('H:i') : null;
+                break;
+            case 'einddatum':
+                return $model->date_planned_finish ? Carbon::parse($model->date_planned_finish)->format('d/m/Y') : null;
+                break;
+            case 'eind_tijd':
+                return $model->end_time_planned ? Carbon::parse($model->end_time_planned)->format('H:i') : null;
+                break;
+            case 'afgehandeld':
+                return $model->finished ? 'Ja' : 'Nee';
+                break;
+            case 'verantwoordelijke':
+                if($model->responsible_user_id) {
+                    return optional($model->responsibleUser)->fullName;
+                }elseif($model->responsible_team_id) {
+                    return optional($model->responsibleTeam)->fullName;
+                }else{
+                    return '';
+                }
+                break;
+            case 'datum_gereed':
+                return $model->date_finished ? Carbon::parse($model->date_finished)->format('d/m/Y') : null;
+                break;
+            case 'afgerond_door':
+                return optional($model->finishedBy)->fullName;
                 break;
             default:
                 return '';

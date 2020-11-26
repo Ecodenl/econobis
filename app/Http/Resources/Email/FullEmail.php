@@ -57,6 +57,7 @@ class FullEmail extends Resource
             'contacts' => FullContact::collection($this->whenLoaded('contacts')),
             'intakeId' => $this->intake_id,
             'intake' => FullIntake::make($this->whenLoaded('intake')),
+            'taskId' => $this->task_id,
             'task' => FullTask::make($this->whenLoaded('task')),
             'quotationRequestId' => $this->quotation_request_id,
             'quotationRequest' => FullQuotationRequest::make($this->whenLoaded('quotationRequest')),

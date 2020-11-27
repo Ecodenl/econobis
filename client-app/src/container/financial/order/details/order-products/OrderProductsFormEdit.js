@@ -90,7 +90,7 @@ const OrderProductsFormEdit = props => {
                             />
                             {variablePrice !== null ? (
                                 <InputText
-                                    label={'Prijs ex. BTW'}
+                                    label={'Prijs excl. BTW'}
                                     name={'variablePrice'}
                                     type={'number'}
                                     value={variablePrice}

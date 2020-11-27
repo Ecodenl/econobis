@@ -51,19 +51,14 @@ class OrderProductsFormNewProductOneTime extends Component {
             },
             errors: {
                 amount: false,
-                dateStart: false,
-                dateEnd: false,
                 priceNumberOfDecimals: false,
                 price: false,
                 priceInclVat: false,
-                datePeriodStartFirstInvoice: false,
                 ledgerId: false,
                 description: false,
             },
         };
 
-        this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
-        this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
     }
 
     handleInputChange = event => {
@@ -129,58 +124,6 @@ class OrderProductsFormNewProductOneTime extends Component {
             },
             this.updatePrice
         );
-    };
-
-    handleInputChangeProductDuration = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        let dateEnd;
-
-        if (this.state.orderProduct.dateStart) {
-            switch (value) {
-                case 'none':
-                    dateEnd = '';
-                    break;
-                case 'month':
-                    dateEnd = moment(this.state.orderProduct.dateStart)
-                        .add(1, 'M')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'quarter':
-                    dateEnd = moment(this.state.orderProduct.dateStart)
-                        .add(1, 'Q')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'half_year':
-                    dateEnd = moment(this.state.orderProduct.dateStart)
-                        .add(6, 'M')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'year':
-                    dateEnd = moment(this.state.orderProduct.dateStart)
-                        .add(1, 'y')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'until_cancellation':
-                    dateEnd = '';
-                    break;
-                default:
-                    dateEnd = '';
-            }
-        }
-
-        this.setState({
-            ...this.state,
-            product: {
-                ...this.state.product,
-                [name]: value,
-            },
-            orderProduct: {
-                ...this.state.orderProduct,
-                dateEnd: dateEnd,
-            },
-        });
     };
 
     handleInputChangeProductVat = event => {
@@ -286,7 +229,7 @@ class OrderProductsFormNewProductOneTime extends Component {
             ? this.state.orderProduct.amountReduction
             : 0;
 
-        let orderPrice = price * amount;
+        let orderPrice = price;
         let totalPrice = 0;
         if (price < 0) {
             const reduction = parseFloat(100) + parseFloat(percentageReduction);
@@ -304,68 +247,10 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         this.setState({
             ...this.state,
-            orderPrice: parseFloat(orderPrice).toFixed(2),
+            orderPrice: parseFloat(orderPrice).toFixed(this.state.product.priceNumberOfDecimals),
             totalPrice: parseFloat(totalPrice).toFixed(2),
         });
     };
-
-    handleInputChangeDate(value, name) {
-        this.setState({
-            ...this.state,
-            orderProduct: {
-                ...this.state.orderProduct,
-                [name]: value,
-            },
-        });
-    }
-
-    handleInputChangeStartDate(value, name) {
-        let dateEnd = '';
-
-        if (this.state.orderProduct.dateStart) {
-            let durationId = this.state.product.durationId;
-
-            switch (durationId) {
-                case 'none':
-                    dateEnd = '';
-                    break;
-                case 'month':
-                    dateEnd = moment(value)
-                        .add(1, 'M')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'quarter':
-                    dateEnd = moment(value)
-                        .add(1, 'Q')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'half_year':
-                    dateEnd = moment(value)
-                        .add(6, 'M')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'year':
-                    dateEnd = moment(value)
-                        .add(1, 'y')
-                        .format('YYYY-MM-DD');
-                    break;
-                case 'until_cancellation':
-                    dateEnd = '';
-                    break;
-                default:
-                    dateEnd = '';
-            }
-        }
-
-        this.setState({
-            ...this.state,
-            orderProduct: {
-                ...this.state.orderProduct,
-                [name]: value,
-                dateEnd: dateEnd,
-            },
-        });
-    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -381,38 +266,7 @@ class OrderProductsFormNewProductOneTime extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(orderProduct.dateStart + '')) {
-            errors.dateStart = true;
-            hasErrors = true;
-        }
-
-        if (
-            !validator.isEmpty(orderProduct.dateStart + '') &&
-            moment(orderProduct.dateEnd).isSameOrBefore(moment(orderProduct.dateStart))
-        ) {
-            errors.dateEnd = true;
-            hasErrors = true;
-        }
-
-        if (
-            !validator.isEmpty(orderProduct.dateEnd + '') &&
-            moment(orderProduct.dateStart).isSameOrAfter(moment(orderProduct.dateEnd))
-        ) {
-            errors.dateStart = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(orderProduct.datePeriodStartFirstInvoice + '')) {
-            errors.datePeriodStartFirstInvoice = true;
-            hasErrors = true;
-        }
-
         const { product } = this.state;
-
-        if (validator.isEmpty(product.administrationId + '')) {
-            errors.administrationId = true;
-            hasErrors = true;
-        }
 
         if (!product.inputInclVat) {
             if (validator.isEmpty(product.price + '')) {
@@ -447,13 +301,9 @@ class OrderProductsFormNewProductOneTime extends Component {
             amount,
             amountReduction,
             percentageReduction,
-            dateStart,
-            dateEnd,
-            datePeriodStartFirstInvoice,
         } = this.state.orderProduct;
         const {
             description,
-            durationId,
             vatPercentage,
             inputInclVat,
             priceNumberOfDecimals,
@@ -472,33 +322,32 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 <span className={'h5 text-bold'}>Product</span>
                             </div>
                         </div>
-                        <div className="row">
-                            {this.props.usesTwinfield ? (
-                                <React.Fragment>
-                                    <InputReactSelect
-                                        label={'Grootboek'}
-                                        name={'ledgerId'}
-                                        id={'ledgerId'}
-                                        options={this.props.ledgers}
-                                        optionName={'description'}
-                                        value={ledgerId}
-                                        onChangeAction={this.handleLedgerChange}
-                                        multi={false}
-                                        required={'required'}
-                                        error={this.state.errors.ledgerId}
-                                    />
-                                    <InputSelect
-                                        label={'Kostenplaats'}
-                                        id={'costCenterId'}
-                                        name={'costCenterId'}
-                                        options={this.props.costCenters}
-                                        optionName={'description'}
-                                        value={costCenterId}
-                                        onChangeAction={this.handleCostCenterChange}
-                                    />
-                                </React.Fragment>
-                            ) : null}
-                        </div>
+                        {this.props.usesTwinfield ? (
+                            <div className="row">
+                                <InputReactSelect
+                                    label={'Grootboek'}
+                                    name={'ledgerId'}
+                                    id={'ledgerId'}
+                                    options={this.props.ledgers}
+                                    optionName={'description'}
+                                    value={ledgerId}
+                                    onChangeAction={this.handleLedgerChange}
+                                    multi={false}
+                                    required={'required'}
+                                    error={this.state.errors.ledgerId}
+                                />
+                                <InputSelect
+                                    label={'Kostenplaats'}
+                                    id={'costCenterId'}
+                                    name={'costCenterId'}
+                                    options={this.props.costCenters}
+                                    optionName={'description'}
+                                    value={costCenterId}
+                                    onChangeAction={this.handleCostCenterChange}
+                                />
+                            </div>
+                        ) : null}
+
 
                         <div className="row">
                             <div className="form-group col-sm-6">&nbsp;</div>
@@ -625,13 +474,13 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={this.state.product.inputInclVat ? 'Bedrag incl. BTW' : 'Bedrag excl. BTW'}
+                                label={this.state.product.inputInclVat ? 'Prijs incl. BTW' : 'Prijs excl. BTW'}
                                 name={'orderPrice'}
                                 value={
                                     '€' +
                                     this.state.orderPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
+                                        maximumFractionDigits: this.state.product.priceNumberOfDecimals,
                                     })
                                 }
                                 readOnly={true}
@@ -661,37 +510,6 @@ class OrderProductsFormNewProductOneTime extends Component {
                             />
                         </div>
 
-                        <div className="row">
-                            <InputDate
-                                label="Begin datum"
-                                name="dateStart"
-                                value={dateStart}
-                                onChangeAction={this.handleInputChangeStartDate}
-                                required={'required'}
-                                error={this.state.errors.dateStart}
-                            />
-                            {durationId !== 'none' && (
-                                <InputDate
-                                    label="Eind datum"
-                                    name="dateEnd"
-                                    value={dateEnd}
-                                    onChangeAction={this.handleInputChangeDate}
-                                    error={this.state.errors.dateEnd}
-                                />
-                            )}
-                        </div>
-                        {durationId !== 'none' && (
-                            <div className="row">
-                                <InputDate
-                                    label="1ste notaperiode start op"
-                                    name="datePeriodStartFirstInvoice"
-                                    value={datePeriodStartFirstInvoice}
-                                    onChangeAction={this.handleInputChangeDate}
-                                    error={this.state.errors.datePeriodStartFirstInvoice}
-                                    required={'required'}
-                                />
-                            </div>
-                        )}
                         {this.state.errorMessage && (
                             <div className="col-sm-10 col-md-offset-1 alert alert-danger">
                                 {this.state.errorMessage}
@@ -721,11 +539,6 @@ class OrderProductsFormNewProductOneTime extends Component {
 const mapStateToProps = state => {
     return {
         orderDetails: state.orderDetails,
-        administrationId: state.administrationDetails.id,
-        productDurations: state.systemData.productDurations,
-        productInvoiceFrequencies: state.systemData.productInvoiceFrequencies,
-        productPaymentTypes: state.systemData.productPaymentTypes,
-        products: state.systemData.products,
         costCenters: state.systemData.costCenters,
         ledgers: state.systemData.ledgers,
         vatCodes: state.systemData.vatCodes,

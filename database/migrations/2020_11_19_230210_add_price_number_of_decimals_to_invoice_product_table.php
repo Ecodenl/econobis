@@ -16,18 +16,19 @@ class AddPriceNumberOfDecimalsToInvoiceProductTable extends Migration
         Schema::table('invoice_product', function (Blueprint $table) {
             $table->tinyInteger('price_number_of_decimals')->default(2)->after('percentage_reduction');
         });
-        $invoiceProducts = \App\Eco\Invoice\InvoiceProduct::all();
-        foreach ($invoiceProducts as $invoiceProduct){
-            $decimals = strlen(substr(strrchr($invoiceProduct->price_incl_vat, "."), 1));
-            if($decimals<2){
-                $decimals = 2;
-            }
-            if($decimals>6){
-                $decimals = 6;
-            }
-            $invoiceProduct->price_number_of_decimals = $decimals;
-            $invoiceProduct->save();
-        }
+//willen we toch niet, gewoon default op 2 decimalen
+//        $invoiceProducts = \App\Eco\Invoice\InvoiceProduct::all();
+//        foreach ($invoiceProducts as $invoiceProduct){
+//            $decimals = strlen(substr(strrchr($invoiceProduct->price_incl_vat, "."), 1));
+//            if($decimals<2){
+//                $decimals = 2;
+//            }
+//            if($decimals>6){
+//                $decimals = 6;
+//            }
+//            $invoiceProduct->price_number_of_decimals = $decimals;
+//            $invoiceProduct->save();
+//        }
     }
 
     /**

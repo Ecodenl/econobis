@@ -12,7 +12,7 @@ import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
-import InputToggle from "../../../../../components/form/InputToggle";
+import InputToggle from '../../../../../components/form/InputToggle';
 
 class OrderProductsFormNewProduct extends Component {
     constructor(props) {
@@ -97,8 +97,7 @@ class OrderProductsFormNewProduct extends Component {
                     vatPercentage,
                 },
             },
-            this.updatePrice,
-            this.updateOrderPrice,
+            this.updatePrice
         );
     };
 
@@ -107,15 +106,13 @@ class OrderProductsFormNewProduct extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        this.setState(
-            {
-                ...this.state,
-                product: {
-                    ...this.state.product,
-                    [name]: value,
-                },
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: value,
             },
-        );
+        });
     };
 
     handleInputChangeProduct = event => {
@@ -131,8 +128,7 @@ class OrderProductsFormNewProduct extends Component {
                     [name]: value,
                 },
             },
-            this.updatePrice,
-            this.updateOrderPrice,
+            this.updatePrice
         );
     };
 
@@ -188,24 +184,6 @@ class OrderProductsFormNewProduct extends Component {
         });
     };
 
-    handleInputChangeProductPrice = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState(
-            {
-                ...this.state,
-                product: {
-                    ...this.state.product,
-                    [name]: value,
-                },
-            },
-            this.updatePrice,
-            this.updateOrderPrice,
-        );
-    };
-
     handleInputChangeProductVat = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -219,8 +197,24 @@ class OrderProductsFormNewProduct extends Component {
                     [name]: value,
                 },
             },
-            this.updatePrice,
-            this.updateOrderPrice,
+            this.updatePrice
+        );
+    };
+
+    handleInputChangeProductPrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState(
+            {
+                ...this.state,
+                product: {
+                    ...this.state.product,
+                    [name]: value,
+                },
+            },
+            this.updatePrice
         );
     };
 
@@ -229,16 +223,13 @@ class OrderProductsFormNewProduct extends Component {
         const value = target.value;
         const name = target.name;
 
-        this.setState(
-            {
-                ...this.state,
-                product: {
-                    ...this.state.product,
-                    [name]: parseFloat(value).toFixed(this.state.product.priceNumberOfDecimals),
-                },
-
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: parseFloat(value).toFixed(this.state.product.priceNumberOfDecimals),
             },
-        );
+        });
     };
 
     updatePrice = () => {
@@ -254,26 +245,40 @@ class OrderProductsFormNewProduct extends Component {
 
         if (inputInclVat) {
             price = priceInclVat / vatFactor;
-            this.setState({
-                ...this.state,
-                product: {
-                    ...this.state.product,
-                    price: parseFloat(price).toFixed(this.state.product.priceNumberOfDecimals),
+            this.setState(
+                {
+                    ...this.state,
+                    product: {
+                        ...this.state.product,
+                        price: parseFloat(price).toFixed(this.state.product.priceNumberOfDecimals),
+                    },
                 },
-            });
+                this.updateOrderPrice
+            );
         } else {
             priceInclVat = price * vatFactor;
-            this.setState({
-                ...this.state,
-                product: {
-                    ...this.state.product,
-                    priceInclVat: parseFloat(priceInclVat).toFixed(this.state.product.priceNumberOfDecimals),
+            this.setState(
+                {
+                    ...this.state,
+                    product: {
+                        ...this.state.product,
+                        priceInclVat: parseFloat(priceInclVat).toFixed(this.state.product.priceNumberOfDecimals),
+                    },
                 },
-            });
+                this.updateOrderPrice
+            );
         }
     };
 
     updateOrderPrice = () => {
+        let inputInclVat = this.state.product.inputInclVat ? this.state.product.inputInclVat : false;
+        let price = 0;
+        if (inputInclVat) {
+            price = validator.isFloat(this.state.product.priceInclVat + '') ? this.state.product.priceInclVat : 0;
+        } else {
+            price = validator.isFloat(this.state.product.price + '') ? this.state.product.price : 0;
+        }
+
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
         let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
             ? this.state.orderProduct.percentageReduction
@@ -282,13 +287,20 @@ class OrderProductsFormNewProduct extends Component {
             ? this.state.orderProduct.amountReduction
             : 0;
 
-        let orderPrice = this.state.product.price * amount;
+        let orderPrice = price * amount;
         let totalPrice = 0;
-        if (this.state.product.priceInclVat < 0) {
+        if (price < 0) {
             const reduction = parseFloat(100) + parseFloat(percentageReduction);
-            totalPrice = this.state.product.priceInclVat * amount * (reduction / 100) - amountReduction;
+            totalPrice = price * amount * (reduction / 100) - amountReduction;
         } else {
-            totalPrice = this.state.product.priceInclVat * amount * ((100 - percentageReduction) / 100) - amountReduction;
+            totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
+        }
+        if (!inputInclVat) {
+            let vatPercentage = validator.isFloat(this.state.product.vatPercentage + '')
+                ? this.state.product.vatPercentage
+                : 0;
+            const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+            totalPrice = totalPrice * vatFactor;
         }
 
         this.setState({
@@ -589,7 +601,6 @@ class OrderProductsFormNewProduct extends Component {
                             />
                         </div>
 
-
                         <div className="row">
                             {inputInclVat ? (
                                 <React.Fragment>
@@ -680,7 +691,7 @@ class OrderProductsFormNewProduct extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={'Bedrag excl. BTW'}
+                                label={this.state.product.inputInclVat ? 'Bedrag incl. BTW' : 'Bedrag excl. BTW'}
                                 name={'orderPrice'}
                                 value={
                                     '€' +
@@ -793,7 +804,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderProductsFormNewProduct);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsFormNewProduct);

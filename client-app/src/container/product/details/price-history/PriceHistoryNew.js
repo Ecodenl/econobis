@@ -20,6 +20,7 @@ class PriceHistoryNew extends Component {
                 productId: props.productId,
                 dateStart: '',
                 inputInclVat: false,
+                priceNumberOfDecimals: 2,
                 price: '',
                 priceInclVat: '',
                 vatPercentage: props.ledger ? props.ledger.vatCode && props.ledger.vatCode.percentage : null,
@@ -27,6 +28,7 @@ class PriceHistoryNew extends Component {
             },
             errors: {
                 dateStart: false,
+                priceNumberOfDecimals: false,
                 price: false,
                 priceInclVat: false,
             },
@@ -72,7 +74,7 @@ class PriceHistoryNew extends Component {
             ...this.state,
             priceHistory: {
                 ...this.state.priceHistory,
-                [name]: parseFloat(value).toFixed(2),
+                [name]: parseFloat(value).toFixed(this.state.priceHistory.priceNumberOfDecimals),
             },
         });
     };
@@ -94,7 +96,7 @@ class PriceHistoryNew extends Component {
                 ...this.state,
                 priceHistory: {
                     ...this.state.priceHistory,
-                    price: parseFloat(price).toFixed(2),
+                    price: parseFloat(price).toFixed(this.state.priceHistory.priceNumberOfDecimals),
                 },
             });
         } else {
@@ -103,7 +105,7 @@ class PriceHistoryNew extends Component {
                 ...this.state,
                 priceHistory: {
                     ...this.state.priceHistory,
-                    priceInclVat: parseFloat(priceInclVat).toFixed(2),
+                    priceInclVat: parseFloat(priceInclVat).toFixed(this.state.priceHistory.priceNumberOfDecimals),
                 },
             });
         }
@@ -149,6 +151,7 @@ class PriceHistoryNew extends Component {
         const {
             dateStart,
             inputInclVat,
+            priceNumberOfDecimals,
             price,
             priceInclVat,
             vatPercentage,
@@ -159,18 +162,25 @@ class PriceHistoryNew extends Component {
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
                     <PanelBody>
-                        <div className={'row'}>
-                            {this.props.hasVariablePrice === 'none' && (
+                        {this.props.hasVariablePrice === 'none' && (
+                            <div className={'row'}>
                                 <InputToggle
                                     label={'Variabele prijs'}
                                     name={'hasVariablePrice'}
                                     value={hasVariablePrice}
                                     onChangeAction={this.handleInputChange}
                                 />
-                            )}
-                        </div>
+                            </div>
+                        )}
 
                         <div className="row">
+                            <InputText
+                                label={'Productcode'}
+                                id={'code'}
+                                name={'code'}
+                                value={this.props.productCode}
+                                readOnly={true}
+                            />
                             <InputText
                                 label={'Product'}
                                 id={'name'}
@@ -178,6 +188,9 @@ class PriceHistoryNew extends Component {
                                 value={this.props.productName}
                                 readOnly={true}
                             />
+                        </div>
+
+                        <div className="row">
                             <InputDate
                                 label="Startdatum"
                                 name="dateStart"
@@ -185,15 +198,6 @@ class PriceHistoryNew extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                                 required={'required'}
                                 error={this.state.errors.dateStart}
-                            />
-                        </div>
-
-                        <div className="row">
-                            <InputToggle
-                                label={'Invoer inclusief BTW'}
-                                name={'inputInclVat'}
-                                value={inputInclVat}
-                                onChangeAction={this.handleInputChange}
                             />
                             <InputSelect
                                 label={'BTW percentage'}
@@ -205,6 +209,26 @@ class PriceHistoryNew extends Component {
                                 onChangeAction={this.props.usesTwinfield ? null : this.handleInputChange}
                                 placeholder={'Geen'}
                                 readOnly={this.props.usesTwinfield}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputToggle
+                                label={'Invoer inclusief BTW'}
+                                name={'inputInclVat'}
+                                value={inputInclVat}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                label={'Aantal decimalen'}
+                                type="number"
+                                min={'2'}
+                                max={'6'}
+                                name={'priceNumberOfDecimals'}
+                                value={priceNumberOfDecimals}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.priceNumberOfDecimals}
                             />
                         </div>
 
@@ -247,7 +271,6 @@ class PriceHistoryNew extends Component {
                                                 type={'number'}
                                                 min={'0'}
                                                 max={'1000000'}
-                                                step={'0.01'}
                                                 value={priceInclVat}
                                                 onChangeAction={this.handleInputChange}
                                                 onBlurAction={this.handleBlurProductPrice}
@@ -264,7 +287,6 @@ class PriceHistoryNew extends Component {
                                                 type={'number'}
                                                 min={'0'}
                                                 max={'1000000'}
-                                                step={'0.01'}
                                                 value={price}
                                                 onChangeAction={this.handleInputChange}
                                                 onBlurAction={this.handleBlurProductPrice}
@@ -309,6 +331,7 @@ const mapStateToProps = state => {
     return {
         productId: state.productDetails.id,
         productName: state.productDetails.name,
+        productCode: state.productDetails.code,
         hasVariablePrice: state.productDetails.hasVariablePrice,
         ledger: state.productDetails.ledger,
         users: state.systemData.users,

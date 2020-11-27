@@ -217,12 +217,14 @@ class OrderController extends ApiController
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
-        $priceHistory->input_incl_vat = false;
+        $priceHistory->input_incl_vat = $productData['inputInclVat'];
+        $priceHistory->price_number_of_decimals = $productData['priceNumberOfDecimals'];
         $priceHistory->price = $productData['price'];
+        $priceHistory->price_incl_vat = $productData['priceInclVat'];
         $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
 
         $vatFactor = (100 + $priceHistory->vat_percentage) / 100;
-        $priceHistory->price_incl_vat = floatval( number_format( $priceHistory->price * $vatFactor, 2, '.', '') );
+        $priceHistory->price_incl_vat = floatval( number_format( $priceHistory->price * $vatFactor, $priceHistory->price_number_of_decimals, '.', '') );
 
         $orderProductData = $request->input('orderProduct');
 
@@ -273,7 +275,7 @@ class OrderController extends ApiController
         $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
 
         $vatFactor = (100 + $priceHistory->vat_percentage) / 100;
-        $priceHistory->price_incl_vat = floatval( number_format( $priceHistory->price * $vatFactor, 2, '.', '') );
+        $priceHistory->price_incl_vat = floatval( number_format( $priceHistory->price * $vatFactor, $priceHistory->price_number_of_decimals, '.', '') );
 
         $orderProductData = $request->input('orderProduct');
 

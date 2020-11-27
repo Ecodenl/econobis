@@ -113,13 +113,13 @@ const OrderProductsFormEdit = props => {
                                                   'nl',
                                                   {
                                                       minimumFractionDigits: 2,
-                                                      maximumFractionDigits: 2,
+                                                      maximumFractionDigits: props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                                   }
                                               )
                                             : '€' +
                                               props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
-                                                  maximumFractionDigits: 2,
+                                                  maximumFractionDigits: props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                               })
                                     }
                                     readOnly={true}

@@ -12,6 +12,7 @@ import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
 import InputReactSelect from '../../../../../components/form/InputReactSelect';
+import InputToggle from '../../../../../components/form/InputToggle';
 
 class OrderProductsFormNewProductOneTime extends Component {
     constructor(props) {
@@ -19,8 +20,8 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         this.state = {
             errorMessage: false,
-            price: '0',
-            totalPrice: '0',
+            orderPrice: '',
+            totalPrice: '',
             orderProduct: {
                 orderId: this.props.orderDetails.id,
                 amount: 1,
@@ -40,7 +41,10 @@ class OrderProductsFormNewProductOneTime extends Component {
                     ? this.props.orderDetails.collectionFrequencyId
                     : 'once',
                 vatPercentage: '',
+                inputInclVat: false,
+                priceNumberOfDecimals: 2,
                 price: '',
+                priceInclVat: '',
                 ledgerId: '',
                 costCenterId: '',
                 isOneTime: true,
@@ -49,7 +53,9 @@ class OrderProductsFormNewProductOneTime extends Component {
                 amount: false,
                 dateStart: false,
                 dateEnd: false,
+                priceNumberOfDecimals: false,
                 price: false,
+                priceInclVat: false,
                 datePeriodStartFirstInvoice: false,
                 ledgerId: false,
                 description: false,
@@ -73,7 +79,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                     [name]: value,
                 },
             },
-            this.updatePrice
+            this.updateOrderPrice
         );
     };
 
@@ -81,20 +87,9 @@ class OrderProductsFormNewProductOneTime extends Component {
         let selectedLedger = this.props.ledgers.find(ledger => ledger.id === selectedOption);
         let vatPercentage = selectedLedger.vatCode && selectedLedger.vatCode.percentage;
 
-        let price;
-
-        if (vatPercentage == '9') {
-            price = this.state.product.price * 1.09;
-        } else if (vatPercentage == '21') {
-            price = this.state.product.price * 1.21;
-        } else {
-            price = this.state.product.price;
-        }
-
         this.setState(
             {
                 ...this.state,
-                price: price,
                 product: {
                     ...this.state.product,
                     ledgerId: selectedOption,
@@ -110,6 +105,20 @@ class OrderProductsFormNewProductOneTime extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeProduct = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
         this.setState(
             {
                 ...this.state,
@@ -120,20 +129,6 @@ class OrderProductsFormNewProductOneTime extends Component {
             },
             this.updatePrice
         );
-    };
-
-    handleInputChangeProduct = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            ...this.state,
-            product: {
-                ...this.state.product,
-                [name]: value,
-            },
-        });
     };
 
     handleInputChangeProductDuration = event => {
@@ -188,53 +183,14 @@ class OrderProductsFormNewProductOneTime extends Component {
         });
     };
 
-    handleInputChangeProductPrice = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        let price;
-
-        if (this.state.product.vatPercentage == '9') {
-            price = value * 1.09;
-        } else if (this.state.product.vatPercentage == '21') {
-            price = value * 1.21;
-        } else {
-            price = value;
-        }
-
-        this.setState(
-            {
-                ...this.state,
-                price: price,
-                product: {
-                    ...this.state.product,
-                    [name]: value,
-                },
-            },
-            this.updatePrice
-        );
-    };
-
     handleInputChangeProductVat = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
-        let price;
-
-        if (value == '9') {
-            price = this.state.product.price * 1.09;
-        } else if (value == '21') {
-            price = this.state.product.price * 1.21;
-        } else {
-            price = this.state.product.price;
-        }
-
         this.setState(
             {
                 ...this.state,
-                price: price,
                 product: {
                     ...this.state.product,
                     [name]: value,
@@ -244,8 +200,84 @@ class OrderProductsFormNewProductOneTime extends Component {
         );
     };
 
+    handleInputChangeProductPrice = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState(
+            {
+                ...this.state,
+                product: {
+                    ...this.state.product,
+                    [name]: value,
+                },
+            },
+            this.updatePrice
+        );
+    };
+
+    handleBlurProductPrice = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            product: {
+                ...this.state.product,
+                [name]: parseFloat(value).toFixed(this.state.product.priceNumberOfDecimals),
+            },
+        });
+    };
+
     updatePrice = () => {
-        let price = validator.isFloat(this.state.price + '') ? this.state.price : 0;
+        let inputInclVat = this.state.product.inputInclVat ? this.state.product.inputInclVat : false;
+        let price = validator.isFloat(this.state.product.price + '') ? this.state.product.price : 0;
+        let priceInclVat = validator.isFloat(this.state.product.priceInclVat + '')
+            ? this.state.product.priceInclVat
+            : 0;
+        let vatPercentage = validator.isFloat(this.state.product.vatPercentage + '')
+            ? this.state.product.vatPercentage
+            : 0;
+        const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+
+        if (inputInclVat) {
+            price = priceInclVat / vatFactor;
+            this.setState(
+                {
+                    ...this.state,
+                    product: {
+                        ...this.state.product,
+                        price: parseFloat(price).toFixed(this.state.product.priceNumberOfDecimals),
+                    },
+                },
+                this.updateOrderPrice
+            );
+        } else {
+            priceInclVat = price * vatFactor;
+            this.setState(
+                {
+                    ...this.state,
+                    product: {
+                        ...this.state.product,
+                        priceInclVat: parseFloat(priceInclVat).toFixed(this.state.product.priceNumberOfDecimals),
+                    },
+                },
+                this.updateOrderPrice
+            );
+        }
+    };
+
+    updateOrderPrice = () => {
+        let inputInclVat = this.state.product.inputInclVat ? this.state.product.inputInclVat : false;
+        let price = 0;
+        if (inputInclVat) {
+            price = validator.isFloat(this.state.product.priceInclVat + '') ? this.state.product.priceInclVat : 0;
+        } else {
+            price = validator.isFloat(this.state.product.price + '') ? this.state.product.price : 0;
+        }
+
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
         let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
             ? this.state.orderProduct.percentageReduction
@@ -254,18 +286,25 @@ class OrderProductsFormNewProductOneTime extends Component {
             ? this.state.orderProduct.amountReduction
             : 0;
 
+        let orderPrice = price * amount;
         let totalPrice = 0;
-
         if (price < 0) {
             const reduction = parseFloat(100) + parseFloat(percentageReduction);
             totalPrice = price * amount * (reduction / 100) - amountReduction;
         } else {
             totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
         }
+        if (!inputInclVat) {
+            let vatPercentage = validator.isFloat(this.state.product.vatPercentage + '')
+                ? this.state.product.vatPercentage
+                : 0;
+            const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+            totalPrice = totalPrice * vatFactor;
+        }
 
         this.setState({
             ...this.state,
-            price: parseFloat(price).toFixed(2),
+            orderPrice: parseFloat(orderPrice).toFixed(2),
             totalPrice: parseFloat(totalPrice).toFixed(2),
         });
     };
@@ -375,16 +414,17 @@ class OrderProductsFormNewProductOneTime extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(product.price + '')) {
-            errors.price = true;
-            hasErrors = true;
+        if (!product.inputInclVat) {
+            if (validator.isEmpty(product.price + '')) {
+                errors.price = true;
+                hasErrors = true;
+            }
+        } else {
+            if (validator.isEmpty(product.priceInclVat + '')) {
+                errors.priceInclVat = true;
+                hasErrors = true;
+            }
         }
-
-        if (validator.isEmpty(product.description)) {
-            errors.description = true;
-            hasErrors = true;
-        }
-
         if (this.props.usesTwinfield) {
             if (validator.isEmpty(String(product.ledgerId))) {
                 errors.ledgerId = true;
@@ -411,7 +451,17 @@ class OrderProductsFormNewProductOneTime extends Component {
             dateEnd,
             datePeriodStartFirstInvoice,
         } = this.state.orderProduct;
-        const { description, durationId, vatPercentage, price, ledgerId, costCenterId } = this.state.product;
+        const {
+            description,
+            durationId,
+            vatPercentage,
+            inputInclVat,
+            priceNumberOfDecimals,
+            price,
+            priceInclVat,
+            ledgerId,
+            costCenterId,
+        } = this.state.product;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -422,20 +472,36 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 <span className={'h5 text-bold'}>Product</span>
                             </div>
                         </div>
+                        <div className="row">
+                            {this.props.usesTwinfield ? (
+                                <React.Fragment>
+                                    <InputReactSelect
+                                        label={'Grootboek'}
+                                        name={'ledgerId'}
+                                        id={'ledgerId'}
+                                        options={this.props.ledgers}
+                                        optionName={'description'}
+                                        value={ledgerId}
+                                        onChangeAction={this.handleLedgerChange}
+                                        multi={false}
+                                        required={'required'}
+                                        error={this.state.errors.ledgerId}
+                                    />
+                                    <InputSelect
+                                        label={'Kostenplaats'}
+                                        id={'costCenterId'}
+                                        name={'costCenterId'}
+                                        options={this.props.costCenters}
+                                        optionName={'description'}
+                                        value={costCenterId}
+                                        onChangeAction={this.handleCostCenterChange}
+                                    />
+                                </React.Fragment>
+                            ) : null}
+                        </div>
 
                         <div className="row">
-                            <InputText
-                                label={'Prijs ex. BTW'}
-                                id={'price'}
-                                name={'price'}
-                                type={'number'}
-                                min={'0'}
-                                max={'1000000'}
-                                value={price}
-                                onChangeAction={this.handleInputChangeProductPrice}
-                                required={'required'}
-                                error={this.state.errors.price}
-                            />
+                            <div className="form-group col-sm-6">&nbsp;</div>
                             <InputSelect
                                 label={'BTW percentage'}
                                 name={'vatPercentage'}
@@ -449,30 +515,77 @@ class OrderProductsFormNewProductOneTime extends Component {
                             />
                         </div>
 
-                        {this.props.usesTwinfield ? (
-                            <div className="row">
-                                <InputReactSelect
-                                    label={'Grootboek'}
-                                    name={'ledgerId'}
-                                    options={this.props.ledgers}
-                                    optionName={'description'}
-                                    value={ledgerId}
-                                    onChangeAction={this.handleLedgerChange}
-                                    multi={false}
-                                    required={'required'}
-                                    error={this.state.errors.ledgerId}
-                                />
-                                <InputSelect
-                                    label={'Kostenplaats'}
-                                    id={'costCenterId'}
-                                    name={'costCenterId'}
-                                    options={this.props.costCenters}
-                                    optionName={'description'}
-                                    value={costCenterId}
-                                    onChangeAction={this.handleCostCenterChange}
-                                />
-                            </div>
-                        ) : null}
+                        <div className="row">
+                            <InputToggle
+                                label={'Invoer inclusief BTW'}
+                                name={'inputInclVat'}
+                                value={inputInclVat}
+                                onChangeAction={this.handleInputChangeProduct}
+                            />
+                            <InputText
+                                label={'Aantal decimalen'}
+                                type="number"
+                                min={'2'}
+                                max={'6'}
+                                name={'priceNumberOfDecimals'}
+                                value={priceNumberOfDecimals}
+                                onChangeAction={this.handleInputChangeProduct}
+                                required={'required'}
+                                error={this.state.errors.priceNumberOfDecimals}
+                            />
+                        </div>
+
+                        <div className="row">
+                            {inputInclVat ? (
+                                <React.Fragment>
+                                    <InputText
+                                        label={'Prijs excl. BTW'}
+                                        id={'price'}
+                                        name={'price'}
+                                        value={price}
+                                        readOnly={true}
+                                        required={'required'}
+                                    />
+                                    <InputText
+                                        label={'Prijs incl. BTW'}
+                                        id={'priceInclVat'}
+                                        name={'priceInclVat'}
+                                        type={'number'}
+                                        min={'0'}
+                                        max={'1000000'}
+                                        value={priceInclVat}
+                                        onChangeAction={this.handleInputChangeProductPrice}
+                                        onBlurAction={this.handleBlurProductPrice}
+                                        required={'required'}
+                                        error={this.state.errors.priceInclVat}
+                                    />
+                                </React.Fragment>
+                            ) : (
+                                <React.Fragment>
+                                    <InputText
+                                        label={'Prijs ex. BTW'}
+                                        id={'price'}
+                                        name={'price'}
+                                        type={'number'}
+                                        min={'0'}
+                                        max={'1000000'}
+                                        value={price}
+                                        onChangeAction={this.handleInputChangeProductPrice}
+                                        onBlurAction={this.handleBlurProductPrice}
+                                        required={'required'}
+                                        error={this.state.errors.price}
+                                    />
+                                    <InputText
+                                        label={'Prijs incl. BTW'}
+                                        id={'priceInclVat'}
+                                        name={'priceInclVat'}
+                                        value={priceInclVat}
+                                        readOnly={true}
+                                        required={'required'}
+                                    />
+                                </React.Fragment>
+                            )}
+                        </div>
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
@@ -512,11 +625,11 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={'Bedrag'}
-                                name={'price'}
+                                label={this.state.product.inputInclVat ? 'Bedrag incl. BTW' : 'Bedrag excl. BTW'}
+                                name={'orderPrice'}
                                 value={
                                     '€' +
-                                    this.state.price.toLocaleString('nl', {
+                                    this.state.orderPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,
                                     })
@@ -626,7 +739,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderProductsFormNewProductOneTime);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsFormNewProductOneTime);

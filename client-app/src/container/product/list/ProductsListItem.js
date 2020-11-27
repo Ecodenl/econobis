@@ -58,7 +58,7 @@ class ProductsListItem extends Component {
                             ? '€' +
                               currentPrice.price.toLocaleString('nl', {
                                   minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
+                                  maximumFractionDigits: currentPrice.priceNumberOfDecimals,
                               })
                             : ''}
                     </td>
@@ -72,7 +72,7 @@ class ProductsListItem extends Component {
                             ? '€' +
                               currentPrice.priceInclVat.toLocaleString('nl', {
                                   minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
+                                  maximumFractionDigits: currentPrice.priceNumberOfDecimals,
                               })
                             : ''}
                     </td>
@@ -105,7 +105,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ProductsListItem);
+export default connect(mapStateToProps, null)(ProductsListItem);

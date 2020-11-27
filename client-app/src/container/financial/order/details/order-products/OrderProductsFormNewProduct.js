@@ -287,7 +287,7 @@ class OrderProductsFormNewProduct extends Component {
             ? this.state.orderProduct.amountReduction
             : 0;
 
-        let orderPrice = price * amount;
+        let orderPrice = price;
         let totalPrice = 0;
         if (price < 0) {
             const reduction = parseFloat(100) + parseFloat(percentageReduction);
@@ -305,7 +305,7 @@ class OrderProductsFormNewProduct extends Component {
 
         this.setState({
             ...this.state,
-            orderPrice: parseFloat(orderPrice).toFixed(2),
+            orderPrice: parseFloat(orderPrice).toFixed(this.state.product.priceNumberOfDecimals),
             totalPrice: parseFloat(totalPrice).toFixed(2),
         });
     };
@@ -691,13 +691,13 @@ class OrderProductsFormNewProduct extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={this.state.product.inputInclVat ? 'Bedrag incl. BTW' : 'Bedrag excl. BTW'}
+                                label={this.state.product.inputInclVat ? 'Prijs incl. BTW' : 'Prijs excl. BTW'}
                                 name={'orderPrice'}
                                 value={
                                     '€' +
                                     this.state.orderPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
+                                        maximumFractionDigits: this.state.product.priceNumberOfDecimals,
                                     })
                                 }
                                 readOnly={true}

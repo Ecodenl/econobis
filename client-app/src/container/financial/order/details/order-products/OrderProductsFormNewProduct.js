@@ -60,6 +60,7 @@ class OrderProductsFormNewProduct extends Component {
                 priceInclVat: false,
                 datePeriodStartFirstInvoice: false,
                 ledgerId: false,
+                description: false,
             },
         };
 
@@ -231,6 +232,36 @@ class OrderProductsFormNewProduct extends Component {
             },
         });
     };
+
+    handleBlurDecimals = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        let priceNumberOfDecimals = value;
+
+        if(priceNumberOfDecimals < 2){
+            priceNumberOfDecimals = 2;
+        }
+        if(priceNumberOfDecimals > 6){
+            priceNumberOfDecimals = 6;
+        }
+
+        this.setState(
+            {
+                ...this.state,
+                product: {
+                    ...this.state.product,
+                    priceNumberOfDecimals: priceNumberOfDecimals,
+                    price: parseFloat(this.state.product.price).toFixed(priceNumberOfDecimals),
+                    priceInclVat: parseFloat(this.state.product.priceInclVat).toFixed(priceNumberOfDecimals),
+
+                },
+            },
+            this.updatePrice
+        );
+    };
+
 
     updatePrice = () => {
         let inputInclVat = this.state.product.inputInclVat ? this.state.product.inputInclVat : false;
@@ -468,6 +499,10 @@ class OrderProductsFormNewProduct extends Component {
                 hasErrors = true;
             }
         }
+        if (validator.isEmpty(product.description)) {
+            errors.description = true;
+            hasErrors = true;
+        }
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
@@ -596,6 +631,7 @@ class OrderProductsFormNewProduct extends Component {
                                 name={'priceNumberOfDecimals'}
                                 value={priceNumberOfDecimals}
                                 onChangeAction={this.handleInputChangeProduct}
+                                onBlurAction={this.handleBlurDecimals}
                                 required={'required'}
                                 error={this.state.errors.priceNumberOfDecimals}
                             />

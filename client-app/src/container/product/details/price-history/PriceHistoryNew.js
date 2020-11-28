@@ -79,6 +79,35 @@ class PriceHistoryNew extends Component {
         });
     };
 
+    handleBlurDecimals = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        let priceNumberOfDecimals = value;
+
+        if(priceNumberOfDecimals < 2){
+            priceNumberOfDecimals = 2;
+        }
+        if(priceNumberOfDecimals > 6){
+            priceNumberOfDecimals = 6;
+        }
+
+        this.setState(
+            {
+                ...this.state,
+                priceHistory: {
+                    ...this.state.priceHistory,
+                    priceNumberOfDecimals: priceNumberOfDecimals,
+                    price: parseFloat(this.state.priceHistory.price).toFixed(priceNumberOfDecimals),
+                    priceInclVat: parseFloat(this.state.priceHistory.priceInclVat).toFixed(priceNumberOfDecimals),
+
+                },
+            },
+            this.updatePrice
+        );
+    };
+
     updatePrice = () => {
         let inputInclVat = this.state.priceHistory.inputInclVat ? this.state.priceHistory.inputInclVat : false;
         let price = validator.isFloat(this.state.priceHistory.price + '') ? this.state.priceHistory.price : 0;
@@ -227,6 +256,7 @@ class PriceHistoryNew extends Component {
                                 name={'priceNumberOfDecimals'}
                                 value={priceNumberOfDecimals}
                                 onChangeAction={this.handleInputChange}
+                                onBlurAction={this.handleBlurDecimals}
                                 required={'required'}
                                 error={this.state.errors.priceNumberOfDecimals}
                             />

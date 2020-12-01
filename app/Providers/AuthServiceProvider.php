@@ -22,6 +22,8 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressPolicy;
+use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewPolicy;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\Intake\Intake;
@@ -135,6 +137,7 @@ class AuthServiceProvider extends ServiceProvider
         TaskType::class => TaskTypePolicy::class,
         QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
         OpportunityStatus::class => OpportunityStatusPolicy::class,
+        FinancialOverview::class => FinancialOverviewPolicy::class,
     ];
 
     /**

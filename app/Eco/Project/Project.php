@@ -94,6 +94,11 @@ class Project extends Model
         return $this->hasMany(ParticipantProject::class, 'project_id');
     }
 
+    public function financialOverviewProjects()
+    {
+        return $this->hasMany(FinancialOverviewProject::class);
+    }
+
     public function participantsProjectDefinitive(){
         $projectType = $this->projectType;
         $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;

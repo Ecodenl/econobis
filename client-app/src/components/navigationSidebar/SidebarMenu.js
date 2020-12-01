@@ -105,6 +105,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </Link>
                     </NavText>
                 </Nav>
+                {permissions.manageFinancial && (
+                    <Nav id="financiele-overzichten">
+                        <NavText>
+                            <Link className="sidebar-link" to="financiele-overzichten">
+                                Financiele jaaroverzichten
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
             </Nav>
             <Nav id="energy-saving">
                 <NavIcon>

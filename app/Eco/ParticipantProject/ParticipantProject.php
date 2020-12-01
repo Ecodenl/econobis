@@ -4,6 +4,7 @@ namespace App\Eco\ParticipantProject;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
@@ -67,6 +68,11 @@ class ParticipantProject extends Model
     public function projectRevenueDistributions()
     {
         return $this->hasMany(ProjectRevenueDistribution::class, 'participation_id');
+    }
+
+    public function financialOverviewParticipantProjects()
+    {
+        return $this->hasMany(FinancialOverviewParticipantProject::class);
     }
 
     public function mutations()

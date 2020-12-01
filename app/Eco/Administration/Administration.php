@@ -4,6 +4,7 @@ namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
@@ -78,6 +79,11 @@ class Administration extends Model
     public function paymentInvoices()
     {
         return $this->hasMany(PaymentInvoice::class);
+    }
+
+    public function financialOverviews()
+    {
+        return $this->hasMany(FinancialOverview::class);
     }
 
     public function country()

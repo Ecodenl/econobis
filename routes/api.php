@@ -461,6 +461,10 @@ Route::namespace('Api')
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
         Route::post('financial-overview/{financialOverview}', 'FinancialOverview\FinancialOverviewController@update');
         Route::post('financial-overview/{financialOverview}/delete', 'FinancialOverview\FinancialOverviewController@destroy');
+//        Route::get('financial-overview/project/jory', 'FinancialOverview\FinancialOverviewProjectController@jory');
+        Route::post('financial-overview-project', 'FinancialOverview\FinancialOverviewProjectController@store');
+        Route::post('financial-overview-project/{financialOverviewProject}', 'FinancialOverview\FinancialOverviewProjectController@update');
+        Route::post('financial-overview-project/{financialOverviewProject}/delete', 'FinancialOverview\FinancialOverviewProjectController@destroy');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

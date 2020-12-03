@@ -293,9 +293,9 @@ const Routes = () => {
                     <Route path="grootboekrekening/nieuw" component={LedgerNewApp} />
                     <Route path="grootboekrekening/:id" component={LedgerDetailsApp} />
                     /* Financial overviews */
-                    <Route path="financiele-overzichten" component={FinancialOverviewListApp} />
-                    <Route path="financieel-overzicht/nieuw" component={FinancialOverviewNewApp} />
-                    <Route path="financieel-overzicht/:id" component={FinancialOverviewDetailsApp} />
+                    <Route path="waardestaten" component={FinancialOverviewListApp} />
+                    <Route path="waardestaat/nieuw" component={FinancialOverviewNewApp} />
+                    <Route path="waardestaat/:id" component={FinancialOverviewDetailsApp} />
                     /* Costcenters */
                     <Route path="kostenplaatsen" component={CostCentersListApp} />
                     <Route path="kostenplaats/nieuw" component={CostCenterNewApp} />

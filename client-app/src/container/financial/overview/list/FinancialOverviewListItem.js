@@ -27,7 +27,7 @@ class FinancialOverviewListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/financieel-overzicht/${id}`);
+        hashHistory.push(`/waardestaat/${id}`);
     }
 
     render() {

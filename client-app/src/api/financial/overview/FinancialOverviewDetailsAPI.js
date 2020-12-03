@@ -1,7 +1,7 @@
 import axiosInstance from '../../default-setup/AxiosInstance';
-import axios from 'axios';
 
 const URL_FINANCIAL_OVERVIEW = `financial-overview`;
+const URL_FINANCIAL_OVERVIEW_PROJECT = `financial-overview-project`;
 
 export default {
     fetchFinancialOverviewDetails: id => {
@@ -14,7 +14,7 @@ export default {
                     rlt: {
                         administration: { fld: ['id', 'name'] },
                         financialOverviewProjects: {
-                            fld: ['id', 'projectId'],
+                            fld: ['id', 'projectId', 'definitive'],
                             rlt: {
                                 project: {
                                     fld: ['id', 'code', 'name'],
@@ -45,6 +45,26 @@ export default {
 
     deleteFinancialOverview: id => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${id}/delete`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
+    newFinancialOverviewProject: financialOverviewProject => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}`;
+        financialOverviewProject.jory = JSON.stringify({
+            fld: ['id'],
+        });
+
+        return axiosInstance.post(requestUrl, financialOverviewProject);
+    },
+    updateFinancialOverviewProject: financialOverviewProject => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${financialOverviewProject.id}`;
+
+        return axiosInstance.post(requestUrl, financialOverviewProject);
+    },
+
+    deleteFinancialOverviewProject: id => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
     },

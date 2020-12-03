@@ -52,11 +52,11 @@ class FinancialOverviewList extends Component {
         let loading = true;
 
         if (hasError) {
-            loadingText = 'Fout bij het ophalen van financiele jaaroverzichten.';
+            loadingText = 'Fout bij het ophalen van waardestaten.';
         } else if (isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (financialOverviews.length === 0) {
-            loadingText = 'Geen financiele jaaroverzichten gevonden!';
+            loadingText = 'Geen waardestaten gevonden!';
         } else {
             loading = false;
         }

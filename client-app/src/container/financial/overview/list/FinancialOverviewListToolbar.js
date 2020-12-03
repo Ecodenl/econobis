@@ -9,7 +9,7 @@ class FinancialOverviewListToolbar extends Component {
     render() {
         let { financialOverviewsCount, refreshFinancialOverviewsData, permissions } = this.props;
         const newFinancialOverview = () => {
-            hashHistory.push(`/financieel-overzicht/nieuw`);
+            hashHistory.push(`/waardestaat/nieuw`);
         };
 
         return (
@@ -23,7 +23,7 @@ class FinancialOverviewListToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h3 className="text-center table-title">Financiele jaaroverzichten</h3>
+                    <h3 className="text-center table-title">Waardestaten</h3>
                 </div>
                 <div className="col-md-4">
                     <div className="pull-right">Resultaten: {financialOverviewsCount}</div>

@@ -13,7 +13,7 @@ use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteFinancialOverview
+ * Class DeleteFinancialOverviewProject
  *
  * Relation: 1-n Emails. Action: dissociate
  * Relation: 1-n Documents. Action: dissociate
@@ -22,19 +22,19 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteFinancialOverview implements DeleteInterface
+class DeleteFinancialOverviewProject implements DeleteInterface
 {
     private $errorMessage = [];
-    private $financialOverview;
+    private $financialOverviewProject;
 
     /** Sets the model to delete
      *
-     * @param Model $financialOverview the model to delete
+     * @param Model $financialOverviewProject the model to delete
      */
 
-    public function __construct(Model $financialOverview)
+    public function __construct(Model $financialOverviewProject)
     {
-        $this->financialOverview = $financialOverview;
+        $this->financialOverviewProject = $financialOverviewProject;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -49,7 +49,7 @@ class DeleteFinancialOverview implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverview->delete();
+        $this->financialOverviewProject->delete();
 
         return $this->errorMessage;
     }
@@ -58,11 +58,8 @@ class DeleteFinancialOverview implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->financialOverview->definitive == true){
-            array_push($this->errorMessage, "Deze waardestaat is al definitief.");
-        }
-        if($this->financialOverview->financialOverviewProjects->where('definitive', true)->count() > 0){
-            array_push($this->errorMessage, "Er zijn al definitieve projecten gekoppeld aan deze waardestaat.");
+        if($this->financialOverviewProject->definitive == true){
+            array_push($this->errorMessage, "Waardestaat voor project " . $this->financialOverviewProject->project->name. " is al definitief.");
         }
     }
 
@@ -70,10 +67,6 @@ class DeleteFinancialOverview implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->financialOverview->financialOverviewProjects as $financialOverviewProject){
-            $deleteFinancialOverviewProject = new DeleteFinancialOverviewProject($financialOverviewProject);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewProject->delete());
-        }
     }
 
     /** The relations which should be dissociated

@@ -103,7 +103,7 @@ class FinancialOverviewNewForm extends Component {
                 hasErrors = true;
                 errors.year = errors.administrationId = true;
                 errorMessage.year = errorMessage.administrationId =
-                    'Financieel jaaroverzicht voor jaar ' +
+                    'Waardestaat voor jaar ' +
                     financialOverviewFromMap.year +
                     ' en administratie ' +
                     financialOverviewFromMap.administration.name +
@@ -117,9 +117,7 @@ class FinancialOverviewNewForm extends Component {
         !hasErrors &&
             FinancialOverviewDetailsAPI.newFinancialOverview(financialOverview)
                 .then(payload => {
-                    this.props.fetchSystemData();
-
-                    hashHistory.push(`/financieel-overzicht/${payload.data.data.id}`);
+                    hashHistory.push(`/waardestaat/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');

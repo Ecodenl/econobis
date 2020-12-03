@@ -42,7 +42,7 @@ class FinancialOverviewDetailsApp extends Component {
         // Api aanroepen met delete
         FinancialOverviewDetailsAPI.deleteFinancialOverview(id)
             .then(payload => {
-                hashHistory.push(`/financieel-jaaroverzichten`);
+                hashHistory.push(`/waardestaten`);
             })
             .catch(error => {
                 // this.setState({ isLoading: false, hasError: true });

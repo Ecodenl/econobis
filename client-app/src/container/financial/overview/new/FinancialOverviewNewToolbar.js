@@ -12,7 +12,7 @@ const FinancialOverviewNewToolbar = () => {
                 </div>
             </div>
             <div className="col-md-4">
-                <h4 className="text-center margin-small">Nieuw financieel jaaroverzicht</h4>
+                <h4 className="text-center margin-small">Nieuwe waardestaat</h4>
             </div>
             <div className="col-md-4" />
         </div>

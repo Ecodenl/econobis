@@ -16,7 +16,7 @@ const FinancialOverviewDeleteItem = ({ deleteFinancialOverview, closeDeleteItemM
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            Verwijder financieel jaaroverzicht: <strong>{description}</strong>?
+            Verwijder waardestaat: <strong>{description}</strong>?
         </Modal>
     );
 };

@@ -23,8 +23,7 @@ const ProjectDelete = props => {
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
             confirmAction={() => confirmAction()}
-            // showConfirmAction={allowDelete}
-            showConfirmAction={true}
+            showConfirmAction={allowDelete}
             title="Verwijderen"
         >
             <p>

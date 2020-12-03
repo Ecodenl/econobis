@@ -10,6 +10,7 @@ use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\Measure\Measure;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;

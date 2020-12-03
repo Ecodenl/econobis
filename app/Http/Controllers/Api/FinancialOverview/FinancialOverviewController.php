@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\FinancialOverview;
 
 use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Helpers\Delete\Models\DeleteFinancialOverview;
+use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
@@ -30,6 +32,8 @@ class FinancialOverviewController extends Controller
 
         $financialOverview = new FinancialOverview($data);
         $financialOverview->save();
+
+        $this->createProjectsForFinancialOverview($financialOverview);
 
         return Jory::on($financialOverview);
     }
@@ -70,5 +74,19 @@ class FinancialOverviewController extends Controller
             abort(501, 'Er is helaas een fout opgetreden.');
         }
     }
+
+
+    public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
+    {
+        $projects = FinancialOverviewHelper::getNewProjectsForFinancialOverview($financialOverview);
+
+        foreach ($projects as $project){
+            FinancialOverviewProject::create([
+                'financial_overview_id' => $financialOverview->id,
+                'project_id' => $project->id,
+                'definitive' => false,
+            ]);        }
+    }
+
 
 }

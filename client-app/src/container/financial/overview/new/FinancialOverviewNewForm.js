@@ -95,6 +95,13 @@ class FinancialOverviewNewForm extends Component {
             hasErrors = true;
         }
 
+        // todo nog even kijken of dit wel wenselijk is
+        //      dus of je maar max 1 totale waardestaat per jaar/administ mag hebben ??
+        //      Indien meerdere toch wenselijk is, dan zal er denk ik een omschrijving
+        //      aan financial overview tabel toegevoegd moeten worden om waardestaat een afwijkende
+        //      naam te geven. De get en createProjectsForFinancialOverview houden al wel rekening met
+        //      deze functionaliteit. Dat wil zeggen dat jee bepaald project maar bij 1 administratie/jaar
+        //      combinatie mag hebben.
         this.state.financialOverviews.map(financialOverviewFromMap => {
             if (
                 financialOverviewFromMap.year == financialOverview.year &&

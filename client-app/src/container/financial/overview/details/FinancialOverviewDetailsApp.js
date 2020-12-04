@@ -54,6 +54,35 @@ class FinancialOverviewDetailsApp extends Component {
         this.setState({ financialOverview });
     };
 
+    addProjectToState = financialOverviewProject => {
+        console.log('FinancialOverviewDetailsApp - addProject');
+        console.log(financialOverviewProject);
+        this.setState({
+            ...this.state,
+            financialOverview: {
+                ...this.state.financialOverview,
+                financialOverviewProjects: [
+                    ...this.state.financialOverview.financialOverviewProjects,
+                    financialOverviewProject,
+                ],
+            },
+        });
+    };
+
+    deleteProjectToState = id => {
+        console.log('FinancialOverviewDetailsApp - deleteProject');
+        console.log(id);
+        this.setState({
+            ...this.state,
+            financialOverview: {
+                ...this.state.financialOverview,
+                financialOverviewProjects: this.state.financialOverview.financialOverviewProjects.filter(
+                    financialOverviewProject => financialOverviewProject.id !== id
+                ),
+            },
+        });
+    };
+
     render() {
         return (
             <div className="row">
@@ -81,6 +110,8 @@ class FinancialOverviewDetailsApp extends Component {
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
                             updateState={this.updateState}
+                            addProjectToState={this.addProjectToState}
+                            deleteProjectToState={this.deleteProjectToState}
                         />
                     </div>
                 </div>

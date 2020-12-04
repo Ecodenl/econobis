@@ -7,6 +7,7 @@ use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FinancialOverview\FullFinancialOverviewProject;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,8 +33,9 @@ class FinancialOverviewProjectController extends Controller
         $financialOverviewProject = new FinancialOverviewProject($data);
         $financialOverviewProject->save();
 
-//        return Jory::on($financialOverviewProject);
-        return GenericResource::make($financialOverviewProject);
+        return Jory::on($financialOverviewProject);
+//        return GenericResource::make($financialOverviewProject);
+//        return FullFinancialOverviewProject::make($financialOverviewProject->load('project'));
 
     }
 

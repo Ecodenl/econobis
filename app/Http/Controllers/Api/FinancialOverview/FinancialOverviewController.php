@@ -75,10 +75,9 @@ class FinancialOverviewController extends Controller
         }
     }
 
-
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
-        $projects = FinancialOverviewHelper::getNewProjectsForFinancialOverview($financialOverview);
+        $projects = $this->getNewProjectsForFinancialOverview($financialOverview);
 
         foreach ($projects as $project){
             FinancialOverviewProject::create([
@@ -86,6 +85,11 @@ class FinancialOverviewController extends Controller
                 'project_id' => $project->id,
                 'definitive' => false,
             ]);        }
+    }
+
+    public function getNewProjectsForFinancialOverview(FinancialOverview $financialOverview)
+    {
+        return FinancialOverviewHelper::getNewProjectsForFinancialOverview($financialOverview);
     }
 
 

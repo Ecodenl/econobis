@@ -9,17 +9,18 @@
 namespace App\Http\Resources\FinancialOverview;
 
 use App\Http\Resources\GenericResource;
+use App\Http\Resources\Project\FullProject;
 use Illuminate\Http\Resources\Json\Resource;
 
-class FullFinancialOverview extends Resource
+class FullFinancialOverviewProject extends Resource
 {
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'administrationId' => $this->administration_id,
-            'administration' => GenericResource::make($this->whenLoaded('administration')),
-            'year' => $this->year,
+            'financialOverviewId' => $this->financial_overview_id,
+            'projectId' => $this->project_id,
+//            'project' => FullProject::make($this->whenLoaded('project')),
             'definitive' => $this->definitive,
         ];
     }

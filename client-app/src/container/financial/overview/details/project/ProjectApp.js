@@ -38,11 +38,15 @@ class ProjectApp extends Component {
                             <ProjectNew
                                 financialOverview={this.props.financialOverview}
                                 toggleShowNew={this.toggleShowNew}
+                                addProjectToState={this.props.addProjectToState}
                             />
                         )}
                     </div>
                     <div className="col-md-12">
-                        <ProjectList financialOverview={this.props.financialOverview} />
+                        <ProjectList
+                            financialOverview={this.props.financialOverview}
+                            deleteProjectToState={this.props.deleteProjectToState}
+                        />
                     </div>
                 </PanelBody>
             </Panel>

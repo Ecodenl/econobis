@@ -88,11 +88,10 @@ class ProjectItem extends Component {
     deleteProject = id => {
         FinancialOverviewDetailsAPI.deleteFinancialOverviewProject(id)
             .then(payload => {
-                // this.setState({
-                //     financialOverviewProjects: this.state.financialOverviewProjects.filter(
-                //         financialOverviewProject => financialOverviewProject.id !== id
-                //     ),
-                // });
+                //project ook deleten uit state
+                console.log('ProjectItem - deleteProject');
+                console.log(id);
+                this.props.deleteProjectToState(id);
             })
             .catch(error => {
                 // todo WM: opschonen log regels
@@ -118,12 +117,12 @@ class ProjectItem extends Component {
                     makeConcept={this.makeConcept}
                     makeDefinitive={this.makeDefinitive}
                     toggleDelete={this.toggleDelete}
-                    financialOverviewDefinitive={this.props.financialOverviewDefinitive}
+                    financialOverviewDefinitive={this.props.financialOverview.definitive}
                     financialOverviewProject={this.state.financialOverviewProject}
                 />
                 {/*{this.state.showEdit && (*/}
                 {/*    <ProjectEdit*/}
-                {/*        financialOverview={this.state.financialOverview}*/}
+                {/*        financialOverview={this.props.financialOverview}*/}
                 {/*        handleInputChange={this.handleInputChange}*/}
                 {/*        handleSubmit={this.handleSubmit}*/}
                 {/*        typeIdError={this.state.errors.typeId}*/}

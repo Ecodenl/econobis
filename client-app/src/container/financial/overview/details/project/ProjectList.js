@@ -24,8 +24,9 @@ const ProjectList = props => {
                     return (
                         <ProjectItem
                             key={financialOverviewProject.id}
-                            financialOverviewDefinitive={props.financialOverview.definitive}
                             financialOverviewProject={financialOverviewProject}
+                            financialOverview={props.financialOverview}
+                            deleteProjectToState={props.deleteProjectToState}
                         />
                     );
                 })

@@ -8,6 +8,7 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 import { hashHistory } from 'react-router';
+import FinancialOverviewsAPI from '../../../../../api/financial/overview/FinancialOverviewsAPI';
 
 class ProjectNew extends Component {
     constructor(props) {
@@ -15,9 +16,9 @@ class ProjectNew extends Component {
         // todo WM: opschonen log regels
         console.log('ProjectNew');
         console.log(props);
-        let testProjects = { id: 31, name: 'test project' };
+        // let testProjects = { id: 31, name: 'test project' };
         this.state = {
-            projects: [testProjects],
+            // projects: [testProjects],
             financialOverviewProjects: props.financialOverview.financialOverviewProjects,
             financialOverviewProject: {
                 financialOverviewId: props.financialOverview.id,
@@ -28,9 +29,30 @@ class ProjectNew extends Component {
             errors: {
                 projectId: false,
             },
+            projectsForFinancialOverview: [],
+            isLoading: false,
+            hasError: false,
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
+
+    componentDidMount() {
+        this.callFetchNewProjectsForFinancialOverview();
+    }
+
+    callFetchNewProjectsForFinancialOverview = () => {
+        this.setState({ isLoading: true, hasError: false });
+        FinancialOverviewDetailsAPI.fetchNewProjectsForFinancialOverview(this.props.financialOverview)
+            .then(payload => {
+                // todo WM: opschonen log regels
+                console.log('callFetchProjectsForFinancialOverview');
+                console.log(payload);
+                this.setState({ isLoading: false, projectsForFinancialOverview: payload.data.data });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false, hasError: true });
+            });
+    };
 
     handleReactSelectChange(selectedOption, name) {
         this.setState({
@@ -64,19 +86,15 @@ class ProjectNew extends Component {
             FinancialOverviewDetailsAPI.newFinancialOverviewProject(financialOverviewProject)
                 .then(payload => {
                     // todo WM: opschonen log regels
-                    // console.log('payload.data.data');
-                    // console.log(payload.data.data);
+                    console.log('payload.data.data');
+                    console.log(payload.data.data);
                     this.props.toggleShowNew();
-                    // this.setState({
-                    //     ...this.state,
-                    //     financialOverviewProjects: {
-                    //         ...this.state.financialOverviewProjects,
-                    //         financialOverviewProject: payload.data.data,
-                    //     },
-                    // });
+                    // add project to state
+                    // todo WM: we krijgen nu alleen Id terug in payload.data.data ?!
+                    // this.props.addProjectToState(payload.data.data);
                 })
                 .catch(error => {
-                    this.props.setError(error.response.status, error.response.data.message);
+                    // this.props.setError(error.response.status, error.response.data.message);
                 });
     };
 
@@ -91,7 +109,7 @@ class ProjectNew extends Component {
                             <InputReactSelectLong
                                 label={'Project'}
                                 name={'projectId'}
-                                options={this.state.projects}
+                                options={this.state.projectsForFinancialOverview}
                                 value={projectId}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}

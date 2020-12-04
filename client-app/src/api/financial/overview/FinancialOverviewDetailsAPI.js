@@ -68,4 +68,10 @@ export default {
 
         return axiosInstance.post(requestUrl);
     },
+
+    fetchNewProjectsForFinancialOverview: financialOverview => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${financialOverview.id}/projects-for-financial-overview`;
+
+        return axiosInstance.get(requestUrl, financialOverview);
+    },
 };

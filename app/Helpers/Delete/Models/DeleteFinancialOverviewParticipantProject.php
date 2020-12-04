@@ -9,11 +9,12 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class DeleteFinancialOverviewProject
+ * Class DeleteFinancialOverviewParticipantProject
  *
  * Relation: 1-n Emails. Action: dissociate
  * Relation: 1-n Documents. Action: dissociate
@@ -22,19 +23,19 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteFinancialOverviewProject implements DeleteInterface
+class DeleteFinancialOverviewParticipantProject implements DeleteInterface
 {
     private $errorMessage = [];
-    private $financialOverviewProject;
+    private $financialOverviewParticipantProject;
 
     /** Sets the model to delete
      *
-     * @param Model $financialOverviewProject the model to delete
+     * @param Model $financialOverviewParticipantProject the model to delete
      */
 
-    public function __construct(Model $financialOverviewProject)
+    public function __construct(Model $financialOverviewParticipantProject)
     {
-        $this->financialOverviewProject = $financialOverviewProject;
+        $this->financialOverviewParticipantProject = $financialOverviewParticipantProject;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -49,7 +50,7 @@ class DeleteFinancialOverviewProject implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->financialOverviewProject->delete();
+        $this->financialOverviewParticipantProject->delete();
 
         return $this->errorMessage;
     }
@@ -58,8 +59,10 @@ class DeleteFinancialOverviewProject implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->financialOverviewProject->definitive == true){
-            array_push($this->errorMessage, "Waardestaat voor project " . $this->financialOverviewProject->project->name. " is al definitief.");
+        $hasFinancialOverviewDefinitive = ParticipantMutation::where('participation_id', $this->financialOverviewParticipantProject->participant_project_id)
+            ->where('financial_overview_definitive', true)->exists();
+        if($hasFinancialOverviewDefinitive){
+            array_push($this->errorMessage, "Er zijn al mutaties voor deelnemer verwerkt in een definitieve project waarde staat.");
         }
     }
 
@@ -67,13 +70,6 @@ class DeleteFinancialOverviewProject implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->financialOverviewProject->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
-            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-            // this can resolve in a lot of messages, we not going to share them.
-//            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewParticipantProject->delete());
-            $deleteFinancialOverviewParticipantProject->delete();
-        }
-
     }
 
     /** The relations which should be dissociated

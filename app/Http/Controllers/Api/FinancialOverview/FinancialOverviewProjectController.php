@@ -50,11 +50,24 @@ class FinancialOverviewProjectController extends Controller
     {
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverview = $financialOverviewProject->financialOverview;
+        if(!$financialOverview)
+        {
+            abort(409,'Waardestaat jaar/administratie onbekend');
+        }
+        if($financialOverview->definitive)
+        {
+            abort(409,'Waardestaat jaar ' . $financialOverview->year . ' en administratie ' . $financialOverview->administration->name . ' is al definitief.');
+        }
+
         $data = $input->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
             ->get();
 
         $financialOverviewProject->fill($data);
         $financialOverviewProject->save();
+
+        $project = Project::find($financialOverviewProject->project_id);
+        $this->updateParticipantMutations($project, $financialOverviewProject);
 
         return GenericResource::make($financialOverviewProject);
     }
@@ -90,7 +103,7 @@ class FinancialOverviewProjectController extends Controller
         $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
         $endDate = Carbon::createFromDate($financialOverview->year, 1, 1)->addYear();
         foreach ($participants as $participant) {
-            //todo WM: hier bepalen start_value en end_value
+            //calculate start_value en end_value of participation
             $startValue = $this->calculateParticipationsValue($participant, $startDate);
             $endValue = $this->calculateParticipationsValue($participant, $endDate);
             FinancialOverviewParticipantProject::create([
@@ -102,6 +115,24 @@ class FinancialOverviewProjectController extends Controller
 
         }
     }
+
+    public function updateParticipantMutations(Project $project, FinancialOverviewProject $financialOverviewProject)
+    {
+        $financialOverview = $financialOverviewProject->financialOverview;
+        $endDate = Carbon::createFromDate($financialOverview->year, 1, 1)->addYear();
+        $participants = $project->participantsProject;
+        foreach ($participants as $participant) {
+            $mutations = $participant->mutationsDefinitive()
+                ->whereDate('date_entry', '<', $endDate);
+
+            //set true/false for all mutations on financial overview definitive till enddate
+            foreach ($mutations->get() as $mutation) {
+                $mutation->financial_overview_definitive = $financialOverviewProject->definitive;
+                $mutation->save();
+            }
+        }
+    }
+
 
     protected function calculateParticipationsValue($participant, $dateReference)
     {

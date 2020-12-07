@@ -60,7 +60,17 @@ export default {
     updateFinancialOverviewProject: financialOverviewProject => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${financialOverviewProject.id}`;
 
-        return axiosInstance.post(requestUrl, financialOverviewProject);
+        // return axiosInstance.post(requestUrl, financialOverviewProject);
+        return axiosInstance
+            .post(requestUrl, financialOverviewProject)
+            .then(function(response) {
+                return null;
+            })
+            .catch(function(error) {
+                console.log('test error');
+                console.log(error.response);
+                return error.response;
+            });
     },
 
     deleteFinancialOverviewProject: id => {

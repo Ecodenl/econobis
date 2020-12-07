@@ -260,6 +260,10 @@ class MutationFormListItem extends Component {
     };
 
     render() {
+        // todo WM: opschonen log regels
+        // console.log('mutationFormListItem');
+        // console.log(this.state.participantMutation.financialOverviewDefinitive);
+        // console.log(this.props.participantMutation.financialOverviewDefinitive);
         return (
             <div>
                 <MutationFormView
@@ -271,25 +275,29 @@ class MutationFormListItem extends Component {
                     toggleDelete={this.toggleDelete}
                     participantMutation={this.props.participantMutation}
                 />
-                {this.state.showEdit && this.props.permissions.manageFinancial && (
-                    <MutationFormEdit
-                        participantMutationFromState={this.state.participantMutation}
-                        participantMutationFromProps={this.props.participantMutation}
-                        handleInputChange={this.handleInputChange}
-                        handleInputChangeDate={this.handleInputChangeDate}
-                        handleSubmit={this.handleSubmit}
-                        cancelEdit={this.cancelEdit}
-                        errors={this.state.errors}
-                        errorMessage={this.state.errorMessage}
-                    />
-                )}
-                {this.state.showDelete && this.props.permissions.manageFinancial && (
-                    <MutationFormDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        handleSubmitDelete={this.handleSubmitDelete}
-                        {...this.props.participantMutation}
-                    />
-                )}
+                {this.state.showEdit &&
+                    !this.props.participantMutation.financialOverviewDefinitive &&
+                    this.props.permissions.manageFinancial && (
+                        <MutationFormEdit
+                            participantMutationFromState={this.state.participantMutation}
+                            participantMutationFromProps={this.props.participantMutation}
+                            handleInputChange={this.handleInputChange}
+                            handleInputChangeDate={this.handleInputChangeDate}
+                            handleSubmit={this.handleSubmit}
+                            cancelEdit={this.cancelEdit}
+                            errors={this.state.errors}
+                            errorMessage={this.state.errorMessage}
+                        />
+                    )}
+                {this.state.showDelete &&
+                    !this.props.participantMutation.financialOverviewDefinitive &&
+                    this.props.permissions.manageFinancial && (
+                        <MutationFormDelete
+                            closeDeleteItemModal={this.toggleDelete}
+                            handleSubmitDelete={this.handleSubmitDelete}
+                            {...this.props.participantMutation}
+                        />
+                    )}
                 {this.state.successUpdateMessage && (
                     <Modal
                         closeModal={this.closeEdit}
@@ -335,7 +343,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MutationFormListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(MutationFormListItem);

@@ -46,6 +46,7 @@ const MutationFormView = ({
         payoutKwh,
         indicationOfRestitutionEnergyTax,
         deletedAt,
+        financialOverviewDefinitive,
     } = participantMutation;
 
     return (
@@ -78,7 +79,7 @@ const MutationFormView = ({
                 )}
                 {!deletedAt && (
                     <StyledColumn columnWidth={'6%'}>
-                        {showActionButtons && permissions.manageFinancial ? (
+                        {showActionButtons && !financialOverviewDefinitive && permissions.manageFinancial ? (
                             <a role="button" onClick={openEdit}>
                                 <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                             </a>
@@ -86,6 +87,7 @@ const MutationFormView = ({
                             ''
                         )}
                         {!participantInDefinitiveRevenue &&
+                        !financialOverviewDefinitive &&
                         participantProjectDateTerminated === null &&
                         showActionButtons &&
                         permissions.manageFinancial ? (

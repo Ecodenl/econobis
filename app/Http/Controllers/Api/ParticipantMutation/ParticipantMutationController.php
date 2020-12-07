@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\ParticipantMutation;
 
+use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
@@ -43,6 +44,7 @@ class ParticipantMutationController extends ApiController
             ->double('payoutKwh')->onEmpty(null)->alias('payout_kwh')->next()
             ->double('indicationOfRestitutionEnergyTax')->onEmpty(null)->alias('indication_of_restitution_energy_tax')->next()
             ->string('paidOn')->onEmpty(null)->alias('paid_on')->next()
+            ->boolean('financialOverviewDefinitive')->onEmpty(false)->alias('financial_overview_definitive')->next()
             ->get();
 
         $participantProject = ParticipantProject::find($data['participation_id']);
@@ -69,6 +71,8 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
+        $result = $this->checkMutationAllowed($participantMutation);
+
         $this->recalculateParticipantMutation($participantMutation);
 
         $dateRegisterNew = $participantMutation->participation->dateEntryFirstDeposit;
@@ -87,6 +91,9 @@ class ParticipantMutationController extends ApiController
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
     {
         $this->authorize('manage', ParticipantMutation::class);
+
+        $participantMutationOld = ParticipantMutation::find($participantMutation->id);
+        $result = $this->checkMutationAllowed($participantMutationOld);
 
         $dateRegisterOld = $participantMutation->participation->dateEntryFirstDeposit;
 
@@ -114,10 +121,14 @@ class ParticipantMutationController extends ApiController
             ->double('payoutKwh')->onEmpty(null)->alias('payout_kwh')->next()
             ->double('indicationOfRestitutionEnergyTax')->onEmpty(null)->alias('indication_of_restitution_energy_tax')->next()
             ->string('paidOn')->onEmpty(null)->alias('paid_on')->next()
+            ->boolean('financialOverviewDefinitive')->onEmpty(false)->alias('financial_overview_definitive')->next()
 
             ->get();
 
         $participantMutation->fill($data);
+
+        $result = $this->checkMutationAllowed($participantMutation);
+
 
         $this->recalculateParticipantMutation($participantMutation);
 
@@ -203,5 +214,25 @@ class ParticipantMutationController extends ApiController
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
         });
+    }
+
+    /**
+     * @param $participantProject
+     */
+    protected function checkMutationAllowed($participantMutation)
+    {
+        $project = $participantMutation->participation->project;
+        $dateEntryYear = Carbon::parse($participantMutation->date_entry)->year;
+        $financialOverviewProjectQuery = FinancialOverviewProject::where('project_id', $project->id)
+            ->where('definitive', true)
+            ->whereHas('financialOverview', function ($query) use ($project, $dateEntryYear) {
+                $query->where('administration_id', $project->administration->id)
+                    ->where('year', $dateEntryYear);
+            });
+        $financialOverviewProject = $financialOverviewProjectQuery->get();
+
+        if ($financialOverviewProjectQuery->exists()) {
+            abort(409, 'Project komt al voor in definitive waardestaat jaar ' . $dateEntryYear . ' en administratie ' . $project->administration->name . '. Deze mutatie is niet meer mogelijk.');
+        }
     }
 }

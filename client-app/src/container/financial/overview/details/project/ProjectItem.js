@@ -5,6 +5,8 @@ import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/F
 import ProjectView from './ProjectView';
 // import ProjectEdit from './ProjectEdit';
 import ProjectDelete from './ProjectDelete';
+import { setError } from '../../../../../actions/general/ErrorActions';
+import { connect } from 'react-redux';
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -82,13 +84,28 @@ class ProjectItem extends Component {
     };
 
     updateProject() {
-        FinancialOverviewDetailsAPI.updateFinancialOverviewProject(this.state.financialOverviewProject);
+        FinancialOverviewDetailsAPI.updateFinancialOverviewProject(this.state.financialOverviewProject)
+            .then(payload => {
+                // todo WM: opschonen log regels
+                console.log('ProjectItem - updateProject');
+                console.log(payload);
+                if (payload && payload.status && payload.status === '409') {
+                    this.props.setError(payload.status, payload.data.message);
+                }
+            })
+            .catch(error => {
+                // todo WM: opschonen log regels
+                console.log('update error');
+                console.log(error);
+                // this.props.setError(error);
+            });
     }
 
     deleteProject = id => {
         FinancialOverviewDetailsAPI.deleteFinancialOverviewProject(id)
             .then(payload => {
                 //project ook deleten uit state
+                // todo WM: opschonen log regels
                 console.log('ProjectItem - deleteProject');
                 console.log(id);
                 this.props.deleteProjectToState(id);
@@ -142,4 +159,12 @@ class ProjectItem extends Component {
     }
 }
 
-export default ProjectItem;
+// export default ProjectItem;
+
+const mapDispatchToProps = dispatch => ({
+    setError: (http_code, message) => {
+        dispatch(setError(http_code, message));
+    },
+});
+
+export default connect(null, mapDispatchToProps)(ProjectItem);

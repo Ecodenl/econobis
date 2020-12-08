@@ -117,7 +117,7 @@ class FullProject extends Resource
                 'textBecomeNoMember' => $this->text_become_no_member,
                 'noMemberGroupId' => $this->no_member_group_id,
                 'noMemberGroup' => FullContactGroup::make($this->whenLoaded('noMemberGroup')),
-                'financialOverviewProjects' => FullFinancialOverviewProject::collection($this->whenLoaded('financialOverviewProjects')),
+                'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
 
             ];
     }

@@ -156,6 +156,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
                         errors={this.state.errors}
                         cancelEdit={this.cancelEdit}
                         isSaving={this.state.isSaving}
+                        lastYearFinancialOverviewDefinitive={this.props.lastYearFinancialOverviewDefinitive}
                     />
                 )}
                 {this.state.showDelete && this.props.permissions.manageFinancial && (
@@ -173,6 +174,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         projectType: state.projectDetails.projectType,
+        lastYearFinancialOverviewDefinitive: state.projectDetails.lastYearFinancialOverviewDefinitive,
     };
 };
 
@@ -182,7 +184,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProjectDetailsFormValueCourseItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetailsFormValueCourseItem);

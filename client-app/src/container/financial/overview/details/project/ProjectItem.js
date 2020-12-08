@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
 
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import ProjectView from './ProjectView';
-// import ProjectEdit from './ProjectEdit';
 import ProjectDelete from './ProjectDelete';
 import { setError } from '../../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
+import ErrorModal from '../../../../../components/modal/ErrorModal';
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -30,18 +29,9 @@ class ProjectItem extends Component {
                 typeId: false,
                 number: false,
             },
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.state.financialOverviewProject, nextProps.financialOverviewProject)) {
-            this.setState({
-                ...this.state,
-                financialOverviewProject: {
-                    ...nextProps.financialOverviewProject,
-                },
-            });
-        }
     }
 
     onLineEnter = () => {
@@ -94,15 +84,17 @@ class ProjectItem extends Component {
                 // todo WM: opschonen log regels
                 console.log('ProjectItem - updateProject');
                 console.log(payload);
-                if (payload && payload.status && payload.status === '409') {
-                    this.props.setError(payload.status, payload.data.message);
-                }
             })
             .catch(error => {
-                // todo WM: opschonen log regels
-                console.log('update error');
-                console.log(error);
-                // this.props.setError(error);
+                let errorObject = JSON.parse(JSON.stringify(error));
+                let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                if (errorObject.response.status !== 500) {
+                    errorMessage = errorObject.response.data.message;
+                }
+                this.setState({
+                    showErrorModal: true,
+                    modalErrorMessage: errorMessage,
+                });
             });
     }
 
@@ -116,10 +108,15 @@ class ProjectItem extends Component {
                 this.props.deleteProjectToState(id);
             })
             .catch(error => {
-                // todo WM: opschonen log regels
-                console.log('delete error');
-                console.log(error);
-                this.props.setError(error.response.status, error.response.data.message);
+                let errorObject = JSON.parse(JSON.stringify(error));
+                let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                if (errorObject.response.status !== 500) {
+                    errorMessage = errorObject.response.data.message;
+                }
+                this.setState({
+                    showErrorModal: true,
+                    modalErrorMessage: errorMessage,
+                });
             });
     };
 
@@ -127,39 +124,42 @@ class ProjectItem extends Component {
         this.setState({ showDelete: !this.state.showDelete });
     };
 
+    closeErrorModal = () => {
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+    };
+
     render() {
         return (
-            <div>
-                <ProjectView
-                    highlightLine={this.state.highlightLine}
-                    showActionButtons={this.state.showActionButtons}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    clickItem={this.clickItem}
-                    makeConcept={this.makeConcept}
-                    makeDefinitive={this.makeDefinitive}
-                    toggleDelete={this.toggleDelete}
-                    financialOverviewDefinitive={this.props.financialOverview.definitive}
-                    financialOverviewProject={this.state.financialOverviewProject}
-                />
-                {/*{this.state.showEdit && (*/}
-                {/*    <ProjectEdit*/}
-                {/*        financialOverview={this.props.financialOverview}*/}
-                {/*        handleInputChange={this.handleInputChange}*/}
-                {/*        handleSubmit={this.handleSubmit}*/}
-                {/*        typeIdError={this.state.errors.typeId}*/}
-                {/*        numberError={this.state.errors.number}*/}
-                {/*        cancelEdit={this.cancelEdit}*/}
-                {/*    />*/}
-                {/*)}*/}
-                {this.state.showDelete && (
-                    <ProjectDelete
+            <React.Fragment>
+                <div>
+                    <ProjectView
+                        highlightLine={this.state.highlightLine}
+                        showActionButtons={this.state.showActionButtons}
+                        onLineEnter={this.onLineEnter}
+                        onLineLeave={this.onLineLeave}
+                        clickItem={this.clickItem}
+                        makeConcept={this.makeConcept}
+                        makeDefinitive={this.makeDefinitive}
+                        toggleDelete={this.toggleDelete}
+                        financialOverviewDefinitive={this.props.financialOverview.definitive}
                         financialOverviewProject={this.state.financialOverviewProject}
-                        deleteProject={this.deleteProject}
-                        closeDeleteItemModal={this.toggleDelete}
+                    />
+                    {this.state.showDelete && (
+                        <ProjectDelete
+                            financialOverviewProject={this.state.financialOverviewProject}
+                            deleteProject={this.deleteProject}
+                            closeDeleteItemModal={this.toggleDelete}
+                        />
+                    )}
+                </div>
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
                     />
                 )}
-            </div>
+            </React.Fragment>
         );
     }
 }

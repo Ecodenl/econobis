@@ -55,8 +55,6 @@ class FinancialOverviewDetailsApp extends Component {
     };
 
     addProjectToState = financialOverviewProject => {
-        console.log('FinancialOverviewDetailsApp - addProject');
-        console.log(financialOverviewProject);
         this.setState({
             ...this.state,
             financialOverview: {
@@ -70,8 +68,6 @@ class FinancialOverviewDetailsApp extends Component {
     };
 
     deleteProjectToState = id => {
-        console.log('FinancialOverviewDetailsApp - deleteProject');
-        console.log(id);
         this.setState({
             ...this.state,
             financialOverview: {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import ProjectItem from './ProjectItem';
 
@@ -19,7 +18,9 @@ const ProjectList = props => {
                 </div>
                 <div className="col-sm-1" />
             </div>
-            {props.financialOverview.financialOverviewProjects.length > 0 ? (
+            {props.financialOverview &&
+            props.financialOverview.financialOverviewProjects &&
+            props.financialOverview.financialOverviewProjects.length > 0 ? (
                 props.financialOverview.financialOverviewProjects.map(financialOverviewProject => {
                     return (
                         <ProjectItem

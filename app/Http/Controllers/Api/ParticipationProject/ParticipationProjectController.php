@@ -198,6 +198,7 @@ class ParticipationProjectController extends ApiController
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
+            'project.financialOverviewProjects',
             'participantProjectPayoutType',
             'giftedByContact',
             'legalRepContact',

@@ -86,8 +86,8 @@ class FinancialOverviewController extends Controller
                 'definitive' => false,
             ]);
 
-            $financialOverviewProjectController = new FinancialOverviewProjectController();
-            $financialOverviewProjectController->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
+            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+            $financialOverviewParticipantProjectController->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
         }
     }
 

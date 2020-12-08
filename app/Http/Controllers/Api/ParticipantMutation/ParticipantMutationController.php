@@ -9,7 +9,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -129,7 +129,6 @@ class ParticipantMutationController extends ApiController
 
         $result = $this->checkMutationAllowed($participantMutation);
 
-
         $this->recalculateParticipantMutation($participantMutation);
 
         $dateRegisterNew = $participantMutation->participation->dateEntryFirstDeposit;
@@ -170,6 +169,14 @@ class ParticipantMutationController extends ApiController
 
                 // Herbereken de afhankelijke gegevens op het project
                 $participantProject->project->calculator()->run()->save();
+            }
+
+            // Indien participation project in concept waardestaat / waardestaten, dan die ook herberekenen.
+            if($participantProject->project->financialOverviewProjects
+                && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
+            {
+                $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+                $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
             }
 
         });
@@ -213,7 +220,17 @@ class ParticipantMutationController extends ApiController
 
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
+
+            // Indien participation project in concept waardestaat / waardestaten, dan die ook herberekenen.
+            if($participantMutation->participation->project->financialOverviewProjects
+                && $participantMutation->participation->project->financialOverviewProjects->where('definitive', false)->count() > 0)
+            {
+                $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+                $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantMutation->participation);
+            }
+
         });
+
     }
 
     /**
@@ -222,6 +239,7 @@ class ParticipantMutationController extends ApiController
     protected function checkMutationAllowed($participantMutation)
     {
         $project = $participantMutation->participation->project;
+
         $dateEntryYear = Carbon::parse($participantMutation->date_entry)->year;
         $financialOverviewProjectQuery = FinancialOverviewProject::where('project_id', $project->id)
             ->where('definitive', true)

@@ -27,6 +27,7 @@ use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Jobs\ParticipationProject\CreateParticipantReport;
@@ -243,6 +244,14 @@ class ParticipationProjectController extends ApiController
         // Create first mutation
         $this->storeFirstMutation($requestInput, $participantProject, $project);
 
+        // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+        if($participantProject->project->financialOverviewProjects
+            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
+        {
+            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
+        }
+
         $message = [];
 
         if($project->is_membership_required){
@@ -308,6 +317,14 @@ class ParticipationProjectController extends ApiController
 
         // Herbereken de afhankelijke gegevens op het project
         $participantProject->project->calculator()->run()->save();
+
+        // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+        if($participantProject->project->financialOverviewProjects
+            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
+        {
+            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
+        }
 
         return $this->show($participantProject);
     }

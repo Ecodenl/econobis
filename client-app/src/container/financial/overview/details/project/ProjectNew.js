@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import validator from 'validator';
 
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
@@ -7,8 +6,8 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
-import { hashHistory } from 'react-router';
-import FinancialOverviewsAPI from '../../../../../api/financial/overview/FinancialOverviewsAPI';
+import ErrorModal from '../../../../../components/modal/ErrorModal';
+import Modal from '../../../../../components/modal/Modal';
 
 class ProjectNew extends Component {
     constructor(props) {
@@ -32,6 +31,8 @@ class ProjectNew extends Component {
             projectsForFinancialOverview: [],
             isLoading: false,
             hasError: false,
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
@@ -85,56 +86,84 @@ class ProjectNew extends Component {
         !hasErrors &&
             FinancialOverviewDetailsAPI.newFinancialOverviewProject(financialOverviewProject)
                 .then(payload => {
-                    // todo WM: opschonen log regels
-                    console.log('payload.data.data');
-                    console.log(payload.data.data);
                     this.props.toggleShowNew();
                     // add project to state
-                    // todo WM: we krijgen nu alleen Id terug in payload.data.data ?!
-                    // this.props.addProjectToState(payload.data.data);
+                    this.props.addProjectToState(payload.data.data);
                 })
                 .catch(error => {
-                    // this.props.setError(error.response.status, error.response.data.message);
+                    let errorObject = JSON.parse(JSON.stringify(error));
+                    let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                    if (errorObject.response.status !== 500) {
+                        errorMessage = errorObject.response.data.message;
+                    }
+                    this.setState({
+                        showErrorModal: true,
+                        modalErrorMessage: errorMessage,
+                    });
                 });
+    };
+
+    closeErrorModal = () => {
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
     render() {
         const { projectId } = this.state.financialOverviewProject;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                <Panel className={'panel-grey'}>
-                    <PanelBody>
-                        <div className="row">
-                            <InputReactSelectLong
-                                label={'Project'}
-                                name={'projectId'}
-                                options={this.state.projectsForFinancialOverview}
-                                value={projectId}
-                                onChangeAction={this.handleReactSelectChange}
-                                required={'required'}
-                                multi={false}
-                                error={this.state.errors.projectId}
-                                errorMessage={this.state.errorMessage.projectId}
-                            />
-                        </div>
+            <React.Fragment>
+                <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                    <Panel className={'panel-grey'}>
+                        <PanelBody>
+                            <div className="row">
+                                {this.props.financialOverview && this.props.financialOverview.definitive ? (
+                                    <div className={'col-sm-12 margin-10-bottom'}>
+                                        <p className={'text-danger'}>
+                                            Aan definitieve waardestaat kunnen geen projecten meer toegevoegd worden.
+                                            <br />
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <InputReactSelectLong
+                                        label={'Project'}
+                                        name={'projectId'}
+                                        options={this.state.projectsForFinancialOverview}
+                                        value={projectId}
+                                        onChangeAction={this.handleReactSelectChange}
+                                        required={'required'}
+                                        multi={false}
+                                        error={this.state.errors.projectId}
+                                        errorMessage={this.state.errorMessage.projectId}
+                                    />
+                                )}
+                            </div>
 
-                        <div className="pull-right btn-group" role="group">
-                            <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Annuleren'}
-                                onClickAction={this.props.toggleShowNew}
-                            />
-                            <ButtonText
-                                buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
-                                type={'submit'}
-                                value={'Submit'}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </form>
+                            <div className="pull-right btn-group" role="group">
+                                <ButtonText
+                                    buttonClassName={'btn-default'}
+                                    buttonText={'Annuleren'}
+                                    onClickAction={this.props.toggleShowNew}
+                                />
+                                {this.props.financialOverview && !this.props.financialOverview.definitive ? (
+                                    <ButtonText
+                                        buttonText={'Opslaan'}
+                                        onClickAction={this.handleSubmit}
+                                        type={'submit'}
+                                        value={'Submit'}
+                                    />
+                                ) : null}
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                </form>
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
+                    />
+                )}
+            </React.Fragment>
         );
     }
 }

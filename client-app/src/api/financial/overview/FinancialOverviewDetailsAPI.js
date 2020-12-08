@@ -83,7 +83,13 @@ export default {
     newFinancialOverviewProject: financialOverviewProject => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}`;
         financialOverviewProject.jory = JSON.stringify({
-            fld: ['id'],
+            fld: ['id', 'projectId', 'definitive'],
+            rlt: {
+                project: {
+                    fld: ['id', 'code', 'name'],
+                    rlt: { projectType: { fld: ['id', 'codeRef', 'name'] } },
+                },
+            },
         });
 
         return axiosInstance.post(requestUrl, financialOverviewProject);
@@ -91,17 +97,7 @@ export default {
     updateFinancialOverviewProject: financialOverviewProject => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${financialOverviewProject.id}`;
 
-        // return axiosInstance.post(requestUrl, financialOverviewProject);
-        return axiosInstance
-            .post(requestUrl, financialOverviewProject)
-            .then(function(response) {
-                return null;
-            })
-            .catch(function(error) {
-                console.log('test error');
-                console.log(error.response);
-                return error.response;
-            });
+        return axiosInstance.post(requestUrl, financialOverviewProject);
     },
 
     deleteFinancialOverviewProject: id => {

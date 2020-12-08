@@ -10,6 +10,7 @@ import { isEqual } from 'lodash';
 import MutationValidateForm from './MutationValidateForm';
 import MutationSubmitHelper from './MutationSubmitHelper';
 import moment from 'moment/moment';
+import ErrorModal from '../../../../../components/modal/ErrorModal';
 import Modal from '../../../../../components/modal/Modal';
 
 class MutationFormListItem extends Component {
@@ -70,6 +71,8 @@ class MutationFormListItem extends Component {
             },
             errors: {},
             errorMessage: {},
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
@@ -229,16 +232,28 @@ class MutationFormListItem extends Component {
         if (!validatedForm.hasErrors) {
             const values = MutationSubmitHelper(participantMutation, this.props.projectTypeCodeRef);
 
-            ParticipantMutationAPI.updateParticipantMutation(values).then(payload => {
-                if (payload.data) {
+            ParticipantMutationAPI.updateParticipantMutation(values)
+                .then(payload => {
+                    if (payload.data) {
+                        this.setState({
+                            ...this.state,
+                            successUpdateMessage: payload.data,
+                        });
+                    } else {
+                        this.closeEdit();
+                    }
+                })
+                .catch(error => {
+                    let errorObject = JSON.parse(JSON.stringify(error));
+                    let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                    if (errorObject.response.status !== 500) {
+                        errorMessage = errorObject.response.data.message;
+                    }
                     this.setState({
-                        ...this.state,
-                        successUpdateMessage: payload.data,
+                        showErrorModal: true,
+                        modalErrorMessage: errorMessage,
                     });
-                } else {
-                    this.closeEdit();
-                }
-            });
+                });
         }
     };
 
@@ -259,70 +274,83 @@ class MutationFormListItem extends Component {
         });
     };
 
+    closeErrorModal = () => {
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+    };
+
     render() {
         // todo WM: opschonen log regels
         // console.log('mutationFormListItem');
         // console.log(this.state.participantMutation.financialOverviewDefinitive);
         // console.log(this.props.participantMutation.financialOverviewDefinitive);
         return (
-            <div>
-                <MutationFormView
-                    highlightLine={this.state.highlightLine}
-                    showActionButtons={this.state.showActionButtons}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    openEdit={this.openEdit}
-                    toggleDelete={this.toggleDelete}
-                    participantMutation={this.props.participantMutation}
-                />
-                {this.state.showEdit &&
-                    !this.props.participantMutation.financialOverviewDefinitive &&
-                    this.props.permissions.manageFinancial && (
-                        <MutationFormEdit
-                            participantMutationFromState={this.state.participantMutation}
-                            participantMutationFromProps={this.props.participantMutation}
-                            handleInputChange={this.handleInputChange}
-                            handleInputChangeDate={this.handleInputChangeDate}
-                            handleSubmit={this.handleSubmit}
-                            cancelEdit={this.cancelEdit}
-                            errors={this.state.errors}
-                            errorMessage={this.state.errorMessage}
-                        />
+            <React.Fragment>
+                <div>
+                    <MutationFormView
+                        highlightLine={this.state.highlightLine}
+                        showActionButtons={this.state.showActionButtons}
+                        onLineEnter={this.onLineEnter}
+                        onLineLeave={this.onLineLeave}
+                        openEdit={this.openEdit}
+                        toggleDelete={this.toggleDelete}
+                        participantMutation={this.props.participantMutation}
+                    />
+                    {this.state.showEdit &&
+                        !this.props.participantMutation.financialOverviewDefinitive &&
+                        this.props.permissions.manageFinancial && (
+                            <MutationFormEdit
+                                participantMutationFromState={this.state.participantMutation}
+                                participantMutationFromProps={this.props.participantMutation}
+                                handleInputChange={this.handleInputChange}
+                                handleInputChangeDate={this.handleInputChangeDate}
+                                handleSubmit={this.handleSubmit}
+                                cancelEdit={this.cancelEdit}
+                                errors={this.state.errors}
+                                errorMessage={this.state.errorMessage}
+                            />
+                        )}
+                    {this.state.showDelete &&
+                        !this.props.participantMutation.financialOverviewDefinitive &&
+                        this.props.permissions.manageFinancial && (
+                            <MutationFormDelete
+                                closeDeleteItemModal={this.toggleDelete}
+                                handleSubmitDelete={this.handleSubmitDelete}
+                                {...this.props.participantMutation}
+                            />
+                        )}
+                    {this.state.successUpdateMessage && (
+                        <Modal
+                            closeModal={this.closeEdit}
+                            buttonCancelText={'Ok'}
+                            showConfirmAction={false}
+                            title={'Succes'}
+                        >
+                            {this.state.successUpdateMessage.map(function(messageLine, index) {
+                                return <p key={index}>{messageLine}</p>;
+                            })}
+                        </Modal>
                     )}
-                {this.state.showDelete &&
-                    !this.props.participantMutation.financialOverviewDefinitive &&
-                    this.props.permissions.manageFinancial && (
-                        <MutationFormDelete
-                            closeDeleteItemModal={this.toggleDelete}
-                            handleSubmitDelete={this.handleSubmitDelete}
-                            {...this.props.participantMutation}
-                        />
+                    {this.state.successDeleteMessage && (
+                        <Modal
+                            closeModal={this.toggleDelete}
+                            buttonCancelText={'Ok'}
+                            showConfirmAction={false}
+                            title={'Succes'}
+                        >
+                            {this.state.successDeleteMessage.map(function(messageLine, index) {
+                                return <p key={index}>{messageLine}</p>;
+                            })}
+                        </Modal>
                     )}
-                {this.state.successUpdateMessage && (
-                    <Modal
-                        closeModal={this.closeEdit}
-                        buttonCancelText={'Ok'}
-                        showConfirmAction={false}
-                        title={'Succes'}
-                    >
-                        {this.state.successUpdateMessage.map(function(messageLine, index) {
-                            return <p key={index}>{messageLine}</p>;
-                        })}
-                    </Modal>
+                </div>
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
+                    />
                 )}
-                {this.state.successDeleteMessage && (
-                    <Modal
-                        closeModal={this.toggleDelete}
-                        buttonCancelText={'Ok'}
-                        showConfirmAction={false}
-                        title={'Succes'}
-                    >
-                        {this.state.successDeleteMessage.map(function(messageLine, index) {
-                            return <p key={index}>{messageLine}</p>;
-                        })}
-                    </Modal>
-                )}
-            </div>
+            </React.Fragment>
         );
     }
 }

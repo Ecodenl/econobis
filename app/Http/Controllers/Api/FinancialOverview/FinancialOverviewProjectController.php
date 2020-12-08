@@ -29,6 +29,17 @@ class FinancialOverviewProjectController extends Controller
     {
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverview = FinancialOverview::find($request->get('financialOverviewId'));
+        if(!$financialOverview)
+        {
+            abort(409,'Waardestaat jaar/administratie onbekend');
+        }
+        if($financialOverview->definitive)
+        {
+            abort(409,'Waardestaat jaar ' . $financialOverview->year . ' en administratie ' . $financialOverview->administration->name . ' is al definitief.');
+        }
+
+
         $data = $input->integer('financialOverviewId')->alias('financial_overview_id')->next()
             ->integer('projectId')->validate('exists:projects,id')->alias('project_id')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
@@ -41,8 +52,6 @@ class FinancialOverviewProjectController extends Controller
         $this->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
 
         return Jory::on($financialOverviewProject);
-//        return GenericResource::make($financialOverviewProject);
-//        return FullFinancialOverviewProject::make($financialOverviewProject->load('project'));
 
     }
 

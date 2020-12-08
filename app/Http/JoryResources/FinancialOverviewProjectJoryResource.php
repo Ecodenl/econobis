@@ -20,6 +20,9 @@ class FinancialOverviewProjectJoryResource extends JoryResource
 
         // Relations
         $this->relation('project');
+        $this->relation('financialOverview');
+        $this->relation('financialOverviewParticipantProjects');
+
     }
 
     protected function configureForPortal(): void

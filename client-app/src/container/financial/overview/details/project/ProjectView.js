@@ -5,11 +5,12 @@ const ProjectView = props => {
     // console.log('ProjectView');
     // console.log(props);
     // const { financialOverview } = props.financialOverview;
-    const { definitive, project } = props.financialOverviewProject;
+    const { id, definitive, project } = props.financialOverviewProject;
 
     return (
         <div
             className={`row border ${props.highlightLine}`}
+            onDoubleClick={() => props.clickItem(id)}
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >

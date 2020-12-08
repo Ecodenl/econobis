@@ -28,6 +28,37 @@ export default {
         });
     },
 
+    fetchFinancialOverviewProjectDetails: id => {
+        const requestUrl = `jory/financial-overview-project/${id}`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: ['id', 'projectId', 'definitive'],
+                    rlt: {
+                        financialOverview: {
+                            fld: ['id', 'administrationId', 'year', 'definitive'],
+                            rlt: { administration: { fld: ['id', 'name'] } },
+                        },
+                        project: {
+                            fld: ['id', 'code', 'name'],
+                            rlt: { projectType: { fld: ['id', 'codeRef', 'name'] } },
+                        },
+                        financialOverviewParticipantProjects: {
+                            fld: ['id', 'participantProjectId', 'startValue', 'endValue'],
+                            rlt: {
+                                participantProject: {
+                                    fld: ['id', 'contactId'],
+                                    rlt: { contact: { fld: ['id', 'fullName'] } },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    },
+
     newFinancialOverview: financialOverview => {
         const requestUrl = URL_FINANCIAL_OVERVIEW;
         financialOverview.jory = JSON.stringify({

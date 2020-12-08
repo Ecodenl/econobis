@@ -7,6 +7,7 @@ import ProjectView from './ProjectView';
 import ProjectDelete from './ProjectDelete';
 import { setError } from '../../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
+import { hashHistory } from 'react-router';
 
 class ProjectItem extends Component {
     constructor(props) {
@@ -55,6 +56,10 @@ class ProjectItem extends Component {
             showActionButtons: false,
             highlightLine: '',
         });
+    };
+
+    clickItem = id => {
+        hashHistory.push(`/waardestaat-project/${id}`);
     };
 
     makeConcept = () => {
@@ -130,7 +135,7 @@ class ProjectItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    // openEdit={this.openEdit}
+                    clickItem={this.clickItem}
                     makeConcept={this.makeConcept}
                     makeDefinitive={this.makeDefinitive}
                     toggleDelete={this.toggleDelete}

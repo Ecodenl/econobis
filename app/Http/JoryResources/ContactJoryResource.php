@@ -12,6 +12,9 @@ class ContactJoryResource extends JoryResource
 
     protected function configureForApp(): void
     {
+        // Fields
+        $this->field('id')->filterable()->sortable();
+        $this->field('full_name')->filterable()->sortable();
     }
 
     protected function configureForPortal(): void

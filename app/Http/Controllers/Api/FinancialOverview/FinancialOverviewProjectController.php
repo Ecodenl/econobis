@@ -49,7 +49,8 @@ class FinancialOverviewProjectController extends Controller
         $financialOverviewProject->save();
 
         $project = Project::find($financialOverviewProject->project_id);
-        $this->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
+        $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+        $financialOverviewParticipantProjectController->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
 
         return Jory::on($financialOverviewProject);
 

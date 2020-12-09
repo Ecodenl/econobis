@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api\FinancialOverview;
 
+use App\Eco\Contact\Contact;
 use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
+use App\Eco\Project\ProjectType;
 use App\Helpers\Delete\Models\DeleteFinancialOverview;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -73,6 +76,113 @@ class FinancialOverviewController extends Controller
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+    }
+
+    public function getFinancialOverviewContact(FinancialOverview $financialOverview, Contact $contact)
+    {
+        $loanTypeId = ProjectType::where('code_ref', 'loan')->first()->id;
+        $obligationTypeId = ProjectType::where('code_ref', 'obligation')->first()->id;
+        $capitalTypeId = ProjectType::where('code_ref', 'capital')->first()->id;
+        $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
+
+        $financialOverview->load([
+            'administration',
+            'financialOverviewProjects',
+        ]);
+        $financialOverviewContactTotalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview){
+                $query->where('definitive', true)
+                ->where('financial_overview_id', $financialOverview->id);
+            })
+            ->whereHas('participantProject', function ($query) use($contact){
+                $query->where('contact_id', $contact->id);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
+            ->select('project_type.code_ref', DB::raw('SUM(start_value) as total_start_value'), DB::raw('SUM(end_value) as total_end_value'))
+            ->groupBy('project_type.code_ref')
+            ->orderBy('project_type.id')
+            ->get();
+
+        $financialOverviewContactLoanProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview, $loanTypeId){
+            $query->where('definitive', true)
+                ->where('financial_overview_id', $financialOverview->id)
+                ->whereHas('project', function ($query) use($loanTypeId){
+                    $query->where('project_type_id', $loanTypeId);
+                });
+        })
+            ->whereHas('participantProject', function ($query) use($contact){
+                $query->where('contact_id', $contact->id);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->get();
+
+        $financialOverviewContactObligationProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview, $obligationTypeId){
+            $query->where('definitive', true)
+                ->where('financial_overview_id', $financialOverview->id)
+                ->whereHas('project', function ($query) use($obligationTypeId){
+                    $query->where('project_type_id', $obligationTypeId);
+                });
+        })
+            ->whereHas('participantProject', function ($query) use($contact){
+                $query->where('contact_id', $contact->id);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->get();
+
+        $financialOverviewContactCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview, $capitalTypeId){
+            $query->where('definitive', true)
+                ->where('financial_overview_id', $financialOverview->id)
+                ->whereHas('project', function ($query) use($capitalTypeId){
+                    $query->where('project_type_id', $capitalTypeId);
+                });
+        })
+            ->whereHas('participantProject', function ($query) use($contact){
+                $query->where('contact_id', $contact->id);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->get();
+
+        $financialOverviewContactPcrProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview, $pcrTypeId){
+            $query->where('definitive', true)
+                ->where('financial_overview_id', $financialOverview->id)
+                ->whereHas('project', function ($query) use($pcrTypeId){
+                    $query->where('project_type_id', $pcrTypeId);
+                });
+        })
+            ->whereHas('participantProject', function ($query) use($contact){
+                $query->where('contact_id', $contact->id);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->get();
+
+        $financialOverviewContact = collect([
+            'financialOverview' => $financialOverview,
+            'contact' => $contact,
+            'financialOverviewContactTotalProjects' => $financialOverviewContactTotalProjects,
+            'financialOverviewContactLoanProjects' => $financialOverviewContactLoanProjects,
+            'financialOverviewContactObligationProjects' => $financialOverviewContactObligationProjects,
+            'financialOverviewContactCapitalProjects' => $financialOverviewContactCapitalProjects,
+            'financialOverviewContactPcrProjects' => $financialOverviewContactPcrProjects,
+            ]);
+        return $financialOverviewContact;
+    }
+
+    public function downloadPreview(FinancialOverview $financialOverview, Contact $contact){
+        return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverview, $contact, true);
     }
 
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)

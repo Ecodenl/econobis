@@ -150,6 +150,10 @@ const FinancialOverviewDetailsApp = React.lazy(() =>
 const FinancialOverviewProjectDetailsApp = React.lazy(() =>
     import('./container/financial/overview/project/FinancialOverviewProjectDetailsApp')
 );
+const FinancialOverviewContactPreviewApp = React.lazy(() =>
+    import('./container/financial/overview/preview/FinancialOverviewContactPreviewApp')
+);
+
 const CostCentersListApp = React.lazy(() => import('./container/cost-center/list/CostCentersListApp'));
 const CostCenterNewApp = React.lazy(() => import('./container/cost-center/new/CostCenterNewApp'));
 const CostCenterDetailsApp = React.lazy(() => import('./container/cost-center/details/CostCenterDetailsApp'));
@@ -300,6 +304,7 @@ const Routes = () => {
                     <Route path="waardestaat/nieuw" component={FinancialOverviewNewApp} />
                     <Route path="waardestaat/:id" component={FinancialOverviewDetailsApp} />
                     <Route path="waardestaat-project/:id" component={FinancialOverviewProjectDetailsApp} />
+                    <Route path="waardestaat-contact/:id/:contactId" component={FinancialOverviewContactPreviewApp} />
                     /* Costcenters */
                     <Route path="kostenplaatsen" component={CostCentersListApp} />
                     <Route path="kostenplaats/nieuw" component={CostCenterNewApp} />

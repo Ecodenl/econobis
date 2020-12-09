@@ -1,7 +1,9 @@
 import axiosInstance from '../../default-setup/AxiosInstance';
+import axios from 'axios';
 
 const URL_FINANCIAL_OVERVIEW = `financial-overview`;
 const URL_FINANCIAL_OVERVIEW_PROJECT = `financial-overview-project`;
+const URL_FINANCIAL_OVERVIEW_CONTACT = `financial-overview-contact`;
 
 export default {
     fetchFinancialOverviewDetails: id => {
@@ -59,6 +61,12 @@ export default {
         });
     },
 
+    fetchFinancialOverviewContactDetails: (financialOverviewId, contactId) => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewId}/${contactId}`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     newFinancialOverview: financialOverview => {
         const requestUrl = URL_FINANCIAL_OVERVIEW;
         financialOverview.jory = JSON.stringify({
@@ -78,6 +86,14 @@ export default {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
+    },
+
+    downloadPreview: (id, contactId) => {
+        const requestUrl = `${URL_API}/api/${URL_FINANCIAL_OVERVIEW}/${id}/${contactId}/download-preview`;
+        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
+        return axios.get(requestUrl, { responseType: 'blob' });
     },
 
     newFinancialOverviewProject: financialOverviewProject => {

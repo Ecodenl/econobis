@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
 import ProjectView from '../../details/project/ProjectView';
 import ParticipantView from './ParticipantView';
+import { hashHistory } from 'react-router';
 
 class ParticipantItem extends Component {
     constructor(props) {
@@ -27,6 +28,10 @@ class ParticipantItem extends Component {
         });
     };
 
+    getFinancialOverviewPDF(financialOverviewId, contactId) {
+        hashHistory.push(`/waardestaat-contact/${financialOverviewId}/${contactId}`);
+    }
+
     render() {
         return (
             <div>
@@ -34,7 +39,9 @@ class ParticipantItem extends Component {
                     highlightLine={this.state.highlightLine}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    financialOverviewProject={this.props.financialOverviewParticipantProject}
+                    getFinancialOverviewPDF={this.getFinancialOverviewPDF}
+                    financialOverview={this.props.financialOverview}
+                    financialOverviewParticipantProject={this.props.financialOverviewParticipantProject}
                 />
             </div>
         );

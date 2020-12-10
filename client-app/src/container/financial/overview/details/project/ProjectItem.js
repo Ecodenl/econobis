@@ -11,9 +11,6 @@ import ErrorModal from '../../../../../components/modal/ErrorModal';
 class ProjectItem extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('ProjectItem');
-        console.log(props);
 
         this.state = {
             showActionButtons: false,
@@ -81,9 +78,8 @@ class ProjectItem extends Component {
     updateProject() {
         FinancialOverviewDetailsAPI.updateFinancialOverviewProject(this.state.financialOverviewProject)
             .then(payload => {
-                // todo WM: opschonen log regels
-                console.log('ProjectItem - updateProject');
-                console.log(payload);
+                // financialoverview opnieuw fetchen
+                this.props.callFetchFinancialOverviewDetails();
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));
@@ -101,11 +97,8 @@ class ProjectItem extends Component {
     deleteProject = id => {
         FinancialOverviewDetailsAPI.deleteFinancialOverviewProject(id)
             .then(payload => {
-                //project ook deleten uit state
-                // todo WM: opschonen log regels
-                console.log('ProjectItem - deleteProject');
-                console.log(id);
-                this.props.deleteProjectToState(id);
+                // financialoverview opnieuw fetchen
+                this.props.callFetchFinancialOverviewDetails();
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));

@@ -1,10 +1,6 @@
 import React from 'react';
 
 const ProjectView = props => {
-    // todo WM: opschonen log regels
-    // console.log('ProjectView');
-    // console.log(props);
-    // const { financialOverview } = props.financialOverview;
     const { id, definitive, project } = props.financialOverviewProject;
 
     return (

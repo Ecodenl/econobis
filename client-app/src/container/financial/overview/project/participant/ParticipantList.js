@@ -2,10 +2,6 @@ import React from 'react';
 import ParticipantItem from './ParticipantItem';
 
 const ParticipantList = props => {
-    // todo WM: opschonen log regels
-    console.log('ParticipantList');
-    console.log(props);
-
     return (
         <div>
             <div className="row header">

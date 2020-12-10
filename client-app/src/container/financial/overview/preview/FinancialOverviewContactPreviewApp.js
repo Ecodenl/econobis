@@ -10,9 +10,6 @@ import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/Fina
 class FinancialOverviewContactPreviewApp extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('FinancialOverviewContactPreviewApp');
-        console.log(props);
 
         this.state = {
             financialOverviewContactDetails: {},
@@ -33,10 +30,6 @@ class FinancialOverviewContactPreviewApp extends Component {
             this.props.params.contactId
         )
             .then(payload => {
-                // todo WM: opschonen log regels
-                console.log('callFetchFinancialOverviewContactDetails');
-                console.log(payload.data);
-
                 this.setState({
                     isLoading: false,
                     financialOverviewContactDetails: payload.data,

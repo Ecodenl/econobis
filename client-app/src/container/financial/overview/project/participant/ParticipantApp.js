@@ -8,9 +8,6 @@ import ParticipantList from './ParticipantList';
 class ParticipantApp extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('ParticipantApp');
-        console.log(props);
     }
 
     render() {

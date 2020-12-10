@@ -3,10 +3,6 @@ import React from 'react';
 import Modal from '../../../../../components/modal/Modal';
 
 const ProjectDelete = props => {
-    // todo WM: opschonen log regels
-    console.log('ProjectDelete');
-    console.log(props);
-
     const confirmAction = () => {
         props.deleteProject(props.financialOverviewProject.id);
         props.closeDeleteItemModal();

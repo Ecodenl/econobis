@@ -279,10 +279,6 @@ class MutationFormListItem extends Component {
     };
 
     render() {
-        // todo WM: opschonen log regels
-        // console.log('mutationFormListItem');
-        // console.log(this.state.participantMutation.financialOverviewDefinitive);
-        // console.log(this.props.participantMutation.financialOverviewDefinitive);
         return (
             <React.Fragment>
                 <div>

@@ -6,9 +6,6 @@ import FinancialOverviewProjectDetailsFormGeneralView from './FinancialOverviewP
 class FinancialOverviewProjectDetailsFormGeneral extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('FinancialOverviewProjectDetailsFormGeneral');
-        console.log(props);
 
         this.state = {
             activeDiv: '',

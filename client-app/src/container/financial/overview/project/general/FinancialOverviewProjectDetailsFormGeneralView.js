@@ -5,9 +5,6 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 
 const FinancialOverviewProjectDetailsFormGeneralView = props => {
-    // todo WM: opschonen log regels
-    // console.log('FinancialOverviewProjectDetailsFormGeneralView');
-    // console.log(props);
     return (
         <div>
             <Panel>

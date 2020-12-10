@@ -2,9 +2,6 @@ import React from 'react';
 import MoneyPresenter from '../../../../../../../customer-portal-app/src/helpers/MoneyPresenter';
 
 const ParticipantView = props => {
-    // todo WM: opschonen log regels
-    // console.log('ParticipantView');
-    // console.log(props);
     const {
         participantProject,
         quantityStartValue,

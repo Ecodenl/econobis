@@ -7,9 +7,6 @@ import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/Fina
 class FinancialOverviewContactPreviewForm extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('FinancialOverviewContactPreviewForm');
-        console.log(props);
 
         this.state = {
             file: null,

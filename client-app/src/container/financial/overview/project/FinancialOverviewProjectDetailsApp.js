@@ -9,9 +9,7 @@ import FinancialOverviewProjectDetailsForm from './FinancialOverviewProjectDetai
 class FinancialOverviewProjectDetailsApp extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('FinancialOverviewProjectDetailsApp');
-        console.log(props);
+
         this.state = {
             financialOverviewProject: {},
             isLoading: false,
@@ -27,9 +25,6 @@ class FinancialOverviewProjectDetailsApp extends Component {
         this.setState({ isLoading: true, hasError: false });
         FinancialOverviewDetailsAPI.fetchFinancialOverviewProjectDetails(this.props.params.id)
             .then(payload => {
-                // todo WM: opschonen log regels
-                console.log('payload');
-                console.log(payload);
                 this.setState({
                     isLoading: false,
                     financialOverviewProject: payload.data.data,

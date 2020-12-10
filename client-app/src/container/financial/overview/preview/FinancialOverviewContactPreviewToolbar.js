@@ -6,9 +6,6 @@ import ButtonIcon from '../../../../components/button/ButtonIcon';
 class FinancialOverviewContactPreviewToolbar extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('FinancialOverviewContactPreviewToolbar');
-        console.log(this.props);
     }
 
     render() {

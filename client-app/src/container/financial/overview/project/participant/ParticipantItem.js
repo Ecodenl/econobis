@@ -7,9 +7,6 @@ import { hashHistory } from 'react-router';
 class ParticipantItem extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('ParticipantItem');
-        console.log(props);
 
         this.state = {
             highlightLine: '',

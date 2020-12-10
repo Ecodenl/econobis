@@ -45,6 +45,9 @@ class FullAdministration extends Resource
                 'emailTemplateExhortationId' => $this->email_template_exhortation_id,
                 'emailTemplateExhortation' => FullEmailTemplate::make($this->whenLoaded('emailTemplateExhortation')),
 
+                'emailTemplateFinancialOverviewId' => $this->email_template_financial_overview_id,
+                'emailTemplateFinancialOverview' => FullEmailTemplate::make($this->whenLoaded('emailTemplateFinancialOverview')),
+
                 'kvkNumber' => $this->kvk_number,
                 'btwNumber' => $this->btw_number,
                 'IBAN' => $this->IBAN,

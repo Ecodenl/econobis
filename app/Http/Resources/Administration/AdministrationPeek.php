@@ -22,6 +22,7 @@ class AdministrationPeek extends Resource
             'emailTemplateIdTransfer' => $this->email_template_id_transfer,
             'emailTemplateReminderId' => $this->email_template_reminder_id,
             'emailTemplateExhortationId' => $this->email_template_exhortation_id,
+            'emailTemplateFinancialOverviewId' => $this->email_template_financial_overview_id,
         ];
     }
 }

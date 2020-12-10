@@ -16,6 +16,7 @@ const AdministrationDetailsFormGeneralView = props => {
         emailTemplateTransfer,
         emailTemplateReminder,
         emailTemplateExhortation,
+        emailTemplateFinancialOverview,
         city,
         country,
         kvkNumber,
@@ -123,6 +124,12 @@ const AdministrationDetailsFormGeneralView = props => {
                             value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
                         />
                         <ViewText label={'Logo'} value={logoName} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'E-mail template waardestaat'}
+                            value={emailTemplateFinancialOverview ? emailTemplateFinancialOverview.name : ''}
+                        />
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />

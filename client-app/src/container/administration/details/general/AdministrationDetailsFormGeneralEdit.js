@@ -39,6 +39,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             emailTemplateIdTransfer,
             emailTemplateReminderId,
             emailTemplateExhortationId,
+            emailTemplateFinancialOverviewId,
             postalCode,
             city,
             countryId,
@@ -102,6 +103,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 emailTemplateIdTransfer: emailTemplateIdTransfer ? emailTemplateIdTransfer : '',
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
                 emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
+                emailTemplateFinancialOverviewId: emailTemplateFinancialOverviewId
+                    ? emailTemplateFinancialOverviewId
+                    : '',
                 attachment: '',
                 mailboxId: mailboxId ? mailboxId : '',
                 usesTwinfield: usesTwinfield,
@@ -407,6 +411,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
+            data.append('emailTemplateFinancialOverviewId', administration.emailTemplateFinancialOverviewId);
             data.append('attachment', administration.attachment);
             data.append('mailboxId', administration.mailboxId);
             data.append('usesTwinfield', administration.usesTwinfield);
@@ -439,6 +444,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             emailTemplateIdTransfer,
             emailTemplateReminderId,
             emailTemplateExhortationId,
+            emailTemplateFinancialOverviewId,
             address,
             postalCode,
             city,
@@ -688,6 +694,17 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             </div>
                         </div>
 
+                        <div className="row">
+                            <InputReactSelect
+                                label={'E-mail template waardestaat'}
+                                name={'emailTemplateFinancialOverviewId'}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateFinancialOverviewId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
+                        </div>
                         <div className="row">
                             <InputSelect
                                 label={"Afzender van Rapportages en nota's is e-mail adres"}
@@ -945,7 +962,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AdministrationDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsFormGeneralEdit);

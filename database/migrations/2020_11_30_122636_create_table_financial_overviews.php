@@ -60,6 +60,13 @@ class CreateTableFinancialOverviews extends Migration
             $table->timestamps();
         });
 
+        Schema::table('administrations', function (Blueprint $table) {
+            $table->unsignedInteger('email_template_financial_overview_id')->nullable()->after('email_template_exhortation_id');
+            $table->foreign('email_template_financial_overview_id')
+                ->references('id')->on('email_templates')
+                ->onDelete('restrict');
+        });
+
         Schema::table('participant_mutations', function (Blueprint $table) {
             $table->boolean('financial_overview_definitive')->default(false)->after('paid_on');
         });
@@ -73,7 +80,6 @@ class CreateTableFinancialOverviews extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('financial_overview_contacts');
         if (Schema::hasColumn('participant_mutations', 'financial_overview_definitive'))
         {
             Schema::table('participant_mutations', function (Blueprint $table)
@@ -81,6 +87,14 @@ class CreateTableFinancialOverviews extends Migration
                 $table->dropColumn('financial_overview_definitive');
             });
         }
+        if (Schema::hasColumn('administrations', 'email_template_financial_overview_id'))
+        {
+            Schema::table('administrations', function (Blueprint $table)
+            {
+                $table->dropColumn('email_template_financial_overview_id');
+            });
+        }
+        Schema::dropIfExists('financial_overview_contacts');
         Schema::dropIfExists('financial_overview_participant_projects');
         Schema::dropIfExists('financial_overview_projects');
         Schema::dropIfExists('financial_overviews');

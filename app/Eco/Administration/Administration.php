@@ -111,6 +111,11 @@ class Administration extends Model
         return $this->belongsTo(EmailTemplate::class);
     }
 
+    public function emailTemplateFinancialOverview()
+    {
+        return $this->belongsTo(EmailTemplate::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class);

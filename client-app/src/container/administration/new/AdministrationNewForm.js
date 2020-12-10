@@ -52,6 +52,7 @@ class AdministrationNewForm extends Component {
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
                 emailTemplateExhortationId: '',
+                emailTemplateFinancialOverviewId: '',
                 attachment: '',
                 mailboxId: '',
                 usesTwinfield: false,
@@ -312,6 +313,7 @@ class AdministrationNewForm extends Component {
             data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
+            data.append('emailTemplateFinancialOverviewId', administration.emailTemplateFinancialOverviewId);
             data.append('usesTwinfield', administration.usesTwinfield);
             data.append('attachment', administration.attachment);
             data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
@@ -359,6 +361,7 @@ class AdministrationNewForm extends Component {
             emailTemplateIdTransfer,
             emailTemplateReminderId,
             emailTemplateExhortationId,
+            emailTemplateFinancialOverviewId,
             ibanAttn,
             mailboxId,
             usesTwinfield,
@@ -572,6 +575,18 @@ class AdministrationNewForm extends Component {
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={'E-mail template waardestaat'}
+                                name={'emailTemplateFinancialOverviewId'}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateFinancialOverviewId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                         </div>
 
                         <div className="row">

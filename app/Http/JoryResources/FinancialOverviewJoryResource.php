@@ -13,9 +13,11 @@ class FinancialOverviewJoryResource extends JoryResource
     {
         // Fields
         $this->field('id')->filterable()->sortable();
+        $this->field('description')->filterable()->sortable();
         $this->field('administration_id')->filterable()->sortable();
         $this->field('year')->filterable()->sortable();
         $this->field('definitive')->filterable()->sortable();
+        $this->field('date_processed')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
 

@@ -5,7 +5,15 @@ const ParticipantView = props => {
     // todo WM: opschonen log regels
     // console.log('ParticipantView');
     // console.log(props);
-    const { participantProject, startValue, endValue } = props.financialOverviewParticipantProject;
+    const {
+        participantProject,
+        quantityStartValue,
+        quantityEndValue,
+        bookworthStartValue,
+        bookworthEndValue,
+        amountStartValue,
+        amountEndValue,
+    } = props.financialOverviewParticipantProject;
 
     return (
         <div
@@ -14,9 +22,13 @@ const ParticipantView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div>
-                <div className="col-sm-5">{participantProject.contact.fullName}</div>
-                <div className="col-sm-3">{MoneyPresenter(startValue)}</div>
-                <div className="col-sm-3">{MoneyPresenter(endValue)}</div>
+                <div className="col-sm-3">{participantProject.contact.fullName}</div>
+                <div className="col-sm-1 text-right">{quantityStartValue}</div>
+                <div className="col-sm-1 text-right">{MoneyPresenter(bookworthStartValue)}</div>
+                <div className="col-sm-2 text-right">{MoneyPresenter(amountStartValue)}</div>
+                <div className="col-sm-1 text-right">{quantityEndValue}</div>
+                <div className="col-sm-1 text-right">{MoneyPresenter(bookworthEndValue)}</div>
+                <div className="col-sm-2 text-right">{MoneyPresenter(amountEndValue)}</div>
                 <div className="col-sm-1">
                     <a
                         role="button"

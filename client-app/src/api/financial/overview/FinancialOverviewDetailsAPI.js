@@ -12,7 +12,7 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'administrationId', 'year', 'definitive'],
+                    fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'dateProcessed'],
                     rlt: {
                         administration: { fld: ['id', 'name'] },
                         financialOverviewProjects: {
@@ -39,7 +39,7 @@ export default {
                     fld: ['id', 'projectId', 'definitive'],
                     rlt: {
                         financialOverview: {
-                            fld: ['id', 'administrationId', 'year', 'definitive'],
+                            fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'dateProcessed'],
                             rlt: { administration: { fld: ['id', 'name'] } },
                         },
                         project: {
@@ -47,7 +47,16 @@ export default {
                             rlt: { projectType: { fld: ['id', 'codeRef', 'name'] } },
                         },
                         financialOverviewParticipantProjects: {
-                            fld: ['id', 'participantProjectId', 'startValue', 'endValue'],
+                            fld: [
+                                'id',
+                                'participantProjectId',
+                                'quantityStartValue',
+                                'quantityEndValue',
+                                'bookworthStartValue',
+                                'bookworthEndValue',
+                                'amountStartValue',
+                                'amountEndValue',
+                            ],
                             rlt: {
                                 participantProject: {
                                     fld: ['id', 'contactId'],

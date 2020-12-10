@@ -10,8 +10,7 @@ class FinancialOverviewProjectDetailsToolbar extends Component {
     }
 
     render() {
-        let { year, administrationName, id } = this.props;
-        const description = 'jaar ' + year + ' en administratie ' + administrationName;
+        let { description } = this.props;
 
         return (
             <div className="row">
@@ -21,9 +20,7 @@ class FinancialOverviewProjectDetailsToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">
-                        Waardestaat: {year} {administrationName}
-                    </h4>
+                    <h4 className="text-center">Waardestaat: {description}</h4>
                 </div>
                 <div className="col-md-4" />
             </div>
@@ -31,6 +28,8 @@ class FinancialOverviewProjectDetailsToolbar extends Component {
     }
 }
 
-FinancialOverviewProjectDetailsToolbar.propTypes = { year: PropTypes.any, administrationName: PropTypes.any };
+FinancialOverviewProjectDetailsToolbar.propTypes = {
+    description: PropTypes.any,
+};
 
 export default FinancialOverviewProjectDetailsToolbar;

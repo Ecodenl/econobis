@@ -14,8 +14,12 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplateObserver;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\EnergySupplier\ContactEnergySupplierObserver;
+use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewObserver;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\FinancialOverview\FinancialOverviewProjectObserver;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProjectObserver;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileObserver;
 use App\Eco\Intake\Intake;
@@ -111,7 +115,9 @@ class ObserverServiceProvider extends ServiceProvider
         ParticipantProject::observe(ParticipantProjectObserver::class);
         PaymentInvoice::observe(PaymentInvoiceObserver::class);
         Webform::observe(WebformObserver::class);
+        FinancialOverview::observe(FinancialOverviewObserver::class);
         FinancialOverviewProject::observe(FinancialOverviewProjectObserver::class);
+        FinancialOverviewParticipantProject::observe(FinancialOverviewParticipantProjectObserver::class);
     }
 
     /**

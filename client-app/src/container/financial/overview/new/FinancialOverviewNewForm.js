@@ -24,8 +24,10 @@ class FinancialOverviewNewForm extends Component {
             financialOverviews: [],
             financialOverview: {
                 year: moment().format('Y'),
+                description: '',
                 administrationId: '',
                 definitive: false,
+                dateProcessed: null,
             },
             errorMessage: false,
             errors: {

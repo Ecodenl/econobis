@@ -36,7 +36,7 @@ class FinancialOverviewProjectController extends Controller
         }
         if($financialOverview->definitive)
         {
-            abort(409,'Waardestaat jaar ' . $financialOverview->year . ' en administratie ' . $financialOverview->administration->name . ' is al definitief.');
+            abort(409,'Waardestaat ' . $financialOverview->description . ' is al definitief.');
         }
 
 
@@ -67,7 +67,7 @@ class FinancialOverviewProjectController extends Controller
         }
         if($financialOverview->definitive)
         {
-            abort(409,'Waardestaat jaar ' . $financialOverview->year . ' en administratie ' . $financialOverview->administration->name . ' is al definitief.');
+            abort(409,'Waardestaat jaar ' . $financialOverview->description . ' is al definitief.');
         }
 
         $data = $input->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()

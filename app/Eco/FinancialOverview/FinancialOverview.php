@@ -10,6 +10,7 @@ class FinancialOverview extends Model
     protected $guarded = ['id'];
 
     protected $dates = [
+        'date_processed',
         'created_at',
         'updated_at',
     ];
@@ -26,6 +27,10 @@ class FinancialOverview extends Model
     public function financialOverviewProjects()
     {
         return $this->hasMany(FinancialOverviewProject::class);
+    }
+    public function financialOverviewContacts()
+    {
+        return $this->hasMany(FinancialOverviewContact::class);
     }
 
 }

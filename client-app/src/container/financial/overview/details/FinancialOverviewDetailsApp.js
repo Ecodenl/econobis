@@ -87,12 +87,7 @@ class FinancialOverviewDetailsApp extends Component {
                         <Panel>
                             <PanelBody className={'panel-small'}>
                                 <FinancialOverviewDetailsToolbar
-                                    year={this.state.financialOverview.year || ''}
-                                    administrationName={
-                                        this.state.financialOverview && this.state.financialOverview.administration
-                                            ? this.state.financialOverview.administration.name
-                                            : ''
-                                    }
+                                    description={this.state.financialOverview.description || ''}
                                     id={this.state.financialOverview.id}
                                     deleteFinancialOverview={this.deleteFinancialOverview}
                                 />

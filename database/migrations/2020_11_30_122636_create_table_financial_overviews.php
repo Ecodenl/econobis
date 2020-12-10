@@ -15,10 +15,12 @@ class CreateTableFinancialOverviews extends Migration
     {
         Schema::create('financial_overviews', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('description');
             $table->unsignedInteger('administration_id');
             $table->foreign('administration_id')->references('id')->on('administrations');
             $table->year('year');
             $table->boolean('definitive')->default(false);
+            $table->date('date_processed')->nullable();
             $table->timestamps();
         });
 
@@ -39,10 +41,23 @@ class CreateTableFinancialOverviews extends Migration
             $table->foreign('financial_overview_project_id', 'fop_id_foreign')->references('id')->on('financial_overview_projects');
             $table->unsignedInteger('participant_project_id');
             $table->foreign('participant_project_id','pp_id_foreign')->references('id')->on('participation_project');
-            $table->double('start_value', 11, 2)->default(0);
-            $table->double('end_value', 11, 2)->default(0);
+            $table->integer('quantity_start_value')->default(0);
+            $table->integer('quantity_end_value')->default(0);
+            $table->double('bookworth_start_value', 11, 2)->default(0);
+            $table->double('bookworth_end_value', 11, 2)->default(0);
+            $table->double('amount_start_value', 11, 2)->default(0);
+            $table->double('amount_end_value', 11, 2)->default(0);
             $table->timestamps();
 
+        });
+
+        Schema::create('financial_overview_contacts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('financial_overview_id');
+            $table->unsignedInteger('contact_id');
+            $table->foreign('contact_id')->references('id')->on('contacts');
+            $table->date('date_sent')->nullable();
+            $table->timestamps();
         });
 
         Schema::table('participant_mutations', function (Blueprint $table) {
@@ -58,6 +73,7 @@ class CreateTableFinancialOverviews extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('financial_overview_contacts');
         if (Schema::hasColumn('participant_mutations', 'financial_overview_definitive'))
         {
             Schema::table('participant_mutations', function (Blueprint $table)

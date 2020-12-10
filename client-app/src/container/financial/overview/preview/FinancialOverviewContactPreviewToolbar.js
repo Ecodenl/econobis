@@ -32,10 +32,7 @@ class FinancialOverviewContactPreviewToolbar extends Component {
                         {' Waardestaat: ' +
                             (this.props.financialOverviewContactDetails &&
                             this.props.financialOverviewContactDetails.financialOverview
-                                ? ' jaar ' +
-                                  this.props.financialOverviewContactDetails.financialOverview.year +
-                                  ' ' +
-                                  this.props.financialOverviewContactDetails.financialOverview.administration.name
+                                ? this.props.financialOverviewContactDetails.financialOverview.description
                                 : '')}
                     </h4>
                 </div>

@@ -8,6 +8,9 @@ import FinancialOverviewDeleteItem from '../list/FinancialOverviewDeleteItem';
 class FinancialOverviewDetailsToolbar extends Component {
     constructor(props) {
         super(props);
+        // todo WM: opschonen log regels
+        console.log('FinancialOverviewDetailsToolbar');
+        console.log(props);
 
         this.state = {
             showDeleteItem: false,
@@ -29,17 +32,6 @@ class FinancialOverviewDetailsToolbar extends Component {
             },
         });
     };
-    // showDeleteItemModal = () => {
-    //     this.setState({
-    //         ...this.state,
-    //         showDeleteItem: true,
-    //         deleteItem: {
-    //             ...this.state.deleteItem,
-    //             id: this.props.id,
-    //             description: 'jaar ' + this.props.year + ' en administratie ' + this.props.administrationName,
-    //         },
-    //     });
-    // };
 
     closeDeleteItemModal = () => {
         this.setState({
@@ -54,8 +46,7 @@ class FinancialOverviewDetailsToolbar extends Component {
     };
 
     render() {
-        let { year, administrationName, id } = this.props;
-        const description = 'jaar ' + year + ' en administratie ' + administrationName;
+        let { id, description } = this.props;
 
         return (
             <div className="row">
@@ -69,9 +60,7 @@ class FinancialOverviewDetailsToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">
-                        Waardestaat: {year} {administrationName}
-                    </h4>
+                    <h4 className="text-center">Waardestaat: {description}</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showDeleteItem && (
@@ -86,6 +75,6 @@ class FinancialOverviewDetailsToolbar extends Component {
     }
 }
 
-FinancialOverviewDetailsToolbar.propTypes = { year: PropTypes.any, administrationName: PropTypes.any };
+FinancialOverviewDetailsToolbar.propTypes = { description: PropTypes.any };
 
 export default FinancialOverviewDetailsToolbar;

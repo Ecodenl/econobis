@@ -17,10 +17,12 @@ class FullFinancialOverview extends Resource
     {
         return [
             'id' => $this->id,
+            'description' => $this->description,
             'administrationId' => $this->administration_id,
             'administration' => GenericResource::make($this->whenLoaded('administration')),
             'year' => $this->year,
             'definitive' => $this->definitive,
+            'date' => $this->date_processed,
         ];
     }
 }

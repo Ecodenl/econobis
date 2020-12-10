@@ -31,8 +31,7 @@ class FinancialOverviewListItem extends Component {
     }
 
     render() {
-        const { id, year, administration, definitive, permissions } = this.props;
-        const description = 'jaar ' + year + ' en administratie ' + administration.name;
+        const { id, description, year, administration, definitive, permissions } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}

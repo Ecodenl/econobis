@@ -278,6 +278,11 @@ class Contact extends Model
         return $this->hasOne(PortalUser::class);
     }
 
+    public function financialOverviews()
+    {
+        return $this->hasMany(FinancialOverview::class);
+    }
+
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first
     public function getPrettyAddresses(){

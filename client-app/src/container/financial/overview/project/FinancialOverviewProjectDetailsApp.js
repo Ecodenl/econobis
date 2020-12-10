@@ -48,17 +48,10 @@ class FinancialOverviewProjectDetailsApp extends Component {
                         <Panel>
                             <PanelBody className={'panel-small'}>
                                 <FinancialOverviewProjectDetailsToolbar
-                                    year={
+                                    description={
                                         this.state.financialOverviewProject &&
                                         this.state.financialOverviewProject.financialOverview
-                                            ? this.state.financialOverviewProject.financialOverview.year
-                                            : ''
-                                    }
-                                    administrationName={
-                                        this.state.financialOverviewProject &&
-                                        this.state.financialOverviewProject.financialOverview &&
-                                        this.state.financialOverviewProject.financialOverview.administration
-                                            ? this.state.financialOverviewProject.financialOverview.administration.name
+                                            ? this.state.financialOverviewProject.financialOverview.description
                                             : ''
                                     }
                                     id={

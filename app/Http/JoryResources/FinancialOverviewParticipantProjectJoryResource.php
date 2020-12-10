@@ -14,8 +14,12 @@ class FinancialOverviewParticipantProjectJoryResource extends JoryResource
         // Fields
         $this->field('id')->filterable()->sortable();
         $this->field('participant_project_id')->filterable()->sortable();
-        $this->field('start_value')->filterable()->sortable();
-        $this->field('end_value')->filterable()->sortable();
+        $this->field('quantity_start_value')->filterable()->sortable();
+        $this->field('quantity_end_value')->filterable()->sortable();
+        $this->field('bookworth_start_value')->filterable()->sortable();
+        $this->field('bookworth_end_value')->filterable()->sortable();
+        $this->field('amount_start_value')->filterable()->sortable();
+        $this->field('amount_end_value')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
 

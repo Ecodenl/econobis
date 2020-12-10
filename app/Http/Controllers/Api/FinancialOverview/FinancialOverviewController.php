@@ -28,9 +28,11 @@ class FinancialOverviewController extends Controller
     {
         $this->authorize('manage', FinancialOverview::class);
 
-        $data = $input->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
+        $data = $input->string('description')->next()
+            ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
+            ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()
             ->get();
 
         $financialOverview = new FinancialOverview($data);
@@ -44,9 +46,11 @@ class FinancialOverviewController extends Controller
     public function update(RequestInput $input, FinancialOverview $financialOverview)
     {
         $this->authorize('manage', FinancialOverview::class);
-        $data = $input->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
+        $data = $input->string('description')->next()
+            ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
+            ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()
             ->get();
 
         $financialOverview->fill($data);
@@ -100,7 +104,7 @@ class FinancialOverviewController extends Controller
             ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
             ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
             ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
-            ->select('project_type.code_ref', DB::raw('SUM(start_value) as total_start_value'), DB::raw('SUM(end_value) as total_end_value'))
+            ->select('project_type.code_ref', DB::raw('SUM(quantity_start_value) as total_quantity_start_value'), DB::raw('SUM(quantity_end_value) as total_quantity_end_value'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
             ->groupBy('project_type.code_ref')
             ->orderBy('project_type.id')
             ->get();
@@ -118,7 +122,7 @@ class FinancialOverviewController extends Controller
             ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
             ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
             ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
-            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
             ->get();
 
         $financialOverviewContactObligationProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview, $obligationTypeId){
@@ -134,7 +138,7 @@ class FinancialOverviewController extends Controller
             ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
             ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
             ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
-            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
             ->get();
 
         $financialOverviewContactCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview, $capitalTypeId){
@@ -150,7 +154,7 @@ class FinancialOverviewController extends Controller
             ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
             ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
             ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
-            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
             ->get();
 
         $financialOverviewContactPcrProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverview, $pcrTypeId){
@@ -166,7 +170,7 @@ class FinancialOverviewController extends Controller
             ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
             ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
             ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
-            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'start_value', 'end_value')
+            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
             ->get();
 
         $financialOverviewContact = collect([

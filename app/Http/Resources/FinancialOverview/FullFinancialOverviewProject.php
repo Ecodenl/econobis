@@ -20,7 +20,6 @@ class FullFinancialOverviewProject extends Resource
             'id' => $this->id,
             'financialOverviewId' => $this->financial_overview_id,
             'projectId' => $this->project_id,
-//            'project' => FullProject::make($this->whenLoaded('project')),
             'definitive' => $this->definitive,
         ];
     }

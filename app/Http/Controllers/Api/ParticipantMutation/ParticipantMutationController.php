@@ -247,10 +247,10 @@ class ParticipantMutationController extends ApiController
                 $query->where('administration_id', $project->administration->id)
                     ->where('year', $dateEntryYear);
             });
-        $financialOverviewProject = $financialOverviewProjectQuery->get();
+        $financialOverview = $financialOverviewProjectQuery->first();
 
         if ($financialOverviewProjectQuery->exists()) {
-            abort(409, 'Project komt al voor in definitive waardestaat jaar ' . $dateEntryYear . ' en administratie ' . $project->administration->name . '. Deze mutatie is niet meer mogelijk.');
+            abort(409, 'Project komt al voor in definitive waardestaat  ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
         }
     }
 }

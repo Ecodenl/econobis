@@ -28,8 +28,12 @@ class FinancialOverviewParticipantProjectController extends Controller
             FinancialOverviewParticipantProject::create([
                 'financial_overview_project_id' => $financialOverviewProject->id,
                 'participant_project_id' => $participant->id,
-                'start_value' => $startValue,
-                'end_value' => $endValue,
+                'quantity_start_value' => $startValue['quantity'],
+                'quantity_end_value' => $endValue['quantity'],
+                'bookworth_start_value' => $startValue['bookworth'],
+                'bookworth_end_value' => $endValue['bookworth'],
+                'amount_start_value' => $startValue['amount'],
+                'amount_end_value' => $endValue['amount'],
             ]);
 
         }
@@ -56,9 +60,12 @@ class FinancialOverviewParticipantProjectController extends Controller
                 'participant_project_id'   => $participant->id,
             ],[
                 'financial_overview_project_id' => $financialOverviewProject->id,
-//                'participant_project_id' => $participant->id,
-                'start_value' => $startValue,
-                'end_value' => $endValue,
+                'quantity_start_value' => $startValue['quantity'],
+                'quantity_end_value' => $endValue['quantity'],
+                'bookworth_start_value' => $startValue['bookworth'],
+                'bookworth_end_value' => $endValue['bookworth'],
+                'amount_start_value' => $startValue['amount'],
+                'amount_end_value' => $endValue['amount'],
             ]);
 
         }
@@ -87,7 +94,23 @@ class FinancialOverviewParticipantProjectController extends Controller
             $participationsValue += $mutation[$measureType] ;
         }
 
-        return $measureType === 'amount' ? $participationsValue : $participationsValue * $projectBookWorth;
+        $participationsQBA['quantity'] = 0;
+        $participationsQBA['bookworth'] = 0;
+        $participationsQBA['amount'] = 0;
+
+        if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
+            $participationsQBA['quantity'] = $participationsValue;
+            $participationsQBA['bookworth'] = $projectBookWorth;
+            $participationsQBA['amount'] = $participationsValue * $projectBookWorth;
+        }
+
+        if($projectTypeCodeRef === 'loan') {
+            $participationsQBA['quantity'] = 1;
+            $participationsQBA['bookworth'] = $participationsValue;
+            $participationsQBA['amount'] = $participationsValue;
+        }
+
+        return $participationsQBA;
     }
 
 }

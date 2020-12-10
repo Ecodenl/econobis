@@ -12,10 +12,7 @@ import Modal from '../../../../../components/modal/Modal';
 class ProjectNew extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('ProjectNew');
-        console.log(props);
-        // let testProjects = { id: 31, name: 'test project' };
+
         this.state = {
             // projects: [testProjects],
             financialOverviewProjects: props.financialOverview.financialOverviewProjects,
@@ -45,9 +42,6 @@ class ProjectNew extends Component {
         this.setState({ isLoading: true, hasError: false });
         FinancialOverviewDetailsAPI.fetchNewProjectsForFinancialOverview(this.props.financialOverview)
             .then(payload => {
-                // todo WM: opschonen log regels
-                console.log('callFetchProjectsForFinancialOverview');
-                console.log(payload);
                 this.setState({ isLoading: false, projectsForFinancialOverview: payload.data.data });
             })
             .catch(error => {
@@ -87,8 +81,8 @@ class ProjectNew extends Component {
             FinancialOverviewDetailsAPI.newFinancialOverviewProject(financialOverviewProject)
                 .then(payload => {
                     this.props.toggleShowNew();
-                    // add project to state
-                    this.props.addProjectToState(payload.data.data);
+                    // financialoverview opnieuw fetchen
+                    this.props.callFetchFinancialOverviewDetails();
                 })
                 .catch(error => {
                     let errorObject = JSON.parse(JSON.stringify(error));

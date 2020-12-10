@@ -93,40 +93,29 @@ class FinancialOverviewHelper
             return $pdf->output();
         }
 
-//        // indien geen preview, dan gaan nu definitief notanummer bepalen
-//        $currentYear = Carbon::now()->year;
-//
-//        // Haal new notanummer op (voor dit jaar en administratie)
-//        $newInvoiceNumber = InvoiceHelper::newInvoiceNumber($currentYear, $invoice->administration_id);
-//
-//        if(Invoice::where('administration_id', $invoice->administration_id)->where('invoice_number', '=', $newInvoiceNumber)->whereYear('created_at', '=', $currentYear)->exists())
-//        {
-//            Log::error("Voor nota met ID " . $invoice->id . " kon geen nieuw notanummer bepaald worden.");
-//            self::invoicePdfIsNotCreated($invoice);
-//            return false;
-//        }else{
-//            $invoice->invoice_number = $newInvoiceNumber;
-//            $invoice->number = 'F' . $currentYear . '-' . $newInvoiceNumber;
-//            $invoice->save();
-//        }
-//
-//        // nu we nieuw notanummer hebben kunnen we PDF maken
-//        $pdf = PDF::loadView('invoices.generic', [
-//            'invoice' => $invoice,
-//            'contactPerson' => $contactPerson,
-//            'contactName' => $contactName,
-//            'logo' => $img,
-//        ]);
-//
-//        $name = $invoice->number . '.pdf';
-//
-//        $path = 'administration_' . $invoice->administration->id
-//            . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name;
-//
-//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
-//
-//        $pdf->save($filePath);
-//
+        // PDF maken
+        $pdf = PDF::loadView('financial.overview.generic', [
+            'financialOverview' => $financialOverview,
+            'financialOverviewContactTotalProjects' => $financialOverviewContact['financialOverviewContactTotalProjects'],
+            'financialOverviewContactLoanProjects' => $financialOverviewContact['financialOverviewContactLoanProjects'],
+            'financialOverviewContactObligationProjects' => $financialOverviewContact['financialOverviewContactObligationProjects'],
+            'financialOverviewContactCapitalProjects' => $financialOverviewContact['financialOverviewContactCapitalProjects'],
+            'financialOverviewContactPcrProjects' => $financialOverviewContact['financialOverviewContactPcrProjects'],
+            'contact' => $contact,
+            'contactPerson' => $contactPerson,
+            'contactName' => $contactName,
+            'logo' => $img,
+        ]);
+
+        $name = 'WS-' . $financialOverview->year . '-' . $financialOverview->administration_id . '-' . $contact->number . '.pdf';
+
+        $path = 'administration_' . $financialOverview->administration->id
+            . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name;
+
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+
+        $pdf->save($filePath);
+
 //        $invoiceDocument = new InvoiceDocument();
 //        $invoiceDocument->invoice_id = $invoice->id;
 //        $invoiceDocument->filename = $path;

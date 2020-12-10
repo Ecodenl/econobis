@@ -15,7 +15,7 @@ class FinancialOverviewDetailsApp extends Component {
 
         this.state = {
             financialOverview: {},
-            isLoading: false,
+            isLoading: true,
             hasError: false,
         };
     }
@@ -25,7 +25,6 @@ class FinancialOverviewDetailsApp extends Component {
     }
 
     callFetchFinancialOverviewDetails = () => {
-        this.setState({ isLoading: true, hasError: false });
         FinancialOverviewDetailsAPI.fetchFinancialOverviewDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
@@ -50,35 +49,6 @@ class FinancialOverviewDetailsApp extends Component {
             });
     };
 
-    updateState = financialOverview => {
-        this.setState({ financialOverview });
-    };
-
-    addProjectToState = financialOverviewProject => {
-        this.setState({
-            ...this.state,
-            financialOverview: {
-                ...this.state.financialOverview,
-                financialOverviewProjects: [
-                    ...this.state.financialOverview.financialOverviewProjects,
-                    financialOverviewProject,
-                ],
-            },
-        });
-    };
-
-    deleteProjectToState = id => {
-        this.setState({
-            ...this.state,
-            financialOverview: {
-                ...this.state.financialOverview,
-                financialOverviewProjects: this.state.financialOverview.financialOverviewProjects.filter(
-                    financialOverviewProject => financialOverviewProject.id !== id
-                ),
-            },
-        });
-    };
-
     render() {
         return (
             <div className="row">
@@ -87,8 +57,7 @@ class FinancialOverviewDetailsApp extends Component {
                         <Panel>
                             <PanelBody className={'panel-small'}>
                                 <FinancialOverviewDetailsToolbar
-                                    description={this.state.financialOverview.description || ''}
-                                    id={this.state.financialOverview.id}
+                                    financialOverview={this.state.financialOverview}
                                     deleteFinancialOverview={this.deleteFinancialOverview}
                                 />
                             </PanelBody>
@@ -100,9 +69,10 @@ class FinancialOverviewDetailsApp extends Component {
                             financialOverview={this.state.financialOverview}
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
-                            updateState={this.updateState}
-                            addProjectToState={this.addProjectToState}
-                            deleteProjectToState={this.deleteProjectToState}
+                            callFetchFinancialOverviewDetails={this.callFetchFinancialOverviewDetails}
+                            // updateProjectToState={this.updateProjectToState}
+                            // addProjectToState={this.addProjectToState}
+                            // deleteProjectToState={this.deleteProjectToState}
                         />
                     </div>
                 </div>

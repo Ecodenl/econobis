@@ -8,12 +8,9 @@ import ProjectApp from './project/ProjectApp';
 class FinancialOverviewDetailsForm extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('FinancialOverviewDetailsForm');
-        console.log(props);
     }
     render() {
-        let { financialOverview, hasError, isLoading, updateState } = this.props;
+        let { financialOverview, hasError, isLoading } = this.props;
         let loadingText = '';
         let loading = true;
 
@@ -31,11 +28,13 @@ class FinancialOverviewDetailsForm extends Component {
             <div>{loadingText}</div>
         ) : (
             <div>
-                <FinancialOverviewDetailsFormGeneral financialOverview={financialOverview} updateState={updateState} />
+                <FinancialOverviewDetailsFormGeneral financialOverview={financialOverview} />
                 <ProjectApp
                     financialOverview={financialOverview}
-                    addProjectToState={this.props.addProjectToState}
-                    deleteProjectToState={this.props.deleteProjectToState}
+                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                    // updateProjectToState={this.props.updateProjectToState}
+                    // addProjectToState={this.props.addProjectToState}
+                    // deleteProjectToState={this.props.deleteProjectToState}
                 />
             </div>
         );
@@ -46,7 +45,6 @@ FinancialOverviewDetailsForm.propTypes = {
     financialOverview: PropTypes.any,
     hasError: PropTypes.any,
     isLoading: PropTypes.any,
-    updateState: PropTypes.any,
 };
 
 export default FinancialOverviewDetailsForm;

@@ -5,13 +5,12 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import ProjectNew from './ProjectNew';
+import FinancialOverviewDetailsForm from '../FinancialOverviewDetailsForm';
 
 class ProjectApp extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('ProjectApp');
-        console.log(props);
+
         this.state = {
             showNew: false,
         };
@@ -38,14 +37,17 @@ class ProjectApp extends Component {
                             <ProjectNew
                                 financialOverview={this.props.financialOverview}
                                 toggleShowNew={this.toggleShowNew}
-                                addProjectToState={this.props.addProjectToState}
+                                callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                                // addProjectToState={this.props.addProjectToState}
                             />
                         )}
                     </div>
                     <div className="col-md-12">
                         <ProjectList
                             financialOverview={this.props.financialOverview}
-                            deleteProjectToState={this.props.deleteProjectToState}
+                            callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                            // updateProjectToState={this.props.updateProjectToState}
+                            // deleteProjectToState={this.props.deleteProjectToState}
                         />
                     </div>
                 </PanelBody>

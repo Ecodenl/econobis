@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { browserHistory, hashHistory } from 'react-router';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import FinancialOverviewDeleteItem from '../list/FinancialOverviewDeleteItem';
+import ButtonText from '../../../../components/button/ButtonText';
 
 class FinancialOverviewDetailsToolbar extends Component {
     constructor(props) {
         super(props);
-        // todo WM: opschonen log regels
-        console.log('FinancialOverviewDetailsToolbar');
-        console.log(props);
 
         this.state = {
             showDeleteItem: false,
@@ -46,7 +44,8 @@ class FinancialOverviewDetailsToolbar extends Component {
     };
 
     render() {
-        let { id, description } = this.props;
+        let { id, description } = this.props.financialOverview;
+        console.log(this.props);
 
         return (
             <div className="row">
@@ -57,6 +56,12 @@ class FinancialOverviewDetailsToolbar extends Component {
                             iconName={'glyphicon-trash'}
                             onClickAction={this.showDeleteItemModal.bind(this, id, description)}
                         />
+                        {this.props.financialOverview.definitive && !this.props.financialOverview.dateProcessed ? (
+                            <ButtonText
+                                buttonText={`Vewerken waardenstaten`}
+                                onClickAction={() => hashHistory.push(`/waardestaat/preview/${id}`)}
+                            />
+                        ) : null}
                     </div>
                 </div>
                 <div className="col-md-4">

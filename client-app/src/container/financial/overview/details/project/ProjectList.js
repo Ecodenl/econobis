@@ -3,10 +3,6 @@ import React from 'react';
 import ProjectItem from './ProjectItem';
 
 const ProjectList = props => {
-    // todo WM: opschonen log regels
-    console.log('ProjectList');
-    console.log(props);
-
     return (
         <div>
             <div className="row header">
@@ -27,7 +23,9 @@ const ProjectList = props => {
                             key={financialOverviewProject.id}
                             financialOverviewProject={financialOverviewProject}
                             financialOverview={props.financialOverview}
-                            deleteProjectToState={props.deleteProjectToState}
+                            callFetchFinancialOverviewDetails={props.callFetchFinancialOverviewDetails}
+                            // updateProjectToState={props.updateProjectToState}
+                            // deleteProjectToState={props.deleteProjectToState}
                         />
                     );
                 })

@@ -43,6 +43,7 @@ class FinancialOverviewProjectController extends Controller
         $data = $input->integer('financialOverviewId')->alias('financial_overview_id')->next()
             ->integer('projectId')->validate('exists:projects,id')->alias('project_id')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
+            ->string('statusId')->onEmpty('concept')->whenMissing('concept')->alias('status_id')->next()
             ->get();
 
         $financialOverviewProject = new FinancialOverviewProject($data);

@@ -262,16 +262,28 @@ class MutationFormListItem extends Component {
 
         const { participantMutation } = this.state;
 
-        ParticipantMutationAPI.deleteParticipantMutation(participantMutation.id).then(payload => {
-            if (payload.data) {
+        ParticipantMutationAPI.deleteParticipantMutation(participantMutation.id)
+            .then(payload => {
+                if (payload.data) {
+                    this.setState({
+                        ...this.state,
+                        successDeleteMessage: payload.data,
+                    });
+                } else {
+                    this.toggleDelete();
+                }
+            })
+            .catch(error => {
+                let errorObject = JSON.parse(JSON.stringify(error));
+                let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                if (errorObject.response.status !== 500) {
+                    errorMessage = errorObject.response.data.message;
+                }
                 this.setState({
-                    ...this.state,
-                    successDeleteMessage: payload.data,
+                    showErrorModal: true,
+                    modalErrorMessage: errorMessage,
                 });
-            } else {
-                this.toggleDelete();
-            }
-        });
+            });
     };
 
     closeErrorModal = () => {

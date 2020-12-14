@@ -17,6 +17,7 @@ class FinancialOverviewJoryResource extends JoryResource
         $this->field('administration_id')->filterable()->sortable();
         $this->field('year')->filterable()->sortable();
         $this->field('definitive')->filterable()->sortable();
+        $this->field('status_id')->filterable()->sortable();
         $this->field('date_processed')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
@@ -24,6 +25,7 @@ class FinancialOverviewJoryResource extends JoryResource
         // Relations
         $this->relation('administration');
         $this->relation('financialOverviewProjects');
+        $this->relation('financialOverviewContacts');
     }
 
     protected function configureForPortal(): void

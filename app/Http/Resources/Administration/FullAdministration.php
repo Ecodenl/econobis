@@ -103,6 +103,7 @@ class FullAdministration extends Resource
 
                 'canCreateInvoices' => $this->can_create_invoices,
                 'canCreatePaymentInvoices' => $this->can_create_payment_invoices,
+                'canCreateFinancialOverviewContacts' => $this->can_create_financial_overview_contacts,
 
                 'usesTwinfield' => $this->uses_twinfield,
                 'twinfieldConnectionType' => $this->twinfield_connection_type,
@@ -130,7 +131,7 @@ class FullAdministration extends Resource
                 'usesVat' => $this->uses_vat,
 
                 'emailBccNotas' => $this->email_bcc_notas,
-
+                'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
             ];
     }
 }

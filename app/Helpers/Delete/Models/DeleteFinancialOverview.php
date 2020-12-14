@@ -64,6 +64,9 @@ class DeleteFinancialOverview implements DeleteInterface
         if($this->financialOverview->financialOverviewProjects->where('definitive', true)->count() > 0){
             array_push($this->errorMessage, "Er zijn al definitieve projecten gekoppeld aan deze waardestaat.");
         }
+        if($this->financialOverview->financialOverviewContacts->where('status_id', '!=', 'concept')->count() > 0){
+            array_push($this->errorMessage, "Er zijn al contacten in behandeling voor deze waardestaat.");
+        }
     }
 
     /** Deletes models recursive
@@ -74,6 +77,12 @@ class DeleteFinancialOverview implements DeleteInterface
             $deleteFinancialOverviewProject = new DeleteFinancialOverviewProject($financialOverviewProject);
             $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewProject->delete());
         }
+
+        foreach ($this->financialOverview->financialOverviewContacts as $financialOverviewContact){
+            $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewContact->delete());
+        }
+
     }
 
     /** The relations which should be dissociated

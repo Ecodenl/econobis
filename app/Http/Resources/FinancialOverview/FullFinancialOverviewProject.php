@@ -21,6 +21,7 @@ class FullFinancialOverviewProject extends Resource
             'financialOverviewId' => $this->financial_overview_id,
             'projectId' => $this->project_id,
             'definitive' => $this->definitive,
+            'statusId' => $this->status_id,
         ];
     }
 }

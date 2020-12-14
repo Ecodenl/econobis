@@ -5,7 +5,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import FinancialOverviewContactPreviewForm from './FinancialOverviewContactPreviewForm';
 import FinancialOverviewContactPreviewToolbar from './FinancialOverviewContactPreviewToolbar';
-import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
+import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
 
 class FinancialOverviewContactPreviewApp extends Component {
     constructor(props) {
@@ -25,7 +25,7 @@ class FinancialOverviewContactPreviewApp extends Component {
 
     callFetchFinancialOverviewContactDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        FinancialOverviewDetailsAPI.fetchFinancialOverviewContactDetails(
+        FinancialOverviewContactAPI.fetchFinancialOverviewContactDetails(
             this.props.params.id,
             this.props.params.contactId
         )

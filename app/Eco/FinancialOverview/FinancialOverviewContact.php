@@ -10,6 +10,7 @@ class FinancialOverviewContact extends Model
     protected $guarded = ['id'];
 
     protected $dates = [
+        'date_sent',
         'created_at',
         'updated_at',
     ];
@@ -21,6 +22,10 @@ class FinancialOverviewContact extends Model
     public function financialOverview()
     {
         return $this->belongsTo(FinancialOverview::class);
+    }
+    public function financialOverviewsToSend()
+    {
+        return $this->hasOne(FinancialOverviewsToSend::class);
     }
 
 }

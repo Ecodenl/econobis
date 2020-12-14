@@ -45,7 +45,6 @@ class FinancialOverviewDetailsToolbar extends Component {
 
     render() {
         let { id, description } = this.props.financialOverview;
-        console.log(this.props);
 
         return (
             <div className="row">
@@ -57,10 +56,16 @@ class FinancialOverviewDetailsToolbar extends Component {
                             onClickAction={this.showDeleteItemModal.bind(this, id, description)}
                         />
                         {this.props.financialOverview.definitive && !this.props.financialOverview.dateProcessed ? (
-                            <ButtonText
-                                buttonText={`Vewerken waardenstaten`}
-                                onClickAction={() => hashHistory.push(`/waardestaat/preview/${id}`)}
-                            />
+                            <>
+                                <ButtonText
+                                    buttonText={`Preview e-mail waardestaten`}
+                                    onClickAction={() => hashHistory.push(`/waardestaat/${id}/aanmaken/email`)}
+                                />
+                                <ButtonText
+                                    buttonText={`Preview post waardestaten`}
+                                    onClickAction={() => hashHistory.push(`/waardestaat/${id}/aanmaken/post`)}
+                                />
+                            </>
                         ) : null}
                     </div>
                 </div>

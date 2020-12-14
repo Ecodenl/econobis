@@ -360,4 +360,19 @@ class Administration extends Model
         return $canCreatePaymentInvoices;
     }
 
+    public function getCanCreateFinancialOverviewContactsAttribute()
+    {
+        $canCreateFinancialOverviewContacts['can'] = true;
+        $canCreateFinancialOverviewContacts['message'] = '';
+        $canCreateFinancialOverviewContacts['requiredFields'] = [];
+
+        return $canCreateFinancialOverviewContacts;
+    }
+
+    public function getLastYearFinancialOverviewDefinitiveAttribute()
+    {
+        $financialOverview = $this->financialOverviews()->where('definitive', true)->get()->sortByDesc('year')->first();
+        return $financialOverview ? $financialOverview->year : null;
+    }
+
 }

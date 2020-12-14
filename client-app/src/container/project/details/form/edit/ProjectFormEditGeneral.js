@@ -32,6 +32,7 @@ const ProjectFormEditGeneral = ({
     dateProduction,
     isMembershipRequired,
     handleInputChange,
+    handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
     handleReactSelectChange,
@@ -41,6 +42,7 @@ const ProjectFormEditGeneral = ({
     users,
     contactGroups,
     staticContactGroups,
+    disableBeforeEntryDate,
     errors,
     amountOfParticipants,
     documentTemplateAgreementId,
@@ -179,7 +181,7 @@ const ProjectFormEditGeneral = ({
                         name={'administrationId'}
                         options={administrations}
                         value={administrationId}
-                        onChangeAction={handleInputChange}
+                        onChangeAction={handleInputChangeAdministration}
                         required={'required'}
                         error={errors.administrationId}
                     />
@@ -235,6 +237,8 @@ const ProjectFormEditGeneral = ({
                     name={'dateEntry'}
                     value={dateEntry}
                     onChangeAction={handleInputChangeDate}
+                    disabledBefore={disableBeforeEntryDate}
+                    error={errors.dateEntry}
                 />
             </div>
 

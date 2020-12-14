@@ -10,12 +10,46 @@ namespace App\Eco\FinancialOverview;
 
 class FinancialOverviewObserver
 {
-
     public function saving(FinancialOverview $financialOverview)
     {
         if(empty($financialOverview->description)) {
             $financialOverview->description = $financialOverview->year . ' ' . $financialOverview->administration->name;
-            $financialOverview->save();
+        }
+//        // default 'concept' alleen bij nieuw maken
+//        if(!$financialOverview->definitive && empty($financialOverview->definitive)) {
+//            $financialOverview->status_id = 'concept';
+//        }
+        if($financialOverview->definitive && empty($financialOverview->date_processed)) {
+            $financialOverview->status_id = 'definitive';
+        }
+        if($financialOverview->definitive && !empty($financialOverview->date_processed)) {
+            $financialOverview->status_id = 'processed';
         }
     }
+
+    public function saved(FinancialOverview $financialOverview)
+    {
+        if($financialOverview->isDirty('definitive')) {
+            // if financial overview is definitive set all financial overview contact status from concept tot to-send and vice versa
+            if($financialOverview->definitive){
+                $financialOverviewContacts = FinancialOverviewContact::where('financial_overview_id', $financialOverview->id)
+                    ->where('status_id', 'concept')->get();
+                foreach ($financialOverviewContacts as $financialOverviewContact) {
+                    $financialOverviewContact->status_id = 'to-send';
+                    $financialOverviewContact->save();
+                }
+            }else{
+                $financialOverviewContacts = FinancialOverviewContact::where('financial_overview_id', $financialOverview->id)
+                    ->where('status_id', 'to-send')->get();
+                foreach ($financialOverviewContacts as $financialOverviewContact) {
+                    $financialOverviewContact->status_id = 'concept';
+                    $financialOverviewContact->save();
+                }
+            }
+        }
+
+    }
+
+
+
 }

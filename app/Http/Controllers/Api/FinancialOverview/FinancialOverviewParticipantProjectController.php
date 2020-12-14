@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\FinancialOverview;
 
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantProject\ParticipantProject;
@@ -36,6 +37,13 @@ class FinancialOverviewParticipantProjectController extends Controller
                 'amount_end_value' => $endValue['amount'],
             ]);
 
+            FinancialOverviewContact::updateOrCreate([
+                //Add unique field to match here
+                'financial_overview_id'   => $financialOverviewProject->financialOverview->id,
+                'contact_id'   => $participant->contact_id,
+            ],[
+                'status_id' => 'concept',
+            ]);
         }
     }
 
@@ -66,6 +74,14 @@ class FinancialOverviewParticipantProjectController extends Controller
                 'bookworth_end_value' => $endValue['bookworth'],
                 'amount_start_value' => $startValue['amount'],
                 'amount_end_value' => $endValue['amount'],
+            ]);
+
+            FinancialOverviewContact::updateOrCreate([
+                //Add unique field to match here
+                'financial_overview_id'   => $financialOverviewProject->financialOverview->id,
+                'contact_id'   => $participant->contact_id,
+            ],[
+                'status_id' => 'concept',
             ]);
 
         }

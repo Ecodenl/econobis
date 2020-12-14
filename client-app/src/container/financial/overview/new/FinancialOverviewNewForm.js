@@ -27,6 +27,7 @@ class FinancialOverviewNewForm extends Component {
                 description: '',
                 administrationId: '',
                 definitive: false,
+                statusId: '',
                 dateProcessed: null,
             },
             errorMessage: false,

@@ -22,6 +22,7 @@ class FullFinancialOverview extends Resource
             'administration' => GenericResource::make($this->whenLoaded('administration')),
             'year' => $this->year,
             'definitive' => $this->definitive,
+            'statusId' => $this->status_id,
             'date' => $this->date_processed,
         ];
     }

@@ -20,6 +20,7 @@ class CreateTableFinancialOverviews extends Migration
             $table->foreign('administration_id')->references('id')->on('administrations');
             $table->year('year');
             $table->boolean('definitive')->default(false);
+            $table->string('status_id')->default('concept');
             $table->date('date_processed')->nullable();
             $table->timestamps();
         });
@@ -31,6 +32,7 @@ class CreateTableFinancialOverviews extends Migration
             $table->unsignedInteger('project_id');
             $table->foreign('project_id')->references('id')->on('projects');
             $table->boolean('definitive')->default(false);
+            $table->string('status_id')->default('concept');
             $table->timestamps();
 
         });
@@ -56,8 +58,11 @@ class CreateTableFinancialOverviews extends Migration
             $table->unsignedInteger('financial_overview_id');
             $table->unsignedInteger('contact_id');
             $table->foreign('contact_id')->references('id')->on('contacts');
-            $table->string('status_id');
+            $table->string('status_id')->default('concept');
+            $table->string('filename')->nullable();;
+            $table->string('name')->nullable();;
             $table->date('date_sent')->nullable();
+            $table->string('emailed_to')->nullable();;
             $table->timestamps();
         });
         Schema::create('financial_overviews_to_send', function (Blueprint $table) {

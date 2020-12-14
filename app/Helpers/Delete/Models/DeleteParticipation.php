@@ -80,6 +80,11 @@ class DeleteParticipation implements DeleteInterface
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
         }
+
+        foreach ($this->participation->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
+            $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewParticipantProject->delete());
+        }
     }
 
     /** The relations which should be dissociated

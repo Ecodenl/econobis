@@ -147,6 +147,8 @@ class ParticipantMutationController extends ApiController
     {
         $this->authorize('manage', ParticipantMutation::class);
 
+        $result = $this->checkMutationAllowed($participantMutation);
+
         $melding = null;
 
         $participantProject = $participantMutation->participation;

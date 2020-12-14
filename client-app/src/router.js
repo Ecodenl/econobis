@@ -143,6 +143,10 @@ const LedgerDetailsApp = React.lazy(() => import('./container/ledger/details/Led
 const FinancialOverviewListApp = React.lazy(() =>
     import('./container/financial/overview/list/FinancialOverviewListApp')
 );
+const FinancialOverviewCreateApp = React.lazy(() =>
+    import('./container/financial/overview/create/FinancialOverviewCreateApp')
+);
+
 const FinancialOverviewNewApp = React.lazy(() => import('./container/financial/overview/new/FinancialOverviewNewApp'));
 const FinancialOverviewDetailsApp = React.lazy(() =>
     import('./container/financial/overview/details/FinancialOverviewDetailsApp')
@@ -303,6 +307,7 @@ const Routes = () => {
                     <Route path="waardestaten" component={FinancialOverviewListApp} />
                     <Route path="waardestaat/nieuw" component={FinancialOverviewNewApp} />
                     <Route path="waardestaat/:id" component={FinancialOverviewDetailsApp} />
+                    <Route path="waardestaat/:id/aanmaken/:type" component={FinancialOverviewCreateApp} />
                     <Route path="waardestaat-project/:id" component={FinancialOverviewProjectDetailsApp} />
                     <Route path="waardestaat-contact/:id/:contactId" component={FinancialOverviewContactPreviewApp} />
                     /* Costcenters */

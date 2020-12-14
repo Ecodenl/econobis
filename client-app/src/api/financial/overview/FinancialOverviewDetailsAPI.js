@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const URL_FINANCIAL_OVERVIEW = `financial-overview`;
 const URL_FINANCIAL_OVERVIEW_PROJECT = `financial-overview-project`;
-const URL_FINANCIAL_OVERVIEW_CONTACT = `financial-overview-contact`;
 
 export default {
     fetchFinancialOverviewDetails: id => {
@@ -12,7 +11,7 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'dateProcessed'],
+                    fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'statusId', 'dateProcessed'],
                     rlt: {
                         administration: { fld: ['id', 'name'] },
                         financialOverviewProjects: {
@@ -23,6 +22,10 @@ export default {
                                     rlt: { projectType: { fld: ['id', 'codeRef', 'name'] } },
                                 },
                             },
+                        },
+                        financialOverviewContacts: {
+                            fld: ['id', 'contactId', 'definitive', 'statusId', 'dateSent', 'emailedTo'],
+                            rlt: { contact: { fld: ['id', 'fullName'] } },
                         },
                     },
                 },
@@ -39,7 +42,15 @@ export default {
                     fld: ['id', 'projectId', 'definitive'],
                     rlt: {
                         financialOverview: {
-                            fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'dateProcessed'],
+                            fld: [
+                                'id',
+                                'description',
+                                'administrationId',
+                                'year',
+                                'definitive',
+                                'statusId',
+                                'dateProcessed',
+                            ],
                             rlt: { administration: { fld: ['id', 'name'] } },
                         },
                         project: {
@@ -70,12 +81,6 @@ export default {
         });
     },
 
-    fetchFinancialOverviewContactDetails: (financialOverviewId, contactId) => {
-        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewId}/${contactId}`;
-
-        return axiosInstance.get(requestUrl);
-    },
-
     newFinancialOverview: financialOverview => {
         const requestUrl = URL_FINANCIAL_OVERVIEW;
         financialOverview.jory = JSON.stringify({
@@ -97,12 +102,18 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
-    downloadPreview: (id, contactId) => {
-        const requestUrl = `${URL_API}/api/${URL_FINANCIAL_OVERVIEW}/${id}/${contactId}/download-preview`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+    // downloadPreview: (id, contactId) => {
+    //     const requestUrl = `${URL_API}/api/${URL_FINANCIAL_OVERVIEW}/${id}/${contactId}/download-preview`;
+    //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
+    //     axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+    //
+    //     return axios.get(requestUrl, { responseType: 'blob' });
+    // },
 
-        return axios.get(requestUrl, { responseType: 'blob' });
+    downloadPreview: (id, contactId) => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${id}/${contactId}/download-preview`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 
     newFinancialOverviewProject: financialOverviewProject => {

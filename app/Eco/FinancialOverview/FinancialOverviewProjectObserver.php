@@ -10,6 +10,14 @@ namespace App\Eco\FinancialOverview;
 
 class FinancialOverviewProjectObserver
 {
+    public function saving(FinancialOverviewProject $financialOverviewProject)
+    {
+        if($financialOverviewProject->definitive) {
+            $financialOverviewProject->status_id = 'definitive';
+        }else{
+            $financialOverviewProject->status_id = 'concept';
+        }
+    }
 
     public function saved(FinancialOverviewProject $financialOverviewProject)
     {

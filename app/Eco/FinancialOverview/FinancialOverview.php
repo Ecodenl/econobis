@@ -15,11 +15,6 @@ class FinancialOverview extends Model
         'updated_at',
     ];
 
-//    protected $casts = [
-//        'year' => 'integer',
-//        'administration_id' => 'integer',
-//    ];
-
     public function administration()
     {
         return $this->belongsTo(Administration::class);

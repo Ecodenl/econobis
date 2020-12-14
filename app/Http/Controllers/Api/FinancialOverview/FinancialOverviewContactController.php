@@ -204,8 +204,8 @@ class FinancialOverviewContactController extends Controller
 
             // Eerst hele zet in progress of is resending zetten
             foreach ($financialOverviewContacts as $financialOverviewContact) {
-                $orderController = new OrderController;
-                $emailTo = $orderController->getContactInfoForOrder($financialOverviewContact->contact)['email'];
+                $financialOverviewContactController = new FinancialOverviewContactController();
+                $emailTo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
 
                 if ($emailTo === 'Geen e-mail bekend') {
                     abort(404, 'Geen e-mail bekend');
@@ -253,7 +253,7 @@ class FinancialOverviewContactController extends Controller
 //                    abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden");
 //                }            }
 //
-//            $orderController = new OrderController;
+//            $financialOverviewContactController = new FinancialOverviewContactController();
 //
 //            foreach ($validatedInvoices as $k => $invoice) {
 //
@@ -261,8 +261,8 @@ class FinancialOverviewContactController extends Controller
 //                $invoice->date_collection = $request->input('dateCollection');
 //                $invoice->save();
 //
-//                $emailTo = $orderController->getContactInfoForOrder($invoice->order->contact)['email'];
-//                $contactPerson = $orderController->getContactInfoForOrder($invoice->order->contact)['contactPerson'];
+//                $emailTo = $financialOverviewContactController->getContactInfoForFinancialOverview($invoice->order->contact)['email'];
+//                $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($invoice->order->contact)['contactPerson'];
 //
 //                if ($invoice->order->contact->full_name === $contactPerson) {
 //                    $contactPerson = null;
@@ -338,7 +338,7 @@ class FinancialOverviewContactController extends Controller
         ];
 
         if($contact->isOrganisation()){
-            $email = $this->getOrganisationEmailAddressForOrder($contact);
+            $email = $this->getOrganisationEmailAddressFinancialOverview($contact);
 
             if (!$email && $contact->contactPerson()->exists())
             {
@@ -367,6 +367,22 @@ class FinancialOverviewContactController extends Controller
         }
 
         return $contactInfo;
+    }
+
+    protected function getOrganisationEmailAddressFinancialOverview(Contact $contact){
+        $emailAddresses = $contact->emailAddresses->reverse();
+
+        foreach($emailAddresses as $emailAddress) {
+            if ($emailAddress->type_id === 'invoice') {
+                return $emailAddress;
+            }
+        }
+
+        if($contact->primaryEmailAddress){
+            return $contact->primaryEmailAddress;
+        }
+
+        return null;
     }
 
 }

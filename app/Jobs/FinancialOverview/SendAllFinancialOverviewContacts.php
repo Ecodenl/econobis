@@ -13,7 +13,7 @@ use App\Eco\Email\Email;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
-use App\Http\Controllers\Api\Order\OrderController;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -57,12 +57,10 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
     {
         //user voor observer
         Auth::setUser(User::find($this->userId));
-        $orderController = new OrderController();
+        $financialOverviewContactController = new FinancialOverviewContactController();
 
         foreach ($this->validatedFinancialOverviewContacts as $financialOverviewContact) {
-            $contactInfo = $orderController->getContactInfoForOrder($financialOverviewContact->contact);
-//            Log::info("contactInfo: " );
-//            Log::info($contactInfo);
+            $contactInfo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
 
             $jobLog = new JobsLog();
             $jobLog->value = 'Start maken en versturen waardestaat (' . ($financialOverviewContact->id) . ') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ').';
@@ -82,7 +80,7 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
         $response = [];
 
         foreach ($this->validatedFinancialOverviewContacts as $financialOverviewContact) {
-            $contactInfo = $orderController->getContactInfoForOrder($financialOverviewContact->contact);
+            $contactInfo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
 
             //alleen als waardestaat goed is aangemaakt, gaan we mailen
             if ($financialOverviewContact->financialOverviewsToSend()->exists() && $financialOverviewContact->financialOverviewsToSend()->first()->financial_overview_created) {

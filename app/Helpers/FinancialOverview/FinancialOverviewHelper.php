@@ -11,7 +11,6 @@ use App\Eco\Project\Project;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
-use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use App\Http\Resources\Project\GridProject;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -88,9 +87,7 @@ class FinancialOverviewHelper
 
         $financialOverviewContactController = new FinancialOverviewContactController();
         $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContact($financialOverview, $contact);
-
-        $orderController = new OrderController();
-        $contactPerson = $orderController->getContactInfoForOrder($contact)['contactPerson'];
+        $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($contact)['contactPerson'];
         $contactName = null;
 
         if ($contact->type_id == 'person') {
@@ -164,9 +161,9 @@ class FinancialOverviewHelper
 
         self::setMailConfigByFinancialOverviewContact($financialOverviewContact);
 
-        $orderController = new OrderController();
+        $financialOverviewContactController = new FinancialOverviewContactController();
         $contactInfo
-            = $orderController->getContactInfoForOrder($financialOverviewContact->contact);
+            = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
 
         if ($contactInfo['email'] === 'Geen e-mail bekend') {
             if ($preview) {

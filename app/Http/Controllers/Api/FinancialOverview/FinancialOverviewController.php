@@ -89,7 +89,7 @@ class FinancialOverviewController extends Controller
     public function downloadPreview(FinancialOverview $financialOverview, Contact $contact){
 //        return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverview, $contact, true);
         $financialOverviewContact = FinancialOverviewContact::where('financial_overview_id', $financialOverview->id)
-            ->where('contact_id', $contact->id);
+            ->where('contact_id', $contact->id)->first();
         return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact, true);
     }
 

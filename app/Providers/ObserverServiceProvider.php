@@ -16,6 +16,8 @@ use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\EnergySupplier\ContactEnergySupplierObserver;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewObserver;
+use App\Eco\FinancialOverview\FinancialOverviewContact;
+use App\Eco\FinancialOverview\FinancialOverviewContactObserver;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\FinancialOverview\FinancialOverviewProjectObserver;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
@@ -116,6 +118,7 @@ class ObserverServiceProvider extends ServiceProvider
         PaymentInvoice::observe(PaymentInvoiceObserver::class);
         Webform::observe(WebformObserver::class);
         FinancialOverview::observe(FinancialOverviewObserver::class);
+        FinancialOverviewContact::observe(FinancialOverviewContactObserver::class);
         FinancialOverviewProject::observe(FinancialOverviewProjectObserver::class);
         FinancialOverviewParticipantProject::observe(FinancialOverviewParticipantProjectObserver::class);
     }

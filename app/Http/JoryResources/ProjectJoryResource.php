@@ -51,6 +51,7 @@ class ProjectJoryResource extends JoryResource
     protected function configureForPortal(): void
     {
         // Fields
+        $this->field('administration_id')->filterable()->sortable();
         $this->field('amount_definitive')->filterable()->sortable();
         $this->field('amount_granted')->filterable()->sortable();
         $this->field('amount_interessed')->filterable()->sortable();
@@ -83,6 +84,7 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_understand_info')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
         // Relations
+        $this->relation('administration');
         $this->relation('projectType');
     }
 }

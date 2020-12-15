@@ -10,6 +10,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
@@ -278,9 +279,13 @@ class Contact extends Model
         return $this->hasOne(PortalUser::class);
     }
 
-    public function financialOverviews()
+    public function financialOverviewContacts()
     {
-        return $this->hasMany(FinancialOverview::class);
+        return $this->hasMany(FinancialOverviewContact::class);
+    }
+    public function financialOverviewContactsSend()
+    {
+        return $this->hasMany(FinancialOverviewContact::class)->where('status_id', 'sent')->orderBy('date_sent', 'desc');
     }
 
     //Returns addresses array as Type - Streetname - Number

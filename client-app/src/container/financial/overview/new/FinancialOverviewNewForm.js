@@ -137,7 +137,24 @@ class FinancialOverviewNewForm extends Component {
     render() {
         const { year, administrationId } = this.state.financialOverview;
 
+        // let loadingText = '';
+        // let loading = true;
+        // console.log(this.props);
+        // if (this.props.hasError) {
+        //     loadingText = 'Fout bij het aanmaken nieuwe waardestaat.';
+        // } else if (this.props.isLoading) {
+        //     loadingText = 'Gegevens aan het laden.';
+        // } else {
+        //     loading = false;
+        // }
+
         return (
+            // <>
+            //     {loading ? (
+            //         <div className="row">
+            //             <td colSpan={7}>{loadingText}</td>
+            //         </div>
+            //     ) : (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
@@ -179,12 +196,15 @@ class FinancialOverviewNewForm extends Component {
                     </PanelBody>
                 </Panel>
             </form>
+            //     )}
+            // </>
         );
     }
 }
 
 const mapStateToProps = state => {
     return {
+        // isLoading: state.loadingData.isLoading,
         administrations: state.systemData.administrations,
     };
 };

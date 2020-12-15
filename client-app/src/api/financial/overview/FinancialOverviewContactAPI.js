@@ -4,7 +4,13 @@ import axios from 'axios';
 const URL_FINANCIAL_OVERVIEW_CONTACT = `financial-overview-contact`;
 
 export default {
-    fetchFinancialOverviewContactDetails: (financialOverviewId, contactId) => {
+    fetchFinancialOverviewContactDetails: financialOverviewContactId => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/get`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    fetchFinancialOverviewContactDetailsXXX: (financialOverviewId, contactId) => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewId}/${contactId}/get`;
 
         return axiosInstance.get(requestUrl);

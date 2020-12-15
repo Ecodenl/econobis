@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import FinancialOverviewContactPreviewForm from './FinancialOverviewContactPreviewForm';
-import FinancialOverviewContactPreviewToolbar from './FinancialOverviewContactPreviewToolbar';
-import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import FinancialOverviewContactViewForm from './FinancialOverviewContactViewForm';
+import FinancialOverviewContactViewToolbar from './FinancialOverviewContactViewToolbar';
+import FinancialOverviewContactAPI from '../../../../../api/financial/overview/FinancialOverviewContactAPI';
+import fileDownload from 'js-file-download';
 
-class FinancialOverviewContactPreviewApp extends Component {
+class FinancialOverviewContactViewApp extends Component {
     constructor(props) {
         super(props);
 
@@ -16,18 +17,17 @@ class FinancialOverviewContactPreviewApp extends Component {
             hasError: false,
             scale: 1,
         };
+
+        this.download = this.download.bind(this);
     }
 
     componentDidMount() {
-        this.callFetchFinancialOverviewContactDetailsXXX();
+        this.callFetchFinancialOverviewContactDetails();
     }
 
-    callFetchFinancialOverviewContactDetailsXXX = () => {
+    callFetchFinancialOverviewContactDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        FinancialOverviewContactAPI.fetchFinancialOverviewContactDetailsXXX(
-            this.props.params.id,
-            this.props.params.contactId
-        )
+        FinancialOverviewContactAPI.fetchFinancialOverviewContactDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
                     isLoading: false,
@@ -51,6 +51,12 @@ class FinancialOverviewContactPreviewApp extends Component {
         });
     };
 
+    download() {
+        FinancialOverviewContactDetailsAPI.download(this.props.financialOverviewContactDetails.id).then(payload => {
+            fileDownload(payload.data, payload.headers['x-filename']);
+        });
+    }
+
     render() {
         return (
             <div className="row">
@@ -58,20 +64,20 @@ class FinancialOverviewContactPreviewApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <Panel>
                             <PanelBody className={'panel-small'}>
-                                <FinancialOverviewContactPreviewToolbar
+                                <FinancialOverviewContactViewToolbar
                                     financialOverviewContactDetails={this.state.financialOverviewContactDetails}
                                     zoomIn={this.zoomIn}
                                     zoomOut={this.zoomOut}
+                                    download={this.download}
                                 />
                             </PanelBody>
                         </Panel>
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <FinancialOverviewContactPreviewForm
+                        <FinancialOverviewContactViewForm
                             financialOverviewContactDetails={this.state.financialOverviewContactDetails}
-                            financialOverviewId={this.props.params.id}
-                            contactId={this.props.params.contactId}
+                            financialOverviewContactId={this.props.params.id}
                             scale={this.state.scale}
                         />
                     </div>
@@ -81,11 +87,20 @@ class FinancialOverviewContactPreviewApp extends Component {
     }
 }
 
+// const mapStateToProps = state => {
+//     return {
+//         financialOverviewContactDetails: state.financialOverviewContactDetails,
+//     };
+// };
+
 // const mapDispatchToProps = dispatch => ({
-//     financialOverviewContactDetails: (id, contactId) => {
-//         dispatch(financialOverviewContactDetails(id, contactId));
+//     fetchFinancialOverviewContactDetails: id => {
+//         dispatch(fetchFinancialOverviewContactDetails(id));
 //     },
 // });
-//
-// export default connect(null, mapDispatchToProps)(FinancialOverviewContactPreviewApp);
-export default FinancialOverviewContactPreviewApp;
+
+// export default connect(
+//     mapStateToProps,
+//     mapDispatchToProps
+// )(FinancialOverviewContactViewApp);
+export default FinancialOverviewContactViewApp;

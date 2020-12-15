@@ -26,7 +26,7 @@ class ParticipantItem extends Component {
     };
 
     getFinancialOverviewPDF(financialOverviewId, contactId) {
-        hashHistory.push(`/waardestaat-contact/${financialOverviewId}/${contactId}`);
+        hashHistory.push(`/waardestaat-contact/preview/${financialOverviewId}/${contactId}`);
     }
 
     render() {

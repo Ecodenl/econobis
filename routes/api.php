@@ -467,9 +467,10 @@ Route::namespace('Api')
         Route::post('financial-overview-project', 'FinancialOverview\FinancialOverviewProjectController@store');
         Route::post('financial-overview-project/{financialOverviewProject}', 'FinancialOverview\FinancialOverviewProjectController@update');
         Route::post('financial-overview-project/{financialOverviewProject}/delete', 'FinancialOverview\FinancialOverviewProjectController@destroy');
-        Route::get('financial-overview-contact/{financialOverview}/{contact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContact');
+        Route::get('financial-overview-contact/{financialOverview}/{contact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactXXX');
         Route::get('financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
         Route::get('financial-overview-contact/{financialOverviewContact}/email-preview', 'FinancialOverview\FinancialOverviewContactController@getEmailPreview');
+        Route::get('financial-overview-contact/{financialOverviewContact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContact');
         Route::post('financial-overview-contact/{financialOverview}/sending/email', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingEmail');
         Route::post('financial-overview-contact/{financialOverview}/sending/post', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingPost');
         Route::post('financial-overview-contact/{financialOverview}/send-all', 'FinancialOverview\FinancialOverviewContactController@sendAll');

@@ -222,7 +222,7 @@
         <table cellpadding=0 cellspacing=2>
             <tr>
                 <td>
-                    Datum: {{ $financialOverview->date_sent ? Carbon\Carbon::parse($financialOverview->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}
+                    Datum: {{ $financialOverviewContact->date_sent ? Carbon\Carbon::parse($financialOverviewContact->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}
                 </td>
             </tr>
 {{--            <tr>--}}

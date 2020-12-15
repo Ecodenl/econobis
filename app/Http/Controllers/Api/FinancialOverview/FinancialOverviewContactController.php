@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FinancialOverview\SendFinancialOverviewContact;
 use App\Jobs\FinancialOverview\SendAllFinancialOverviewContacts;
+use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +21,12 @@ use Illuminate\Support\Facades\Storage;
 
 class FinancialOverviewContactController extends Controller
 {
-    public function getFinancialOverviewContact(FinancialOverview $financialOverview, Contact $contact)
+    public function getFinancialOverviewContact(FinancialOverviewContact $financialOverviewContact)
+    {
+        return $this->getFinancialOverviewContactXXX($financialOverviewContact->financialOverview, $financialOverviewContact->contact);
+    }
+
+    public function getFinancialOverviewContactXXX(FinancialOverview $financialOverview, Contact $contact)
     {
         $loanTypeId = ProjectType::where('code_ref', 'loan')->first()->id;
         $obligationTypeId = ProjectType::where('code_ref', 'obligation')->first()->id;
@@ -225,106 +232,113 @@ class FinancialOverviewContactController extends Controller
         return $response;
     }
 
-//    public function sendAllPost(FinancialOverview $financialOverview, Request $request)
-//    {
-//        set_time_limit(0);
-//        $this->authorize('manage', Invoice::class);
-//
-//        $invoices = Invoice::whereIn('id', $request->input('ids'))->with(['order.contact', 'administration'])->get();
-//
-//        // verwijder alle notas waar twinfield gebruikt wordt en geen ledgercode bekend is
-//        $validatedInvoices = $invoices->reject(function ($invoice) {
-//            return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
-//        });
-//
-//        $html
-//            = '<style>
-//.page-break {
-//    page-break-after: always;
-//}
-//</style>';
-//
-//        if ($validatedInvoices->count() > 0) {
-//            // Eerst hele zet in progress zetten
-//            foreach ($validatedInvoices as $k => $invoice) {
-//                if($invoice->status_id === 'to-send') {
-//                    InvoiceHelper::invoiceInProgress($invoice);
-//                }else{
-//                    abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden");
-//                }            }
-//
-//            $financialOverviewContactController = new FinancialOverviewContactController();
-//
-//            foreach ($validatedInvoices as $k => $invoice) {
-//
-//                $invoice->date_sent = Carbon::today();
-//                $invoice->date_collection = $request->input('dateCollection');
-//                $invoice->save();
-//
-//                $emailTo = $financialOverviewContactController->getContactInfoForFinancialOverview($invoice->order->contact)['email'];
-//                $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($invoice->order->contact)['contactPerson'];
-//
-//                if ($invoice->order->contact->full_name === $contactPerson) {
-//                    $contactPerson = null;
-//                }
-//
-//                $contactName = null;
-//
-//                if ($invoice->order->contact->type_id == 'person') {
-//                    $prefix = $invoice->order->contact->person->last_name_prefix;
-//                    $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' '
-//                        . $invoice->order->contact->person->last_name
-//                        : $invoice->order->contact->person->first_name . ' '
-//                        . $invoice->order->contact->person->last_name;
-//                } elseif ($invoice->order->contact->type_id == 'organisation') {
-//                    $contactName = $invoice->order->contact->full_name;
-//                }
-//
-//                if ($emailTo === 'Geen e-mail bekend') {
-//                    $createdOk = InvoiceHelper::createInvoiceDocument($invoice);
-//                    if ($createdOk) {
-//                        InvoiceHelper::invoiceIsSending($invoice);
-//                        InvoiceHelper::invoiceSend($invoice);
-//
-//                        $img = '';
-//                        if ($invoice->administration->logo_filename) {
-//                            $path = storage_path('app' . DIRECTORY_SEPARATOR
-//                                . 'administrations' . DIRECTORY_SEPARATOR
-//                                . $invoice->administration->logo_filename);
-//                            $logo = file_get_contents($path);
-//
-//                            $src = 'data:' . mime_content_type($path)
-//                                . ';charset=binary;base64,' . base64_encode($logo);
-//                            $src = str_replace(" ", "", $src);
-//                            $img = '<img src="' . $src
-//                                . '" width="auto" height="156px"/>';
-//                        }
-//
-//                        if ($k !== 0) {
-//                            $html .= '<div class="page-break"></div>';
-//                        }
-//                        $html .= view('invoices.generic')->with([
-//                            'invoice' => $invoice,
-//                            'contactPerson' => $contactPerson,
-//                            'contactName' => $contactName
-//                        ])
-//                            ->with('logo', $img)->render();
-//                    }
-//                }
-//            }
-//        }
-//
-//        $name = 'Post-notas-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
-//
-//        libxml_use_internal_errors(true);
-//        $pdfOutput = PDF::loadHTML($html);
-//        libxml_use_internal_errors(false);
-//
-//        header('X-Filename:' . $name);
-//        header('Access-Control-Expose-Headers: X-Filename');
-//
-//        return $pdfOutput->output();
-//    }
+    public function sendAllPost(FinancialOverview $financialOverview, Request $request)
+    {
+        set_time_limit(0);
+        $this->authorize('manage', FinancialOverview::class);
+
+        $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'post');
+
+        $html
+            = '<style>
+.page-break {
+    page-break-after: always;
+}
+</style>';
+
+        if ($financialOverviewContacts->count() > 0) {
+            // Eerst hele zet in progress zetten
+            foreach ($financialOverviewContacts as $k => $financialOverviewContact) {
+                if($financialOverviewContact->status_id === 'to-send') {
+                    FinancialOverviewHelper::financialOverviewContactInProgress($financialOverviewContact);
+                }else{
+                    abort(404, "Waardestaat contact met ID " . $financialOverviewContact->id . " heeft geen status Te verzenden");
+                }            }
+
+            $financialOverviewContactController = new FinancialOverviewContactController();
+
+            foreach ($financialOverviewContacts as $k => $financialOverviewContact) {
+
+                $financialOverview = $financialOverviewContact->financialOverview;
+                $contact = $financialOverviewContact->contact;
+
+                $financialOverviewContact->date_sent = Carbon::today();
+                $financialOverviewContact->save();
+
+                $financialOverviewContactController = new FinancialOverviewContactController();
+                $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContactXXX($financialOverview, $contact);
+
+                $emailTo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+                $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['contactPerson'];
+
+                if ($financialOverviewContact->contact->full_name === $contactPerson) {
+                    $contactPerson = null;
+                }
+
+                $contactName = null;
+
+                if ($financialOverviewContact->contact->type_id == 'person') {
+                    $prefix = $financialOverviewContact->contact->person->last_name_prefix;
+                    $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' '
+                        . $financialOverviewContact->contact->person->last_name
+                        : $financialOverviewContact->contact->person->first_name . ' '
+                        . $financialOverviewContact->contact->person->last_name;
+                } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
+                    $contactName = $financialOverviewContact->contact->full_name;
+                }
+
+                if ($emailTo === 'Geen e-mail bekend') {
+                    $createdOk = FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact);
+                    if ($createdOk) {
+                        FinancialOverviewHelper::financialOverviewContactIsSending($financialOverviewContact);
+                        FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
+
+                        $img = '';
+                        if ($financialOverviewContact->financialOverview->administration->logo_filename) {
+                            $path = storage_path('app' . DIRECTORY_SEPARATOR
+                                . 'administrations' . DIRECTORY_SEPARATOR
+                                . $financialOverviewContact->financialOverview->administration->logo_filename);
+                            $logo = file_get_contents($path);
+
+                            $src = 'data:' . mime_content_type($path)
+                                . ';charset=binary;base64,' . base64_encode($logo);
+                            $src = str_replace(" ", "", $src);
+                            $img = '<img src="' . $src
+                                . '" width="auto" height="156px"/>';
+                        }
+
+                        if ($k !== 0) {
+                            $html .= '<div class="page-break"></div>';
+                        }
+                        $html .= view('financial.overview.generic')->with([
+                            'financialOverview' => $financialOverview,
+                            'financialOverviewContact' => $financialOverviewContact,
+                            'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
+                            'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
+                            'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
+                            'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
+                            'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
+                            'contact' => $contact,
+                            'contactPerson' => $contactPerson,
+                            'contactName' => $contactName,
+                        ])
+                            ->with('logo', $img)->render();
+                    }
+                }
+            }
+        }
+
+        $name = 'Post-waardestaten-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+
+        libxml_use_internal_errors(true);
+        $pdfOutput = PDF::loadHTML($html);
+        libxml_use_internal_errors(false);
+
+        header('X-Filename:' . $name);
+        header('Access-Control-Expose-Headers: X-Filename');
+
+        return $pdfOutput->output();
+    }
 
     public function getContactInfoForFinancialOverview(Contact $contact)
     {

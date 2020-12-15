@@ -86,7 +86,7 @@ class FinancialOverviewHelper
         self::checkStorageDir($financialOverview->administration->id);
 
         $financialOverviewContactController = new FinancialOverviewContactController();
-        $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContact($financialOverview, $contact);
+        $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContactXXX($financialOverview, $contact);
         $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($contact)['contactPerson'];
         $contactName = null;
 
@@ -100,6 +100,7 @@ class FinancialOverviewHelper
         if ($preview) {
             $pdf = PDF::loadView('financial.overview.generic', [
                 'financialOverview' => $financialOverview,
+                'financialOverviewContact' => $financialOverviewContact,
                 'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
                 'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
                 'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
@@ -116,6 +117,7 @@ class FinancialOverviewHelper
         // PDF maken
         $pdf = PDF::loadView('financial.overview.generic', [
             'financialOverview' => $financialOverview,
+            'financialOverviewContact' => $financialOverviewContact,
             'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
             'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
             'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],

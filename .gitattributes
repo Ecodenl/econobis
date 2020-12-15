@@ -1,5 +1,7 @@
 * text=auto
 *.css linguist-vendored
 *.scss linguist-vendored
-*.js linguist-vendored
+client-app/dist/* linguist-vendored
+public/js/* linguist-vendored
+customer-portal-app/build/* linguist-vendored
 CHANGELOG.md export-ignore

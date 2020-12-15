@@ -18,5 +18,8 @@ class AdministrationJoryResource extends JoryResource
 
     protected function configureForPortal(): void
     {
+        // Fields
+        $this->field('id')->filterable()->sortable();
+        $this->field('name')->filterable()->sortable();
     }
 }

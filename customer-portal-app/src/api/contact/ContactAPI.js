@@ -129,7 +129,10 @@ export default {
                             rlt: {
                                 project: {
                                     fld: ['id', 'name', 'dateEnd', 'linkUnderstandInfo', 'showQuestionAboutMembership'],
-                                    rlt: { projectType: { fld: ['id', 'codeRef'] } },
+                                    rlt: {
+                                        projectType: { fld: ['id', 'codeRef'] },
+                                        administration: { fld: ['id', 'name'] },
+                                    },
                                 },
                             },
                         },

@@ -43,7 +43,7 @@ class ParticipantProjectResource extends Resource
                             ['string', 'Uitgevende instelling', ($this->project && $this->project->administration) ? $this->project->administration->name : ''],
                             ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
                     ];
             case 'capital':
                 return
@@ -55,7 +55,7 @@ class ParticipantProjectResource extends Resource
                             ['decimal', 'Huidig saldo kapitaal rekening', $this->participations_capital_worth],
                             ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
                     ];
             case 'postalcode_link_capital':
                 return
@@ -67,7 +67,7 @@ class ParticipantProjectResource extends Resource
                             ['decimal', 'Huidig saldo kapitaal rekening', $this->participations_capital_worth],
                             ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
                     ];
 
         }

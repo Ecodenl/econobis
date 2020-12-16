@@ -24,6 +24,7 @@ use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
 use App\Rules\EnumExists;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -557,6 +558,16 @@ class ContactController extends ApiController
         $newTask->date_planned_start = Carbon::today();
 
         $newTask->save();
+    }
+
+    public function financialOverviewDocuments(Contact $contact)
+    {
+        $contact->load([
+            'financialOverviewContactsSend' => function($query){
+                $query->orderBy('date_sent');
+            },
+        ]);
+        return FinancialOverviewDocumentResource::collection($contact->financialOverviewContactsSend)->sortBy('date_sent');
     }
 
 }

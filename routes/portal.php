@@ -22,6 +22,7 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::post('/portal-user/change-password', 'PortalUser\PortalUserController@changePassword');
 
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
+        Route::get('/contact/{contact}/financial-overview-documents', 'Contact\ContactController@financialOverviewDocuments');
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
 

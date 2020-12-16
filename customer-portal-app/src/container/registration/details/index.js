@@ -2,10 +2,6 @@ import React, { useEffect, useReducer } from 'react';
 import Container from 'react-bootstrap/Container';
 import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
-import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import MutationTable from './mutation-table';
 import RegistrationDetailsTitle from './Title';
 import RegistrationDetailsProjectTable from './project-table';
 import RegistrationDetailsMutationTable from './mutation-table';
@@ -45,7 +41,7 @@ function RegistrationDetails({ match: { params } }) {
                     });
                     setIsLoading(false);
                 })
-                .catch(error => {
+                .catch(() => {
                     alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                     setIsLoading(false);
                 });

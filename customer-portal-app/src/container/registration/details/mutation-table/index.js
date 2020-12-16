@@ -2,7 +2,7 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import valueBasedOnTypePresenter from '../../../../helpers/ValueBasedOnTypePresenter';
 
-function MutationTable({ participantMutations }) {
+function RegistrationDetailsMutationTable({ participantMutations }) {
     if (participantMutations.length === 0) return 'Geen mutaties bekend';
 
     return (
@@ -27,4 +27,4 @@ function MutationTable({ participantMutations }) {
     );
 }
 
-export default MutationTable;
+export default RegistrationDetailsMutationTable;

@@ -6,6 +6,9 @@ import Table from 'react-bootstrap/Table';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import MutationTable from './mutation-table';
+import RegistrationDetailsTitle from './Title';
+import RegistrationDetailsProjectTable from './project-table';
+import RegistrationDetailsMutationTable from './mutation-table';
 
 const INITIAL_STATE = {
     result: [],
@@ -63,31 +66,9 @@ function RegistrationDetails({ match: { params } }) {
                 <LoadingView />
             ) : (
                 <>
-                    <Row>
-                        <Col>
-                            <h1 className="content-heading">
-                                Deelname van {state.result.basicInformation.contactName} in de{' '}
-                                {state.result.basicInformation.projectName}
-                            </h1>
-                            <span className="content-subheading">
-                                Uitgevende instantie {state.result.basicInformation.administrationName}
-                            </span>
-                        </Col>
-                    </Row>
-
-                    <Table className={'my-4'}>
-                        <tbody>
-                            {state.result.fields.map(field => (
-                                <tr>
-                                    <td>
-                                        <strong>{field.label}</strong>
-                                    </td>
-                                    <td>{field.value}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                    <MutationTable participantMutations={state.result.participantMutations} />
+                    <RegistrationDetailsTitle {...state.result.basicInformation} />
+                    <RegistrationDetailsProjectTable fields={state.result.fields} />
+                    <RegistrationDetailsMutationTable participantMutations={state.result.participantMutations} />
                 </>
             )}
         </Container>

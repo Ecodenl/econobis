@@ -26,7 +26,7 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Portal\ParticipantProject\CollectionParticipantProject;
+use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
@@ -62,7 +62,7 @@ class ParticipationProjectController extends Controller
             'createdBy',
             'updatedBy',
         ]);
-        return CollectionParticipantProject::make($participantProject);
+        return ParticipantProjectResource::make($participantProject);
     }
 
     public function create(Request $request)

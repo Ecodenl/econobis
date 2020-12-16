@@ -5,7 +5,7 @@ namespace App\Http\Resources\Portal\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use Illuminate\Http\Resources\Json\Resource;
 
-class CollectionParticipantMutation extends Resource
+class ParticipantMutationCollection extends Resource
 {
     /**
      * Transform the resource into an array.

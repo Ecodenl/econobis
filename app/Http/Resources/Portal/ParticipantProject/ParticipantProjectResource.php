@@ -5,10 +5,10 @@ namespace App\Http\Resources\Portal\ParticipantProject;
 use App\Http\Resources\Portal\Administration\CollectionAdministration;
 use App\Http\Resources\Portal\Contact\CollectionContact;
 use App\Http\Resources\Portal\Project\CollectionProject;
-use App\Http\Resources\Portal\ParticipantMutation\CollectionParticipantMutation;
+use App\Http\Resources\Portal\ParticipantMutation\ParticipantMutationCollection;
 use Illuminate\Http\Resources\Json\Resource;
 
-class CollectionParticipantProject extends Resource
+class ParticipantProjectResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -32,7 +32,7 @@ class CollectionParticipantProject extends Resource
                             ['decimal', 'Huidig saldo lening rekening', $this->amount_definitive],
                             ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
                         ],
-                        'participantMutations' => CollectionParticipantMutation::collection($this->whenLoaded('mutations'))->sort(),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
                     ];
             case 'obligation':
                 return
@@ -43,7 +43,7 @@ class CollectionParticipantProject extends Resource
                             ['string', 'Uitgevende instelling', ($this->project && $this->project->administration) ? $this->project->administration->name : ''],
                             ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
                         ],
-                        'participantMutations' => CollectionParticipantMutation::collection($this->whenLoaded('mutations')),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
                     ];
             case 'capital':
                 return
@@ -55,7 +55,7 @@ class CollectionParticipantProject extends Resource
                             ['decimal', 'Huidig saldo kapitaal rekening', $this->participations_capital_worth],
                             ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
                         ],
-                        'participantMutations' => CollectionParticipantMutation::collection($this->whenLoaded('mutations')),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
                     ];
             case 'postalcode_link_capital':
                 return
@@ -67,7 +67,7 @@ class CollectionParticipantProject extends Resource
                             ['decimal', 'Huidig saldo kapitaal rekening', $this->participations_capital_worth],
                             ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
                         ],
-                        'participantMutations' => CollectionParticipantMutation::collection($this->whenLoaded('mutations')),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
                     ];
 
         }

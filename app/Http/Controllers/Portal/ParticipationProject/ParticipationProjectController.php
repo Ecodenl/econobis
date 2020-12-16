@@ -26,6 +26,7 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
@@ -38,6 +39,32 @@ use Illuminate\Support\Facades\Storage;
 
 class ParticipationProjectController extends Controller
 {
+    public function show(ParticipantProject $participantProject)
+    {
+        $participantProject->load([
+            'mutations' => function($query){
+                $query->orderBy('id', 'desc');
+            },
+        ]);
+        $participantProject->load([
+            'contact',
+            'project.projectType',
+            'project.administration',
+            'project.projectValueCourses',
+            'participantProjectPayoutType',
+            'mutations.type',
+            'mutations.status',
+            'mutations.statusLog',
+            'mutations.createdBy',
+            'mutations.updatedBy',
+            'obligationNumbers',
+            'documents',
+            'createdBy',
+            'updatedBy',
+        ]);
+        return ParticipantProjectResource::make($participantProject);
+    }
+
     public function create(Request $request)
     {
         if (!isset($request) || !isset($request->contactId)) {

@@ -78,6 +78,7 @@ function RegistrationList(props) {
                         <Table responsive>
                             <thead>
                                 <tr>
+                                    <th>Uitgevende instantie</th>
                                     <th>Project</th>
                                     <th>Deelname</th>
                                 </tr>
@@ -91,6 +92,7 @@ function RegistrationList(props) {
                                     ) {
                                         return (
                                             <tr key={participation.id}>
+                                                <td>{participation.project.administration.name}</td>
                                                 <td>{participation.project.name}</td>
                                                 <td>
                                                     {participation.project.projectType.codeRef == 'loan' ? (

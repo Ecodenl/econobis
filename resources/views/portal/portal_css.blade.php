@@ -112,6 +112,14 @@ font-weight: 400;
 text-shadow: none;
 }
 
+.content-subheading {
+color: var(--main-primary-color);
+font-size: 20px;
+font-weight: 200;
+text-shadow: none;
+margin-bottom: 32px;
+}
+
 .text-block {
 padding-top: .375rem;
 padding-bottom: .375rem;

@@ -52,7 +52,7 @@ class FinancialOverviewContactViewApp extends Component {
     };
 
     download() {
-        FinancialOverviewContactDetailsAPI.download(this.props.financialOverviewContactDetails.id).then(payload => {
+        FinancialOverviewContactAPI.download(this.props.financialOverviewContactDetails.id).then(payload => {
             fileDownload(payload.data, payload.headers['x-filename']);
         });
     }

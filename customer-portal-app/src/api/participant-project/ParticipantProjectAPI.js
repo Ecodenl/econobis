@@ -6,4 +6,10 @@ export default {
 
         return axiosInstance.post(requestUrl, registerValues);
     },
+
+    show: id => {
+        const requestUrl = `/project/participant/${id}`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

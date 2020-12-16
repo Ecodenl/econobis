@@ -16,6 +16,7 @@ class FinancialOverviewDocumentResource extends Resource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'description' => $this->financialOverview->description,
             'name' => $this->name,
             'filename' => $this->filename,

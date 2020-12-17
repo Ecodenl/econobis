@@ -42,26 +42,22 @@ class ParticipationProjectController extends Controller
     public function show(ParticipantProject $participantProject)
     {
         $participantProject->load([
-            'mutations' => function($query){
-                $query->orderBy('id', 'desc');
-            },
-        ]);
-        $participantProject->load([
             'contact',
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',
             'participantProjectPayoutType',
-            'mutations.type',
-            'mutations.status',
-            'mutations.statusLog',
-            'mutations.createdBy',
-            'mutations.updatedBy',
+            'mutationsForPortal.type',
+            'mutationsForPortal.status',
+            'mutationsForPortal.statusLog',
+            'mutationsForPortal.createdBy',
+            'mutationsForPortal.updatedBy',
             'obligationNumbers',
             'documents',
             'createdBy',
             'updatedBy',
         ]);
+
         return ParticipantProjectResource::make($participantProject);
     }
 

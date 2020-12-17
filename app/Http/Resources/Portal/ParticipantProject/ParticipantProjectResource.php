@@ -58,7 +58,7 @@ class ParticipantProjectResource extends Resource
                                 'value' => $this->participations_returns_total,
                             ],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'obligation':
                 return
@@ -86,7 +86,7 @@ class ParticipantProjectResource extends Resource
                                 'value' => $this->participations_returns_total,
                             ],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'capital':
                 return
@@ -119,7 +119,7 @@ class ParticipantProjectResource extends Resource
                                 'value' => $this->participations_returns_total,
                             ],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'postalcode_link_capital':
                 return
@@ -151,7 +151,7 @@ class ParticipantProjectResource extends Resource
                                 'value' => $this->participations_returns_total,
                             ],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
 
         }

@@ -80,6 +80,11 @@ class ParticipantProject extends Model
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->orderBy('id', 'desc');
     }
 
+    public function mutationsForPortal()
+    {
+        return $this->hasMany(ParticipantMutation::class, 'participation_id');
+    }
+
     public function mutationsDefinitive()
     {
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;

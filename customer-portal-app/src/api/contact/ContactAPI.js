@@ -168,6 +168,10 @@ export default {
 
     financialOverviewContactDownload: function(id) {
         const requestUrl = `/financial-overview-contact/${id}/download`;
+    },
+
+    fetchContactRelatedAdministrations: function(contactId) {
+        const requestUrl = `/contact/${contactId}/related-administrations`;
 
         return axiosInstance.get(requestUrl);
     },

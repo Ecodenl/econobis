@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import { FaFileDownload } from 'react-icons/all';
+import fileDownload from 'js-file-download';
 
 const INITIAL_STATE = {
     result: [],
@@ -61,6 +62,19 @@ function FinancialOverviewDocuments() {
         });
     }
 
+    function downloadFile(e, id) {
+        e.preventDefault();
+
+        ContactAPI.financialOverviewContactDownload(id)
+            .then(payload => {
+                fileDownload(payload.data, payload.headers['x-filename']);
+            })
+            .catch(() => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setIsLoading(false);
+            });
+    }
+
     return (
         <Container className={'content-section'}>
             {state.isLoading ? (
@@ -86,7 +100,7 @@ function FinancialOverviewDocuments() {
                                     <td>{item.name}</td>
                                     <td>{item.description}</td>
                                     <td>
-                                        <a href={'/#/waardestaat-documenten'}>
+                                        <a href="#" onClick={e => downloadFile(e, item.id)}>
                                             <FaFileDownload /> downloaden
                                         </a>
                                     </td>

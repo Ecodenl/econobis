@@ -168,6 +168,8 @@ export default {
 
     financialOverviewContactDownload: function(id) {
         const requestUrl = `/financial-overview-contact/${id}/download`;
+
+        return axiosInstance(requestUrl, { responseType: 'blob' });
     },
 
     fetchContactRelatedAdministrations: function(contactId) {

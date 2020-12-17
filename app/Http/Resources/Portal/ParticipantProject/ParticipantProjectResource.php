@@ -13,59 +13,143 @@ class ParticipantProjectResource extends Resource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request
+     * @param \Illuminate\Http\Request
      *
      * @return array
      */
     public function toArray($request)
     {
         $projectTypeCodeRef = $this->project->projectType->code_ref;
+        $basicInformation = [
+            'contactName' => $this->contact ? $this->contact->full_name : '',
+            'projectName' => $this->project ? $this->project->name : '',
+            'administrationName' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
+        ];
 
-        switch ($projectTypeCodeRef){
+        switch ($projectTypeCodeRef) {
             case 'loan':
                 return
                     [
+                        'basicInformation' => $basicInformation,
                         'fields' => [
-                            ['string', 'Contact naam', $this->contact ? $this->contact->full_name : ''],
-                            ['string', 'Project', $this->project ? $this->project->name : ''],
-                            ['string', 'Uitgevende instelling', ($this->project && $this->project->administration) ? $this->project->administration->name : ''],
-                            ['decimal', 'Huidig saldo lening rekening', $this->amount_definitive],
-                            ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
+                            [
+                                'type' => 'string',
+                                'label' => 'Contact naam',
+                                'value' => $this->contact ? $this->contact->full_name : ''
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Project',
+                                'value' => $this->project ? $this->project->name : ''
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Uitgevende instelling',
+                                'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : ''
+                            ],
+                            [
+                                'type' => 'decimal',
+                                'label' => 'Huidig saldo lening rekening',
+                                'value' => $this->amount_definitive,
+                            ],
+                            [
+                                'type' => 'decimal',
+                                'label' => 'Totale opbrengsten',
+                                'value' => $this->participations_returns_total,
+                            ],
                         ],
-                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
+                        'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations')),
                     ];
             case 'obligation':
                 return
                     [
+                        'basicInformation' => $basicInformation,
                         'fields' => [
-                            ['string', 'Contact naam', $this->contact ? $this->contact->full_name : ''],
-                            ['string', 'Project', $this->project ? $this->project->name : ''],
-                            ['string', 'Uitgevende instelling', ($this->project && $this->project->administration) ? $this->project->administration->name : ''],
-                            ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
+                            [
+                                'type' => 'string',
+                                'label' => 'Contact naam',
+                                'value' => $this->contact ? $this->contact->full_name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Project',
+                                'value' => $this->project ? $this->project->name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Uitgevende instelling',
+                                'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
+                            ],
+                            [
+                                'type' => 'decimal',
+                                'label' => 'Totale opbrengsten',
+                                'value' => $this->participations_returns_total,
+                            ],
                         ],
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
                     ];
             case 'capital':
                 return
                     [
+                        'basicInformation' => $basicInformation,
                         'fields' => [
-                            ['string', 'Contact naam', $this->contact ? $this->contact->full_name : ''],
-                            ['string', 'Project', $this->project ? $this->project->name : ''],
-                            ['string', 'Uitgevende instelling', ($this->project && $this->project->administration) ? $this->project->administration->name : ''],
-                            ['decimal', 'Huidig saldo kapitaal rekening', $this->participations_capital_worth],
-                            ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
+                            [
+                                'type' => 'string',
+                                'label' => 'Contact naam',
+                                'value' => $this->contact ? $this->contact->full_name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Project',
+                                'value' => $this->project ? $this->project->name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Uitgevende instelling',
+                                'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
+                            ],
+                            [
+                                'type' => 'decimal',
+                                'label' => 'Huidig saldo kapitaal rekening',
+                                'value' => $this->participations_capital_worth,
+                            ],
+                            [
+                                'type' => 'decimal',
+                                'label' => 'Totale opbrengsten',
+                                'value' => $this->participations_returns_total,
+                            ],
                         ],
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
                     ];
             case 'postalcode_link_capital':
                 return
                     [
+                        'basicInformation' => $basicInformation,
                         'fields' => [
-                            ['string', 'Contact naam', $this->contact ? $this->contact->full_name : ''],
-                            ['string', 'Project', $this->project ? $this->project->name : ''],
-                            ['string', 'Uitgevende instelling', ($this->project && $this->project->administration) ? $this->project->administration->name : ''],
-                            ['decimal', 'Huidig saldo kapitaal rekening', $this->participations_capital_worth],
-                            ['decimal', 'Totale opbrengsten', $this->participations_returns_total],
+                            [
+                                'type' => 'string',
+                                'label' => 'Contact naam',
+                                'value' => $this->contact ? $this->contact->full_name : '',
+                            ],
+                            [
+                                'type' => 'string',
+                                'label' => 'Project',
+                                'value' => $this->project ? $this->project->name : '',
+                            ],
+                            ['type' => 'string',
+                                'label' => 'Uitgevende instelling',
+                                'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
+                            ],
+                            [
+                                'type' => 'decimal',
+                                'label' => 'Huidig saldo kapitaal rekening',
+                                'value' => $this->participations_capital_worth,
+                            ],
+                            [
+                                'type' => 'decimal',
+                                'label' => 'Totale opbrengsten',
+                                'value' => $this->participations_returns_total,
+                            ],
                         ],
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutations'))->sort(),
                     ];

@@ -120,6 +120,12 @@ text-shadow: none;
 margin-bottom: 32px;
 }
 
+.card-header_title {
+color: var(--main-primary-color);
+font-size: 18px;
+font-weight: 400;
+}
+
 .text-block {
 padding-top: .375rem;
 padding-bottom: .375rem;

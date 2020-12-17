@@ -7,9 +7,6 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import { FaFileDownload } from 'react-icons/all';
-// import FinancialOverviewDocumentsTitle from './Title';
-// import FinancialOverviewDocumentsProjectTable from './project-table';
-// import FinancialOverviewDocumentsMutationTable from './mutation-table';
 
 const INITIAL_STATE = {
     result: [],
@@ -33,7 +30,7 @@ const reducer = (state, action) => {
     }
 };
 
-function FinancialOverviewDocuments({ match: { params } }) {
+function FinancialOverviewDocuments() {
     const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
     const { currentSelectedContact } = useContext(PortalUserContext);
 

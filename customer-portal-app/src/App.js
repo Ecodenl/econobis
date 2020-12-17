@@ -17,6 +17,7 @@ import RegistrationList from './container/registration/list';
 import NewAccount from './container/authorization/new-account';
 import NewAccountSuccess from './container/authorization/new-account/NewAccountSuccess';
 import ChangeAccount from './container/authorization/change-account';
+import AboutUs from './container/about-us';
 import RegistrationDetails from './container/registration/details';
 import FinancialOverviewDocuments from './container/financial-overview-documents/list';
 
@@ -36,6 +37,7 @@ function App() {
                         <ProtectedRoute path="/project/:id" component={ProjectDetails} />
                         <ProtectedRoute path="/waardestaat-documenten" component={FinancialOverviewDocuments} />
                         <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />
+                        <ProtectedRoute path="/over-ons" component={AboutUs} />
                         <PublicRoute path="/login" component={Login} />
                         <PublicRoute path="/activeer-registratie/:registrationCode/:email" component={Register} />
                         <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />

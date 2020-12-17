@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Portal\Contact;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
+use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 use App\Eco\DocumentTemplate\DocumentTemplate;
@@ -24,6 +25,7 @@ use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
 use App\Rules\EnumExists;
 use Carbon\Carbon;
@@ -567,7 +569,19 @@ class ContactController extends ApiController
                 $query->orderBy('date_sent');
             },
         ]);
-        return FinancialOverviewDocumentResource::collection($contact->financialOverviewContactsSend)->sortBy('date_sent');
+        return FinancialOverviewDocumentResource::collection($contact->financialOverviewContactsSend);
+    }
+
+    public function relatedAdministrations(Contact $contact)
+    {
+        $contactId = $contact->id;
+        $administrations = Administration::whereHas('projects', function($query) use($contactId){
+            $query->WhereHas('participantsProject', function($query2) use($contactId){
+                $query2->where('contact_id', $contactId);
+            });
+        })->orderBy('name')->get();
+
+        return AdministrationResource::collection($administrations);
     }
 
 }

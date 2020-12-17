@@ -48,12 +48,12 @@ class ParticipantProjectResource extends Resource
                                 'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : ''
                             ],
                             [
-                                'type' => 'decimal',
+                                'type' => 'money',
                                 'label' => 'Huidig saldo lening rekening',
                                 'value' => $this->amount_definitive,
                             ],
                             [
-                                'type' => 'decimal',
+                                'type' => 'money',
                                 'label' => 'Totale opbrengsten',
                                 'value' => $this->participations_returns_total,
                             ],
@@ -81,7 +81,7 @@ class ParticipantProjectResource extends Resource
                                 'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
                             ],
                             [
-                                'type' => 'decimal',
+                                'type' => 'money',
                                 'label' => 'Totale opbrengsten',
                                 'value' => $this->participations_returns_total,
                             ],
@@ -109,12 +109,12 @@ class ParticipantProjectResource extends Resource
                                 'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
                             ],
                             [
-                                'type' => 'decimal',
+                                'type' => 'money',
                                 'label' => 'Huidig saldo kapitaal rekening',
                                 'value' => $this->participations_capital_worth,
                             ],
                             [
-                                'type' => 'decimal',
+                                'type' => 'money',
                                 'label' => 'Totale opbrengsten',
                                 'value' => $this->participations_returns_total,
                             ],
@@ -141,12 +141,12 @@ class ParticipantProjectResource extends Resource
                                 'value' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
                             ],
                             [
-                                'type' => 'decimal',
+                                'type' => 'money',
                                 'label' => 'Huidig saldo kapitaal rekening',
                                 'value' => $this->participations_capital_worth,
                             ],
                             [
-                                'type' => 'decimal',
+                                'type' => 'money',
                                 'label' => 'Totale opbrengsten',
                                 'value' => $this->participations_returns_total,
                             ],

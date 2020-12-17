@@ -264,6 +264,15 @@ function Header({ location, history }) {
                         >
                             Inschrijven projecten
                         </Link>
+                        <Link
+                            to={'/waardestaat-documenten'}
+                            className={`nav-link w-nav-link w--nav-link-open ${
+                                location.pathname === '/waardestaat-documenten' ? 'w--current' : ''
+                            }`}
+                            onClick={closeMenu}
+                        >
+                            Waardestaat documenten
+                        </Link>
                     </React.Fragment>
                 </div>
             </Menu>

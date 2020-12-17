@@ -158,4 +158,10 @@ export default {
         const requestUrl = `/contact/${contactId}/${projectId}/contact-project-data`;
         return axiosInstance.get(requestUrl);
     },
+
+    fetchContactFinancialOverviewDocuments: function(contactId) {
+        const requestUrl = `/contact/${contactId}/financial-overview-documents`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

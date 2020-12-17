@@ -567,7 +567,7 @@ class ContactController extends ApiController
                 $query->orderBy('date_sent');
             },
         ]);
-        return FinancialOverviewDocumentResource::collection($contact->financialOverviewContactsSend)->sortBy('date_sent');
+        return FinancialOverviewDocumentResource::collection($contact->financialOverviewContactsSend);
     }
 
 }

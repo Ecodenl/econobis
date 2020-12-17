@@ -30,7 +30,7 @@ const reducer = (state, action) => {
     }
 };
 
-function FinancialOverviewDocuments({ match: { params } }) {
+function FinancialOverviewDocuments() {
     const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
     const { currentSelectedContact } = useContext(PortalUserContext);
 

@@ -32,8 +32,7 @@ const PortalUserProvider = function(props) {
             // If there is no selected contact then set default the login user as selected contact.
             // Except if the user has an organisation as occupation that is primary
             const organisationUser = user.occupations.find(
-                occupation => occupation.primaryContact.typeId === 'organisation' &&
-                    occupation.primary
+                occupation => occupation.primaryContact.typeId === 'organisation' && occupation.primary
             );
 
             if (organisationUser) {
@@ -91,4 +90,4 @@ const PortalUserProvider = function(props) {
 
 const PortalUserConsumer = PortalUserContext.Consumer;
 
-export { PortalUserProvider, PortalUserConsumer };
+export { PortalUserProvider, PortalUserConsumer, PortalUserContext };

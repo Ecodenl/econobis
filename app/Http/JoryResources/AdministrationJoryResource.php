@@ -21,5 +21,16 @@ class AdministrationJoryResource extends JoryResource
         // Fields
         $this->field('id')->filterable()->sortable();
         $this->field('name')->filterable()->sortable();
+        $this->field('address')->filterable()->sortable();
+        $this->field('postal_code')->filterable()->sortable();
+        $this->field('city')->filterable()->sortable();
+        $this->field('kvk_number')->filterable()->sortable();
+        $this->field('IBAN')->filterable()->sortable();
+        $this->field('iban_attn')->filterable()->sortable();
+        $this->field('btw_number')->filterable()->sortable();
+
+        // Relations
+        $this->relation('country');
+
     }
 }

@@ -23,6 +23,7 @@ class AdministrationResource extends Resource
             'city' => $this->city,
             'country' => $this->country ? $this->country->name : '',
             'kvkNumber' => $this->kvk_number,
+            'website' => $this->website,
             'iban' => $this->IBAN,
             'ibanAttn' => $this->iban_attn,
             'btwNumber' => $this->btw_number,

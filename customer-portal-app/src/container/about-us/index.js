@@ -100,7 +100,7 @@ function AboutUs() {
                                                 <td>
                                                     <strong>Website</strong>
                                                 </td>
-                                                <td>http://energiedongen.nl</td>
+                                                <td>{item.website}</td>
                                             </tr>
                                             <tr>
                                                 <td>

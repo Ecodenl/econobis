@@ -51,10 +51,12 @@ class FinancialOverviewDetailsToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                        <ButtonIcon
-                            iconName={'glyphicon-trash'}
-                            onClickAction={this.showDeleteItemModal.bind(this, id, description)}
-                        />
+                        {!this.props.financialOverview.definitive ? (
+                            <ButtonIcon
+                                iconName={'glyphicon-trash'}
+                                onClickAction={this.showDeleteItemModal.bind(this, id, description)}
+                            />
+                        ) : null}
                         {this.props.financialOverview.definitive && !this.props.financialOverview.dateProcessed ? (
                             <>
                                 <ButtonText

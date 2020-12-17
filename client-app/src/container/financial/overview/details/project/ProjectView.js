@@ -30,17 +30,15 @@ const ProjectView = props => {
                             <span className="glyphicon glyphicon-remove mybtn-danger" />
                         </a>
                     ) : (
-                        <a role="button" onClick={props.makeDefinitive}>
-                            <span className="glyphicon glyphicon-ok mybtn-success" />
-                        </a>
+                        <>
+                            <a role="button" onClick={props.makeDefinitive}>
+                                <span className="glyphicon glyphicon-ok mybtn-success" />
+                            </a>
+                            <a role="button" onClick={props.toggleDelete}>
+                                <span className="glyphicon glyphicon-trash mybtn-danger" />
+                            </a>
+                        </>
                     )
-                ) : (
-                    ''
-                )}
-                {props.showActionButtons ? (
-                    <a role="button" onClick={props.toggleDelete}>
-                        <span className="glyphicon glyphicon-trash mybtn-danger" />
-                    </a>
                 ) : (
                     ''
                 )}

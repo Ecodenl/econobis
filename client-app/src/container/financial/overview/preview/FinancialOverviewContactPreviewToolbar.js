@@ -26,11 +26,12 @@ class FinancialOverviewContactPreviewToolbar extends Component {
                                 ? this.props.financialOverviewContactDetails.contact.full_name
                                 : '')}
                         <br />
-                        {' Waardestaat: ' +
+                        {'Waardestaat: ' +
                             (this.props.financialOverviewContactDetails &&
                             this.props.financialOverviewContactDetails.financialOverview
                                 ? this.props.financialOverviewContactDetails.financialOverview.description
                                 : '')}
+                        <br />
                     </h4>
                 </div>
                 <div className="col-md-3" />

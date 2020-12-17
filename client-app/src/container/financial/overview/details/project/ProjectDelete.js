@@ -36,11 +36,4 @@ const ProjectDelete = props => {
     );
 };
 
-// const mapDispatchToProps = dispatch => ({
-//     deleteProject: id => {
-//         dispatch(deleteProject(id));
-//     },
-// });
-
-// export default connect(null, mapDispatchToProps)(ProjectDelete);
 export default ProjectDelete;

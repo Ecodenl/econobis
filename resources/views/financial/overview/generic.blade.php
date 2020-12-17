@@ -145,7 +145,7 @@
                     @if($contactPerson)
                         t.a.v. {{ $contactPerson }}
                     @else
-                        {{ $contact->addressLines['street'] }}
+                        {{ $financialOverviewContact->contact->addressLines['street'] }}
                     @endif
                 </td>
             </tr>
@@ -153,25 +153,25 @@
                 <td>
                     {{--Eerst nota adres, anders primair--}}
                     @if($contactPerson)
-                        {{ $contact->addressLines['street'] }}
+                        {{ $financialOverviewContact->contact->addressLines['street'] }}
                     @else
-                        {{ $contact->addressLines['city']}}
+                        {{ $financialOverviewContact->contact->addressLines['city']}}
                     @endif
                 </td>
             </tr>
             <tr>
                 <td>
                     @if($contactPerson)
-                        {{ $contact->addressLines['city']}}
+                        {{ $financialOverviewContact->contact->addressLines['city']}}
                     @else
-                        {{ $contact->addressLines['country']}}
+                        {{ $financialOverviewContact->contact->addressLines['country']}}
                     @endif
                 </td>
             </tr>
             <tr>
                 <td>
                     @if($contactPerson)
-                        {{ $contact->addressLines['country']}}
+                        {{ $financialOverviewContact->contact->addressLines['country']}}
                     @endif
                 </td>
             </tr>
@@ -185,32 +185,32 @@
         <table cellpadding=0 cellspacing=2>
             <tr>
                 <td>
-                    {{ $financialOverview->administration->name }}
+                    {{ $financialOverviewContact->financialOverview->administration->name }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ $financialOverview->administration->address }}
+                    {{ $financialOverviewContact->financialOverview->administration->address }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ $financialOverview->administration->postal_code . ' ' . $financialOverview->administration->city }}
+                    {{ $financialOverviewContact->financialOverview->administration->postal_code . ' ' . $financialOverviewContact->financialOverview->administration->city }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{ $financialOverview->administration->country ? $financialOverview->administration->country->name : '' }}
+                    {{ $financialOverviewContact->financialOverview->administration->country ? $financialOverviewContact->financialOverview->administration->country->name : '' }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href="{{ 'mailto: ' . $financialOverview->administration->email }}">{{ $financialOverview->administration->email }}</a>
+                    <a href="{{ 'mailto: ' . $financialOverviewContact->financialOverview->administration->email }}">{{ $financialOverviewContact->financialOverview->administration->email }}</a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a href>{{ $financialOverview->administration->website }}</a>
+                    <a href>{{ $financialOverviewContact->financialOverview->administration->website }}</a>
                 </td>
             </tr>
         </table>
@@ -227,12 +227,12 @@
             </tr>
 {{--            <tr>--}}
 {{--                <td>--}}
-{{--                    Kenmerk: {{ $financialOverview->reference ? $financialOverview->reference : 'Nog niet bekend' }}--}}
+{{--                    Kenmerk: {{ $financialOverviewContact->financialOverview->reference ? $financialOverviewContact->financialOverview->reference : 'Nog niet bekend' }}--}}
 {{--                </td>--}}
 {{--            </tr>--}}
             <tr>
                 <td>
-                    Contactnummer: {{ $contact->number }}
+                    Contactnummer: {{ $financialOverviewContact->contact->number }}
                 </td>
             </tr>
             <tr>
@@ -249,40 +249,40 @@
         <table cellpadding=0 cellspacing=2>
             <tr>
                 <td>
-                    KvK {{ $financialOverview->administration->kvk_number }}
+                    KvK {{ $financialOverviewContact->financialOverview->administration->kvk_number }}
                 </td>
             </tr>
             <tr>
                 <td>
-                    @if($financialOverview->administration->btw_number)
-                        BTW-nummer {{ $financialOverview->administration->btw_number }}
+                    @if($financialOverviewContact->financialOverview->administration->btw_number)
+                        BTW-nummer {{ $financialOverviewContact->financialOverview->administration->btw_number }}
                     @else
-                        IBAN {{ $financialOverview->administration->IBAN }}
+                        IBAN {{ $financialOverviewContact->financialOverview->administration->IBAN }}
                     @endif
                 </td>
             </tr>
             <tr>
                 <td>
-                    @if($financialOverview->administration->btw_number)
-                        IBAN {{ $financialOverview->administration->IBAN }}
+                    @if($financialOverviewContact->financialOverview->administration->btw_number)
+                        IBAN {{ $financialOverviewContact->financialOverview->administration->IBAN }}
                     @else
-                        BIC {{ $financialOverview->administration->bic }}
+                        BIC {{ $financialOverviewContact->financialOverview->administration->bic }}
                     @endif
                 </td>
             </tr>
             <tr>
                 <td>
-                    @if($financialOverview->administration->btw_number)
-                        BIC {{ $financialOverview->administration->bic }}
-                    @elseif($financialOverview->administration->rsin_number)
-                        RSIN {{ $financialOverview->administration->rsin_number }}
+                    @if($financialOverviewContact->financialOverview->administration->btw_number)
+                        BIC {{ $financialOverviewContact->financialOverview->administration->bic }}
+                    @elseif($financialOverviewContact->financialOverview->administration->rsin_number)
+                        RSIN {{ $financialOverviewContact->financialOverview->administration->rsin_number }}
                     @endif
                 </td>
             </tr>
             <tr>
                 <td>
-                    @if($financialOverview->administration->btw_number && $financialOverview->administration->rsin_number)
-                        RSIN {{ $financialOverview->administration->rsin_number }}
+                    @if($financialOverviewContact->financialOverview->administration->btw_number && $financialOverviewContact->financialOverview->administration->rsin_number)
+                        RSIN {{ $financialOverviewContact->financialOverview->administration->rsin_number }}
                     @endif
                 </td>
             </tr>
@@ -291,14 +291,14 @@
 
     <div style="clear: both !important;">&nbsp;</div>
 
-    <h4 class="subject-text">Betreft: waardestaat {{ $financialOverview->description }}</h4>
+    <h4 class="subject-text">Betreft: waardestaat {{ $financialOverviewContact->financialOverview->description }}</h4>
 
     <h3 class="subject-text">Bezittingen</h3>
     <table cellpadding=0 cellspacing=0>
         <tr>
             <th class="align-left" width="45%">&nbsp;</th>
-            <th class="align-right" width="15%">01-01-{{ $financialOverview->year }}</th>
-            <th class="align-right" width="15%">31-12-{{ $financialOverview->year }}</th>
+            <th class="align-right" width="15%">01-01-{{ $financialOverviewContact->financialOverview->year }}</th>
+            <th class="align-right" width="15%">31-12-{{ $financialOverviewContact->financialOverview->year }}</th>
         </tr>
 
         @foreach($financialOverviewContactTotalProjects as $financialOverviewContactTotalProject)
@@ -331,7 +331,7 @@
 
     @if($financialOverviewContactLoanProjects && count($financialOverviewContactLoanProjects)>0)
         <br/>
-        <h3 class="subject-text">Lening per 31-12-{{ $financialOverview->year }}</h3>
+        <h3 class="subject-text">Lening per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h3>
         <table cellpadding=0 cellspacing=0>
             <tr>
                 <th class="align-left" width="45%">Project</th>
@@ -355,7 +355,7 @@
 
     @if($financialOverviewContactObligationProjects && count($financialOverviewContactObligationProjects)>0)
         <br/>
-        <h3 class="subject-text">Obligaties per 31-12-{{ $financialOverview->year }}</h3>
+        <h3 class="subject-text">Obligaties per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h3>
         <table cellpadding=0 cellspacing=0>
             <tr>
                 <th class="align-left" width="45%">Project</th>
@@ -380,7 +380,7 @@
 
     @if($financialOverviewContactCapitalProjects && count($financialOverviewContactCapitalProjects)>0)
         <br/>
-        <h3 class="subject-text">Participaties per 31-12-{{ $financialOverview->year }}</h3>
+        <h3 class="subject-text">Participaties per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h3>
         <table cellpadding=0 cellspacing=0>
             <tr>
                 <th class="align-left" width="45%">Project</th>
@@ -405,7 +405,7 @@
 
     @if($financialOverviewContactPcrProjects && count($financialOverviewContactPcrProjects)>0)
         <br/>
-        <h3 class="subject-text">Participaties (PCR) per 31-12-{{ $financialOverview->year }}</h3>
+        <h3 class="subject-text">Participaties (PCR) per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h3>
         <table cellpadding=0 cellspacing=0>
             <tr>
                 <th class="align-left" width="45%">Project</th>

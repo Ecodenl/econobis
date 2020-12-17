@@ -4,9 +4,6 @@ import Modal from '../../../../components/modal/Modal';
 import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
 import { hashHistory } from 'react-router';
 import fileDownload from 'js-file-download';
-import InputDate from '../../../../components/form/InputDate';
-import validator from 'validator';
-import moment from 'moment/moment';
 import { setError } from '../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 
@@ -70,5 +67,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-// export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewCreateConfirm);
 export default connect(null, mapDispatchToProps)(FinancialOverviewCreateConfirm);

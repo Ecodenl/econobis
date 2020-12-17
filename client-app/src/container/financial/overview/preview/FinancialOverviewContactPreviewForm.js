@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PdfViewer from '../../../../components/pdf/PdfViewer';
-import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
+import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
 
 class FinancialOverviewContactPreviewForm extends Component {
     constructor(props) {
@@ -18,7 +17,7 @@ class FinancialOverviewContactPreviewForm extends Component {
     }
 
     downloadFile(i = 0) {
-        FinancialOverviewDetailsAPI.downloadPreview(this.props.financialOverviewId, this.props.contactId)
+        FinancialOverviewContactAPI.downloadPreview(this.props.financialOverviewId, this.props.contactId)
             .then(payload => {
                 this.setState({
                     file: payload.data,
@@ -45,11 +44,4 @@ class FinancialOverviewContactPreviewForm extends Component {
     }
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         financialOverviewContactDetails: state.financialOverviewContactDetails,
-//     };
-// };
-//
-// export default connect(mapStateToProps, null)(FinancialOverviewContactPreviewForm);
 export default FinancialOverviewContactPreviewForm;

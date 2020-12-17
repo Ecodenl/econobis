@@ -162,17 +162,4 @@ class ProjectNew extends Component {
     }
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         id: state.financialOverview.id,
-//     };
-// };
-//
-// const mapDispatchToProps = dispatch => ({
-//     newProject: id => {
-//         dispatch(newProject(id));
-//     },
-// });
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(ProjectNew);
 export default ProjectNew;

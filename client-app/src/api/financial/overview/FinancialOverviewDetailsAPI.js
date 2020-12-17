@@ -24,7 +24,7 @@ export default {
                             },
                         },
                         financialOverviewContacts: {
-                            fld: ['id', 'contactId', 'definitive', 'statusId', 'dateSent', 'emailedTo'],
+                            fld: ['id', 'contactId', 'definitive', 'statusId', 'status', 'dateSent', 'emailedTo'],
                             rlt: { contact: { fld: ['id', 'fullName'] } },
                         },
                     },
@@ -100,20 +100,6 @@ export default {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
-    },
-
-    // downloadPreview: (id, contactId) => {
-    //     const requestUrl = `${URL_API}/api/${URL_FINANCIAL_OVERVIEW}/${id}/${contactId}/download-preview`;
-    //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-    //     axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-    //
-    //     return axios.get(requestUrl, { responseType: 'blob' });
-    // },
-
-    downloadPreview: (id, contactId) => {
-        const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${id}/${contactId}/download-preview`;
-
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },
 
     newFinancialOverviewProject: financialOverviewProject => {

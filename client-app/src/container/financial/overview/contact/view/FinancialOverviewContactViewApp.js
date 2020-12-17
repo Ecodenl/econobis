@@ -87,20 +87,4 @@ class FinancialOverviewContactViewApp extends Component {
     }
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         financialOverviewContactDetails: state.financialOverviewContactDetails,
-//     };
-// };
-
-// const mapDispatchToProps = dispatch => ({
-//     fetchFinancialOverviewContactDetails: id => {
-//         dispatch(fetchFinancialOverviewContactDetails(id));
-//     },
-// });
-
-// export default connect(
-//     mapStateToProps,
-//     mapDispatchToProps
-// )(FinancialOverviewContactViewApp);
 export default FinancialOverviewContactViewApp;

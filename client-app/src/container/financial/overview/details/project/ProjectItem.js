@@ -157,8 +157,6 @@ class ProjectItem extends Component {
     }
 }
 
-// export default ProjectItem;
-
 const mapDispatchToProps = dispatch => ({
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));

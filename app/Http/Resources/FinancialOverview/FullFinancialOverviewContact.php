@@ -22,6 +22,7 @@ class FullFinancialOverviewContact extends Resource
             'financialOverviewId' => $this->financial_overview_id,
             'contactId' => $this->contact_id,
             'statusId' => $this->status_id,
+            'status' => $this->status,
             'name' => $this->name,
             'filename' => $this->filename,
             'contact' => FullContact::make($this->whenLoaded('contact')),

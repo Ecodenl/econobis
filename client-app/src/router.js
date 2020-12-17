@@ -312,10 +312,7 @@ const Routes = () => {
                     <Route path="waardestaat/:id" component={FinancialOverviewDetailsApp} />
                     <Route path="waardestaat/:id/aanmaken/:type" component={FinancialOverviewCreateApp} />
                     <Route path="waardestaat-project/:id" component={FinancialOverviewProjectDetailsApp} />
-                    <Route
-                        path="waardestaat-contact/preview/:id/:contactId"
-                        component={FinancialOverviewContactPreviewApp}
-                    />
+                    <Route path="waardestaat-contact/preview/:id" component={FinancialOverviewContactPreviewApp} />
                     <Route path="waardestaat-contact/inzien/:id" component={FinancialOverviewContactViewApp} />
                     /* Costcenters */
                     <Route path="kostenplaatsen" component={CostCentersListApp} />

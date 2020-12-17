@@ -5,9 +5,6 @@ import { hashHistory } from 'react-router';
 class FinancialOverviewContactItem extends Component {
     constructor(props) {
         super(props);
-        //todo WM: opschonen log
-        // console.log('FinancialOverviewContactItem');
-        // console.log(props);
 
         this.state = {
             highlightLine: '',
@@ -26,8 +23,8 @@ class FinancialOverviewContactItem extends Component {
         });
     };
 
-    getFinancialOverviewPDF(financialOverviewId, contactId) {
-        hashHistory.push(`/waardestaat-contact/preview/${financialOverviewId}/${contactId}`);
+    getFinancialOverviewPDF(financialOverviewContactId) {
+        hashHistory.push(`/waardestaat-contact/preview/${financialOverviewContactId}`);
     }
 
     render() {

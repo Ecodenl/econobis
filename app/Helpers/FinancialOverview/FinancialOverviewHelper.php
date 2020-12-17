@@ -67,14 +67,9 @@ class FinancialOverviewHelper
 
     public static function createFinancialOverviewContactDocument(FinancialOverviewcontact $financialOverviewContact, $preview = false)
     {
-//        self::financialOverviewContactInProgress($financialOverviewContact);
-
-        $financialOverview = $financialOverviewContact->financialOverview;
-        $contact = $financialOverviewContact->contact;
-
         $img = '';
-        if ($financialOverview->administration->logo_filename) {
-            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $financialOverview->administration->logo_filename);
+        if ($financialOverviewContact->financialOverview->administration->logo_filename) {
+            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $financialOverviewContact->financialOverview->administration->logo_filename);
             $logo = file_get_contents($path);
 
             $src = 'data:' . mime_content_type($path)
@@ -83,30 +78,28 @@ class FinancialOverviewHelper
             $img = '<img src="' . $src . '" width="auto" height="156px"/>';
         }
 
-        self::checkStorageDir($financialOverview->administration->id);
+        self::checkStorageDir($financialOverviewContact->financialOverview->administration->id);
 
         $financialOverviewContactController = new FinancialOverviewContactController();
-        $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContactXXX($financialOverview, $contact);
-        $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($contact)['contactPerson'];
+        $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContact($financialOverviewContact);
+        $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['contactPerson'];
         $contactName = null;
 
-        if ($contact->type_id == 'person') {
-            $prefix = $contact->person->last_name_prefix;
-            $contactName = $prefix ? $contact->person->first_name . ' ' . $prefix . ' ' . $contact->person->last_name : $contact->person->first_name . ' ' . $contact->person->last_name;
-        } elseif ($contact->type_id == 'organisation') {
-            $contactName = $contact->full_name;
+        if ($financialOverviewContact->contact->type_id == 'person') {
+            $prefix = $financialOverviewContact->contact->person->last_name_prefix;
+            $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' ' . $financialOverviewContact->contact->person->last_name : $financialOverviewContact->contact->person->first_name . ' ' . $financialOverviewContact->contact->person->last_name;
+        } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
+            $contactName = $financialOverviewContact->contact->full_name;
         }
         // indien preview, dan zijn we nu klaar om PDF te tonen
         if ($preview) {
             $pdf = PDF::loadView('financial.overview.generic', [
-                'financialOverview' => $financialOverview,
                 'financialOverviewContact' => $financialOverviewContact,
                 'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
                 'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
                 'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
                 'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
                 'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-                'contact' => $contact,
                 'contactPerson' => $contactPerson,
                 'contactName' => $contactName,
                 'logo' => $img,
@@ -116,22 +109,20 @@ class FinancialOverviewHelper
 
         // PDF maken
         $pdf = PDF::loadView('financial.overview.generic', [
-            'financialOverview' => $financialOverview,
             'financialOverviewContact' => $financialOverviewContact,
             'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
             'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
             'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
             'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
             'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-            'contact' => $contact,
             'contactPerson' => $contactPerson,
             'contactName' => $contactName,
             'logo' => $img,
         ]);
 
-        $name = 'WS-' . $financialOverview->year . '-' . $financialOverview->administration_id . '-' . $contact->number . '.pdf';
+        $name = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number . '.pdf';
 
-        $path = 'administration_' . $financialOverview->administration->id
+        $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
             . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $name;
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);

@@ -156,11 +156,18 @@ export default {
 
     fetchContactProjectData: function(contactId, projectId) {
         const requestUrl = `/contact/${contactId}/${projectId}/contact-project-data`;
+
         return axiosInstance.get(requestUrl);
     },
 
     fetchContactFinancialOverviewDocuments: function(contactId) {
         const requestUrl = `/contact/${contactId}/financial-overview-documents`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    financialOverviewContactDownload: function(id) {
+        const requestUrl = `/financial-overview-contact/${id}/download`;
 
         return axiosInstance.get(requestUrl);
     },

@@ -273,6 +273,15 @@ function Header({ location, history }) {
                         >
                             Waardestaat documenten
                         </Link>
+                        <Link
+                            to={'/over-ons'}
+                            className={`nav-link w-nav-link w--nav-link-open ${
+                                location.pathname === '/over-ons' ? 'w--current' : ''
+                            }`}
+                            onClick={closeMenu}
+                        >
+                            Over ons
+                        </Link>
                     </React.Fragment>
                 </div>
             </Menu>

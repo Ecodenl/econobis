@@ -164,4 +164,10 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+
+    fetchContactRelatedAdministrations: function(contactId) {
+        const requestUrl = `/contact/${contactId}/related-administrations`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

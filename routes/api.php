@@ -457,6 +457,10 @@ Route::namespace('Api')
         Route::get('setting/multiple', 'Setting\SettingController@multiple');
         Route::post('setting', 'Setting\SettingController@store');
 
+        Route::get('cooperation/{cooperation}', 'Cooperation\CooperationController@show');
+        Route::post('cooperation', 'Cooperation\CooperationController@store');
+        Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
+
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');
         Route::get('jory/{resource}/count', '\\'.JoryController::class.'@count');

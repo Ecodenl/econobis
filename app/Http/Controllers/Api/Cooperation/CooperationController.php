@@ -16,11 +16,11 @@ use App\Http\Resources\Cooperation\FullCooperation;
 
 class CooperationController extends ApiController
 {
-    public function show(Cooperation $team)
+    public function show()
     {
         $this->authorize('manage_cooperation_settings', Cooperation::class);
 
-        return FullCooperation::make($team);
+        return FullCooperation::make(Cooperation::first());
     }
 
     public function store(CreateCooperation $request)

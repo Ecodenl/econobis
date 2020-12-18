@@ -457,7 +457,7 @@ Route::namespace('Api')
         Route::get('setting/multiple', 'Setting\SettingController@multiple');
         Route::post('setting', 'Setting\SettingController@store');
 
-        Route::get('cooperation/{cooperation}', 'Cooperation\CooperationController@show');
+        Route::get('cooperation', 'Cooperation\CooperationController@show');
         Route::post('cooperation', 'Cooperation\CooperationController@store');
         Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
 

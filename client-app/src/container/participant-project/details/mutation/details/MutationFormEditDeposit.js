@@ -27,6 +27,10 @@ function MutationFormEditDeposit({
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
 }) {
+    // todo WM: opschonen console.log
+    //     console.log('MutationFormEditDeposit');
+    //     console.log(participantMutationFromProps);
+
     return (
         <PanelBody>
             <div className="row">

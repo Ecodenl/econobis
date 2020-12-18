@@ -14,6 +14,7 @@ use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
@@ -962,6 +963,8 @@ class ParticipationProjectController extends ApiController
 
         $participantMutation->fill($mutationData);
 
+        $result = $this->checkMutationAllowed($participantMutation);
+
         // Calculate participation worth based on current book worth of project
         if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
             $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
@@ -1019,6 +1022,8 @@ class ParticipationProjectController extends ApiController
                 $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
             }
 
+            $result = $this->checkMutationAllowed($participantMutation);
+
             $participantMutation->save();
 
             // Herbereken de afhankelijke gegevens op het participantProject
@@ -1054,6 +1059,9 @@ class ParticipationProjectController extends ApiController
             $participantMutation->date_payment = $participantProject->date_terminated;
         }
         $participantMutation->paid_on = 'Bijschrijven';
+
+        $result = $this->checkMutationAllowed($participantMutation);
+
         $participantMutation->save();
 
         // Recalculate dependent data in participantProject
@@ -1116,6 +1124,32 @@ class ParticipationProjectController extends ApiController
         }
 
         return number_format($payout, 2, '.', '');
+    }
+
+    /**
+     * @param $participantProject
+     */
+    protected function checkMutationAllowed($participantMutation)
+    {
+        $project = $participantMutation->participation->project;
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        if($participantMutation->status_id === $mutationStatusFinal){
+            $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
+            $financialOverviewProjectQuery = FinancialOverviewProject::where('project_id', $project->id)
+                ->where('definitive', true)
+                ->whereHas('financialOverview', function ($query) use ($project, $dateEntryYear) {
+                    $query->where('administration_id', $project->administration->id)
+                        ->where('year', $dateEntryYear);
+                });
+
+            if ($financialOverviewProjectQuery->exists()) {
+                $financialOverview = $financialOverviewProjectQuery->first()->financialOverview;
+                abort(409, 'Project komt al voor in definitive waardestaat  ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
+                return false;
+            }
+        }
+        return true;
     }
 
     protected function translateToValidCharacterSet($field){

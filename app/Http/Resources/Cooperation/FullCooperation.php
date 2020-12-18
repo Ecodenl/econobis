@@ -31,6 +31,8 @@ class FullCooperation extends Resource
             'logo_name' => $this->logo_name,
             'hoom_link' => $this->hoom_link,
             'hoom_key' => $this->hoom_key,
+            'hoom_email_template_id' => $this->hoom_email_template_id,
+            'hoom_group_id' => $this->hoom_group_id,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'createdById' => $this->created_by_id,

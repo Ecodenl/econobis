@@ -31,6 +31,14 @@ class CreateCooperationsTable extends Migration
             $table->string('logo_name')->nullable();
             $table->string('hoom_link')->nullable();
             $table->string('hoom_key')->nullable();
+            $table->unsignedInteger('hoom_email_template_id')->nullable();
+            $table->foreign('hoom_email_template_id')
+                ->references('id')->on('email_templates')
+                ->onDelete('restrict');
+            $table->unsignedInteger('hoom_group_id')->nullable();
+            $table->foreign('hoom_group_id')
+                ->references('id')->on('contact_groups')
+                ->onDelete('restrict');
             $table->unsignedInteger('created_by_id');
             $table->foreign('created_by_id')
                 ->references('id')->on('users')

@@ -39,7 +39,8 @@ class CreateCooperation extends FormRequest
             'logo_name' => [''],
             'hoom_link' => [''],
             'hoom_key' => [''],
-
+            'hoom_email_template_id' => [''],
+            'hoom_group_id' => [''],
         ];
     }
 }

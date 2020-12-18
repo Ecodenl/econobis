@@ -29,6 +29,7 @@ const ProjectFormEditGeneral = ({
     dateEnd,
     dateEntry,
     disableBeforeEntryDate,
+    lastYearFinancialOverviewDefinitive,
     contactGroupIds,
     dateProduction,
     isMembershipRequired,
@@ -167,8 +168,8 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                 />
 
-                {/*Als er al nota's zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
-                {hasPaymentInvoices ? (
+                {/*Als er al nota's of waardestaten zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
+                {hasPaymentInvoices || lastYearFinancialOverviewDefinitive != null ? (
                     <InputText
                         label={'Administratie'}
                         name={'administration'}

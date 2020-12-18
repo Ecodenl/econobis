@@ -31,6 +31,7 @@ class ProjectFormEdit extends Component {
             emailTemplates: [],
             documentTemplates: [],
             disableBeforeEntryDate: '',
+            lastYearFinancialOverviewDefinitive: null,
             project: {
                 ...props.project,
                 isMembershipRequired: Boolean(props.project.isMembershipRequired),
@@ -213,6 +214,7 @@ class ProjectFormEdit extends Component {
         this.setState({
             ...this.state,
             disableBeforeEntryDate: disableBeforeEntryDate,
+            lastYearFinancialOverviewDefinitive: lastYearFinancialOverviewDefinitive,
         });
     }
 
@@ -468,6 +470,7 @@ class ProjectFormEdit extends Component {
                     textBecomeNoMember={textBecomeNoMember}
                     noMemberGroupId={noMemberGroupId}
                     disableBeforeEntryDate={this.state.disableBeforeEntryDate}
+                    lastYearFinancialOverviewDefinitive={this.state.lastYearFinancialOverviewDefinitive}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (

@@ -11,6 +11,7 @@ import ParticipantDetailsTerminate from './ParticipantDetailsTerminate';
 import ParticipantDetailsUndoTerminate from './ParticipantDetailsUndoTerminate';
 import moment from 'moment';
 import validator from 'validator';
+import ErrorModal from '../../../components/modal/ErrorModal';
 
 class ParticipantDetailsToolbar extends Component {
     constructor(props) {
@@ -20,6 +21,8 @@ class ParticipantDetailsToolbar extends Component {
             showDelete: false,
             showTerminate: false,
             showUndoTerminate: false,
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
@@ -33,6 +36,16 @@ class ParticipantDetailsToolbar extends Component {
 
     toggleUndoTerminate = () => {
         this.setState({ showUndoTerminate: !this.state.showUndoTerminate });
+    };
+
+    setErrorModal = errorMessage => {
+        this.setState({
+            showErrorModal: true,
+            modalErrorMessage: errorMessage,
+        });
+    };
+    closeErrorModal = () => {
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
     getDisableBeforeEntryDate(project) {
@@ -58,9 +71,16 @@ class ParticipantDetailsToolbar extends Component {
 
     render() {
         const { participantProject, project = {} } = this.props;
+        let numberOfMutations = participantProject.participantMutations
+            ? participantProject.participantMutations.length
+            : null;
         let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
         let allowDeleteAndTerminateButtons = false;
-        if (validator.isEmpty(disableBeforeEntryDate) || moment().format('YYYY-01-01') >= disableBeforeEntryDate) {
+        if (
+            numberOfMutations == 0 ||
+            validator.isEmpty(disableBeforeEntryDate) ||
+            moment().format('YYYY-01-01') >= disableBeforeEntryDate
+        ) {
             allowDeleteAndTerminateButtons = true;
         }
 
@@ -154,6 +174,7 @@ class ParticipantDetailsToolbar extends Component {
                 {this.state.showTerminate && (
                     <ParticipantDetailsTerminate
                         participantProjectId={participantProject.id}
+                        setErrorModal={this.setErrorModal}
                         closeDeleteItemModal={this.toggleTerminate}
                         projectTypeCodeRef={participantProject.project.projectType.codeRef}
                     />
@@ -161,8 +182,16 @@ class ParticipantDetailsToolbar extends Component {
                 {this.state.showUndoTerminate && (
                     <ParticipantDetailsUndoTerminate
                         participantProjectId={participantProject.id}
+                        setErrorModal={this.setErrorModal}
                         closeDeleteItemModal={this.toggleUndoTerminate}
                         projectTypeCodeRef={participantProject.project.projectType.codeRef}
+                    />
+                )}
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
                     />
                 )}
             </div>

@@ -24,8 +24,6 @@ const ProjectList = props => {
                             financialOverviewProject={financialOverviewProject}
                             financialOverview={props.financialOverview}
                             callFetchFinancialOverviewDetails={props.callFetchFinancialOverviewDetails}
-                            // updateProjectToState={props.updateProjectToState}
-                            // deleteProjectToState={props.deleteProjectToState}
                         />
                     );
                 })

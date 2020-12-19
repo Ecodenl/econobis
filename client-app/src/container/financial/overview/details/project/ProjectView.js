@@ -26,14 +26,15 @@ const ProjectView = props => {
                     </a>
                 ) : props.showActionButtons ? (
                     definitive ? (
-                        <a role="button" onClick={props.makeConcept}>
+                        <a role="button" onClick={props.toggleMakeConcept}>
                             <span className="glyphicon glyphicon-remove mybtn-danger" />
                         </a>
                     ) : (
                         <>
-                            <a role="button" onClick={props.makeDefinitive}>
+                            <a role="button" onClick={props.toggleMakeDefinitive}>
                                 <span className="glyphicon glyphicon-ok mybtn-success" />
                             </a>
+                            &nbsp;&nbsp;&nbsp;
                             <a role="button" onClick={props.toggleDelete}>
                                 <span className="glyphicon glyphicon-trash mybtn-danger" />
                             </a>

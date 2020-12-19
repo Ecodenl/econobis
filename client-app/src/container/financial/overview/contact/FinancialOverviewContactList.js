@@ -17,6 +17,7 @@ const FinancialOverviewContactList = props => {
                 props.financialOverview.financialOverviewContacts.map(financialOverviewContact => {
                     return (
                         <FinancialOverviewContactItem
+                            key={financialOverviewContact.id}
                             financialOverview={props.financialOverview}
                             financialOverviewContact={financialOverviewContact}
                         />

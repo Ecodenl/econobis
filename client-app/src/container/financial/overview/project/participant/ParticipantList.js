@@ -18,6 +18,7 @@ const ParticipantList = props => {
                     financialOverviewParticipantProject => {
                         return (
                             <ParticipantItem
+                                key={financialOverviewParticipantProject.id}
                                 financialOverview={props.financialOverviewProject.financialOverview}
                                 financialOverviewParticipantProject={financialOverviewParticipantProject}
                             />

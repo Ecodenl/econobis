@@ -21,6 +21,11 @@ class ProjectApp extends Component {
             showNew: !this.state.showNew,
         });
     };
+    setShowNewFalse = () => {
+        this.setState({
+            showNew: false,
+        });
+    };
 
     render() {
         return (
@@ -47,6 +52,7 @@ class ProjectApp extends Component {
                         <ProjectList
                             financialOverview={this.props.financialOverview}
                             callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                            setShowNewFalse={this.setShowNewFalse}
                         />
                     </div>
                 </PanelBody>

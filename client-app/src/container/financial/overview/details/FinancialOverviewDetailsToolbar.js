@@ -4,7 +4,6 @@ import { browserHistory, hashHistory } from 'react-router';
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import FinancialOverviewDeleteItem from '../list/FinancialOverviewDeleteItem';
-import ButtonText from '../../../../components/button/ButtonText';
 
 class FinancialOverviewDetailsToolbar extends Component {
     constructor(props) {
@@ -44,30 +43,18 @@ class FinancialOverviewDetailsToolbar extends Component {
     };
 
     render() {
-        let { id, description } = this.props.financialOverview;
+        let { id, description, definitive } = this.props.financialOverview;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                        {!this.props.financialOverview.definitive ? (
+                        {!definitive ? (
                             <ButtonIcon
                                 iconName={'glyphicon-trash'}
                                 onClickAction={this.showDeleteItemModal.bind(this, id, description)}
                             />
-                        ) : null}
-                        {this.props.financialOverview.definitive && !this.props.financialOverview.dateProcessed ? (
-                            <>
-                                <ButtonText
-                                    buttonText={`Preview e-mail waardestaten`}
-                                    onClickAction={() => hashHistory.push(`/waardestaat/${id}/aanmaken/email`)}
-                                />
-                                <ButtonText
-                                    buttonText={`Preview post waardestaten`}
-                                    onClickAction={() => hashHistory.push(`/waardestaat/${id}/aanmaken/post`)}
-                                />
-                            </>
                         ) : null}
                     </div>
                 </div>

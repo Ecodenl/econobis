@@ -24,6 +24,7 @@ const ProjectList = props => {
                             financialOverviewProject={financialOverviewProject}
                             financialOverview={props.financialOverview}
                             callFetchFinancialOverviewDetails={props.callFetchFinancialOverviewDetails}
+                            setShowNewFalse={props.setShowNewFalse}
                         />
                     );
                 })

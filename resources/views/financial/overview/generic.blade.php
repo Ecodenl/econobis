@@ -225,11 +225,11 @@
                     Datum: {{ $financialOverviewContact->date_sent ? Carbon\Carbon::parse($financialOverviewContact->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}
                 </td>
             </tr>
-{{--            <tr>--}}
-{{--                <td>--}}
-{{--                    Kenmerk: {{ $financialOverviewContact->financialOverview->reference ? $financialOverviewContact->financialOverview->reference : 'Nog niet bekend' }}--}}
-{{--                </td>--}}
-{{--            </tr>--}}
+            <tr>
+                <td>
+                    Referentie: {{ $financialOverviewContactReference ? $financialOverviewContactReference : 'Nog niet bekend' }}
+                </td>
+            </tr>
             <tr>
                 <td>
                     Contactnummer: {{ $financialOverviewContact->contact->number }}

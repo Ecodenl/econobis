@@ -21,36 +21,10 @@ use Illuminate\Support\Facades\Storage;
 
 class FinancialOverviewHelper
 {
-    public static function getNewProjectsForFinancialOverviewGrid(FinancialOverview $financialOverview)
-    {
-        $projectsQuery = self::getNewProjectsForFinancialOverviewQuery($financialOverview);
-        $projects = $projectsQuery->get();
-
-        $projects->load([
-            'projectType',
-        ]);
-
-        return GridProject::collection($projects)
-            ->additional(['meta' => [
-                'total' => $projectsQuery->count(),
-            ]
-            ]);
-    }
-
     public static function getNewProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
-        $projectsQuery = self::getNewProjectsForFinancialOverviewQuery($financialOverview);
-        return $projectsQuery->get();
-    }
-
-    /**
-     * @param FinancialOverview $financialOverview
-     * @return mixed
-     */
-    protected static function getNewProjectsForFinancialOverviewQuery(FinancialOverview $financialOverview)
-    {
         $checkDate = Carbon::createFromDate($financialOverview->year, 1, 1)->format('Y-m-d');
-        $projectsQuery = Project::where('administration_id', $financialOverview->administration_id)
+        $projects = Project::where('administration_id', $financialOverview->administration_id)
             ->where(function ($query) use($checkDate) {
                 $query->whereNull('date_end')
                     ->orWhere('date_end', '>=', $checkDate);
@@ -60,9 +34,9 @@ class FinancialOverviewHelper
                     $query3->where('administration_id', $financialOverview->administration_id)
                         ->where('year', $financialOverview->year);
                 });
-            });
+            })->get();
 
-        return $projectsQuery;
+        return $projects;
     }
 
     public static function createFinancialOverviewContactDocument(FinancialOverviewcontact $financialOverviewContact, $preview = false)
@@ -81,7 +55,7 @@ class FinancialOverviewHelper
         self::checkStorageDir($financialOverviewContact->financialOverview->administration->id);
 
         $financialOverviewContactController = new FinancialOverviewContactController();
-        $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContact($financialOverviewContact);
+        $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContact($financialOverviewContact, $preview);
         $contactPerson = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['contactPerson'];
         $contactName = null;
 
@@ -91,6 +65,9 @@ class FinancialOverviewHelper
         } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
             $contactName = $financialOverviewContact->contact->full_name;
         }
+
+        $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
+
         // indien preview, dan zijn we nu klaar om PDF te tonen
         if ($preview) {
             $pdf = PDF::loadView('financial.overview.generic', [
@@ -102,6 +79,7 @@ class FinancialOverviewHelper
                 'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
                 'contactPerson' => $contactPerson,
                 'contactName' => $contactName,
+                'financialOverviewContactReference' => $financialOverviewContactReference,
                 'logo' => $img,
             ]);
             return $pdf->output();
@@ -117,10 +95,11 @@ class FinancialOverviewHelper
             'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
             'contactPerson' => $contactPerson,
             'contactName' => $contactName,
+            'financialOverviewContactReference' => $financialOverviewContactReference,
             'logo' => $img,
         ]);
 
-        $name = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number . '.pdf';
+        $name = $financialOverviewContactReference . '.pdf';
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
             . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $name;
@@ -157,7 +136,6 @@ class FinancialOverviewHelper
         $financialOverviewContactController = new FinancialOverviewContactController();
         $contactInfo
             = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
-
         if ($contactInfo['email'] === 'Geen e-mail bekend') {
             if ($preview) {
                 return [
@@ -169,11 +147,22 @@ class FinancialOverviewHelper
             }
             return false;
         }
+        $contactName = null;
+
+        if ($financialOverviewContact->contact->type_id == 'person') {
+            $prefix = $financialOverviewContact->contact->person->last_name_prefix;
+            $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' ' . $financialOverviewContact->contact->person->last_name : $financialOverviewContact->contact->person->first_name . ' ' . $financialOverviewContact->contact->person->last_name;
+        } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
+            $contactName = $financialOverviewContact->contact->full_name;
+        }
+
+        $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
 
         $subject = 'Waardestaat';
-        $htmlBody = 'Beste ' . $contactInfo['contactPerson'] . ',';
+        $htmlBody = 'Beste ' . ($contactInfo['contactPerson'] ? $contactInfo['contactPerson'] : $contactName) . ',';
         $htmlBody .= '<p>&nbsp;</p>';
-        $htmlBody .= 'Hierbij uw waardestaat: ' . $financialOverviewContact->financialOverview->description . ' (Contactnummer: ' . $financialOverviewContact->contact->number . ').';
+        $htmlBody .= 'Hierbij uw waardestaat: ' . $financialOverviewContact->financialOverview->description . '<br />';
+        $htmlBody .= '(Referentie: ' . $financialOverviewContactReference . ').';
         $htmlBody .= '<p>&nbsp;</p>';
         $htmlBody .= 'Met vriendelijke groet,';
         $htmlBody .= '<p></p>';

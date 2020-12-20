@@ -102,10 +102,6 @@ class FinancialOverviewController extends Controller
         }
     }
 
-    public function getNewProjectsForFinancialOverviewGrid(FinancialOverview $financialOverview)
-    {
-        return FinancialOverviewHelper::getNewProjectsForFinancialOverviewGrid($financialOverview);
-    }
     public function getNewProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
         return FinancialOverviewHelper::getNewProjectsForFinancialOverview($financialOverview);

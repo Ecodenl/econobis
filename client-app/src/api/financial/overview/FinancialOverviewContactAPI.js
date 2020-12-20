@@ -4,6 +4,28 @@ import axios from 'axios';
 const URL_FINANCIAL_OVERVIEW_CONTACT = `financial-overview-contact`;
 
 export default {
+    fetchFinancialOverviewContacts: (
+        filters,
+        sorts,
+        pagination,
+        financialOverviewId,
+        onlyEmailFinancialOverviewContacts,
+        onlyPostFinancialOverviewContacts
+    ) => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/grid`;
+        return axiosInstance.get(requestUrl, {
+            params: {
+                financialOverviewId: JSON.stringify(financialOverviewId),
+                onlyEmailFinancialOverviewContacts: JSON.stringify(onlyEmailFinancialOverviewContacts),
+                onlyPostFinancialOverviewContacts: JSON.stringify(onlyPostFinancialOverviewContacts),
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
+            },
+        });
+    },
+
     fetchFinancialOverviewContactDetails: financialOverviewContactId => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/get`;
 

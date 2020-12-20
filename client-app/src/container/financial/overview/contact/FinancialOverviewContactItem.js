@@ -1,45 +1,39 @@
-import React, { Component } from 'react';
-import FinancialOverviewContactView from './FinancialOverviewContactView';
+import React, { useState } from 'react';
 import { hashHistory } from 'react-router';
+import moment from 'moment';
 
-class FinancialOverviewContactItem extends Component {
-    constructor(props) {
-        super(props);
+function FinancialOverviewContactItem({ id, contactFullName, statusId, status, dateSent, emailedTo }) {
+    const dateSentFormated = dateSent ? moment(dateSent).format('DD-MM-Y') : '';
+    const [highlightLine, setHighlightLine] = useState('');
 
-        this.state = {
-            highlightLine: '',
-        };
+    return (
+        <tr className={`border ${highlightLine}`} onMouseEnter={() => onLineEnter()} onMouseLeave={() => onLineLeave()}>
+            <td>{contactFullName}</td>
+            <td>{status}</td>
+            <td>{dateSentFormated}</td>
+            <td>{emailedTo}</td>
+            <td>
+                <a role="button" onClick={() => getFinancialOverviewPDF(id, statusId)}>
+                    <span className="glyphicon glyphicon-list-alt mybtn-success" />
+                </a>
+            </td>
+        </tr>
+    );
+
+    function onLineEnter() {
+        setHighlightLine('highlight-line');
     }
 
-    onLineEnter = () => {
-        this.setState({
-            highlightLine: 'highlight-line',
-        });
-    };
-
-    onLineLeave = () => {
-        this.setState({
-            highlightLine: '',
-        });
-    };
-
-    getFinancialOverviewPDF(financialOverviewContactId) {
-        hashHistory.push(`/waardestaat-contact/preview/${financialOverviewContactId}`);
+    function onLineLeave() {
+        setHighlightLine('');
     }
 
-    render() {
-        return (
-            <div>
-                <FinancialOverviewContactView
-                    highlightLine={this.state.highlightLine}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    getFinancialOverviewPDF={this.getFinancialOverviewPDF}
-                    financialOverview={this.props.financialOverview}
-                    financialOverviewContact={this.props.financialOverviewContact}
-                />
-            </div>
-        );
+    function getFinancialOverviewPDF(financialOverviewContactId, statusId) {
+        if (statusId === 'sent') {
+            hashHistory.push(`/waardestaat-contact/inzien/${financialOverviewContactId}`);
+        } else {
+            hashHistory.push(`/waardestaat-contact/preview/${financialOverviewContactId}`);
+        }
     }
 }
 

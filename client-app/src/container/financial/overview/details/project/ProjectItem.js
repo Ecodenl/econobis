@@ -100,6 +100,7 @@ class ProjectItem extends Component {
     deleteProject = id => {
         FinancialOverviewDetailsAPI.deleteFinancialOverviewProject(id)
             .then(payload => {
+                this.props.setShowNewFalse();
                 // financialoverview opnieuw fetchen
                 this.props.callFetchFinancialOverviewDetails();
             })

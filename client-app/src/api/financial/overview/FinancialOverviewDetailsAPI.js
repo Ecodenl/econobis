@@ -23,10 +23,6 @@ export default {
                                 },
                             },
                         },
-                        financialOverviewContacts: {
-                            fld: ['id', 'contactId', 'definitive', 'statusId', 'status', 'dateSent', 'emailedTo'],
-                            rlt: { contact: { fld: ['id', 'fullName'] } },
-                        },
                     },
                 },
             },

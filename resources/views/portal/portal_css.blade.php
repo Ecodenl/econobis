@@ -1,5 +1,4 @@
 :root {
---main-default-text-color: {{ $store->get('defaultTextColor', '#000') }};
 --main-primary-color: {{ $store->get('backgroundColor', '#034b8c') }};
 --main-primary-text-color: {{ $store->get('backgroundTextColor', '#fff') }};
 --main-primary-rgba: {{ $store->get('backgroundImageColor', 'rgba(3, 75, 140, 0.9)') }};

@@ -3,9 +3,19 @@ import DataTableFilterDate from '../../../../components/dataTable/DataTableFilte
 import moment from 'moment';
 import financialOverviewContactStatuses from '../../../../data/financialOverviewContactStatuses';
 
-function FinancialOverviewContactListFilter({ filter, handleChangeFilter }) {
+function FinancialOverviewContactListFilter({
+    showSelectFinancialOverviewContactsToSend,
+    toggleCheckedAll,
+    filter,
+    handleChangeFilter,
+}) {
     return (
         <tr className="thead-filter">
+            {showSelectFinancialOverviewContactsToSend && (
+                <th>
+                    <input type="checkbox" onChange={toggleCheckedAll} />
+                </th>
+            )}
             <th>
                 <input
                     type="text"

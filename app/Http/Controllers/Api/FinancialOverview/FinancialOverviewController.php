@@ -107,4 +107,22 @@ class FinancialOverviewController extends Controller
         return FinancialOverviewHelper::getNewProjectsForFinancialOverview($financialOverview);
     }
 
+    public function getTotalsInfoFinancialOverview(FinancialOverview $financialOverview)
+    {
+        $totalsInfo = [
+            'totalFinancialOverviewContacts' => $financialOverview->total_financial_overview_contacts,
+            'totalFinancialOverviewContactsConcept' => $financialOverview->total_financial_overview_contacts_concept,
+            'totalFinancialOverviewContactsToSend' => $financialOverview->total_financial_overview_contacts_to_send,
+            'totalFinancialOverviewContactsInProgress' => $financialOverview->total_financial_overview_contacts_in_progress,
+            'totalFinancialOverviewContactsErrorMaking' => $financialOverview->total_financial_overview_contacts_error_making,
+            'totalFinancialOverviewContactsIsSending' => $financialOverview->total_financial_overview_contacts_is_sending,
+            'totalFinancialOverviewContactsErrorSending' => $financialOverview->total_financial_overview_contacts_error_sending,
+            'totalFinancialOverviewContactsIsResending' => $financialOverview->total_financial_overview_contacts_is_resending,
+            'totalFinancialOverviewContactsSent' => $financialOverview->total_financial_overview_contacts_sent,
+        ];
+
+        return $totalsInfo;
+    }
+
+
 }

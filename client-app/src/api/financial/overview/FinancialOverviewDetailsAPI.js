@@ -129,4 +129,10 @@ export default {
 
         return axiosInstance.get(requestUrl, financialOverview);
     },
+
+    fetchTotalsInfoFinancialOverview: financialOverview => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${financialOverview.id}/totals-info-financial-overview`;
+
+        return axiosInstance.get(requestUrl, financialOverview);
+    },
 };

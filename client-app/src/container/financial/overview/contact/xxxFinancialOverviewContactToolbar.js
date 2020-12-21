@@ -4,7 +4,7 @@ import { browserHistory, hashHistory } from 'react-router';
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import ButtonText from '../../../../components/button/ButtonText';
 
-class FinancialOverviewContactToolbar extends Component {
+class XxxFinancialOverviewContactToolbar extends Component {
     constructor(props) {
         super(props);
 
@@ -38,4 +38,4 @@ class FinancialOverviewContactToolbar extends Component {
     }
 }
 
-export default FinancialOverviewContactToolbar;
+export default XxxFinancialOverviewContactToolbar;

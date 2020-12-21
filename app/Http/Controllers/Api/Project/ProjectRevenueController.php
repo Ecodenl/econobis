@@ -626,7 +626,8 @@ class ProjectRevenueController extends ApiController
         }
 
         foreach ($distributions as $distribution) {
-            //status moet nu onderhanden zijn (in-progess zijn)
+            //todo WM: moet hier ook niet check op mutation allowed inzake definitieve waardestaten?
+            //status moet nu onderhanden zijn (in-progress zijn)
             if ($distribution->status === 'in-progress')
             {
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).

@@ -12,9 +12,6 @@ import { connect } from 'react-redux';
 class FinancialOverviewCreateApp extends Component {
     constructor(props) {
         super(props);
-        //todo WM: opschonen log
-        console.log('FinancialOverviewCreateApp');
-        console.log(props);
 
         this.state = {
             financialOverviewContacts: [],

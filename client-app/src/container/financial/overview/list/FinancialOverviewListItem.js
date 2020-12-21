@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 class FinancialOverviewListItem extends Component {
     constructor(props) {
@@ -31,7 +32,22 @@ class FinancialOverviewListItem extends Component {
     }
 
     render() {
-        const { id, description, year, administration, definitive, permissions } = this.props;
+        const { id, description, year, administration, definitive, statusId, dateProcessed, permissions } = this.props;
+        let status = '';
+        switch (statusId) {
+            case 'concept':
+                status = 'Concept';
+                break;
+            case 'definitive':
+                status = 'Definitief';
+                break;
+            case 'processed':
+                status = 'Verwerkt';
+                break;
+        }
+
+        const dateProcessedFormated = dateProcessed ? moment(dateProcessed).format('DD-MM-Y') : '';
+
         return (
             <tr
                 className={this.state.highlightRow}
@@ -39,9 +55,11 @@ class FinancialOverviewListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
+                <td>{description}</td>
                 <td>{year}</td>
                 <td>{administration && administration.name}</td>
-                <td>{definitive ? 'Definitief' : 'Concept'}</td>
+                <td>{status}</td>
+                <td>{dateProcessedFormated}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -50,7 +68,7 @@ class FinancialOverviewListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && permissions.manageFinancial && administration ? (
+                    {this.state.showActionButtons && permissions.manageFinancial && !definitive ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>

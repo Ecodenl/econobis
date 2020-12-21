@@ -24,8 +24,7 @@ const ProjectList = props => {
                             financialOverviewProject={financialOverviewProject}
                             financialOverview={props.financialOverview}
                             callFetchFinancialOverviewDetails={props.callFetchFinancialOverviewDetails}
-                            // updateProjectToState={props.updateProjectToState}
-                            // deleteProjectToState={props.deleteProjectToState}
+                            setShowNewFalse={props.setShowNewFalse}
                         />
                     );
                 })
@@ -36,11 +35,4 @@ const ProjectList = props => {
     );
 };
 
-// const mapStateToProps = state => {
-//     return {
-//         projects: state.financialOverview.projects,
-//     };
-// };
-
-// export default connect(mapStateToProps)(ProjectList);
 export default ProjectList;

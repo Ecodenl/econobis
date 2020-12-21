@@ -14,6 +14,7 @@ import ParticipantNewForm from './ParticipantNewForm';
 import ParticipantSubmitHelper from './ParticipantSubmitHelper';
 import ParticipantValidateForm from './ParticipantValidateForm';
 import moment from 'moment';
+import validator from 'validator';
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -46,6 +47,7 @@ class ParticipantNewApp extends Component {
                 dateContractRetour: null,
                 datePayment: null,
                 dateEntry: moment().format('YYYY-MM-DD'),
+                disableBeforeEntryDate: '',
             },
             errors: {
                 contactId: false,
@@ -76,6 +78,7 @@ class ParticipantNewApp extends Component {
 
             if (this.props.params.projectId) {
                 let project = payload.find(project => project.id == this.props.params.projectId);
+                let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
 
                 this.setState({
                     ...this.state,
@@ -84,11 +87,36 @@ class ParticipantNewApp extends Component {
                         ...this.state.participation,
                         dateEntry: project.dateEntry
                             ? moment(project.dateEntry).format('YYYY-MM-DD')
+                            : !validator.isEmpty(disableBeforeEntryDate + '')
+                            ? moment(disableBeforeEntryDate).format('YYYY-MM-DD')
                             : moment().format('YYYY-MM-DD'),
+                        disableBeforeEntryDate: disableBeforeEntryDate,
                     },
                 });
             }
         });
+    }
+
+    getDisableBeforeEntryDate(project) {
+        let lastYearFinancialOverviewDefinitive = 0;
+        if (project && project.lastYearFinancialOverviewDefinitive) {
+            lastYearFinancialOverviewDefinitive = project.lastYearFinancialOverviewDefinitive;
+        } else {
+            let administration;
+            administration = this.props.administrations.filter(
+                administration => administration.id == project.administrationId
+            );
+            administration = administration[0];
+            if (administration && administration.lastYearFinancialOverviewDefinitive) {
+                lastYearFinancialOverviewDefinitive = administration.lastYearFinancialOverviewDefinitive;
+            }
+        }
+        let disableBeforeEntryDate =
+            lastYearFinancialOverviewDefinitive > 0
+                ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
+                : '';
+
+        return disableBeforeEntryDate;
     }
 
     redirectTask = () => {
@@ -136,6 +164,7 @@ class ParticipantNewApp extends Component {
 
         if (name === 'projectId') {
             let project = this.state.projects.find(project => project.id == this.state.participation.projectId);
+            let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
 
             this.setState({
                 ...this.state,
@@ -144,7 +173,10 @@ class ParticipantNewApp extends Component {
                     ...this.state.participation,
                     dateEntry: project.dateEntry
                         ? moment(project.dateEntry).format('YYYY-MM-DD')
+                        : !validator.isEmpty(disableBeforeEntryDate + '')
+                        ? moment(disableBeforeEntryDate).format('YYYY-MM-DD')
                         : moment().format('YYYY-MM-DD'),
+                    disableBeforeEntryDate: disableBeforeEntryDate,
                 },
             });
         }
@@ -204,9 +236,7 @@ class ParticipantNewApp extends Component {
                         modalText: payload.data.message,
                     });
                     this.setState({
-                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${
-                            participation.projectId
-                        }/deelnemer/${payload.data.id}`,
+                        modalRedirectTask: `/taak/nieuw/contact/${participation.contactId}/project/${participation.projectId}/deelnemer/${payload.data.id}`,
                         modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
                     });
                 } else {
@@ -272,6 +302,7 @@ class ParticipantNewApp extends Component {
 const mapStateToProps = state => {
     return {
         participantMutationStatuses: state.systemData.participantMutationStatuses,
+        administrations: state.meDetails.administrations,
     };
 };
 

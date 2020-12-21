@@ -25,10 +25,6 @@ class ParticipantItem extends Component {
         });
     };
 
-    getFinancialOverviewPDF(financialOverviewId, contactId) {
-        hashHistory.push(`/waardestaat-contact/preview/${financialOverviewId}/${contactId}`);
-    }
-
     render() {
         return (
             <div>
@@ -36,7 +32,6 @@ class ParticipantItem extends Component {
                     highlightLine={this.state.highlightLine}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    getFinancialOverviewPDF={this.getFinancialOverviewPDF}
                     financialOverview={this.props.financialOverview}
                     financialOverviewParticipantProject={this.props.financialOverviewParticipantProject}
                 />

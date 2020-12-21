@@ -86,13 +86,6 @@ class FinancialOverviewController extends Controller
         }
     }
 
-    public function downloadPreview(FinancialOverview $financialOverview, Contact $contact){
-//        return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverview, $contact, true);
-        $financialOverviewContact = FinancialOverviewContact::where('financial_overview_id', $financialOverview->id)
-            ->where('contact_id', $contact->id)->first();
-        return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact, true);
-    }
-
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
         $projects = $this->getNewProjectsForFinancialOverview($financialOverview);
@@ -109,10 +102,6 @@ class FinancialOverviewController extends Controller
         }
     }
 
-    public function getNewProjectsForFinancialOverviewGrid(FinancialOverview $financialOverview)
-    {
-        return FinancialOverviewHelper::getNewProjectsForFinancialOverviewGrid($financialOverview);
-    }
     public function getNewProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
         return FinancialOverviewHelper::getNewProjectsForFinancialOverview($financialOverview);

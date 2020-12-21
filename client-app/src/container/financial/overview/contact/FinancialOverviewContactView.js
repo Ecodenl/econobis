@@ -1,20 +1,11 @@
 import React from 'react';
 import MoneyPresenter from '../../../../../../customer-portal-app/src/helpers/MoneyPresenter';
+import moment from 'moment';
 
 const FinancialOverviewContactView = props => {
-    //todo WM: opschonen log
-    // console.log('FinancialOverviewContactView');
-    // console.log(props);
+    const { contact, status, dateSent, emailedTo } = props.financialOverviewContact;
 
-    const {
-        contact,
-        // quantityStartValue,
-        // quantityEndValue,
-        // bookworthStartValue,
-        // bookworthEndValue,
-        // amountStartValue,
-        // amountEndValue,
-    } = props.financialOverviewContact;
+    const dateSentFormated = dateSent ? moment(dateSent).format('DD-MM-Y') : '';
 
     return (
         <div
@@ -23,23 +14,12 @@ const FinancialOverviewContactView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div>
-                <div className="col-sm-3">{contact.fullName}</div>
-                {/*<div className="col-sm-1 text-right">{quantityStartValue}</div>*/}
-                {/*<div className="col-sm-1 text-right">{MoneyPresenter(bookworthStartValue)}</div>*/}
-                {/*<div className="col-sm-2 text-right">{MoneyPresenter(amountStartValue)}</div>*/}
-                {/*<div className="col-sm-1 text-right">{quantityEndValue}</div>*/}
-                {/*<div className="col-sm-1 text-right">{MoneyPresenter(bookworthEndValue)}</div>*/}
-                {/*<div className="col-sm-2 text-right">{MoneyPresenter(amountEndValue)}</div>*/}
+                <div className="col-sm-4">{contact.fullName}</div>
+                <div className="col-sm-2">{status}</div>
+                <div className="col-sm-2">{dateSentFormated}</div>
+                <div className="col-sm-3">{emailedTo}</div>
                 <div className="col-sm-1">
-                    <a
-                        role="button"
-                        onClick={() =>
-                            props.getFinancialOverviewPDF(
-                                props.financialOverview.id,
-                                props.financialOverviewContact.contactId
-                            )
-                        }
-                    >
+                    <a role="button" onClick={() => props.getFinancialOverviewPDF(props.financialOverviewContact.id)}>
                         <span className="glyphicon glyphicon-list-alt mybtn-success" />{' '}
                     </a>
                 </div>

@@ -21,15 +21,22 @@ class ProjectApp extends Component {
             showNew: !this.state.showNew,
         });
     };
+    setShowNewFalse = () => {
+        this.setState({
+            showNew: false,
+        });
+    };
 
     render() {
         return (
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Projecten</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
-                    </a>
+                    {this.props.financialOverview && !this.props.financialOverview.definitive && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <span className="glyphicon glyphicon-plus" />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
@@ -38,7 +45,6 @@ class ProjectApp extends Component {
                                 financialOverview={this.props.financialOverview}
                                 toggleShowNew={this.toggleShowNew}
                                 callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
-                                // addProjectToState={this.props.addProjectToState}
                             />
                         )}
                     </div>
@@ -46,8 +52,7 @@ class ProjectApp extends Component {
                         <ProjectList
                             financialOverview={this.props.financialOverview}
                             callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
-                            // updateProjectToState={this.props.updateProjectToState}
-                            // deleteProjectToState={this.props.deleteProjectToState}
+                            setShowNewFalse={this.setShowNewFalse}
                         />
                     </div>
                 </PanelBody>

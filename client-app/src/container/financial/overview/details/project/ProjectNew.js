@@ -7,7 +7,6 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 import ErrorModal from '../../../../../components/modal/ErrorModal';
-import Modal from '../../../../../components/modal/Modal';
 
 class ProjectNew extends Component {
     constructor(props) {
@@ -42,7 +41,7 @@ class ProjectNew extends Component {
         this.setState({ isLoading: true, hasError: false });
         FinancialOverviewDetailsAPI.fetchNewProjectsForFinancialOverview(this.props.financialOverview)
             .then(payload => {
-                this.setState({ isLoading: false, projectsForFinancialOverview: payload.data.data });
+                this.setState({ isLoading: false, projectsForFinancialOverview: payload.data });
             })
             .catch(error => {
                 this.setState({ isLoading: false, hasError: true });
@@ -162,17 +161,4 @@ class ProjectNew extends Component {
     }
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         id: state.financialOverview.id,
-//     };
-// };
-//
-// const mapDispatchToProps = dispatch => ({
-//     newProject: id => {
-//         dispatch(newProject(id));
-//     },
-// });
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(ProjectNew);
 export default ProjectNew;

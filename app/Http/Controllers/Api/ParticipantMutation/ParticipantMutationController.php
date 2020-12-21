@@ -241,18 +241,23 @@ class ParticipantMutationController extends ApiController
     protected function checkMutationAllowed($participantMutation)
     {
         $project = $participantMutation->participation->project;
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
 
-        $dateEntryYear = Carbon::parse($participantMutation->date_entry)->year;
-        $financialOverviewProjectQuery = FinancialOverviewProject::where('project_id', $project->id)
-            ->where('definitive', true)
-            ->whereHas('financialOverview', function ($query) use ($project, $dateEntryYear) {
-                $query->where('administration_id', $project->administration->id)
-                    ->where('year', $dateEntryYear);
-            });
-        $financialOverview = $financialOverviewProjectQuery->first();
+        if($participantMutation->status_id === $mutationStatusFinal){
+            $dateEntryYear = Carbon::parse($participantMutation->date_entry)->year;
+            $financialOverviewProjectQuery = FinancialOverviewProject::where('project_id', $project->id)
+                ->where('definitive', true)
+                ->whereHas('financialOverview', function ($query) use ($project, $dateEntryYear) {
+                    $query->where('administration_id', $project->administration->id)
+                        ->where('year', $dateEntryYear);
+                });
 
-        if ($financialOverviewProjectQuery->exists()) {
-            abort(409, 'Project komt al voor in definitive waardestaat  ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
+            if ($financialOverviewProjectQuery->exists()) {
+                $financialOverview = $financialOverviewProjectQuery->first()->financialOverview;
+                abort(409, 'Project komt al voor in definitive waardestaat ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
+                return false;
+            }
         }
+        return true;
     }
 }

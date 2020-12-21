@@ -28,4 +28,12 @@ class FinancialOverviewContact extends Model
         return $this->hasOne(FinancialOverviewsToSend::class);
     }
 
+    public function getStatusAttribute()
+    {
+        if(!$this->status_id) return null;
+
+        return FinancialOverviewContactStatus::get($this->status_id)->name;
+    }
+
+
 }

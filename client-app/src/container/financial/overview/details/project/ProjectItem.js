@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import ProjectView from './ProjectView';
+import ProjectMakeConcept from './ProjectMakeConcept';
+import ProjectMakeDefinitive from './ProjectMakeDefinitive';
 import ProjectDelete from './ProjectDelete';
 import { setError } from '../../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
@@ -15,7 +17,8 @@ class ProjectItem extends Component {
         this.state = {
             showActionButtons: false,
             highlightLine: '',
-            showEdit: false,
+            showMakeConcept: false,
+            showMakeDefinitive: false,
             showDelete: false,
             typeIdError: false,
             numberError: false,
@@ -49,7 +52,7 @@ class ProjectItem extends Component {
         hashHistory.push(`/waardestaat-project/${id}`);
     };
 
-    makeConcept = () => {
+    makeConceptProject = () => {
         this.setState(
             {
                 ...this.state,
@@ -62,7 +65,7 @@ class ProjectItem extends Component {
         );
     };
 
-    makeDefinitive = () => {
+    makeDefinitiveProject = () => {
         this.setState(
             {
                 ...this.state,
@@ -97,6 +100,7 @@ class ProjectItem extends Component {
     deleteProject = id => {
         FinancialOverviewDetailsAPI.deleteFinancialOverviewProject(id)
             .then(payload => {
+                this.props.setShowNewFalse();
                 // financialoverview opnieuw fetchen
                 this.props.callFetchFinancialOverviewDetails();
             })
@@ -111,6 +115,14 @@ class ProjectItem extends Component {
                     modalErrorMessage: errorMessage,
                 });
             });
+    };
+
+    toggleMakeConcept = action => {
+        this.setState({ showMakeConcept: !this.state.showMakeConcept, action: action });
+    };
+
+    toggleMakeDefinitive = action => {
+        this.setState({ showMakeDefinitive: !this.state.showMakeDefinitive, action: action });
     };
 
     toggleDelete = () => {
@@ -131,12 +143,26 @@ class ProjectItem extends Component {
                         onLineEnter={this.onLineEnter}
                         onLineLeave={this.onLineLeave}
                         clickItem={this.clickItem}
-                        makeConcept={this.makeConcept}
-                        makeDefinitive={this.makeDefinitive}
+                        toggleMakeConcept={this.toggleMakeConcept}
+                        toggleMakeDefinitive={this.toggleMakeDefinitive}
                         toggleDelete={this.toggleDelete}
                         financialOverviewDefinitive={this.props.financialOverview.definitive}
                         financialOverviewProject={this.state.financialOverviewProject}
                     />
+                    {this.state.showMakeConcept && (
+                        <ProjectMakeConcept
+                            financialOverviewProject={this.state.financialOverviewProject}
+                            makeConceptProject={this.makeConceptProject}
+                            closeMakeConceptItemModal={this.toggleMakeConcept}
+                        />
+                    )}
+                    {this.state.showMakeDefinitive && (
+                        <ProjectMakeDefinitive
+                            financialOverviewProject={this.state.financialOverviewProject}
+                            makeDefinitiveProject={this.makeDefinitiveProject}
+                            closeMakeDefinitiveItemModal={this.toggleMakeDefinitive}
+                        />
+                    )}
                     {this.state.showDelete && (
                         <ProjectDelete
                             financialOverviewProject={this.state.financialOverviewProject}
@@ -156,8 +182,6 @@ class ProjectItem extends Component {
         );
     }
 }
-
-// export default ProjectItem;
 
 const mapDispatchToProps = dispatch => ({
     setError: (http_code, message) => {

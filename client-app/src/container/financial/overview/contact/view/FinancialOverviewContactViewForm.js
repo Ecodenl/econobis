@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PdfViewer from '../../../../../components/pdf/PdfViewer';
 import FinancialOverviewContactAPI from '../../../../../api/financial/overview/FinancialOverviewContactAPI';
@@ -45,14 +44,4 @@ class FinancialOverviewContactViewForm extends Component {
     }
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         financialOverviewContactDetails: state.financialOverviewContactDetails,
-//     };
-// };
-
-// export default connect(
-//     mapStateToProps,
-//     null
-// )(FinancialOverviewContactViewForm);
 export default FinancialOverviewContactViewForm;

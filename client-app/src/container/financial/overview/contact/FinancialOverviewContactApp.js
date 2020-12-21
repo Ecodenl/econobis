@@ -8,9 +8,6 @@ import FinancialOverviewContactList from './FinancialOverviewContactList';
 class FinancialOverviewContactApp extends Component {
     constructor(props) {
         super(props);
-        //todo WM: opschonen log
-        // console.log('FinancialOverviewContactApp');
-        // console.log(props);
     }
 
     render() {

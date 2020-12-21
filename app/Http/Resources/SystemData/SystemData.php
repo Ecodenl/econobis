@@ -15,6 +15,7 @@ use App\Eco\Email\EmailStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\CostCenter\CostCenter;
@@ -163,6 +164,7 @@ class SystemData extends Resource
             'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
+            'financialOverviewContactStatuses' => FullEnumWithIdAndName::collection(FinancialOverviewContactStatus::collection()),
             'industries' => FullIndustry::collection(Industry::all()),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),

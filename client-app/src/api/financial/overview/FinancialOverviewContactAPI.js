@@ -4,14 +4,30 @@ import axios from 'axios';
 const URL_FINANCIAL_OVERVIEW_CONTACT = `financial-overview-contact`;
 
 export default {
-    fetchFinancialOverviewContactDetails: financialOverviewContactId => {
-        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/get`;
-
-        return axiosInstance.get(requestUrl);
+    fetchFinancialOverviewContacts: (
+        filters,
+        sorts,
+        pagination,
+        financialOverviewId,
+        onlyEmailFinancialOverviewContacts,
+        onlyPostFinancialOverviewContacts
+    ) => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/grid`;
+        return axiosInstance.get(requestUrl, {
+            params: {
+                financialOverviewId: JSON.stringify(financialOverviewId),
+                onlyEmailFinancialOverviewContacts: JSON.stringify(onlyEmailFinancialOverviewContacts),
+                onlyPostFinancialOverviewContacts: JSON.stringify(onlyPostFinancialOverviewContacts),
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
+            },
+        });
     },
 
-    fetchFinancialOverviewContactDetailsXXX: (financialOverviewId, contactId) => {
-        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewId}/${contactId}/get`;
+    fetchFinancialOverviewContactDetails: financialOverviewContactId => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/get`;
 
         return axiosInstance.get(requestUrl);
     },
@@ -30,16 +46,6 @@ export default {
         document.body.style.cursor = 'default';
         return response;
     },
-    // sendAll: financialOverviewContactIds => {
-    //     const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/send-all`;
-    //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-    //     axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-    //
-    //     document.body.style.cursor = 'wait';
-    //     let response = axios.post(requestUrl, { ids: financialOverviewContactIds }, { responseType: 'blob' });
-    //     document.body.style.cursor = 'default';
-    //     return response;
-    // },
 
     sendAllPost: (financialOverviewId, ids) => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewId}/send-all-post`;
@@ -49,27 +55,15 @@ export default {
         document.body.style.cursor = 'default';
         return response;
     },
-    // sendAllPost: financialOverviewContactIds => {
-    //     const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/send-all-post`;
-    //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-    //     axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-    //
-    //     document.body.style.cursor = 'wait';
-    //     let response = axios.post(requestUrl, { ids: financialOverviewContactIds }, { responseType: 'blob' });
-    //     document.body.style.cursor = 'default';
-    //     return response;
-    // },
 
-    //
-    // download: id => {
-    //     const requestUrl = `${URL_API}/api/${URL_FINANCIAL_OVERVIEW_CONTACT}/${id}/download`;
-    //     const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-    //     axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-    //
-    //     return axios.get(requestUrl, { responseType: 'blob' });
-    // },
     download: id => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${id}/download`;
+
+        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+    },
+
+    downloadPreview: id => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${id}}/download-preview`;
 
         return axiosInstance.get(requestUrl, { responseType: 'blob' });
     },

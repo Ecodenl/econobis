@@ -19,15 +19,12 @@ class FinancialOverviewContactPreviewApp extends Component {
     }
 
     componentDidMount() {
-        this.callFetchFinancialOverviewContactDetailsXXX();
+        this.callFetchFinancialOverviewContactDetails();
     }
 
-    callFetchFinancialOverviewContactDetailsXXX = () => {
+    callFetchFinancialOverviewContactDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        FinancialOverviewContactAPI.fetchFinancialOverviewContactDetailsXXX(
-            this.props.params.id,
-            this.props.params.contactId
-        )
+        FinancialOverviewContactAPI.fetchFinancialOverviewContactDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
                     isLoading: false,
@@ -81,11 +78,4 @@ class FinancialOverviewContactPreviewApp extends Component {
     }
 }
 
-// const mapDispatchToProps = dispatch => ({
-//     financialOverviewContactDetails: (id, contactId) => {
-//         dispatch(financialOverviewContactDetails(id, contactId));
-//     },
-// });
-//
-// export default connect(null, mapDispatchToProps)(FinancialOverviewContactPreviewApp);
 export default FinancialOverviewContactPreviewApp;

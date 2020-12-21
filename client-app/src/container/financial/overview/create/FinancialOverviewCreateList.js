@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 
 import SideNav, { Nav, NavText } from 'react-sidenav';
 import { Link } from 'react-router';
@@ -61,11 +59,4 @@ class FinancialOverviewCreateList extends Component {
     }
 }
 
-// const mapStateToProps = state => {
-//     return {
-//         administrationDetails: state.administrationDetails,
-//     };
-// };
-
-// export default connect(mapStateToProps)(FinancialOverviewCreateList);
 export default FinancialOverviewCreateList;

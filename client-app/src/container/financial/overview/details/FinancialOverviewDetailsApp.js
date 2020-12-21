@@ -70,9 +70,6 @@ class FinancialOverviewDetailsApp extends Component {
                             isLoading={this.state.isLoading}
                             hasError={this.state.hasError}
                             callFetchFinancialOverviewDetails={this.callFetchFinancialOverviewDetails}
-                            // updateProjectToState={this.updateProjectToState}
-                            // addProjectToState={this.addProjectToState}
-                            // deleteProjectToState={this.deleteProjectToState}
                         />
                     </div>
                 </div>

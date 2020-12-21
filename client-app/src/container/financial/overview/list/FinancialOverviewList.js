@@ -66,16 +66,18 @@ class FinancialOverviewList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Jaar'} width={'20%'} />
-                            <DataTableHeadTitle title={'Administratie'} width={'55%'} />
-                            <DataTableHeadTitle title={'Definitief'} width={'20%'} />
+                            <DataTableHeadTitle title={'Description'} width={'30%'} />
+                            <DataTableHeadTitle title={'Jaar'} width={'10%'} />
+                            <DataTableHeadTitle title={'Administratie'} width={'30%'} />
+                            <DataTableHeadTitle title={'Status'} width={'10%'} />
+                            <DataTableHeadTitle title={'Datum verwerkt'} width={'15%'} />
                             <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={5}>{loadingText}</td>
+                                <td colSpan={6}>{loadingText}</td>
                             </tr>
                         ) : (
                             financialOverviews.map(financialOverview => {

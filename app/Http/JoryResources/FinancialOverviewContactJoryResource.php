@@ -21,6 +21,9 @@ class FinancialOverviewContactJoryResource extends JoryResource
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
 
+        // Attributes
+        $this->field('status')->filterable()->sortable();
+
         // Relations
         $this->relation('contact');
         $this->relation('financialOverview');

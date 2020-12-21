@@ -184,13 +184,9 @@ const mapDispatchToProps = dispatch => {
             setFilterOpportunityName,
             setFilterOpportunityNumber,
             setFilterOpportunityStatusId,
-            setFilterOpportunityAmountOfQuotationRequests,
         },
         dispatch
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OpportunitiesListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListFilter);

@@ -9,6 +9,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
+use App\Eco\PortalSettings\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
 use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
@@ -125,7 +126,22 @@ class Administration extends Model
         return $this->belongsTo(Mailbox::class);
     }
 
+    public function portalSettingsLayout()
+    {
+        return $this->belongsTo(PortalSettingsLayout::class);
+    }
+
     //appended fields
+    public function getPortalSettingsLayoutAssignedAttribute()
+    {
+        if($this->portal_settings_layout_id)
+        {
+            return PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->get();
+        }else{
+            return PortalSettingsLayout::where('default', true)->get();
+        }
+    }
+
     public function getTotalOrdersAttribute()
     {
         return $this->orders()->count();

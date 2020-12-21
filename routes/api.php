@@ -456,6 +456,7 @@ Route::namespace('Api')
         Route::get('setting', 'Setting\SettingController@get');
         Route::get('setting/multiple', 'Setting\SettingController@multiple');
         Route::post('setting', 'Setting\SettingController@store');
+        Route::get('portal_settings_layout', 'PortalSettings\PortalSettingsLayoutController@get');
 
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');

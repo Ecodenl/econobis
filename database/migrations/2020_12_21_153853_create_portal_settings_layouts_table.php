@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePortalSettingsLayoutTable extends Migration
+class CreatePortalSettingsLayoutsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePortalSettingsLayoutTable extends Migration
      */
     public function up()
     {
-        Schema::create('portal_settings_layout', function (Blueprint $table) {
+        Schema::create('portal_settings_layouts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('description');
             $table->boolean('default')->default(false);
@@ -34,7 +34,7 @@ class CreatePortalSettingsLayoutTable extends Migration
         Schema::table('administrations', function (Blueprint $table) {
             $table->unsignedInteger('portal_settings_layout_id')->nullable()->default(null);
             $table->foreign('portal_settings_layout_id')
-                ->references('id')->on('portal_settings_layout');
+                ->references('id')->on('portal_settings_layouts');
         });
     }
 
@@ -51,6 +51,6 @@ class CreatePortalSettingsLayoutTable extends Migration
                 $table->dropColumn('portal_settings_layout_id');
             });
         }
-        Schema::dropIfExists('portal_settings_layout');
+        Schema::dropIfExists('portal_settings_layouts');
     }
 }

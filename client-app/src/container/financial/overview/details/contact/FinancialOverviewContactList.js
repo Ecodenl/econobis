@@ -336,27 +336,27 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                     <div className="btn-group btn-group-flex" role="group">
                         <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={refreshFinancialOverviewContacts} />
                         {financialOverview.definitive &&
-                            financialOverview.statusId === 'definitive' &&
-                            (totalsInfo.totalFinancialOverviewContactsToSend > 0 ||
-                                totalsInfo.totalFinancialOverviewContactsErrorSending > 0) &&
-                            !onlyPostFinancialOverviewContacts &&
-                            meta.total > 0 && (
-                                <ButtonText
-                                    buttonText={emailFinancialOverviewContactsText}
-                                    onClickAction={() => previewSendEmail()}
-                                />
-                            )}
+                        financialOverview.statusId === 'definitive' &&
+                        (totalsInfo.totalFinancialOverviewContactsToSend > 0 ||
+                            totalsInfo.totalFinancialOverviewContactsErrorSending > 0) &&
+                        !onlyPostFinancialOverviewContacts &&
+                        meta.total > 0 ? (
+                            <ButtonText
+                                buttonText={emailFinancialOverviewContactsText}
+                                onClickAction={() => previewSendEmail()}
+                            />
+                        ) : null}
                         {financialOverview.definitive &&
-                            financialOverview.statusId === 'definitive' &&
-                            (totalsInfo.totalFinancialOverviewContactsToSend > 0 ||
-                                totalsInfo.totalFinancialOverviewContactsErrorSending > 0) &&
-                            !onlyEmailFinancialOverviewContacts &&
-                            meta.total > 0 && (
-                                <ButtonText
-                                    buttonText={postFinancialOverviewContactsText}
-                                    onClickAction={() => previewSendPost()}
-                                />
-                            )}
+                        financialOverview.statusId === 'definitive' &&
+                        (totalsInfo.totalFinancialOverviewContactsToSend > 0 ||
+                            totalsInfo.totalFinancialOverviewContactsErrorSending > 0) &&
+                        !onlyEmailFinancialOverviewContacts &&
+                        meta.total > 0 ? (
+                            <ButtonText
+                                buttonText={postFinancialOverviewContactsText}
+                                onClickAction={() => previewSendPost()}
+                            />
+                        ) : null}
                     </div>
                 </div>
                 <div className="col-md-6">
@@ -510,7 +510,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(FinancialOverviewContactList);
+export default connect(null, mapDispatchToProps)(FinancialOverviewContactList);

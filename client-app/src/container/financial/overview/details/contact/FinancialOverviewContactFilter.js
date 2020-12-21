@@ -1,7 +1,7 @@
 import React from 'react';
-import DataTableFilterDate from '../../../../components/dataTable/DataTableFilterDate';
+import DataTableFilterDate from '../../../../../components/dataTable/DataTableFilterDate';
 import moment from 'moment';
-import financialOverviewContactStatuses from '../../../../data/financialOverviewContactStatuses';
+import financialOverviewContactStatuses from '../../../../../data/financialOverviewContactStatuses';
 
 function FinancialOverviewContactListFilter({
     showSelectFinancialOverviewContactsToSend,

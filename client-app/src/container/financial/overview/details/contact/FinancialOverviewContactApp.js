@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import PanelHeader from '../../../../components/panel/PanelHeader';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import PanelHeader from '../../../../../components/panel/PanelHeader';
 import FinancialOverviewContactList from './FinancialOverviewContactList';
 
 class FinancialOverviewContactApp extends Component {

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
-import Panel from '../../../../../components/panel/Panel';
-import PanelBody from '../../../../../components/panel/PanelBody';
+import Panel from '../../../../../../components/panel/Panel';
+import PanelBody from '../../../../../../components/panel/PanelBody';
 import FinancialOverviewContactViewForm from './FinancialOverviewContactViewForm';
 import FinancialOverviewContactViewToolbar from './FinancialOverviewContactViewToolbar';
-import FinancialOverviewContactAPI from '../../../../../api/financial/overview/FinancialOverviewContactAPI';
+import FinancialOverviewContactAPI from '../../../../../../api/financial/overview/FinancialOverviewContactAPI';
 import fileDownload from 'js-file-download';
 
 class FinancialOverviewContactViewApp extends Component {

@@ -4,18 +4,18 @@ import axios from 'axios';
 import moment from 'moment';
 
 import FinancialOverviewContactItem from './FinancialOverviewContactItem';
-import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
-import useKeyPress from '../../../../helpers/useKeyPress';
-import DataTablePagination from '../../../../components/dataTable/DataTablePagination';
-import DataTable from '../../../../components/dataTable/DataTable';
-import DataTableHead from '../../../../components/dataTable/DataTableHead';
-import DataTableHeadTitleAndSort from '../../../../components/dataTable/DataTableHeadTitleAndSort';
-import DataTableBody from '../../../../components/dataTable/DataTableBody';
+import FinancialOverviewContactAPI from '../../../../../api/financial/overview/FinancialOverviewContactAPI';
+import useKeyPress from '../../../../../helpers/useKeyPress';
+import DataTablePagination from '../../../../../components/dataTable/DataTablePagination';
+import DataTable from '../../../../../components/dataTable/DataTable';
+import DataTableHead from '../../../../../components/dataTable/DataTableHead';
+import DataTableHeadTitleAndSort from '../../../../../components/dataTable/DataTableHeadTitleAndSort';
+import DataTableBody from '../../../../../components/dataTable/DataTableBody';
 import FinancialOverviewContactListFilter from './FinancialOverviewContactFilter';
-import ErrorModal from '../../../../components/modal/ErrorModal';
-import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
-import ButtonIcon from '../../../../components/button/ButtonIcon';
-import ButtonText from '../../../../components/button/ButtonText';
+import ErrorModal from '../../../../../components/modal/ErrorModal';
+import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
+import ButtonIcon from '../../../../../components/button/ButtonIcon';
+import ButtonText from '../../../../../components/button/ButtonText';
 
 const initialFilter = { contact: '', statusId: null, dateSent: '', emailedTo: '' };
 const recordsPerPage = 50;
@@ -154,7 +154,6 @@ function FinancialOverviewContactList({ financialOverview }) {
 
         fetchFinancialOverviewContacts();
 
-        // this.setState({ ...initialState });
         setShowSelectFinancialOverviewContactsToSend(false);
         setCheckedAll(false);
         setFinancialOverviewContactIds([]);
@@ -243,12 +242,12 @@ function FinancialOverviewContactList({ financialOverview }) {
         const financialOverviewContactId = Number(event.target.name);
 
         if (isChecked) {
-            setFinancialOverviewContactIds({ ...financialOverviewContactIds, financialOverviewContactId });
+            setFinancialOverviewContactIds([...financialOverviewContactIds, financialOverviewContactId]);
             checkAllFinancialOverviewContactsAreChecked();
         } else {
-            setFinancialOverviewContactIds({
+            setFinancialOverviewContactIds([
                 ...financialOverviewContactIds.filter(item => item !== financialOverviewContactId),
-            });
+            ]);
             setCheckedAll(false);
         }
     }

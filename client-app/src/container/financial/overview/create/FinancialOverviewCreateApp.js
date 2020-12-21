@@ -26,7 +26,7 @@ class FinancialOverviewCreateApp extends Component {
     callGetFinancialOverviewContactsForSending = () => {
         FinancialOverviewContactsAPI.getFinancialOverviewContactsForSending(
             this.props.params.id,
-            this.props.financialOverviewContactPreviewSend,
+            this.props.selectedIds,
             this.props.params.type
         ).then(payload => {
             this.setState({
@@ -109,8 +109,11 @@ class FinancialOverviewCreateApp extends Component {
 
 const mapStateToProps = state => {
     return {
-        financialOverviewContactPreviewSend: state.financialOverviewContactPreviewSend,
+        selectedIds: state.financialOverviewPreview.selectedIds,
     };
 };
 
-export default connect(mapStateToProps, null)(FinancialOverviewCreateApp);
+export default connect(
+    mapStateToProps,
+    null
+)(FinancialOverviewCreateApp);

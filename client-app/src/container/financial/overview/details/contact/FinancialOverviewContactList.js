@@ -16,11 +16,14 @@ import ErrorModal from '../../../../../components/modal/ErrorModal';
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import ButtonText from '../../../../../components/button/ButtonText';
+import { clearPreviewParticipantReport } from '../../../../../actions/project/ProjectDetailsActions';
+import { connect } from 'react-redux';
+import { previewFinancialOverview } from '../../../../../actions/financial-overview/FinancialOverviewActions';
 
 const initialFilter = { contact: '', statusId: null, dateSent: '', emailedTo: '' };
 const recordsPerPage = 50;
 
-function FinancialOverviewContactList({ financialOverview }) {
+function FinancialOverviewContactList({ financialOverview, previewFinancialOverview }) {
     const [showSelectFinancialOverviewContactsToSend, setShowSelectFinancialOverviewContactsToSend] = useState(false);
     const [checkedAll, setCheckedAll] = useState(false);
     const [financialOverviewContactIds, setFinancialOverviewContactIds] = useState([]);
@@ -48,7 +51,16 @@ function FinancialOverviewContactList({ financialOverview }) {
         function() {
             fetchFinancialOverviewContacts();
         },
-        [pagination.offset, sort, filter.contact, filter.statusId, filter.dateSent, filter.emailedTo]
+        [
+            pagination.offset,
+            sort,
+            filter.contact,
+            filter.statusId,
+            filter.dateSent,
+            filter.emailedTo,
+            onlyEmailFinancialOverviewContacts,
+            onlyPostFinancialOverviewContacts,
+        ]
     );
 
     // If pressed enter then reload data
@@ -96,15 +108,8 @@ function FinancialOverviewContactList({ financialOverview }) {
         setEmailFinancialOverviewContactsText('Preview e-mail waardestaten');
         setOnlyEmailFinancialOverviewContacts(true);
 
-        //todo WM: opschonen console.log
-        // console.log('previewSendEmail - ids');
-        // console.log(financialOverviewContactIds);
-        // console.log(financialOverviewContactIds.length);
-
-        fetchFinancialOverviewContacts();
-
         if (financialOverviewContactIds.length > 0) {
-            // previewSend(financialOverviewContactIds);
+            previewFinancialOverview(financialOverviewContactIds);
             hashHistory.push(`/waardestaat/${financialOverview.id}/aanmaken/email`);
         } else {
             toggleShowCheckboxList();
@@ -115,19 +120,12 @@ function FinancialOverviewContactList({ financialOverview }) {
         setPostFinancialOverviewContactsText('Preview post waardestaten');
         setOnlyPostFinancialOverviewContacts(true);
 
-        //todo WM: opschonen console.log
-        // console.log('previewSendPost - ids');
-        // console.log(financialOverviewContactIds);
-        // console.log(financialOverviewContactIds.length);
-
-        fetchFinancialOverviewContacts();
-
         // Bij verzenden post voorlopig even max 50 tegelijk (worden in 1 PDF samengevoegd en anders wordt PDF wel erg groot)
         if (financialOverviewContactIds.length > 50) {
             toggleErrorMessagePost();
         } else {
             if (financialOverviewContactIds.length > 0) {
-                // previewSend(financialOverviewContactIds);
+                previewFinancialOverview(financialOverviewContactIds);
                 hashHistory.push(`/waardestaat/${financialOverview.id}/aanmaken/post`);
             } else {
                 toggleShowCheckboxList();
@@ -506,4 +504,13 @@ function FinancialOverviewContactList({ financialOverview }) {
     );
 }
 
-export default FinancialOverviewContactList;
+const mapDispatchToProps = dispatch => ({
+    previewFinancialOverview: data => {
+        dispatch(previewFinancialOverview(data));
+    },
+});
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(FinancialOverviewContactList);

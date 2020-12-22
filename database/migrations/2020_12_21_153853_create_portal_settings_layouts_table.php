@@ -17,7 +17,7 @@ class CreatePortalSettingsLayoutsTable extends Migration
             $table->increments('id');
             $table->string('description');
             $table->boolean('default')->default(false);
-            $table->string('portal-logo_file_name');;
+            $table->string('portal_logo_file_name');;
             $table->string('portal_favicon_file_name');
             $table->string('portal_background_color', 30);
             $table->string('portal_background_text_color', 30);

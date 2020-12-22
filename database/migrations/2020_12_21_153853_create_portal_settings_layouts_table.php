@@ -16,7 +16,7 @@ class CreatePortalSettingsLayoutsTable extends Migration
         Schema::create('portal_settings_layouts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('description');
-            $table->boolean('default')->default(false);
+            $table->boolean('is_default')->default(false);
             $table->string('portal_logo_file_name');;
             $table->string('portal_favicon_file_name');
             $table->string('portal_background_color', 30);

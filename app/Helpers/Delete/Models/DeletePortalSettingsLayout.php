@@ -16,11 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Class DeletePortalSettingsLayout
  *
- * Relation: 1-n Emails. Action: dissociate
- * Relation: 1-n Documents. Action: dissociate
- * Relation: 1-n Tasks & notes. Action: call DeleteTask
- * Relation: 1-n Quotation requests. Action: call DeleteQuotationRequest
- *
  * @package App\Helpers\Delete\Models
  */
 class DeletePortalSettingsLayout implements DeleteInterface
@@ -71,8 +66,8 @@ class DeletePortalSettingsLayout implements DeleteInterface
      */
     public function dissociateRelations()
     {
-        foreach (Administration::where('portal_settings_layout_id', $this->emailTemplate->id)->get() as $administration){
-            $administration->emailTemplateFinancialOverview()->dissociate();
+        foreach (Administration::where('portal_settings_layout_id', $this->portalSettingsLayout->id)->get() as $administration){
+            $administration->portalSettingsLayout()->dissociate();
             $administration->save();
         }
     }

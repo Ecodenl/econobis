@@ -53,12 +53,7 @@ class FinancialOverviewCreateApp extends Component {
                                     <FinancialOverviewCreateToolbar
                                         type={this.props.params.type}
                                         paymentType={this.props.params.paymentType}
-                                        financialOverviewContactIds={this.props.financialOverviewContactPreviewSend}
-                                        amountOfFinancialOverviewContacts={
-                                            this.state.financialOverviewContacts
-                                                ? this.state.financialOverviewContacts.length
-                                                : 0
-                                        }
+                                        selectedIds={this.props.selectedIds}
                                         financialOverviewId={this.props.params.id}
                                     />
                                 </PanelBody>

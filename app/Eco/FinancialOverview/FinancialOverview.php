@@ -28,6 +28,16 @@ class FinancialOverview extends Model
         return $this->hasMany(FinancialOverviewContact::class);
     }
 
+    public function getTotalFinancialOverviewProjectsConceptAttribute()
+    {
+        return $this->financialOverviewProjects()->where('definitive', false)->count();
+    }
+
+    public function getTotalFinancialOverviewProjectsDefinitiveAttribute()
+    {
+        return $this->financialOverviewProjects()->where('definitive', true)->count();
+    }
+
     public function getTotalFinancialOverviewContactsAttribute()
     {
         return $this->financialOverviewContacts()->count();

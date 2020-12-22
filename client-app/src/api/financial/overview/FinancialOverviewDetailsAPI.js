@@ -11,7 +11,17 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'statusId', 'dateProcessed'],
+                    fld: [
+                        'id',
+                        'description',
+                        'administrationId',
+                        'year',
+                        'definitive',
+                        'statusId',
+                        'dateProcessed',
+                        'totalFinancialOverviewProjectsConcept',
+                        'totalFinancialOverviewProjectsDefinitive',
+                    ],
                     rlt: {
                         administration: { fld: ['id', 'name'] },
                         financialOverviewProjects: {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,9 +12,11 @@ import ObligationDetails from './ObligationDetails';
 import CapitalDetails from './CapitalDetails';
 import PcrDetails from './PcrDetails';
 import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
+import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
 
 function ProjectDetails({ match }) {
     const [portalSettings, setPortalSettings] = useState({});
+    const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
     const [project, setProject] = useState({});
     const [isLoading, setLoading] = useState(true);
 
@@ -41,6 +43,7 @@ function ProjectDetails({ match }) {
             ProjectAPI.fetchProject(match.params.id)
                 .then(payload => {
                     setProject(payload.data.data);
+                    setCurrentThemeSettings(payload.data.data.administration.portalSettingsLayoutAssigned);
                     setLoading(false);
                 })
                 .catch(error => {

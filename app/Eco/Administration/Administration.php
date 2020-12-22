@@ -136,9 +136,9 @@ class Administration extends Model
     {
         if($this->portal_settings_layout_id)
         {
-            return PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->get();
+            return PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
         }else{
-            return PortalSettingsLayout::where('is_default', true)->get();
+            return PortalSettingsLayout::where('is_default', true)->first();
         }
     }
 

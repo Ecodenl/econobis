@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Portal;
 
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use Config;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -34,10 +35,9 @@ class GeneratePortalCss implements ShouldQueue
      */
     public function handle()
     {
-        $store = $this->getStore();
-
+        $defaultPortalSettingsLayout = PortalSettingsLayout::where('is_default', true);
         $html = view('portal.portal_css', [
-            'store' => $store
+            'defaultPortalSettingsLayout' => $defaultPortalSettingsLayout
         ])->render();
 
         try{

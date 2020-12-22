@@ -22,7 +22,7 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
-use App\Eco\PortalSettings\PortalSettingsLayout;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Task\Task;

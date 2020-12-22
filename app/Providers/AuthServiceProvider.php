@@ -60,6 +60,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Portal\PortalUserPolicy;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayoutPolicy;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductPolicy;
 use App\Eco\Project\Project;
@@ -138,6 +140,7 @@ class AuthServiceProvider extends ServiceProvider
         QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
         OpportunityStatus::class => OpportunityStatusPolicy::class,
         FinancialOverview::class => FinancialOverviewPolicy::class,
+        PortalSettingsLayout::class => PortalSettingsLayoutPolicy::class,
     ];
 
     /**

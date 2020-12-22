@@ -39,10 +39,10 @@ class PortalSettingsFormGeneralEdit extends Component {
                 ...props.staticContactGroups,
             },
             attachmentLogo: '',
-            filenameLogo: 'logo.png',
+            filenameLogo: '',
             newLogo: false,
             attachmentFavicon: '',
-            filenameFavicon: 'favicon.ico',
+            filenameFavicon: '',
             newFavicon: false,
             errors: {
                 portalActive: false,

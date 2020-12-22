@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Eco\PortalSettings;
+namespace App\Eco\PortalSettingsLayout;
 
 use App\Eco\Administration\Administration;
 use Illuminate\Database\Eloquent\Model;

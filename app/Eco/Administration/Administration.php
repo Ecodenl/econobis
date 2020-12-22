@@ -9,7 +9,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
-use App\Eco\PortalSettings\PortalSettingsLayout;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
 use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;

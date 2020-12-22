@@ -50,7 +50,7 @@ class PortalSettingsLayoutListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && permissions.manageFinancial ? (
+                    {this.state.showActionButtons && !isDefault && permissions.manageFinancial ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>

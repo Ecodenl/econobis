@@ -64,6 +64,7 @@ class PortalSettingsLayoutDetailsApp extends Component {
                                 <PortalSettingsLayoutToolbar
                                     description={this.state.portalSettingsLayout.description || ''}
                                     id={this.state.portalSettingsLayout.id}
+                                    isDefault={this.state.portalSettingsLayout.isDefault}
                                     deletePortalSettingsLayout={this.deletePortalSettingsLayout}
                                 />
                             </PanelBody>

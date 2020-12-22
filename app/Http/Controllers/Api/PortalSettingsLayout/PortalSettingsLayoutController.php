@@ -7,6 +7,7 @@ use App\Helpers\Delete\Models\DeletePortalSettingsLayout;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
+use App\Jobs\Portal\GeneratePortalCss;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -69,6 +70,11 @@ class PortalSettingsLayoutController extends Controller
 
         $portalSettingsLayout->fill($data);
         $portalSettingsLayout->save();
+
+        // Generate portal css with default color settings
+        if($portalSettingsLayout->is_default){
+            GeneratePortalCss::dispatch();
+        }
 
         $this->storeLogoAndFavicon($request, $portalSettingsLayout);
 
@@ -146,7 +152,7 @@ class PortalSettingsLayoutController extends Controller
                 abort('422', 'Error uploading file favicon');
             }
             try {
-                $layoutFaviconName = 'logo-' . $portalSettingsLayout->id . '.png';
+                $layoutFaviconName = 'favicon-' . $portalSettingsLayout->id . '.ico';
                 if (Config::get('app.env') == "local") {
                     Storage::disk('public_portal_local')->putFileAs('/', $request->file('attachmentFavicon'), $layoutFaviconName);
                     $portalSettingsLayout->portal_favicon_file_name = $layoutFaviconName;

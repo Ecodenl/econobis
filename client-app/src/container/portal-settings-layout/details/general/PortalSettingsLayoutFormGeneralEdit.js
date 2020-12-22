@@ -16,7 +16,6 @@ import InputToggle from '../../../../components/form/InputToggle';
 import PortalLogoLayoutNew from './PortalLogoLayoutNew';
 import PortalFaviconLayoutNew from './PortalFaviconLayoutNew';
 import Image from 'react-bootstrap/es/Image';
-import ViewText from '../../../../components/form/ViewText';
 
 class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -34,10 +33,10 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                 ...props.portalSettingsLayout,
             },
             attachmentLogo: '',
-            filenameLogo: 'logo' + props.portalSettingsLayout.id + '.png',
+            filenameLogo: '',
             newLogo: false,
             attachmentFavicon: '',
-            filenameFavicon: 'favicon.png',
+            filenameFavicon: '',
             newFavicon: false,
 
             errors: {
@@ -204,9 +203,6 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
             buttonTextColor,
         } = this.state.portalSettingsLayout;
 
-        // const portalLogoFileName = `logo-${id}.png`;
-        // const portalFaviconFileName = `favicon-${id}.ico`;
-        const imageHash = this.props.imageHash;
         const logoUrl = `${URL_API}/portal/images/${portalLogoFileName}?${this.props.imageHash}`;
         const faviconUrl = `${URL_API}/portal/${portalFaviconFileName}?${this.props.imageHash}`;
 
@@ -229,6 +225,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 divSize={'col-sm-4'}
                                 name={'isDefault'}
                                 value={isDefault}
+                                disabled={isDefault}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>
@@ -265,46 +262,26 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         {this.state.newLogo && (
                             <PortalLogoLayoutNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
                         )}
-                        {/*<div className="row">*/}
-                        {/*    <InputText*/}
-                        {/*        label="Favicon"*/}
-                        {/*        divSize={'col-sm-8'}*/}
-                        {/*        value={this.state.attachmentFavicon.name ? this.state.attachmentFavicon.name : portalLogoFileName}*/}
-                        {/*        onClickAction={this.toggleNewFavicon}*/}
-                        {/*        onChangeaction={() => {}}*/}
-                        {/*        readOnly={!this.manageTechnicalPortalSettings}*/}
-                        {/*        required={'required'}*/}
-                        {/*    />*/}
-                        {/*    <Image*/}
-                        {/*        src={*/}
-                        {/*            this.state.attachmentFavicon && this.state.attachmentFavicon.preview*/}
-                        {/*                ? this.state.attachmentFavicon.preview*/}
-                        {/*                : faviconUrl*/}
-                        {/*        }*/}
-                        {/*        style={{*/}
-                        {/*            border: '1px solid #999',*/}
-                        {/*            display: 'inline-block',*/}
-                        {/*            padding: '1px',*/}
-                        {/*            borderRadius: '1px',*/}
-                        {/*            height: '20px',*/}
-                        {/*            boxShadow: '0 0 0 1px #fff inset',*/}
-                        {/*        }}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
-                        {/*{this.state.newFavicon && (*/}
-                        {/*    <PortalFaviconLayoutNew*/}
-                        {/*        toggleShowNewFavicon={this.toggleNewFavicon}*/}
-                        {/*        addFavicon={this.addFavicon}*/}
-                        {/*    />*/}
-                        {/*)}*/}
                         <div className="row">
-                            <ViewText
-                                label={'Favicon'}
-                                value={portalFaviconFileName}
-                                className={'col-sm-8 form-group'}
+                            <InputText
+                                label="Favicon"
+                                divSize={'col-sm-8'}
+                                value={
+                                    this.state.attachmentFavicon.name
+                                        ? this.state.attachmentFavicon.name
+                                        : portalFaviconFileName
+                                }
+                                onClickAction={this.toggleNewFavicon}
+                                onChangeaction={() => {}}
+                                readOnly={!this.manageTechnicalPortalSettings}
+                                required={'required'}
                             />
                             <Image
-                                src={`${URL_API}/portal/favicon.ico?${imageHash}`}
+                                src={
+                                    this.state.attachmentFavicon && this.state.attachmentFavicon.preview
+                                        ? this.state.attachmentFavicon.preview
+                                        : faviconUrl
+                                }
                                 style={{
                                     border: '1px solid #999',
                                     display: 'inline-block',
@@ -315,6 +292,12 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 }}
                             />
                         </div>
+                        {this.state.newFavicon && (
+                            <PortalFaviconLayoutNew
+                                toggleShowNewFavicon={this.toggleNewFavicon}
+                                addFavicon={this.addFavicon}
+                            />
+                        )}
 
                         <div className="row">
                             <InputText

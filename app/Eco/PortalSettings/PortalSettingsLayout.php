@@ -14,7 +14,7 @@ class PortalSettingsLayout extends Model
         'updated_at',
     ];
 
-    public function aministrations()
+    public function administrations()
     {
         return $this->hasMany(Administration::class);
     }

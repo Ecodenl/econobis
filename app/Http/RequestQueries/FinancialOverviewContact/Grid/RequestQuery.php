@@ -24,7 +24,12 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 
     protected function baseQuery()
     {
-        return FinancialOverviewContact::query()
+        $query = FinancialOverviewContact::query()
             ->select('financial_overview_contacts.*')->where('financial_overview_contacts.financial_overview_id', $this->request->input('financialOverviewId'));
+
+        if($this->request->input('onlyEmailFinancialOverviewContacts') == "true" || $this->request->input('onlyPostFinancialOverviewContacts') == "true") {
+            $query->where('financial_overview_contacts.status_id', 'to-send');
+        }
+        return $query;
     }
 }

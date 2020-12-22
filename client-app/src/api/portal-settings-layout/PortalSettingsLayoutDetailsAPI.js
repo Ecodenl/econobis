@@ -1,5 +1,4 @@
 import axiosInstance from '../default-setup/AxiosInstance';
-import axios from 'axios';
 
 const URL_PORTAL_SETTINGS_LAYOUT = `portal-settings-layout`;
 

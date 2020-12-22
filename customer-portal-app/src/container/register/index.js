@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -13,8 +13,11 @@ import Button from 'react-bootstrap/Button';
 import MasterForm from './MasterForm';
 import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 import axios from 'axios';
+import { ThemeSettingsContext } from '../../context/ThemeSettingsContext';
 
 function RegisterProject({ match, currentSelectedContact }) {
+    const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
+
     const initialRegisterValues = {
         contactId: null,
         projectId: null,
@@ -60,6 +63,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                             const contact = payloadContact.data.data;
                             const project = payloadProject.data.data;
                             setProject(project);
+                            setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
                             const contactData = rebaseContact(contact);
                             setContact(contactData);
                             callFetchContactProjects();

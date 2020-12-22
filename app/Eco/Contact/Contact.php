@@ -429,7 +429,7 @@ class Contact extends Model
 
     public function getPortalSettingsLayoutAssignedAttribute()
     {
-        return PortalSettingsLayout::where('is_default', true)->get();
+        return PortalSettingsLayout::where('is_default', true)->first();
     }
 
     /**

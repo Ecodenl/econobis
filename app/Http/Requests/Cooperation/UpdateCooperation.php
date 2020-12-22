@@ -14,7 +14,7 @@ class UpdateCooperation extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('manage_cooperation_settings', Cooperation::class);
+        return $this->user()->can('manage', Cooperation::class);
     }
 
     /**

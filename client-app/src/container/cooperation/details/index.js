@@ -2,9 +2,28 @@ import React, { useEffect, useReducer } from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import CooperationDetailsToolbar from './Toolbar';
+import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
+import CooperationDetailsForm from './Form';
 
 const INITIAL_STATE = {
-    result: {},
+    result: {
+        name: '',
+        address: '',
+        postalCode: '',
+        city: '',
+        kvkNumber: '',
+        btwNumber: '',
+        iban: '',
+        ibanAttn: '',
+        email: '',
+        website: '',
+        logoFilename: '',
+        logoName: '',
+        hoomLink: '',
+        hoomKey: '',
+        hoomEmailTemplateId: '',
+        hoomGroupId: '',
+    },
     isLoading: true,
 };
 
@@ -31,16 +50,18 @@ function CooperationDetailsApp() {
     useEffect(
         function() {
             setIsLoading(true);
-            EmployeeAPI.fetchEmployeeFinancialResultReport({ ...state.filter })
+            CooperationDetailsAPI.fetchDetails()
                 .then(function(payload) {
-                    dispatch({
-                        type: 'updateResult',
-                        payload: payload.data.data,
-                    });
+                    if (payload.data && payload.data.data && payload.data.data.id) {
+                        dispatch({
+                            type: 'updateResult',
+                            payload: payload.data.data,
+                        });
+                    }
                     setIsLoading(false);
                 })
                 .catch(function(error) {
-                    showNotification('Er is iets misgegaan met het laden van de gegevens. Herlaad de pagina.');
+                    alert('Er is iets misgegaan met het laden van de gegevens. Herlaad de pagina.');
                     setIsLoading(false);
                 });
         },
@@ -66,13 +87,7 @@ function CooperationDetailsApp() {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    {/*<PortalSettingsForm*/}
-                    {/*    portalSettings={this.state.portalSettings}*/}
-                    {/*    isLoading={this.state.isLoading}*/}
-                    {/*    hasError={this.state.hasError}*/}
-                    {/*    updateState={this.updateState}*/}
-                    {/*/>*/}
-                    Formulier
+                    {state.isLoading ? 'Laden...' : <CooperationDetailsForm initialDetails={state.result} />}
                 </div>
             </div>
             <div className="col-md-3" />

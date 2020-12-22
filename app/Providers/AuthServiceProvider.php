@@ -14,6 +14,8 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\ContactGroupPolicy;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\ContactNote\ContactNotePolicy;
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\Cooperation\CooperationPolicy;
 use App\Eco\CostCenter\CostCenter;
 use App\Eco\CostCenter\CostCenterPolicy;
 use App\Eco\Document\Document;
@@ -135,6 +137,7 @@ class AuthServiceProvider extends ServiceProvider
         TaskType::class => TaskTypePolicy::class,
         QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
         OpportunityStatus::class => OpportunityStatusPolicy::class,
+        Cooperation::class => CooperationPolicy::class,
     ];
 
     /**

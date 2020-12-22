@@ -6,7 +6,7 @@
  * Time: 9:35
  */
 
-namespace App\Http\Controllers\Api\Team;
+namespace App\Http\Controllers\Api\Cooperation;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Http\Controllers\Api\ApiController;
@@ -18,7 +18,9 @@ class CooperationController extends ApiController
 {
     public function show()
     {
-        $this->authorize('manage_cooperation_settings', Cooperation::class);
+        $this->authorize('manage', Cooperation::class);
+
+        if(Cooperation::doesntExist()) return null;
 
         return FullCooperation::make(Cooperation::first());
     }

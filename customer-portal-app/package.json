@@ -20,7 +20,7 @@
     "react-google-recaptcha-v3": "^1.4.0",
     "react-html-parser": "^2.0.2",
     "react-icons": "^3.7.0",
-    "react-router-dom": "5.0.1",
+    "react-router-dom": "5.2.0",
     "react-scripts": "^3.4.0",
     "react-spinners": "^0.5.13",
     "yup": "^0.27.0"

@@ -33,6 +33,7 @@ class ContactJoryResource extends JoryResource
         $this->field('address_lines')->hideByDefault();
         $this->field('is_participant')->filterable()->sortable();
         $this->field('is_participant_pcr_project')->filterable()->sortable();
+        $this->field('portal_settings_layout_assigned')->filterable()->sortable();
 
         // Relations
         $this->relation('addresses');

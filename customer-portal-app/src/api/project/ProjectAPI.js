@@ -50,7 +50,7 @@ export default {
                     ],
                     rlt: {
                         projectType: { fld: ['id', 'codeRef'] },
-                        administration: { fld: ['id', 'name'] },
+                        administration: { fld: ['id', 'name', 'portalSettingsLayoutAssigned'] },
                     },
                 },
             },

@@ -15,9 +15,6 @@ import InputText from '../../../components/form/InputText';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import InputToggle from '../../../components/form/InputToggle';
-import PortalLogoNew from './PortalLogoNew';
-import PortalFaviconNew from './PortalFaviconNew';
-import Image from 'react-bootstrap/es/Image';
 
 class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
@@ -39,10 +36,10 @@ class PortalSettingsFormGeneralEdit extends Component {
                 ...props.staticContactGroups,
             },
             attachmentLogo: '',
-            filenameLogo: 'logo.png',
+            filenameLogo: '',
             newLogo: false,
             attachmentFavicon: '',
-            filenameFavicon: 'favicon.ico',
+            filenameFavicon: '',
             newFavicon: false,
             errors: {
                 portalActive: false,
@@ -50,15 +47,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                 cooperativeName: false,
                 portalWebsite: false,
                 portalUrl: false,
-                backgroundColor: false,
-                backgroundTextColor: false,
-                backgroundImageColor: false,
-                backgroundImageTextColor: false,
-                headerPortalIconColor: false,
-                backgroundSecondaryColor: false,
-                backgroundSecondaryTextColor: false,
-                buttonColor: false,
-                buttonTextColor: false,
                 responsibleUserId: false,
                 checkContactTaskResponsibleUserId: false,
                 checkContactTaskResponsibleTeamId: false,
@@ -143,139 +131,55 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.portalUrl = true;
             hasErrors = true;
         }
-        if (validator.isEmpty(portalSettings.backgroundColor)) {
-            errors.backgroundColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.backgroundTextColor)) {
-            errors.backgroundTextColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.backgroundImageColor)) {
-            errors.backgroundImageColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.backgroundImageTextColor)) {
-            errors.backgroundImageTextColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.headerPortalIconColor)) {
-            errors.headerPortalIconColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.backgroundSecondaryColor)) {
-            errors.backgroundSecondaryColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.backgroundSecondaryTextColor)) {
-            errors.backgroundSecondaryTextColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.buttonColor)) {
-            errors.buttonColor = true;
-            hasErrors = true;
-        }
-        if (validator.isEmpty(portalSettings.buttonTextColor)) {
-            errors.buttonTextColor = true;
-            hasErrors = true;
-        }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.responsibleUserId + '')
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.responsibleUserId + '')) {
             errors.responsibleUserId = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.contactResponsibleOwnerUserId + '')
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.contactResponsibleOwnerUserId + '')) {
             errors.contactResponsibleOwnerUserId = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.checkContactTaskResponsible + '')
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.checkContactTaskResponsible + '')) {
             errors.checkContactTaskResponsible = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.newAtCooperativeLinkText)
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.newAtCooperativeLinkText)) {
             errors.newAtCooperativeLinkText = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.defaultContactGroupMemberId + '')
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.defaultContactGroupMemberId + '')) {
             errors.defaultContactGroupMemberId = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.defaultContactGroupNoMemberId + '')
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.defaultContactGroupNoMemberId + '')) {
             errors.defaultContactGroupNoMemberId = true;
             hasErrors = true;
         }
-        if (!this.manageTechnicalPortalSettings && validator.isEmpty(portalSettings.linkPrivacyPolicy)) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.linkPrivacyPolicy)) {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage + '')
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage + '')) {
             errors.pcrPowerKwhConsumptionPercentage = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)) {
             errors.pcrGeneratingCapacityOneSolorPanel = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.emailTemplateNewAccountId + '')
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.emailTemplateNewAccountId + '')) {
             errors.emailTemplateNewAccountId = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.portalName)
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.portalName)) {
             errors.portalName = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.cooperativeName)
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.cooperativeName)) {
             errors.cooperativeName = true;
             hasErrors = true;
         }
-        if (
-            !this.manageTechnicalPortalSettings &&
-            portalSettings.portalActive &&
-            validator.isEmpty(portalSettings.portalWebsite)
-        ) {
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.portalWebsite)) {
             errors.portalWebsite = true;
             hasErrors = true;
         }
@@ -303,15 +207,6 @@ class PortalSettingsFormGeneralEdit extends Component {
         data.append('cooperativeName', portalSettings.cooperativeName ? portalSettings.cooperativeName : '');
         data.append('portalWebsite', portalSettings.portalWebsite ? portalSettings.portalWebsite : '');
         data.append('portalUrl', portalSettings.portalUrl);
-        data.append('backgroundColor', portalSettings.backgroundColor);
-        data.append('backgroundTextColor', portalSettings.backgroundTextColor);
-        data.append('backgroundImageColor', portalSettings.backgroundImageColor);
-        data.append('backgroundImageTextColor', portalSettings.backgroundImageTextColor);
-        data.append('headerPortalIconColor', portalSettings.headerPortalIconColor);
-        data.append('backgroundSecondaryColor', portalSettings.backgroundSecondaryColor);
-        data.append('backgroundSecondaryTextColor', portalSettings.backgroundSecondaryTextColor);
-        data.append('buttonColor', portalSettings.buttonColor);
-        data.append('buttonTextColor', portalSettings.buttonTextColor);
         data.append('responsibleUserId', portalSettings.responsibleUserId ? portalSettings.responsibleUserId : '');
         data.append(
             'checkContactTaskResponsibleUserId',
@@ -384,15 +279,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             cooperativeName,
             portalWebsite,
             portalUrl,
-            backgroundColor,
-            backgroundTextColor,
-            backgroundImageColor,
-            backgroundImageTextColor,
-            headerPortalIconColor,
-            backgroundSecondaryColor,
-            backgroundSecondaryTextColor,
-            buttonColor,
-            buttonTextColor,
             responsibleUserId,
             checkContactTaskResponsible,
             contactResponsibleOwnerUserId,
@@ -424,273 +310,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 error={this.state.errors.portalUrl}
                             />
                         </div>
-                        <div className="row">
-                            <InputText
-                                label="Logo"
-                                divSize={'col-sm-8'}
-                                value={this.state.attachmentLogo.name ? this.state.attachmentLogo.name : 'logo.png'}
-                                onClickAction={this.toggleNewLogo}
-                                onChangeaction={() => {}}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                            />
-                            <Image
-                                src={
-                                    this.state.attachmentLogo && this.state.attachmentLogo.preview
-                                        ? this.state.attachmentLogo.preview
-                                        : logoUrl
-                                }
-                                style={{
-                                    backgroundColor: backgroundImageColor,
-                                    color: backgroundImageTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '1px',
-                                    borderRadius: '1px',
-                                    height: '50px',
-                                    boxShadow: '0 0 0 1px #fff inset',
-                                }}
-                            />
-                        </div>
-                        {this.state.newLogo && (
-                            <PortalLogoNew toggleShowNewLogo={this.toggleNewLogo} addLogo={this.addLogo} />
-                        )}
-                        <div className="row">
-                            <InputText
-                                label="Favicon"
-                                divSize={'col-sm-8'}
-                                value={'favicon.ico'}
-                                onClickAction={this.toggleNewFavicon}
-                                onChangeaction={() => {}}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                            />
-                            <Image
-                                src={
-                                    this.state.attachmentFavicon && this.state.attachmentFavicon.preview
-                                        ? this.state.attachmentFavicon.preview
-                                        : faviconUrl
-                                }
-                                style={{
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '1px',
-                                    borderRadius: '1px',
-                                    height: '20px',
-                                    boxShadow: '0 0 0 1px #fff inset',
-                                }}
-                            />
-                        </div>
-                        {this.state.newFavicon && (
-                            <PortalFaviconNew
-                                toggleShowNewFavicon={this.toggleNewFavicon}
-                                addFavicon={this.addFavicon}
-                            />
-                        )}
-
-                        <div className="row">
-                            <InputText
-                                label="Login/Header - achtergrond afbeelding kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundImageColor'}
-                                value={backgroundImageColor}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.backgroundImageColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundImageColor,
-                                    color: backgroundImageTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                Tekst
-                            </span>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Login/Header - achtergrond afbeelding tekst kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundImageTextColor'}
-                                value={backgroundImageTextColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundImageTextColor}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Header - menu/poppetje kleur"
-                                divSize={'col-sm-8'}
-                                name={'headerPortalIconColor'}
-                                value={headerPortalIconColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.headerPortalIconColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundImageColor,
-                                    color: headerPortalIconColor,
-                                    textAlign: 'center',
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '4px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                = <FaUser />
-                            </span>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Login - veld achtergrond kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundSecondaryColor'}
-                                value={backgroundSecondaryColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundSecondaryColor}
-                            />
-                            <div
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundImageColor,
-                                    display: 'inline-block',
-                                }}
-                            >
-                                <span
-                                    className="rc-color-picker-trigger"
-                                    unselectable="unselectable"
-                                    style={{
-                                        backgroundColor: backgroundSecondaryColor,
-                                        color: backgroundSecondaryTextColor,
-                                        border: '1px solid #999',
-                                        display: 'inline-block',
-                                        padding: '2px',
-                                        borderRadius: '2px',
-                                        width: '50px',
-                                        height: '30px',
-                                        boxShadow: '0 0 0 2px #fff inset',
-                                    }}
-                                >
-                                    Tekst
-                                </span>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Login - veld tekst kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundSecondaryTextColor'}
-                                value={backgroundSecondaryTextColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundSecondaryTextColor}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Achtergrond kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundColor'}
-                                value={backgroundColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: backgroundColor,
-                                    color: backgroundTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                Tekst
-                            </span>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Achtergrond tekst kleur"
-                                divSize={'col-sm-8'}
-                                name={'backgroundTextColor'}
-                                value={backgroundTextColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.backgroundTextColor}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Buttonknop kleur"
-                                divSize={'col-sm-8'}
-                                name={'buttonColor'}
-                                value={buttonColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.buttonColor}
-                            />
-                            <span
-                                className="rc-color-picker-trigger"
-                                unselectable="unselectable"
-                                style={{
-                                    backgroundColor: buttonColor,
-                                    color: buttonTextColor,
-                                    border: '1px solid #999',
-                                    display: 'inline-block',
-                                    padding: '2px',
-                                    borderRadius: '2px',
-                                    width: '50px',
-                                    height: '30px',
-                                    boxShadow: '0 0 0 2px #fff inset',
-                                }}
-                            >
-                                Tekst
-                            </span>
-                        </div>
-                        <div className="row">
-                            <InputText
-                                label="Buttonknop tekst kleur"
-                                divSize={'col-sm-8'}
-                                name={'buttonTextColor'}
-                                value={buttonTextColor}
-                                onChangeAction={this.handleInputChange}
-                                readOnly={!this.manageTechnicalPortalSettings}
-                                required={'required'}
-                                error={this.state.errors.buttonTextColor}
-                            />
-                        </div>
 
                         <hr />
 
@@ -712,7 +331,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.responsibleUserId}
                                 multi={false}
                             />
@@ -726,7 +345,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 options={this.props.users}
                                 optionName={'fullName'}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.contactResponsibleOwnerUserId}
                                 multi={false}
                             />
@@ -748,7 +367,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 ]}
                                 value={checkContactTaskResponsible}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.checkContactTaskResponsible}
                             />
                         </div>
@@ -772,26 +391,9 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     value={newAtCooperativeLinkText}
                                     maxLength={255}
                                     onChangeAction={this.handleInputChange}
-                                    required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                    required={portalActive ? 'required' : ''}
                                     error={this.state.errors.newAtCooperativeLinkText}
                                 />
-                                {/*<span*/}
-                                {/*className="rc-color-picker-trigger"*/}
-                                {/*unselectable="unselectable"*/}
-                                {/*style={{*/}
-                                {/*backgroundColor: backgroundImageColor,*/}
-                                {/*color: backgroundImageTextColor,*/}
-                                {/*border: '1px solid #999',*/}
-                                {/*display: 'inline-block',*/}
-                                {/*padding: '2px',*/}
-                                {/*borderRadius: '2px',*/}
-                                {/*width: '300px',*/}
-                                {/*height: 'auto',*/}
-                                {/*boxShadow: '0 0 0 2px #fff inset',*/}
-                                {/*}}*/}
-                                {/*>*/}
-                                {/*{newAtCooperativeLinkText.replace('{cooperatie_naam}', cooperativeName)}*/}
-                                {/*</span>*/}
                             </div>
                         ) : null}
 
@@ -803,7 +405,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={defaultContactGroupMemberId}
                                 options={this.props.staticContactGroups}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultContactGroupMemberId}
                                 multi={false}
                             />
@@ -816,7 +418,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={defaultContactGroupNoMemberId}
                                 options={this.props.staticContactGroups}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.defaultContactGroupNoMemberId}
                                 multi={false}
                             />
@@ -828,7 +430,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'linkPrivacyPolicy'}
                                 value={linkPrivacyPolicy}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.linkPrivacyPolicy}
                             />
                         </div>
@@ -842,7 +444,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'pcrPowerKwhConsumptionPercentage'}
                                 value={pcrPowerKwhConsumptionPercentage}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.pcrPowerKwhConsumptionPercentage}
                             />
                         </div>
@@ -854,7 +456,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'pcrGeneratingCapacityOneSolorPanel'}
                                 value={pcrGeneratingCapacityOneSolorPanel}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.pcrGeneratingCapacityOneSolorPanel}
                             />
                         </div>
@@ -866,7 +468,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 value={emailTemplateNewAccountId}
                                 options={this.props.emailTemplates}
                                 onChangeAction={this.handleReactSelectChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.emailTemplateNewAccountId}
                                 multi={false}
                             />
@@ -878,7 +480,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'portalName'}
                                 value={portalName}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.portalName}
                             />
                         </div>
@@ -889,7 +491,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'cooperativeName'}
                                 value={cooperativeName}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.cooperativeName}
                             />
                         </div>
@@ -900,7 +502,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 name={'portalWebsite'}
                                 value={portalWebsite}
                                 onChangeAction={this.handleInputChange}
-                                required={!this.manageTechnicalPortalSettings && portalActive ? 'required' : ''}
+                                required={portalActive ? 'required' : ''}
                                 error={this.state.errors.portalWebsite}
                             />
                         </div>

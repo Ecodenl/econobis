@@ -10,12 +10,12 @@
 
 # production portal
 /portal
-/build/images/logo.png
-/build/favicon.ico
+/build/images/logo*
+/build/favicon*
 /build/js/server-data.js
 /build/portal.css
-/public/images/logo.png
-/public/favicon.ico
+/public/images/*
+/public/favicon*
 /public/js/server-data.js
 /public/portal.css
 /server-data

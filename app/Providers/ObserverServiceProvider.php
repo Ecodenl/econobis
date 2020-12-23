@@ -58,6 +58,8 @@ use App\Eco\Person\Person;
 use App\Eco\Person\PersonObserver;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberObserver;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayoutObserver;
 use App\Eco\Product\PriceHistory;
 use App\Eco\Product\PriceHistoryObserver;
 use App\Eco\Product\Product;
@@ -121,6 +123,7 @@ class ObserverServiceProvider extends ServiceProvider
         FinancialOverviewContact::observe(FinancialOverviewContactObserver::class);
         FinancialOverviewProject::observe(FinancialOverviewProjectObserver::class);
         FinancialOverviewParticipantProject::observe(FinancialOverviewParticipantProjectObserver::class);
+        PortalSettingsLayout::observe(PortalSettingsLayoutObserver::class);
     }
 
     /**

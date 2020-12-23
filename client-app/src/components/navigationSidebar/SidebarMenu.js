@@ -453,10 +453,22 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <SvgIcon size={20} icon={road} />
                     </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link-header" to="portal-settings">
-                            Portal instellingen
-                        </Link>
+                        <Link className="sidebar-link-header">Portal instellingen</Link>
                     </NavText>
+                    <Nav id="portalSettingsGeneral">
+                        <NavText>
+                            <Link className="sidebar-link" to="portal-settings">
+                                Algemene instellingen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="portalSettingsLayouts">
+                        <NavText>
+                            <Link className="sidebar-link" to="portal-instellingen-layout">
+                                Layout instellingen
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
             )}
         </SideNav>

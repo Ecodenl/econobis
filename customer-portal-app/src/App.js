@@ -20,31 +20,34 @@ import ChangeAccount from './container/authorization/change-account';
 import AboutUs from './container/about-us';
 import RegistrationDetails from './container/registration/details';
 import FinancialOverviewDocuments from './container/financial-overview-documents/list';
+import { ThemeSettingsProvider } from './context/ThemeSettingsContext';
 
 function App() {
     return (
         <Router>
             <AuthProvider>
                 <PortalUserProvider>
-                    <Switch>
-                        <ProtectedRoute exact path="/" component={ContactDetails} />
-                        <ProtectedRoute path="/gegevens" component={ContactDetails} />
-                        <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
-                        <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
-                        <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
-                        <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />
-                        <ProtectedRoute path="/project-deelname/:id" component={RegistrationDetails} />
-                        <ProtectedRoute path="/project/:id" component={ProjectDetails} />
-                        <ProtectedRoute path="/waardestaat-documenten" component={FinancialOverviewDocuments} />
-                        <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />
-                        <ProtectedRoute path="/over-ons" component={AboutUs} />
-                        <PublicRoute path="/login" component={Login} />
-                        <PublicRoute path="/activeer-registratie/:registrationCode/:email" component={Register} />
-                        <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />
-                        <PublicRoute path="/wachtwoord-wijzigen/:token/:email" component={Reset} />
-                        <PublicRoute path="/nieuw-account" component={NewAccount} />
-                        <PublicRoute path="/nieuw-account-succes" component={NewAccountSuccess} />
-                    </Switch>
+                    <ThemeSettingsProvider>
+                        <Switch>
+                            <ProtectedRoute exact path="/" component={ContactDetails} />
+                            <ProtectedRoute path="/gegevens" component={ContactDetails} />
+                            <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
+                            <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
+                            <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
+                            <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />
+                            <ProtectedRoute path="/project-deelname/:id" component={RegistrationDetails} />
+                            <ProtectedRoute path="/project/:id" component={ProjectDetails} />
+                            <ProtectedRoute path="/waardestaat-documenten" component={FinancialOverviewDocuments} />
+                            <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />
+                            <ProtectedRoute path="/over-ons" component={AboutUs} />
+                            <PublicRoute path="/login" component={Login} />
+                            <PublicRoute path="/activeer-registratie/:registrationCode/:email" component={Register} />
+                            <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />
+                            <PublicRoute path="/wachtwoord-wijzigen/:token/:email" component={Reset} />
+                            <PublicRoute path="/nieuw-account" component={NewAccount} />
+                            <PublicRoute path="/nieuw-account-succes" component={NewAccountSuccess} />
+                        </Switch>
+                    </ThemeSettingsProvider>
                 </PortalUserProvider>
             </AuthProvider>
         </Router>

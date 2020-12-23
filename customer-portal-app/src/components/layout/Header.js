@@ -5,6 +5,7 @@ import { Link, withRouter } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { PortalUserConsumer } from '../../context/PortalUserContext';
+import { ThemeSettingsConsumer } from '../../context/ThemeSettingsContext';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import { FaUser } from 'react-icons/fa';
@@ -98,9 +99,13 @@ function Header({ location, history }) {
                 <Container>
                     <Row>
                         <Col xs={6}>
-                            <div className="header-logo">
-                                <Image src="images/logo.png" />
-                            </div>
+                            <ThemeSettingsConsumer>
+                                {({ currentThemeSettings }) => (
+                                    <div className="header-logo">
+                                        <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
+                                    </div>
+                                )}
+                            </ThemeSettingsConsumer>
                         </Col>
                         <Col xs={6}>
                             <div className="d-flex justify-content-end">

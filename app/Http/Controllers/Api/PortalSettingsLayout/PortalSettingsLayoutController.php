@@ -32,14 +32,14 @@ class PortalSettingsLayoutController extends Controller
             ->boolean('isDefault')->onEmpty(false)->whenMissing(false)->alias('is_default')->next()
             ->string('portalLogoFileName')->whenMissing('')->onEmpty('')->alias('portal_logo_file_name')->next()
             ->string('portalFaviconFileName')->whenMissing('')->onEmpty('')->alias('portal_favicon_file_name')->next()
-            ->string('portalBackgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('portal_background_color')->next()
-            ->string('portalBackgroundTextColor')->whenMissing('#000')->onEmpty('#000')->alias('portal_background_text_color')->next()
-            ->string('loginHeaderBackgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('login_header_background_color')->next()
-            ->string('loginHeaderBackgroundTextColor')->whenMissing('#000')->onEmpty('#000')->alias('login_header_background_text_color')->next()
-            ->string('headerIconsColor')->whenMissing('#000')->onEmpty('#000')->alias('header_icons_color')->next()
-            ->string('loginFieldBackgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('login_field_background_color')->next()
-            ->string('loginFieldBackgroundTextColor')->whenMissing('#000')->onEmpty('#000')->alias('login_field_background_text_color')->next()
-            ->string('buttonColor')->whenMissing('#000')->onEmpty('#000')->alias('button_color')->next()
+            ->string('portalBackgroundColor')->whenMissing('#034b8c')->onEmpty('#034b8c')->alias('portal_background_color')->next()
+            ->string('portalBackgroundTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('portal_background_text_color')->next()
+            ->string('loginHeaderBackgroundColor')->whenMissing('rgba(3, 75, 140, 0.9)')->onEmpty('rgba(3, 75, 140, 0.9)')->alias('login_header_background_color')->next()
+            ->string('loginHeaderBackgroundTextColor')->whenMissing('#333')->onEmpty('#000')->alias('login_header_background_text_color')->next()
+            ->string('headerIconsColor')->whenMissing('#fff')->onEmpty('#fff')->alias('header_icons_color')->next()
+            ->string('loginFieldBackgroundColor')->whenMissing('#3898EC')->onEmpty('#3898EC')->alias('login_field_background_color')->next()
+            ->string('loginFieldBackgroundTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('login_field_background_text_color')->next()
+            ->string('buttonColor')->whenMissing('#3898EC')->onEmpty('#3898EC')->alias('button_color')->next()
             ->string('buttonTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('button_text_color')->next()
             ->get();
 
@@ -57,14 +57,14 @@ class PortalSettingsLayoutController extends Controller
             ->boolean('isDefault')->onEmpty(false)->whenMissing(false)->alias('is_default')->next()
             ->string('portalLogoFileName')->whenMissing('logo.png')->onEmpty('logo.png')->alias('portal_logo_file_name')->next()
             ->string('portalFaviconFileName')->whenMissing('favicon.ico')->onEmpty('favicon.ico')->alias('portal_favicon_file_name')->next()
-            ->string('portalBackgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('portal_background_color')->next()
-            ->string('portalBackgroundTextColor')->whenMissing('#000')->onEmpty('#000')->alias('portal_background_text_color')->next()
-            ->string('loginHeaderBackgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('login_header_background_color')->next()
-            ->string('loginHeaderBackgroundTextColor')->whenMissing('#000')->onEmpty('#000')->alias('login_header_background_text_color')->next()
-            ->string('headerIconsColor')->whenMissing('#000')->onEmpty('#000')->alias('header_icons_color')->next()
-            ->string('loginFieldBackgroundColor')->whenMissing('#fff')->onEmpty('#fff')->alias('login_field_background_color')->next()
-            ->string('loginFieldBackgroundTextColor')->whenMissing('#000')->onEmpty('#000')->alias('login_field_background_text_color')->next()
-            ->string('buttonColor')->whenMissing('#000')->onEmpty('#000')->alias('button_color')->next()
+            ->string('portalBackgroundColor')->whenMissing('#034b8c')->onEmpty('#034b8c')->alias('portal_background_color')->next()
+            ->string('portalBackgroundTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('portal_background_text_color')->next()
+            ->string('loginHeaderBackgroundColor')->whenMissing('rgba(3, 75, 140, 0.9)')->onEmpty('rgba(3, 75, 140, 0.9)')->alias('login_header_background_color')->next()
+            ->string('loginHeaderBackgroundTextColor')->whenMissing('#333')->onEmpty('#000')->alias('login_header_background_text_color')->next()
+            ->string('headerIconsColor')->whenMissing('#fff')->onEmpty('#fff')->alias('header_icons_color')->next()
+            ->string('loginFieldBackgroundColor')->whenMissing('#3898EC')->onEmpty('#3898EC')->alias('login_field_background_color')->next()
+            ->string('loginFieldBackgroundTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('login_field_background_text_color')->next()
+            ->string('buttonColor')->whenMissing('#3898EC')->onEmpty('#3898EC')->alias('button_color')->next()
             ->string('buttonTextColor')->whenMissing('#fff')->onEmpty('#fff')->alias('button_text_color')->next()
             ->get();
 
@@ -154,11 +154,11 @@ class PortalSettingsLayoutController extends Controller
             try {
                 $layoutFaviconName = 'favicon-' . $portalSettingsLayout->id . '.ico';
                 if (Config::get('app.env') == "local") {
-                    Storage::disk('public_portal_local')->putFileAs('/', $request->file('attachmentFavicon'), $layoutFaviconName);
+                    Storage::disk('public_portal_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), $layoutFaviconName);
                     $portalSettingsLayout->portal_favicon_file_name = $layoutFaviconName;
                     $portalSettingsLayout->save();
                     if ($portalSettingsLayout->is_default) {
-                        Storage::disk('public_portal_local')->putFileAs('/', $request->file('attachmentFavicon'), 'favicon.ico');
+                        Storage::disk('public_portal_local')->putFileAs(DIRECTORY_SEPARATOR, $request->file('attachmentFavicon'), 'favicon.ico');
                     }
                 } else {
                     Storage::disk('public_portal')->putFileAs('/', $request->file('attachmentFavicon'), $layoutFaviconName);

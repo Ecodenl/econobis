@@ -22,7 +22,11 @@ class CooperationController extends ApiController
 
         if(Cooperation::doesntExist()) return null;
 
-        return FullCooperation::make(Cooperation::first());
+        $cooperation = Cooperation::first();
+
+        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate']);
+
+        return FullCooperation::make($cooperation);
     }
 
     public function store(CreateCooperation $request)

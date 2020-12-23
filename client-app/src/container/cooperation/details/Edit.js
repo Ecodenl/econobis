@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import ViewText from '../../../../components/form/ViewText';
-import PanelHeader from '../../../../components/panel/PanelHeader';
-import InputText from '../../../../components/form/InputText';
-import ButtonText from '../../../../components/button/ButtonText';
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
+import ViewText from '../../../components/form/ViewText';
+import PanelHeader from '../../../components/panel/PanelHeader';
+import InputText from '../../../components/form/InputText';
+import ButtonText from '../../../components/button/ButtonText';
 import { useFormik } from 'formik';
-import InputSelect from '../../../../components/form/InputSelect';
 import axios from 'axios';
-import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
-import InputReactSelect from '../../../../components/form/InputReactSelect';
-import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
+import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
+import InputReactSelect from '../../../components/form/InputReactSelect';
+import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
+import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 
-function CooperationDetailsFormEdit({ formData, toggleEdit }) {
+function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +20,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit }) {
         initialValues: formData,
 
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            processSubmit(values);
         },
     });
 
@@ -33,6 +33,21 @@ function CooperationDetailsFormEdit({ formData, toggleEdit }) {
             })
         );
     }, []);
+
+    function processSubmit(values) {
+        // Process to formdata
+
+        let send = null;
+        if (values.id === null) send = CooperationDetailsAPI.create(values);
+        else send = CooperationDetailsAPI.update(values);
+
+        send.then(payload => {
+            updateResult(payload.data.data);
+            toggleEdit();
+        }).catch(error => {
+            alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
+        });
+    }
 
     return (
         <section className={'panel-hover'}>

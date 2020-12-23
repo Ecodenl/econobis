@@ -32,13 +32,15 @@ class FullCooperation extends Resource
             'hoomLink' => $this->hoom_link,
             'hoomKey' => $this->hoom_key,
             'hoomEmailTemplateId' => $this->hoom_email_template_id,
+            'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],
             'hoomGroupId' => $this->hoom_group_id,
+            'hoomGroup' => ['name' => $this->contactGroup ? $this->contactGroup->name : ''],
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'createdById' => $this->created_by_id,
-            'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
+            'createdBy' => ['fullName' => $this->updatedBy->first_name],
             'updatedById' => $this->updated_by_id,
-            'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
+            'updatedBy' => ['fullName' => $this->updatedBy->full_name],
         ];
     }
 }

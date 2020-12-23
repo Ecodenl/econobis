@@ -1,8 +1,8 @@
 import React from 'react';
-import Panel from '../../../../components/panel/Panel';
-import PanelBody from '../../../../components/panel/PanelBody';
-import ViewText from '../../../../components/form/ViewText';
-import PanelHeader from '../../../../components/panel/PanelHeader';
+import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
+import ViewText from '../../../components/form/ViewText';
+import PanelHeader from '../../../components/panel/PanelHeader';
 
 function CooperationDetailsFormView({ formData, toggleEdit }) {
     return (
@@ -11,18 +11,18 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Naam'} value={formData.name} />
-                        <ViewText label={'Adres'} value={formData.address} />
-                    </div>
-                    <div className="row">
-                        <ViewText label={'Postcode'} value={formData.postalCode} />
-                        <ViewText label={'Plaats'} value={formData.city} />
-                    </div>
-                    <div className="row">
                         <ViewText label={'KvK'} value={formData.kvkNumber} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Adres'} value={formData.address} />
                         <ViewText label={'Btw nummer'} value={formData.btwNumber} />
                     </div>
                     <div className="row">
+                        <ViewText label={'Postcode'} value={formData.postalCode} />
                         <ViewText label={'IBAN'} value={formData.iban} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Plaats'} value={formData.city} />
                         <ViewText label={'IBAN t.n.v.'} value={formData.ibanAttn} />
                     </div>
                     <div className="row">
@@ -61,8 +61,8 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         <ViewText label={'Hoom key'} value={formData.hoomKey} />
                     </div>
                     <div className="row">
-                        <ViewText label={'Home e-mail template'} value={formData.hoomEmailTemplateId} />
-                        <ViewText label={'Hoom groep'} value={formData.hoomGroupId} />
+                        <ViewText label={'Home e-mail template'} value={formData.hoomEmailTemplate.name} />
+                        <ViewText label={'Hoom groep'} value={formData.hoomGroup.name} />
                     </div>
                 </PanelBody>
             </Panel>

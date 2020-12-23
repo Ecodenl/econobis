@@ -11,11 +11,11 @@
 # production portal
 /portal
 /build/images/logo*
-/build/favicon.ico
+/build/favicon*
 /build/js/server-data.js
 /build/portal.css
 /public/images/*
-/public/favicon.ico
+/public/favicon*
 /public/js/server-data.js
 /public/portal.css
 /server-data

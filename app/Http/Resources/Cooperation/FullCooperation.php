@@ -38,9 +38,9 @@ class FullCooperation extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'createdById' => $this->created_by_id,
-            'createdBy' => ['fullName' => $this->updatedBy->first_name],
+            'createdBy' => ['fullName' => $this->updatedBy->present()->fullName()],
             'updatedById' => $this->updated_by_id,
-            'updatedBy' => ['fullName' => $this->updatedBy->full_name],
+            'updatedBy' => ['fullName' => $this->updatedBy->present()->fullName()],
         ];
     }
 }

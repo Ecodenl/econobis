@@ -29,6 +29,7 @@ class CreatePortalSettingsLayoutsTable extends Migration
             $table->string('button_color', 30);
             $table->string('button_text_color', 30);
             $table->timestamps();
+            $table->softdeletes();
         });
 
         Schema::table('administrations', function (Blueprint $table) {

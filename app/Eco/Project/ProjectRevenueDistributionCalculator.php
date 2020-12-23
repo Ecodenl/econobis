@@ -156,6 +156,7 @@ class ProjectRevenueDistributionCalculator
         }else{
             $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
             $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
+            $daysOfYear = $this->daysOfYear($dateBegin, $dateEnd);
 
             if (!$dateBegin || !$dateEnd){
                 $payout = 0;
@@ -168,7 +169,7 @@ class ProjectRevenueDistributionCalculator
 
                     $payout = $payoutTillKeyAmount + $payoutAboveKeyAmount;
                 } else {
-                    $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+                    $payout = ($participationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / $daysOfYear * $daysOfPeriod;
                 }
             }
         }
@@ -186,6 +187,7 @@ class ProjectRevenueDistributionCalculator
 
         $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
         $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
+        $daysOfYear = $this->daysOfYear($dateBegin, $dateEnd);
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -213,11 +215,11 @@ class ProjectRevenueDistributionCalculator
 
             if($this->projectTypeCodeRef == 'loan') {
                 $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100
-                    / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+                    / $daysOfYear * $daysOfPeriod;
             }else {
 
                 $payout += ($mutationValue * $this->projectRevenueDistribution->revenue->pay_percentage) / 100
-                    / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod * $mutation->quantity;
+                    / $daysOfYear * $daysOfPeriod * $mutation->quantity;
             }
 
         }
@@ -233,6 +235,7 @@ class ProjectRevenueDistributionCalculator
 
         $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
         $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
+        $daysOfYear = $this->daysOfYear($dateBegin, $dateEnd);
 
         if (!$dateBegin || !$dateEnd) return 0;
 
@@ -275,8 +278,8 @@ class ProjectRevenueDistributionCalculator
             $currentMutationValues->modification_above_key_amount = $currentMutationValues->above_key_amount - $aboveKeyAmountOriginal;
 
 
-            $payoutTillKeyAmount = ($currentMutationValues->modification_before_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
-            $payoutAboveKeyAmount = ($currentMutationValues->modification_above_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
+            $payoutTillKeyAmount = ($currentMutationValues->modification_before_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / $daysOfYear * $daysOfPeriod;
+            $payoutAboveKeyAmount = ($currentMutationValues->modification_above_key_amount * $this->projectRevenueDistribution->revenue->pay_percentage_valid_from_key_amount) / 100 / $daysOfYear * $daysOfPeriod;
 
             $payout += $payoutTillKeyAmount + $payoutAboveKeyAmount;
         }
@@ -313,5 +316,59 @@ class ProjectRevenueDistributionCalculator
         return $participationsCount;
     }
 
+    /**
+     * @param string $dateBegin
+     * @param string $dateEnd
+     */
+    protected function daysOfYear($dateBegin, $dateEnd)
+    {
+        $dateBeginIsLeapYear = $dateBegin->isLeapYear();
+        $dateEndIsLeapYear = $dateEnd->isLeapYear();
+
+//  Determine if 29 feb (leapyear) is in period
+//  jaar startdatum = jaar einddatum?
+//      =>	Ja	jaar startdatum leapyear?
+//      	=>	Ja	29-2-jaar startdatum > startdatum en < eindatum
+//          	=>	Ja	leapperiode
+//				=>	Nee	geen leapperiode
+//			=>	nee	geen leapperiode
+//
+//    	=>	Nee	jaar startdatum leapyear?
+//        	=>	Ja	29-2-jaar startdatum > startdatum en < eindatum
+//          	=>	Ja	leapperiode
+//				=>	Nee	geen leapperiode
+//			=>	Nee	jaar einddatum leapyear?
+//          	=>	Ja	29-2-jaar einddatum > startdatum en < eindatum
+//                  =>	Ja	leapperiode
+//					=>	Nee	geen leapperiode
+//				=>	nee 	geen leapperiode
+
+        $hasPeriod29February = false;
+        if ($dateBegin->year == $dateEnd->year) {
+            // Period is not cross-annual period
+            if ($dateBeginIsLeapYear) {
+                $date29February = Carbon::createFromDate($dateBegin->year, 2, 29);
+                if ($date29February->between($dateBegin, $dateEnd)) {
+                    $hasPeriod29February = true;
+                }
+            }
+        } else {
+            // Period is cross-annual period
+            if ($dateBeginIsLeapYear) {
+                $date29February = Carbon::createFromDate($dateBegin->year, 2, 29);
+                if ($date29February->between($dateBegin, $dateEnd)) {
+                    $hasPeriod29February = true;
+                }
+            } else {
+                if ($dateEndIsLeapYear) {
+                    $date29February = Carbon::createFromDate($dateEnd->year, 2, 29);
+                    if ($date29February->between($dateBegin, $dateEnd)) {
+                        $hasPeriod29February = true;
+                    }
+                }
+            }
+        }
+        return $hasPeriod29February ? 366 : 365;
+    }
 
 }

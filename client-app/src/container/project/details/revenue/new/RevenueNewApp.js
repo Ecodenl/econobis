@@ -265,6 +265,8 @@ class RevenueNewApp extends Component {
             !hasErrors &&
             category.codeRef !== 'revenueKwh' &&
             category.codeRef !== 'redemptionEuro' &&
+            (this.state.project.projectType.codeRef === 'capital' ||
+                this.state.project.projectType.codeRef === 'postalcode_link_capital') &&
             moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()
         ) {
             errors.dateBegin = true;
@@ -286,6 +288,23 @@ class RevenueNewApp extends Component {
             errorMessage.dateBegin = 'Aflossingperiode mag maximaal 1 jaar zijn.';
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Aflossingperiode mag maximaal 1 jaar zijn.';
+            hasErrors = true;
+        }
+        if (
+            !hasErrors &&
+            category.codeRef === 'revenueEuro' &&
+            (this.state.project.projectType.codeRef === 'loan' ||
+                this.state.project.projectType.codeRef === 'obligation') &&
+            moment(revenue.dateBegin).format('Y-MM-DD') <
+            moment(revenue.dateEnd)
+                .add(-1, 'year')
+                .add(1, 'day')
+                .format('Y-MM-DD')
+        ) {
+            errors.dateBegin = true;
+            errorMessage.dateBegin = 'Periode mag maximaal 1 jaar zijn.';
+            errors.dateEnd = true;
+            errorMessage.dateEnd = 'Periode mag maximaal 1 jaar zijn.';
             hasErrors = true;
         }
 

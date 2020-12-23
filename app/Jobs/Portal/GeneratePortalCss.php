@@ -35,7 +35,7 @@ class GeneratePortalCss implements ShouldQueue
      */
     public function handle()
     {
-        $defaultPortalSettingsLayout = PortalSettingsLayout::where('is_default', true);
+        $defaultPortalSettingsLayout = PortalSettingsLayout::where('is_default', true)->first();
         $html = view('portal.portal_css', [
             'defaultPortalSettingsLayout' => $defaultPortalSettingsLayout
         ])->render();

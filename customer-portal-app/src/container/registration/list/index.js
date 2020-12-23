@@ -8,6 +8,7 @@ import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 function RegistrationList(props) {
     const [contact, setContact] = useState({});
@@ -78,6 +79,7 @@ function RegistrationList(props) {
                         <Table responsive>
                             <thead>
                                 <tr>
+                                    <th>Uitgevende instantie</th>
                                     <th>Project</th>
                                     <th>Deelname</th>
                                 </tr>
@@ -91,7 +93,12 @@ function RegistrationList(props) {
                                     ) {
                                         return (
                                             <tr key={participation.id}>
-                                                <td>{participation.project.name}</td>
+                                                <td>{participation.project.administration.name}</td>
+                                                <td>
+                                                    <Link to={`/project-deelname/${participation.id}`}>
+                                                        {participation.project.name}
+                                                    </Link>
+                                                </td>
                                                 <td>
                                                     {participation.project.projectType.codeRef == 'loan' ? (
                                                         <>

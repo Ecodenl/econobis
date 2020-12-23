@@ -4,10 +4,12 @@ namespace App\Eco\Administration;
 
 use App\Eco\Country\Country;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\PaymentInvoice\PaymentInvoice;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
 use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
@@ -80,6 +82,11 @@ class Administration extends Model
         return $this->hasMany(PaymentInvoice::class);
     }
 
+    public function financialOverviews()
+    {
+        return $this->hasMany(FinancialOverview::class);
+    }
+
     public function country()
     {
         return $this->belongsTo(Country::class);
@@ -105,6 +112,11 @@ class Administration extends Model
         return $this->belongsTo(EmailTemplate::class);
     }
 
+    public function emailTemplateFinancialOverview()
+    {
+        return $this->belongsTo(EmailTemplate::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class);
@@ -114,7 +126,22 @@ class Administration extends Model
         return $this->belongsTo(Mailbox::class);
     }
 
+    public function portalSettingsLayout()
+    {
+        return $this->belongsTo(PortalSettingsLayout::class);
+    }
+
     //appended fields
+    public function getPortalSettingsLayoutAssignedAttribute()
+    {
+        if($this->portal_settings_layout_id)
+        {
+            return PortalSettingsLayout::where('id', $this->portal_settings_layout_id)->first();
+        }else{
+            return PortalSettingsLayout::where('is_default', true)->first();
+        }
+    }
+
     public function getTotalOrdersAttribute()
     {
         return $this->orders()->count();
@@ -347,6 +374,21 @@ class Administration extends Model
         }
 
         return $canCreatePaymentInvoices;
+    }
+
+    public function getCanCreateFinancialOverviewContactsAttribute()
+    {
+        $canCreateFinancialOverviewContacts['can'] = true;
+        $canCreateFinancialOverviewContacts['message'] = '';
+        $canCreateFinancialOverviewContacts['requiredFields'] = [];
+
+        return $canCreateFinancialOverviewContacts;
+    }
+
+    public function getLastYearFinancialOverviewDefinitiveAttribute()
+    {
+        $financialOverview = $this->financialOverviews()->where('definitive', true)->get()->sortByDesc('year')->first();
+        return $financialOverview ? $financialOverview->year : null;
     }
 
 }

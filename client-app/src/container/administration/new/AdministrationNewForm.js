@@ -19,6 +19,7 @@ import InputToggle from '../../../components/form/InputToggle';
 import ViewText from '../../../components/form/ViewText';
 import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
+import PortalSettingsLayoutAPI from '../../../api/portal-settings-layout/PortalSettingsLayoutAPI';
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -52,6 +53,7 @@ class AdministrationNewForm extends Component {
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
                 emailTemplateExhortationId: '',
+                emailTemplateFinancialOverviewId: '',
                 attachment: '',
                 mailboxId: '',
                 usesTwinfield: false,
@@ -66,6 +68,7 @@ class AdministrationNewForm extends Component {
                 dateSyncTwinfieldPayments: '',
                 usesVat: true,
                 emailBccNotas: '',
+                portalSettingsLayoutId: '',
             },
             errors: {
                 name: false,
@@ -312,6 +315,7 @@ class AdministrationNewForm extends Component {
             data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
+            data.append('emailTemplateFinancialOverviewId', administration.emailTemplateFinancialOverviewId);
             data.append('usesTwinfield', administration.usesTwinfield);
             data.append('attachment', administration.attachment);
             data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
@@ -325,6 +329,7 @@ class AdministrationNewForm extends Component {
             data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
+            data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
 
             AdministrationDetailsAPI.newAdministration(data)
                 .then(payload => {
@@ -359,6 +364,7 @@ class AdministrationNewForm extends Component {
             emailTemplateIdTransfer,
             emailTemplateReminderId,
             emailTemplateExhortationId,
+            emailTemplateFinancialOverviewId,
             ibanAttn,
             mailboxId,
             usesTwinfield,
@@ -373,6 +379,7 @@ class AdministrationNewForm extends Component {
             dateSyncTwinfieldPayments,
             usesVat,
             emailBccNotas,
+            portalSettingsLayoutId,
         } = this.state.administration;
 
         let disableBeforeDateSyncTwinfieldContacts = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
@@ -575,6 +582,18 @@ class AdministrationNewForm extends Component {
                         </div>
 
                         <div className="row">
+                            <InputReactSelect
+                                label={'E-mail template waardestaat'}
+                                name={'emailTemplateFinancialOverviewId'}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateFinancialOverviewId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
+                        </div>
+
+                        <div className="row">
                             <InputSelect
                                 label={"Afzender van Rapportages en nota's is e-mail adres"}
                                 id="mailboxId"
@@ -606,6 +625,18 @@ class AdministrationNewForm extends Component {
                                 value={emailBccNotas}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailBccNotas}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Portal instellingen layout'}
+                                name={'portalSettingsLayoutId'}
+                                options={this.props.portalSettingsLayouts}
+                                optionName={'description'}
+                                value={portalSettingsLayoutId}
+                                onChangeAction={this.handleReactSelectChange}
+                                multi={false}
                             />
                         </div>
 
@@ -767,6 +798,7 @@ class AdministrationNewForm extends Component {
 const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
+        portalSettingsLayouts: state.systemData.portalSettingsLayouts,
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
     };
 };

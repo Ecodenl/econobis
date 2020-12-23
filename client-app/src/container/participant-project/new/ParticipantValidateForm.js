@@ -1,3 +1,5 @@
+import validator from 'validator';
+
 export default function(participation, errors, hasErrors, statusCodeRef, projectTypeCodeRef) {
     if (!participation.contactId) {
         errors.contactId = true;
@@ -65,6 +67,15 @@ export default function(participation, errors, hasErrors, statusCodeRef, project
                     errors.dateEntry = true;
                     hasErrors = true;
                 }
+                if (
+                    !validator.isEmpty(participation.dateEntry + '') &&
+                    !validator.isEmpty(participation.disableBeforeEntryDate) &&
+                    participation.dateEntry < participation.disableBeforeEntryDate
+                ) {
+                    errors.dateEntry = true;
+                    hasErrors = true;
+                }
+
                 if (projectTypeCodeRef === 'loan') {
                     if (!participation.amountFinal || participation.amountFinal < 0) {
                         errors.amountFinal = true;

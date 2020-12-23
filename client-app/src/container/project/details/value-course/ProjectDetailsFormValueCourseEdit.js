@@ -18,9 +18,13 @@ const ProjectDetailsFormValueCourseEdit = ({
     errors,
     projectType,
     isSaving,
+    lastYearFinancialOverviewDefinitive,
 }) => {
     const { project, date, bookWorth, transferWorth, active, createdAt, createdBy } = valueCourse;
 
+    let disableBeforeDate = lastYearFinancialOverviewDefinitive
+        ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
+        : '';
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel className={'panel-grey'}>
@@ -40,6 +44,11 @@ const ProjectDetailsFormValueCourseEdit = ({
                             name={'date'}
                             value={date}
                             onChangeAction={handleInputChangeDate}
+                            disabledBefore={disableBeforeDate}
+                            readOnly={
+                                lastYearFinancialOverviewDefinitive &&
+                                moment(date).year() <= lastYearFinancialOverviewDefinitive
+                            }
                             required={'required'}
                             error={errors.date}
                         />
@@ -118,7 +127,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ProjectDetailsFormValueCourseEdit);
+export default connect(mapStateToProps, null)(ProjectDetailsFormValueCourseEdit);

@@ -22,6 +22,8 @@ use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\DocumentTemplate\DocumentTemplatePolicy;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressPolicy;
+use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewPolicy;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\Intake\Intake;
@@ -58,6 +60,8 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberPolicy;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Portal\PortalUserPolicy;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayoutPolicy;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductPolicy;
 use App\Eco\Project\Project;
@@ -135,6 +139,8 @@ class AuthServiceProvider extends ServiceProvider
         TaskType::class => TaskTypePolicy::class,
         QuotationRequestStatus::class => QuotationRequestStatusPolicy::class,
         OpportunityStatus::class => OpportunityStatusPolicy::class,
+        FinancialOverview::class => FinancialOverviewPolicy::class,
+        PortalSettingsLayout::class => PortalSettingsLayoutPolicy::class,
     ];
 
     /**

@@ -37,6 +37,7 @@ const ParticipantNewForm = ({
         dateContractRetour,
         datePayment,
         dateEntry,
+        disableBeforeEntryDate,
     } = participation;
     const status = participantMutationStatuses.find(
         participantMutationStatuses => participantMutationStatuses.id == statusId
@@ -250,6 +251,7 @@ const ParticipantNewForm = ({
                             id={'dateEntry'}
                             value={dateEntry}
                             onChangeAction={handleInputChangeDate}
+                            disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
                         />

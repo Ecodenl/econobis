@@ -10,6 +10,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
@@ -21,6 +22,7 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Task\Task;
@@ -278,6 +280,15 @@ class Contact extends Model
         return $this->hasOne(PortalUser::class);
     }
 
+    public function financialOverviewContacts()
+    {
+        return $this->hasMany(FinancialOverviewContact::class);
+    }
+    public function financialOverviewContactsSend()
+    {
+        return $this->hasMany(FinancialOverviewContact::class)->where('status_id', 'sent')->orderBy('date_sent', 'desc');
+    }
+
     //Returns addresses array as Type - Streetname - Number
     //Primary address always comes first
     public function getPrettyAddresses(){
@@ -414,6 +425,11 @@ class Contact extends Model
             }
         }
         return false;
+    }
+
+    public function getPortalSettingsLayoutAssignedAttribute()
+    {
+        return PortalSettingsLayout::where('is_default', true)->first();
     }
 
     /**

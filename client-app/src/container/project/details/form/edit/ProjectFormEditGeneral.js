@@ -28,10 +28,13 @@ const ProjectFormEditGeneral = ({
     dateStart,
     dateEnd,
     dateEntry,
+    disableBeforeEntryDate,
+    lastYearFinancialOverviewDefinitive,
     contactGroupIds,
     dateProduction,
     isMembershipRequired,
     handleInputChange,
+    handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
     handleReactSelectChange,
@@ -165,8 +168,8 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                 />
 
-                {/*Als er al nota's zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
-                {hasPaymentInvoices ? (
+                {/*Als er al nota's of waardestaten zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
+                {hasPaymentInvoices || lastYearFinancialOverviewDefinitive != null ? (
                     <InputText
                         label={'Administratie'}
                         name={'administration'}
@@ -179,7 +182,7 @@ const ProjectFormEditGeneral = ({
                         name={'administrationId'}
                         options={administrations}
                         value={administrationId}
-                        onChangeAction={handleInputChange}
+                        onChangeAction={handleInputChangeAdministration}
                         required={'required'}
                         error={errors.administrationId}
                     />
@@ -235,6 +238,8 @@ const ProjectFormEditGeneral = ({
                     name={'dateEntry'}
                     value={dateEntry}
                     onChangeAction={handleInputChangeDate}
+                    disabledBefore={disableBeforeEntryDate}
+                    error={errors.dateEntry}
                 />
             </div>
 

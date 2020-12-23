@@ -22,9 +22,13 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::post('/portal-user/change-password', 'PortalUser\PortalUserController@changePassword');
 
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
+        Route::get('/contact/{contact}/financial-overview-documents', 'Contact\ContactController@financialOverviewDocuments');
+        Route::get('/contact/{contact}/related-administrations', 'Contact\ContactController@relatedAdministrations');
+        Route::get('/financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
 
+        Route::get('/project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
 
         Route::get('setting', '\\' . SettingController::class . '@get');

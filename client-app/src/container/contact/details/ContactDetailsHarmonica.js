@@ -16,6 +16,7 @@ import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import ParticipationHarmonica from './harmonica/ParticipationHarmonica';
 import OrderHarmonica from './harmonica/OrderHarmonica';
 import InvoiceHarmonica from './harmonica/InvoiceHarmonica';
+import FinancialOverviewContactHarmonica from './harmonica/FinancialOverviewContactHarmonica';
 
 class ContactDetailsHarmonica extends Component {
     constructor(props) {
@@ -238,6 +239,12 @@ class ContactDetailsHarmonica extends Component {
                     invoiceCount={this.props.contactDetails.invoiceCount}
                 />
 
+                <FinancialOverviewContactHarmonica
+                    toggleShowList={() => this.toggleShowList('financialOverviewContacts')}
+                    showFinancialOverviewContactList={this.state.toggleShowList.financialOverviewContacts}
+                    financialOverviewContactCount={this.props.contactDetails.financialOverviewContactCount}
+                />
+
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}
                     showDocumentsList={this.state.toggleShowList.documents}
@@ -270,7 +277,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactDetailsHarmonica);
+export default connect(mapStateToProps, null)(ContactDetailsHarmonica);

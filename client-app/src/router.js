@@ -140,10 +140,40 @@ const VatCodeDetailsApp = React.lazy(() => import('./container/vat-code/details/
 const LedgersListApp = React.lazy(() => import('./container/ledger/list/LedgersListApp'));
 const LedgerNewApp = React.lazy(() => import('./container/ledger/new/LedgerNewApp'));
 const LedgerDetailsApp = React.lazy(() => import('./container/ledger/details/LedgerDetailsApp'));
+const FinancialOverviewListApp = React.lazy(() =>
+    import('./container/financial/overview/list/FinancialOverviewListApp')
+);
+const FinancialOverviewCreateApp = React.lazy(() =>
+    import('./container/financial/overview/create/FinancialOverviewCreateApp')
+);
+
+const FinancialOverviewNewApp = React.lazy(() => import('./container/financial/overview/new/FinancialOverviewNewApp'));
+const FinancialOverviewDetailsApp = React.lazy(() =>
+    import('./container/financial/overview/details/FinancialOverviewDetailsApp')
+);
+const FinancialOverviewProjectDetailsApp = React.lazy(() =>
+    import('./container/financial/overview/project/FinancialOverviewProjectDetailsApp')
+);
+const FinancialOverviewContactPreviewApp = React.lazy(() =>
+    import('./container/financial/overview/preview/FinancialOverviewContactPreviewApp')
+);
+const FinancialOverviewContactViewApp = React.lazy(() =>
+    import('./container/financial/overview/details/contact/view/FinancialOverviewContactViewApp')
+);
+
 const CostCentersListApp = React.lazy(() => import('./container/cost-center/list/CostCentersListApp'));
 const CostCenterNewApp = React.lazy(() => import('./container/cost-center/new/CostCenterNewApp'));
 const CostCenterDetailsApp = React.lazy(() => import('./container/cost-center/details/CostCenterDetailsApp'));
 const PortalSettingsApp = React.lazy(() => import('./container/portal-settings/PortalSettingsApp'));
+const PortalSettingsLayoutListApp = React.lazy(() =>
+    import('./container/portal-settings-layout/list/PortalSettingsLayoutListApp')
+);
+const PortalSettingsLayoutNewApp = React.lazy(() =>
+    import('./container/portal-settings-layout/new/PortalSettingsLayoutNewApp')
+);
+const PortalSettingsLayoutApp = React.lazy(() =>
+    import('./container/portal-settings-layout/details/PortalSettingsLayoutApp')
+);
 const TaskTypesListApp = React.lazy(() => import('./container/task-type/list/TaskTypesListApp'));
 const TaskTypeDetailsApp = React.lazy(() => import('./container/task-type/details/TaskTypeDetailsApp'));
 const QuotationRequestStatusListApp = React.lazy(() =>
@@ -272,11 +302,21 @@ const Routes = () => {
                         path="financieel/:id/notas/te-verzenden/verzenden/:type/:paymentType"
                         component={InvoiceSendApp}
                     />
+                    /* Orders */
                     <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
                     <Route path="order/:id" component={OrderDetailsApp} />
                     <Route path="order/inzien/:id" component={InvoicePreviewApp} />
+                    /* Nota's */
                     <Route path="nota/:id" component={InvoiceDetailsApp} />
                     <Route path="nota/inzien/:id" component={InvoiceViewApp} />
+                    /* Waardestaten */
+                    <Route path="waardestaten" component={FinancialOverviewListApp} />
+                    <Route path="waardestaat/nieuw" component={FinancialOverviewNewApp} />
+                    <Route path="waardestaat/:id" component={FinancialOverviewDetailsApp} />
+                    <Route path="waardestaat/:id/aanmaken/:type" component={FinancialOverviewCreateApp} />
+                    <Route path="waardestaat-project/:id" component={FinancialOverviewProjectDetailsApp} />
+                    <Route path="waardestaat-contact/preview/:id" component={FinancialOverviewContactPreviewApp} />
+                    <Route path="waardestaat-contact/inzien/:id" component={FinancialOverviewContactViewApp} />
                     /* Campagnes */
                     <Route path="campagne/nieuw" component={CampaignNewApp} />
                     <Route path="campagne/:id" component={CampaignDetailsApp} />
@@ -289,6 +329,10 @@ const Routes = () => {
                     <Route path="kostenplaatsen" component={CostCentersListApp} />
                     <Route path="kostenplaats/nieuw" component={CostCenterNewApp} />
                     <Route path="kostenplaats/:id" component={CostCenterDetailsApp} />
+                    /* PortalSettingsLayout */
+                    <Route path="portal-instellingen-layout" component={PortalSettingsLayoutListApp} />
+                    <Route path="portal-instellingen-layout/nieuw" component={PortalSettingsLayoutNewApp} />
+                    <Route path="portal-instellingen-layout/:id" component={PortalSettingsLayoutApp} />
                     /* Measures */
                     <Route path="maatregelen" component={MeasuresListApp} />
                     <Route path="maatregel/:id" component={MeasureDetailsApp} />

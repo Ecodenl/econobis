@@ -7,6 +7,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
+use App\Http\Resources\FinancialOverview\FullFinancialOverviewProject;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Task\GridTask;
@@ -116,6 +117,7 @@ class FullProject extends Resource
                 'textBecomeNoMember' => $this->text_become_no_member,
                 'noMemberGroupId' => $this->no_member_group_id,
                 'noMemberGroup' => FullContactGroup::make($this->whenLoaded('noMemberGroup')),
+                'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
 
             ];
     }

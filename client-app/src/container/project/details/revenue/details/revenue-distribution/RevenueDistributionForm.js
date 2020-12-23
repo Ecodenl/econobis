@@ -20,6 +20,7 @@ import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 import moment from 'moment-business-days';
 import InputDate from '../../../../../../components/form/InputDate';
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
+import ErrorModal from '../../../../../../components/modal/ErrorModal';
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -49,6 +50,8 @@ class RevenueDistributionForm extends Component {
             buttonConfirmText: '',
             readyForCreation: false,
             createType: '',
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
@@ -254,6 +257,41 @@ class RevenueDistributionForm extends Component {
     };
 
     checkDistributionRevenueInvoices = () => {
+        let lastYearFinancialOverviewDefinitive = 0;
+        if (
+            this.props.projectRevenue.project &&
+            this.props.projectRevenue.project.lastYearFinancialOverviewDefinitive
+        ) {
+            lastYearFinancialOverviewDefinitive = this.props.projectRevenue.project.lastYearFinancialOverviewDefinitive;
+        } else if (
+            this.props.projectRevenue.project.administration &&
+            this.props.projectRevenue.project.administration.lastYearFinancialOverviewDefinitive
+        ) {
+            lastYearFinancialOverviewDefinitive = this.props.projectRevenue.project.administration
+                .lastYearFinancialOverviewDefinitive;
+        }
+        let disableBeforeEntryDate =
+            lastYearFinancialOverviewDefinitive > 0
+                ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
+                : '';
+        const $variableDateText =
+            'redemptionEuro' === this.props.projectRevenue.category.codeRef ? 'aflossingsdatum' : 'uitkeringsdatum';
+
+        if (
+            !validator.isEmpty(disableBeforeEntryDate) &&
+            moment(this.state.datePayout).format('YYYY-MM-DD') < disableBeforeEntryDate
+        ) {
+            this.props.setError(
+                412,
+                'De ' +
+                    $variableDateText +
+                    ' valt in jaar waar al een definitive waardestaat voor dit project aanwezig is.'
+            );
+            this.setState({
+                showModal: false,
+            });
+            return;
+        }
         if (this.state.distributionIds.length) {
             if (!this.props.projectRevenue.project.administration.canCreatePaymentInvoices['can']) {
                 this.props.setError(
@@ -265,11 +303,6 @@ class RevenueDistributionForm extends Component {
                 });
                 return;
             } else {
-                // this.createPaymentInvoices();
-                const $variableDateText =
-                    'redemptionEuro' === this.props.projectRevenue.category.codeRef
-                        ? 'aflossingsdatum'
-                        : 'uitkeringsdatum';
                 this.setState({
                     showModal: true,
                     modalText:
@@ -334,14 +367,31 @@ class RevenueDistributionForm extends Component {
         }
 
         document.body.style.cursor = 'wait';
-        ProjectRevenueAPI.createPaymentInvoices(this.state.datePayout, this.state.distributionIds).then(payload => {
-            document.body.style.cursor = 'default';
-            this.setState({
-                showSuccessMessage: true,
-                successMessage: succesMessageText,
+        ProjectRevenueAPI.createPaymentInvoices(this.state.datePayout, this.state.distributionIds)
+            .then(payload => {
+                document.body.style.cursor = 'default';
+                this.setState({
+                    showSuccessMessage: true,
+                    successMessage: succesMessageText,
+                });
+            })
+            .catch(error => {
+                let errorObject = JSON.parse(JSON.stringify(error));
+                let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                if (errorObject.response.status !== 500) {
+                    errorMessage = errorObject.response.data.message;
+                }
+                this.setState({
+                    showErrorModal: true,
+                    modalErrorMessage: errorMessage,
+                });
             });
-        });
     };
+
+    closeErrorModal = () => {
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+    };
+
     render() {
         let administrationIds = [];
         this.props.administrations.forEach(function(administration) {
@@ -531,6 +581,13 @@ class RevenueDistributionForm extends Component {
                     >
                         {this.state.successMessage}
                     </Modal>
+                )}
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
+                    />
                 )}
             </Panel>
         );

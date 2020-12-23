@@ -61,15 +61,15 @@ export default {
     createPaymentInvoices: (datePayout, distributionIds) => {
         const requestUrl = `${URL_API}/api/distribution/create-payment-invoices`;
 
-        return axiosInstance
-            .post(requestUrl, {
-                distributionIds: distributionIds,
-                datePayout: datePayout,
-            })
-            .then(response => response)
-            .catch(error => {
-                console.log(error);
-            });
+        return axiosInstance.post(requestUrl, {
+            distributionIds: distributionIds,
+            datePayout: datePayout,
+        });
+        // todo cleanup
+        // .then(response => response)
+        // .catch(error => {
+        //     console.log(error);
+        // });
     },
 
     createEnergySupplierReport: (revenueId, templateId, documentName) => {

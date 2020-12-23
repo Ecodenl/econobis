@@ -10,6 +10,7 @@ import ParticipantProjectDetailsAPI from '../../../api/participant-project/Parti
 
 const ParticipantDetailsTerminate = ({
     participantProjectId,
+    setErrorModal,
     closeDeleteItemModal,
     projectTypeCodeRef,
     fetchParticipantProjectDetails,
@@ -38,7 +39,12 @@ const ParticipantDetailsTerminate = ({
                     closeDeleteItemModal();
                 })
                 .catch(error => {
-                    alert('Er is iets misgegaan bij het opslaan. Herlaad de pagina.');
+                    let errorObject = JSON.parse(JSON.stringify(error));
+                    let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                    if (errorObject.response.status !== 500) {
+                        errorMessage = errorObject.response.data.message;
+                    }
+                    setErrorModal(errorMessage);
                 });
         }
     };
@@ -80,7 +86,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ParticipantDetailsTerminate);
+export default connect(null, mapDispatchToProps)(ParticipantDetailsTerminate);

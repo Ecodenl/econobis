@@ -457,6 +457,32 @@ Route::namespace('Api')
         Route::get('setting/multiple', 'Setting\SettingController@multiple');
         Route::post('setting', 'Setting\SettingController@store');
 
+        Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
+        Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
+        Route::post('financial-overview/{financialOverview}', 'FinancialOverview\FinancialOverviewController@update');
+        Route::post('financial-overview/{financialOverview}/delete', 'FinancialOverview\FinancialOverviewController@destroy');
+        Route::get('financial-overview/{financialOverview}/projects-for-financial-overview', 'FinancialOverview\FinancialOverviewController@getNewProjectsForFinancialOverview');
+        Route::get('financial-overview/{financialOverview}/totals-info-financial-overview', 'FinancialOverview\FinancialOverviewController@getTotalsInfoFinancialOverview');
+
+        Route::post('financial-overview-project', 'FinancialOverview\FinancialOverviewProjectController@store');
+        Route::post('financial-overview-project/{financialOverviewProject}', 'FinancialOverview\FinancialOverviewProjectController@update');
+        Route::post('financial-overview-project/{financialOverviewProject}/delete', 'FinancialOverview\FinancialOverviewProjectController@destroy');
+
+        Route::get('financial-overview-contact/grid', 'FinancialOverview\FinancialOverviewContactController@grid');
+        Route::get('financial-overview-contact/{financialOverviewContact}/email-preview', 'FinancialOverview\FinancialOverviewContactController@getEmailPreview');
+        Route::get('financial-overview-contact/{financialOverviewContact}/download-preview', 'FinancialOverview\FinancialOverviewContactController@downloadPreview');
+        Route::get('financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
+        Route::get('financial-overview-contact/{financialOverviewContact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContact');
+        Route::post('financial-overview-contact/{financialOverview}/sending/email', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingEmail');
+        Route::post('financial-overview-contact/{financialOverview}/sending/post', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingPost');
+        Route::post('financial-overview-contact/{financialOverview}/send-all', 'FinancialOverview\FinancialOverviewContactController@sendAll');
+        Route::post('financial-overview-contact/{financialOverview}/send-all-post', 'FinancialOverview\FinancialOverviewContactController@sendAllPost');
+
+        Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
+        Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
+        Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');
+        Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
+
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');
         Route::get('jory/{resource}/count', '\\'.JoryController::class.'@count');

@@ -15,6 +15,7 @@ use App\Eco\Email\EmailStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\FinancialOverview\FinancialOverviewContactStatus;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\CostCenter\CostCenter;
@@ -48,6 +49,7 @@ use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
@@ -163,6 +165,7 @@ class SystemData extends Resource
             'energyLabels' => EnergyLabel::select(['id', 'name'])->get(),
             'energyLabelStatus' => FullEnumWithIdAndName::collection(EnergyLabelStatus::all()),
             'energySuppliers' => GenericResource::collection($sortedEnergySuppliers),
+            'financialOverviewContactStatuses' => FullEnumWithIdAndName::collection(FinancialOverviewContactStatus::collection()),
             'industries' => FullIndustry::collection(Industry::all()),
             'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
@@ -209,6 +212,7 @@ class SystemData extends Resource
             'usersExtraAdministration' => $usersExtraAdministration,
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,
             'vatCodes' => VatCode::select(['id', 'description', 'percentage'])->get(),
+            'portalSettingsLayouts' => PortalSettingsLayout::select(['id', 'description'])->get(),
             'versionNumber' => 'Versie: ' . config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
         ];
     }

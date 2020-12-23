@@ -18,6 +18,7 @@ class JobCategory extends EnumWithIdAndName
             new static('create-payment-invoice', 'Maken uitkeringsnota\'s'),
             new static('sent-invoice', 'Versturen nota'),
             new static('sent-invoice-reminder', 'Versturen herinnering nota'),
+            new static('sent-financial-overview-contact', 'Versturen waardestaat'),
         ];
 
     }

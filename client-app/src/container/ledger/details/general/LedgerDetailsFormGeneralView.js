@@ -4,7 +4,7 @@ import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-const VatCodeDetailsFormGeneralView = ({ description, vatCodeId, twinfieldLedgerCode, switchToEdit, vatCodes }) => {
+const LedgerDetailsFormGeneralView = ({ description, vatCodeId, twinfieldLedgerCode, switchToEdit, vatCodes }) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
@@ -28,4 +28,4 @@ const VatCodeDetailsFormGeneralView = ({ description, vatCodeId, twinfieldLedger
     );
 };
 
-export default VatCodeDetailsFormGeneralView;
+export default LedgerDetailsFormGeneralView;

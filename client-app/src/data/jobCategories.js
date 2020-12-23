@@ -6,4 +6,5 @@ export default [
     { code: 'create-payment-invoice', name: "Maken uitkeringsnota's" },
     { code: 'sent-invoice', name: 'Versturen nota' },
     { code: 'sent-invoice-reminder', name: 'Versturen herinnering nota' },
+    { code: 'sent-financial-overview-contact', name: 'Versturen waardestaat' },
 ];

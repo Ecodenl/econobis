@@ -118,6 +118,11 @@ class DeleteEmailTemplate implements DeleteInterface
             $administration->save();
         }
 
+        foreach (Administration::where('email_template_financial_overview_id', $this->emailTemplate->id)->get() as $administration){
+            $administration->emailTemplateFinancialOverview()->dissociate();
+            $administration->save();
+        }
+
         foreach (Order::where('email_template_id_collection', $this->emailTemplate->id)->get() as $order) {
             $order->emailTemplateCollection()->dissociate();
             $order->save();

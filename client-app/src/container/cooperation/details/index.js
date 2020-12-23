@@ -3,7 +3,7 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import CooperationDetailsToolbar from './Toolbar';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
-import CooperationDetailsForm from './Form';
+import CooperationDetailsForm from './form';
 
 const INITIAL_STATE = {
     result: {
@@ -87,7 +87,7 @@ function CooperationDetailsApp() {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    {state.isLoading ? 'Laden...' : <CooperationDetailsForm initialDetails={state.result} />}
+                    {state.isLoading ? 'Laden...' : <CooperationDetailsForm formData={state.result} />}
                 </div>
             </div>
             <div className="col-md-3" />

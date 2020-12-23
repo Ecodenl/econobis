@@ -302,18 +302,9 @@
         </tr>
 
         @foreach($invoice->invoiceProducts as $invoiceProduct)
-            <?php
-            $decimals = strlen(substr(strrchr($invoiceProduct->price, "."), 1));
-            if($decimals<2){
-                $decimals = 2;
-            }
-            if($decimals>6){
-                $decimals = 6;
-            }
-            ?>
             <tr>
                 <td class="align-left">{{ $invoiceProduct->description }}</td>
-                <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($invoiceProduct->price, $decimals, ',', '.') }}</td>
+                <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($invoiceProduct->price, $invoiceProduct->price_number_of_decimals, ',', '.') }}</td>
                 <td class="align-right">{{ $invoiceProduct->amount }}</td>
                 <td class="align-right">@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
                 <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format(($invoiceProduct->price * $invoiceProduct->amount), 2, ',', '.') }}</td>

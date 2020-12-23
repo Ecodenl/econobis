@@ -217,12 +217,14 @@ class OrderController extends ApiController
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
-        $priceHistory->input_incl_vat = false;
+        $priceHistory->input_incl_vat = $productData['inputInclVat'];
+        $priceHistory->price_number_of_decimals = $productData['priceNumberOfDecimals'];
         $priceHistory->price = $productData['price'];
+        $priceHistory->price_incl_vat = $productData['priceInclVat'];
         $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
 
         $vatFactor = (100 + $priceHistory->vat_percentage) / 100;
-        $priceHistory->price_incl_vat = floatval( number_format( $priceHistory->price * $vatFactor, 2, '.', '') );
+        $priceHistory->price_incl_vat = floatval( number_format( $priceHistory->price * $vatFactor, $priceHistory->price_number_of_decimals, '.', '') );
 
         $orderProductData = $request->input('orderProduct');
 
@@ -259,21 +261,10 @@ class OrderController extends ApiController
 
         $product = Product::withoutGlobalScopes()->find($productData['id']);
         $product->invoice_text = $productData['description'];
-        $product->duration_id = $productData['durationId'];
         $product->ledger_id = $productData['ledgerId'];
         $product->ledger_id ?: $product->ledger_id = null;
         $product->cost_center_id = $productData['costCenterId'];
         $product->cost_center_id ?: $product->cost_center_id = null;
-
-        $priceHistory = new PriceHistory();
-        $priceHistory->product_id = $product->id;
-        $priceHistory->date_start = Carbon::today();
-        $priceHistory->input_incl_vat = false;
-        $priceHistory->price = $productData['price'];
-        $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
-
-        $vatFactor = (100 + $priceHistory->vat_percentage) / 100;
-        $priceHistory->price_incl_vat = floatval( number_format( $priceHistory->price * $vatFactor, 2, '.', '') );
 
         $orderProductData = $request->input('orderProduct');
 
@@ -282,13 +273,9 @@ class OrderController extends ApiController
         $orderProduct->amount = $orderProductData['amount'];
         $orderProduct->amount_reduction = $orderProductData['amountReduction'] ? $orderProductData['amountReduction'] : 0;
         $orderProduct->percentage_reduction = $orderProductData['percentageReduction'] ? $orderProductData['percentageReduction'] : 0;
-        $orderProduct->date_start = $orderProductData['dateStart'];
-        $orderProduct->date_end = $orderProductData['dateEnd'] ? $orderProductData['dateEnd'] : null;
-        $orderProduct->date_period_start_first_invoice = $orderProductData['datePeriodStartFirstInvoice'];
 
-        DB::transaction(function () use ($product, $priceHistory, $orderProduct) {
+        DB::transaction(function () use ($product, $orderProduct) {
             $product->save();
-            $priceHistory->save();
             $orderProduct->save();
         });
     }

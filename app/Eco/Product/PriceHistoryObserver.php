@@ -17,9 +17,11 @@ class PriceHistoryObserver
         if($product && $product->hasVariablePrice === 'static') {
             foreach ($product->invoiceProductsToSend as $invoiceProductToSend) {
 
+                $priceNumberOfDecimals = 2;
                 $price = 0;
                 $priceInclVat = 0;
                 if ($product->currentPrice) {
+                    $priceNumberOfDecimals = $product->currentPrice->price_number_of_decimals;
                     $price = $product->currentPrice->price;
                     $priceInclVat = $product->currentPrice->price_incl_vat;
 
@@ -62,7 +64,7 @@ class PriceHistoryObserver
                     }
                 }
 
-
+                $invoiceProductToSend->price_number_of_decimals = $priceNumberOfDecimals;
                 $invoiceProductToSend->price = $price;
                 $invoiceProductToSend->price_incl_vat = $priceInclVat;
                 $invoiceProductToSend->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage

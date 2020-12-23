@@ -90,7 +90,7 @@ const OrderProductsFormEdit = props => {
                             />
                             {variablePrice !== null ? (
                                 <InputText
-                                    label={'Prijs ex. BTW'}
+                                    label={'Prijs excl. BTW'}
                                     name={'variablePrice'}
                                     type={'number'}
                                     value={variablePrice}
@@ -113,13 +113,13 @@ const OrderProductsFormEdit = props => {
                                                   'nl',
                                                   {
                                                       minimumFractionDigits: 2,
-                                                      maximumFractionDigits: 2,
+                                                      maximumFractionDigits: props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                                   }
                                               )
                                             : '€' +
                                               props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
-                                                  maximumFractionDigits: 2,
+                                                  maximumFractionDigits: props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                               })
                                     }
                                     readOnly={true}

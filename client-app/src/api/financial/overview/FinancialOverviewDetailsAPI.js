@@ -11,7 +11,17 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'statusId', 'dateProcessed'],
+                    fld: [
+                        'id',
+                        'description',
+                        'administrationId',
+                        'year',
+                        'definitive',
+                        'statusId',
+                        'dateProcessed',
+                        'totalFinancialOverviewProjectsConcept',
+                        'totalFinancialOverviewProjectsDefinitive',
+                    ],
                     rlt: {
                         administration: { fld: ['id', 'name'] },
                         financialOverviewProjects: {
@@ -126,6 +136,12 @@ export default {
 
     fetchNewProjectsForFinancialOverview: financialOverview => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${financialOverview.id}/projects-for-financial-overview`;
+
+        return axiosInstance.get(requestUrl, financialOverview);
+    },
+
+    fetchTotalsInfoFinancialOverview: financialOverview => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${financialOverview.id}/totals-info-financial-overview`;
 
         return axiosInstance.get(requestUrl, financialOverview);
     },

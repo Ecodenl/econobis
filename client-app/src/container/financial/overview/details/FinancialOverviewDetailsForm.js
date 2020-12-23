@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import FinancialOverviewDetailsFormGeneral from './general/FinancialOverviewDetailsFormGeneral';
 import * as PropTypes from 'prop-types';
 import ProjectApp from './project/ProjectApp';
-import FinancialOverviewContactApp from '../contact/FinancialOverviewContactApp';
+import FinancialOverviewContactApp from './contact/FinancialOverviewContactApp';
 
 class FinancialOverviewDetailsForm extends Component {
     constructor(props) {

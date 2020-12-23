@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
-import PdfViewer from '../../../../../components/pdf/PdfViewer';
-import FinancialOverviewContactAPI from '../../../../../api/financial/overview/FinancialOverviewContactAPI';
+import PdfViewer from '../../../../../../components/pdf/PdfViewer';
+import FinancialOverviewContactAPI from '../../../../../../api/financial/overview/FinancialOverviewContactAPI';
 
 class FinancialOverviewContactViewForm extends Component {
     constructor(props) {

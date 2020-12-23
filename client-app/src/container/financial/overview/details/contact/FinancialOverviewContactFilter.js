@@ -1,11 +1,21 @@
 import React from 'react';
-import DataTableFilterDate from '../../../../components/dataTable/DataTableFilterDate';
+import DataTableFilterDate from '../../../../../components/dataTable/DataTableFilterDate';
 import moment from 'moment';
-import financialOverviewContactStatuses from '../../../../data/financialOverviewContactStatuses';
+import financialOverviewContactStatuses from '../../../../../data/financialOverviewContactStatuses';
 
-function FinancialOverviewContactListFilter({ filter, handleChangeFilter }) {
+function FinancialOverviewContactListFilter({
+    showSelectFinancialOverviewContactsToSend,
+    toggleCheckedAll,
+    filter,
+    handleChangeFilter,
+}) {
     return (
         <tr className="thead-filter">
+            {showSelectFinancialOverviewContactsToSend && (
+                <th>
+                    <input type="checkbox" onChange={toggleCheckedAll} />
+                </th>
+            )}
             <th>
                 <input
                     type="text"

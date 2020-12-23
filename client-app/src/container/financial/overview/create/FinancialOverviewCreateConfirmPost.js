@@ -48,7 +48,7 @@ class FinancialOverviewCreateConfirmPost extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Waarestaat downloaden"
+                title="Waardestaten downloaden"
                 buttonConfirmText={'Downloaden'}
                 loading={this.state.loading}
             >

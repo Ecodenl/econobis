@@ -208,7 +208,7 @@ class FinancialOverviewContactController extends Controller
         if($request->input('ids')){
             $financialOverviewContacts = FinancialOverviewContact::whereIn('status_id', ['to-send', 'error-sending', 'is-resending'])->where('financial_overview_id', $financialOverview->id)->whereIn('id', $request->input('ids'))->get();
         }else{
-            $financialOverviewContacts = FinancialOverviewContact::whereIn('status_id', ['to-send', 'error-sending', 'is-resending'])->where('financial_overview_id', $financialOverview->id)->get();
+            return [];
         }
 
         foreach ($financialOverviewContacts as $financialOverviewContact) {

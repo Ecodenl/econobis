@@ -26,7 +26,7 @@ class FinancialOverviewCreateApp extends Component {
     callGetFinancialOverviewContactsForSending = () => {
         FinancialOverviewContactsAPI.getFinancialOverviewContactsForSending(
             this.props.params.id,
-            this.props.financialOverviewContactPreviewSend,
+            this.props.selectedIds,
             this.props.params.type
         ).then(payload => {
             this.setState({
@@ -53,12 +53,7 @@ class FinancialOverviewCreateApp extends Component {
                                     <FinancialOverviewCreateToolbar
                                         type={this.props.params.type}
                                         paymentType={this.props.params.paymentType}
-                                        financialOverviewContactIds={this.props.financialOverviewContactPreviewSend}
-                                        amountOfFinancialOverviewContacts={
-                                            this.state.financialOverviewContacts
-                                                ? this.state.financialOverviewContacts.length
-                                                : 0
-                                        }
+                                        selectedIds={this.props.selectedIds}
                                         financialOverviewId={this.props.params.id}
                                     />
                                 </PanelBody>
@@ -109,8 +104,11 @@ class FinancialOverviewCreateApp extends Component {
 
 const mapStateToProps = state => {
     return {
-        financialOverviewContactPreviewSend: state.financialOverviewContactPreviewSend,
+        selectedIds: state.financialOverviewPreview.selectedIds,
     };
 };
 
-export default connect(mapStateToProps, null)(FinancialOverviewCreateApp);
+export default connect(
+    mapStateToProps,
+    null
+)(FinancialOverviewCreateApp);

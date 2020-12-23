@@ -158,7 +158,7 @@ const FinancialOverviewContactPreviewApp = React.lazy(() =>
     import('./container/financial/overview/preview/FinancialOverviewContactPreviewApp')
 );
 const FinancialOverviewContactViewApp = React.lazy(() =>
-    import('./container/financial/overview/contact/view/FinancialOverviewContactViewApp')
+    import('./container/financial/overview/details/contact/view/FinancialOverviewContactViewApp')
 );
 
 const CostCentersListApp = React.lazy(() => import('./container/cost-center/list/CostCentersListApp'));

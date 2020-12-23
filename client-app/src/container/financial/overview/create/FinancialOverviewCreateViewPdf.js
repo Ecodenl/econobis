@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { isEmpty } from 'lodash';
 import PdfViewer from '../../../../components/pdf/PdfViewer';
 import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
 
@@ -12,14 +11,10 @@ class FinancialOverviewCreateViewPdf extends Component {
         };
     }
 
-    // componentDidMount() {
-    //     this.downloadFile(this.props.financialOverviewContactId);
-    // }
-
-    componentWillReceiveProps(nextProps) {
-        if (this.props.financialOverviewContactId !== nextProps.financialOverviewContactId) {
-            if (nextProps.financialOverviewContactId) {
-                this.downloadFile(nextProps.financialOverviewContactId);
+    componentDidUpdate(prevProps) {
+        if (this.props.financialOverviewContactId !== prevProps.financialOverviewContactId) {
+            if (this.props.financialOverviewContactId) {
+                this.downloadFile(this.props.financialOverviewContactId);
             }
         }
     }

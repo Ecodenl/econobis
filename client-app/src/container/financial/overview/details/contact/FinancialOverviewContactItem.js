@@ -2,12 +2,39 @@ import React, { useState } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
 
-function FinancialOverviewContactItem({ id, contactFullName, statusId, status, dateSent, emailedTo }) {
+function FinancialOverviewContactItem({
+    id,
+    contactFullName,
+    statusId,
+    status,
+    dateSent,
+    emailedTo,
+    showSelectFinancialOverviewContactsToSend,
+    toggleFinancialOverviewContactCheck,
+    financialOverviewContactIds,
+}) {
+    //todo WM: opschonen console.log
+    // console.log('FinancialOverviewContactItem - ids');
+    // console.log(financialOverviewContactIds);
     const dateSentFormated = dateSent ? moment(dateSent).format('DD-MM-Y') : '';
     const [highlightLine, setHighlightLine] = useState('');
 
     return (
-        <tr className={`border ${highlightLine}`} onMouseEnter={() => onLineEnter()} onMouseLeave={() => onLineLeave()}>
+        <tr className={`${highlightLine}`} onMouseEnter={() => onLineEnter()} onMouseLeave={() => onLineLeave()}>
+            {showSelectFinancialOverviewContactsToSend && (
+                <td>
+                    <input
+                        type="checkbox"
+                        name={id}
+                        onChange={toggleFinancialOverviewContactCheck}
+                        checked={
+                            financialOverviewContactIds && financialOverviewContactIds.length > 0
+                                ? financialOverviewContactIds.includes(id)
+                                : false
+                        }
+                    />
+                </td>
+            )}
             <td>{contactFullName}</td>
             <td>{status}</td>
             <td>{dateSentFormated}</td>

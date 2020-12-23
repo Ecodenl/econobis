@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router';
 
-import ButtonIcon from '../../../../../components/button/ButtonIcon';
+import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 
 class FinancialOverviewContactViewToolbar extends Component {
     constructor(props) {

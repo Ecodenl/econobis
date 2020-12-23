@@ -158,6 +158,12 @@ class ProjectItem extends Component {
                     )}
                     {this.state.showMakeDefinitive && (
                         <ProjectMakeDefinitive
+                            totalFinancialOverviewProjectsConcept={
+                                this.props.financialOverview.totalFinancialOverviewProjectsConcept
+                            }
+                            totalFinancialOverviewProjectsDefinitive={
+                                this.props.financialOverview.totalFinancialOverviewProjectsDefinitive
+                            }
                             financialOverviewProject={this.state.financialOverviewProject}
                             makeDefinitiveProject={this.makeDefinitiveProject}
                             closeMakeDefinitiveItemModal={this.toggleMakeDefinitive}

@@ -14,6 +14,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
@@ -34,7 +35,7 @@ class FinancialOverviewController extends Controller
             ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
-            ->string('statusId')->onEmpty('concept')->whenMissing('concept')->alias('status_id')->next()
+            ->string('statusId')->onEmpty('in-progress')->whenMissing('in-progress')->alias('status_id')->next()
             ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()
             ->get();
 
@@ -89,17 +90,30 @@ class FinancialOverviewController extends Controller
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
         $projects = $this->getNewProjectsForFinancialOverview($financialOverview);
-        foreach ($projects as $project) {
-            $financialOverviewProject = FinancialOverviewProject::create([
-                'financial_overview_id' => $financialOverview->id,
-                'project_id' => $project->id,
-                'definitive' => false,
-                'status_id' => 'concept',
-            ]);
+        if(!$projects){
+            $financialOverview->status = 'concept';
+            $financialOverview->save();
+
+        } else {
+            foreach ($projects as $project) {
+                $financialOverviewProject = FinancialOverviewProject::create([
+                    'financial_overview_id' => $financialOverview->id,
+                    'project_id' => $project->id,
+                    'definitive' => false,
+//                    'status_id' => 'in-progress',
+                    'status_id' => 'concept',
+                ]);
 
             $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
             $financialOverviewParticipantProjectController->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
+
+//                CalculateFinancialOverviewProject::dispatch(Auth::id(), $financialOverviewProject);
+
+            }
+
         }
+        $financialOverview->status = 'concept';
+        $financialOverview->save();
     }
 
     public function getNewProjectsForFinancialOverview(FinancialOverview $financialOverview)

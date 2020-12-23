@@ -72,6 +72,7 @@ const ThemeSettingsProvider = function(props) {
                 setInitialThemeSettings,
                 setCurrentThemeSettings,
                 switchToDefaultThemeSettings,
+                currentThemeSettings,
             }}
         >
             {props.children}

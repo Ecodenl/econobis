@@ -5,8 +5,8 @@ function RegistrationDetailsProjectTable({ fields }) {
     return (
         <Table className={'my-4'}>
             <tbody>
-                {fields.map(field => (
-                    <tr>
+                {fields.map((field, index) => (
+                    <tr key={index}>
                         <td>
                             <strong>{field.label}</strong>
                         </td>

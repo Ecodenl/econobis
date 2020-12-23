@@ -7,6 +7,7 @@ Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalAc
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
 Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
 Route::get('setting/new-at-cooperative-link-text', 'Setting\PortalSettingController@getNewAtCooperativeLinkText');
+Route::get('portal-settings-layout/default', 'PortalSettingsLayout\PortalSettingsLayoutController@getDefault');
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');

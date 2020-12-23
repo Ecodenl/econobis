@@ -28,4 +28,18 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+    fetchDefaultPortalSettingsLayout: function(id) {
+        const requestUrl = `/portal-settings-layout/default`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: ['id', 'name', 'address', 'postalCode', 'city', 'kvkNumber', 'IBAN', 'ibanAttn', 'btwNumber'],
+                    rlt: {
+                        country: { fld: ['name'] },
+                    },
+                },
+            },
+        });
+    },
 };

@@ -41,6 +41,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
 
             errors: {
                 description: false,
+                portalLogoFileName: false,
+                portalFaviconFileName: false,
                 portalBackgroundColor: false,
                 portalBackgroundTextColor: false,
                 loginHeaderBackgroundColor: false,
@@ -106,6 +108,14 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
+        if (validator.isEmpty(portalSettingsLayout.portalLogoFileName) && attachmentLogo.name === undefined) {
+            errors.portalLogoFileName = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty(portalSettingsLayout.portalFaviconFileName) && attachmentFavicon.name === undefined) {
+            errors.portalFaviconFileName = true;
+            hasErrors = true;
+        }
         if (validator.isEmpty(portalSettingsLayout.description)) {
             errors.description = true;
             hasErrors = true;
@@ -240,6 +250,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 onChangeaction={() => {}}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
+                                error={this.state.errors.portalLogoFileName}
                             />
                             <Image
                                 src={
@@ -275,6 +286,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                                 onChangeaction={() => {}}
                                 readOnly={!this.manageTechnicalPortalSettings}
                                 required={'required'}
+                                error={this.state.errors.portalFaviconFileName}
                             />
                             <Image
                                 src={

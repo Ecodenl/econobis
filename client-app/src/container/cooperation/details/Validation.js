@@ -3,8 +3,6 @@ import * as ibantools from 'ibantools';
 
 export const CooperationValidation = Yup.object().shape({
     name: Yup.string()
-        .min(2, 'Too Short!')
-        .max(50, 'Too Long!')
         .required('Verplicht'),
     iban: Yup.string()
         .trim()

@@ -16,11 +16,10 @@ import ErrorModal from '../../../../../components/modal/ErrorModal';
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import ButtonText from '../../../../../components/button/ButtonText';
-import { clearPreviewParticipantReport } from '../../../../../actions/project/ProjectDetailsActions';
 import { connect } from 'react-redux';
 import { previewFinancialOverview } from '../../../../../actions/financial-overview/FinancialOverviewActions';
 
-const initialFilter = { contact: '', statusId: null, dateSent: '', emailedTo: '' };
+// const initialFilter = { contact: '', statusId: null, dateSent: '', emailedTo: '' };
 const recordsPerPage = 50;
 
 function FinancialOverviewContactList({ financialOverview, previewFinancialOverview }) {

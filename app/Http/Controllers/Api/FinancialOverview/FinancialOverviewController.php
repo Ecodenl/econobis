@@ -91,8 +91,8 @@ class FinancialOverviewController extends Controller
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
         $projects = $this->getNewProjectsForFinancialOverview($financialOverview);
-        if(!$projects){
-            $financialOverview->status = 'concept';
+        if(count($projects) == 0){
+            $financialOverview->status_id = 'concept';
             $financialOverview->save();
 
         } else {

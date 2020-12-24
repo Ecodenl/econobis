@@ -5,7 +5,6 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import ProjectNew from './ProjectNew';
-import FinancialOverviewDetailsForm from '../FinancialOverviewDetailsForm';
 
 class ProjectApp extends Component {
     constructor(props) {

@@ -12,11 +12,15 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 import { CooperationValidation } from './Validation';
+import CooperationUploadLogo from './UploadLogo';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showUploadLogo, setShowUploadLogo] = useState(false);
+    const [attachment, setAttachment] = useState(null);
+
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur } = useFormik({
         initialValues: formData,
         validationSchema: CooperationValidation,
@@ -36,18 +40,49 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
     }, []);
 
     function processSubmit(values) {
+        // Cleanup value data
+        const cleanUpFormFields = [
+            'hoomGroup',
+            'hoomEmailTemplate',
+            'createdAt',
+            'createdBy',
+            'createdById',
+            'updatedAt',
+            'updatedById',
+            'updatedBy',
+        ];
+        for (const item of cleanUpFormFields) {
+            delete values[item];
+        }
+
         // Process to formdata
+        let formData = new FormData();
 
-        let send = null;
-        if (values.id === null) send = CooperationDetailsAPI.create(values);
-        else send = CooperationDetailsAPI.update(values);
+        for (const [key, value] of Object.entries(values)) {
+            formData.append(key, value);
+        }
 
-        send.then(payload => {
-            updateResult(payload.data.data);
-            toggleEdit();
-        }).catch(error => {
-            alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
-        });
+        if (attachment) {
+            formData.append('attachment', attachment);
+        }
+
+        // Send form data
+        let request = null;
+        if (values.id === null) request = CooperationDetailsAPI.create(formData);
+        else request = CooperationDetailsAPI.update(values.id, formData);
+
+        request
+            .then(payload => {
+                updateResult(payload.data.data);
+                toggleEdit();
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
+            });
+    }
+
+    function toggleShowUploadLogo() {
+        setShowUploadLogo(!showUploadLogo);
     }
 
     return (
@@ -70,6 +105,8 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                             name={'kvkNumber'}
                             value={values.kvkNumber}
                             onChangeAction={handleChange}
+                            error={errors.kvkNumber && touched.kvkNumber}
+                            errorMessage={errors.kvkNumber}
                         />
                     </div>
                     <div className="row">
@@ -134,26 +171,24 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                         />
                     </div>
                     <div className="row">
-                        <ViewText label={'Logo'} value={formData.logoName} />
-                        {/*<ViewText*/}
-                        {/*    label={'Logo'}*/}
-                        {/*    divSize={'col-sm-8'}*/}
-                        {/*    value={'logo.png'}*/}
-                        {/*    className={'col-sm-8 form-group'}*/}
-                        {/*/>*/}
-                        {/*<Image*/}
-                        {/*    src={`${URL_API}/portal/images/logo.png?${imageHash}`}*/}
-                        {/*    style={{*/}
-                        {/*        backgroundColor: backgroundImageColor,*/}
-                        {/*        color: backgroundImageTextColor,*/}
-                        {/*        border: '1px solid #999',*/}
-                        {/*        display: 'inline-block',*/}
-                        {/*        padding: '1px',*/}
-                        {/*        borderRadius: '1px',*/}
-                        {/*        height: '50px',*/}
-                        {/*        boxShadow: '0 0 0 1px #fff inset',*/}
-                        {/*    }}*/}
-                        {/*/>*/}
+                        <div className="form-group col-sm-6">
+                            <label className="col-sm-6">Kies logo</label>
+                            <div className="col-sm-6">
+                                <input
+                                    type="text"
+                                    className="form-control input-sm col-sm-6"
+                                    value={attachment ? attachment.name : values.logoName}
+                                    onClick={toggleShowUploadLogo}
+                                    onChange={() => {}}
+                                />
+                            </div>
+                        </div>
+                        {showUploadLogo ? (
+                            <CooperationUploadLogo
+                                addAttachment={setAttachment}
+                                toggleShowUploadLogo={toggleShowUploadLogo}
+                            />
+                        ) : null}
                     </div>
                 </PanelBody>
                 <PanelHeader>

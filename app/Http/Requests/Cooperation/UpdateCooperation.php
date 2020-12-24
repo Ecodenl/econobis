@@ -30,7 +30,7 @@ class UpdateCooperation extends FormRequest
             'postalCode' => [''],
             'city' => [''],
             'kvkNumber' => [''],
-            'btw_Number' => [''],
+            'btwNumber' => [''],
             'iban' => [''],
             'ibanAttn' => [''],
             'email' => ['email'],

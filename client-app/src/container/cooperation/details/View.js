@@ -31,25 +31,6 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     </div>
                     <div className="row">
                         <ViewText label={'Logo'} value={formData.logoName} />
-                        {/*<ViewText*/}
-                        {/*    label={'Logo'}*/}
-                        {/*    divSize={'col-sm-8'}*/}
-                        {/*    value={'logo.png'}*/}
-                        {/*    className={'col-sm-8 form-group'}*/}
-                        {/*/>*/}
-                        {/*<Image*/}
-                        {/*    src={`${URL_API}/portal/images/logo.png?${imageHash}`}*/}
-                        {/*    style={{*/}
-                        {/*        backgroundColor: backgroundImageColor,*/}
-                        {/*        color: backgroundImageTextColor,*/}
-                        {/*        border: '1px solid #999',*/}
-                        {/*        display: 'inline-block',*/}
-                        {/*        padding: '1px',*/}
-                        {/*        borderRadius: '1px',*/}
-                        {/*        height: '50px',*/}
-                        {/*        boxShadow: '0 0 0 1px #fff inset',*/}
-                        {/*    }}*/}
-                        {/*/>*/}
                     </div>
                 </PanelBody>
                 <PanelHeader>
@@ -61,8 +42,11 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         <ViewText label={'Hoom key'} value={formData.hoomKey} />
                     </div>
                     <div className="row">
-                        <ViewText label={'Home e-mail template'} value={formData.hoomEmailTemplate.name} />
-                        <ViewText label={'Hoom groep'} value={formData.hoomGroup.name} />
+                        <ViewText
+                            label={'Home e-mail template'}
+                            value={formData.hoomEmailTemplate && formData.hoomEmailTemplate.name}
+                        />
+                        <ViewText label={'Hoom groep'} value={formData.hoomGroup && formData.hoomGroup.name} />
                     </div>
                 </PanelBody>
             </Panel>

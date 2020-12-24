@@ -21,7 +21,7 @@ class CreateCooperationsTable extends Migration
             $table->string('address')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('city')->nullable();
-            $table->integer('kvk_number')->nullable();
+            $table->string('kvk_number')->nullable();
             $table->string('btw_number')->nullable();
             $table->text('iban')->nullable();
             $table->text('iban_attn')->nullable();

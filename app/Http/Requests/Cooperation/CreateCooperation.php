@@ -30,7 +30,7 @@ class CreateCooperation extends FormRequest
             'postalCode' => [''],
             'city' => [''],
             'kvkNumber' => [''],
-            'btw_Number' => [''],
+            'btwNumber' => [''],
             'iban' => [''],
             'ibanAttn' => [''],
             'email' => ['email'],
@@ -39,10 +39,8 @@ class CreateCooperation extends FormRequest
             'logoName' => [''],
             'hoomLink' => [''],
             'hoomKey' => [''],
-            'hoomEmailTemplateId' => [''],
-            'hoomEmailTemplate' => [''],
-            'hoomGroupId' => [''],
-            'hoomGroup' => [''],
+            'hoomEmailTemplateId' => '',
+            'hoomGroupId' => '',
         ];
     }
 }

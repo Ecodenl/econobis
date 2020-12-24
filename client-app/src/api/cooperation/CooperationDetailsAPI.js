@@ -13,8 +13,8 @@ export default {
         return axiosInstance.post(requestUrl, payload);
     },
 
-    update: payload => {
-        const requestUrl = `cooperation/${payload.id}`;
+    update: (id, payload) => {
+        const requestUrl = `cooperation/${id}`;
 
         return axiosInstance.post(requestUrl, payload);
     },

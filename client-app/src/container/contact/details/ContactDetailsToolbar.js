@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
@@ -7,65 +7,63 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactDetailsDelete from './ContactDetailsDelete';
+import ButtonText from '../../../components/button/ButtonText';
+import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
 
-class ContactDetailsToolbar extends Component {
-    constructor(props) {
-        super(props);
+function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId, isLoading }) {
+    const [showDelete, setShowDelete] = useState(false);
+    const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
-        this.state = {
-            showDelete: false,
-        };
+    function toggleDelete() {
+        setShowDelete(!showDelete);
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
-    };
+    function toggleShowMakeHoomdossier() {
+        setShowMakeHoomdossier(!showMakeHoomdossier);
+    }
 
-    render() {
-        const { type = {} } = this.props;
-        return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <Panel>
-                        <PanelBody className={'panel-small'}>
-                            <div className="col-md-4">
-                                <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'glyphicon-arrow-left'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
-                                    {type.id === 'organisation' && this.props.permissions.deleteOrganisation && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
+    return (
+        <div className="row">
+            <div className="col-sm-12">
+                <Panel>
+                    <PanelBody className={'panel-small'}>
+                        <div className="col-md-4">
+                            <div className="btn-group btn-group-flex margin-small" role="group">
+                                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
+                                {type &&
+                                    type.id === 'organisation' &&
+                                    permissions &&
+                                    permissions.deleteOrganisation && (
+                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
                                     )}
-                                    {type.id === 'person' && this.props.permissions.deletePerson && (
-                                        <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
-                                    )}
-                                </div>
+                                {type && type.id === 'person' && permissions && permissions.deletePerson && (
+                                    <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
+                                )}
+                                <ButtonText
+                                    onClickAction={toggleShowMakeHoomdossier}
+                                    buttonText={hoomAccountId ? 'Hoomdossier aangemaakt' : 'Hoomdossier aanmaken'}
+                                    disabled={hoomAccountId}
+                                />
                             </div>
-                            {!this.props.isLoading && (
-                                <div className="col-md-4">
-                                    <h4 className="text-center text-success margin-small">
-                                        <strong>
-                                            {this.props.fullName || 'Nieuw'} ({type.name})
-                                        </strong>
-                                    </h4>
-                                </div>
-                            )}
-                            <div className="col-md-4" />
-                        </PanelBody>
-                    </Panel>
-                </div>
-
-                {this.state.showDelete && (
-                    <ContactDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        fullName={this.props.fullName}
-                        id={this.props.id}
-                    />
-                )}
+                        </div>
+                        {!isLoading && (
+                            <div className="col-md-4">
+                                <h4 className="text-center text-success margin-small">
+                                    <strong>
+                                        {fullName || 'Nieuw'} ({type && type.name})
+                                    </strong>
+                                </h4>
+                            </div>
+                        )}
+                        <div className="col-md-4" />
+                    </PanelBody>
+                </Panel>
             </div>
-        );
-    }
+
+            {showDelete && <ContactDetailsDelete closeDeleteItemModal={toggleDelete} fullName={fullName} id={id} />}
+            {showMakeHoomdossier && <ContactDetailsHoomdossier closeModal={toggleShowMakeHoomdossier} />}
+        </div>
+    );
 }
 
 const mapStateToProps = state => {
@@ -73,6 +71,7 @@ const mapStateToProps = state => {
         fullName: state.contactDetails.fullName,
         id: state.contactDetails.id,
         type: state.contactDetails.type,
+        hoomAccountId: state.contactDetails.hoomAccountId,
         permissions: state.meDetails.permissions,
         isLoading: state.loadingData.isLoading,
     };

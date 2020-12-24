@@ -97,6 +97,7 @@ class FullContactWithGroups extends Resource
             'collectMandateSignatureDate' => $this->collect_mandate_signature_date,
             'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
+            'hoomAccountId' => $this->hoom_account_id,
         ];
     }
 }

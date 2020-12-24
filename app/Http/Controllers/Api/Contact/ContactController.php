@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Import\ContactImportHelper;
@@ -15,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use GuzzleHttp\Client;
 
 class ContactController extends Controller
 {
@@ -186,5 +189,66 @@ class ContactController extends Controller
         }
 
         return array_unique($emailIds);
+    }
+
+    public function makeHoomdossier(Contact $contact) {
+        // Check if all necessary fields are filled
+        $this->validateNecessaryData($contact);
+
+        // Send to hoomdossier url
+        $hoomId = $this->sendHoomdossier($contact);
+        $hoomAccountId = 1;
+
+        // When success save hoomdossier id
+        $contact->hoom_account_id = $hoomAccountId;
+        $contact->save();
+
+        // When successfull add contact to hoomgroup
+
+
+        // When successfull send message to contact
+
+        // Return hoomdossier id
+        return $hoomAccountId;
+    }
+
+    private function validateNecessaryData($contact) {
+        $errors = [];
+
+        if(!$contact->primaryEmailAddress) {
+            $errors[] = 'Primair mailadres ontbreekt';
+        }
+
+        if($contact->type_id == 'person') {
+            if(!$contact->person->first_name) {
+                $errors[] = 'Voornaam ontbreekt';
+            }
+
+            if(!$contact->person->last_name) {
+                $errors[] = 'Achternaam ontbreekt';
+            }
+        }
+
+        if(!$contact->primaryAddress) {
+            $errors[] = 'Primair adres ontbreekt';
+        }
+
+        if(count($errors)) throw ValidationException::withMessages($errors);
+
+        return true;
+    }
+
+    private function sendHoomdossier($contact) {
+        $cooperation = Cooperation::first();
+
+        $client = new Client;
+        $request = $client->post($cooperation->hoom_link, [
+            'key' => $cooperation->hoom_key,
+            'contact_id' => $contact->id,
+        ]);
+
+        $response = $request->getBody();
+
+        dd($response);
     }
 }

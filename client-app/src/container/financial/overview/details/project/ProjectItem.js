@@ -14,6 +14,12 @@ class ProjectItem extends Component {
     constructor(props) {
         super(props);
 
+        //todo WM: opschonen log
+        // if (props.financialOverviewProject.id == 99) {
+        //     console.log('hello ProjectItem props 99!!');
+        //     console.log(props.financialOverviewProject);
+        // }
+
         this.state = {
             showActionButtons: false,
             highlightLine: '',
@@ -32,6 +38,11 @@ class ProjectItem extends Component {
             showErrorModal: false,
             modalErrorMessage: '',
         };
+        //todo WM: opschonen log
+        // if (this.state && this.state.financialOverviewProject && this.state.financialOverviewProject.id == 99) {
+        //     console.log('hello ProjectItem state 99!!');
+        //     console.log(this.state.financialOverviewProject);
+        // }
     }
 
     onLineEnter = () => {

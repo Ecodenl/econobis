@@ -1,7 +1,19 @@
 import React from 'react';
 
 const ProjectView = props => {
-    const { id, definitive, project } = props.financialOverviewProject;
+    const { id, definitive, statusId, project } = props.financialOverviewProject;
+    let status = '';
+    switch (statusId) {
+        case 'in-progress':
+            status = 'Wordt toegevoegd...';
+            break;
+        case 'concept':
+            status = 'Concept';
+            break;
+        case 'definitive':
+            status = 'Definitief';
+            break;
+    }
 
     return (
         <div
@@ -14,10 +26,8 @@ const ProjectView = props => {
             <div>
                 <div className="col-sm-2">{project.code}</div>
                 <div className="col-sm-5">{project.name}</div>
-                <div className="col-sm-3">{project.projectType.name}</div>
-                <div className="col-sm-1 push">
-                    <span className="pull-right">{definitive ? 'Definitief' : 'Concept'}</span>
-                </div>
+                <div className="col-sm-2">{project.projectType.name}</div>
+                <div className="col-sm-2">{status}</div>
             </div>
             <div className="col-sm-1">
                 {props.financialOverviewDefinitive ? (

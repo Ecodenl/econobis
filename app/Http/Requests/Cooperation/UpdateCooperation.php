@@ -14,7 +14,7 @@ class UpdateCooperation extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('manage_cooperation_settings', Cooperation::class);
+        return $this->user()->can('manage', Cooperation::class);
     }
 
     /**
@@ -27,20 +27,20 @@ class UpdateCooperation extends FormRequest
         return [
             'name' => ['required'],
             'address' => [''],
-            'postal_code' => [''],
+            'postalCode' => [''],
             'city' => [''],
-            'kvk_number' => [''],
-            'btw_number' => [''],
+            'kvkNumber' => [''],
+            'btwNumber' => [''],
             'iban' => [''],
-            'iban_attn' => [''],
+            'ibanAttn' => [''],
             'email' => ['email'],
             'website' => [''],
-            'logo_filename' => [''],
-            'logo_name' => [''],
-            'hoom_link' => [''],
-            'hoom_key' => [''],
-            'hoom_email_template_id' => [''],
-            'hoom_group_id' => [''],
+            'logoFilename' => [''],
+            'logoName' => [''],
+            'hoomLink' => [''],
+            'hoomKey' => [''],
+            'hoomEmailTemplateId' => [''],
+            'hoomGroupId' => [''],
         ];
     }
 }

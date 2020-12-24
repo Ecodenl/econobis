@@ -61,31 +61,31 @@ const FinancialOverviewDetailsFormGeneralView = ({
                     </PanelBody>
                 </Panel>
             </div>
-            <div>
-                <Panel>
-                    <PanelBody>
-                        <div className="col-md-12 margin-10-top">
-                            <div className="row">
-                                <div className="col-md-10">
-                                    <div className="btn-group btn-group-flex" role="group">
-                                        <ButtonIcon
-                                            iconName={'glyphicon-refresh'}
-                                            onClickAction={callFetchFinancialOverviewDetails}
-                                        />
+            {statusId === 'in-progress' ? (
+                <div>
+                    <Panel>
+                        <PanelBody>
+                            <div className="col-md-12 margin-10-top">
+                                <div className="row">
+                                    <div className="col-md-10">
+                                        <div className="btn-group btn-group-flex" role="group">
+                                            <ButtonIcon
+                                                iconName={'glyphicon-refresh'}
+                                                onClickAction={callFetchFinancialOverviewDetails}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            {statusId === 'in-progress' ? (
                                 <div className="row">
                                     <div className="col-md-12">
                                         {messageText ? <div className="alert alert-danger">{messageText}</div> : null}
                                     </div>
                                 </div>
-                            ) : null}
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </div>
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                </div>
+            ) : null}
         </>
     );
 };

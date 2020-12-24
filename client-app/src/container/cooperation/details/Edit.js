@@ -11,14 +11,15 @@ import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
+import { CooperationValidation } from './Validation';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const formik = useFormik({
+    const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur } = useFormik({
         initialValues: formData,
-
+        validationSchema: CooperationValidation,
         onSubmit: values => {
             processSubmit(values);
         },
@@ -57,91 +58,79 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                         <InputText
                             label="Naam"
                             name={'name'}
-                            value={formik.values.name}
-                            onChangeAction={formik.handleChange}
+                            value={values.name}
+                            onChangeAction={handleChange}
+                            onBlurAction={handleBlur}
                             required={'required'}
-                            error={''}
+                            error={errors.name && touched.name}
+                            errorMessage={errors.name}
                         />
                         <InputText
                             label="KvK"
                             name={'kvkNumber'}
-                            value={formik.values.kvkNumber}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.kvkNumber}
+                            onChangeAction={handleChange}
                         />
                     </div>
                     <div className="row">
                         <InputText
                             label="Adres"
                             name={'address'}
-                            value={formik.values.address}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.address}
+                            onChangeAction={handleChange}
                         />
                         <InputText
                             label="Btw nummer"
                             name={'btwNumber'}
-                            value={formik.values.btwNumber}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.btwNumber}
+                            onChangeAction={handleChange}
                         />
                     </div>
                     <div className="row">
                         <InputText
                             label="Postcode"
                             name={'postalCode'}
-                            value={formik.values.postalCode}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.postalCode}
+                            onChangeAction={handleChange}
                         />
                         <InputText
                             label="IBAN"
                             name={'iban'}
-                            value={formik.values.iban}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.iban}
+                            onChangeAction={handleChange}
+                            onBlurAction={handleBlur}
+                            error={errors.iban && touched.iban}
+                            errorMessage={errors.iban}
                         />
                     </div>
                     <div className="row">
-                        <InputText
-                            label="Plaats"
-                            name={'city'}
-                            value={formik.values.city}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
-                        />
+                        <InputText label="Plaats" name={'city'} value={values.city} onChangeAction={handleChange} />
 
                         <InputText
                             label="IBAN t.n.v."
                             name={'ibanAttn'}
-                            value={formik.values.ibanAttn}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.ibanAttn}
+                            onChangeAction={handleChange}
                         />
                     </div>
                     <div className="row">
                         <InputText
                             label="Email"
                             name={'email'}
-                            value={formik.values.email}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.email}
+                            onChangeAction={handleChange}
+                            onBlurAction={handleBlur}
+                            error={errors.email && touched.email}
+                            errorMessage={errors.email}
                         />
                         <InputText
                             label="Website"
                             name={'website'}
-                            value={formik.values.website}
-                            onChangeAction={formik.handleChange}
-                            required={'required'}
-                            error={''}
+                            value={values.website}
+                            onChangeAction={handleChange}
+                            onBlurAction={handleBlur}
+                            error={errors.website && touched.website}
+                            errorMessage={errors.website}
                         />
                     </div>
                     <div className="row">
@@ -175,16 +164,17 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                         <InputText
                             label="Hoom link"
                             name={'hoomLink'}
-                            value={formik.values.hoomLink}
-                            onChangeAction={formik.handleChange}
-                            error={''}
+                            value={values.hoomLink}
+                            onChangeAction={handleChange}
+                            onBlurAction={handleBlur}
+                            error={errors.hoomLink && touched.hoomLink}
+                            errorMessage={errors.hoomLink}
                         />
                         <InputText
                             label="Hoom key"
                             name={'hoomKey'}
-                            value={formik.values.hoomKey}
-                            onChangeAction={formik.handleChange}
-                            error={''}
+                            value={values.hoomKey}
+                            onChangeAction={handleChange}
                         />
                     </div>
                     <div className="row">
@@ -192,8 +182,8 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                             label={'Hoom e-mail template'}
                             name={'hoomEmailTemplateId'}
                             options={emailTemplates}
-                            value={formik.values.hoomEmailTemplateId}
-                            onChangeAction={(value, name) => formik.setFieldValue(name, value)}
+                            value={values.hoomEmailTemplateId}
+                            onChangeAction={(value, name) => setFieldValue(name, value)}
                             isLoading={isLoading}
                             multi={false}
                         />
@@ -201,8 +191,8 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                             label={'Hoom groep'}
                             name={'hoomGroupId'}
                             options={staticContactGroups}
-                            value={formik.values.hoomGroupId}
-                            onChangeAction={(value, name) => formik.setFieldValue(name, value)}
+                            value={values.hoomGroupId}
+                            onChangeAction={(value, name) => setFieldValue(name, value)}
                             isLoading={isLoading}
                             multi={false}
                         />
@@ -216,7 +206,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                             loading={false}
                             loadText={'laden'}
                             buttonText={'Opslaan'}
-                            onClickAction={formik.handleSubmit}
+                            onClickAction={handleSubmit}
                             type={'submit'}
                             value={'Submit'}
                         />

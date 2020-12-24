@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import ProjectView from './ProjectView';
@@ -10,90 +10,55 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 import ErrorModal from '../../../../../components/modal/ErrorModal';
 
-class ProjectItem extends Component {
-    constructor(props) {
-        super(props);
+function ProjectItem({ financialOverviewProject, financialOverview, callFetchFinancialOverviewDetails }) {
+    const [showActionButtons, setShowActionButtuns] = useState(false);
+    const [highlightLine, setHighlightLine] = useState('');
+    const [showMakeConcept, setShowMakeConcept] = useState(false);
+    const [showMakeDefinitive, setShowMakeDefinitive] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [modalErrorMessage, setModalErrorMessage] = useState(false);
 
-        //todo WM: opschonen log
-        // if (props.financialOverviewProject.id == 99) {
-        //     console.log('hello ProjectItem props 99!!');
-        //     console.log(props.financialOverviewProject);
-        // }
+    // If financial overview has changes, reload data here
+    // useEffect(
+    //     function() {
+    //         callFetchFinancialOverviewDetails;
+    //     },
+    //     [financialOverviewProject.definitive]
+    // );
 
-        this.state = {
-            showActionButtons: false,
-            highlightLine: '',
-            showMakeConcept: false,
-            showMakeDefinitive: false,
-            showDelete: false,
-            typeIdError: false,
-            numberError: false,
-            financialOverviewProject: {
-                ...props.financialOverviewProject,
-            },
-            errors: {
-                typeId: false,
-                number: false,
-            },
-            showErrorModal: false,
-            modalErrorMessage: '',
-        };
-        //todo WM: opschonen log
-        // if (this.state && this.state.financialOverviewProject && this.state.financialOverviewProject.id == 99) {
-        //     console.log('hello ProjectItem state 99!!');
-        //     console.log(this.state.financialOverviewProject);
-        // }
+    function onLineEnter() {
+        if (financialOverviewProject.statusId !== 'in-progress') {
+            setShowActionButtuns(true);
+            setHighlightLine('highlight-line');
+        }
     }
 
-    onLineEnter = () => {
-        this.setState({
-            showActionButtons: true,
-            highlightLine: 'highlight-line',
-        });
-    };
+    function onLineLeave() {
+        setShowActionButtuns(false);
+        setHighlightLine('');
+    }
 
-    onLineLeave = () => {
-        this.setState({
-            showActionButtons: false,
-            highlightLine: '',
-        });
-    };
-
-    clickItem = id => {
+    function clickItem(id) {
         hashHistory.push(`/waardestaat-project/${id}`);
-    };
+    }
 
-    makeConceptProject = () => {
-        this.setState(
-            {
-                ...this.state,
-                financialOverviewProject: {
-                    ...this.state.financialOverviewProject,
-                    definitive: false,
-                },
-            },
-            this.updateProject
-        );
-    };
+    function makeConceptProject() {
+        // setFinancialOverviewProject({ ...financialOverviewProject, definitive: false });
+        financialOverviewProject = { ...financialOverviewProject, definitive: false };
+        updateProject();
+    }
 
-    makeDefinitiveProject = () => {
-        this.setState(
-            {
-                ...this.state,
-                financialOverviewProject: {
-                    ...this.state.financialOverviewProject,
-                    definitive: true,
-                },
-            },
-            this.updateProject
-        );
-    };
+    function makeDefinitiveProject() {
+        financialOverviewProject = { ...financialOverviewProject, definitive: true };
+        updateProject();
+    }
 
-    updateProject() {
-        FinancialOverviewDetailsAPI.updateFinancialOverviewProject(this.state.financialOverviewProject)
+    function updateProject() {
+        FinancialOverviewDetailsAPI.updateFinancialOverviewProject(financialOverviewProject)
             .then(payload => {
                 // financialoverview opnieuw fetchen
-                this.props.callFetchFinancialOverviewDetails();
+                callFetchFinancialOverviewDetails();
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));
@@ -101,19 +66,17 @@ class ProjectItem extends Component {
                 if (errorObject.response.status !== 500) {
                     errorMessage = errorObject.response.data.message;
                 }
-                this.setState({
-                    showErrorModal: true,
-                    modalErrorMessage: errorMessage,
-                });
+                setShowErrorModal(true);
+                setModalErrorMessage(errorMessage);
             });
     }
 
-    deleteProject = id => {
+    function deleteProject(id) {
         FinancialOverviewDetailsAPI.deleteFinancialOverviewProject(id)
             .then(payload => {
-                this.props.setShowNewFalse();
+                setShowNewFalse();
                 // financialoverview opnieuw fetchen
-                this.props.callFetchFinancialOverviewDetails();
+                callFetchFinancialOverviewDetails();
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));
@@ -121,83 +84,74 @@ class ProjectItem extends Component {
                 if (errorObject.response.status !== 500) {
                     errorMessage = errorObject.response.data.message;
                 }
-                this.setState({
-                    showErrorModal: true,
-                    modalErrorMessage: errorMessage,
-                });
+                setShowErrorModal(true);
+                setModalErrorMessage(errorMessage);
             });
-    };
+    }
 
-    toggleMakeConcept = action => {
-        this.setState({ showMakeConcept: !this.state.showMakeConcept, action: action });
-    };
+    function toggleMakeConcept() {
+        setShowMakeConcept(!showMakeConcept);
+    }
 
-    toggleMakeDefinitive = action => {
-        this.setState({ showMakeDefinitive: !this.state.showMakeDefinitive, action: action });
-    };
+    function toggleMakeDefinitive(action) {
+        setShowMakeDefinitive(!showMakeDefinitive);
+    }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
-    };
+    function toggleDelete() {
+        setShowDelete(!showDelete);
+    }
 
-    closeErrorModal = () => {
-        this.setState({ showErrorModal: false, modalErrorMessage: '' });
-    };
+    function closeErrorModal() {
+        setShowErrorModal(false);
+        setModalErrorMessage('');
+    }
 
-    render() {
-        return (
-            <React.Fragment>
-                <div>
-                    <ProjectView
-                        highlightLine={this.state.highlightLine}
-                        showActionButtons={this.state.showActionButtons}
-                        onLineEnter={this.onLineEnter}
-                        onLineLeave={this.onLineLeave}
-                        clickItem={this.clickItem}
-                        toggleMakeConcept={this.toggleMakeConcept}
-                        toggleMakeDefinitive={this.toggleMakeDefinitive}
-                        toggleDelete={this.toggleDelete}
-                        financialOverviewDefinitive={this.props.financialOverview.definitive}
-                        financialOverviewProject={this.state.financialOverviewProject}
-                    />
-                    {this.state.showMakeConcept && (
-                        <ProjectMakeConcept
-                            financialOverviewProject={this.state.financialOverviewProject}
-                            makeConceptProject={this.makeConceptProject}
-                            closeMakeConceptItemModal={this.toggleMakeConcept}
-                        />
-                    )}
-                    {this.state.showMakeDefinitive && (
-                        <ProjectMakeDefinitive
-                            totalFinancialOverviewProjectsConcept={
-                                this.props.financialOverview.totalFinancialOverviewProjectsConcept
-                            }
-                            totalFinancialOverviewProjectsDefinitive={
-                                this.props.financialOverview.totalFinancialOverviewProjectsDefinitive
-                            }
-                            financialOverviewProject={this.state.financialOverviewProject}
-                            makeDefinitiveProject={this.makeDefinitiveProject}
-                            closeMakeDefinitiveItemModal={this.toggleMakeDefinitive}
-                        />
-                    )}
-                    {this.state.showDelete && (
-                        <ProjectDelete
-                            financialOverviewProject={this.state.financialOverviewProject}
-                            deleteProject={this.deleteProject}
-                            closeDeleteItemModal={this.toggleDelete}
-                        />
-                    )}
-                </div>
-                {this.state.showErrorModal && (
-                    <ErrorModal
-                        closeModal={this.closeErrorModal}
-                        title={'Fout bij opslaan'}
-                        errorMessage={this.state.modalErrorMessage}
+    return (
+        <React.Fragment>
+            <div>
+                <ProjectView
+                    highlightLine={highlightLine}
+                    showActionButtons={showActionButtons}
+                    onLineEnter={onLineEnter}
+                    onLineLeave={onLineLeave}
+                    clickItem={clickItem}
+                    toggleMakeConcept={toggleMakeConcept}
+                    toggleMakeDefinitive={toggleMakeDefinitive}
+                    toggleDelete={toggleDelete}
+                    financialOverviewDefinitive={financialOverview.definitive}
+                    financialOverviewProject={financialOverviewProject}
+                />
+                {showMakeConcept && (
+                    <ProjectMakeConcept
+                        financialOverviewProject={financialOverviewProject}
+                        makeConceptProject={makeConceptProject}
+                        closeMakeConceptItemModal={toggleMakeConcept}
                     />
                 )}
-            </React.Fragment>
-        );
-    }
+                {showMakeDefinitive && (
+                    <ProjectMakeDefinitive
+                        totalFinancialOverviewProjectsConcept={financialOverview.totalFinancialOverviewProjectsConcept}
+                        totalFinancialOverviewProjectsDefinitive={
+                            financialOverview.totalFinancialOverviewProjectsDefinitive
+                        }
+                        financialOverviewProject={financialOverviewProject}
+                        makeDefinitiveProject={makeDefinitiveProject}
+                        closeMakeDefinitiveItemModal={toggleMakeDefinitive}
+                    />
+                )}
+                {showDelete && (
+                    <ProjectDelete
+                        financialOverviewProject={financialOverviewProject}
+                        deleteProject={deleteProject}
+                        closeDeleteItemModal={toggleDelete}
+                    />
+                )}
+            </div>
+            {showErrorModal && (
+                <ErrorModal closeModal={closeErrorModal} title={'Fout bij opslaan'} errorMessage={modalErrorMessage} />
+            )}
+        </React.Fragment>
+    );
 }
 
 const mapDispatchToProps = dispatch => ({

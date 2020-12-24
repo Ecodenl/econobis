@@ -1,63 +1,81 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import ProjectList from './ProjectList';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import ProjectNew from './ProjectNew';
+import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 
-class ProjectApp extends Component {
-    constructor(props) {
-        super(props);
+function ProjectApp({ financialOverview, callFetchFinancialOverviewDetails }) {
+    // const [financialOverviewProjects, setFinancialOverviewProjects] = useState([]);
+    // const [financialOverviewTest, setFinancialOverviewTest] = useState([]);
+    // const [isLoading, setLoading] = useState(true);
 
-        this.state = {
-            showNew: false,
-        };
+    const [showNew, setShowNew] = useState(false);
+
+    // If financial overview has changes, reload data here
+    // useEffect(
+    //     function() {
+    //         // console.log('hello useEffect projectApp');
+    //         callFetchFinancialOverviewProjects();
+    //     },
+    //     [financialOverview.statusId]
+    // );
+
+    function toggleShowNew() {
+        setShowNew(!showNew);
+    }
+    function setShowNewFalse() {
+        setShowNew(false);
     }
 
-    toggleShowNew = () => {
-        this.setState({
-            showNew: !this.state.showNew,
-        });
-    };
-    setShowNewFalse = () => {
-        this.setState({
-            showNew: false,
-        });
-    };
+    // function callFetchFinancialOverviewProjects() {
+    //     setLoading(true);
+    //     //todo WM: opschonen log
+    //     // console.log('callFetchFinancialOverviewTest');
+    //     //todo fetchFinancialOverviewProjects hier ipv fetchFinancialOverviewDetails ?
+    //     FinancialOverviewDetailsAPI.fetchFinancialOverviewDetails(financialOverview.id)
+    //         .then(payload => {
+    //             setFinancialOverviewTest(payload.data.data);
+    //             setLoading(false);
+    //         })
+    //         .catch(error => {
+    //             setLoading(false);
+    //             alert('Er is iets misgegaan met ophalen van de gegevens.');
+    //         });
+    // }
 
-    render() {
-        return (
-            <Panel>
-                <PanelHeader>
-                    <span className="h5 text-bold">Projecten</span>
-                    {this.props.financialOverview && !this.props.financialOverview.definitive && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <span className="glyphicon glyphicon-plus" />
-                        </a>
-                    )}
-                </PanelHeader>
-                <PanelBody>
-                    <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && (
-                            <ProjectNew
-                                financialOverview={this.props.financialOverview}
-                                toggleShowNew={this.toggleShowNew}
-                                callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
-                            />
-                        )}
-                    </div>
-                    <div className="col-md-12">
-                        <ProjectList
-                            financialOverview={this.props.financialOverview}
-                            callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
-                            setShowNewFalse={this.setShowNewFalse}
+    return (
+        <Panel>
+            <PanelHeader>
+                <span className="h5 text-bold">Projecten</span>
+                {financialOverview && !financialOverview.definitive && (
+                    <a role="button" className="pull-right" onClick={toggleShowNew}>
+                        <span className="glyphicon glyphicon-plus" />
+                    </a>
+                )}
+            </PanelHeader>
+            <PanelBody>
+                <div className="col-md-12 margin-10-top">
+                    {showNew && (
+                        <ProjectNew
+                            financialOverview={financialOverview}
+                            toggleShowNew={toggleShowNew}
+                            callFetchFinancialOverviewDetails={callFetchFinancialOverviewDetails}
                         />
-                    </div>
-                </PanelBody>
-            </Panel>
-        );
-    }
+                    )}
+                </div>
+                <div className="col-md-12">
+                    <ProjectList
+                        financialOverview={financialOverview}
+                        callFetchFinancialOverviewDetails={callFetchFinancialOverviewDetails}
+                        setShowNewFalse={setShowNewFalse}
+                    />
+                </div>
+            </PanelBody>
+        </Panel>
+    );
 }
 
 export default ProjectApp;

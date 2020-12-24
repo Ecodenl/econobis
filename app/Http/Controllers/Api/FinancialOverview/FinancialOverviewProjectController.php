@@ -12,8 +12,10 @@ use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
+use App\Jobs\FinancialOverview\CreateFinancialOverviewParticipantProjects;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
@@ -43,15 +45,13 @@ class FinancialOverviewProjectController extends Controller
         $data = $input->integer('financialOverviewId')->alias('financial_overview_id')->next()
             ->integer('projectId')->validate('exists:projects,id')->alias('project_id')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
-            ->string('statusId')->onEmpty('')->whenMissing('')->alias('status_id')->next()
+            ->string('statusId')->onEmpty('in-progress')->whenMissing('in-progress')->alias('status_id')->next()
             ->get();
 
         $financialOverviewProject = new FinancialOverviewProject($data);
         $financialOverviewProject->save();
 
-        $project = Project::find($financialOverviewProject->project_id);
-        $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-        $financialOverviewParticipantProjectController->createParticipantProjectsForFinancialOverview($financialOverviewProject);
+        CreateFinancialOverviewParticipantProjects::dispatch($financialOverviewProject, Auth::id());
 
         return Jory::on($financialOverviewProject);
 

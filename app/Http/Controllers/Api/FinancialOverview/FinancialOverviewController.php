@@ -13,6 +13,7 @@ use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
+use App\Jobs\FinancialOverview\CreateFinancialOverviewParticipantProjects;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -96,24 +97,20 @@ class FinancialOverviewController extends Controller
 
         } else {
             foreach ($projects as $project) {
-                $financialOverviewProject = FinancialOverviewProject::create([
+                FinancialOverviewProject::create([
                     'financial_overview_id' => $financialOverview->id,
                     'project_id' => $project->id,
                     'definitive' => false,
-//                    'status_id' => 'in-progress',
-                    'status_id' => 'concept',
+                    'status_id' => 'in-progress',
                 ]);
+            }
 
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
-
-//                CalculateFinancialOverviewProject::dispatch(Auth::id(), $financialOverviewProject);
-
+            $financialOverviewProjects = FinancialOverviewProject::where('financial_overview_id', $financialOverview->id)->get();
+            foreach ($financialOverviewProjects as $financialOverviewProject) {
+                CreateFinancialOverviewParticipantProjects::dispatch($financialOverviewProject, Auth::id());
             }
 
         }
-        $financialOverview->status = 'concept';
-        $financialOverview->save();
     }
 
     public function getNewProjectsForFinancialOverview(FinancialOverview $financialOverview)

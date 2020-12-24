@@ -12,10 +12,12 @@ class FinancialOverviewProjectObserver
 {
     public function saving(FinancialOverviewProject $financialOverviewProject)
     {
-        if($financialOverviewProject->definitive) {
-            $financialOverviewProject->status_id = 'definitive';
-        }else{
-            $financialOverviewProject->status_id = 'concept';
+        if(!empty($financialOverviewProject->status_id) && $financialOverviewProject->status_id != 'in-progress') {
+            if($financialOverviewProject->definitive) {
+                $financialOverviewProject->status_id = 'definitive';
+            }else{
+                $financialOverviewProject->status_id = 'concept';
+            }
         }
     }
 

@@ -9,6 +9,9 @@ import FinancialOverviewContactApp from './contact/FinancialOverviewContactApp';
 class FinancialOverviewDetailsForm extends Component {
     constructor(props) {
         super(props);
+
+        //todo WM: opschonen log
+        // console.log('FinancialOverviewDetailsForm - props');
     }
     render() {
         let { financialOverview, hasError, isLoading } = this.props;
@@ -29,14 +32,17 @@ class FinancialOverviewDetailsForm extends Component {
             <div>{loadingText}</div>
         ) : (
             <div>
-                <FinancialOverviewDetailsFormGeneral financialOverview={financialOverview} />
+                <FinancialOverviewDetailsFormGeneral
+                    financialOverview={financialOverview}
+                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                />
                 <ProjectApp
                     financialOverview={financialOverview}
                     callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
                 <FinancialOverviewContactApp
                     financialOverview={financialOverview}
-                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                    // callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
             </div>
         );

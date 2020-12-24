@@ -60,6 +60,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
             onlyEmailFinancialOverviewContacts,
             onlyPostFinancialOverviewContacts,
             financialOverview.totalFinancialOverviewProjectsConcept === 0,
+            financialOverview.statusId,
         ]
     );
 

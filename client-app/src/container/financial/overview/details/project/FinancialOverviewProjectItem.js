@@ -9,8 +9,8 @@ import FinancialOverviewProjectDelete from './FinancialOverviewProjectDelete';
 function FinancialOverviewProjectItem({
     financialOverview,
     financialOverviewProject,
-    fetchFinancialOverviewProjects,
     setShowNewFalse,
+    refreshFinancialOverviewProjects,
 }) {
     const [showActionButtons, setShowActionButtuns] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
@@ -54,7 +54,7 @@ function FinancialOverviewProjectItem({
         FinancialOverviewProjectAPI.updateFinancialOverviewProject(financialOverviewProjectId, data)
             .then(payload => {
                 // financialoverview opnieuw fetchen
-                fetchFinancialOverviewProjects;
+                refreshFinancialOverviewProjects();
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));
@@ -73,7 +73,7 @@ function FinancialOverviewProjectItem({
                 setShowNewFalse(false);
                 toggleDelete();
                 // financialoverview opnieuw fetchen
-                fetchFinancialOverviewProjects();
+                refreshFinancialOverviewProjects();
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));
@@ -155,6 +155,9 @@ function FinancialOverviewProjectItem({
                 )}
                 {showMakeDefinitive && (
                     <FinancialOverviewProjectMakeDefinitive
+                        totalFinancialOverviewProjectsInProgress={
+                            financialOverview.totalFinancialOverviewProjectsInProgress
+                        }
                         totalFinancialOverviewProjectsConcept={financialOverview.totalFinancialOverviewProjectsConcept}
                         totalFinancialOverviewProjectsDefinitive={
                             financialOverview.totalFinancialOverviewProjectsDefinitive

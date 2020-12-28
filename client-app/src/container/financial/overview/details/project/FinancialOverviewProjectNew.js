@@ -82,7 +82,7 @@ class FinancialOverviewProjectNew extends Component {
                 .then(payload => {
                     this.props.toggleShowNew();
                     // financialoverview opnieuw fetchen
-                    // this.props.callFetchFinancialOverviewDetails();
+                    this.props.refreshFinancialOverviewProjects();
                 })
                 .catch(error => {
                     let errorObject = JSON.parse(JSON.stringify(error));

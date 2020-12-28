@@ -1,50 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
 import FinancialOverviewProjectItem from './FinancialOverviewProjectItem';
-import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
-import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 
-function FinancialOverviewProjectList({ financialOverview, setShowNewFalse }) {
-    const [financialOverviewProjects, setFinancialOverviewProjects] = useState([]);
-    const [totalsInfo, setTotalsInfo] = useState([]);
-    const [isLoading, setLoading] = useState(true);
-    const [meta, setMetaData] = useState({ total: 0 });
-
-    // If pagination, sort or filter created at change then reload data
-    useEffect(
-        function() {
-            fetchFinancialOverviewProjects();
-        },
-        [financialOverview.statusId, totalsInfo.totalFinancialOverviewProjectsConcept]
-    );
-
-    function fetchFinancialOverviewProjects() {
-        setLoading(true);
-        setFinancialOverviewProjects([]);
-
-        axios
-            .all([
-                FinancialOverviewProjectAPI.fetchFinancialOverviewProjects(financialOverview.id),
-                FinancialOverviewDetailsAPI.fetchTotalsInfoFinancialOverview(financialOverview),
-            ])
-            .then(
-                axios.spread((payloadFinancialOverviewProjects, payloadTotalsInfoFinancialOverview) => {
-                    setFinancialOverviewProjects(payloadFinancialOverviewProjects.data.data);
-                    setMetaData(payloadFinancialOverviewProjects.data.meta);
-                    setTotalsInfo(payloadTotalsInfoFinancialOverview.data);
-                    setLoading(false);
-                })
-            )
-            .catch(error => {
-                setLoading(false);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
-            });
-    }
-
-    function refreshFinancialOverviewProjects() {
-        fetchFinancialOverviewProjects();
+function FinancialOverviewProjectList({
+    financialOverview,
+    financialOverviewProjects,
+    meta,
+    isLoading,
+    setShowNewFalse,
+    refreshFinancialOverviewProjects,
+}) {
+    let inProgressStartText = null;
+    let inProgressEndText = null;
+    if (financialOverview.totalFinancialOverviewProjectsInProgress > 0) {
+        inProgressStartText =
+            'Totaal projecten die nu toegevoegd worden: ' + financialOverview.totalFinancialOverviewProjectsInProgress;
+        inProgressEndText =
+            'Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om projecten overzicht te verversen.';
     }
 
     return (
@@ -63,9 +36,17 @@ function FinancialOverviewProjectList({ financialOverview, setShowNewFalse }) {
                     </div>
                 </div>
             </div>
-            {/*<div className="col-md-12">*/}
-            {/*    {messageText ? <div className="alert alert-danger">{messageText}</div> : null}*/}
-            {/*</div>*/}
+
+            {financialOverview.totalFinancialOverviewProjectsInProgress > 0 ? (
+                <div className="col-md-12">
+                    <div className="alert alert-warning">
+                        {inProgressStartText}
+                        <br />
+                        {inProgressEndText}
+                    </div>
+                </div>
+            ) : null}
+
             <div className="row header">
                 <div className="col-sm-2">Projectcode</div>
                 <div className="col-sm-5">Project</div>
@@ -83,8 +64,8 @@ function FinancialOverviewProjectList({ financialOverview, setShowNewFalse }) {
                                 key={financialOverviewProject.id}
                                 financialOverview={financialOverview}
                                 financialOverviewProject={financialOverviewProject}
-                                fetchFinancialOverviewProjects={fetchFinancialOverviewProjects}
                                 setShowNewFalse={setShowNewFalse}
+                                refreshFinancialOverviewProjects={refreshFinancialOverviewProjects}
                             />
                         );
                     })

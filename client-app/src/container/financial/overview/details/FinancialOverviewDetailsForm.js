@@ -35,7 +35,7 @@ class FinancialOverviewDetailsForm extends Component {
                 />
                 <FinancialOverviewProjectApp
                     financialOverview={financialOverview}
-                    // callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
                 <FinancialOverviewContactApp
                     financialOverview={financialOverview}

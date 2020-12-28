@@ -23,12 +23,12 @@ class FinancialOverviewJoryResource extends JoryResource
         $this->field('updated_at')->filterable()->sortable();
 
         // Attributes
+        $this->field('total_financial_overview_projects_in_progress')->filterable()->sortable();
         $this->field('total_financial_overview_projects_concept')->filterable()->sortable();
         $this->field('total_financial_overview_projects_definitive')->filterable()->sortable();
 
         // Relations
         $this->relation('administration');
-        $this->relation('financialOverviewProjects');
     }
 
     protected function configureForPortal(): void

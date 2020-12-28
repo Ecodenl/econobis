@@ -17,20 +17,12 @@ export default {
                         'definitive',
                         'statusId',
                         'dateProcessed',
+                        'totalFinancialOverviewProjectsInProgress',
                         'totalFinancialOverviewProjectsConcept',
                         'totalFinancialOverviewProjectsDefinitive',
                     ],
                     rlt: {
                         administration: { fld: ['id', 'name'] },
-                        financialOverviewProjects: {
-                            fld: ['id', 'projectId', 'statusId', 'definitive'],
-                            rlt: {
-                                project: {
-                                    fld: ['id', 'code', 'name'],
-                                    rlt: { projectType: { fld: ['id', 'codeRef', 'name'] } },
-                                },
-                            },
-                        },
                     },
                 },
             },

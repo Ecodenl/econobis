@@ -59,7 +59,8 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
             filter.emailedTo,
             onlyEmailFinancialOverviewContacts,
             onlyPostFinancialOverviewContacts,
-            financialOverview.totalFinancialOverviewProjectsConcept === 0,
+            financialOverview.totalFinancialOverviewProjectsConcept,
+            financialOverview.totalFinancialOverviewProjectsDefinitive,
             financialOverview.statusId,
         ]
     );

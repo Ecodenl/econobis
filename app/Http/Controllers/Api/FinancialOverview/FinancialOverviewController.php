@@ -121,9 +121,11 @@ class FinancialOverviewController extends Controller
     public function getTotalsInfoFinancialOverview(FinancialOverview $financialOverview)
     {
         $totalsInfo = [
-            'totalFinancialOverviewContacts' => $financialOverview->total_financial_overview_contacts,
+            'totalFinancialOverviewProjects' => $financialOverview->total_financial_overview_projects,
+            'totalFinancialOverviewProjectsInProgress' => $financialOverview->total_financial_overview_projects_in_progress,
             'totalFinancialOverviewProjectsConcept' => $financialOverview->total_financial_overview_projects_concept,
             'totalFinancialOverviewProjectsDefinitive' => $financialOverview->total_financial_overview_projects_definitive,
+            'totalFinancialOverviewContacts' => $financialOverview->total_financial_overview_contacts,
             'totalFinancialOverviewContactsConcept' => $financialOverview->total_financial_overview_contacts_concept,
             'totalFinancialOverviewContactsToSend' => $financialOverview->total_financial_overview_contacts_to_send,
             'totalFinancialOverviewContactsInProgress' => $financialOverview->total_financial_overview_contacts_in_progress,

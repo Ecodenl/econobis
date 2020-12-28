@@ -5,15 +5,67 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../../components/panel/PanelHeader';
 import FinancialOverviewProjectNew from './FinancialOverviewProjectNew';
 import FinancialOverviewProjectList from './FinancialOverviewProjectList';
+import axios from 'axios';
+import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
+import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 
-function FinancialOverviewProjectApp({ financialOverview }) {
+function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOverviewDetails }) {
     const [showNew, setShowNew] = useState(false);
+    const [financialOverviewProjects, setFinancialOverviewProjects] = useState([]);
+    const [meta, setMetaData] = useState({ total: 0 });
+    const [totalsInfo, setTotalsInfo] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+
+    // If pagination, sort or filter created at change then reload data
+    useEffect(
+        function() {
+            fetchFinancialOverviewProjects();
+            callFetchFinancialOverviewDetails();
+        },
+        [
+            financialOverview.statusId,
+            financialOverview.totalFinancialOverviewProjectsInProgress,
+            financialOverview.totalFinancialOverviewProjectsConcept,
+            financialOverview.totalFinancialOverviewProjectsDefinitive,
+        ]
+    );
 
     function toggleShowNew() {
         setShowNew(!showNew);
     }
     function setShowNewFalse() {
         setShowNew(false);
+    }
+
+    function fetchFinancialOverviewProjects() {
+        setLoading(true);
+        setFinancialOverviewProjects([]);
+
+        axios
+            .all([
+                FinancialOverviewProjectAPI.fetchFinancialOverviewProjects(financialOverview.id),
+                FinancialOverviewDetailsAPI.fetchTotalsInfoFinancialOverview(financialOverview),
+            ])
+            .then(
+                axios.spread((payloadFinancialOverviewProjects, payloadTotalsInfoFinancialOverview) => {
+                    setFinancialOverviewProjects(payloadFinancialOverviewProjects.data.data);
+                    setMetaData(payloadFinancialOverviewProjects.data.meta);
+                    setTotalsInfo(payloadTotalsInfoFinancialOverview.data);
+                    setLoading(false);
+                })
+            )
+            .catch(error => {
+                setLoading(false);
+                alert('Er is iets misgegaan met ophalen van de gegevens.');
+            });
+    }
+
+    function refreshFinancialOverviewProjects() {
+        //todo wm: opschonen log
+        console.log('refreshFinancialOverviewProjects?');
+
+        fetchFinancialOverviewProjects();
+        callFetchFinancialOverviewDetails();
     }
 
     return (
@@ -32,13 +84,18 @@ function FinancialOverviewProjectApp({ financialOverview }) {
                         <FinancialOverviewProjectNew
                             financialOverview={financialOverview}
                             toggleShowNew={toggleShowNew}
+                            refreshFinancialOverviewProjects={refreshFinancialOverviewProjects}
                         />
                     )}
                 </div>
                 <div className="col-md-12">
                     <FinancialOverviewProjectList
                         financialOverview={financialOverview}
+                        financialOverviewProjects={financialOverviewProjects}
+                        meta={meta}
+                        isLoading={isLoading}
                         setShowNewFalse={setShowNewFalse}
+                        refreshFinancialOverviewProjects={refreshFinancialOverviewProjects}
                     />
                 </div>
             </PanelBody>

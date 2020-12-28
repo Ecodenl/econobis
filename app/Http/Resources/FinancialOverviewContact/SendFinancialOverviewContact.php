@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\FinancialOverview;
+namespace App\Http\Resources\FinancialOverviewContact;
 
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;

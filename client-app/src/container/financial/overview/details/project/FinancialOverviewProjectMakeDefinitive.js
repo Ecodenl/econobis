@@ -2,11 +2,7 @@ import React from 'react';
 
 import Modal from '../../../../../components/modal/Modal';
 
-const ProjectMakeDefinitive = props => {
-    const confirmAction = () => {
-        props.makeDefinitiveProject(props.financialOverviewProject.id);
-        props.closeMakeDefinitiveItemModal();
-    };
+const FinancialOverviewProjectMakeDefinitive = props => {
     let allowMakeDefinitive = false;
     if (!props.financialOverviewProject.definitive) {
         allowMakeDefinitive = true;
@@ -17,12 +13,12 @@ const ProjectMakeDefinitive = props => {
             buttonConfirmText="Bevestig"
             buttonClassName={'btn-danger'}
             closeModal={props.closeMakeDefinitiveItemModal}
-            confirmAction={() => confirmAction()}
+            confirmAction={props.makeDefinitiveProject}
             showConfirmAction={allowMakeDefinitive}
             title="Definitief maken"
         >
             <p>
-                Maak project <strong> {`${props.financialOverviewProject.project.name}`} </strong> definitief in
+                Maak project <strong> {`${props.financialOverviewProject.projectName}`} </strong> definitief in
                 waardestaat.
             </p>
             {props.totalFinancialOverviewProjectsConcept === 1 ? (
@@ -47,4 +43,4 @@ const ProjectMakeDefinitive = props => {
     );
 };
 
-export default ProjectMakeDefinitive;
+export default FinancialOverviewProjectMakeDefinitive;

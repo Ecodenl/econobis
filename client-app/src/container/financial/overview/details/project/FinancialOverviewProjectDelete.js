@@ -2,11 +2,7 @@ import React from 'react';
 
 import Modal from '../../../../../components/modal/Modal';
 
-const ProjectDelete = props => {
-    const confirmAction = () => {
-        props.deleteProject(props.financialOverviewProject.id);
-        props.closeDeleteItemModal();
-    };
+const FinancialOverviewProjectDelete = props => {
     let allowDelete = false;
     if (!props.financialOverviewProject.definitive) {
         allowDelete = true;
@@ -17,12 +13,12 @@ const ProjectDelete = props => {
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
             closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            confirmAction={props.deleteProject}
             showConfirmAction={allowDelete}
             title="Verwijderen"
         >
             <p>
-                Verwijder project uit waardestaat: <strong> {`${props.financialOverviewProject.project.name}`} </strong>
+                Verwijder project uit waardestaat: <strong> {`${props.financialOverviewProject.projectName}`} </strong>
             </p>
 
             {props.financialOverviewProject.definitive ? (
@@ -36,4 +32,4 @@ const ProjectDelete = props => {
     );
 };
 
-export default ProjectDelete;
+export default FinancialOverviewProjectDelete;

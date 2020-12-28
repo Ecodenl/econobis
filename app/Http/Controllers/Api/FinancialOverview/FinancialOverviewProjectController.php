@@ -11,6 +11,8 @@ use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
+use App\Http\RequestQueries\FinancialOverviewProject\Grid\RequestQuery;
+use App\Http\Resources\FinancialOverviewProject\GridFinancialOverviewProject;
 use App\Http\Resources\GenericResource;
 use App\Jobs\FinancialOverview\CreateFinancialOverviewParticipantProjects;
 use Carbon\Carbon;
@@ -25,6 +27,20 @@ class FinancialOverviewProjectController extends Controller
     public function jory()
     {
         return Jory::on(FinancialOverviewProject::class);
+    }
+
+    public function grid(RequestQuery $requestQuery)
+    {
+        $financialOverviewProjects = $requestQuery->get();
+
+        $financialOverviewProjects->load(['financialOverview', 'project']);
+
+        return GridFinancialOverviewProject::collection($financialOverviewProjects)
+            ->additional([
+                'meta' => [
+                    'total' => $requestQuery->total(),
+                ]
+            ]);
     }
 
     public function store(RequestInput $input, Request $request)
@@ -57,7 +73,7 @@ class FinancialOverviewProjectController extends Controller
 
     }
 
-    public function update(RequestInput $input, FinancialOverviewProject $financialOverviewProject)
+    public function update(RequestInput $input, Request $request, FinancialOverviewProject $financialOverviewProject)
     {
         $this->authorize('manage', FinancialOverview::class);
 
@@ -71,8 +87,13 @@ class FinancialOverviewProjectController extends Controller
             abort(409,'Waardestaat jaar ' . $financialOverview->description . ' is al definitief.');
         }
 
-        $data = $input->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
-            ->get();
+        //bool als string? waarschijnlijk door formdata
+        if($request->input('definitive') == 'false' || $request->input('definitive') == '0'){
+            $data['definitive'] = false;
+        }
+        if($request->input('definitive') == 'true' || $request->input('definitive') == '1'){
+            $data['definitive'] = true;
+        }
 
         $financialOverviewProject->fill($data);
         $financialOverviewProject->save();

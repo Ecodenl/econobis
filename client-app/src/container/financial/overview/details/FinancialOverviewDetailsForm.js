@@ -3,15 +3,12 @@ import { isEmpty } from 'lodash';
 
 import FinancialOverviewDetailsFormGeneral from './general/FinancialOverviewDetailsFormGeneral';
 import * as PropTypes from 'prop-types';
-import ProjectApp from './project/ProjectApp';
 import FinancialOverviewContactApp from './contact/FinancialOverviewContactApp';
+import FinancialOverviewProjectApp from './project/FinancialOverviewProjectApp';
 
 class FinancialOverviewDetailsForm extends Component {
     constructor(props) {
         super(props);
-
-        //todo WM: opschonen log
-        // console.log('FinancialOverviewDetailsForm - props');
     }
     render() {
         let { financialOverview, hasError, isLoading } = this.props;
@@ -36,9 +33,9 @@ class FinancialOverviewDetailsForm extends Component {
                     financialOverview={financialOverview}
                     callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
-                <ProjectApp
+                <FinancialOverviewProjectApp
                     financialOverview={financialOverview}
-                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                    // callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
                 <FinancialOverviewContactApp
                     financialOverview={financialOverview}

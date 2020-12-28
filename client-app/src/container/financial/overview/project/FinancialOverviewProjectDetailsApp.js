@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import FinancialOverviewProjectDetailsToolbar from './FinancialOverviewProjectDetailsToolbar';
 import FinancialOverviewProjectDetailsForm from './FinancialOverviewProjectDetailsForm';
+import FinancialOverviewProjectAPI from '../../../../api/financial/overview/FinancialOverviewProjectAPI';
 
 class FinancialOverviewProjectDetailsApp extends Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class FinancialOverviewProjectDetailsApp extends Component {
 
     callFetchFinancialOverviewProjectDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        FinancialOverviewDetailsAPI.fetchFinancialOverviewProjectDetails(this.props.params.id)
+        FinancialOverviewProjectAPI.fetchFinancialOverviewProjectDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
                     isLoading: false,

@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-
-import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
-import ProjectView from './ProjectView';
-import ProjectMakeConcept from './ProjectMakeConcept';
-import ProjectMakeDefinitive from './ProjectMakeDefinitive';
-import ProjectDelete from './ProjectDelete';
-import { setError } from '../../../../../actions/general/ErrorActions';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 import { hashHistory } from 'react-router';
+import FinancialOverviewProjectMakeConcept from './FinancialOverviewProjectMakeConcept';
+import FinancialOverviewProjectMakeDefinitive from './FinancialOverviewProjectMakeDefinitive';
+import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
 import ErrorModal from '../../../../../components/modal/ErrorModal';
+import FinancialOverviewProjectDelete from './FinancialOverviewProjectDelete';
 
-function ProjectItem({ financialOverviewProject, financialOverview, callFetchFinancialOverviewDetails }) {
+function FinancialOverviewProjectItem({
+    financialOverview,
+    financialOverviewProject,
+    fetchFinancialOverviewProjects,
+    setShowNewFalse,
+}) {
     const [showActionButtons, setShowActionButtuns] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
     const [showMakeConcept, setShowMakeConcept] = useState(false);
@@ -18,14 +19,6 @@ function ProjectItem({ financialOverviewProject, financialOverview, callFetchFin
     const [showDelete, setShowDelete] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [modalErrorMessage, setModalErrorMessage] = useState(false);
-
-    // If financial overview has changes, reload data here
-    // useEffect(
-    //     function() {
-    //         callFetchFinancialOverviewDetails;
-    //     },
-    //     [financialOverviewProject.definitive]
-    // );
 
     function onLineEnter() {
         if (financialOverviewProject.statusId !== 'in-progress') {
@@ -39,26 +32,29 @@ function ProjectItem({ financialOverviewProject, financialOverview, callFetchFin
         setHighlightLine('');
     }
 
-    function clickItem(id) {
-        hashHistory.push(`/waardestaat-project/${id}`);
+    function clickItem(financialOverviewProjectId) {
+        hashHistory.push(`/waardestaat-project/${financialOverviewProjectId}`);
     }
 
     function makeConceptProject() {
-        // setFinancialOverviewProject({ ...financialOverviewProject, definitive: false });
-        financialOverviewProject = { ...financialOverviewProject, definitive: false };
-        updateProject();
+        updateProject(financialOverviewProject.id, false);
+        toggleMakeConcept();
     }
 
     function makeDefinitiveProject() {
-        financialOverviewProject = { ...financialOverviewProject, definitive: true };
-        updateProject();
+        updateProject(financialOverviewProject.id, true);
+        toggleMakeDefinitive();
     }
 
-    function updateProject() {
-        FinancialOverviewDetailsAPI.updateFinancialOverviewProject(financialOverviewProject)
+    function updateProject(financialOverviewProjectId, definitive) {
+        const data = new FormData();
+
+        data.append('definitive', definitive);
+
+        FinancialOverviewProjectAPI.updateFinancialOverviewProject(financialOverviewProjectId, data)
             .then(payload => {
                 // financialoverview opnieuw fetchen
-                callFetchFinancialOverviewDetails();
+                fetchFinancialOverviewProjects;
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));
@@ -71,12 +67,13 @@ function ProjectItem({ financialOverviewProject, financialOverview, callFetchFin
             });
     }
 
-    function deleteProject(id) {
-        FinancialOverviewDetailsAPI.deleteFinancialOverviewProject(id)
+    function deleteProject() {
+        FinancialOverviewProjectAPI.deleteFinancialOverviewProject(financialOverviewProject.id)
             .then(payload => {
-                setShowNewFalse();
+                setShowNewFalse(false);
+                toggleDelete();
                 // financialoverview opnieuw fetchen
-                callFetchFinancialOverviewDetails();
+                fetchFinancialOverviewProjects();
             })
             .catch(error => {
                 let errorObject = JSON.parse(JSON.stringify(error));
@@ -109,27 +106,55 @@ function ProjectItem({ financialOverviewProject, financialOverview, callFetchFin
     return (
         <React.Fragment>
             <div>
-                <ProjectView
-                    highlightLine={highlightLine}
-                    showActionButtons={showActionButtons}
-                    onLineEnter={onLineEnter}
-                    onLineLeave={onLineLeave}
-                    clickItem={clickItem}
-                    toggleMakeConcept={toggleMakeConcept}
-                    toggleMakeDefinitive={toggleMakeDefinitive}
-                    toggleDelete={toggleDelete}
-                    financialOverviewDefinitive={financialOverview.definitive}
-                    financialOverviewProject={financialOverviewProject}
-                />
+                <div
+                    className={`row border ${highlightLine}`}
+                    onDoubleClick={() => clickItem(financialOverviewProject.id)}
+                    onMouseEnter={() => onLineEnter()}
+                    onMouseLeave={() => onLineLeave()}
+                >
+                    {/*<div onClick={openEdit}>*/}
+                    <div>
+                        <div className="col-sm-2">{financialOverviewProject.projectCode}</div>
+                        <div className="col-sm-5">{financialOverviewProject.projectName}</div>
+                        <div className="col-sm-2">{financialOverviewProject.projectType}</div>
+                        <div className="col-sm-2">{financialOverviewProject.status}</div>
+                    </div>
+                    <div className="col-sm-1">
+                        {financialOverview.definitive ? (
+                            <a role="button">
+                                <span className="glyphicon glyphicon-ok mybtn-primary" />{' '}
+                            </a>
+                        ) : showActionButtons ? (
+                            financialOverviewProject.definitive ? (
+                                <a role="button" onClick={toggleMakeConcept}>
+                                    <span className="glyphicon glyphicon-remove mybtn-danger" />
+                                </a>
+                            ) : (
+                                <>
+                                    <a role="button" onClick={toggleMakeDefinitive}>
+                                        <span className="glyphicon glyphicon-ok mybtn-success" />
+                                    </a>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <a role="button" onClick={toggleDelete}>
+                                        <span className="glyphicon glyphicon-trash mybtn-danger" />
+                                    </a>
+                                </>
+                            )
+                        ) : (
+                            ''
+                        )}
+                    </div>
+                </div>
+
                 {showMakeConcept && (
-                    <ProjectMakeConcept
+                    <FinancialOverviewProjectMakeConcept
                         financialOverviewProject={financialOverviewProject}
                         makeConceptProject={makeConceptProject}
                         closeMakeConceptItemModal={toggleMakeConcept}
                     />
                 )}
                 {showMakeDefinitive && (
-                    <ProjectMakeDefinitive
+                    <FinancialOverviewProjectMakeDefinitive
                         totalFinancialOverviewProjectsConcept={financialOverview.totalFinancialOverviewProjectsConcept}
                         totalFinancialOverviewProjectsDefinitive={
                             financialOverview.totalFinancialOverviewProjectsDefinitive
@@ -140,7 +165,7 @@ function ProjectItem({ financialOverviewProject, financialOverview, callFetchFin
                     />
                 )}
                 {showDelete && (
-                    <ProjectDelete
+                    <FinancialOverviewProjectDelete
                         financialOverviewProject={financialOverviewProject}
                         deleteProject={deleteProject}
                         closeDeleteItemModal={toggleDelete}
@@ -154,10 +179,4 @@ function ProjectItem({ financialOverviewProject, financialOverview, callFetchFin
     );
 }
 
-const mapDispatchToProps = dispatch => ({
-    setError: (http_code, message) => {
-        dispatch(setError(http_code, message));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(ProjectItem);
+export default FinancialOverviewProjectItem;

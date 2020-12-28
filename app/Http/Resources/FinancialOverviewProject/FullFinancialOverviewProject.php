@@ -6,7 +6,7 @@
  * Time: 11:49
  */
 
-namespace App\Http\Resources\FinancialOverview;
+namespace App\Http\Resources\FinancialOverviewProject;
 
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Project\FullProject;

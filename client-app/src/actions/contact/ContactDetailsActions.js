@@ -169,3 +169,10 @@ export const deleteContactEnergySupplier = id => {
         id,
     };
 };
+
+export const updateContactHoomAccount = hoomAccountId => {
+    return {
+        type: 'UPDATE_HOOM_ACCOUNT_ID',
+        hoomAccountId,
+    };
+};

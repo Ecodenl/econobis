@@ -11,6 +11,7 @@
         "cmpayments/iban": "^1.1",
         "doctrine/dbal": "^2.6",
         "ecodenl/pico-wrapper": "dev-master",
+        "guzzlehttp/guzzle": "^7.2",
         "iio/libmergepdf": "^3.1",
         "joskolenberg/enum": "^1.2",
         "joskolenberg/laravel-jory": "^2.0",

@@ -4,17 +4,22 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteContact;
+use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
 
 class ContactController extends Controller
 {
@@ -186,5 +191,11 @@ class ContactController extends Controller
         }
 
         return array_unique($emailIds);
+    }
+
+    public function makeHoomdossier(Contact $contact) {
+        $hoomdossierHelper = new HoomdossierHelper($contact);
+
+        return $hoomdossierHelper->make();
     }
 }

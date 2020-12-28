@@ -7,6 +7,7 @@ use App\Eco\Contact\ContactStatus;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteContact;
+use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeek;
@@ -193,90 +194,8 @@ class ContactController extends Controller
     }
 
     public function makeHoomdossier(Contact $contact) {
-        // Check if all necessary fields are filled
-        $this->validateRequiredFields($contact);
+        $hoomdossierHelper = new HoomdossierHelper($contact);
 
-        // Send to hoomdossier url
-        $hoomAccountId = $this->sendHoomdossier($contact);
-
-        if($hoomAccountId)
-        // When success save hoomdossier id
-        $contact->hoom_account_id = $hoomAccountId;
-        $contact->save();
-
-        // When successfull add contact to hoomgroup
-
-
-        // When successfull send message to contact
-
-        // Return hoomdossier id
-        return $hoomAccountId;
-    }
-
-    private function validateRequiredFields($contact) {
-        $errors = [];
-
-        if(!$contact->primaryEmailAddress) {
-            $errors[] = 'Primair mailadres ontbreekt';
-        }
-
-        if($contact->type_id == 'person') {
-            if(!$contact->person->first_name) {
-                $errors[] = 'Voornaam ontbreekt';
-            }
-
-            if(!$contact->person->last_name) {
-                $errors[] = 'Achternaam ontbreekt';
-            }
-        }
-
-        if(!$contact->primaryAddress) {
-            $errors[] = 'Primair adres ontbreekt';
-        }
-
-        if(count($errors)) throw ValidationException::withMessages($errors);
-
-        return true;
-    }
-
-    private function sendHoomdossier($contact) {
-        // Get cooperation for hoom link and key
-        $cooperation = Cooperation::first();
-
-        // If hoom link contains .test then return fake id
-        if(strpos ($cooperation->hoom_link, '.test')) return rand(1,3000);
-
-        if($contact->person->last_name_prefix != '') {
-            $lastName = $contact->person->last_name_prefix . ' ' . $contact->person->last_name;
-        } else {
-            $lastName = $contact->person->last_name;
-        }
-
-        $payload = [
-            'key' => $cooperation->hoom_key,
-            'contact_id' => $contact->id,
-            'email' => $contact->primaryEmailAddress->email,
-            'first_name' => $contact->person->first_name,
-            'last_name' => $lastName,
-            'postal_code' => $contact->primaryAddress->postal_code,
-            'number' => $contact->primaryAddress->number,
-            'house_number_extension' => $contact->primaryAddress->addition,
-            'street' => $contact->primaryAddress->street,
-            'city' => $contact->primaryAddress->city,
-            'phone_number' => $contact->primaryphoneNumber ? $contact->primaryphoneNumber->number : '',
-        ];
-
-        $client = new Client;
-
-        try {
-            $response = $client->post($cooperation->hoom_link, $payload);
-            return $response->getBody();
-        } catch (RequestException $e) {
-            if ($e->hasResponse()) {
-                abort($e->getCode(), Psr7\str($e->getResponse()));
-            } else {
-                abort($e->getCode(), 'Er is iets misgegaan met het verzenden naar Hoomdossier');
-            }
-        }
+        return $hoomdossierHelper->make();
     }
 }

@@ -70,6 +70,8 @@ class HoomdossierHelper
             if(!$this->contact->person->last_name) {
                 $errors[] = 'Achternaam ontbreekt';
             }
+        } else {
+            $errors[] = 'Bedrijven kunnen niet worden aangemaakt bij Hoomdossier';
         }
 
         if(!$this->contact->primaryAddress) {

@@ -2,6 +2,9 @@ import React from 'react';
 
 import FinancialOverviewProjectItem from './FinancialOverviewProjectItem';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
+import DataTable from '../../../../../components/dataTable/DataTable';
+import DataTableHead from '../../../../../components/dataTable/DataTableHead';
+import DataTableBody from '../../../../../components/dataTable/DataTableBody';
 
 function FinancialOverviewProjectList({
     financialOverview,
@@ -47,31 +50,42 @@ function FinancialOverviewProjectList({
                 </div>
             ) : null}
 
-            <div className="row header">
-                <div className="col-sm-2">Projectcode</div>
-                <div className="col-sm-5">Project</div>
-                <div className="col-sm-2">Type project</div>
-                <div className="col-sm-2">Status</div>
-            </div>
+            <div className={'margin-10-top'}>
+                <DataTable>
+                    <DataTableHead>
+                        <tr className="thead-title">
+                            <th width={'25%'}>Projectcode</th>
+                            <th width={'40%'}>Project</th>
+                            <th width={'15%'}>Type project</th>
+                            <th width={'15%'}>Status</th>
+                            <th width={'5%'} />
+                        </tr>
+                    </DataTableHead>
 
-            <div>
-                {isLoading ? (
-                    <div>Bezig met gegevens laden</div>
-                ) : financialOverviewProjects.length > 0 ? (
-                    financialOverviewProjects.map(financialOverviewProject => {
-                        return (
-                            <FinancialOverviewProjectItem
-                                key={financialOverviewProject.id}
-                                financialOverview={financialOverview}
-                                financialOverviewProject={financialOverviewProject}
-                                setShowNewFalse={setShowNewFalse}
-                                refreshFinancialOverviewProjects={refreshFinancialOverviewProjects}
-                            />
-                        );
-                    })
-                ) : (
-                    <div>Geen resultaten!</div>
-                )}
+                    <DataTableBody>
+                        {isLoading ? (
+                            <tr>
+                                <td colSpan={5}>Bezig met gegevens laden</td>
+                            </tr>
+                        ) : financialOverviewProjects.length > 0 ? (
+                            financialOverviewProjects.map(financialOverviewProject => {
+                                return (
+                                    <FinancialOverviewProjectItem
+                                        key={financialOverviewProject.id}
+                                        financialOverview={financialOverview}
+                                        financialOverviewProject={financialOverviewProject}
+                                        setShowNewFalse={setShowNewFalse}
+                                        refreshFinancialOverviewProjects={refreshFinancialOverviewProjects}
+                                    />
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <td colSpan={5}>Geen resultaten!</td>
+                            </tr>
+                        )}
+                    </DataTableBody>
+                </DataTable>
             </div>
         </div>
     );

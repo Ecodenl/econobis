@@ -23,7 +23,7 @@ function FinancialOverviewProjectItem({
     function onLineEnter() {
         if (financialOverviewProject.statusId !== 'in-progress') {
             setShowActionButtuns(true);
-            setHighlightLine('highlight-line');
+            setHighlightLine('highlight-row');
         }
     }
 
@@ -103,78 +103,75 @@ function FinancialOverviewProjectItem({
         setModalErrorMessage('');
     }
 
+    const inProgressRowClass = financialOverviewProject.statusId === 'in-progress' ? 'in-progress-row' : '';
+
     return (
         <React.Fragment>
-            <div>
-                <div
-                    className={`row border ${highlightLine}`}
-                    onDoubleClick={() => clickItem(financialOverviewProject.id)}
-                    onMouseEnter={() => onLineEnter()}
-                    onMouseLeave={() => onLineLeave()}
-                >
-                    {/*<div onClick={openEdit}>*/}
-                    <div>
-                        <div className="col-sm-2">{financialOverviewProject.projectCode}</div>
-                        <div className="col-sm-5">{financialOverviewProject.projectName}</div>
-                        <div className="col-sm-2">{financialOverviewProject.projectType}</div>
-                        <div className="col-sm-2">{financialOverviewProject.status}</div>
-                    </div>
-                    <div className="col-sm-1">
-                        {financialOverview.definitive ? (
-                            <a role="button">
-                                <span className="glyphicon glyphicon-ok mybtn-primary" />{' '}
+            <tr
+                className={`${highlightLine} ${inProgressRowClass}`}
+                onDoubleClick={() => clickItem(financialOverviewProject.id)}
+                onMouseEnter={() => onLineEnter()}
+                onMouseLeave={() => onLineLeave()}
+            >
+                <td>{financialOverviewProject.projectCode}</td>
+                <td>{financialOverviewProject.projectName}</td>
+                <td>{financialOverviewProject.projectType}</td>
+                <td>{financialOverviewProject.status}</td>
+                <td>
+                    {financialOverview.definitive ? (
+                        <a role="button">
+                            <span className="glyphicon glyphicon-ok mybtn-primary" />{' '}
+                        </a>
+                    ) : showActionButtons ? (
+                        financialOverviewProject.definitive ? (
+                            <a role="button" onClick={toggleMakeConcept}>
+                                <span className="glyphicon glyphicon-remove mybtn-danger" />
                             </a>
-                        ) : showActionButtons ? (
-                            financialOverviewProject.definitive ? (
-                                <a role="button" onClick={toggleMakeConcept}>
-                                    <span className="glyphicon glyphicon-remove mybtn-danger" />
-                                </a>
-                            ) : (
-                                <>
-                                    <a role="button" onClick={toggleMakeDefinitive}>
-                                        <span className="glyphicon glyphicon-ok mybtn-success" />
-                                    </a>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <a role="button" onClick={toggleDelete}>
-                                        <span className="glyphicon glyphicon-trash mybtn-danger" />
-                                    </a>
-                                </>
-                            )
                         ) : (
-                            ''
-                        )}
-                    </div>
-                </div>
+                            <>
+                                <a role="button" onClick={toggleMakeDefinitive}>
+                                    <span className="glyphicon glyphicon-ok mybtn-success" />
+                                </a>
+                                &nbsp;&nbsp;&nbsp;
+                                <a role="button" onClick={toggleDelete}>
+                                    <span className="glyphicon glyphicon-trash mybtn-danger" />
+                                </a>
+                            </>
+                        )
+                    ) : (
+                        ''
+                    )}
+                </td>
+            </tr>
 
-                {showMakeConcept && (
-                    <FinancialOverviewProjectMakeConcept
-                        financialOverviewProject={financialOverviewProject}
-                        makeConceptProject={makeConceptProject}
-                        closeMakeConceptItemModal={toggleMakeConcept}
-                    />
-                )}
-                {showMakeDefinitive && (
-                    <FinancialOverviewProjectMakeDefinitive
-                        totalFinancialOverviewProjectsInProgress={
-                            financialOverview.totalFinancialOverviewProjectsInProgress
-                        }
-                        totalFinancialOverviewProjectsConcept={financialOverview.totalFinancialOverviewProjectsConcept}
-                        totalFinancialOverviewProjectsDefinitive={
-                            financialOverview.totalFinancialOverviewProjectsDefinitive
-                        }
-                        financialOverviewProject={financialOverviewProject}
-                        makeDefinitiveProject={makeDefinitiveProject}
-                        closeMakeDefinitiveItemModal={toggleMakeDefinitive}
-                    />
-                )}
-                {showDelete && (
-                    <FinancialOverviewProjectDelete
-                        financialOverviewProject={financialOverviewProject}
-                        deleteProject={deleteProject}
-                        closeDeleteItemModal={toggleDelete}
-                    />
-                )}
-            </div>
+            {showMakeConcept && (
+                <FinancialOverviewProjectMakeConcept
+                    financialOverviewProject={financialOverviewProject}
+                    makeConceptProject={makeConceptProject}
+                    closeMakeConceptItemModal={toggleMakeConcept}
+                />
+            )}
+            {showMakeDefinitive && (
+                <FinancialOverviewProjectMakeDefinitive
+                    totalFinancialOverviewProjectsInProgress={
+                        financialOverview.totalFinancialOverviewProjectsInProgress
+                    }
+                    totalFinancialOverviewProjectsConcept={financialOverview.totalFinancialOverviewProjectsConcept}
+                    totalFinancialOverviewProjectsDefinitive={
+                        financialOverview.totalFinancialOverviewProjectsDefinitive
+                    }
+                    financialOverviewProject={financialOverviewProject}
+                    makeDefinitiveProject={makeDefinitiveProject}
+                    closeMakeDefinitiveItemModal={toggleMakeDefinitive}
+                />
+            )}
+            {showDelete && (
+                <FinancialOverviewProjectDelete
+                    financialOverviewProject={financialOverviewProject}
+                    deleteProject={deleteProject}
+                    closeDeleteItemModal={toggleDelete}
+                />
+            )}
             {showErrorModal && (
                 <ErrorModal closeModal={closeErrorModal} title={'Fout bij opslaan'} errorMessage={modalErrorMessage} />
             )}

@@ -13,11 +13,12 @@ use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\Contact\FullContactWithGroups;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
 
 class ContactController extends Controller
 {
@@ -193,12 +194,12 @@ class ContactController extends Controller
 
     public function makeHoomdossier(Contact $contact) {
         // Check if all necessary fields are filled
-        $this->validateNecessaryData($contact);
+        $this->validateRequiredFields($contact);
 
         // Send to hoomdossier url
-        $hoomId = $this->sendHoomdossier($contact);
-        $hoomAccountId = 1;
+        $hoomAccountId = $this->sendHoomdossier($contact);
 
+        if($hoomAccountId)
         // When success save hoomdossier id
         $contact->hoom_account_id = $hoomAccountId;
         $contact->save();
@@ -212,7 +213,7 @@ class ContactController extends Controller
         return $hoomAccountId;
     }
 
-    private function validateNecessaryData($contact) {
+    private function validateRequiredFields($contact) {
         $errors = [];
 
         if(!$contact->primaryEmailAddress) {
@@ -239,16 +240,43 @@ class ContactController extends Controller
     }
 
     private function sendHoomdossier($contact) {
+        // Get cooperation for hoom link and key
         $cooperation = Cooperation::first();
 
-        $client = new Client;
-        $request = $client->post($cooperation->hoom_link, [
+        // If hoom link contains .test then return fake id
+        if(strpos ($cooperation->hoom_link, '.test')) return rand(1,3000);
+
+        if($contact->person->last_name_prefix != '') {
+            $lastName = $contact->person->last_name_prefix . ' ' . $contact->person->last_name;
+        } else {
+            $lastName = $contact->person->last_name;
+        }
+
+        $payload = [
             'key' => $cooperation->hoom_key,
             'contact_id' => $contact->id,
-        ]);
+            'email' => $contact->primaryEmailAddress->email,
+            'first_name' => $contact->person->first_name,
+            'last_name' => $lastName,
+            'postal_code' => $contact->primaryAddress->postal_code,
+            'number' => $contact->primaryAddress->number,
+            'house_number_extension' => $contact->primaryAddress->addition,
+            'street' => $contact->primaryAddress->street,
+            'city' => $contact->primaryAddress->city,
+            'phone_number' => $contact->primaryphoneNumber ? $contact->primaryphoneNumber->number : '',
+        ];
 
-        $response = $request->getBody();
+        $client = new Client;
 
-        dd($response);
+        try {
+            $response = $client->post($cooperation->hoom_link, $payload);
+            return $response->getBody();
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                abort($e->getCode(), Psr7\str($e->getResponse()));
+            } else {
+                abort($e->getCode(), 'Er is iets misgegaan met het verzenden naar Hoomdossier');
+            }
+        }
     }
 }

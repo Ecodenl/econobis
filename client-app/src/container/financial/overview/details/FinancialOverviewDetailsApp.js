@@ -25,8 +25,6 @@ class FinancialOverviewDetailsApp extends Component {
     }
 
     callFetchFinancialOverviewDetails = () => {
-        //todo WM: opschonen log
-        // console.log('FinancialOverviewDetailsApp - callFetchFinancialOverviewDetails');
         FinancialOverviewDetailsAPI.fetchFinancialOverviewDetails(this.props.params.id)
             .then(payload => {
                 this.setState({

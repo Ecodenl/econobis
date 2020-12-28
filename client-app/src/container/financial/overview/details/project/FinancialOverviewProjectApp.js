@@ -61,9 +61,6 @@ function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOver
     }
 
     function refreshFinancialOverviewProjects() {
-        //todo wm: opschonen log
-        console.log('refreshFinancialOverviewProjects?');
-
         fetchFinancialOverviewProjects();
         callFetchFinancialOverviewDetails();
     }

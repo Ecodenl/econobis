@@ -98,13 +98,6 @@ class FinancialOverviewNewForm extends Component {
             hasErrors = true;
         }
 
-        // todo nog even kijken of dit wel wenselijk is
-        //      dus of je maar max 1 totale waardestaat per jaar/administ mag hebben ??
-        //      Indien meerdere toch wenselijk is, dan zal er denk ik een omschrijving
-        //      aan financial overview tabel toegevoegd moeten worden om waardestaat een afwijkende
-        //      naam te geven. De get en createProjectsForFinancialOverview houden al wel rekening met
-        //      deze functionaliteit. Dat wil zeggen dat jee bepaald project maar bij 1 administratie/jaar
-        //      combinatie mag hebben.
         this.state.financialOverviews.map(financialOverviewFromMap => {
             if (
                 financialOverviewFromMap.year == financialOverview.year &&
@@ -137,24 +130,7 @@ class FinancialOverviewNewForm extends Component {
     render() {
         const { year, administrationId } = this.state.financialOverview;
 
-        // let loadingText = '';
-        // let loading = true;
-        // console.log(this.props);
-        // if (this.props.hasError) {
-        //     loadingText = 'Fout bij het aanmaken nieuwe waardestaat.';
-        // } else if (this.props.isLoading) {
-        //     loadingText = 'Gegevens aan het laden.';
-        // } else {
-        //     loading = false;
-        // }
-
         return (
-            // <>
-            //     {loading ? (
-            //         <div className="row">
-            //             <td colSpan={7}>{loadingText}</td>
-            //         </div>
-            //     ) : (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
@@ -196,15 +172,12 @@ class FinancialOverviewNewForm extends Component {
                     </PanelBody>
                 </Panel>
             </form>
-            //     )}
-            // </>
         );
     }
 }
 
 const mapStateToProps = state => {
     return {
-        // isLoading: state.loadingData.isLoading,
         administrations: state.systemData.administrations,
     };
 };

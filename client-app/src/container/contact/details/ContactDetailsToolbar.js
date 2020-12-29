@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
+import { isEmpty } from 'lodash';
 
 import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
 import Panel from '../../../components/panel/Panel';
@@ -10,7 +11,7 @@ import ContactDetailsDelete from './ContactDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
 
-function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId, isLoading }) {
+function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId, cooperation, isLoading }) {
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
@@ -39,7 +40,7 @@ function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId,
                                 {type && type.id === 'person' && permissions && permissions.deletePerson && (
                                     <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
                                 )}
-                                {type && type.id === 'person' ? (
+                                {type && type.id === 'person' && cooperation && !isEmpty(cooperation.hoom_link) ? (
                                     <ButtonText
                                         onClickAction={toggleShowMakeHoomdossier}
                                         buttonText={hoomAccountId ? 'Hoomdossier aangemaakt' : 'Hoomdossier aanmaken'}
@@ -74,6 +75,7 @@ const mapStateToProps = state => {
         id: state.contactDetails.id,
         type: state.contactDetails.type,
         hoomAccountId: state.contactDetails.hoomAccountId,
+        cooperation: state.systemData.cooperation,
         permissions: state.meDetails.permissions,
         isLoading: state.loadingData.isLoading,
     };
@@ -85,7 +87,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsToolbar);

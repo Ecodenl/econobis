@@ -3,8 +3,8 @@ import { isEmpty } from 'lodash';
 
 import FinancialOverviewDetailsFormGeneral from './general/FinancialOverviewDetailsFormGeneral';
 import * as PropTypes from 'prop-types';
-import ProjectApp from './project/ProjectApp';
 import FinancialOverviewContactApp from './contact/FinancialOverviewContactApp';
+import FinancialOverviewProjectApp from './project/FinancialOverviewProjectApp';
 
 class FinancialOverviewDetailsForm extends Component {
     constructor(props) {
@@ -29,14 +29,17 @@ class FinancialOverviewDetailsForm extends Component {
             <div>{loadingText}</div>
         ) : (
             <div>
-                <FinancialOverviewDetailsFormGeneral financialOverview={financialOverview} />
-                <ProjectApp
+                <FinancialOverviewDetailsFormGeneral
+                    financialOverview={financialOverview}
+                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                />
+                <FinancialOverviewProjectApp
                     financialOverview={financialOverview}
                     callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
                 <FinancialOverviewContactApp
                     financialOverview={financialOverview}
-                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                    // callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
             </div>
         );

@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
-import ProjectView from '../../details/project/ProjectView';
 import ParticipantView from './ParticipantView';
-import { hashHistory } from 'react-router';
 
 class ParticipantItem extends Component {
     constructor(props) {

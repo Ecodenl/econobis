@@ -132,7 +132,7 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'error-sending' ||
             this.props.statusId === 'is-resending'
                 ? 'in-progress-row'
-                : null;
+                : '';
         return (
             <tr
                 className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
@@ -232,14 +232,14 @@ class InvoicesListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons &&
-                    (this.props.statusId !== 'to-send' &&
+                    this.props.statusId !== 'to-send' &&
                         this.props.statusId !== 'in-progress' &&
                         this.props.statusId !== 'is-sending' &&
                         this.props.statusId !== 'error-making' &&
                         this.props.statusId !== 'error-sending' &&
                         this.props.statusId !== 'is-resending' &&
                         this.props.statusId !== 'paid' &&
-                        this.props.statusId !== 'irrecoverable') ? (
+                        this.props.statusId !== 'irrecoverable' ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">
                             <span className="glyphicon glyphicon-remove mybtn-success" />{' '}
                         </a>

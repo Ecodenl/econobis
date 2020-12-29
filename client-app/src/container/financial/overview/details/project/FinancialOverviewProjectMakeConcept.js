@@ -2,11 +2,7 @@ import React from 'react';
 
 import Modal from '../../../../../components/modal/Modal';
 
-const ProjectMakeConcept = props => {
-    const confirmAction = () => {
-        props.makeConceptProject(props.financialOverviewProject.id);
-        props.closeMakeConceptItemModal();
-    };
+const FinancialOverviewProjectMakeConcept = props => {
     let allowMakeConcept = false;
     if (props.financialOverviewProject.definitive) {
         allowMakeConcept = true;
@@ -17,12 +13,12 @@ const ProjectMakeConcept = props => {
             buttonConfirmText="Bevestig"
             buttonClassName={'btn-danger'}
             closeModal={props.closeMakeConceptItemModal}
-            confirmAction={() => confirmAction()}
+            confirmAction={props.makeConceptProject}
             showConfirmAction={allowMakeConcept}
             title="Concept maken"
         >
             <p>
-                Maak project <strong> {`${props.financialOverviewProject.project.name}`} </strong> weer concept in
+                Maak project <strong> {`${props.financialOverviewProject.projectName}`} </strong> weer concept in
                 waardestaat.
             </p>
 
@@ -36,4 +32,4 @@ const ProjectMakeConcept = props => {
     );
 };
 
-export default ProjectMakeConcept;
+export default FinancialOverviewProjectMakeConcept;

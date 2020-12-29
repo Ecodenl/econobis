@@ -53,6 +53,7 @@ class FinancialOverviewDetailsFormGeneral extends Component {
                 <FinancialOverviewDetailsFormGeneralView
                     {...this.props.financialOverview}
                     switchToEdit={this.switchToEdit}
+                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                     administrations={this.props.administrations}
                 />
                 {/*)}*/}

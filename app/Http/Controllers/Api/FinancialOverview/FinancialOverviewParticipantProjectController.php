@@ -16,10 +16,10 @@ use Carbon\Carbon;
 
 class FinancialOverviewParticipantProjectController extends Controller
 {
-    public function createParticipantProjectsForFinancialOverview(Project $project, FinancialOverviewProject $financialOverviewProject)
+    public function createParticipantProjectsForFinancialOverview(FinancialOverviewProject $financialOverviewProject)
     {
         $financialOverview = $financialOverviewProject->financialOverview;
-        $participants = $project->participantsProject;
+        $participants = $financialOverviewProject->project->participantsProject;
 
         $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
         $endDate = Carbon::createFromDate($financialOverview->year, 1, 1)->addYear();

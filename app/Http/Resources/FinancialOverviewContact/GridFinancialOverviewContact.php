@@ -6,7 +6,7 @@
  * Time: 12:09
  */
 
-namespace App\Http\Resources\FinancialOverview;
+namespace App\Http\Resources\FinancialOverviewContact;
 
 
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;

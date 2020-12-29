@@ -7,8 +7,9 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 import ErrorModal from '../../../../../components/modal/ErrorModal';
+import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
 
-class ProjectNew extends Component {
+class FinancialOverviewProjectNew extends Component {
     constructor(props) {
         super(props);
 
@@ -77,11 +78,11 @@ class ProjectNew extends Component {
 
         // If no errors send form
         !hasErrors &&
-            FinancialOverviewDetailsAPI.newFinancialOverviewProject(financialOverviewProject)
+            FinancialOverviewProjectAPI.newFinancialOverviewProject(financialOverviewProject)
                 .then(payload => {
                     this.props.toggleShowNew();
                     // financialoverview opnieuw fetchen
-                    this.props.callFetchFinancialOverviewDetails();
+                    this.props.refreshFinancialOverviewProjects();
                 })
                 .catch(error => {
                     let errorObject = JSON.parse(JSON.stringify(error));
@@ -161,4 +162,4 @@ class ProjectNew extends Component {
     }
 }
 
-export default ProjectNew;
+export default FinancialOverviewProjectNew;

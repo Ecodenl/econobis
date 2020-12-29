@@ -53,8 +53,8 @@ class ContactObserver
             $contact->date_did_agree_avg = Carbon::now();
         }
 
-        if($contact->isDirty('home_account_id')) {
-            $contact->home_account_created_at = Carbon::now();
+        if($contact->isDirty('hoom_account_id')) {
+            $contact->hoom_account_created_at = Carbon::now();
         }
     }
 

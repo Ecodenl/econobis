@@ -42,7 +42,7 @@ class HoomdossierHelper
         if($this->cooperation->hoom_group_id) {
             $hoomdossierContactGroup = ContactGroup::find($this->cooperation->hoom_group_id);
 
-            $hoomdossierContactGroup->contacts()->attach($this->contact);
+            $hoomdossierContactGroup->contacts()->syncWithoutDetaching($this->contact);
         }
 
         // Send email to contact
@@ -57,6 +57,10 @@ class HoomdossierHelper
     private function validateRequiredFields()
     {
         $errors = [];
+
+        if($this->contact->hoom_account_id) {
+            $errors[] = 'Koppeling hoomdossier bestaat al';
+        }
 
         if(!$this->contact->primaryEmailAddress) {
             $errors[] = 'Primair mailadres ontbreekt';

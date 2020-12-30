@@ -830,6 +830,8 @@ class ProjectRevenueController extends ApiController
                     $subject = 'Participant rapportage Econobis';
                 }
 
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $project);
+
                 $email->subject = $subject;
 
                 $email->html_body
@@ -1060,6 +1062,8 @@ class ProjectRevenueController extends ApiController
                     if (!$subject) {
                         $subject = 'Participant rapportage Econobis';
                     }
+
+                    $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $project);
 
                     $email->subject = $subject;
 

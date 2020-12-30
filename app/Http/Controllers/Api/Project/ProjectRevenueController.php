@@ -72,7 +72,7 @@ class ProjectRevenueController extends ApiController
 //        } else {
 //            $projectRevenue = new RevenueParticipantsCSVHelper($projectRevenue->project->participantsProject, $projectRevenue);
 //        }
-            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
+            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution, $projectRevenue->project->project_type_id);
 
 
         return $projectRevenue->downloadCSV();

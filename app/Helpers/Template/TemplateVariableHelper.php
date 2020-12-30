@@ -223,7 +223,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'adres':
-                return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number . optional($model->primaryAddress)->addition;
+                return optional($model->primaryAddress)->street . ' ' . optional($model->primaryAddress)->number . (optional($model->primaryAddress)->addition ? ('-' . optional($model->primaryAddress)->addition) : '');
                 break;
             case 'postcode':
                 return optional($model->primaryAddress)->postal_code;
@@ -392,7 +392,7 @@ class TemplateVariableHelper
                 return optional($model->intake)->contact->full_name;
                 break;
             case 'contact_adres':
-                return optional(optional($model->intake)->contact->primaryAddress)->street . ' ' . optional(optional($model->intake)->contact->primaryAddress)->number . optional(optional($model->intake)->contact->primaryAddress)->addition;
+                return optional(optional($model->intake)->contact->primaryAddress)->street . ' ' . optional(optional($model->intake)->contact->primaryAddress)->number . (optional(optional($model->intake)->contact->primaryAddress)->addition ? ('-' . optional(optional($model->intake)->contact->primaryAddress)->addition) : '');
                 break;
             case 'contact_postcode':
                 return optional(optional($model->intake)->contact->primaryAddress)->postal_code;
@@ -461,7 +461,7 @@ class TemplateVariableHelper
                 return $model->contact->full_name;
                 break;
             case 'contact_adres':
-                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . optional($model->contact->primaryAddress)->addition;
+                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . (optional($model->contact->primaryAddress)->addition ? ('-' . optional($model->contact->primaryAddress)->addition) : '');
                 break;
             case 'contact_postcode':
                 return optional($model->contact->primaryAddress)->postal_code;
@@ -490,7 +490,7 @@ class TemplateVariableHelper
                 return optional($model->contact)->full_name;
                 break;
 //            case 'contact_adres':
-//                return optional(optional($model->contact)->primaryAddress)->street . ' ' . optional(optional($model->contact)->primaryAddress)->number . optional(optional($model->contact)->primaryAddress)->addition;
+//                return optional(optional($model->contact)->primaryAddress)->street . ' ' . optional(optional($model->contact)->primaryAddress)->number . (optional(optional($model->contact)->primaryAddress)->addition ? ('-' . optional(optional($model->contact)->primaryAddress)->addition) : '');
 //                break;
 //            case 'contact_postcode':
 //                return optional(optional($model->contact)->primaryAddress)->postal_code;
@@ -722,7 +722,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'contact_adres':
-                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . optional($model->contact->primaryAddress)->addition;
+                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . (optional($model->contact->primaryAddress)->addition ? ('-' . optional($model->contact->primaryAddress)->addition) : '');
                 break;
             case 'contact_postcode':
                 return optional($model->contact->primaryAddress)->postal_code;
@@ -1353,7 +1353,7 @@ class TemplateVariableHelper
     }
 
     public static function getProjectRevenueDistributionVar($model, $varname){
-
+        $projectTypeCodeRef = $model->revenue->project->projectType->code_ref;
         switch ($varname) {
             case 'adres':
                 return $model->address;
@@ -1381,7 +1381,11 @@ class TemplateVariableHelper
                 }
                 break;
             case 'participaties':
-                return $model->participations_amount;
+                if($projectTypeCodeRef == 'loan') {
+                    return number_format($model->participations_loan_amount, 2, ',', '');
+                }else{
+                    return $model->participations_amount;
+                }
                 break;
             case 'bedrag':
                 return number_format($model->payout, 2, ',', '');
@@ -1445,7 +1449,7 @@ class TemplateVariableHelper
                 return $model->organisation->name;
                 break;
             case 'organisatie_adres':
-                return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number . optional($model->organisation->contact->primaryAddress)->addition;
+                return optional($model->organisation->contact->primaryAddress)->street . ' ' . optional($model->organisation->contact->primaryAddress)->number . (optional($model->organisation->contact->primaryAddress)->addition ? ('-' . optional($model->organisation->contact->primaryAddress)->addition) : '');
                 break;
             case 'organisatie_plaats':
                 return optional($model->organisation->contact->primaryAddress)->city;
@@ -1482,7 +1486,7 @@ class TemplateVariableHelper
                 break;
             case 'contact_adres':
             case 'verzoek_voor_adres':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition;
+                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . (optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition ? ('-' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition) : '');
                 break;
             case 'contact_postcode':
             case 'verzoek_voor_postcode':
@@ -1596,7 +1600,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'contact_adres':
-                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . optional($model->contact->primaryAddress)->addition;
+                return optional($model->contact->primaryAddress)->street . ' ' . optional($model->contact->primaryAddress)->number . (optional($model->contact->primaryAddress)->addition ? ('-' . optional($model->contact->primaryAddress)->addition) : '');
                 break;
             case 'contact_postcode':
                 return optional($model->contact->primaryAddress)->postal_code;

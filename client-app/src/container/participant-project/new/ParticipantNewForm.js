@@ -36,6 +36,7 @@ const ParticipantNewForm = ({
         amountFinal,
         dateContractRetour,
         datePayment,
+        paymentReference,
         dateEntry,
     } = participation;
     const status = participantMutationStatuses.find(
@@ -252,6 +253,13 @@ const ParticipantNewForm = ({
                             onChangeAction={handleInputChangeDate}
                             required={'required'}
                             error={errors.dateEntry}
+                        />
+                        <InputText
+                            label={'Betalingskenmerk'}
+                            id={'paymentReference'}
+                            name={'paymentReference'}
+                            value={paymentReference}
+                            onChangeAction={handleInputChange}
                         />
                     </div>
                 </React.Fragment>

@@ -250,6 +250,7 @@ class ExternalWebformController extends Controller
                 'deelname_mutatie_bedrag' => 'participation_mutation_amount',
                 'deelname_mutatie_ingangs_datum' => 'participation_mutation_date',
                 'deelname_mutatie_betaal_datum' => 'participation_mutation_date_payment',
+                'deelname_mutatie_betalingskenmerk' => 'participation_mutation_payment_reference',
                 'deelname_mutatie_contract_retour' => 'participation_mutation_date_contract_retour',
             ],
             'order' => [
@@ -1183,6 +1184,7 @@ class ExternalWebformController extends Controller
                 'participation_id' => $participation->id,
                 'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->value('id'),
                 'status_id' => $status->id,
+                'payment_reference' => $data['participation_mutation_payment_reference'],
                 'date_payment' => Carbon::make($data['participation_mutation_date_payment']),
                 'date_contract_retour' => Carbon::make($data['participation_mutation_date_contract_retour']),
                 'amount' => $participation_mutation_amount,

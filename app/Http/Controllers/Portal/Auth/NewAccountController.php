@@ -74,7 +74,11 @@ class NewAccountController extends Controller
                 $contact = $this->addContact($data['contact']);
                 if ($contact) {
                     $contact = Contact::find($contact->id);
-                    $this->sendNewAccountMail($contact, $responsibleUserId, $emailTemplateNewAccountId);
+                    $organisationName = null;
+                    if ($data['contact']['organisation_name']) {
+                        $organisationName = $data['contact']['organisation_name'];
+                    }
+                    $this->sendNewAccountMail($contact, $organisationName, $responsibleUserId, $emailTemplateNewAccountId);
                 } else {
                     abort(501, 'Er is helaas een fout opgetreden (7).');
                 }
@@ -248,7 +252,7 @@ class NewAccountController extends Controller
         }
     }
 
-    protected function sendNewAccountMail(Contact $contact, $responsibleUserId, $emailTemplateNewAccountId)
+    protected function sendNewAccountMail(Contact $contact, $organisationName, $responsibleUserId, $emailTemplateNewAccountId)
     {
 
         // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
@@ -274,6 +278,9 @@ class NewAccountController extends Controller
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
         $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);
         $htmlBody = str_replace('{contactpersoon}', $contact->full_name, $htmlBody);
+        if($organisationName){
+            $htmlBody = str_replace('{organisatie_naam}', $organisationName, $htmlBody);
+        }
 
 //        $user = Auth::user();
 //        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,

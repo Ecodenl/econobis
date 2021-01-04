@@ -48,14 +48,18 @@ export default {
             });
     },
 
-    setInvoicesPaid: (invoiceIds, datePaid) => {
+    setInvoicesPaid: (invoiceIds, datePaid, paymentReference) => {
         const requestUrl = `${URL_INVOICE}/set-multiple-paid`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
         document.body.style.cursor = 'wait';
 
-        let response = axios.post(requestUrl, { ids: invoiceIds, datePaid: datePaid });
+        let response = axios.post(requestUrl, {
+            ids: invoiceIds,
+            datePaid: datePaid,
+            paymentReference: paymentReference,
+        });
 
         document.body.style.cursor = 'default';
 

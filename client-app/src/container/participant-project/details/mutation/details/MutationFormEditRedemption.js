@@ -13,6 +13,7 @@ function MutationFormEditRedemption({ participantMutationFromProps, cancelEdit }
         amount,
         entry,
         datePayment,
+        paymentReference,
         paidOn,
         createdAt,
         createdBy,
@@ -50,6 +51,15 @@ function MutationFormEditRedemption({ participantMutationFromProps, cancelEdit }
                 />
             </div>
 
+            <div className="row">
+                <ViewText
+                    label={'Betalingskenmerk'}
+                    id={'paymentReference'}
+                    className={'col-sm-6 form-group'}
+                    value={paymentReference ? paymentReference : ''}
+                />
+            </div>
+
             <ParticipantDetailsMutationConclusion
                 createdAt={createdAt}
                 createdBy={createdBy}
@@ -69,6 +79,7 @@ MutationFormEditRedemption.propTypes = {
     originalStatus: PropTypes.object,
     returns: PropTypes.string,
     datePayment: PropTypes.object,
+    paymentReference: PropTypes.string,
     entry: PropTypes.string,
     paidOn: PropTypes.string,
     cancelEdit: PropTypes.func,

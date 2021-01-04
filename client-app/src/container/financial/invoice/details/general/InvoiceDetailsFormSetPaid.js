@@ -7,6 +7,7 @@ import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import { connect } from 'react-redux';
 import { fetchInvoiceDetails } from '../../../../../actions/invoice/InvoiceDetailsActions';
+import InputText from '../../../../../components/form/InputText';
 
 class InvoiceDetailsFormSetPaid extends Component {
     constructor(props) {
@@ -16,12 +17,27 @@ class InvoiceDetailsFormSetPaid extends Component {
             invoice: {
                 id: props.invoiceId,
                 datePaid: moment().format('Y-MM-DD'),
+                paymentReference: null,
             },
             errors: {
                 datePaid: false,
             },
         };
     }
+
+    handleInputChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            invoice: {
+                ...this.state.invoice,
+                [name]: value,
+            },
+        });
+    };
 
     handleInputChangeDate = (value, name) => {
         this.setState({
@@ -48,7 +64,6 @@ class InvoiceDetailsFormSetPaid extends Component {
         }
 
         this.setState({ ...this.state, errors: errors });
-
         // If no errors send form
         if (!hasErrors) {
             InvoiceDetailsAPI.updateInvoice(invoice).then(payload => {
@@ -59,7 +74,7 @@ class InvoiceDetailsFormSetPaid extends Component {
     };
 
     render() {
-        const { datePaid } = this.state.invoice;
+        const { datePaid, paymentReference } = this.state.invoice;
 
         return (
             <Modal
@@ -92,6 +107,15 @@ class InvoiceDetailsFormSetPaid extends Component {
                         error={this.state.errors.datePaid}
                     />
                 </div>
+                <div className="row">
+                    <InputText
+                        divSize={'col-sm-12'}
+                        label="Betalingskenmerk"
+                        name="paymentReference"
+                        value={paymentReference}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
             </Modal>
         );
     }
@@ -103,7 +127,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(InvoiceDetailsFormSetPaid);
+export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSetPaid);

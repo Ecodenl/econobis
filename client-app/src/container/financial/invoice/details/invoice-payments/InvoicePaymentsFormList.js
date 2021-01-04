@@ -7,9 +7,10 @@ const InvoicePaymentsFormList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-4">Datum betaald</div>
-                <div className="col-sm-3">Bedrag</div>
-                <div className="col-sm-4">Datum aangemaakt</div>
+                <div className="col-sm-3">Datum betaald</div>
+                <div className="col-sm-2">Bedrag</div>
+                <div className="col-sm-3">Betalingskenmerk</div>
+                <div className="col-sm-3">Datum aangemaakt</div>
                 <div className="col-sm-1" />
             </div>
             {props.payments.length > 0 ? (

@@ -168,10 +168,12 @@ class InvoiceController extends ApiController
         $this->authorize('manage', Invoice::class);
 
         $datePaid = $input
-            ->date('datePaid')->validate('nullable|date')->whenMissing(null)->onEmpty(null)->alias('date_paid')->next()->get();
+            ->date('datePaid')->validate('nullable|date')->whenMissing(null)->onEmpty(null)->alias('date_paid')->next()
+            ->string('paymentReference')->whenMissing(null)->onEmpty(null)->alias('payment_reference')->next()
+            ->get();
 
         if ($datePaid['date_paid']) {
-            InvoiceHelper::saveInvoiceDatePaid($invoice, $datePaid['date_paid']);
+            InvoiceHelper::saveInvoiceDatePaid($invoice, $datePaid['date_paid'], $datePaid['payment_reference']);
         }
 
         return $this->show($invoice->fresh());
@@ -184,7 +186,7 @@ class InvoiceController extends ApiController
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
 
         foreach ($invoices as $invoice) {
-            InvoiceHelper::saveInvoiceDatePaid($invoice, $request->input('datePaid'));
+            InvoiceHelper::saveInvoiceDatePaid($invoice, $request->input('datePaid'), $request->input('paymentReference'));
         }
 
     }
@@ -196,6 +198,7 @@ class InvoiceController extends ApiController
         $data = $input
             ->double('amount')->validate('required')->next()
             ->date('datePaid')->validate('required|date')->alias('date_paid')->next()
+            ->string('paymentReference')->whenMissing(null)->onEmpty(null)->alias('payment_reference')->next()
             ->get();
 
         $data['invoice_id'] = $invoice->id;
@@ -213,6 +216,7 @@ class InvoiceController extends ApiController
         $data = $input
             ->double('amount')->validate('required')->next()
             ->date('datePaid')->validate('required|date')->alias('date_paid')->next()
+            ->string('paymentReference')->whenMissing(null)->onEmpty(null)->alias('payment_reference')->next()
             ->get();
 
         $invoicePayment->fill($data);

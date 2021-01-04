@@ -135,12 +135,15 @@ class TwinfieldInvoiceHelper
                         // [5] - Betaaldatum
                         // [6] - Twinfieldnumber
                         // [7] - Matchnumber
+                        // [ ] - PaymentReference ??
 
                         $dagBoek     = ($row->getCells()[1]->getValue());
                         $amountInvoice = $row->getCells()[3]->getValue();
                         $amountOpen = $row->getCells()[4]->getValue();
                         $dateInput = $row->getCells()[5]->getValue(); //datetime
                         $dateInput = date_format($dateInput, 'Y-m-d');
+                        //todo WM: nog uitzoeken of en hoe we deze kunnen bepalen vanuit Twinfield???
+                        $paymentReference = null;
                         $twinfieldNumber = ($row->getCells()[6]->getValue());
                         $twinfieldMatchNumber = ($row->getCells()[7]->getValue());
 
@@ -160,6 +163,7 @@ class TwinfieldInvoiceHelper
                                 $invoicePayment->amount = $amount;
                                 $invoicePayment->type_id = $dagBoek;
                                 $invoicePayment->date_paid = $dateInput;
+                                $invoicePayment->payment_reference = $paymentReference;
                                 $invoicePayment->save();
                                 Log::info('Betaling van ' . $amount . ' toegevoegd via twinfield voor nota ' . $invoiceToBeChecked->number);
                                 array_push($messages, 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.');
@@ -168,13 +172,14 @@ class TwinfieldInvoiceHelper
                                 $invoicePayment = $invoicePaymentCheck->first();
                                 $oldAmount = floatval(number_format($invoicePayment->amount, 2, '.', ''));
                                 $oldDateInput = $invoicePayment->date_paid;
-                                if($oldAmount != $amount || $oldDateInput != $dateInput )
+                                $oldPaymentReference = $invoicePayment->payment_reference;
+                                if($oldAmount != $amount || $oldDateInput != $dateInput || $oldPaymentReference != $paymentReference)
                                 {
-                                    $data = ['amount'=>$amount, 'date_paid'=>$dateInput];
+                                    $data = ['amount'=>$amount, 'date_paid'=>$dateInput, 'payment_reference'=>$paymentReference];
                                     $invoicePayment->fill($data);
                                     $invoicePayment->save();
-                                    Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ') aangepast via twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInput . ').' );
-                                    array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').');
+                                    Log::info('Betaling van ' . $amount . ' (datum ' . $dateInput . ', kenmerk ' . ($paymentReference ? $paymentReference : '') . ') aangepast via twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was ' . $oldAmount . ' (datum ' . $oldDateInput . ').' );
+                                    array_push($messages, 'Betaling van €' . $amount . ' (datum ' . $dateInput . ', kenmerk ' . ($paymentReference ? $paymentReference : '') . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').');
                                 }
                             }
                         }

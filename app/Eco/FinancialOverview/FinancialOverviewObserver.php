@@ -8,6 +8,8 @@
 
 namespace App\Eco\FinancialOverview;
 
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
+
 class FinancialOverviewObserver
 {
     public function saving(FinancialOverview $financialOverview)
@@ -35,6 +37,9 @@ class FinancialOverviewObserver
                 $financialOverviewContacts = FinancialOverviewContact::where('financial_overview_id', $financialOverview->id)
                     ->where('status_id', 'concept')->get();
                 foreach ($financialOverviewContacts as $financialOverviewContact) {
+                    $financialOverviewContactController = new FinancialOverviewContactController();
+                    $emailedTo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+                    $financialOverviewContact->emailed_to = $emailedTo;
                     $financialOverviewContact->status_id = 'to-send';
                     $financialOverviewContact->save();
                 }
@@ -42,6 +47,7 @@ class FinancialOverviewObserver
                 $financialOverviewContacts = FinancialOverviewContact::where('financial_overview_id', $financialOverview->id)
                     ->where('status_id', 'to-send')->get();
                 foreach ($financialOverviewContacts as $financialOverviewContact) {
+                    $financialOverviewContact->emailed_to = null;
                     $financialOverviewContact->status_id = 'concept';
                     $financialOverviewContact->save();
                 }

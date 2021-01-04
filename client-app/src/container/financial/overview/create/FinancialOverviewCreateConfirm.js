@@ -53,7 +53,10 @@ class FinancialOverviewCreateConfirm extends Component {
             >
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u alle definitieve waardestaten verzenden?</span>
+                        <span>
+                            Wilt u alle geselecteerde definitieve waardestaten (
+                            {this.props.financialOverviewContactIds.length}) verzenden?
+                        </span>
                     </div>
                 </div>
             </Modal>

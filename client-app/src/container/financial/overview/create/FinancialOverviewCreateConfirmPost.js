@@ -55,7 +55,9 @@ class FinancialOverviewCreateConfirmPost extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                         <span>
-                            Wilt u alle definitieve waardestaten downloaden en doorzetten naar status verzonden?
+                            Wilt u alle geselecteerde definitieve waardestaten (
+                            {this.props.financialOverviewContactIds.length}) downloaden en doorzetten naar status
+                            verzonden?
                         </span>
                     </div>
                 </div>

@@ -21,6 +21,7 @@ import { previewFinancialOverview } from '../../../../../actions/financial-overv
 
 // const initialFilter = { contact: '', statusId: null, dateSent: '', emailedTo: '' };
 const recordsPerPage = 50;
+const maxRecordsPost = 50;
 
 function FinancialOverviewContactList({ financialOverview, previewFinancialOverview }) {
     const [showSelectFinancialOverviewContactsToSend, setShowSelectFinancialOverviewContactsToSend] = useState(false);
@@ -123,7 +124,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         setOnlyPostFinancialOverviewContacts(true);
 
         // Bij verzenden post voorlopig even max 50 tegelijk (worden in 1 PDF samengevoegd en anders wordt PDF wel erg groot)
-        if (financialOverviewContactIds.length > 50) {
+        if (financialOverviewContactIds.length > maxRecordsPost) {
             toggleErrorMessagePost();
         } else {
             if (financialOverviewContactIds.length > 0) {
@@ -233,7 +234,11 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         if (isChecked) {
             financialOverviewContactIds = meta.financialOverviewContactIdsTotal;
         }
-        setFinancialOverviewContactIds(financialOverviewContactIds);
+        if (onlyPostFinancialOverviewContacts) {
+            setFinancialOverviewContactIds(financialOverviewContactIds.slice(0, maxRecordsPost));
+        } else {
+            setFinancialOverviewContactIds(financialOverviewContactIds);
+        }
         setCheckedAll(isChecked);
     }
 

@@ -173,9 +173,6 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         let page = 0;
         let offset = 0;
         setPagination({ ...pagination, page, offset });
-
-        // this.fetchFinancialOverviewContactData();
-        fetchFinancialOverviewContacts();
     }
 
     function handlePageClick(page) {
@@ -517,4 +514,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(FinancialOverviewContactList);
+export default connect(
+    null,
+    mapDispatchToProps
+)(FinancialOverviewContactList);

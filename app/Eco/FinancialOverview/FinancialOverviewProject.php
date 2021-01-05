@@ -26,5 +26,21 @@ class FinancialOverviewProject extends Model
     {
         return $this->hasMany(FinancialOverviewParticipantProject::class);
     }
+    public function getStatusAttribute()
+    {
+        if(!$this->status_id) return null;
+
+        switch ($this->status_id) {
+            case 'in-progress':
+                return 'Wordt toegevoegd';
+            case 'concept':
+                return 'Concept';
+            case 'definitive':
+                return 'Definitief';
+            default:
+                return null;
+        }
+
+    }
 
 }

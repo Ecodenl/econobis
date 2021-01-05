@@ -17,6 +17,7 @@ class ParticipantMutationCollection extends Resource
     public function toArray($request)
     {
         $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->first()->id;
+        $mutationEnergyTaxRefundType = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->first()->id;
         $projectTypeCodeRef = $this->participation->project->projectType->code_ref;
 
         switch ($projectTypeCodeRef){
@@ -59,7 +60,7 @@ class ParticipantMutationCollection extends Resource
                 return
                     [
                         'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => ($this->type_id == $mutationResultType) ? $this->date_payment : $this->date_entry],
+                            ['type' => 'date', 'label' => 'Datum', 'value' => ($this->type_id == $mutationResultType || $this->type_id == $mutationEnergyTaxRefundType) ? $this->date_payment : $this->date_entry],
                             ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                             ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
                             ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],

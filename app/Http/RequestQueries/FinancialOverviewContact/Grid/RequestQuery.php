@@ -27,9 +27,16 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         $query = FinancialOverviewContact::query()
             ->select('financial_overview_contacts.*')->where('financial_overview_contacts.financial_overview_id', $this->request->input('financialOverviewId'));
 
-        if($this->request->input('onlyEmailFinancialOverviewContacts') == "true" || $this->request->input('onlyPostFinancialOverviewContacts') == "true") {
+        if($this->request->onlyEmailFinancialOverviewContacts == "true" || $this->request->onlyPostFinancialOverviewContacts == "true") {
             $query->whereIn('financial_overview_contacts.status_id', ['to-send', 'error-sending']);
         }
+        $onlyEmailFinancialOverviewContacts = $this->request->onlyEmailFinancialOverviewContacts == 'true';
+        if ($onlyEmailFinancialOverviewContacts)
+        {
+            $query->whereNotNull('financial_overview_contacts.emailed_to' )
+            ->where('financial_overview_contacts.emailed_to', 'not like', '%Geen e-mail bekend%');
+        }
+
         return $query;
     }
 }

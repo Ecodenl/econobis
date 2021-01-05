@@ -13,7 +13,9 @@ use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
+use App\Jobs\FinancialOverview\CreateFinancialOverviewParticipantProjects;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
@@ -34,7 +36,7 @@ class FinancialOverviewController extends Controller
             ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
-            ->string('statusId')->onEmpty('concept')->whenMissing('concept')->alias('status_id')->next()
+            ->string('statusId')->onEmpty('in-progress')->whenMissing('in-progress')->alias('status_id')->next()
             ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()
             ->get();
 
@@ -89,16 +91,25 @@ class FinancialOverviewController extends Controller
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
         $projects = $this->getNewProjectsForFinancialOverview($financialOverview);
-        foreach ($projects as $project) {
-            $financialOverviewProject = FinancialOverviewProject::create([
-                'financial_overview_id' => $financialOverview->id,
-                'project_id' => $project->id,
-                'definitive' => false,
-                'status_id' => 'concept',
-            ]);
+        if(count($projects) == 0){
+            $financialOverview->status_id = 'concept';
+            $financialOverview->save();
 
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->createParticipantProjectsForFinancialOverview($project, $financialOverviewProject);
+        } else {
+            foreach ($projects as $project) {
+                FinancialOverviewProject::create([
+                    'financial_overview_id' => $financialOverview->id,
+                    'project_id' => $project->id,
+                    'definitive' => false,
+                    'status_id' => 'in-progress',
+                ]);
+            }
+
+            $financialOverviewProjects = FinancialOverviewProject::where('financial_overview_id', $financialOverview->id)->get();
+            foreach ($financialOverviewProjects as $financialOverviewProject) {
+                CreateFinancialOverviewParticipantProjects::dispatch($financialOverviewProject, Auth::id());
+            }
+
         }
     }
 
@@ -110,6 +121,10 @@ class FinancialOverviewController extends Controller
     public function getTotalsInfoFinancialOverview(FinancialOverview $financialOverview)
     {
         $totalsInfo = [
+            'totalFinancialOverviewProjects' => $financialOverview->total_financial_overview_projects,
+            'totalFinancialOverviewProjectsInProgress' => $financialOverview->total_financial_overview_projects_in_progress,
+            'totalFinancialOverviewProjectsConcept' => $financialOverview->total_financial_overview_projects_concept,
+            'totalFinancialOverviewProjectsDefinitive' => $financialOverview->total_financial_overview_projects_definitive,
             'totalFinancialOverviewContacts' => $financialOverview->total_financial_overview_contacts,
             'totalFinancialOverviewContactsConcept' => $financialOverview->total_financial_overview_contacts_concept,
             'totalFinancialOverviewContactsToSend' => $financialOverview->total_financial_overview_contacts_to_send,

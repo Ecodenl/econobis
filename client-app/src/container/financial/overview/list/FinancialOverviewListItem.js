@@ -35,6 +35,9 @@ class FinancialOverviewListItem extends Component {
         const { id, description, year, administration, definitive, statusId, dateProcessed, permissions } = this.props;
         let status = '';
         switch (statusId) {
+            case 'in-progress':
+                status = 'Wordt aangemaakt...';
+                break;
             case 'concept':
                 status = 'Concept';
                 break;

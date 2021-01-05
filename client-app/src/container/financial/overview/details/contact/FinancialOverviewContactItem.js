@@ -13,14 +13,23 @@ function FinancialOverviewContactItem({
     toggleFinancialOverviewContactCheck,
     financialOverviewContactIds,
 }) {
-    //todo WM: opschonen console.log
-    // console.log('FinancialOverviewContactItem - ids');
-    // console.log(financialOverviewContactIds);
     const dateSentFormated = dateSent ? moment(dateSent).format('DD-MM-Y') : '';
     const [highlightLine, setHighlightLine] = useState('');
 
+    const inProgressRowClass =
+        statusId === 'in-progress' ||
+        statusId === 'is-sending' ||
+        statusId === 'error-making' ||
+        statusId === 'error-sending' ||
+        statusId === 'is-resending'
+            ? 'in-progress-row'
+            : '';
     return (
-        <tr className={`${highlightLine}`} onMouseEnter={() => onLineEnter()} onMouseLeave={() => onLineLeave()}>
+        <tr
+            className={`${highlightLine} ${inProgressRowClass}`}
+            onMouseEnter={() => onLineEnter()}
+            onMouseLeave={() => onLineLeave()}
+        >
             {showSelectFinancialOverviewContactsToSend && (
                 <td>
                     <input
@@ -48,7 +57,7 @@ function FinancialOverviewContactItem({
     );
 
     function onLineEnter() {
-        setHighlightLine('highlight-line');
+        setHighlightLine('highlight-row');
     }
 
     function onLineLeave() {

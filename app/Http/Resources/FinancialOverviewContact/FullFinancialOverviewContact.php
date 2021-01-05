@@ -6,7 +6,7 @@
  * Time: 14:20
  */
 
-namespace App\Http\Resources\FinancialOverview;
+namespace App\Http\Resources\FinancialOverviewContact;
 
 
 use App\Http\Resources\Contact\FullContact;

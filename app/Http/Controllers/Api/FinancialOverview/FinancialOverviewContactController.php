@@ -10,8 +10,8 @@ use App\Eco\Project\ProjectType;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\FinancialOverviewContact\Grid\RequestQuery;
-use App\Http\Resources\FinancialOverview\SendFinancialOverviewContact;
-use App\Http\Resources\FinancialOverview\GridFinancialOverviewContact;
+use App\Http\Resources\FinancialOverviewContact\SendFinancialOverviewContact;
+use App\Http\Resources\FinancialOverviewContact\GridFinancialOverviewContact;
 use App\Jobs\FinancialOverview\SendAllFinancialOverviewContacts;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
@@ -27,9 +27,6 @@ class FinancialOverviewContactController extends Controller
     {
         $financialOverviewContacts = $requestQuery->get();
 
-        $onlyEmailFinancialOverviewContacts = $requestQuery->getRequest()->onlyEmailFinancialOverviewContacts == 'true';
-        $onlyPostFinancialOverviewContacts = $requestQuery->getRequest()->onlyPostFinancialOverviewContacts == 'true';
-
         $financialOverviewContacts->load(['financialOverview', 'contact']);
 
         foreach ($financialOverviewContacts as $financialOverviewContact) {
@@ -43,24 +40,6 @@ class FinancialOverviewContactController extends Controller
             $selectedFinancialOverviewContacts->push($financialOverviewContact);
         }
 
-        if ($onlyEmailFinancialOverviewContacts)
-        {
-            $financialOverviewContacts = $financialOverviewContacts->reject(function ($financialOverviewContact) {
-                return ( $financialOverviewContact->emailToAddress === 'Geen e-mail bekend' );
-            });
-            $selectedFinancialOverviewContacts = $selectedFinancialOverviewContacts->reject(function ($financialOverviewContact) {
-                return ( $financialOverviewContact->emailToAddress === 'Geen e-mail bekend' );
-            });
-        }
-        elseif ($onlyPostFinancialOverviewContacts)
-        {
-            $financialOverviewContacts = $financialOverviewContacts->reject(function ($financialOverviewContact) {
-                return ( $financialOverviewContact->emailToAddress !== 'Geen e-mail bekend' );
-            });
-            $selectedFinancialOverviewContacts = $selectedFinancialOverviewContacts->reject(function ($financialOverviewContact) {
-                return ( $financialOverviewContact->emailToAddress !== 'Geen e-mail bekend' );
-            });
-        }
 
         $totalIds = $selectedFinancialOverviewContacts->pluck("id");
 
@@ -218,10 +197,6 @@ class FinancialOverviewContactController extends Controller
             $financialOverviewContacts = $financialOverviewContacts->reject(function ($financialOverviewContact) {
                 return ( $financialOverviewContact->emailed_to === 'Geen e-mail bekend' );
             });
-        }else{
-            $financialOverviewContacts = $financialOverviewContacts->reject(function ($financialOverviewContact) {
-                return ( $financialOverviewContact->emailed_to !== 'Geen e-mail bekend' );
-            });
         }
 
         return $financialOverviewContacts;
@@ -339,45 +314,43 @@ class FinancialOverviewContactController extends Controller
                     $contactName = $financialOverviewContact->contact->full_name;
                 }
 
-                if ($emailTo === 'Geen e-mail bekend') {
-                    $createdOk = FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact);
-                    if ($createdOk) {
-                        FinancialOverviewHelper::financialOverviewContactIsSending($financialOverviewContact);
-                        FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
+                $createdOk = FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact);
+                if ($createdOk) {
+                    FinancialOverviewHelper::financialOverviewContactIsSending($financialOverviewContact);
+                    FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
 
-                        $img = '';
-                        if ($financialOverviewContact->financialOverview->administration->logo_filename) {
-                            $path = storage_path('app' . DIRECTORY_SEPARATOR
-                                . 'administrations' . DIRECTORY_SEPARATOR
-                                . $financialOverviewContact->financialOverview->administration->logo_filename);
-                            $logo = file_get_contents($path);
+                    $img = '';
+                    if ($financialOverviewContact->financialOverview->administration->logo_filename) {
+                        $path = storage_path('app' . DIRECTORY_SEPARATOR
+                            . 'administrations' . DIRECTORY_SEPARATOR
+                            . $financialOverviewContact->financialOverview->administration->logo_filename);
+                        $logo = file_get_contents($path);
 
-                            $src = 'data:' . mime_content_type($path)
-                                . ';charset=binary;base64,' . base64_encode($logo);
-                            $src = str_replace(" ", "", $src);
-                            $img = '<img src="' . $src
-                                . '" width="auto" height="156px"/>';
-                        }
-
-                        if ($k !== 0) {
-                            $html .= '<div class="page-break"></div>';
-                        }
-
-                        $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
-
-                        $html .= view('financial.overview.generic')->with([
-                            'financialOverviewContact' => $financialOverviewContact,
-                            'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-                            'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
-                            'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
-                            'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
-                            'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-                            'contactPerson' => $contactPerson,
-                            'contactName' => $contactName,
-                            'financialOverviewContactReference' => $financialOverviewContactReference
-                        ])
-                            ->with('logo', $img)->render();
+                        $src = 'data:' . mime_content_type($path)
+                            . ';charset=binary;base64,' . base64_encode($logo);
+                        $src = str_replace(" ", "", $src);
+                        $img = '<img src="' . $src
+                            . '" width="auto" height="156px"/>';
                     }
+
+                    if ($k !== 0) {
+                        $html .= '<div class="page-break"></div>';
+                    }
+
+                    $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
+
+                    $html .= view('financial.overview.generic')->with([
+                        'financialOverviewContact' => $financialOverviewContact,
+                        'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
+                        'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
+                        'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
+                        'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
+                        'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
+                        'contactPerson' => $contactPerson,
+                        'contactName' => $contactName,
+                        'financialOverviewContactReference' => $financialOverviewContactReference
+                    ])
+                        ->with('logo', $img)->render();
                 }
             }
         }

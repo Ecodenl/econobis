@@ -8,6 +8,8 @@
 
 namespace App\Eco\EmailAddress;
 
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
+
 class EmailAddressObserver
 {
 
@@ -33,6 +35,25 @@ class EmailAddressObserver
                 $oldPrimaryEmailAddress->save();
             }
         }
+
+        if( $emailAddress->isDirty('email') )
+        {
+            // Check if any financial overview contacts are present with status to-send
+            // If so, then renew emailaddress for financial overview contact
+            $financialOverviewContacts = $emailAddress->contact->financialOverviewContacts->whereIn('status_id', ['to-send', 'error-sending']);
+            if($financialOverviewContacts->count() > 0)
+            {
+                $financialOverviewContactController = new FinancialOverviewContactController();
+                foreach($financialOverviewContacts as $financialOverviewContact) {
+                    $emailedTo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+                    $financialOverviewContact->emailed_to = $emailedTo;
+                    $financialOverviewContact->save();
+
+                }
+
+            }
+        }
+
     }
 
 }

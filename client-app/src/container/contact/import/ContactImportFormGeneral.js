@@ -139,7 +139,7 @@ class ContactImportFormGeneral extends Component {
                             <div className="col-md-12">
                                 <span>
                                     <strong>
-                                        aanspreektitel_id;initialen;voornaam;tussenvoegsel;achternaam;straat;woonplaats;huisnummer;huisnummer_toevoeging;postcode;telefoonnummer;telefoonnummer2;email;email2;iban
+                                        aanspreektitel_id;initialen;voornaam;tussenvoegsel;achternaam;straat;woonplaats;huisnummer;huisnummer_toevoeging;postcode;telefoonnummer;telefoonnummer2;email;email2;iban;iban_tnv
                                     </strong>
                                 </span>
                             </div>

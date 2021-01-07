@@ -5,6 +5,10 @@ import LoadingView from '../../../components/general/LoadingView';
 import RegistrationDetailsTitle from './Title';
 import RegistrationDetailsProjectTable from './project-table';
 import RegistrationDetailsMutationTable from './mutation-table';
+import Row from 'react-bootstrap/Row';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
 const INITIAL_STATE = {
     result: [],
@@ -62,6 +66,15 @@ function RegistrationDetails({ match: { params } }) {
                 <LoadingView />
             ) : (
                 <>
+                    <Row>
+                        <ButtonGroup aria-label="Steps" className="float-left">
+                            <Link to={`/inschrijvingen-projecten`}>
+                                <Button className={'w-button'} size="sm">
+                                    Huidige deelnames
+                                </Button>
+                            </Link>
+                        </ButtonGroup>
+                    </Row>
                     <RegistrationDetailsTitle {...state.result.basicInformation} />
                     <RegistrationDetailsProjectTable fields={state.result.fields} />
                     <RegistrationDetailsMutationTable participantMutations={state.result.participantMutations} />

@@ -9,6 +9,8 @@ import moment from 'moment';
 import LoadingView from '../../../components/general/LoadingView';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Button from 'react-bootstrap/Button';
 
 function ProjectList(props) {
     const [contactProjectsArray, setContactProjectsArray] = useState([]);
@@ -88,6 +90,21 @@ function ProjectList(props) {
 
     return (
         <Container className={'content-section'}>
+            <Row>
+                <ButtonGroup aria-label="Steps" className="float-left">
+                    <Link to={`/gegevens`}>
+                        <Button className={'w-button'} size="sm">
+                            Gegevens
+                        </Button>
+                    </Link>
+                    &nbsp;
+                    <Link to={`/inschrijvingen-projecten`}>
+                        <Button className={'w-button'} size="sm">
+                            Huidige deelnames
+                        </Button>
+                    </Link>
+                </ButtonGroup>
+            </Row>
             <Row>
                 <Col>
                     <h1 className="content-heading">

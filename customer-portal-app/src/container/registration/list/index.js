@@ -9,6 +9,8 @@ import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Button from 'react-bootstrap/Button';
 
 function RegistrationList(props) {
     const [contact, setContact] = useState({});
@@ -62,6 +64,21 @@ function RegistrationList(props) {
 
     return (
         <Container className={'content-section'}>
+            <Row>
+                <ButtonGroup aria-label="Steps" className="float-left">
+                    <Link to={`/gegevens`}>
+                        <Button className={'w-button'} size="sm">
+                            Gegevens
+                        </Button>
+                    </Link>
+                    &nbsp;
+                    <Link to={`/inschrijven-projecten`}>
+                        <Button className={'w-button'} size="sm">
+                            Inschrijven projecten
+                        </Button>
+                    </Link>
+                </ButtonGroup>
+            </Row>{' '}
             <Row>
                 <Col>
                     <h1 className="content-heading">

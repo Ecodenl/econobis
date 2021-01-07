@@ -60,6 +60,15 @@ function ProjectDetails({ match }) {
             ) : (
                 <>
                     <Row>
+                        <ButtonGroup aria-label="Steps" className="float-left">
+                            <Link to={`/inschrijven-projecten`}>
+                                <Button className={'w-button'} size="sm">
+                                    Inschrijven projecten
+                                </Button>
+                            </Link>
+                        </ButtonGroup>
+                    </Row>
+                    <Row>
                         <Col>
                             <h1 className="content-heading">Inschrijven project</h1>
                             <div className="content-subheading">Uitgevende instantie {project.administration.name}</div>

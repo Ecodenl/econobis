@@ -46,7 +46,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Logo'}
+                            label={'Logo (bestandstype PNG)'}
                             divSize={'col-sm-8'}
                             value={portalLogoFileName}
                             className={'col-sm-8 form-group'}
@@ -67,7 +67,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Favicon'}
+                            label={'Favicon (bestandstype ICO)'}
                             divSize={'col-sm-8'}
                             value={portalFaviconFileName}
                             className={'col-sm-8 form-group'}

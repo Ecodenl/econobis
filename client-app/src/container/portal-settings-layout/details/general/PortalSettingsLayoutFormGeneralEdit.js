@@ -241,7 +241,8 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Logo"
+                                Men
+                                label="Logo (bestandstype PNG)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentLogo.name ? this.state.attachmentLogo.name : portalLogoFileName
@@ -275,7 +276,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
                         )}
                         <div className="row">
                             <InputText
-                                label="Favicon"
+                                label="Favicon (bestandstype ICO)"
                                 divSize={'col-sm-8'}
                                 value={
                                     this.state.attachmentFavicon.name

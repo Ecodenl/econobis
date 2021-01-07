@@ -225,10 +225,21 @@ function RegisterProject({ match, currentSelectedContact }) {
                                 Ingeschreven voor project <strong>{project.name}</strong>
                             </h1>
                         ) : (
-                            <h1 className="content-heading">
-                                Schrijf <strong>{formatFullName(contact.fullName)}</strong> in voor project{' '}
-                                <strong>{project.name}</strong>
-                            </h1>
+                            <>
+                                <Row>
+                                    <ButtonGroup aria-label="Steps" className="float-left">
+                                        <Link to={`/inschrijven-projecten`}>
+                                            <Button className={'w-button'} size="sm">
+                                                Inschrijven projecten
+                                            </Button>
+                                        </Link>
+                                    </ButtonGroup>
+                                </Row>
+                                <h1 className="content-heading">
+                                    Schrijf <strong>{formatFullName(contact.fullName)}</strong> in voor project{' '}
+                                    <strong>{project.name}</strong>
+                                </h1>
+                            </>
                         )}
                         <MasterForm
                             portalSettings={portalSettings}

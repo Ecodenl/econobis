@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 moment.locale('nl');
 
 const InvoicePaymentsFormView = props => {
-    const { datePaid, amount, createdAt } = props.payment;
+    const { datePaid, amount, paymentReference, createdAt } = props.payment;
 
     return (
         <div
@@ -13,13 +13,14 @@ const InvoicePaymentsFormView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div onClick={props.openEdit}>
-                <div className="col-sm-4">{datePaid ? moment(datePaid).format('L') : ''}</div>
-                <div className="col-sm-3">
+                <div className="col-sm-3">{datePaid ? moment(datePaid).format('L') : ''}</div>
+                <div className="col-sm-2">
                     {amount
                         ? '€' + amount.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                         : '€0,00'}
                 </div>
-                <div className="col-sm-4">{createdAt ? moment(createdAt).format('L') : ''}</div>
+                <div className="col-sm-3">{paymentReference ? paymentReference : ''}</div>
+                <div className="col-sm-3">{createdAt ? moment(createdAt).format('L') : ''}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageFinancial ? (

@@ -1208,6 +1208,11 @@ class TemplateVariableHelper
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
                 return ($lastMutation && $lastMutation->date_payment) ? Carbon::parse($lastMutation->date_payment)->format('d/m/Y') : null;
                 break;
+            case 'mutatie_betalingskenmerk':
+                $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+                $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();
+                return ($lastMutation && $lastMutation->payment_reference) ? $lastMutation->payment_reference : null;
+                break;
             case 'mutatie_datum_contract_retour':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 $lastMutation = $model->mutations->where('status_id', $mutationStatus)->where('type_id', $mutationType)->last();

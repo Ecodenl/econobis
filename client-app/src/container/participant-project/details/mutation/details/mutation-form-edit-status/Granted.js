@@ -144,6 +144,16 @@ const MutationFormEditStatusGranted = ({
                         onChangeAction={handleInputChangeDate}
                     />
                 </div>
+                <div className="row">
+                    <div className={'form-group col-md-6'} />
+                    <InputText
+                        label={'Betalingskenmerk'}
+                        id={'paymentReference'}
+                        name={'paymentReference'}
+                        value={participantMutationFromState.paymentReference}
+                        onChangeAction={handleInputChange}
+                    />
+                </div>
             </React.Fragment>
         ) : (
             <React.Fragment>

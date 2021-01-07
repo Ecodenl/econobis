@@ -10,7 +10,7 @@ import moment from 'moment/moment';
 moment.locale('nl');
 
 const InvoicePaymentsFormEdit = props => {
-    const { amount, datePaid } = props.payment;
+    const { amount, datePaid, paymentReference } = props.payment;
 
     return (
         <div>
@@ -34,6 +34,14 @@ const InvoicePaymentsFormEdit = props => {
                                 onChangeAction={props.handleInputChangeDate}
                                 required={'required'}
                                 error={props.errors.datePaid}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Betalingskenmerk"
+                                name="paymentReference"
+                                value={paymentReference}
+                                onChangeAction={props.handleInputChange}
                             />
                         </div>
 

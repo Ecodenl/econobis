@@ -34,6 +34,7 @@ export default function(participation, statusCodeRef, projectTypeCodeRef) {
             values.dateGranted = participation.dateGranted;
             values.dateContractRetour = participation.dateContractRetour;
             values.datePayment = participation.datePayment;
+            values.paymentReference = participation.paymentReference;
             values.dateEntry = participation.dateEntry;
             if (projectTypeCodeRef === 'loan') {
                 values.amountFinal = participation.amountFinal;

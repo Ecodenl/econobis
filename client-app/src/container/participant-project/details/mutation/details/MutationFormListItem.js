@@ -38,6 +38,9 @@ class MutationFormListItem extends Component {
                     ? props.participantMutation.dateContractRetour
                     : '',
                 datePayment: props.participantMutation.datePayment ? props.participantMutation.datePayment : '',
+                paymentReference: props.participantMutation.paymentReference
+                    ? props.participantMutation.paymentReference
+                    : '',
                 dateEntry: props.participantMutation.dateEntry
                     ? props.participantMutation.dateEntry
                     : props.projectDateEntry
@@ -93,6 +96,9 @@ class MutationFormListItem extends Component {
                         : '',
                     datePayment: this.props.participantMutation.datePayment
                         ? this.props.participantMutation.datePayment
+                        : '',
+                    paymentReference: this.props.participantMutation.paymentReference
+                        ? this.props.participantMutation.paymentReference
                         : '',
                     dateEntry: this.props.participantMutation.dateEntry
                         ? this.props.participantMutation.dateEntry
@@ -168,6 +174,9 @@ class MutationFormListItem extends Component {
                     : '',
                 datePayment: this.props.participantMutation.datePayment
                     ? this.props.participantMutation.datePayment
+                    : '',
+                paymentReference: this.props.participantMutation.paymentReference
+                    ? this.props.participantMutation.paymentReference
                     : '',
                 dateEntry: this.props.participantMutation.dateEntry
                     ? this.props.participantMutation.dateEntry
@@ -335,7 +344,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MutationFormListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(MutationFormListItem);

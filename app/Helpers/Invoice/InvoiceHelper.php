@@ -151,10 +151,11 @@ class InvoiceHelper
 
     }
 
-    public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid)
+    public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid, $paymentReference)
     {
         $invoicePayment = new InvoicePayment();
         $invoicePayment->date_paid = $datePaid;
+        $invoicePayment->payment_reference = $paymentReference;
         $invoicePayment->amount = $invoice->amount_open;
         $invoicePayment->invoice_id = $invoice->id;
         $invoicePayment->save();

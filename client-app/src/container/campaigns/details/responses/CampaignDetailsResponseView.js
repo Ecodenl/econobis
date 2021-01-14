@@ -16,7 +16,9 @@ const CampaignDetailsResponseView = props => {
                 <div className="col-sm-1">{contact ? contact.number : ''}</div>
                 <div className="col-sm-1">{contact ? contact.type.name : ''}</div>
                 <div className="col-sm-2">{contact ? contact.fullName : ''}</div>
-                <div className="col-sm-2">{address ? address.street + address.number : ''}</div>
+                <div className="col-sm-2">
+                    {address ? address.street + address.number + (address.addition ? '-' + address.addition : '') : ''}
+                </div>
                 <div className="col-sm-1">{address ? address.postal_code : ''}</div>
                 <div className="col-sm-2">{address ? address.city : ''}</div>
                 <div className="col-sm-2">{dateResponded ? moment(dateResponded).format('L') : ''}</div>

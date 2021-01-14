@@ -30,6 +30,7 @@ class FullParticipantMutation extends Resource
                 'dateGranted' => $this->date_granted,
                 'dateContractRetour' => $this->date_contract_retour,
                 'datePayment' => $this->date_payment,
+                'paymentReference' => $this->payment_reference,
                 'dateEntry' => $this->date_entry,
                 'statusId' => $this->status_id,
                 'status' => GenericResource::make($this->whenLoaded('status')),

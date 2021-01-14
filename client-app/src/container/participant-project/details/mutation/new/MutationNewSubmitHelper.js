@@ -42,6 +42,7 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
     if (statusCodeRef === 'final') {
         values.dateGranted = participantMutation.dateGranted;
         values.datePayment = participantMutation.datePayment;
+        values.paymentReference = participantMutation.paymentReference;
         values.dateEntry = participantMutation.dateEntry;
         if (projectTypeCodeRef === 'loan') {
             values.amountFinal = participantMutation.amountFinal;

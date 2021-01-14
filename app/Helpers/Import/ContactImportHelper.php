@@ -41,7 +41,8 @@ class ContactImportHelper
             'telefoonnummer2',
             'email',
             'email2',
-            'iban'
+            'iban',
+            'iban_tnv',
         ];
 
     public function validateImport($file)
@@ -191,11 +192,11 @@ class ContactImportHelper
             $prio = 1;
         };
 
-        //initialen
-        if (!$line[2]) {
+        //voornaam of achternaam verplicht
+        if (!$line[2] && !$line[4]) {
             array_push($field, self::HEADERS[2]);
             array_push($value, $line[2]);
-            array_push($message, 'Voornaam is een verplicht veld.');
+            array_push($message, 'Voornaam of achternaam is een verplicht veld.');
             $prio = 1;
         };
 
@@ -308,6 +309,9 @@ class ContactImportHelper
                 $contact->full_name = 'temp';
                 if ($line[14]) {
                     $contact->iban = $line[14];
+                }
+                if ($line[15]) {
+                    $contact->iban_attn = $line[15];
                 }
                 $contact->save();
 

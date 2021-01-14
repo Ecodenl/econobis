@@ -131,6 +131,14 @@ class Invoice extends Model
         return $latest_payment ? $latest_payment->date_paid : null;
     }
 
+    public function getPaymentReferenceAttribute()
+    {
+
+        $latest_payment = InvoicePayment::where('invoice_id', $this->id)->where('amount','>', 0)->orderBy('date_paid', 'desc')->first();
+
+        return $latest_payment ? $latest_payment->payment_reference : null;
+    }
+
     public function getDatePaymentDueAttribute()
     {
         if($this->payment_type_id === 'transfer'){

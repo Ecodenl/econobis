@@ -168,10 +168,12 @@ class InvoiceController extends ApiController
         $this->authorize('manage', Invoice::class);
 
         $datePaid = $input
-            ->date('datePaid')->validate('nullable|date')->whenMissing(null)->onEmpty(null)->alias('date_paid')->next()->get();
+            ->date('datePaid')->validate('nullable|date')->whenMissing(null)->onEmpty(null)->alias('date_paid')->next()
+            ->string('paymentReference')->whenMissing(null)->onEmpty(null)->alias('payment_reference')->next()
+            ->get();
 
         if ($datePaid['date_paid']) {
-            InvoiceHelper::saveInvoiceDatePaid($invoice, $datePaid['date_paid']);
+            InvoiceHelper::saveInvoiceDatePaid($invoice, $datePaid['date_paid'], $datePaid['payment_reference']);
         }
 
         return $this->show($invoice->fresh());
@@ -184,7 +186,7 @@ class InvoiceController extends ApiController
         $invoices = Invoice::whereIn('id', $request->input('ids'))->get();
 
         foreach ($invoices as $invoice) {
-            InvoiceHelper::saveInvoiceDatePaid($invoice, $request->input('datePaid'));
+            InvoiceHelper::saveInvoiceDatePaid($invoice, $request->input('datePaid'), $request->input('paymentReference'));
         }
 
     }
@@ -196,6 +198,7 @@ class InvoiceController extends ApiController
         $data = $input
             ->double('amount')->validate('required')->next()
             ->date('datePaid')->validate('required|date')->alias('date_paid')->next()
+            ->string('paymentReference')->whenMissing(null)->onEmpty(null)->alias('payment_reference')->next()
             ->get();
 
         $data['invoice_id'] = $invoice->id;
@@ -213,6 +216,7 @@ class InvoiceController extends ApiController
         $data = $input
             ->double('amount')->validate('required')->next()
             ->date('datePaid')->validate('required|date')->alias('date_paid')->next()
+            ->string('paymentReference')->whenMissing(null)->onEmpty(null)->alias('payment_reference')->next()
             ->get();
 
         $invoicePayment->fill($data);
@@ -579,7 +583,9 @@ class InvoiceController extends ApiController
         $invoice = Invoice::find($data['invoice_id']);
 
         $price = 0;
+        $priceNumberOfDecimals = 2;
         if ($product->currentPrice) {
+            $priceNumberOfDecimals = $product->currentPrice->price_number_of_decimals;
             if ($product->currentPrice->has_variable_price) {
                 $price = $request->input('variablePrice') ? $request->input('variablePrice') : 0;
             } else {
@@ -617,6 +623,7 @@ class InvoiceController extends ApiController
             }
         }
 
+        $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
         $invoiceProduct->price = $price;
         $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
         $invoiceProduct->product_code = $product->code;
@@ -632,7 +639,6 @@ class InvoiceController extends ApiController
         $this->authorize('manage', Invoice::class);
 
         $productData = $request->input('product');
-
         $product = new Product();
         $product->is_one_time = $productData['isOneTime'];
         $product->name = $productData['name'];
@@ -645,7 +651,10 @@ class InvoiceController extends ApiController
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
+        $priceHistory->input_incl_vat = $productData['inputInclVat'];
+        $priceHistory->price_number_of_decimals = $productData['priceNumberOfDecimals'];
         $priceHistory->price = $productData['price'];
+        $priceHistory->price_incl_vat = $productData['priceInclVat'];
         $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
 
         $invoiceProductData = $request->input('invoiceProduct');
@@ -670,8 +679,10 @@ class InvoiceController extends ApiController
             $priceHistory->product_id = $product->id;
             $priceHistory->save();
 
+            $priceNumberOfDecimals = 2;
             $price = 0;
             if ($product->currentPrice) {
+                $priceNumberOfDecimals = $product->currentPrice->price_number_of_decimals;
                 $price = $product->currentPrice->price;
 
                 switch ($product->invoice_frequency_id) {
@@ -706,6 +717,7 @@ class InvoiceController extends ApiController
             }
 
             $invoiceProduct->product_id = $product->id;
+            $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
             $invoiceProduct->price = $price;
             $invoiceProduct->vat_percentage = $product->currentPrice ? $product->currentPrice->vat_percentage : 0;
             $invoiceProduct->product_code = $product->code;

@@ -6,6 +6,7 @@ import moment from 'moment/moment';
 import validator from 'validator';
 import InputDate from '../../../../components/form/InputDate';
 import { hashHistory } from 'react-router';
+import InputText from '../../../../components/form/InputText';
 
 class InvoiceListSetMultiplePaid extends Component {
     constructor(props) {
@@ -14,12 +15,27 @@ class InvoiceListSetMultiplePaid extends Component {
         this.state = {
             invoice: {
                 datePaid: moment().format('Y-MM-DD'),
+                paymentReference: null,
             },
             errors: {
                 datePaid: false,
             },
         };
     }
+
+    handleInputChange = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            invoice: {
+                ...this.state.invoice,
+                [name]: value,
+            },
+        });
+    };
 
     handleInputChangeDate = (value, name) => {
         this.setState({
@@ -51,14 +67,14 @@ class InvoiceListSetMultiplePaid extends Component {
 
         // If no errors send form
         if (!hasErrors) {
-            InvoiceDetailsAPI.setInvoicesPaid(invoiceIds, invoice.datePaid).then(payload => {
+            InvoiceDetailsAPI.setInvoicesPaid(invoiceIds, invoice.datePaid, invoice.paymentReference).then(payload => {
                 hashHistory.push(`/financieel/${this.props.administrationId}/notas/betaald`);
             });
         }
     };
 
     render() {
-        const { datePaid } = this.state.invoice;
+        const { datePaid, paymentReference } = this.state.invoice;
 
         return (
             <Modal
@@ -84,6 +100,15 @@ class InvoiceListSetMultiplePaid extends Component {
                         onChangeAction={this.handleInputChangeDate}
                         required={'required'}
                         error={this.state.errors.datePaid}
+                    />
+                </div>
+                <div className="row">
+                    <InputText
+                        divSize={'col-sm-12'}
+                        label="Betalingskenmerk"
+                        name="paymentReference"
+                        value={paymentReference}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
             </Modal>

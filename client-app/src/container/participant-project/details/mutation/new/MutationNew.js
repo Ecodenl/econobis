@@ -35,6 +35,7 @@ class MutationFormNew extends Component {
                 amountFinal: 0,
                 dateContractRetour: null,
                 datePayment: null,
+                paymentReference: null,
                 dateEntry: this.props.projectDateEntry
                     ? moment(this.props.projectDateEntry).format('YYYY-MM-DD')
                     : moment().format('YYYY-MM-DD'),
@@ -270,7 +271,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MutationFormNew);
+export default connect(mapStateToProps, mapDispatchToProps)(MutationFormNew);

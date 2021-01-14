@@ -92,7 +92,7 @@ class ParticipantsListItem extends Component {
 
                 <td>{contact.type ? contact.type.name : ''}</td>
                 <td>{contact.fullName}</td>
-                <td>{primaryAddress ? street + ' ' + number + addition : ''}</td>
+                <td>{primaryAddress ? street + ' ' + number + (addition ? '-' + addition : '') : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.postalCode : ''}</td>
                 <td>{contact.primaryAddress ? contact.primaryAddress.city : ''}</td>
                 {this.props.projectTypeRef === 'loan' ? (

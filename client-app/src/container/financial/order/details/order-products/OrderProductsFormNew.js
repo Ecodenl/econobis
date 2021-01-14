@@ -17,6 +17,7 @@ class OrderProductsFormNew extends Component {
         super(props);
 
         this.state = {
+            priceNumberOfDecimals: '2',
             price: '0',
             priceInclVat: '0',
             vatPercentage: '0',
@@ -84,6 +85,20 @@ class OrderProductsFormNew extends Component {
             },
             this.updatePrice
         );
+    };
+
+    handleBlurVariablePrice = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            orderProduct: {
+                ...this.state.orderProduct,
+                variablePrice: parseFloat(value).toFixed(this.state.priceNumberOfDecimals),
+            },
+        });
     };
 
     updatePrice = () => {
@@ -199,6 +214,7 @@ class OrderProductsFormNew extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        let priceNumberOfDecimals = 2;
         let price = 0;
         let priceInclVat = 0;
         let vatPercentage = 0;
@@ -211,6 +227,7 @@ class OrderProductsFormNew extends Component {
 
         if (value) {
             let product = this.props.products.find(product => product.id == value);
+            priceNumberOfDecimals = product.currentPrice.priceNumberOfDecimals;
             price = product.currentPrice.price;
             priceInclVat = product.currentPrice.priceInclVat;
             vatPercentage = product.currentPrice.vatPercentage;
@@ -260,6 +277,7 @@ class OrderProductsFormNew extends Component {
         this.setState(
             {
                 ...this.state,
+                priceNumberOfDecimals: priceNumberOfDecimals,
                 price: price,
                 priceInclVat: priceInclVat,
                 vatPercentage: vatPercentage,
@@ -422,6 +440,7 @@ class OrderProductsFormNew extends Component {
                                     type={'number'}
                                     value={this.state.price}
                                     onChangeAction={this.handleInputChangeVariablePrice}
+                                    onBlurAction={this.handleBlurVariablePrice}
                                     error={this.state.errors.variablePrice}
                                     required={this.state.productHasVariablePrice && 'required'}
                                 />
@@ -434,12 +453,12 @@ class OrderProductsFormNew extends Component {
                                             ? '€' +
                                               this.state.priceInclVat.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
-                                                  maximumFractionDigits: 2,
+                                                  maximumFractionDigits: this.state.priceNumberOfDecimals,
                                               })
                                             : '€' +
                                               this.state.price.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
-                                                  maximumFractionDigits: 2,
+                                                  maximumFractionDigits: this.state.priceNumberOfDecimals,
                                               })
                                     }
                                     readOnly={true}

@@ -47,6 +47,7 @@ class FullInvoice extends Resource
 
                 'amountOpen' => $this->amount_open,
                 'datePaid' => $this->date_paid,
+                'paymentReference' => $this->payment_reference,
                 'datePaymentDue' => $this->date_payment_due,
                 'dateSent' => $this->date_sent,
                 'emailedTo' => $this->emailed_to,

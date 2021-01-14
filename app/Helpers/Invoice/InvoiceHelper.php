@@ -34,11 +34,13 @@ class InvoiceHelper
                 continue;
             }
 
+            $priceNumberOfDecimals = 2;
             $price = 0;
             $priceInclVat = 0;
             $vatPercentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
             $vatFactor = (100 + $vatPercentage) / 100;
             if ($orderProduct->product->currentPrice) {
+                $priceNumberOfDecimals = $orderProduct->product->currentPrice->price_number_of_decimals;
                 if ($orderProduct->product->currentPrice->has_variable_price) {
                     $price        = $orderProduct->variable_price;
                     $priceInclVat = $orderProduct->variable_price * $vatFactor;
@@ -91,6 +93,7 @@ class InvoiceHelper
             $invoiceProduct->amount = $orderProduct->amount;
             $invoiceProduct->amount_reduction = $orderProduct->amount_reduction;
             $invoiceProduct->percentage_reduction = $orderProduct->percentage_reduction;
+            $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
             $invoiceProduct->price = $price;
             $invoiceProduct->price_incl_vat = $priceInclVat;
             $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
@@ -148,10 +151,11 @@ class InvoiceHelper
 
     }
 
-    public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid)
+    public static function saveInvoiceDatePaid(Invoice $invoice, $datePaid, $paymentReference)
     {
         $invoicePayment = new InvoicePayment();
         $invoicePayment->date_paid = $datePaid;
+        $invoicePayment->payment_reference = $paymentReference;
         $invoicePayment->amount = $invoice->amount_open;
         $invoicePayment->invoice_id = $invoice->id;
         $invoicePayment->save();

@@ -344,6 +344,7 @@ Route::namespace('Api')
 
         Route::get('administration/grid', 'Administration\AdministrationController@grid');
         Route::get('administration/peek', 'Administration\AdministrationController@peek');
+        Route::get('administration/twinfield-info-administrations', 'Administration\AdministrationController@twinfieldInfoAdministrations');
         Route::get('administration/{administration}', 'Administration\AdministrationController@show');
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
         Route::get('administration/{administration}/ledgers', 'Administration\AdministrationController@getLedgers');

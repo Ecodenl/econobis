@@ -23,6 +23,7 @@ use App\Http\RequestQueries\Administration\Grid\RequestQuery;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\Administration\GridAdministration;
+use App\Http\Resources\Administration\TwinfieldInfoAdministration;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\UserPeek;
 use Carbon\Carbon;
@@ -339,6 +340,11 @@ class AdministrationController extends ApiController
     public function peek()
     {
         return AdministrationPeek::collection(Administration::orderBy('id')->get());
+    }
+
+    public function twinfieldInfoAdministrations()
+    {
+        return TwinfieldInfoAdministration::collection(Administration::orderBy('id')->get());
     }
 
     public function downloadSepa(Sepa $sepa){

@@ -20,6 +20,7 @@ import ViewText from '../../../../components/form/ViewText';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
 import { Link } from 'react-router';
+import AdministrationsAPI from '../../../../api/administration/AdministrationsAPI';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -76,6 +77,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             newLogo: false,
             emailTemplates: [],
             mailboxAddresses: [],
+            twinfieldInfoAdministrations: [],
             isSaving: false,
             loadingText: 'Aan het opslaan',
             administration: {
@@ -149,18 +151,25 @@ class AdministrationDetailsFormGeneralEdit extends Component {
     }
 
     componentDidMount() {
-        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek(), MailboxAPI.fetchMailboxesLoggedInUserPeek()]).then(
-            axios.spread((emailTemplates, mailboxAddresses) => {
-                this.setState({
-                    emailTemplates,
-                    mailboxAddresses,
-                    peekLoading: {
-                        ...this.state.peekLoading,
-                        emailTemplates: false,
-                    },
-                });
-            })
-        );
+        axios
+            .all([
+                EmailTemplateAPI.fetchEmailTemplatesPeek(),
+                MailboxAPI.fetchMailboxesLoggedInUserPeek(),
+                AdministrationsAPI.fetchTwinfieldInfoAdministrations(),
+            ])
+            .then(
+                axios.spread((emailTemplates, mailboxAddresses, twinfieldInfoAdministrations) => {
+                    this.setState({
+                        emailTemplates,
+                        mailboxAddresses,
+                        twinfieldInfoAdministrations,
+                        peekLoading: {
+                            ...this.state.peekLoading,
+                            emailTemplates: false,
+                        },
+                    });
+                })
+            );
     }
 
     toggleNewLogo = () => {
@@ -348,7 +357,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
             let twinFieldOfficeAndOrganizationCodeNotUnique = false;
 
-            this.props.administrations.map(
+            this.state.twinfieldInfoAdministrations.map(
                 existingTwinfieldAdministration =>
                     existingTwinfieldAdministration.twinfieldOfficeCode &&
                     administration.twinfieldOfficeCode &&
@@ -934,7 +943,7 @@ const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
-        administrations: state.systemData.administrations,
+        // administrations: state.systemData.administrations,
         administrationDetails: state.administrationDetails,
     };
 };
@@ -945,7 +954,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AdministrationDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsFormGeneralEdit);

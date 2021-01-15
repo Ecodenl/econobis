@@ -23,7 +23,9 @@ class FinancialOverviewNewForm extends Component {
         this.state = {
             financialOverviews: [],
             financialOverview: {
-                year: moment().format('Y'),
+                year: moment()
+                    .subtract(1, 'year')
+                    .format('Y'),
                 description: '',
                 administrationId: '',
                 definitive: false,

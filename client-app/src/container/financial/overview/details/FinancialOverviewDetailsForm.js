@@ -5,6 +5,7 @@ import FinancialOverviewDetailsFormGeneral from './general/FinancialOverviewDeta
 import * as PropTypes from 'prop-types';
 import FinancialOverviewContactApp from './contact/FinancialOverviewContactApp';
 import FinancialOverviewProjectApp from './project/FinancialOverviewProjectApp';
+import FinancialOverviewPostApp from './post/FinancialOverviewPostApp';
 
 class FinancialOverviewDetailsForm extends Component {
     constructor(props) {
@@ -37,10 +38,8 @@ class FinancialOverviewDetailsForm extends Component {
                     financialOverview={financialOverview}
                     callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
                 />
-                <FinancialOverviewContactApp
-                    financialOverview={financialOverview}
-                    // callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
-                />
+                <FinancialOverviewContactApp financialOverview={financialOverview} />
+                <FinancialOverviewPostApp financialOverview={financialOverview} />
             </div>
         );
     }

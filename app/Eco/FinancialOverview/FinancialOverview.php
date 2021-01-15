@@ -28,6 +28,10 @@ class FinancialOverview extends Model
         return $this->hasMany(FinancialOverviewContact::class);
     }
 
+    public function financialOverviewPosts()
+    {
+        return $this->hasMany(FinancialOverviewPost::class)->orderBy('created_at', 'desc');
+    }
     public function getTotalFinancialOverviewProjectsAttribute()
     {
         return $this->financialOverviewProjects()->count();

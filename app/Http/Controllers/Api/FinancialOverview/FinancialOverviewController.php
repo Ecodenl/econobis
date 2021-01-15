@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers\Api\FinancialOverview;
 
-use App\Eco\Contact\Contact;
 use App\Eco\FinancialOverview\FinancialOverview;
-use App\Eco\FinancialOverview\FinancialOverviewContact;
-use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
-use App\Eco\Project\ProjectType;
 use App\Helpers\Delete\Models\DeleteFinancialOverview;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Helpers\RequestInput\RequestInput;

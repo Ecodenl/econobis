@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
+use App\Eco\FinancialOverview\FinancialOverviewPost;
 use App\Eco\Project\ProjectType;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Http\Controllers\Controller;
@@ -363,15 +364,22 @@ class FinancialOverviewContactController extends Controller
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
         libxml_use_internal_errors(true);
-        $pdfOutput = PDF::loadHTML($html);
+//        $pdfOutput = PDF::loadHTML($html);
         $pdfOutputSave = PDF::loadHTML($html);
         $pdfOutputSave->save($filePath);
         libxml_use_internal_errors(false);
 
-        header('X-Filename:' . $name);
-        header('Access-Control-Expose-Headers: X-Filename');
+        $financialOverviewPost = New FinancialOverviewPost();
+        $financialOverviewPost->filename = $path;
+        $financialOverviewPost->name = $name;
+        $financialOverviewPost->financial_overview_id = $financialOverview->id;
+        $financialOverviewPost->save();
 
-        return $pdfOutput->output();
+//        header('X-Filename:' . $name);
+//        header('Access-Control-Expose-Headers: X-Filename');
+
+//        return $pdfOutput->output();
+        return [];
     }
 
     public function getContactInfoForFinancialOverview(Contact $contact)

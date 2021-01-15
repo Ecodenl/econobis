@@ -178,7 +178,7 @@ class FinancialOverviewNewForm extends Component {
 
 const mapStateToProps = state => {
     return {
-        administrations: state.systemData.administrations,
+        administrations: state.meDetails.administrations,
     };
 };
 

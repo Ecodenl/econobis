@@ -66,7 +66,7 @@ const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
-        administrations: state.systemData.administrations,
+        administrations: state.meDetails.administrations,
     };
 };
 

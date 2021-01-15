@@ -1,72 +1,59 @@
-import React, { useContext, useEffect, useReducer } from 'react';
-import { Row, Col, Container, Table, Card } from 'react-bootstrap';
-import { PortalUserContext } from '../../context/PortalUserContext';
-import ContactAPI from '../../api/contact/ContactAPI';
-import LoadingView from '../../components/general/LoadingView';
+import React, { useState, useEffect, useContext } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import LoadingView from '../../../components/general/LoadingView';
+import { PortalUserContext } from '../../../context/PortalUserContext';
+import { Card, Table } from 'react-bootstrap';
+import AdministrationAPI from '../../../api/administration/AdministrationAPI';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
-const INITIAL_STATE = {
-    result: [],
-    isLoading: true,
-};
-
-const reducer = (state, action) => {
-    switch (action.type) {
-        case 'updateIsLoading':
-            return {
-                ...state,
-                isLoading: action.payload,
-            };
-        case 'updateResult':
-            return {
-                ...state,
-                result: action.payload,
-            };
-        default:
-            return INITIAL_STATE;
-    }
-};
-
-function AboutUs() {
-    const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+function AboutUsAdministration({ match }) {
     const { currentSelectedContact } = useContext(PortalUserContext);
+    const [administration, setAdministration] = useState({});
+    const [isLoading, setLoading] = useState(true);
 
-    useEffect(
-        function() {
-            if (currentSelectedContact.id) {
-                ContactAPI.fetchContactRelatedAdministrations(currentSelectedContact.id)
+    useEffect(() => {
+        if (currentSelectedContact.id) {
+            (function callFetchAdministration() {
+                setLoading(true);
+                console.log(match);
+                AdministrationAPI.fetchAdministration(match.params.id)
                     .then(payload => {
-                        dispatch({
-                            type: 'updateResult',
-                            payload: payload.data.data,
-                        });
-                        setIsLoading(false);
+                        setAdministration(payload.data.data);
+                        setLoading(false);
                     })
-                    .catch(() => {
+                    .catch(error => {
                         alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                        setIsLoading(false);
+                        setLoading(false);
                     });
-            }
-        },
-        [currentSelectedContact.id]
-    );
-
-    function setIsLoading(isLoading) {
-        dispatch({
-            type: 'updateIsLoading',
-            payload: isLoading,
-        });
-    }
+            })();
+        }
+    }, [match, currentSelectedContact]);
 
     return (
         <Container className={'content-section'}>
-            {state.isLoading ? (
+            {isLoading ? (
                 <LoadingView />
             ) : (
-                <Row>
-                    {state.result.map(item => (
+                <>
+                    <Row>
+                        <ButtonGroup aria-label="Steps" className="float-left">
+                            <Link to={`/over-ons`}>
+                                <Button className={'w-button'} size="sm">
+                                    Over ons
+                                </Button>
+                            </Link>
+                        </ButtonGroup>
+                    </Row>
+                    <Row className={'justify-content-center align-content-center flex-wrap'}>
                         <Col xs={12} lg={6} className={'mb-3'}>
                             <Card>
-                                <Card.Header className={'card-header_title'}>Informatie over {item.name}</Card.Header>
+                                <Card.Header className={'card-header_title'}>
+                                    Informatie over {administration.name}
+                                </Card.Header>
                                 <Card.Body>
                                     <Table responsive>
                                         <tbody>
@@ -74,62 +61,62 @@ function AboutUs() {
                                                 <td>
                                                     <strong>Naam</strong>
                                                 </td>
-                                                <td>{item.name}</td>
+                                                <td>{administration.name}</td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <strong>Adres</strong>
                                                 </td>
-                                                <td>{item.address}</td>
+                                                <td>{administration.address}</td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <strong>Postcode / Plaats</strong>
                                                 </td>
                                                 <td>
-                                                    {item.postalCode} {item.city}
+                                                    {administration.postalCode} {administration.city}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <strong>Kvk</strong>
                                                 </td>
-                                                <td>{item.kvkNumber}</td>
+                                                <td>{administration.kvkNumber}</td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <strong>Website</strong>
                                                 </td>
-                                                <td>{item.website}</td>
+                                                <td>{administration.website}</td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <strong>IBAN</strong>
                                                 </td>
-                                                <td>{item.iban}</td>
+                                                <td>{administration.iBAN}</td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <strong>IBAN t.n.v.</strong>
                                                 </td>
-                                                <td>{item.ibanAttn}</td>
+                                                <td>{administration.ibanAttn}</td>
                                             </tr>
                                             <tr>
                                                 <td>
                                                     <strong>BTW nummer</strong>
                                                 </td>
-                                                <td>{item.btwNumber}</td>
+                                                <td>{administration.btwNumber}</td>
                                             </tr>
                                         </tbody>
                                     </Table>
                                 </Card.Body>
                             </Card>
                         </Col>
-                    ))}
-                </Row>
+                    </Row>
+                </>
             )}
         </Container>
     );
 }
 
-export default AboutUs;
+export default AboutUsAdministration;

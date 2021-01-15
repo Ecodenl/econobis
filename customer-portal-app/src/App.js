@@ -17,10 +17,11 @@ import RegistrationList from './container/registration/list';
 import NewAccount from './container/authorization/new-account';
 import NewAccountSuccess from './container/authorization/new-account/NewAccountSuccess';
 import ChangeAccount from './container/authorization/change-account';
-import AboutUs from './container/about-us';
+import AboutUs from './container/about-us/list';
 import RegistrationDetails from './container/registration/details';
 import FinancialOverviewDocuments from './container/financial-overview-documents/list';
 import { ThemeSettingsProvider } from './context/ThemeSettingsContext';
+import AboutUsAdministration from './container/about-us/details';
 
 function App() {
     return (
@@ -40,6 +41,7 @@ function App() {
                             <ProtectedRoute path="/waardestaat-documenten" component={FinancialOverviewDocuments} />
                             <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />
                             <ProtectedRoute path="/over-ons" component={AboutUs} />
+                            <ProtectedRoute path="/over-ons-organisatie/:id" component={AboutUsAdministration} />
                             <PublicRoute path="/login" component={Login} />
                             <PublicRoute path="/activeer-registratie/:registrationCode/:email" component={Register} />
                             <PublicRoute path="/wachtwoord-vergeten" component={Forgot} />

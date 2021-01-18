@@ -7,5 +7,6 @@ export default [
     { code: 'sent-invoice', name: 'Versturen nota' },
     { code: 'sent-invoice-reminder', name: 'Versturen herinnering nota' },
     { code: 'create-financial-overview-project', name: 'Aanmaken waardestaat project' },
-    { code: 'sent-financial-overview-contact', name: 'Versturen waardestaten' },
+    { code: 'sent-financial-overview-contact', name: 'Maken/versturen waardestaten email' },
+    { code: 'create-financial-overview-contact-post', name: 'Maken waardestaten post' },
 ];

@@ -85,41 +85,45 @@ function AboutUs() {
                     </h1>
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <p>Klik op de organisatie voor meer details.</p>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {state.isLoading ? (
+            {state.isLoading ? (
+                <Row>
+                    <Col>
                         <LoadingView />
-                    ) : state.result.length === 0 ? (
-                        'Geen informatie organisaties beschikbaar waar contact een relatie mee heeft.'
-                    ) : (
-                        <Table responsive>
-                            <thead>
-                                <tr>
-                                    <th>Naam</th>
-                                    <th>Adres</th>
+                    </Col>
+                </Row>
+            ) : state.result.length === 0 ? (
+                <Row>
+                    <Col>Geen informatie organisaties beschikbaar waar contact een relatie mee heeft.</Col>
+                </Row>
+            ) : (
+                <>
+                    <Row>
+                        <Col>
+                            <p>Klik op de organisatie voor meer details.</p>
+                        </Col>
+                    </Row>
+                    <Table responsive>
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Adres</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {state.result.map(item => (
+                                <tr key={item.id}>
+                                    <td>
+                                        <Link to={`/over-ons-organisatie/${item.id}`}>{item.name}</Link>
+                                    </td>
+                                    <td>
+                                        {item.address}, {item.city}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {state.result.map(item => (
-                                    <tr key={item.id}>
-                                        <td>
-                                            <Link to={`/over-ons-organisatie/${item.id}`}>{item.name}</Link>
-                                        </td>
-                                        <td>
-                                            {item.address}, {item.city}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-                </Col>
-            </Row>
+                            ))}
+                        </tbody>
+                    </Table>
+                </>
+            )}
         </Container>
     );
 }

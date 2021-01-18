@@ -19,9 +19,8 @@ import ButtonText from '../../../../../components/button/ButtonText';
 import { connect } from 'react-redux';
 import { previewFinancialOverview } from '../../../../../actions/financial-overview/FinancialOverviewActions';
 
-// const initialFilter = { contact: '', statusId: null, dateSent: '', emailedTo: '' };
 const recordsPerPage = 50;
-const maxRecordsPost = 50;
+// const maxRecordsPost = 50;
 
 function FinancialOverviewContactList({ financialOverview, previewFinancialOverview }) {
     const [showSelectFinancialOverviewContactsToSend, setShowSelectFinancialOverviewContactsToSend] = useState(false);
@@ -124,16 +123,16 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         setOnlyPostFinancialOverviewContacts(true);
 
         // Bij verzenden post voorlopig even max 50 tegelijk (worden in 1 PDF samengevoegd en anders wordt PDF wel erg groot)
-        if (financialOverviewContactIds.length > maxRecordsPost) {
-            toggleErrorMessagePost();
+        // if (financialOverviewContactIds.length > maxRecordsPost) {
+        //     toggleErrorMessagePost();
+        // } else {
+        if (financialOverviewContactIds.length > 0) {
+            previewFinancialOverview(financialOverviewContactIds);
+            hashHistory.push(`/waardestaat/${financialOverview.id}/aanmaken/post`);
         } else {
-            if (financialOverviewContactIds.length > 0) {
-                previewFinancialOverview(financialOverviewContactIds);
-                hashHistory.push(`/waardestaat/${financialOverview.id}/aanmaken/post`);
-            } else {
-                toggleShowCheckboxList();
-            }
+            toggleShowCheckboxList();
         }
+        // }
     }
 
     function toggleErrorMessagePost() {
@@ -231,11 +230,11 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         if (isChecked) {
             financialOverviewContactIds = meta.financialOverviewContactIdsTotal;
         }
-        if (onlyPostFinancialOverviewContacts) {
-            setFinancialOverviewContactIds(financialOverviewContactIds.slice(0, maxRecordsPost));
-        } else {
-            setFinancialOverviewContactIds(financialOverviewContactIds);
-        }
+        // if (onlyPostFinancialOverviewContacts) {
+        //     setFinancialOverviewContactIds(financialOverviewContactIds.slice(0, maxRecordsPost));
+        // } else {
+        setFinancialOverviewContactIds(financialOverviewContactIds);
+        // }
         setCheckedAll(isChecked);
     }
 
@@ -514,7 +513,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(FinancialOverviewContactList);
+export default connect(null, mapDispatchToProps)(FinancialOverviewContactList);

@@ -15,8 +15,8 @@ use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
-use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use iio\libmergepdf\Merger;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -65,23 +65,11 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
 
     public function handle()
     {
-        //todo: nu stopt queue:work na elk verwerkte job.
-        // Hier set_time_limit(0) geprobeerd, maar dat lijkt probleem niet te verhelpen, wat nu ?!
-//        set_time_limit(0);
-
         //user voor observer
         Auth::setUser(User::find($this->userId));
         $financialOverviewContactController = new FinancialOverviewContactController();
 
-        $html = '<style>
-.page-break {
-    page-break-after: always;
-}
-</style>';
-
         foreach ($this->validatedFinancialOverviewContactsSet as $financialOverviewContact) {
-            $contactInfo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
-
             $jobLog = new JobsLog();
             $jobLog->value = 'Start maken waardestaat (' . ($financialOverviewContact->id) . ') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ').';
             $jobLog->job_category_id = 'create-financial-overview-contact-post';
@@ -91,74 +79,15 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
             $financialOverviewContact->date_sent = Carbon::today();
             $financialOverviewContact->save();
 
-            $financialOverviewContactData = $financialOverviewContactController->getFinancialOverviewContact($financialOverviewContact, false);
-
-            $contactPerson = $contactInfo['contactPerson'];
-
-            if ($financialOverviewContact->contact->full_name === $contactPerson) {
-                $contactPerson = null;
-            }
-
-            $contactName = null;
-
-            if ($financialOverviewContact->contact->type_id == 'person') {
-                $prefix = $financialOverviewContact->contact->person->last_name_prefix;
-                $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' '
-                    . $financialOverviewContact->contact->person->last_name
-                    : $financialOverviewContact->contact->person->first_name . ' '
-                    . $financialOverviewContact->contact->person->last_name;
-            } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
-                $contactName = $financialOverviewContact->contact->full_name;
-            }
-
-            $createdOk = FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact);
-            if ($createdOk) {
+            $pdf = FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact);
+            if (!empty($pdf)) {
                 FinancialOverviewHelper::financialOverviewContactIsSending($financialOverviewContact);
                 FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
-
-                $img = '';
-                if ($financialOverviewContact->financialOverview->administration->logo_filename) {
-                    $path = storage_path('app' . DIRECTORY_SEPARATOR
-                        . 'administrations' . DIRECTORY_SEPARATOR
-                        . $financialOverviewContact->financialOverview->administration->logo_filename);
-                    $logo = file_get_contents($path);
-
-                    $src = 'data:' . mime_content_type($path)
-                        . ';charset=binary;base64,' . base64_encode($logo);
-                    $src = str_replace(" ", "", $src);
-                    $img = '<img src="' . $src
-                        . '" width="auto" height="156px"/>';
-                }
-
-                if (!$this->first) {
-                    $html .= '<div class="page-break"></div>';
-                    $this->first = false;
-                }
-
-                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
-                $html .= view('financial.overview.generic')->with([
-                    'financialOverviewContact' => $financialOverviewContact,
-                    'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-                    'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_start_value'),
-                    'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_end_value'),
-                    'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
-                    'financialOverviewContactLoanTotalEnd' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_end_value'),
-                    'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
-                    'financialOverviewContactObligationTotalEnd' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_end_value'),
-                    'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
-                    'financialOverviewContactCapitalTotalEnd' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_end_value'),
-                    'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-                    'financialOverviewContactPcrTotalEnd' => $financialOverviewContactData['financialOverviewContactPcrProjects']->sum('amount_end_value'),
-                    'contactPerson' => $contactPerson,
-                    'contactName' => $contactName,
-                    'financialOverviewContactReference' => $financialOverviewContactReference
-                ])
-                    ->with('logo', $img)->render();
             }
             $jobLog = new JobsLog();
             $financialOverviewName = 'WS-' . ($financialOverviewContact->financialOverview->year) . '-' . ($financialOverviewContact->financialOverview->administration->id) . '-' . ($financialOverviewContact->contact->number);
 
-            if($createdOk && $financialOverviewContact->status_id === 'sent'){
+            if(!empty($pdf) && $financialOverviewContact->status_id === 'sent'){
                 $this->financialOverviewContactsOk += 1;
                 $jobLog->value = 'Maken waardestaat ' . ($financialOverviewName) . ' (' . ($financialOverviewContact->id) . ') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
             }else{
@@ -169,6 +98,7 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
             $jobLog->user_id = $this->userId;
             $jobLog->save();
 
+            $createdPdfs[] = $pdf;
         }
 
         $financialOverviewPost = New FinancialOverviewPost();
@@ -185,10 +115,12 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
-        libxml_use_internal_errors(true);
-        $pdfOutputSave = PDF::loadHTML($html);
-        $pdfOutputSave->save($filePath);
-        libxml_use_internal_errors(false);
+        $merger = new Merger;
+        foreach ($createdPdfs as $createdPdf){
+            $merger->addFile(storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $createdPdf);
+        }
+        $createdPdf = $merger->merge();
+        file_put_contents($filePath, $createdPdf);
 
         $financialOverviewPost->filename = $path;
         $financialOverviewPost->name = $name;

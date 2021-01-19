@@ -65,7 +65,7 @@ const ProjectFormViewCapital = ({
             </div>
             <div className="row">
                 <ViewText label={'Max. aantal participaties p/p'} value={maxParticipations} />
-                <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
+                <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
             </div>
             <div className="row">
                 <ViewText label={'Participaties overdraagbaar'} value={isParticipationTransferable ? 'Ja' : 'Nee'} />

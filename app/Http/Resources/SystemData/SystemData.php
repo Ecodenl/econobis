@@ -143,7 +143,7 @@ class SystemData extends Resource
 
         return [
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
-            'administrations' => FullAdministration::collection(Administration::all()),
+//            'administrations' => FullAdministration::collection(Administration::all()),
             'appName' => config('app.name'),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),

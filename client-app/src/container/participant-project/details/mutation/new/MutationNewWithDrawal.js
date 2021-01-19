@@ -17,6 +17,7 @@ const MutationNewWithDrawal = ({
     amountFinal,
     dateContractRetour,
     datePayment,
+    paymentReference,
     dateEntry,
     errors,
     errorMessage,
@@ -191,6 +192,16 @@ const MutationNewWithDrawal = ({
                             id={'datePayment'}
                             value={datePayment}
                             onChangeAction={handleInputChangeDate}
+                        />
+                    </div>
+                    <div className="row">
+                        <div className={'form-group col-md-6'} />
+                        <InputText
+                            label={'Betalingskenmerk'}
+                            id={'paymentReference'}
+                            name={'paymentReference'}
+                            value={paymentReference}
+                            onChangeAction={handleInputChange}
                         />
                     </div>
                 </React.Fragment>

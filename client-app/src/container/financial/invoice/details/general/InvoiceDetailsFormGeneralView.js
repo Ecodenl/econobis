@@ -20,6 +20,7 @@ const InvoiceDetailsFormGeneralView = props => {
         dateSent,
         datePaymentDue,
         datePaid,
+        paymentReference,
         dateReminder1,
         dateReminder2,
         dateReminder3,
@@ -157,6 +158,9 @@ const InvoiceDetailsFormGeneralView = props => {
                             />
                         )}
                         <ViewText label={'Datum betaald'} value={datePaid ? moment(datePaid).format('DD-MM-Y') : ''} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Betalingskenmerk'} value={paymentReference ? paymentReference : ''} />
                     </div>
                 </PanelBody>
             </Panel>

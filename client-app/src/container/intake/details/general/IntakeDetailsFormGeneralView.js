@@ -24,10 +24,20 @@ const IntakeDetailsFormGeneralView = props => {
                                 className='"link-underline"'
                             >
                                 {' '}
-                                {address && address.street + ' ' + address.number}
+                                {address &&
+                                    address.street +
+                                        ' ' +
+                                        address.number +
+                                        (address.addition ? '-' + address.addition : '')}
                             </Link>
                         ) : (
-                            <div>{address && address.street + ' ' + address.number}</div>
+                            <div>
+                                {address &&
+                                    address.street +
+                                        ' ' +
+                                        address.number +
+                                        (address.addition ? '-' + address.addition : '')}
+                            </div>
                         )}
                     </div>
                 </div>

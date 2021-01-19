@@ -18,6 +18,7 @@ const RevenueDistributionFormView = props => {
         deliveredTotal,
         kwhReturn,
         participationsAmount,
+        participationsLoanAmount,
         payout,
         payoutType,
         datePayout,
@@ -88,7 +89,7 @@ const RevenueDistributionFormView = props => {
             <div className="col-sm-1">{contactType ? contactType.name : ''}</div>
             <div className="col-sm-2">{contactName}</div>
             {props.projectTypeCodeRef === 'loan' ? (
-                <div className="col-sm-2">{MoneyPresenter(participationsAmount)}</div>
+                <div className="col-sm-2">{MoneyPresenter(participationsLoanAmount)}</div>
             ) : (
                 <div className="col-sm-1">{participationsAmount}</div>
             )}

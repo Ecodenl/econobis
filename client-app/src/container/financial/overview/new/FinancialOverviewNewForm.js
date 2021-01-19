@@ -15,6 +15,8 @@ import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputSelect from '../../../../components/form/InputSelect';
 import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import FinancialOverviewsAPI from '../../../../api/financial/overview/FinancialOverviewsAPI';
+import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
+import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
 
 class FinancialOverviewNewForm extends Component {
     constructor(props) {
@@ -23,13 +25,17 @@ class FinancialOverviewNewForm extends Component {
         this.state = {
             financialOverviews: [],
             financialOverview: {
-                year: moment().format('Y'),
+                year: moment()
+                    .subtract(1, 'year')
+                    .format('Y'),
                 description: '',
+                documentTemplateFinancialOverviewId: '',
                 administrationId: '',
                 definitive: false,
                 statusId: '',
                 dateProcessed: null,
             },
+            documentTemplates: [],
             errorMessage: false,
             errors: {
                 year: false,
@@ -46,6 +52,18 @@ class FinancialOverviewNewForm extends Component {
             .catch(error => {
                 this.setState({ ...this.state, hasError: true });
             });
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
+            let documentTemplates = [];
+            payload.forEach(function(documentTemplate) {
+                if (documentTemplate.group == 'financial-overview') {
+                    documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
+                }
+            });
+
+            this.setState({
+                documentTemplates: documentTemplates,
+            });
+        });
     }
 
     handleInputChange = event => {
@@ -68,6 +86,16 @@ class FinancialOverviewNewForm extends Component {
             financialOverview: {
                 ...this.state.financialOverview,
                 [name]: value,
+            },
+        });
+    };
+
+    handleReactSelectChange = (selectedOption, name) => {
+        this.setState({
+            ...this.state,
+            financialOverview: {
+                ...this.state.financialOverview,
+                [name]: selectedOption,
             },
         });
     };
@@ -128,8 +156,7 @@ class FinancialOverviewNewForm extends Component {
     };
 
     render() {
-        const { year, administrationId } = this.state.financialOverview;
-
+        const { year, administrationId, documentTemplateFinancialOverviewId } = this.state.financialOverview;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -158,6 +185,17 @@ class FinancialOverviewNewForm extends Component {
                                 errorMessage={this.state.errorMessage.administrationId}
                             />
                         </div>
+                        <div className="row">
+                            <InputReactSelectLong
+                                label="Document template"
+                                name={'documentTemplateFinancialOverviewId'}
+                                options={this.state.documentTemplates}
+                                value={documentTemplateFinancialOverviewId}
+                                onChangeAction={this.handleReactSelectChange}
+                                // isLoading={peekLoading.documentTemplates}
+                                multi={false}
+                            />
+                        </div>
                     </PanelBody>
 
                     <PanelBody>
@@ -178,7 +216,7 @@ class FinancialOverviewNewForm extends Component {
 
 const mapStateToProps = state => {
     return {
-        administrations: state.systemData.administrations,
+        administrations: state.meDetails.administrations,
     };
 };
 

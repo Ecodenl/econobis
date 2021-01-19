@@ -639,6 +639,8 @@ class ParticipationProjectController extends ApiController
                     $subject = 'Participant rapportage Econobis';
                 }
 
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $project);
+
                 $email->subject = $subject;
 
                 $email->html_body
@@ -815,6 +817,8 @@ class ParticipationProjectController extends ApiController
                     $subject = 'Participant rapportage Econobis';
                 }
 
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $project);
+
                 $email->subject = $subject;
 
                 $email->html_body
@@ -933,6 +937,7 @@ class ParticipationProjectController extends ApiController
                     ->date('dateGranted')->validate('nullable|date')->onEmpty(null)->alias('date_granted')->next()
                     ->date('dateContractRetour')->validate('nullable|date')->onEmpty(null)->alias('date_contract_retour')->next()
                     ->date('datePayment')->validate('nullable|date')->onEmpty(null)->alias('date_payment')->next()
+                    ->string('paymentReference')->onEmpty(null)->alias('payment_reference')->next()
                     ->date('dateEntry')->validate('required|date')->alias('date_entry')->next()
                     ->get();
                 $mutationData['quantity'] = isset($mutationData['quantity_final']) ? $mutationData['quantity_final'] : null;

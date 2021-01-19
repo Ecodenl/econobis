@@ -293,7 +293,10 @@
 
     <h4 class="subject-text">Betreft: waardestaat {{ $financialOverviewContact->financialOverview->description }}</h4>
 
+    <h3 class="subject-text">Totaaloverzicht:</h3>
+
     <h3 class="subject-text">Bezittingen</h3>
+
     <table cellpadding=0 cellspacing=0>
         <tr>
             <th class="align-left" width="45%">&nbsp;</th>
@@ -315,7 +318,7 @@
                         Participaties
                         @break
                         @case('postalcode_link_capital')
-                        Participaties (PCR)
+                        Participaties
                         @break
                     @endswitch
                 </td>
@@ -327,10 +330,19 @@
                 <td class="invoice-product-line" colspan="3"></td>
             </tr>
         @endforeach
+
+        <tr>
+            <td class="align-left"><strong>Totaal bezittingen:</strong></td>
+            <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactTotalStart, 2, ',', '.') }}</strong></td>
+            <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactTotalEnd, 2, ',', '.') }}</strong></td>
+        </tr>
+
     </table>
 
+    <br/>
+    <h3 class="subject-text">Specificaties:</h3>
+
     @if($financialOverviewContactLoanProjects && count($financialOverviewContactLoanProjects)>0)
-        <br/>
         <h3 class="subject-text">Lening per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h3>
         <table cellpadding=0 cellspacing=0>
             <tr>
@@ -345,11 +357,19 @@
                 <tr>
                     <td class="align-left">{{ $financialOverviewContactLoanProject->name }}</td>
                     <td class="align-left">Lening</td>
-                    <th class="align-right" width="10%">&nbsp;</th>
-                    <th class="align-right" width="10%">&nbsp;</th>
+                    <td class="align-right">&nbsp;</td>
+                    <td class="align-right">&nbsp;</td>
                     <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactLoanProject->amount_end_value, 2, ',', '.') }}</td>
                 </tr>
             @endforeach
+
+            <tr>
+                <td class="align-left"><strong>Totaal:</strong></td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactLoanTotalEnd, 2, ',', '.') }}</strong></td>
+            </tr>
         </table>
     @endif
 
@@ -374,6 +394,14 @@
                     <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactObligationProject->amount_end_value, 2, ',', '.') }}</td>
                 </tr>
             @endforeach
+
+            <tr>
+                <td class="align-left"><strong>Totaal:</strong></td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactObligationTotalEnd, 2, ',', '.') }}</strong></td>
+            </tr>
         </table>
 
     @endif
@@ -399,13 +427,21 @@
                     <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactCapitalProject->amount_end_value, 2, ',', '.') }}</td>
                 </tr>
             @endforeach
+
+            <tr>
+                <td class="align-left"><strong>Totaal:</strong></td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactCapitalTotalEnd, 2, ',', '.') }}</strong></td>
+            </tr>
         </table>
 
     @endif
 
     @if($financialOverviewContactPcrProjects && count($financialOverviewContactPcrProjects)>0)
         <br/>
-        <h3 class="subject-text">Participaties (PCR) per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h3>
+        <h3 class="subject-text">Participaties per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h3>
         <table cellpadding=0 cellspacing=0>
             <tr>
                 <th class="align-left" width="45%">Project</th>
@@ -418,7 +454,7 @@
             @foreach($financialOverviewContactPcrProjects as $financialOverviewContactPcrProject)
                 <tr>
                     <td class="align-left">{{ $financialOverviewContactPcrProject->name }}</td>
-                    <td class="align-left">Participaties (PCR)</td>
+                    <td class="align-left">Participaties</td>
                     <td class="align-right">{{ $financialOverviewContactPcrProject->quantity_end_value }}</td>
                     <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactPcrProject->bookworth_end_value, 2, ',', '.') }}</td>
                     <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactPcrProject->amount_end_value, 2, ',', '.') }}</td>
@@ -428,7 +464,20 @@
                     <td class="invoice-product-line" colspan="5"></td>
                 </tr>
             @endforeach
+
+            <tr>
+                <td class="align-left"><strong>Totaal:</strong></td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($financialOverviewContactPcrTotalEnd, 2, ',', '.') }}</strong></td>
+            </tr>
         </table>
+    @endif
+
+    @if($wsAdditionalInfo)
+        <div class="page-break"></div>
+        {!! $wsAdditionalInfo !!}
     @endif
 
 </div>

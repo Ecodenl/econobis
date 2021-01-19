@@ -10,6 +10,7 @@ namespace App\Helpers\CSV;
 
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectType;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -17,12 +18,14 @@ class RevenueDistributionCSVHelper
 {
     private $csvExporter;
     private $distribution;
+    private $projectTypeCodeRef;
 
-    public function __construct($distribution)
+    public function __construct($distribution, $projectTypeId)
     {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->distribution = $distribution;
+        $this->projectTypeCodeRef = (ProjectType::where('id', $projectTypeId)->first())->code_ref;
     }
 
     public function downloadCSV(){
@@ -62,6 +65,12 @@ class RevenueDistributionCSVHelper
                 $distribution->last_name_prefix = $distribution->contact->person->last_name_prefix;
                 $distribution->last_name = $distribution->contact->person->last_name;
             }
+            // participatios or loan amount field
+            if ($this->projectTypeCodeRef === 'loan') {
+                $distribution->participations_or_loan_amount = $this->formatFinancial($distribution->participations_loan_amount);
+            }else{
+                $distribution->participations_or_loan_amount = $distribution->participations_amount;
+            }
 
             $distribution->date_payout = $this->formatDate($distribution->date_payout);
 
@@ -75,7 +84,7 @@ class RevenueDistributionCSVHelper
                 'type' => 'Type',
                 'contact.number' => 'Nummer',
                 'contact.full_name' => 'Naam',
-                'participations_amount' => 'Participaties',
+                'participations_or_loan_amount' => 'Participaties',
                 'payout_formatted' => 'Uit te keren bedrag',
                 'payout_type' => 'Uitkeren op',
                 'date_payout' => 'Datum uitkering',

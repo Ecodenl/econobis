@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers\Api\FinancialOverview;
 
-use App\Eco\Contact\Contact;
 use App\Eco\FinancialOverview\FinancialOverview;
-use App\Eco\FinancialOverview\FinancialOverviewContact;
-use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
-use App\Eco\Project\ProjectType;
 use App\Helpers\Delete\Models\DeleteFinancialOverview;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -35,6 +31,7 @@ class FinancialOverviewController extends Controller
         $data = $input->string('description')->next()
             ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
+            ->integer('documentTemplateFinancialOverviewId')->validate('exists:document_templates,id')->alias('document_template_financial_overview_id')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
             ->string('statusId')->onEmpty('in-progress')->whenMissing('in-progress')->alias('status_id')->next()
             ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()
@@ -54,6 +51,7 @@ class FinancialOverviewController extends Controller
         $data = $input->string('description')->next()
             ->integer('administrationId')->validate('exists:administrations,id')->alias('administration_id')->next()
             ->integer('year')->next()
+            ->integer('documentTemplateFinancialOverviewId')->validate('exists:document_templates,id')->alias('document_template_financial_overview_id')->next()
             ->boolean('definitive')->onEmpty(false)->whenMissing(false)->next()
             ->string('statusId')->onEmpty('concept')->whenMissing('concept')->alias('status_id')->next()
             ->date('dateProcessed')->validate('nullable|date')->onEmpty(null)->whenMissing(null)->alias('date_processed')->next()

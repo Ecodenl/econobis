@@ -63,7 +63,7 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
             $contactInfo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'Start maken en versturen waardestaat (' . ($financialOverviewContact->id) . ') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ').';
+            $jobLog->value = 'Start maken en versturen waardestaat (' . ($financialOverviewContact->id) . ') voor ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ').';
             $jobLog->job_category_id = 'sent-financial-overview-contact';
             $jobLog->user_id = $this->userId;
             $jobLog->save();

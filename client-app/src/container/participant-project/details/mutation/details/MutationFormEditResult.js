@@ -13,6 +13,7 @@ function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
         returns,
         entry,
         datePayment,
+        paymentReference,
         paidOn,
         createdAt,
         createdBy,
@@ -47,6 +48,15 @@ function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
                     id={'paidOn'}
                     className={'col-sm-6 form-group'}
                     value={paidOn}
+                />
+            </div>
+
+            <div className="row">
+                <ViewText
+                    label={'Betalingskenmerk'}
+                    id={'paymentReference'}
+                    className={'col-sm-6 form-group'}
+                    value={paymentReference ? paymentReference : ''}
                 />
             </div>
 

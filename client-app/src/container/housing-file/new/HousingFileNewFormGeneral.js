@@ -92,9 +92,14 @@ class HousingFileNewFormGeneral extends Component {
                                 onChange={this.handleInputChange}
                             >
                                 {addresses.map((address, i) => {
+                                    let addressFormatted =
+                                        address.street +
+                                        ' ' +
+                                        address.number +
+                                        (address.addition ? '-' + address.addition : '');
                                     return (
                                         <option key={i} value={address.id}>
-                                            {`${address.street} ${address.number}`}
+                                            {`${addressFormatted}`}
                                         </option>
                                     );
                                 })}
@@ -198,7 +203,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(HousingFileNewFormGeneral);
+export default connect(mapStateToProps, null)(HousingFileNewFormGeneral);

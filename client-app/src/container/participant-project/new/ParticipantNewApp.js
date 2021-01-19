@@ -46,6 +46,7 @@ class ParticipantNewApp extends Component {
                 amountFinal: 0,
                 dateContractRetour: null,
                 datePayment: null,
+                paymentReference: null,
                 dateEntry: moment().format('YYYY-MM-DD'),
                 disableBeforeEntryDate: '',
             },

@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Api\FinancialOverview;
 
 use App\Eco\FinancialOverview\FinancialOverview;
-use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\Project\Project;
-use App\Eco\Project\ProjectType;
-use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;

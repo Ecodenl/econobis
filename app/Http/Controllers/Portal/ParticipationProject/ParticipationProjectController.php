@@ -186,6 +186,9 @@ class ParticipationProjectController extends Controller
             }else{
                 $subject = 'Bevestiging inschrijving';
             }
+
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $project);
+
             $email->subject = $subject;
             $emailTemplateBody = $emailTemplate ? $emailTemplate->html_body : '';
 

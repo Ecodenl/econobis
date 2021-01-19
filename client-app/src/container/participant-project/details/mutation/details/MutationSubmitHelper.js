@@ -75,6 +75,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             }
             values.dateContractRetour = participantMutation.dateContractRetour;
             values.datePayment = participantMutation.datePayment;
+            values.paymentReference = participantMutation.paymentReference;
             values.dateEntry = participantMutation.dateEntry;
         }
     }
@@ -89,6 +90,7 @@ export default function(participantMutation, projectTypeCodeRef) {
         }
         values.dateContractRetour = participantMutation.dateContractRetour;
         values.datePayment = participantMutation.datePayment;
+        values.paymentReference = participantMutation.paymentReference;
         values.dateEntry = participantMutation.dateEntry;
         values.statusId = participantMutation.statusId;
     }

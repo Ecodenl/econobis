@@ -71,7 +71,10 @@ class FinancialOverviewListItem extends Component {
                     ) : (
                         ''
                     )}
-                    {this.state.showActionButtons && permissions.manageFinancial && !definitive ? (
+                    {this.state.showActionButtons &&
+                    permissions.manageFinancial &&
+                    !definitive &&
+                    statusId === 'concept' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>

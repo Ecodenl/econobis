@@ -117,7 +117,12 @@ class IntakeNewFormGeneral extends Component {
                                 {addresses.map((address, i) => {
                                     return (
                                         <option key={i} value={address.id}>
-                                            {address.street + ' ' + address.number + ', ' + address.city}
+                                            {address.street +
+                                                ' ' +
+                                                address.number +
+                                                (address.addition ? '-' + address.addition : '') +
+                                                ', ' +
+                                                address.city}
                                         </option>
                                     );
                                 })}
@@ -204,7 +209,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(IntakeNewFormGeneral);
+export default connect(mapStateToProps, null)(IntakeNewFormGeneral);

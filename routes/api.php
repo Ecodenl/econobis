@@ -344,6 +344,7 @@ Route::namespace('Api')
 
         Route::get('administration/grid', 'Administration\AdministrationController@grid');
         Route::get('administration/peek', 'Administration\AdministrationController@peek');
+        Route::get('administration/twinfield-info-administrations', 'Administration\AdministrationController@twinfieldInfoAdministrations');
         Route::get('administration/{administration}', 'Administration\AdministrationController@show');
         Route::get('administration/sepa/{sepa}', 'Administration\AdministrationController@downloadSepa');
         Route::get('administration/{administration}/ledgers', 'Administration\AdministrationController@getLedgers');
@@ -478,6 +479,10 @@ Route::namespace('Api')
         Route::post('financial-overview-contact/{financialOverview}/sending/post', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingPost');
         Route::post('financial-overview-contact/{financialOverview}/send-all', 'FinancialOverview\FinancialOverviewContactController@sendAll');
         Route::post('financial-overview-contact/{financialOverview}/send-all-post', 'FinancialOverview\FinancialOverviewContactController@sendAllPost');
+
+        Route::get('financial-overview-post/grid', 'FinancialOverview\FinancialOverviewPostController@grid');
+        Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');
+        Route::post('financial-overview-post/{financialOverviewPost}/delete', 'FinancialOverview\FinancialOverviewPostController@deleteFinancialOverviewPost');
 
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');

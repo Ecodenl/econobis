@@ -12,9 +12,8 @@ use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\FinancialOverviewContact\Grid\RequestQuery;
 use App\Http\Resources\FinancialOverviewContact\SendFinancialOverviewContact;
 use App\Http\Resources\FinancialOverviewContact\GridFinancialOverviewContact;
+use App\Jobs\FinancialOverview\CreateAllFinancialOverviewContactsPost;
 use App\Jobs\FinancialOverview\SendAllFinancialOverviewContacts;
-use Barryvdh\DomPDF\Facade as PDF;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -272,106 +271,29 @@ class FinancialOverviewContactController extends Controller
 
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'post');
 
-        $html
-            = '<style>
-.page-break {
-    page-break-after: always;
-}
-</style>';
+        $response = [];
 
         if ($financialOverviewContacts->count() > 0) {
+
             // Eerst hele zet in progress zetten
             foreach ($financialOverviewContacts as $k => $financialOverviewContact) {
-                if($financialOverviewContact->status_id === 'to-send') {
+                if ($financialOverviewContact->status_id === 'to-send') {
                     FinancialOverviewHelper::financialOverviewContactInProgress($financialOverviewContact);
-                }else{
+                } else {
                     abort(404, "Waardestaat contact met ID " . $financialOverviewContact->id . " heeft geen status Te verzenden");
-                }            }
-
-            foreach ($financialOverviewContacts as $k => $financialOverviewContact) {
-
-                $financialOverviewContact->date_sent = Carbon::today();
-                $financialOverviewContact->save();
-
-                $financialOverviewContactData = self::getFinancialOverviewContact($financialOverviewContact, false);
-
-                $emailTo = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
-                $contactPerson = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['contactPerson'];
-
-                if ($financialOverviewContact->contact->full_name === $contactPerson) {
-                    $contactPerson = null;
                 }
+            }
 
-                $contactName = null;
-
-                if ($financialOverviewContact->contact->type_id == 'person') {
-                    $prefix = $financialOverviewContact->contact->person->last_name_prefix;
-                    $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' '
-                        . $financialOverviewContact->contact->person->last_name
-                        : $financialOverviewContact->contact->person->first_name . ' '
-                        . $financialOverviewContact->contact->person->last_name;
-                } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
-                    $contactName = $financialOverviewContact->contact->full_name;
-                }
-
-                $createdOk = FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact);
-                if ($createdOk) {
-                    FinancialOverviewHelper::financialOverviewContactIsSending($financialOverviewContact);
-                    FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
-
-                    $img = '';
-                    if ($financialOverviewContact->financialOverview->administration->logo_filename) {
-                        $path = storage_path('app' . DIRECTORY_SEPARATOR
-                            . 'administrations' . DIRECTORY_SEPARATOR
-                            . $financialOverviewContact->financialOverview->administration->logo_filename);
-                        $logo = file_get_contents($path);
-
-                        $src = 'data:' . mime_content_type($path)
-                            . ';charset=binary;base64,' . base64_encode($logo);
-                        $src = str_replace(" ", "", $src);
-                        $img = '<img src="' . $src
-                            . '" width="auto" height="156px"/>';
-                    }
-
-                    if ($k !== 0) {
-                        $html .= '<div class="page-break"></div>';
-                    }
-
-                    $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
-
-                    $html .= view('financial.overview.generic')->with([
-                        'financialOverviewContact' => $financialOverviewContact,
-                        'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-                        'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
-                        'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
-                        'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
-                        'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-                        'contactPerson' => $contactPerson,
-                        'contactName' => $contactName,
-                        'financialOverviewContactReference' => $financialOverviewContactReference
-                    ])
-                        ->with('logo', $img)->render();
-                }
+            $chunkNumber = 0;
+            $itemsPerChunk = 50;
+            $numberOfChunks = ceil($financialOverviewContacts->count() / $itemsPerChunk);
+            foreach ($financialOverviewContacts->chunk($itemsPerChunk) as $financialOverviewContactsSet) {
+                $chunkNumber = $chunkNumber + 1;
+                CreateAllFinancialOverviewContactsPost::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id());
             }
         }
 
-        $name = 'Post-waardestaten-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
-
-        $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
-            . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $name;
-
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
-
-        libxml_use_internal_errors(true);
-        $pdfOutput = PDF::loadHTML($html);
-        $pdfOutputSave = PDF::loadHTML($html);
-        $pdfOutputSave->save($filePath);
-        libxml_use_internal_errors(false);
-
-        header('X-Filename:' . $name);
-        header('Access-Control-Expose-Headers: X-Filename');
-
-        return $pdfOutput->output();
+        return $response;
     }
 
     public function getContactInfoForFinancialOverview(Contact $contact)

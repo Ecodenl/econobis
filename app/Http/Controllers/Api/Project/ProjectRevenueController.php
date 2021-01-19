@@ -72,7 +72,7 @@ class ProjectRevenueController extends ApiController
 //        } else {
 //            $projectRevenue = new RevenueParticipantsCSVHelper($projectRevenue->project->participantsProject, $projectRevenue);
 //        }
-            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
+            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution, $projectRevenue->project->project_type_id);
 
 
         return $projectRevenue->downloadCSV();
@@ -841,6 +841,8 @@ class ProjectRevenueController extends ApiController
                     $subject = 'Participant rapportage Econobis';
                 }
 
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $project);
+
                 $email->subject = $subject;
 
                 $email->html_body
@@ -1071,6 +1073,8 @@ class ProjectRevenueController extends ApiController
                     if (!$subject) {
                         $subject = 'Participant rapportage Econobis';
                     }
+
+                    $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $project);
 
                     $email->subject = $subject;
 

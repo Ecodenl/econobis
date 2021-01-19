@@ -127,6 +127,7 @@ function ProjectList(props) {
                         <Table responsive>
                             <thead>
                                 <tr>
+                                    <th>Uitgevende instantie</th>
                                     <th>Project</th>
                                     <th>Ingeschreven</th>
                                     <th>Start inschrijving</th>
@@ -136,6 +137,7 @@ function ProjectList(props) {
                             <tbody>
                                 {projectData.map(project => (
                                     <tr key={project.id}>
+                                        <td>{project.administration.name}</td>
                                         <td>
                                             {contactProjectsArray.includes(project.id) ? (
                                                 project.name

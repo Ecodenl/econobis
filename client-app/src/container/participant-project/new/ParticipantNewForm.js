@@ -36,6 +36,7 @@ const ParticipantNewForm = ({
         amountFinal,
         dateContractRetour,
         datePayment,
+        paymentReference,
         dateEntry,
         disableBeforeEntryDate,
     } = participation;
@@ -254,6 +255,13 @@ const ParticipantNewForm = ({
                             disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
+                        />
+                        <InputText
+                            label={'Betalingskenmerk'}
+                            id={'paymentReference'}
+                            name={'paymentReference'}
+                            value={paymentReference}
+                            onChangeAction={handleInputChange}
                         />
                     </div>
                 </React.Fragment>

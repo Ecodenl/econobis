@@ -21,6 +21,7 @@ class InvoicePaymentsFormNew extends Component {
                 invoiceId: this.props.invoiceDetails.id,
                 amount: '',
                 datePaid: moment(),
+                paymentReference: null,
             },
             errors: {
                 amount: false,
@@ -82,7 +83,7 @@ class InvoicePaymentsFormNew extends Component {
     };
 
     render() {
-        const { amount, datePaid } = this.state.payment;
+        const { amount, datePaid, paymentReference } = this.state.payment;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -105,6 +106,14 @@ class InvoicePaymentsFormNew extends Component {
                                 onChangeAction={this.handleInputChangeDate}
                                 required={'required'}
                                 error={this.state.errors.datePaid}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Betalingskenmerk"
+                                name="paymentReference"
+                                value={paymentReference}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
 
@@ -140,7 +149,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoicePaymentsFormNew);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoicePaymentsFormNew);

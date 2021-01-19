@@ -38,6 +38,7 @@ class FullProjectRevenueDistribution extends Resource
                 'payoutIbanAttn' => $this->participation ? $this->participation->iban_payout_attn :'',
                 'status' => $this->status,
                 'participationsAmount' => $this->participations_amount,
+                'participationsLoanAmount' => $this->participations_loan_amount,
                 'payout' => $this->payout,
                 'payoutType' => $this->payout_type,
                 'datePayout' => $this->date_payout,

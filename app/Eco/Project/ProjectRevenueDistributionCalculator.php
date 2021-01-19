@@ -21,7 +21,11 @@ class ProjectRevenueDistributionCalculator
         // Revenue category REVENUE EURO of REDEMPTION EURO
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id
         || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
-            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
+            if($this->projectTypeCodeRef === 'loan') {
+                $this->projectRevenueDistribution->participations_loan_amount = $this->calculateParticipationsCount();
+            }else{
+                $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
+            }
             $this->projectRevenueDistribution->payout = $this->calculatePayout();
         }
 
@@ -129,7 +133,11 @@ class ProjectRevenueDistributionCalculator
 
     protected function calculatePayoutInPossessionOf()
     {
-        $amount = $this->projectRevenueDistribution->participations_amount;
+        if($this->projectTypeCodeRef === 'loan') {
+            $amount = $this->projectRevenueDistribution->participations_loan_amount;
+        }else{
+            $amount = $this->projectRevenueDistribution->participations_amount;
+        }
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
             if($this->projectTypeCodeRef === 'loan') {
                 $participationValue = $amount;

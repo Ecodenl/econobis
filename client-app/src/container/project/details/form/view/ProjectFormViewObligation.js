@@ -62,7 +62,7 @@ const ProjectFormViewObligation = ({
             </div>
             <div className="row">
                 <ViewText label={'Max. aantal obligaties p/p'} value={maxParticipations} />
-                <ViewText label={'Opgesteld vermogen kWh'} value={powerKwAvailable} />
+                <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
             </div>
             <div className="row">
                 <ViewText label={'Obligaties overdraagbaar'} value={isParticipationTransferable ? 'Ja' : 'Nee'} />

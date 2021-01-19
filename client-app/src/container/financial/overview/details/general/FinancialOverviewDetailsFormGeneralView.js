@@ -12,6 +12,7 @@ const FinancialOverviewDetailsFormGeneralView = ({
     administrationId,
     statusId,
     dateProcessed,
+    documentTemplateFinancialOverview,
     switchToEdit,
     callFetchFinancialOverviewDetails,
     administrations,
@@ -57,6 +58,12 @@ const FinancialOverviewDetailsFormGeneralView = ({
                                 }
                             />
                             <ViewText label={'Datum verwerkt'} value={dateProcessedFormated} />
+                        </div>
+                        <div className="row">
+                            <ViewText
+                                label={'Document template'}
+                                value={documentTemplateFinancialOverview ? documentTemplateFinancialOverview.name : ''}
+                            />
                         </div>
                     </PanelBody>
                 </Panel>

@@ -43,14 +43,14 @@ class FinancialOverviewDetailsToolbar extends Component {
     };
 
     render() {
-        let { id, description, definitive } = this.props.financialOverview;
+        let { id, description, statusId, definitive } = this.props.financialOverview;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                        {!definitive ? (
+                        {!definitive && statusId === 'concept' ? (
                             <ButtonIcon
                                 iconName={'glyphicon-trash'}
                                 onClickAction={this.showDeleteItemModal.bind(this, id, description)}

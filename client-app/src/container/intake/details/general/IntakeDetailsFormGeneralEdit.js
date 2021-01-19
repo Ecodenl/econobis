@@ -123,7 +123,10 @@ class IntakeDetailsFormGeneralEdit extends Component {
                     <InputText
                         label={'Adres'}
                         name={'address'}
-                        value={address && address.street + ' ' + address.number}
+                        value={
+                            address &&
+                            address.street + ' ' + address.number + (address.addition ? '-' + address.addition : '')
+                        }
                         readOnly
                     />
                 </div>
@@ -221,7 +224,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(IntakeDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(IntakeDetailsFormGeneralEdit);

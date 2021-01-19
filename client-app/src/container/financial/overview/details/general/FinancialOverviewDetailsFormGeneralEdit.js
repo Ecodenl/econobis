@@ -1,40 +1,41 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
 import validator from 'validator';
 import moment from 'moment';
-
 moment.locale('nl');
 
-import InputText from '../../../../components/form/InputText';
-import ButtonText from '../../../../components/button/ButtonText';
-import PanelBody from '../../../../components/panel/PanelBody';
-import Panel from '../../../../components/panel/Panel';
-import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
-import InputSelect from '../../../../components/form/InputSelect';
-import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
-import FinancialOverviewsAPI from '../../../../api/financial/overview/FinancialOverviewsAPI';
-import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
-import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
+import ButtonText from '../../../../../components/button/ButtonText';
+import Panel from '../../../../../components/panel/Panel';
+import PanelBody from '../../../../../components/panel/PanelBody';
+import FinancialOverviewsAPI from '../../../../../api/financial/overview/FinancialOverviewsAPI';
+import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
+import ViewText from '../../../../../components/form/ViewText';
+import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
+import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 
-class FinancialOverviewNewForm extends Component {
+class FinancialOverviewDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             financialOverviews: [],
             financialOverview: {
-                year: moment()
-                    .subtract(1, 'year')
-                    .format('Y'),
-                description: '',
-                documentTemplateFinancialOverviewId: '',
-                administrationId: '',
-                definitive: false,
-                statusId: '',
-                dateProcessed: null,
+                id: props.id ? props.id : '',
+                year: props.year
+                    ? props.year
+                    : moment()
+                          .subtract(1, 'year')
+                          .format('Y'),
+                description: props.description ? props.description : '',
+                documentTemplateFinancialOverviewId: props.documentTemplateFinancialOverviewId
+                    ? props.documentTemplateFinancialOverviewId
+                    : '',
+                administrationId: props.administrationId ? props.administrationId : '',
+                definitive: props.definitive ? props.definitive : false,
+                statusId: props.statusId ? props.statusId : '',
+                dateProcessed: props.dateProcessed ? props.dateProcessed : null,
             },
+            administrations: props.administrations ? props.administrations : null,
             documentTemplates: [],
             errorMessage: false,
             errors: {
@@ -54,6 +55,7 @@ class FinancialOverviewNewForm extends Component {
             });
         DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
             let documentTemplates = [];
+
             payload.forEach(function(documentTemplate) {
                 if (documentTemplate.group == 'financial-overview') {
                     documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
@@ -102,7 +104,6 @@ class FinancialOverviewNewForm extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-
         const { financialOverview } = this.state;
 
         // Validation
@@ -126,63 +127,71 @@ class FinancialOverviewNewForm extends Component {
             hasErrors = true;
         }
 
-        this.state.financialOverviews.map(financialOverviewFromMap => {
-            if (
-                financialOverviewFromMap.year == financialOverview.year &&
-                financialOverviewFromMap.administrationId == financialOverview.administrationId
-            ) {
-                hasErrors = true;
-                errors.year = errors.administrationId = true;
-                errorMessage.year = errorMessage.administrationId =
-                    'Waardestaat voor jaar ' +
-                    financialOverviewFromMap.year +
-                    ' en administratie ' +
-                    financialOverviewFromMap.administration.name +
-                    ' bestaat al.';
-            }
-        });
-
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
         // If no errors send form
         !hasErrors &&
-            FinancialOverviewDetailsAPI.newFinancialOverview(financialOverview)
+            FinancialOverviewDetailsAPI.updateFinancialOverview(financialOverview)
                 .then(payload => {
-                    hashHistory.push(`/waardestaat/${payload.data.data.id}`);
+                    this.props.callFetchFinancialOverviewDetails();
+                    this.props.switchToView();
                 })
-                .catch(function(error) {
-                    alert('Er is iets mis gegaan met opslaan!');
+                .catch(error => {
+                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
                 });
     };
 
     render() {
-        const { year, administrationId, documentTemplateFinancialOverviewId } = this.state.financialOverview;
+        const {
+            year,
+            administrationId,
+            statusId,
+            dateProcessed,
+            documentTemplateFinancialOverviewId,
+        } = this.state.financialOverview;
+
+        let status = '';
+        switch (statusId) {
+            case 'in-progress':
+                status = 'Wordt aangemaakt...';
+                break;
+            case 'concept':
+                status = 'Concept';
+                break;
+            case 'definitive':
+                status = 'Definitief';
+                break;
+            case 'processed':
+                status = 'Verwerkt';
+                break;
+        }
+        const dateProcessedFormated = dateProcessed ? moment(dateProcessed).format('DD-MM-Y') : '';
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
                     <PanelBody>
                         <div className="row">
-                            <InputText
-                                label="Jaar"
-                                type="number"
-                                name={'year'}
-                                value={year}
-                                min={2000}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.year}
-                                errorMessage={this.state.errorMessage.year}
-                            />
-                            <InputSelect
+                            <ViewText className={'form-group col-md-6'} label={'Jaar'} value={year} />
+                            <ViewText className={'form-group col-md-6'} label={'Status'} value={status} />
+                        </div>
+                        <div className="row">
+                            <ViewText
+                                className={'form-group col-md-6'}
                                 label={'Administratie'}
-                                name={'administrationId'}
-                                value={administrationId}
-                                options={this.props.administrations}
-                                optionName={'name'}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.administrationId}
-                                errorMessage={this.state.errorMessage.administrationId}
+                                value={
+                                    administrationId
+                                        ? this.state.administrations &&
+                                          this.state.administrations.find(
+                                              administration => administration.id == administrationId
+                                          ).name
+                                        : ''
+                                }
+                            />
+                            <ViewText
+                                className={'form-group col-md-6'}
+                                label={'Datum verwerkt'}
+                                value={dateProcessedFormated}
                             />
                         </div>
                         <div className="row">
@@ -201,10 +210,15 @@ class FinancialOverviewNewForm extends Component {
                     <PanelBody>
                         <div className="pull-right btn-group" role="group">
                             <ButtonText
+                                buttonClassName={'btn-default'}
+                                buttonText={'Sluiten'}
+                                onClickAction={this.props.switchToView}
+                            />
+                            <ButtonText
                                 buttonText={'Opslaan'}
-                                onClickAction={this.handleSubmit}
                                 type={'submit'}
                                 value={'Submit'}
+                                onClickAction={this.handleSubmit}
                             />
                         </div>
                     </PanelBody>
@@ -220,6 +234,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewNewForm);
+export default connect(mapStateToProps, null)(FinancialOverviewDetailsFormGeneralEdit);

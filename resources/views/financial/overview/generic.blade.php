@@ -475,5 +475,10 @@
         </table>
     @endif
 
+    @if($wsAdditionalInfo)
+        <div class="page-break"></div>
+        {!! $wsAdditionalInfo !!}
+    @endif
+
 </div>
 </body>

@@ -2,17 +2,18 @@
 
 namespace App\Helpers\FinancialOverview;
 
-use App\Eco\Contact\Contact;
+use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewsToSend;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Occupation\OccupationContact;
 use App\Eco\Project\Project;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
-use App\Http\Resources\Project\GridProject;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,8 @@ class FinancialOverviewHelper
 
     public static function createFinancialOverviewContactDocument(FinancialOverviewcontact $financialOverviewContact, $preview = false)
     {
+        $user = Auth::user();
+
         $img = '';
         if ($financialOverviewContact->financialOverview->administration->logo_filename) {
             $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $financialOverviewContact->financialOverview->administration->logo_filename);
@@ -68,6 +71,8 @@ class FinancialOverviewHelper
 
         $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
 
+        $wsAdditionalInfo = self::getWsAdditionalInfo($financialOverviewContact, $contactPerson, $user);
+
         // indien preview, dan zijn we nu klaar om PDF te tonen
         if ($preview) {
             $pdf = PDF::loadView('financial.overview.generic', [
@@ -87,7 +92,9 @@ class FinancialOverviewHelper
                 'contactName' => $contactName,
                 'financialOverviewContactReference' => $financialOverviewContactReference,
                 'logo' => $img,
+                'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
+
             return $pdf->output();
         }
 
@@ -109,6 +116,7 @@ class FinancialOverviewHelper
             'contactName' => $contactName,
             'financialOverviewContactReference' => $financialOverviewContactReference,
             'logo' => $img,
+            'wsAdditionalInfo' => $wsAdditionalInfo,
         ]);
 
         $name = $financialOverviewContactReference . '.pdf';
@@ -126,7 +134,7 @@ class FinancialOverviewHelper
 
         self::financialOverviewContactPdfIsCreated($financialOverviewContact);
 
-        return true;
+        return $path;
     }
 
     public static function send(FinancialOverviewContact $financialOverviewContact, $preview = false)
@@ -350,6 +358,60 @@ class FinancialOverviewHelper
         }
     }
 
+    /**
+     * @param FinancialOverviewContact $financialOverviewContact
+     * @param $contactPerson
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     * @return String
+     */
+    public static function getWsAdditionalInfo(FinancialOverviewContact $financialOverviewContact, $contactPerson, \Illuminate\Contracts\Auth\Authenticatable $user): string
+    {
+        $documentTemplateId = $financialOverviewContact->financialOverview ? $financialOverviewContact->financialOverview->document_template_financial_overview_id : 0;
+        $documentTemplate = DocumentTemplate::find($documentTemplateId);
+
+        $contact = $financialOverviewContact->contact;
+
+        if (!$documentTemplate) {
+            $wsAdditionalInfo = '';
+        } else {
+            $documentTemplate->load('footer', 'baseTemplate', 'header');
+            $wsAdditionalInfo = $documentTemplate->header ? $documentTemplate->header->html_body : '';
+
+            if ($documentTemplate->baseTemplate) {
+                $wsAdditionalInfo .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                    $documentTemplate->html_body, '', '');
+            } else {
+                $wsAdditionalInfo .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                    '', '');
+            }
+
+            $wsAdditionalInfo .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
+            $wsAdditionalInfo = str_replace('{contactpersoon}', $contactPerson, $wsAdditionalInfo);
+
+            $wsAdditionalInfo = TemplateTableHelper::replaceTemplateTables($wsAdditionalInfo, $contact);
+            $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'contact', $contact);
+            $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'portal');
+            $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'contacten_portal');
+            $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateCooperativeVariables($wsAdditionalInfo, 'cooperatie');
+
+            //wettelijk vertegenwoordiger
+            if (OccupationContact::where('contact_id', $contact->id)->where('occupation_id', 7)->exists()) {
+                $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $contact->id)
+                    ->where('occupation_id', 7)->first()->primaryContact;
+                $wsAdditionalInfo
+                    = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'wettelijk_vertegenwoordiger',
+                    $wettelijkVertegenwoordiger);
+            }
+            $wsAdditionalInfo
+                = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'ik', $user);
+            $wsAdditionalInfo
+                = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'administratie', $financialOverviewContact->financialOverview->administration);
+
+            $wsAdditionalInfo
+                = TemplateVariableHelper::stripRemainingVariableTags($wsAdditionalInfo);
+        }
+        return $wsAdditionalInfo;
+    }
 
 
 }

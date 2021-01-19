@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-// import FinancialOverviewDetailsFormGeneralEdit from './FinancialOverviewDetailsFormGeneralEdit';
 import FinancialOverviewDetailsFormGeneralView from './FinancialOverviewDetailsFormGeneralView';
+import FinancialOverviewDetailsFormGeneralEdit from './FinancialOverviewDetailsFormGeneralEdit';
 
 class FinancialOverviewDetailsFormGeneral extends Component {
     constructor(props) {
@@ -15,9 +15,11 @@ class FinancialOverviewDetailsFormGeneral extends Component {
     }
 
     switchToEdit = () => {
-        this.setState({
-            // showEdit: true,
-        });
+        if (this.props.financialOverview.statusId === 'concept') {
+            this.setState({
+                showEdit: true,
+            });
+        }
     };
 
     switchToView = () => {
@@ -50,13 +52,21 @@ class FinancialOverviewDetailsFormGeneral extends Component {
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
-                <FinancialOverviewDetailsFormGeneralView
-                    {...this.props.financialOverview}
-                    switchToEdit={this.switchToEdit}
-                    callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
-                    administrations={this.props.administrations}
-                />
-                {/*)}*/}
+                {this.state.showEdit && permissions.manageFinancial ? (
+                    <FinancialOverviewDetailsFormGeneralEdit
+                        {...this.props.financialOverview}
+                        switchToView={this.switchToView}
+                        callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                        administrations={this.props.administrations}
+                    />
+                ) : (
+                    <FinancialOverviewDetailsFormGeneralView
+                        {...this.props.financialOverview}
+                        switchToEdit={this.switchToEdit}
+                        callFetchFinancialOverviewDetails={this.props.callFetchFinancialOverviewDetails}
+                        administrations={this.props.administrations}
+                    />
+                )}
             </div>
         );
     }

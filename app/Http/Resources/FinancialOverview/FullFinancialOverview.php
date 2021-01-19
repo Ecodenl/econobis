@@ -20,6 +20,8 @@ class FullFinancialOverview extends Resource
             'description' => $this->description,
             'administrationId' => $this->administration_id,
             'administration' => GenericResource::make($this->whenLoaded('administration')),
+            'documentTemplateFinancialOverviewId' => $this->document_template_financial_overview_id,
+            'documentTemplateFinancialOverview' => GenericResource::make($this->whenLoaded('document_templates')),
             'year' => $this->year,
             'definitive' => $this->definitive,
             'statusId' => $this->status_id,

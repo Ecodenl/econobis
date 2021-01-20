@@ -153,6 +153,12 @@ class ParticipantProject extends Model
         return $projectRevenueDistributions->count() > 0;
     }
 
+    // Return if projectparicipant already has a link in a confirmed revenue distribution
+    public function getParticipantInConfirmedRevenueAttribute()
+    {
+        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereIn('status', ['confirmed']);
+        return $projectRevenueDistributions->count() > 0;
+    }
 
     public function getParticipationsReturnsTotalAttribute()
     {

@@ -61,6 +61,7 @@ class FullRevenueParticipantProject extends Resource
                 'dateRegister' => $this->date_register,
                 'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
+                'participantInConfirmedRevenue' => $this->participantInConfirmedRevenue,
             ];
     }
 }

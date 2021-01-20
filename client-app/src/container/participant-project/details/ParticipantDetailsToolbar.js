@@ -173,7 +173,7 @@ class ParticipantDetailsToolbar extends Component {
                 )}
                 {this.state.showTerminate && (
                     <ParticipantDetailsTerminate
-                        participantProjectId={participantProject.id}
+                        participantProject={participantProject}
                         setErrorModal={this.setErrorModal}
                         closeDeleteItemModal={this.toggleTerminate}
                         projectTypeCodeRef={participantProject.project.projectType.codeRef}

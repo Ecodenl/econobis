@@ -1074,11 +1074,29 @@ class ParticipationProjectController extends ApiController
     {
         $currentBookWorth = $participantProject->project->currentBookWorth();
         $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
-        $dateBegin = $participantProject->project->date_interest_bearing ? new Carbon($participantProject->project->date_interest_bearing) : null;
         $dateEnd = new Carbon($participantProject->date_terminated);
-        $daysOfYear = $this->daysOfYear($dateBegin, $dateEnd);
+        if (!$dateEnd){
+            return 0;
+        }
 
-        if (!$dateEnd) return 0;
+        // Als eerst volgende dateInterestBearing na einddatum ligt, dan doen we geen uitkering meer.
+        $dateInterestBearing = $participantProject->project->date_interest_bearing ? new Carbon($participantProject->project->date_interest_bearing) : null;
+        if($dateInterestBearing && $dateInterestBearing->copy()->startOfDay() > $dateEnd->copy()->startOfDay()){
+            return 0;
+        }
+
+        // Indien jaar van 1e ingangsdatum = jaar beeindigingsdatum, dan dateBegin = 1e ingangsdatum.
+        // Anders dateBegin = 1-1-[jaar beeindigingsdatum]
+        $dateBegin = $participantProject->date_entry_first_deposit ? new Carbon($participantProject->date_entry_first_deposit) : null;
+        if(!$dateBegin || $dateBegin->year != $dateEnd->year){
+            $dateBegin = $dateEnd->copy()->startOfYear();
+        }
+        // Als eerst volgende dateInterestBearing na begindatum ligt, dan wordt dit de begindatum
+        $dateInterestBearing = $participantProject->project->date_interest_bearing ? new Carbon($participantProject->project->date_interest_bearing) : null;
+        if($dateInterestBearing && $dateInterestBearing->copy()->startOfDay() > $dateBegin->copy()->startOfDay()){
+            $dateBegin = $dateInterestBearing->copy()->startOfDay();
+        }
+        $daysOfYear = $this->daysOfYear($dateBegin, $dateEnd);
 
         $mutations = $participantProject->mutationsDefinitive;
 
@@ -1119,7 +1137,7 @@ class ParticipationProjectController extends ApiController
      * @param string $dateBegin
      * @param string $dateEnd
      */
-    protected function daysOfYear(string $dateBegin, string $dateEnd)
+    protected function daysOfYear($dateBegin, $dateEnd)
     {
         $dateBeginIsLeapYear = $dateBegin->isLeapYear();
         $dateEndIsLeapYear = $dateEnd->isLeapYear();

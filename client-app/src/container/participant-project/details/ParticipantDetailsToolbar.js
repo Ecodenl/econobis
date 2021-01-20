@@ -118,7 +118,7 @@ class ParticipantDetailsToolbar extends Component {
                 )}
                 {this.state.showTerminate && (
                     <ParticipantDetailsTerminate
-                        participantProjectId={participantProject.id}
+                        participantProject={participantProject}
                         closeDeleteItemModal={this.toggleTerminate}
                         projectTypeCodeRef={participantProject.project.projectType.codeRef}
                     />

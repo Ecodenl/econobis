@@ -227,7 +227,6 @@ class FinancialOverviewContactController extends Controller
 
     public function getEmailPreview(FinancialOverviewContact $financialOverviewContact)
     {
-        FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact, true);
         return FinancialOverviewHelper::send($financialOverviewContact, true);
     }
 

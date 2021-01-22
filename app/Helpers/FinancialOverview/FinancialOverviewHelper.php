@@ -94,6 +94,14 @@ class FinancialOverviewHelper
                 'logo' => $img,
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
+            $contxt = stream_context_create([
+                'ssl' => [
+                    'verify_peer' => FALSE,
+                    'verify_peer_name' => FALSE,
+                    'allow_self_signed'=> TRUE
+                ]
+            ]);
+            $pdf->getDomPDF()->setHttpContext($contxt);
 
             return $pdf->output();
         }

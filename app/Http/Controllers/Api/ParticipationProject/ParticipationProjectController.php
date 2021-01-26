@@ -402,7 +402,7 @@ class ParticipationProjectController extends ApiController
 
         $data = $requestInput
             ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
-            ->integer('payoutPercentageTerminated')->validate('nullable')->onEmpty(null)->alias('payout_percentage_terminated')->next()
+            ->double('payoutPercentageTerminated')->validate('nullable')->onEmpty(null)->alias('payout_percentage_terminated')->next()
             ->get();
 
         // Set terminated date
@@ -1101,27 +1101,28 @@ class ParticipationProjectController extends ApiController
         $mutations = $participantProject->mutationsDefinitive;
 
         $payout = 0;
-
         foreach ($mutations as $mutation) {
-            $dateEntry = new Carbon($mutation->date_entry);
+            if($mutation->date_entry){
+                $dateEntry = new Carbon($mutation->date_entry);
 
-            // If date entry is before date begin then date entry is equal to date begin
-            if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+                // If date entry is before date begin then date entry is equal to date begin
+                if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
-            $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                $dateEndForPeriod = clone $dateEnd;
+                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateEntry);
 
-            if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
-                $mutationValue = $currentBookWorth * $mutation->quantity;
+                if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
+                    $mutationValue = $currentBookWorth * $mutation->quantity;
+                }
+
+                if($projectTypeCodeRef === 'loan') {
+                    $mutationValue = $mutation->amount;
+                }
+
+                if($dateEntry > $dateEnd) $mutationValue = 0;
+                $payout += ($mutationValue * $payoutPercentageTerminated) / 100 / $daysOfYear * $daysOfPeriod;
             }
-
-            if($projectTypeCodeRef === 'loan') {
-                $mutationValue = $mutation->amount;
-            }
-
-            if($dateEntry > $dateEnd) $mutationValue = 0;
-            $payout += ($mutationValue * $payoutPercentageTerminated) / 100 / $daysOfYear * $daysOfPeriod;
         }
-
         return number_format($payout, 2, '.', '');
     }
 

@@ -80,6 +80,7 @@ const ParticipantDetailsTerminate = ({
                         />
                         {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
                             <InputText
+                                type={'number'}
                                 label={'Uitkeringspercentage'}
                                 name="payoutPercentageTerminated"
                                 value={payoutPercentageTerminated}

@@ -74,28 +74,46 @@ class FinancialOverviewCreateApp extends Component {
                             </Panel>
                         </div>
                     </div>
-                    <div className="col-md-5">
-                        <div className="col-md-12 margin-10-top">
-                            <Panel>
-                                <PanelBody>
-                                    <FinancialOverviewCreateViewPdf
-                                        financialOverviewContactId={this.state.financialOverviewContactId}
-                                    />
-                                </PanelBody>
-                            </Panel>
-                        </div>
-                    </div>
-                    <div className="col-md-5">
-                        <div className="col-md-12 margin-10-top">
-                            <Panel>
-                                <PanelBody>
-                                    <FinancialOverviewCreateViewEmail
-                                        financialOverviewContactId={this.state.financialOverviewContactId}
-                                    />
-                                </PanelBody>
-                            </Panel>
-                        </div>
-                    </div>
+                    {this.props.params.type == 'email' ? (
+                        <>
+                            <div className="col-md-5">
+                                <div className="col-md-12 margin-10-top">
+                                    <Panel>
+                                        <PanelBody>
+                                            <FinancialOverviewCreateViewPdf
+                                                financialOverviewContactId={this.state.financialOverviewContactId}
+                                            />
+                                        </PanelBody>
+                                    </Panel>
+                                </div>
+                            </div>
+                            <div className="col-md-5">
+                                <div className="col-md-12 margin-10-top">
+                                    <Panel>
+                                        <PanelBody>
+                                            <FinancialOverviewCreateViewEmail
+                                                financialOverviewContactId={this.state.financialOverviewContactId}
+                                            />
+                                        </PanelBody>
+                                    </Panel>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="col-md-6">
+                                <div className="col-md-12 margin-10-top">
+                                    <Panel>
+                                        <PanelBody>
+                                            <FinancialOverviewCreateViewPdf
+                                                financialOverviewContactId={this.state.financialOverviewContactId}
+                                            />
+                                        </PanelBody>
+                                    </Panel>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         );
@@ -108,7 +126,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(FinancialOverviewCreateApp);
+export default connect(mapStateToProps, null)(FinancialOverviewCreateApp);

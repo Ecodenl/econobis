@@ -41,6 +41,7 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             errors: {
                 year: false,
                 administrationId: false,
+                documentTemplateFinancialOverviewId: false,
             },
         };
     }
@@ -126,6 +127,11 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             errorMessage.administrationId = 'Administratie is een verplicht veld.';
             hasErrors = true;
         }
+        if (validator.isEmpty(financialOverview.documentTemplateFinancialOverviewId + '')) {
+            errors.documentTemplateFinancialOverviewId = true;
+            errorMessage.documentTemplateFinancialOverviewId = 'Document template is een verplicht veld.';
+            hasErrors = true;
+        }
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
@@ -201,8 +207,11 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                                 options={this.state.documentTemplates}
                                 value={documentTemplateFinancialOverviewId}
                                 onChangeAction={this.handleReactSelectChange}
+                                required={'required'}
                                 // isLoading={peekLoading.documentTemplates}
                                 multi={false}
+                                error={this.state.errors.documentTemplateFinancialOverviewId}
+                                errorMessage={this.state.errorMessage.documentTemplateFinancialOverviewId}
                             />
                         </div>
                     </PanelBody>

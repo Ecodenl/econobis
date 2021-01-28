@@ -16,6 +16,7 @@ const InputReactSelectLong = props => {
         required,
         multi,
         error,
+        errorMessage,
         isLoading,
         disabled,
     } = props;
@@ -26,32 +27,37 @@ const InputReactSelectLong = props => {
 
     return (
         <div className={`form-group col-sm-12`}>
-                <div className={`row`}>
-                    <div className={`col-sm-3`}>
-                        <label htmlFor={id} className={`col-sm-12 ${required}`}>
-                            {label}
-                        </label>
-                    </div>
-                    <div className={`col-sm-8`}>
-                        <Select
-                            id={id}
-                            name={name}
-                            value={value}
-                            onChange={onChange}
-                            options={options}
-                            valueKey={optionId}
-                            labelKey={optionName}
-                            placeholder={''}
-                            noResultsText={'Geen resultaat gevonden'}
-                            multi={multi}
-                            simpleValue
-                            removeSelected
-                            className={error ? ' has-error' : ''}
-                            isLoading={isLoading}
-                            disabled={disabled}
-                        />
-                    </div>
+            <div className={`row`}>
+                <div className={`col-sm-3`}>
+                    <label htmlFor={id} className={`col-sm-12 ${required}`}>
+                        {label}
+                    </label>
                 </div>
+                <div className={`col-sm-8`}>
+                    <Select
+                        id={id}
+                        name={name}
+                        value={value}
+                        onChange={onChange}
+                        options={options}
+                        valueKey={optionId}
+                        labelKey={optionName}
+                        placeholder={''}
+                        noResultsText={'Geen resultaat gevonden'}
+                        multi={multi}
+                        simpleValue
+                        removeSelected
+                        className={error ? ' has-error' : ''}
+                        isLoading={isLoading}
+                        disabled={disabled}
+                    />
+                </div>
+                {error && (
+                    <div className="col-sm-offset-3 col-sm-8">
+                        <span className="has-error-message"> {errorMessage}</span>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
@@ -63,6 +69,7 @@ InputReactSelectLong.defaultProps = {
     disabled: false,
     required: '',
     error: false,
+    errorMessage: '',
     value: '',
     multi: true,
     isLoading: false,
@@ -82,6 +89,7 @@ InputReactSelectLong.propTypes = {
     required: PropTypes.string,
     disabled: PropTypes.bool,
     error: PropTypes.bool,
+    errorMessage: PropTypes.string,
     multi: PropTypes.bool,
     isLoading: PropTypes.bool,
 };

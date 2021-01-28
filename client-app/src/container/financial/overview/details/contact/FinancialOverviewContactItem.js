@@ -50,7 +50,7 @@ function FinancialOverviewContactItem({
             <td>{emailedTo}</td>
             <td>
                 <a role="button" onClick={() => getFinancialOverviewPDF(id, statusId)}>
-                    <span className="glyphicon glyphicon-list-alt mybtn-success" />
+                    <span className="glyphicon glyphicon-eye-open mybtn-success" />
                 </a>
             </td>
         </tr>

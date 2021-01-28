@@ -69,7 +69,7 @@ class CreateTableFinancialOverviews extends Migration
             $table->increments('id');
             $table->unsignedInteger('financial_overview_contact_id');
             $table->foreign('financial_overview_contact_id','foc_id_foreign')->references('id')->on('financial_overview_contacts');
-            $table->boolean('financial_overview_created')->default(false);;
+            $table->boolean('financial_overview_created')->default(false);
             $table->timestamps();
         });
 

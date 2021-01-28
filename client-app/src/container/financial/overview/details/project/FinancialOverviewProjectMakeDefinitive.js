@@ -25,9 +25,9 @@ const FinancialOverviewProjectMakeDefinitive = props => {
             props.totalFinancialOverviewProjectsConcept === 1 ? (
                 <p className={'text-danger'}>
                     <strong>
-                        Dit is laatste project die definitief gemaakt wordt in waardestaat. Hiermee wordt de totale
-                        waarde staat definitief. Hierna kan je geen wijzigingen meer doen in deze waarde staat. Weet je
-                        het zeker?
+                        Dit is het laatste project dat definitief gemaakt wordt in deze waardestaat. Hiermee wordt de
+                        totale waardestaat definitief. Hierna kan je geen wijzigingen meer aanbrengen in deze
+                        waardestaat. Weet je het zeker?
                     </strong>
                     <br />
                 </p>

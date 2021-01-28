@@ -41,7 +41,6 @@ class FinancialOverviewCreateToolbar extends Component {
                 {this.state.showSend && this.props.type === 'email' && (
                     <FinancialOverviewCreateConfirm
                         type={this.props.type}
-                        paymentType={this.props.paymentType}
                         financialOverviewContactIds={this.props.selectedIds}
                         closeModal={this.showSend}
                         financialOverviewId={this.props.financialOverviewId}
@@ -50,7 +49,6 @@ class FinancialOverviewCreateToolbar extends Component {
                 {this.state.showSend && this.props.type === 'post' && (
                     <FinancialOverviewCreateConfirmPost
                         type={this.props.type}
-                        paymentType={this.props.paymentType}
                         financialOverviewContactIds={this.props.selectedIds}
                         closeModal={this.showSend}
                         financialOverviewId={this.props.financialOverviewId}

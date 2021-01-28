@@ -52,7 +52,6 @@ class FinancialOverviewCreateApp extends Component {
                                 <PanelBody className={'panel-small'}>
                                     <FinancialOverviewCreateToolbar
                                         type={this.props.params.type}
-                                        paymentType={this.props.params.paymentType}
                                         selectedIds={this.props.selectedIds}
                                         financialOverviewId={this.props.params.id}
                                     />

@@ -106,8 +106,8 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
         $financialOverviewPost = New FinancialOverviewPost();
         $financialOverviewPost->financial_overview_id = $this->financialOverviewId;
         $financialOverviewPost->financial_overview_contact_ids = implode(',', $this->validatedFinancialOverviewContactsSet->pluck('id')->toArray() );
-        $financialOverviewPost->filename = 'Wordt gemaakt...';
-        $financialOverviewPost->name = '';
+        $financialOverviewPost->filename = '';
+        $financialOverviewPost->name = 'Wordt gemaakt...';
 
         $financialOverviewPost->save();
 

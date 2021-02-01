@@ -13,7 +13,15 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepOnePcr({ portalSettings, next, project, initialContact, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepOnePcr({
+    portalSettings,
+    next,
+    project,
+    contactProjectData,
+    initialContact,
+    initialRegisterValues,
+    handleSubmitRegisterValues,
+}) {
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .typeError('Alleen nummers')
@@ -310,11 +318,11 @@ function StepOnePcr({ portalSettings, next, project, initialContact, initialRegi
                             <Row>
                                 <Col xs={12} md={6}>
                                     <p>
-                                        We adviseren tot {(PCR_POWER_KWH_CONSUMPTION_PERCENTAGE*100)}% van je jaarlijks verbruik minus de jaarlijkse opbrengsten
-                                        (in jouw geval {powerKwhConsumption} kWh) te dekken met participaties. In het
-                                        veld hier direct onder is voor je uitgerekend hoeveel participaties dat zijn.
-                                        Het is een advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je
-                                        rendement.
+                                        We adviseren tot {PCR_POWER_KWH_CONSUMPTION_PERCENTAGE * 100}% van je jaarlijks
+                                        verbruik minus de jaarlijkse opbrengsten (in jouw geval {powerKwhConsumption}{' '}
+                                        kWh) te dekken met participaties. In het veld hier direct onder is voor je
+                                        uitgerekend hoeveel participaties dat zijn. Het is een advies, je mag er ook
+                                        meer kopen. Dit kan echter slecht zijn voor je rendement.
                                     </p>
                                 </Col>
                             </Row>
@@ -351,6 +359,61 @@ function StepOnePcr({ portalSettings, next, project, initialContact, initialRegi
                                     </TextBlock>
                                 </Col>
                             </Row>
+                            {project.showQuestionAboutMembership ? (
+                                <>
+                                    <hr />
+                                    <Row>
+                                        <Col xs={12} md={10}>
+                                            <p>
+                                                {contactProjectData.belongsToMembershipGroup
+                                                    ? contactProjectData.textIsMemberMerged
+                                                    : contactProjectData.textIsNoMemberMerged}
+                                            </p>
+                                        </Col>
+                                    </Row>
+                                    {!contactProjectData.belongsToMembershipGroup ? (
+                                        <Row>
+                                            <Col xs={12} md={10}>
+                                                <Field
+                                                    name="choiceMembership"
+                                                    render={({ field }) => (
+                                                        <>
+                                                            <div className="form-check">
+                                                                <label className="radio-inline">
+                                                                    <input
+                                                                        type="radio"
+                                                                        {...field}
+                                                                        id="choice_membership_yes"
+                                                                        checked={field.value === 1}
+                                                                        value={1}
+                                                                        onChange={() =>
+                                                                            setFieldValue('choiceMembership', 1)
+                                                                        }
+                                                                    />
+                                                                    &nbsp;{contactProjectData.textBecomeMemberMerged}
+                                                                </label>
+                                                                <label className="radio-inline">
+                                                                    <input
+                                                                        type="radio"
+                                                                        {...field}
+                                                                        id="choice_membership_no"
+                                                                        checked={field.value === 2}
+                                                                        value={2}
+                                                                        onChange={() => {
+                                                                            setFieldValue('choiceMembership', 2);
+                                                                        }}
+                                                                    />
+                                                                    &nbsp;{contactProjectData.textBecomeNoMemberMerged}
+                                                                </label>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    ) : null}
+                                </>
+                            ) : null}
 
                             <Row>
                                 <Col>

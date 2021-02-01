@@ -29,6 +29,7 @@ function Steps({
                         <StepOneLoan
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />
@@ -38,6 +39,7 @@ function Steps({
                         <StepOneObligation
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />
@@ -47,6 +49,7 @@ function Steps({
                         <StepOneCapital
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />
@@ -57,6 +60,7 @@ function Steps({
                             portalSettings={portalSettings}
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialContact={initialContact}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
@@ -81,7 +85,6 @@ function Steps({
             return (
                 <StepThree
                     project={project}
-                    contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}
                     initialRegisterValues={initialRegisterValues}

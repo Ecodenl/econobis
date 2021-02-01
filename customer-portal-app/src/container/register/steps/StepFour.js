@@ -12,6 +12,7 @@ import ParticipantProjectAPI from '../../../api/participant-project/ParticipantP
 import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
+import FormLabel from 'react-bootstrap/FormLabel';
 
 function StepFour({ previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
@@ -68,6 +69,11 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                     {({ handleSubmit, touched, errors, isSubmitting }) => (
                         <>
                             <Form>
+                                <Row>
+                                    <Col xs={12} md={10}>
+                                        <FormLabel className={'field-label'}>Controleer de inschrijving</FormLabel>
+                                    </Col>
+                                </Row>
                                 <Row>
                                     <Col xs={12} md={10}>
                                         <ViewHtmlAsText value={contactDocument} />

@@ -11,9 +11,8 @@ function StepFive() {
             <Row>
                 <Col xs={12} md={10}>
                     <p>
-                        Bedankt voor je inschrijving! Je ontvangt van ons een e-mail met daarin alle gegevens van je
-                        inschrijving en informatie over de vervolgstappen die we nemen om jouw inschrijving definitief
-                        te maken.
+                        Bedankt voor je inschrijving. Per e-mail sturen wij een bevestiging van je inschrijving met
+                        informatie over de vervolgstappen.
                         <br />
                         Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van bijvoorbeeld Gmail
                         en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail daar terug vindt.

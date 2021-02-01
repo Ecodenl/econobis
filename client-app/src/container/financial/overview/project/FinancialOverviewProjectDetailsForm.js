@@ -29,7 +29,7 @@ class FinancialOverviewProjectDetailsForm extends Component {
         ) : (
             <div>
                 <FinancialOverviewProjectDetailsFormGeneral financialOverviewProject={financialOverviewProject} />
-                <ParticipantApp financialOverviewProject={financialOverviewProject} />
+                {/*<ParticipantApp financialOverviewProject={financialOverviewProject} />*/}
             </div>
         );
     }

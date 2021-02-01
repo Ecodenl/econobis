@@ -61,12 +61,6 @@ class FinancialOverviewParticipantProjectController extends Controller
 
     public function recalculateParticipantProjectForFinancialOverviews(ParticipantProject $participant)
     {
-        // Only concept (not definitive) financial overview projects recalculate
-//        $financialOverviewParticipantProjects = $participant->financialOverviewParticipantProjects()
-//            ->whereHas('financialOverviewProject', function ($query) {
-//                $query->where('definitive', false);
-//            });
-
         $financialOverviewProjects = $participant->project->financialOverviewProjects->where('definitive', false);
         foreach ($financialOverviewProjects as $financialOverviewProject) {
             $financialOverview = $financialOverviewProject->financialOverview;
@@ -74,21 +68,17 @@ class FinancialOverviewParticipantProjectController extends Controller
             $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
             $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
 
-            $checkStartDate = clone $startDate;
-            $checkEndDate = clone $endDate;
+            $startValue = $this->calculateParticipationsValue($participant, $startDate);
+            $endValue = $this->calculateParticipationsValue($participant, $endDate);
 
-            $participantHasFinalMutation = $participant->mutationsDefinitive->whereBetween('date_entry', [$checkStartDate->format('Y-m-d'), $checkEndDate->format('Y-m-d')])->count() > 0;
-
-            if($participantHasFinalMutation){
-
-                $startValue = $this->calculateParticipationsValue($participant, $startDate);
-                $endValue = $this->calculateParticipationsValue($participant, $endDate);
+            if($startValue['quantity'] != $participant->quantity_start_value || $startValue['bookworth'] != $participant->bookworth_start_value || $startValue['amount'] != $participant->amount_start_value
+                || $endValue['quantity'] != $participant->quantity_end_value || $endValue['bookworth'] != $participant->bookworth_end_value || $endValue['amount'] != $participant->amount_end_value) {
 
                 FinancialOverviewParticipantProject::updateOrCreate([
                     //Add unique field to match here
-                    'participant_project_id'   => $participant->id,
+                    'participant_project_id' => $participant->id,
                     'financial_overview_project_id' => $financialOverviewProject->id,
-                ],[
+                ], [
                     'quantity_start_value' => $startValue['quantity'],
                     'quantity_end_value' => $endValue['quantity'],
                     'bookworth_start_value' => $startValue['bookworth'],
@@ -99,21 +89,12 @@ class FinancialOverviewParticipantProjectController extends Controller
 
                 FinancialOverviewContact::updateOrCreate([
                     //Add unique field to match here
-                    'financial_overview_id'   => $financialOverviewProject->financialOverview->id,
-                    'contact_id'   => $participant->contact_id,
-                ],[
+                    'financial_overview_id' => $financialOverviewProject->financialOverview->id,
+                    'contact_id' => $participant->contact_id,
+                ], [
                     'status_id' => 'concept',
                 ]);
-
-            } else {
-                $financialOverviewParticipantProject = FinancialOverviewParticipantProject::where('participant_project_id', $participant->id)
-                    ->where('financial_overview_project_id', $financialOverviewProject->id)->first();
-                if($financialOverviewParticipantProject){
-                    $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-                    $deleteFinancialOverviewParticipantProject->delete();
-                }
             }
-
         }
     }
 

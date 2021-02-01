@@ -284,7 +284,7 @@ class FinancialOverviewContactController extends Controller
             }
 
             $chunkNumber = 0;
-            $itemsPerChunk = 25;
+            $itemsPerChunk = 50;
             $numberOfChunks = ceil($financialOverviewContacts->count() / $itemsPerChunk);
             foreach ($financialOverviewContacts->chunk($itemsPerChunk) as $financialOverviewContactsSet) {
                 $chunkNumber = $chunkNumber + 1;

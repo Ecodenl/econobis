@@ -469,6 +469,7 @@ Route::namespace('Api')
         Route::post('financial-overview-project', 'FinancialOverview\FinancialOverviewProjectController@store');
         Route::post('financial-overview-project/{financialOverviewProject}', 'FinancialOverview\FinancialOverviewProjectController@update');
         Route::post('financial-overview-project/{financialOverviewProject}/delete', 'FinancialOverview\FinancialOverviewProjectController@destroy');
+        Route::get('financial-overview-project/{financialOverviewProject}/csv', 'FinancialOverview\FinancialOverviewProjectController@csv');
 
         Route::get('financial-overview-contact/grid', 'FinancialOverview\FinancialOverviewContactController@grid');
         Route::get('financial-overview-contact/{financialOverviewContact}/email-preview', 'FinancialOverview\FinancialOverviewContactController@getEmailPreview');

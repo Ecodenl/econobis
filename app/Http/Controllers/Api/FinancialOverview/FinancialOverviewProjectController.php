@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\Project\Project;
+use App\Helpers\CSV\FinancialOverviewProjectCSVHelper;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
@@ -139,6 +140,15 @@ class FinancialOverviewProjectController extends Controller
                 $mutation->save();
             }
         }
+    }
+
+    public function csv(FinancialOverviewProject $financialOverviewProject)
+    {
+        set_time_limit(0);
+
+        $financialOverviewProjectCSVHelper = new FinancialOverviewProjectCSVHelper($financialOverviewProject);
+
+        return $financialOverviewProjectCSVHelper->downloadCSV();
     }
 
 }

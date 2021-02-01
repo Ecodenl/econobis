@@ -103,5 +103,9 @@ class FinancialOverview extends Model
         return $this->financialOverviewContacts()->where('status_id', 'sent')->count();
     }
 
+//    public function getTotalFinancialOverviewPostsAttribute()
+//    {
+//        return $this->financialOverviewPosts()->count();
+//    }
 
 }

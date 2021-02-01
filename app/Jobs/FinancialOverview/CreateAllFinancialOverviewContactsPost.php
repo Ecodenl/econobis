@@ -42,6 +42,8 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
     private $financialOverviewContactsOk;
     private $financialOverviewContactsError;
 
+//    public $timeout = 120;
+
     public function __construct($chunkNumber, $numberOfChunks, $financialOverviewId, $validatedFinancialOverviewContactsSet, $userId)
     {
         $this->first = true;
@@ -103,12 +105,17 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
 
         $financialOverviewPost = New FinancialOverviewPost();
         $financialOverviewPost->financial_overview_id = $this->financialOverviewId;
-        $financialOverviewPost->filename = '';
+        $financialOverviewPost->financial_overview_contact_ids = implode(',', $this->validatedFinancialOverviewContactsSet->pluck('id')->toArray() );
+        $financialOverviewPost->filename = 'Wordt gemaakt...';
         $financialOverviewPost->name = '';
 
         $financialOverviewPost->save();
 
-        $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+        if($this->numberOfChunks > 1){
+            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-part-' . $this->chunkNumber . "-of-" . $this->numberOfChunks . "-" . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+        } else {
+            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+        }
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
             . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $name;

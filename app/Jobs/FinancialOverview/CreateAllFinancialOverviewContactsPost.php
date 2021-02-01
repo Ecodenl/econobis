@@ -42,6 +42,8 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
     private $financialOverviewContactsOk;
     private $financialOverviewContactsError;
 
+//    public $timeout = 120;
+
     public function __construct($chunkNumber, $numberOfChunks, $financialOverviewId, $validatedFinancialOverviewContactsSet, $userId)
     {
         $this->first = true;

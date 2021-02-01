@@ -9,6 +9,7 @@
 namespace App\Eco\FinancialOverview;
 
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 
 class FinancialOverviewObserver
 {
@@ -52,6 +53,16 @@ class FinancialOverviewObserver
                     $financialOverviewContact->save();
                 }
             }
+        }
+        // Indien financial overview nog concept, dan na save herberekenen van nog niet definitieve financial overview projects.
+        if($financialOverview->status_id == 'concept') {
+            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+            foreach ($financialOverview->financialOverviewProjects->where('definitive', false) as $financialOverviewProject) {
+                foreach ($financialOverviewProject->financialOverviewParticipantProjects as $financialOverviewParticipantProject) {
+                    $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($financialOverviewParticipantProject->participantProject);
+                }
+            }
+
         }
 
     }

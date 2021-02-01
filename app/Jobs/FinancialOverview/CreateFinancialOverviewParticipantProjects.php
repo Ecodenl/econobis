@@ -63,7 +63,7 @@ class CreateFinancialOverviewParticipantProjects implements ShouldQueue
         $financialOverviewProjectsToGo = FinancialOverviewProject::where('financial_overview_id', $this->financialOverviewProject->financialOverview->id)
             ->where('status_id', 'in-progress')->count();
 
-        Log::info("Projecten nog te verwerken: " . $financialOverviewProjectsToGo);
+//        Log::info("Projecten nog te verwerken: " . $financialOverviewProjectsToGo);
 
         if($financialOverviewProjectsToGo == 0){
             $this->financialOverviewProject->financialOverview->status_id = 'concept';

@@ -43,17 +43,18 @@ class FinancialOverviewProjectDetailsApp extends Component {
                         <Panel>
                             <PanelBody className={'panel-small'}>
                                 <FinancialOverviewProjectDetailsToolbar
-                                    description={
+                                    id={this.props.params.id}
+                                    projectName={
+                                        this.state.financialOverviewProject &&
+                                        this.state.financialOverviewProject.project
+                                            ? this.state.financialOverviewProject.project.name
+                                            : ''
+                                    }
+                                    financialOverviewDescription={
                                         this.state.financialOverviewProject &&
                                         this.state.financialOverviewProject.financialOverview
                                             ? this.state.financialOverviewProject.financialOverview.description
                                             : ''
-                                    }
-                                    id={
-                                        this.state.financialOverviewProject &&
-                                        this.state.financialOverviewProject.financialOverview
-                                            ? this.state.financialOverviewProject.financialOverview.id
-                                            : null
                                     }
                                 />
                             </PanelBody>

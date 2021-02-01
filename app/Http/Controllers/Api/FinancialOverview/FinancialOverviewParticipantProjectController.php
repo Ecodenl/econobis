@@ -21,7 +21,7 @@ class FinancialOverviewParticipantProjectController extends Controller
         $financialOverview = $financialOverviewProject->financialOverview;
 
         $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
-        $endDate = Carbon::createFromDate($financialOverview->year, 1, 1)->addYear();
+        $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
 
         $participants = $financialOverviewProject->project->participantsProject->filter(function($participantProject) use ($startDate) {
             return ($participantProject->date_terminated == null) ||
@@ -72,10 +72,10 @@ class FinancialOverviewParticipantProjectController extends Controller
             $financialOverview = $financialOverviewProject->financialOverview;
 
             $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
-            $endDate = Carbon::createFromDate($financialOverview->year, 1, 1)->addYear();
+            $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
 
             $checkStartDate = clone $startDate;
-            $checkEndDate = clone $endDate->subDay();
+            $checkEndDate = clone $endDate;
 
             $participantHasFinalMutation = $participant->mutationsDefinitive->whereBetween('date_entry', [$checkStartDate->format('Y-m-d'), $checkEndDate->format('Y-m-d')])->count() > 0;
 
@@ -120,7 +120,7 @@ class FinancialOverviewParticipantProjectController extends Controller
     protected function calculateParticipationsValue($participant, $dateReference)
     {
         $projectTypeCodeRef = (ProjectType::where('id', $participant->project->project_type_id)->first())->code_ref;
-        $projectValueCourse = ProjectValueCourse::where('project_id', $participant->project->id)->where('date', '<', $dateReference->format('Y-m-d'))->orderBy('date', 'DESC')->first();
+        $projectValueCourse = ProjectValueCourse::where('project_id', $participant->project->id)->where('date', '<=', $dateReference->format('Y-m-d'))->orderBy('date', 'DESC')->first();
         $projectBookWorth = $projectValueCourse ? $projectValueCourse->book_worth : 0;
 
         $mutations = $participant->mutationsDefinitive()

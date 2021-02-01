@@ -19,7 +19,20 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'projectId', 'definitive'],
+                    fld: [
+                        'id',
+                        'projectId',
+                        'definitive',
+                        'startDate',
+                        'endDate',
+                        'numberOfParticipantProjects',
+                        'totalQuantityStartValue',
+                        'totalQuantityEndValue',
+                        'bookworthStartValue',
+                        'bookworthEndValue',
+                        'totalAmountStartValue',
+                        'totalAmountEndValue',
+                    ],
                     rlt: {
                         financialOverview: {
                             fld: [
@@ -86,5 +99,11 @@ export default {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
+    },
+
+    getCSV: id => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${id}/csv`;
+
+        return axiosInstance.get(requestUrl);
     },
 };

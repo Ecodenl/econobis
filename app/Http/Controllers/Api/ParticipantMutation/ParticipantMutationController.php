@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\ParticipantMutation;
 
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectValueCourse;
+use App\Helpers\Delete\Models\DeleteFinancialOverviewParticipantProject;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
@@ -179,6 +181,16 @@ class ParticipantMutationController extends ApiController
             if($participantProject->project->financialOverviewProjects
                 && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
             {
+                // Verwijder eerst bestaande FinancialOverviewParticipantProject records behorende bij participantProject en nog niet definitieve waardestaten.
+                // Indien nodig worden ze via recalculateParticipantProjectForFinancialOverviews daarna eventueel weer nieuw aangemaakt.
+                $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantProject->id)->get();
+                foreach ($financialOverviewParticipantProjects as $financialOverviewParticipantProject){
+                    if($financialOverviewParticipantProject->financialOverviewProject->financialOverview->definitive == false){
+                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                        $deleteFinancialOverviewParticipantProject->delete();
+                    }
+                }
+
                 $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
                 $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
             }
@@ -229,6 +241,16 @@ class ParticipantMutationController extends ApiController
             if($participantMutation->participation->project->financialOverviewProjects
                 && $participantMutation->participation->project->financialOverviewProjects->where('definitive', false)->count() > 0)
             {
+                // Verwijder eerst bestaande FinancialOverviewParticipantProject records behorende bij participantProject en nog niet definitieve waardestaten.
+                // Indien nodig worden ze via recalculateParticipantProjectForFinancialOverviews daarna eventueel weer nieuw aangemaakt.
+                $financialOverviewParticipantProjects = FinancialOverviewParticipantProject::where('participant_project_id', $participantMutation->participation->id)->get();
+                foreach ($financialOverviewParticipantProjects as $financialOverviewParticipantProject){
+                    if($financialOverviewParticipantProject->financialOverviewProject->financialOverview->definitive == false){
+                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                        $deleteFinancialOverviewParticipantProject->delete();
+                    }
+                }
+
                 $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
                 $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantMutation->participation);
             }

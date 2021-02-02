@@ -14,6 +14,8 @@ use App\Console\Commands\conversionProjectRevenues;
 use App\Console\Commands\conversionProjects;
 use App\Console\Commands\conversionProjectRevenueDistribution;
 use App\Console\Commands\conversionPortalRegistrationCode;
+use App\Console\Commands\deleteEmailDefinitive;
+//use App\Console\Commands\deleteFloatingAttachmentFiles;
 use App\Console\Commands\getAllEmail;
 use App\Console\Commands\processPaidInvoices;
 use App\Console\Commands\processWorkflowEmailCompleteTask;
@@ -40,7 +42,7 @@ class Kernel extends ConsoleKernel
         checkContactPostalCode::class,
         checkJobsLogForRecovery::class,
         deleteEmailDefinitive::class,
-        deleteFloatingAttachmentFiles::class,
+//        deleteFloatingAttachmentFiles::class,
         getAllEmail::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,

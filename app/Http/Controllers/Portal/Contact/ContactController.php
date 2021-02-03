@@ -170,12 +170,56 @@ class ContactController extends ApiController
         $textBecomeNoMemberMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textBecomeNoMemberMerged,'contacten_portal' );
         $textBecomeNoMemberMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textBecomeNoMemberMerged,'cooperatie' );
 
+        $textAgreeTermsMerged = $project->text_agree_terms;
+        $textAgreeTermsMerged = str_replace('{voorwaarden_link}', "<a href='" . $project->link_agree_terms . "' target='_blank'>voorwaarden</a>", $textAgreeTermsMerged);
+        $textAgreeTermsMerged = str_replace('{project_informatie_link}', "<a href='" . $project->link_understand_info . "' target='_blank'>project informatie</a>", $textAgreeTermsMerged);
+        $textAgreeTermsMerged = TemplateVariableHelper::replaceTemplateVariables($textAgreeTermsMerged, 'contact', $contact);
+        $textAgreeTermsMerged = TemplateVariableHelper::replaceTemplateVariables($textAgreeTermsMerged, 'ik', Auth::user());
+        $textAgreeTermsMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textAgreeTermsMerged,'portal' );
+        $textAgreeTermsMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textAgreeTermsMerged,'contacten_portal' );
+        $textAgreeTermsMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textAgreeTermsMerged,'cooperatie' );
+
+        $textLinkAgreeTermsMerged = $project->text_link_agree_terms;
+        $textLinkAgreeTermsMerged = str_replace('{voorwaarden_link}', "<a href='" . $project->link_agree_terms . "' target='_blank'>voorwaarden</a>", $textLinkAgreeTermsMerged);
+        $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkAgreeTermsMerged, 'contact', $contact);
+        $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkAgreeTermsMerged, 'ik', Auth::user());
+        $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textLinkAgreeTermsMerged,'portal' );
+        $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textLinkAgreeTermsMerged,'contacten_portal' );
+        $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textLinkAgreeTermsMerged,'cooperatie' );
+
+        $textLinkUnderstandInfoMerged = $project->text_link_understand_info;
+        $textLinkUnderstandInfoMerged = str_replace('{project_informatie_link}', "<a href='" . $project->link_understand_info . "' target='_blank'>project informatie</a>", $textLinkUnderstandInfoMerged);
+        $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkUnderstandInfoMerged, 'contact', $contact);
+        $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkUnderstandInfoMerged, 'ik', Auth::user());
+        $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textLinkUnderstandInfoMerged,'portal' );
+        $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textLinkUnderstandInfoMerged,'contacten_portal' );
+        $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textLinkUnderstandInfoMerged,'cooperatie' );
+
+        $textAcceptAgreementMerged = $project->text_accept_agreement;
+        $textAcceptAgreementMerged = TemplateVariableHelper::replaceTemplateVariables($textAcceptAgreementMerged, 'contact', $contact);
+        $textAcceptAgreementMerged = TemplateVariableHelper::replaceTemplateVariables($textAcceptAgreementMerged, 'ik', Auth::user());
+        $textAcceptAgreementMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textAcceptAgreementMerged,'portal' );
+        $textAcceptAgreementMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textAcceptAgreementMerged,'contacten_portal' );
+        $textAcceptAgreementMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textAcceptAgreementMerged,'cooperatie' );
+
+        $textAcceptAgreementQuestionMerged = $project->text_accept_agreement_question;
+        $textAcceptAgreementQuestionMerged = TemplateVariableHelper::replaceTemplateVariables($textAcceptAgreementQuestionMerged, 'contact', $contact);
+        $textAcceptAgreementQuestionMerged = TemplateVariableHelper::replaceTemplateVariables($textAcceptAgreementQuestionMerged, 'ik', Auth::user());
+        $textAcceptAgreementQuestionMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textAcceptAgreementQuestionMerged,'portal' );
+        $textAcceptAgreementQuestionMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textAcceptAgreementQuestionMerged,'contacten_portal' );
+        $textAcceptAgreementQuestionMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textAcceptAgreementQuestionMerged,'cooperatie' );
+
         $result = [
             "belongsToMembershipGroup" => $belongsToMembershipGroup,
             "textIsMemberMerged" => $textIsMemberMerged,
             "textIsNoMemberMerged" => $textIsNoMemberMerged,
             "textBecomeMemberMerged" => $textBecomeMemberMerged,
             "textBecomeNoMemberMerged" => $textBecomeNoMemberMerged,
+            "textAgreeTermsMerged" => $textAgreeTermsMerged,
+            "textLinkAgreeTermsMerged" => $textLinkAgreeTermsMerged,
+            "textLinkUnderstandInfoMerged" => $textLinkUnderstandInfoMerged,
+            "textAcceptAgreementMerged" => $textAcceptAgreementMerged,
+            "textAcceptAgreementQuestionMerged" => $textAcceptAgreementQuestionMerged,
             ];
         return response()->json($result);
     }

@@ -123,6 +123,11 @@ class ProjectController extends ApiController
             ->integer('memberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('member_group_id')->next()
             ->string('textBecomeNoMember')->alias('text_become_no_member')->next()
             ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
+            ->string('textAgreeTerms')->alias('text_agree_terms')->next()
+            ->string('textLinkAgreeTerms')->alias('text_link_agree_terms')->next()
+            ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
+            ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
+            ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->get();
 
         $project = new Project();
@@ -209,6 +214,11 @@ class ProjectController extends ApiController
             ->integer('memberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('member_group_id')->next()
             ->string('textBecomeNoMember')->alias('text_become_no_member')->next()
             ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
+            ->string('textAgreeTerms')->alias('text_agree_terms')->next()
+            ->string('textLinkAgreeTerms')->alias('text_link_agree_terms')->next()
+            ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
+            ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
+            ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->get();
 
         $project->fill($data);

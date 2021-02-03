@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepThree({ project, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepThree({ project, contactProjectData, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         didAcceptAgreement: Yup.bool().test(
             'didAcceptAgreement',
@@ -17,7 +17,7 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
         ),
         didUnderstandInfo: Yup.bool().test(
             'didUnderstandInfo',
-            'Je dient te bevestigen, dat de projectinformatie gelezen en begrepen is!',
+            'Je dient te bevestigen, dat de project informatie gelezen en begrepen is!',
             value => value === true
         ),
     });
@@ -37,10 +37,11 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                         <Form>
                             <Row>
                                 <Col xs={12} md={10}>
-                                    <p>
-                                        Om deel te kunnen nemen dien je akkoord te gaan met de voorwaarden en dien je te
-                                        bevestigen dat je de projectinformatie hebt gelezen en begrepen.
-                                    </p>
+                                    <p
+                                        dangerouslySetInnerHTML={{
+                                            __html: contactProjectData.textAgreeTermsMerged,
+                                        }}
+                                    />
                                 </Col>
                             </Row>
                             <Row>
@@ -59,12 +60,10 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                                                 <span
                                                     htmlFor="did_accept_agreement"
                                                     className="checkbox-label w-form-label"
-                                                >
-                                                    Ik ga akkoord met de{' '}
-                                                    <a href={project.linkAgreeTerms} target="_blank">
-                                                        voorwaarden
-                                                    </a>
-                                                </span>
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: contactProjectData.textLinkAgreeTermsMerged,
+                                                    }}
+                                                />
                                                 {touched[field.name] && errors[field.name] ? (
                                                     <div className={'error-message text-danger'}>
                                                         {errors[field.name]}
@@ -91,14 +90,10 @@ function StepThree({ project, previous, next, initialRegisterValues, handleSubmi
                                                 <span
                                                     htmlFor="did_understand_info"
                                                     className="checkbox-label w-form-label"
-                                                >
-                                                    Ik heb de{' '}
-                                                    <a href={`${project.linkUnderstandInfo}`} target="_blank">
-                                                        projectinformatie
-                                                    </a>{' '}
-                                                    (inclusief de daarin beschreven risico’s) behorende bij het project
-                                                    gelezen en begrepen
-                                                </span>
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: contactProjectData.textLinkUnderstandInfoMerged,
+                                                    }}
+                                                />
                                                 {touched[field.name] && errors[field.name] ? (
                                                     <div className={'error-message text-danger'}>
                                                         {errors[field.name]}

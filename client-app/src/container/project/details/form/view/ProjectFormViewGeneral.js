@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
-import ViewTextLong from "../../../../../components/form/ViewTextLong";
+import ViewTextLong from '../../../../../components/form/ViewTextLong';
 
 const ProjectFormViewGeneral = ({
     name,
@@ -38,6 +38,11 @@ const ProjectFormViewGeneral = ({
     memberGroup,
     textBecomeNoMember,
     noMemberGroup,
+    textAgreeTerms,
+    textLinkAgreeTerms,
+    textLinkUnderstandInfo,
+    textAcceptAgreement,
+    textAcceptAgreementQuestion,
 }) => (
     <React.Fragment>
         <h4>Algemeen</h4>
@@ -111,27 +116,12 @@ const ProjectFormViewGeneral = ({
             <ViewText label={'Standaard ingangsdatum mutatie'} value={dateEntry ? moment(dateEntry).format('L') : ''} />
         </div>
 
-        <h4>Contacten portal instellingen</h4>
-        <div className="row">
-            <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
-        </div>
-        <div className="row">
-            <ViewTextLong label={'Projectinformatie link'} value={linkUnderstandInfo} />
-        </div>
-        <div className="row">
-            <ViewTextLong
-                label={'Document template inschrijfformulier'}
-                value={documentTemplateAgreement ? documentTemplateAgreement.name : ''}
-            />
-        </div>
-        <div className="row">
-            <ViewTextLong
-                label={'Email template inschrijfbevestiging'}
-                value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
-            />
-        </div>
-
         <hr />
+        <h4>Contacten portal instellingen</h4>
+
+        <p>
+            <strong>Inschrijven</strong>
+        </p>
         <div className="row">
             <ViewText label={'Vragen over lid worden aan of uit?'} value={showQuestionAboutMembership ? 'Ja' : 'Nee'} />
         </div>
@@ -171,6 +161,65 @@ const ProjectFormViewGeneral = ({
                 </div>
             </>
         )}
+
+        <p>
+            <strong>Voorwaarden</strong>
+        </p>
+        <div className="row">
+            <div className="col-sm-3">
+                <label htmlFor="textAgreeTerms" className="col-sm-12">
+                    Voorwaarden tekst
+                </label>
+            </div>
+            <div className="col-sm-9" id="textAgreeTerms">
+                {textAgreeTerms}
+            </div>
+        </div>
+        <div className="row">
+            <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
+        </div>
+        <div className="row">
+            <ViewTextLong label={'Voorwaarden link tekst'} value={textLinkAgreeTerms} />
+        </div>
+
+        <p>
+            <strong>Project informatie</strong>
+        </p>
+        <div className="row">
+            <ViewTextLong label={'Project informatie link'} value={linkUnderstandInfo} />
+        </div>
+        <div className="row">
+            <ViewTextLong label={'Project informatie link tekst'} value={textLinkUnderstandInfo} />
+        </div>
+
+        <p>
+            <strong>Bevestigen</strong>
+        </p>
+        <div className="row">
+            <div className="col-sm-3">
+                <label htmlFor="textAcceptAgreement" className="col-sm-12">
+                    Bevestigen tekst
+                </label>
+            </div>
+            <div className="col-sm-9" id="textAcceptAgreement">
+                {textAcceptAgreement}
+            </div>
+        </div>
+        <div className="row">
+            <ViewTextLong label={'Bevestigen knop tekst'} value={textAcceptAgreementQuestion} />
+        </div>
+        <div className="row">
+            <ViewTextLong
+                label={'Document template inschrijfformulier'}
+                value={documentTemplateAgreement ? documentTemplateAgreement.name : ''}
+            />
+        </div>
+        <div className="row">
+            <ViewTextLong
+                label={'Email template inschrijfbevestiging'}
+                value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
+            />
+        </div>
     </React.Fragment>
 );
 

@@ -85,6 +85,7 @@ function Steps({
             return (
                 <StepThree
                     project={project}
+                    contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}
                     initialRegisterValues={initialRegisterValues}
@@ -94,6 +95,7 @@ function Steps({
         case 4:
             return (
                 <StepFour
+                    contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}
                     registerValues={initialRegisterValues}

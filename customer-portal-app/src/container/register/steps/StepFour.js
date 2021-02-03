@@ -14,7 +14,7 @@ import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import FormLabel from 'react-bootstrap/FormLabel';
 
-function StepFour({ previous, next, registerValues, setSucces }) {
+function StepFour({ contactProjectData, previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
@@ -77,6 +77,15 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                 <Row>
                                     <Col xs={12} md={10}>
                                         <ViewHtmlAsText value={contactDocument} />
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={10}>
+                                        <p>{contactProjectData.textAcceptAgreementMerged}</p>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={10}>
                                         <Field
                                             name="didAgreeRegistration"
                                             render={({ field }) => (
@@ -92,7 +101,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                                         htmlFor="did_agree_registration"
                                                         className="checkbox-label w-form-label"
                                                     >
-                                                        Ik ben akkoord met het inschrijfformulier
+                                                        {contactProjectData.textAcceptAgreementQuestionMerged}
                                                     </span>
                                                     {touched[field.name] && errors[field.name] ? (
                                                         <div className={'error-message text-danger'}>
@@ -102,14 +111,6 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                                 </label>
                                             )}
                                         />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col xs={12} md={10}>
-                                        <p>
-                                            Wanneer je akkoord gaat met het inschrijfformulier en de inschrijving
-                                            bevestigt, is je inschrijving definitief.
-                                        </p>
                                     </Col>
                                 </Row>
                                 <Row>
@@ -130,7 +131,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                                         Bezig met verwerken
                                                     </span>
                                                 ) : (
-                                                    'Bevestigen inschrijving'
+                                                    'Bevestig inschrijving'
                                                 )}
                                             </Button>
                                         </ButtonGroup>

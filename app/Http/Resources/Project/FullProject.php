@@ -118,7 +118,11 @@ class FullProject extends Resource
                 'noMemberGroupId' => $this->no_member_group_id,
                 'noMemberGroup' => FullContactGroup::make($this->whenLoaded('noMemberGroup')),
                 'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
-
+                'textAgreeTerms' => $this->text_agree_terms,
+                'textLinkAgreeTerms' => $this->text_link_agree_terms,
+                'textLinkUnderstandInfo' => $this->text_link_understand_info,
+                'textAcceptAgreement' => $this->text_accept_agreement,
+                'textAcceptAgreementQuestion' => $this->text_accept_agreement_question,
             ];
     }
 }

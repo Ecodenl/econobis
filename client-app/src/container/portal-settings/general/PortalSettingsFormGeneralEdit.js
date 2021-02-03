@@ -32,6 +32,9 @@ class PortalSettingsFormGeneralEdit extends Component {
             emailTemplates: {
                 ...props.emailTemplates,
             },
+            administrations: {
+                ...props.administrations,
+            },
             staticContactGroups: {
                 ...props.staticContactGroups,
             },
@@ -60,6 +63,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 defaultContactGroupNoMemberId: false,
                 pcrPowerKwhConsumptionPercentage: false,
                 pcrGeneratingCapacityOneSolorPanel: false,
+                defaultAdministrationId: false,
             },
         };
 
@@ -200,6 +204,11 @@ class PortalSettingsFormGeneralEdit extends Component {
             );
         }
 
+        if (portalSettings.portalActive && validator.isEmpty(portalSettings.defaultAdministrationId + '')) {
+            errors.defaultAdministrationId = true;
+            hasErrors = true;
+        }
+
         const data = new FormData();
 
         data.append('portalActive', portalSettings.portalActive ? portalSettings.portalActive : false);
@@ -251,6 +260,10 @@ class PortalSettingsFormGeneralEdit extends Component {
             'pcrGeneratingCapacityOneSolorPanel',
             portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0
         );
+        data.append(
+            'defaultAdministrationId',
+            portalSettings.defaultAdministrationId ? portalSettings.defaultAdministrationId : ''
+        );
 
         data.append('attachmentLogo', attachmentLogo);
         data.append('attachmentFavicon', attachmentFavicon);
@@ -263,6 +276,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 .then(payload => {
                     this.props.updateState(payload.data);
                     this.props.fetchSystemData();
+                    this.props.peekAdministrations();
                     this.props.fetchStaticContactGroups();
                     this.props.switchToView();
                 })
@@ -290,6 +304,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             defaultContactGroupNoMemberId,
             pcrPowerKwhConsumptionPercentage,
             pcrGeneratingCapacityOneSolorPanel,
+            defaultAdministrationId,
         } = this.state.portalSettings;
 
         const logoUrl = `${URL_API}/portal/images/logo.png?${this.props.imageHash}`;
@@ -504,6 +519,19 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={portalActive ? 'required' : ''}
                                 error={this.state.errors.portalWebsite}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label="Standaard administratie / uitgevende instantie"
+                                divSize={'col-sm-8'}
+                                name={'defaultAdministrationId'}
+                                value={defaultAdministrationId}
+                                options={this.props.administrations}
+                                onChangeAction={this.handleReactSelectChange}
+                                required={portalActive ? 'required' : ''}
+                                error={this.state.errors.defaultAdministrationId}
+                                multi={false}
                             />
                         </div>
                     </PanelBody>

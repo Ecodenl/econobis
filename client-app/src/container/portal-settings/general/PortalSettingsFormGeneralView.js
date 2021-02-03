@@ -22,6 +22,7 @@ const PortalSettingsFormGeneralView = ({
     defaultContactGroupNoMember,
     pcrPowerKwhConsumptionPercentage,
     pcrGeneratingCapacityOneSolorPanel,
+    defaultAdministration,
     switchToEdit,
     imageHash,
 }) => {
@@ -180,6 +181,14 @@ const PortalSettingsFormGeneralView = ({
                             label={'Coöperatie website'}
                             divSize={'col-sm-8'}
                             value={portalWebsite}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Standaard administratie / uitgevende instantie'}
+                            divSize={'col-sm-8'}
+                            value={defaultAdministration ? defaultAdministration.name : ''}
                             className={'col-sm-8 form-group'}
                         />
                     </div>

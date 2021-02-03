@@ -50,6 +50,7 @@ class PortalSettingsApp extends Component {
             '&keys[]=newAtCooperativeLinkText' +
             '&keys[]=defaultContactGroupMemberId' +
             '&keys[]=defaultContactGroupNoMemberId' +
+            '&keys[]=defaultAdministrationId' +
             '&keys[]=pcrPowerKwhConsumptionPercentage' +
             '&keys[]=pcrGeneratingCapacityOneSolorPanel';
         PortalSettingsAPI.fetchPortalSettings(keys)

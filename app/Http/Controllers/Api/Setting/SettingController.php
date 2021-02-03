@@ -108,15 +108,6 @@ class SettingController
             'cooperativeName',
             'portalWebsite',
             'portalUrl',
-//            'backgroundColor',
-//            'backgroundTextColor',
-//            'backgroundImageColor',
-//            'backgroundImageTextColor',
-//            'headerPortalIconColor',
-//            'backgroundSecondaryColor',
-//            'backgroundSecondaryTextColor',
-//            'buttonColor',
-//            'buttonTextColor',
             'responsibleUserId',
             'contactResponsibleOwnerUserId',
             'checkContactTaskResponsibleUserId',
@@ -129,6 +120,7 @@ class SettingController
             'pcrGeneratingCapacityOneSolorPanel',
             'defaultContactGroupMemberId',
             'defaultContactGroupNoMemberId',
+            'defaultAdministrationId',
         ]);
     }
 

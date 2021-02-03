@@ -624,6 +624,12 @@ class ContactController extends ApiController
                 $query2->where('contact_id', $contactId);
             });
         })->orderBy('name')->get();
+        if($administrations->count() == 0){
+            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            if(!empty($defaultAdministrationId)){
+                $administrations = Administration::whereId($defaultAdministrationId)->get();
+            }
+        }
 
         return AdministrationResource::collection($administrations);
     }

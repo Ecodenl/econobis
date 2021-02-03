@@ -5,6 +5,7 @@ import PortalSettingsFormGeneralEdit from './PortalSettingsFormGeneralEdit';
 import PortalSettingsFormGeneralView from './PortalSettingsFormGeneralView';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
+import AdministrationsAPI from '../../../api/administration/AdministrationsAPI';
 
 class PortalSettingsFormGeneral extends Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class PortalSettingsFormGeneral extends Component {
 
         this.state = {
             emailTemplates: [],
+            administrations: [],
             staticContactGroups: [],
             imageHash: Date.now(),
             showEdit: false,
@@ -25,8 +27,15 @@ class PortalSettingsFormGeneral extends Component {
                 emailTemplates: payload,
             });
         });
+        this.peekAdministrations();
         this.fetchStaticContactGroups();
     }
+
+    peekAdministrations = () => {
+        AdministrationsAPI.peekAdministrations().then(payload => {
+            this.setState({ administrations: payload });
+        });
+    };
 
     fetchStaticContactGroups = () => {
         ContactGroupAPI.peekStaticContactGroups().then(payload => {
@@ -130,6 +139,16 @@ class PortalSettingsFormGeneral extends Component {
                 team => team.id == this.props.portalSettings.checkContactTaskResponsibleTeamId
             );
         }
+        this.props.portalSettings.defaultAdministration = '';
+        if (
+            this.props.portalSettings.defaultAdministrationId &&
+            this.props.portalSettings.defaultAdministrationId != 0
+        ) {
+            this.props.portalSettings.defaultAdministration = this.state.administrations.find(
+                administration => administration.id == this.props.portalSettings.defaultAdministrationId
+            );
+        }
+
         return (
             <div
                 className={this.state.activeDiv}
@@ -140,8 +159,10 @@ class PortalSettingsFormGeneral extends Component {
                     <PortalSettingsFormGeneralEdit
                         portalSettings={this.props.portalSettings}
                         emailTemplates={this.state.emailTemplates}
+                        administrations={this.state.administrations}
                         staticContactGroups={this.state.staticContactGroups}
                         switchToView={this.switchToView}
+                        peekAdministrations={this.peekAdministrations}
                         fetchStaticContactGroups={this.fetchStaticContactGroups}
                         imageHash={this.state.imageHash}
                         updateState={this.props.updateState}
@@ -164,6 +185,7 @@ class PortalSettingsFormGeneral extends Component {
 const mapStateToProps = state => {
     return {
         emailTemplates: state.emailTemplates,
+        administrations: state.administrations,
         staticContactGroups: state.staticContactGroups,
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,

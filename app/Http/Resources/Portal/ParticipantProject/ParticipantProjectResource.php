@@ -24,6 +24,7 @@ class ParticipantProjectResource extends Resource
             'contactName' => $this->contact ? $this->contact->full_name : '',
             'projectName' => $this->project ? $this->project->name : '',
             'administrationName' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
+            'portalSettingsLayoutAssigned' => ($this->project && $this->project->administration) ? $this->project->administration->portalSettingsLayoutAssigned : '',
         ];
 
         switch ($projectTypeCodeRef) {

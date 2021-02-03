@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
@@ -9,6 +9,8 @@ import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
+import { PortalUserContext } from '../../../context/PortalUserContext';
 
 const INITIAL_STATE = {
     result: [],
@@ -34,24 +36,28 @@ const reducer = (state, action) => {
 
 function RegistrationDetails({ match: { params } }) {
     const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+    const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
+    const { currentSelectedContact } = useContext(PortalUserContext);
 
-    useEffect(
-        function() {
-            ParticipantProjectAPI.show(params.id)
-                .then(payload => {
-                    dispatch({
-                        type: 'updateResult',
-                        payload: payload.data.data,
+    useEffect(() => {
+        if (currentSelectedContact.id) {
+            (function() {
+                ParticipantProjectAPI.show(params.id)
+                    .then(payload => {
+                        dispatch({
+                            type: 'updateResult',
+                            payload: payload.data.data,
+                        });
+                        setCurrentThemeSettings(payload.data.data.basicInformation.portalSettingsLayoutAssigned);
+                        setIsLoading(false);
+                    })
+                    .catch(() => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setIsLoading(false);
                     });
-                    setIsLoading(false);
-                })
-                .catch(() => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setIsLoading(false);
-                });
-        },
-        [params.id]
-    );
+            })();
+        }
+    }, [params.id, currentSelectedContact]);
 
     function setIsLoading(isLoading) {
         dispatch({

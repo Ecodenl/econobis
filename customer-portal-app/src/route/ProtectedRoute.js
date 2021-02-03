@@ -27,7 +27,11 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
 
     useEffect(() => {
         if (isAuth) {
-            if (!location.pathname.includes('/project/') && !location.pathname.includes('/inschrijven/')) {
+            if (
+                !location.pathname.includes('/project/') &&
+                !location.pathname.includes('/project-deelname/') &&
+                !location.pathname.includes('/inschrijven/')
+            ) {
                 switchToDefaultThemeSettings();
             }
         }

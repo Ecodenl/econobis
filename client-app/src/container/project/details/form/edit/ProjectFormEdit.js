@@ -119,35 +119,6 @@ class ProjectFormEdit extends Component {
             });
         }
 
-        const defaultTextAgreeTerms =
-            'Om deel te kunnen nemen dien je akkoord te gaan met de voorwaarden en dien je te bevestigen dat je de project informatie hebt gelezen en begrepen.';
-        const defaultTextLinkAgreeTerms = 'Ik ga akkoord met de {voorwaarden_link}';
-        const defaultTextLinkUnderstandInfo =
-            'Ik heb de {project_informatie_link} (inclusief de daarin beschreven risico’s) behorende bij het project gelezen en begrepen';
-        const defaultTextAcceptAgreement =
-            'Wanneer je akkoord gaat met het inschrijfformulier en in de inschrijving bevestigd, is je inschrijving definitief';
-        const defaultTextAcceptAgreementQuestion = 'Ik ben akkoord met deze inschrijving';
-        this.setState({
-            project: {
-                ...this.state.project,
-                textAgreeTerms: isEmpty(this.state.project.textAgreeTerms)
-                    ? defaultTextAgreeTerms
-                    : this.state.project.textAgreeTerms,
-                textLinkAgreeTerms: isEmpty(this.state.project.textLinkAgreeTerms)
-                    ? defaultTextLinkAgreeTerms
-                    : this.state.project.textLinkAgreeTerms,
-                textLinkUnderstandInfo: isEmpty(this.state.project.textLinkUnderstandInfo)
-                    ? defaultTextLinkUnderstandInfo
-                    : this.state.project.textLinkUnderstandInfo,
-                textAcceptAgreement: isEmpty(this.state.project.textAcceptAgreement)
-                    ? defaultTextAcceptAgreement
-                    : this.state.project.textAcceptAgreement,
-                textAcceptAgreementQuestion: isEmpty(this.state.project.textAcceptAgreementQuestion)
-                    ? defaultTextAcceptAgreementQuestion
-                    : this.state.project.textAcceptAgreementQuestion,
-            },
-        });
-
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });

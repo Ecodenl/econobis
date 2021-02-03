@@ -54,10 +54,30 @@ function StepFour({ contactProjectData, previous, next, registerValues, setSucce
         ),
     });
 
+    let contactDocumentOk = false;
+    if (!isEmpty('' + contactDocument)) {
+        contactDocumentOk = true;
+    }
+
     return (
         <>
             {isLoading ? (
                 <LoadingView />
+            ) : !contactDocumentOk ? (
+                <>
+                    <Row>
+                        <Col>Er ging iets mis bij het maken van het bevestingsformulier voorbeeld.</Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} md={10}>
+                            <ButtonGroup aria-label="Steps" className="float-right">
+                                <Button className={'w-button'} size="sm" onClick={previous}>
+                                    Terug
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
             ) : (
                 <Formik
                     validationSchema={validationSchema}

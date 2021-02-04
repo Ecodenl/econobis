@@ -28,7 +28,7 @@ class FinancialOverviewContactController extends Controller
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $financialOverviewContact->name);
         } else {
-            $financialOverviewContactNumber = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
+            $financialOverviewContactNumber = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->contact->number . '-' . $financialOverviewContact->financialOverview->id;
             header('X-Filename:' . $financialOverviewContactNumber . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact, true);

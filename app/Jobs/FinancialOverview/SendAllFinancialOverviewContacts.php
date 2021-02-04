@@ -106,7 +106,7 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
             }
 
             $jobLog = new JobsLog();
-            $financialOverviewName = 'WS-' . ($financialOverviewContact->financialOverview->year) . '-' . ($financialOverviewContact->financialOverview->administration->id) . '-' . ($financialOverviewContact->contact->number);
+            $financialOverviewName = 'WS-' . ($financialOverviewContact->financialOverview->year) . '-' . ($financialOverviewContact->contact->number) . '-' . ($financialOverviewContact->financialOverview->id);
 
             if($financialOverviewContact->status_id === 'sent'){
                 $this->financialOverviewContactsOk += 1;

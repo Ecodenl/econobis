@@ -87,7 +87,7 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
                 FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
             }
             $jobLog = new JobsLog();
-            $financialOverviewName = 'WS-' . ($financialOverviewContact->financialOverview->year) . '-' . ($financialOverviewContact->financialOverview->administration->id) . '-' . ($financialOverviewContact->contact->number);
+            $financialOverviewName = 'WS-' . ($financialOverviewContact->financialOverview->year) . '-' . ($financialOverviewContact->contact->number) . '-' . ($financialOverviewContact->financialOverview->id);
 
             if(!empty($pdf) && $financialOverviewContact->status_id === 'sent'){
                 $this->financialOverviewContactsOk += 1;

@@ -69,7 +69,7 @@ class FinancialOverviewHelper
             $contactName = $financialOverviewContact->contact->full_name;
         }
 
-        $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
+        $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->contact->number . '-' . $financialOverviewContact->financialOverview->id;
 
         $wsAdditionalInfo = self::getWsAdditionalInfo($financialOverviewContact, $contactPerson, $user);
 
@@ -184,7 +184,7 @@ class FinancialOverviewHelper
             $contactName = $financialOverviewContact->contact->full_name;
         }
 
-        $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration_id . '-' . $financialOverviewContact->contact->number;
+        $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->contact->number . '-' . $financialOverviewContact->financialOverview->id;
 
         $subject = 'Waardestaat';
         $htmlBody = 'Beste ' . ($contactInfo['contactPerson'] ? $contactInfo['contactPerson'] : $contactName) . ',';

@@ -19,13 +19,27 @@ class ParticipantMutationCollection extends Resource
         $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->first()->id;
         $mutationEnergyTaxRefundType = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->first()->id;
         $projectTypeCodeRef = $this->participation->project->projectType->code_ref;
+        $statusCodeRef = $this->status->code_ref;
+        $date = $this->date_entry;
+        switch ($statusCodeRef) {
+            case 'interest':
+                $date = $this->date_interest;
+            case 'option':
+                $date = $this->date_option;
+            case 'granted':
+                $date = $this->date_granted;
+            case 'final':
+                if($this->type_id == $mutationResultType || $this->type_id == $mutationEnergyTaxRefundType){
+                    $date = $this->date_payment;
+                }
+        }
 
         switch ($projectTypeCodeRef){
             case 'loan':
                 return
                     [
                         'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => ($this->type_id == $mutationResultType) ? $this->date_payment : $this->date_entry],
+                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                             ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                             ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
                             ['type' => 'money', 'label' => 'Lening rekening', 'value' => $this->amount],
@@ -37,7 +51,7 @@ class ParticipantMutationCollection extends Resource
                 return
                     [
                         'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => ($this->type_id == $mutationResultType) ? $this->date_payment : $this->date_entry],
+                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                             ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                             ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
                             ['type' => 'integer', 'label' => 'Aantal obligaties', 'value' => $this->quantity],
@@ -48,7 +62,7 @@ class ParticipantMutationCollection extends Resource
                 return
                     [
                         'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => ($this->type_id == $mutationResultType) ? $this->date_payment : $this->date_entry],
+                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                             ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                             ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
                             ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
@@ -60,7 +74,7 @@ class ParticipantMutationCollection extends Resource
                 return
                     [
                         'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => ($this->type_id == $mutationResultType || $this->type_id == $mutationEnergyTaxRefundType) ? $this->date_payment : $this->date_entry],
+                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                             ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                             ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
                             ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],

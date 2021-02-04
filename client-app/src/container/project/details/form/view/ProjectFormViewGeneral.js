@@ -30,6 +30,7 @@ const ProjectFormViewGeneral = ({
     emailTemplateAgreement,
     linkAgreeTerms,
     linkUnderstandInfo,
+    linkProjectInfo,
     showQuestionAboutMembership,
     questionAboutMembershipGroup,
     textIsMember,
@@ -119,9 +120,21 @@ const ProjectFormViewGeneral = ({
         <hr />
         <h4>Contacten portal instellingen</h4>
 
-        <p>
-            <strong>Inschrijven</strong>
-        </p>
+        <div className="row">
+            <label htmlFor="projectInfo" className="col-sm-12">
+                <strong>Project informatie</strong>
+            </label>
+        </div>
+        <div className="row">
+            <ViewTextLong label={'Informatie link'} value={linkProjectInfo} />
+        </div>
+
+        <hr />
+        <div className="row">
+            <label htmlFor="registerProject" className="col-sm-12">
+                <strong>Inschrijven</strong>
+            </label>
+        </div>
         <div className="row">
             <ViewText label={'Vragen over lid worden aan of uit?'} value={showQuestionAboutMembership ? 'Ja' : 'Nee'} />
         </div>
@@ -162,9 +175,12 @@ const ProjectFormViewGeneral = ({
             </>
         )}
 
-        <p>
-            <strong>Voorwaarden</strong>
-        </p>
+        <hr />
+        <div className="row">
+            <label htmlFor="agreeTerms" className="col-sm-12">
+                <strong>Voorwaarden</strong>
+            </label>
+        </div>
         <div className="row">
             <div className="col-sm-3">
                 <label htmlFor="textAgreeTerms" className="col-sm-12">
@@ -175,6 +191,7 @@ const ProjectFormViewGeneral = ({
                 {textAgreeTerms}
             </div>
         </div>
+        <hr />
         <div className="row">
             <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
         </div>
@@ -182,9 +199,7 @@ const ProjectFormViewGeneral = ({
             <ViewTextLong label={'Voorwaarden link tekst'} value={textLinkAgreeTerms} />
         </div>
 
-        <p>
-            <strong>Project informatie</strong>
-        </p>
+        <hr />
         <div className="row">
             <ViewTextLong label={'Project informatie link'} value={linkUnderstandInfo} />
         </div>
@@ -192,9 +207,12 @@ const ProjectFormViewGeneral = ({
             <ViewTextLong label={'Project informatie link tekst'} value={textLinkUnderstandInfo} />
         </div>
 
-        <p>
-            <strong>Bevestigen</strong>
-        </p>
+        <hr />
+        <div className="row">
+            <label htmlFor="confirmAgreement" className="col-sm-12">
+                <strong>Bevestigen</strong>
+            </label>
+        </div>
         <div className="row">
             <div className="col-sm-3">
                 <label htmlFor="textAcceptAgreement" className="col-sm-12">

@@ -57,6 +57,7 @@ const ProjectFormView = props => {
         emailTemplateAgreement,
         linkAgreeTerms,
         linkUnderstandInfo,
+        linkProjectInfo,
         showQuestionAboutMembership,
         questionAboutMembershipGroup,
         textIsMember,
@@ -100,6 +101,7 @@ const ProjectFormView = props => {
                 emailTemplateAgreement={emailTemplateAgreement}
                 linkAgreeTerms={linkAgreeTerms}
                 linkUnderstandInfo={linkUnderstandInfo}
+                linkProjectInfo={linkProjectInfo}
                 showQuestionAboutMembership={showQuestionAboutMembership}
                 questionAboutMembershipGroup={questionAboutMembershipGroup}
                 textIsMember={textIsMember}

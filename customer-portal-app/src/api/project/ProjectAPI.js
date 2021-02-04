@@ -45,6 +45,7 @@ export default {
                         'maxAmountLoan',
                         'postalcodeLink',
                         'linkAgreeTerms',
+                        'linkProjectInfo',
                         'linkUnderstandInfo',
                         'showQuestionAboutMembership',
                     ],

@@ -280,26 +280,26 @@ class ProjectFormEdit extends Component {
                 errors.noMemberGroupId = true;
                 hasErrors = true;
             }
-            if (validator.isEmpty('' + project.textAgreeTerms)) {
-                errors.textAgreeTerms = true;
-                hasErrors = true;
-            }
-            if (validator.isEmpty('' + project.textLinkAgreeTerms)) {
-                errors.textLinkAgreeTerms = true;
-                hasErrors = true;
-            }
-            if (validator.isEmpty('' + project.textLinkUnderstandInfo)) {
-                errors.textLinkUnderstandInfo = true;
-                hasErrors = true;
-            }
-            if (validator.isEmpty('' + project.textAcceptAgreement)) {
-                errors.textAcceptAgreement = true;
-                hasErrors = true;
-            }
-            if (validator.isEmpty('' + project.textAcceptAgreementQuestion)) {
-                errors.textAcceptAgreementQuestion = true;
-                hasErrors = true;
-            }
+        }
+        if (validator.isEmpty('' + project.textAgreeTerms)) {
+            errors.textAgreeTerms = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textLinkAgreeTerms)) {
+            errors.textLinkAgreeTerms = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textLinkUnderstandInfo)) {
+            errors.textLinkUnderstandInfo = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textAcceptAgreement)) {
+            errors.textAcceptAgreement = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textAcceptAgreementQuestion)) {
+            errors.textAcceptAgreementQuestion = true;
+            hasErrors = true;
         }
 
         // todo projects doesn't have a countryId field yet
@@ -419,6 +419,7 @@ class ProjectFormEdit extends Component {
             emailTemplates,
             linkAgreeTerms,
             linkUnderstandInfo,
+            linkProjectInfo,
             showQuestionAboutMembership,
             questionAboutMembershipGroupId,
             textIsMember,
@@ -486,6 +487,7 @@ class ProjectFormEdit extends Component {
                     emailTemplates={this.state.emailTemplates}
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
+                    linkProjectInfo={linkProjectInfo}
                     showQuestionAboutMembership={showQuestionAboutMembership}
                     questionAboutMembershipGroupId={questionAboutMembershipGroupId}
                     textIsMember={textIsMember}

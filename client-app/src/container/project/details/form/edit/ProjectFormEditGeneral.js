@@ -52,6 +52,7 @@ const ProjectFormEditGeneral = ({
     emailTemplates,
     linkAgreeTerms,
     linkUnderstandInfo,
+    linkProjectInfo,
     showQuestionAboutMembership,
     questionAboutMembershipGroupId,
     textIsMember,
@@ -75,8 +76,6 @@ const ProjectFormEditGeneral = ({
     const helpTextLinkAgreeTerms = 'Gebruik {voorwaarden_link} in tekst voor plaatsing van de voorwaarden link';
     const helpTextLinkUnderstandInfo =
         'Gebruik {project_informatie_link} in tekst voor plaatsing van de project informatie link';
-
-    console.log(textAgreeTerms);
 
     return (
         <React.Fragment>
@@ -257,9 +256,28 @@ const ProjectFormEditGeneral = ({
             <hr />
             <h4>Contacten portal instellingen</h4>
 
-            <p>
-                <strong>Inschrijven</strong>
-            </p>
+            <div className="row">
+                <label htmlFor="projectInfo" className="col-sm-12">
+                    <strong>Project informatie</strong>
+                </label>
+            </div>
+            <div className="row">
+                <InputTextLong
+                    label="Informatie link"
+                    name={'linkProjectInfo'}
+                    value={linkProjectInfo}
+                    onChangeAction={handleInputChange}
+                    error={errors.linkProjectInfo}
+                    readOnly={!permissions.managePortalSettings}
+                />
+            </div>
+
+            <hr />
+            <div className="row">
+                <label htmlFor="registerProject" className="col-sm-12">
+                    <strong>Inschrijven</strong>
+                </label>
+            </div>
             <div className="row">
                 <InputToggle
                     label={'Vragen over lid worden aan of uit?'}
@@ -363,9 +381,12 @@ const ProjectFormEditGeneral = ({
                 </>
             )}
 
-            <p>
-                <strong>Voorwaarden</strong>
-            </p>
+            <hr />
+            <div className="row">
+                <label htmlFor="agreeTerms" className="col-sm-12">
+                    <strong>Voorwaarden</strong>
+                </label>
+            </div>
             <div className={'row'}>
                 <div className="form-group col-sm-12">
                     <div className="row">
@@ -388,6 +409,7 @@ const ProjectFormEditGeneral = ({
                     </div>
                 </div>
             </div>
+            <hr />
             <div className="row">
                 <InputTextLong
                     label="Voorwaarden link"
@@ -417,9 +439,7 @@ const ProjectFormEditGeneral = ({
                 />
             </div>
 
-            <p>
-                <strong>Project informatie</strong>
-            </p>
+            <hr />
             <div className="row">
                 <InputTextLong
                     label="Project informatie link"
@@ -449,9 +469,12 @@ const ProjectFormEditGeneral = ({
                 />
             </div>
 
-            <p>
-                <strong>Bevestigen</strong>
-            </p>
+            <hr />
+            <div className="row">
+                <label htmlFor="confirmAgreement" className="col-sm-12">
+                    <strong>Bevestigen</strong>
+                </label>
+            </div>
             <div className={'row'}>
                 <div className="form-group col-sm-12">
                     <div className="row">

@@ -128,7 +128,14 @@ export default {
                             ],
                             rlt: {
                                 project: {
-                                    fld: ['id', 'name', 'dateEnd', 'linkUnderstandInfo', 'showQuestionAboutMembership'],
+                                    fld: [
+                                        'id',
+                                        'name',
+                                        'dateEnd',
+                                        'linkProjectInfo',
+                                        'linkUnderstandInfo',
+                                        'showQuestionAboutMembership',
+                                    ],
                                     rlt: {
                                         projectType: { fld: ['id', 'codeRef'] },
                                         administration: { fld: ['name'] },

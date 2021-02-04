@@ -24,14 +24,18 @@ class ParticipantMutationCollection extends Resource
         switch ($statusCodeRef) {
             case 'interest':
                 $date = $this->date_interest;
+                break;
             case 'option':
                 $date = $this->date_option;
+                break;
             case 'granted':
                 $date = $this->date_granted;
+                break;
             case 'final':
                 if($this->type_id == $mutationResultType || $this->type_id == $mutationEnergyTaxRefundType){
                     $date = $this->date_payment;
                 }
+                break;
         }
 
         switch ($projectTypeCodeRef){

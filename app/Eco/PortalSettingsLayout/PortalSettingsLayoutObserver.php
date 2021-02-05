@@ -24,7 +24,7 @@ class PortalSettingsLayoutObserver
 
     public function saved(PortalSettingsLayout $portalSettingsLayout)
     {
-        if($portalSettingsLayout->isDirty('is_default') && $portalSettingsLayout->is_default == true){
+        if($portalSettingsLayout->isDirty('is_default') && $portalSettingsLayout->is_default == true && $portalSettingsLayout->portal_logo_file_name != 'conversion.png'){
             // Als er een andere layout standaard was dan deze niet meer standaard maken
             $oldPrimaryPortalSettingsLayout = PortalSettingsLayout::where('is_default', true)
                 ->where('id', '<>', $portalSettingsLayout->id)

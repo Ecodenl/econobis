@@ -79,7 +79,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('email:checkMailboxes')->dailyAt('17:58');
         $schedule->command('invoice:setDaysLastReminder')->dailyAt('01:05');
         $schedule->command('invoice:setDaysToExpire')->dailyAt('02:05');
-        $schedule->command('email:deleteEmailDefinitive')->dailyAt('11:40');
+        $schedule->command('email:deleteEmailDefinitive')->dailyAt('12:25');
 //        $schedule->command('email:deleteFloatingAttachmentFiles')->dailyAt('03:35');
         $schedule->command('invoice:processPaidInvoices')->dailyAt('04:30');
         $schedule->command('workflow:processWorkflowEmailCompleteTask')->dailyAt('05:00');

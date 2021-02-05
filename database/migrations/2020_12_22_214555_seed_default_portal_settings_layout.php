@@ -21,7 +21,7 @@ class SeedDefaultPortalSettingsLayout extends Migration
         if($portalSettingsExists){
             $portalSettingsLayout = new PortalSettingsLayout();
             $portalSettingsLayout->description = 'Standaard portal instellingen layout';
-            $portalSettingsLayout->is_default = true;
+            $portalSettingsLayout->is_default = false;
             $portalSettingsLayout->portal_logo_file_name = 'logo.png';
             $portalSettingsLayout->portal_favicon_file_name = 'favicon.ico';
             $portalSettingsLayout->portal_background_color = PortalSettings::get('backgroundColor');
@@ -33,10 +33,6 @@ class SeedDefaultPortalSettingsLayout extends Migration
             $portalSettingsLayout->login_field_background_text_color = PortalSettings::get('backgroundSecondaryTextColor');
             $portalSettingsLayout->button_color = PortalSettings::get('buttonColor');
             $portalSettingsLayout->button_text_color = PortalSettings::get('buttonTextColor');
-            $portalSettingsLayout->save();
-
-            $portalSettingsLayout->portal_logo_file_name = 'logo-' . $portalSettingsLayout->id . '.png';
-            $portalSettingsLayout->portal_favicon_file_name = 'favicon-' . $portalSettingsLayout->id . '.ico';
             $portalSettingsLayout->save();
 
             try {
@@ -58,6 +54,12 @@ class SeedDefaultPortalSettingsLayout extends Migration
             } catch (\Exception $exception) {
                 Log::error('Copy favicon.ico mislukt : ' . $exception->getMessage());
             }
+
+            $portalSettingsLayout->portal_logo_file_name = 'logo-' . $portalSettingsLayout->id . '.png';
+            $portalSettingsLayout->portal_favicon_file_name = 'favicon-' . $portalSettingsLayout->id . '.ico';
+            $portalSettingsLayout->is_default = true;
+            $portalSettingsLayout->save();
+
         }
 
 

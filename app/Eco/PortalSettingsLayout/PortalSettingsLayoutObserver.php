@@ -34,13 +34,13 @@ class PortalSettingsLayoutObserver
                 $oldPrimaryPortalSettingsLayout->is_default = false;
                 $oldPrimaryPortalSettingsLayout->save();
             }
-        }
-        // Maak logo.png opnieuw voor default logo
-        $layoutLogoName = 'logo-' . $portalSettingsLayout->id . '.png';
-        if (Config::get('app.env') == "local") {
-            Storage::disk('public_portal_local')->put('images/logo.png' , Storage::disk('public_portal_local')->get('images/' . $layoutLogoName));
-        } else {
-            Storage::disk('public_portal')->put('images/logo.png' , Storage::disk('public_portal')->get('images/' . $layoutLogoName));
+            // Maak logo.png opnieuw voor default logo
+            $layoutLogoName = 'logo-' . $portalSettingsLayout->id . '.png';
+            if (Config::get('app.env') == "local") {
+                Storage::disk('public_portal_local')->put('images/logo.png' , Storage::disk('public_portal_local')->get('images/' . $layoutLogoName));
+            } else {
+                Storage::disk('public_portal')->put('images/logo.png' , Storage::disk('public_portal')->get('images/' . $layoutLogoName));
+            }
         }
 
     }

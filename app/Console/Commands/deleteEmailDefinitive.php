@@ -6,6 +6,7 @@ use App\Eco\Email\Email;
 use App\Http\Controllers\Api\Email\EmailController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class deleteEmailDefinitive extends Command
 {
@@ -63,6 +64,7 @@ class deleteEmailDefinitive extends Command
             $email->groupEmailAddresses()->detach();
             $email->forceDelete();
         }
+        Log::info('Verwijder email (soft deleted) definitief heeft gedraaid.');
     }
 
 }

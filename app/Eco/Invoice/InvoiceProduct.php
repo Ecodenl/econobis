@@ -85,9 +85,10 @@ class InvoiceProduct extends Model
 
     public function getPriceInclVatAndReductionAttribute()
     {
-        if($this->getAmountReductionAmountAttribute() == 0 && $this->getAmountReductionPercentageAttribute() == 0){
-            return floatval( number_format( ($this->amount * $this->price_incl_vat), 2, '.', ''));
-        }
+// rollback this change: other situations are not calculated correct anymore
+//        if($this->getAmountReductionAmountAttribute() == 0 && $this->getAmountReductionPercentageAttribute() == 0){
+//            return floatval( number_format( ($this->amount * $this->price_incl_vat), 2, '.', ''));
+//        }
         $vatPercentage = $this->vat_percentage;
         $vatFactor = (100 + $vatPercentage) / 100;
         $priceExclVat = $this->getPriceExVatInclReductionAttribute();

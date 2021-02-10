@@ -87,14 +87,18 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
                 FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
             }
             $jobLog = new JobsLog();
-            $financialOverviewName = 'WS-' . ($financialOverviewContact->financialOverview->year) . '-' . ($financialOverviewContact->contact->number) . '-' . ($financialOverviewContact->financialOverview->id);
+            if($financialOverviewContact->financialOverview->administration->administration_code){
+                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration->administration_code . '-' . $financialOverviewContact->contact->number;
+            } else {
+                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->contact->number . '-' . $financialOverviewContact->financialOverview->id;
+            }
 
             if(!empty($pdf) && $financialOverviewContact->status_id === 'sent'){
                 $this->financialOverviewContactsOk += 1;
-                $jobLog->value = 'Maken waardestaat ' . ($financialOverviewName) . ' (' . ($financialOverviewContact->id) . ') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
+                $jobLog->value = 'Maken waardestaat ' . ($financialOverviewContactReference) . ' (' . ($financialOverviewContact->id) . ') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
             }else{
                 $this->financialOverviewContactsError += 1;
-                $jobLog->value = 'Maken waardestaat ' . ($financialOverviewName) . ' (' . $financialOverviewContact->id.') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
+                $jobLog->value = 'Maken waardestaat ' . ($financialOverviewContactReference) . ' (' . $financialOverviewContact->id.') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
             }
             $jobLog->job_category_id = 'create-financial-overview-contact-post';
             $jobLog->user_id = $this->userId;

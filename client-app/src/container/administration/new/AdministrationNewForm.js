@@ -33,7 +33,7 @@ class AdministrationNewForm extends Component {
             loadingText: 'Aan het opslaan',
             administration: {
                 name: '',
-                administrationNumber: '',
+                administrationCode: '',
                 address: '',
                 postalCode: '',
                 city: '',
@@ -72,7 +72,7 @@ class AdministrationNewForm extends Component {
             },
             errors: {
                 name: false,
-                administrationNumber: false,
+                administrationCode: false,
                 postalCode: false,
                 kvkNumber: false,
                 IBAN: false,
@@ -171,16 +171,9 @@ class AdministrationNewForm extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(administration.name)) {
+        if (validator.isEmpty(administration.name + '')) {
             errors.name = true;
             hasErrors = true;
-        }
-
-        if (!validator.isEmpty(administration.administrationNumber)) {
-            if (!validator.isInt(administration.administrationNumber + '')) {
-                errors.administrationNumber = true;
-                hasErrors = true;
-            }
         }
 
         let countryId = administration.countryId;
@@ -202,22 +195,30 @@ class AdministrationNewForm extends Component {
             }
         }
 
-        if (!validator.isEmpty(administration.kvkNumber)) {
+        if (
+            !validator.isEmpty(administration.administrationCode + '') &&
+            !/^([A-Za-z0-9_\\-]+)$/u.test(administration.administrationCode)
+        ) {
+            errors.administrationCode = true;
+            hasErrors = true;
+        }
+
+        if (!validator.isEmpty(administration.kvkNumber + '')) {
             if (!validator.isInt(administration.kvkNumber + '')) {
                 errors.kvkNumber = true;
                 hasErrors = true;
             }
         }
 
-        if (!validator.isEmpty(administration.IBAN)) {
-            if (!ibantools.isValidIBAN(administration.IBAN)) {
+        if (!validator.isEmpty(administration.IBAN + '')) {
+            if (!ibantools.isValidIBAN(administration.IBAN + '')) {
                 errors.IBAN = true;
                 hasErrors = true;
             }
         }
 
-        if (!validator.isEmpty(administration.email)) {
-            if (!validator.isEmail(administration.email)) {
+        if (!validator.isEmpty(administration.email + '')) {
+            if (!validator.isEmail(administration.email + '')) {
                 errors.email = true;
                 hasErrors = true;
             }
@@ -230,8 +231,8 @@ class AdministrationNewForm extends Component {
             }
         }
 
-        if (!validator.isEmpty(administration.website)) {
-            if (!validator.isFQDN(administration.website)) {
+        if (!validator.isEmpty(administration.website + '')) {
+            if (!validator.isFQDN(administration.website + '')) {
                 errors.website = true;
                 hasErrors = true;
             }
@@ -275,6 +276,45 @@ class AdministrationNewForm extends Component {
                 errors.twinfieldOrganizationCode = true;
                 hasErrors = true;
             }
+
+            let administrationCodeNotUnique = false;
+            if (!validator.isEmpty(administration.administrationCode + '')) {
+                this.props.administrationsPeek.map(
+                    existingAdministrationCode =>
+                        existingAdministrationCode.id !== administration.id &&
+                        existingAdministrationCode.administrationCode !== null &&
+                        !validator.isEmpty(existingAdministrationCode.administrationCode + '') &&
+                        existingAdministrationCode.administrationCode &&
+                        administration.administrationCode &&
+                        existingAdministrationCode.administrationCode.toUpperCase() ===
+                            administration.administrationCode.toUpperCase() &&
+                        (administrationCodeNotUnique = true)
+                );
+            }
+            if (administrationCodeNotUnique) {
+                errors.administrationCode = true;
+                hasErrors = true;
+                console.log('fout 2');
+            }
+
+            let twinFieldOfficeAndOrganizationCodeNotUnique = false;
+            this.state.twinfieldInfoAdministrations.map(
+                existingTwinfieldAdministration =>
+                    existingTwinfieldAdministration.twinfieldOfficeCode &&
+                    administration.twinfieldOfficeCode &&
+                    existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() ===
+                        administration.twinfieldOfficeCode.toUpperCase() &&
+                    existingTwinfieldAdministration.twinfieldOrganizationCode &&
+                    administration.twinfieldOrganizationCode &&
+                    existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
+                        administration.twinfieldOrganizationCode.toUpperCase() &&
+                    existingTwinfieldAdministration.id !== administration.id &&
+                    (twinFieldOfficeAndOrganizationCodeNotUnique = true)
+            );
+            if (twinFieldOfficeAndOrganizationCodeNotUnique) {
+                errors.twinfieldOfficeCode = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -295,7 +335,7 @@ class AdministrationNewForm extends Component {
             const data = new FormData();
 
             data.append('name', administration.name);
-            data.append('administrationNumber', administration.administrationNumber);
+            data.append('administrationCode', administration.administrationCode);
             data.append('address', administration.address);
             data.append('postalCode', administration.postalCode);
             data.append('city', administration.city);
@@ -344,7 +384,7 @@ class AdministrationNewForm extends Component {
     render() {
         const {
             name,
-            administrationNumber,
+            administrationCode,
             address,
             postalCode,
             city,
@@ -399,11 +439,12 @@ class AdministrationNewForm extends Component {
                                 error={this.state.errors.name}
                             />
                             <InputText
-                                label="Administratie nummer"
-                                name={'administrationNumber'}
-                                value={administrationNumber}
+                                label="Administratie code"
+                                name={'administrationCode'}
+                                value={administrationCode}
+                                maxLength={5}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.administrationNumber}
+                                error={this.state.errors.administrationCode}
                             />
                         </div>
 
@@ -800,6 +841,7 @@ const mapStateToProps = state => {
         countries: state.systemData.countries,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
+        administrationsPeek: state.systemData.administrationsPeek,
     };
 };
 

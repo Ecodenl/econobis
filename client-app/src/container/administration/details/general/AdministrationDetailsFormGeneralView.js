@@ -9,7 +9,7 @@ import moment from 'moment';
 const AdministrationDetailsFormGeneralView = props => {
     const {
         name,
-        administrationNumber,
+        administrationCode,
         address,
         postalCode,
         emailTemplateCollection,
@@ -62,10 +62,7 @@ const AdministrationDetailsFormGeneralView = props => {
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Naam'} value={name} />
-                        <ViewText
-                            label={'Administratie nummer'}
-                            value={administrationNumber ? administrationNumber : ''}
-                        />
+                        <ViewText label={'Administratie code'} value={administrationCode ? administrationCode : ''} />
                     </div>
                     <div className="row">
                         <ViewText label={'Adres'} value={address ? address : ''} />

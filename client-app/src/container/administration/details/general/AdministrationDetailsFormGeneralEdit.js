@@ -35,7 +35,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         const {
             id,
             name,
-            administrationNumber,
+            administrationCode,
             address,
             emailTemplateIdCollection,
             emailTemplateIdTransfer,
@@ -86,7 +86,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             administration: {
                 id,
                 name: name ? name : '',
-                administrationNumber: administrationNumber ? administrationNumber : '',
+                administrationCode: administrationCode ? administrationCode : '',
                 address: address ? address : '',
                 postalCode: postalCode ? postalCode : '',
                 city: city ? city : '',
@@ -131,7 +131,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             },
             errors: {
                 name: false,
-                administrationNumber: false,
+                administrationCode: false,
                 postalCode: false,
                 kvkNumber: false,
                 IBAN: false,
@@ -278,11 +278,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             }
         }
 
-        if (!validator.isEmpty(administration.administrationNumber + '')) {
-            if (!validator.isInt(administration.administrationNumber + '')) {
-                errors.administrationNumber = true;
-                hasErrors = true;
-            }
+        if (
+            !validator.isEmpty(administration.administrationCode + '') &&
+            !/^([A-Za-z0-9_\\-]+)$/u.test(administration.administrationCode)
+        ) {
+            errors.administrationCode = true;
+            hasErrors = true;
         }
 
         if (!validator.isEmpty(administration.kvkNumber + '')) {
@@ -362,8 +363,27 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 hasErrors = true;
             }
 
-            let twinFieldOfficeAndOrganizationCodeNotUnique = false;
+            let administrationCodeNotUnique = false;
+            if (!validator.isEmpty(administration.administrationCode + '')) {
+                this.props.administrationsPeek.map(
+                    existingAdministrationCode =>
+                        existingAdministrationCode.id !== administration.id &&
+                        existingAdministrationCode.administrationCode !== null &&
+                        !validator.isEmpty(existingAdministrationCode.administrationCode + '') &&
+                        existingAdministrationCode.administrationCode &&
+                        administration.administrationCode &&
+                        existingAdministrationCode.administrationCode.toUpperCase() ===
+                            administration.administrationCode.toUpperCase() &&
+                        (administrationCodeNotUnique = true)
+                );
+            }
+            if (administrationCodeNotUnique) {
+                errors.administrationCode = true;
+                hasErrors = true;
+                console.log('fout 2');
+            }
 
+            let twinFieldOfficeAndOrganizationCodeNotUnique = false;
             this.state.twinfieldInfoAdministrations.map(
                 existingTwinfieldAdministration =>
                     existingTwinfieldAdministration.twinfieldOfficeCode &&
@@ -377,7 +397,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                     existingTwinfieldAdministration.id !== administration.id &&
                     (twinFieldOfficeAndOrganizationCodeNotUnique = true)
             );
-
             if (twinFieldOfficeAndOrganizationCodeNotUnique) {
                 errors.twinfieldOfficeCode = true;
                 hasErrors = true;
@@ -403,7 +422,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 
             data.append('id', administration.id);
             data.append('name', administration.name);
-            data.append('administrationNumber', administration.administrationNumber);
+            data.append('administrationCode', administration.administrationCode);
             data.append('address', administration.address);
             data.append('postalCode', administration.postalCode);
             data.append('city', administration.city);
@@ -452,7 +471,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
     render() {
         const {
             name,
-            administrationNumber,
+            administrationCode,
             emailTemplateIdCollection,
             emailTemplateIdTransfer,
             emailTemplateReminderId,
@@ -525,11 +544,12 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.name}
                             />
                             <InputText
-                                label="Administratie nummer"
-                                name={'administrationNumber'}
-                                value={administrationNumber}
+                                label="Administratie code"
+                                name={'administrationCode'}
+                                value={administrationCode}
+                                maxLength={5}
                                 onChangeAction={this.handleInputChange}
-                                error={this.state.errors.administrationNumber}
+                                error={this.state.errors.administrationCode}
                             />
                         </div>
 
@@ -979,7 +999,7 @@ const mapStateToProps = state => {
         countries: state.systemData.countries,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
-        // administrations: state.systemData.administrations,
+        administrationsPeek: state.systemData.administrationsPeek,
         administrationDetails: state.administrationDetails,
     };
 };

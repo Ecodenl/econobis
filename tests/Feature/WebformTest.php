@@ -375,7 +375,7 @@ class WebformTest extends TestCase
 
         Administration::create([
             'name' => 'test administratie',
-            'administration_number' => 1445,
+            'administration_code' => "1445",
             'btw_number' => '1233123123',
             'IBAN' => 'CH3608387000001080173',
             'created_by_id' => 1,

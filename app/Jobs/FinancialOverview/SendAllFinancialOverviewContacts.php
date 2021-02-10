@@ -106,14 +106,18 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
             }
 
             $jobLog = new JobsLog();
-            $financialOverviewName = 'WS-' . ($financialOverviewContact->financialOverview->year) . '-' . ($financialOverviewContact->contact->number) . '-' . ($financialOverviewContact->financialOverview->id);
+            if($financialOverviewContact->financialOverview->administration->administration_code){
+                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration->administration_code . '-' . $financialOverviewContact->contact->number;
+            } else {
+                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->contact->number . '-' . $financialOverviewContact->financialOverview->id;
+            }
 
             if($financialOverviewContact->status_id === 'sent'){
                 $this->financialOverviewContactsOk += 1;
-                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewName) . ' (' . ($financialOverviewContact->id) . ') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
+                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . ($financialOverviewContact->id) . ') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
             }else{
                 $this->financialOverviewContactsError += 1;
-                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewName) . ' (' . $financialOverviewContact->id.') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
+                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . $financialOverviewContact->id.') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
             }
             $jobLog->job_category_id = 'sent-financial-overview-contact';
             $jobLog->user_id = $this->userId;

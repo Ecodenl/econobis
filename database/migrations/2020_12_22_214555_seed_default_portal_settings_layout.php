@@ -37,9 +37,9 @@ class SeedDefaultPortalSettingsLayout extends Migration
 
             try {
                 if (config('app.env') == "local") {
-                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $portalSettingsLayout->portal_logo_file_name);
+                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-' . $portalSettingsLayout->id . '.png');
                 } else {
-                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . $portalSettingsLayout->portal_logo_file_name);
+                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo.png', DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'logo-' . $portalSettingsLayout->id . '.png');
                 }
             } catch (\Exception $exception) {
                 Log::error('Copy logo.png mislukt : ' . $exception->getMessage());

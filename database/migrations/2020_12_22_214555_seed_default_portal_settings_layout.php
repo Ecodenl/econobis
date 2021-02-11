@@ -23,7 +23,7 @@ class SeedDefaultPortalSettingsLayout extends Migration
             $portalSettingsLayout->description = 'Standaard portal instellingen layout';
             $portalSettingsLayout->is_default = true;
             $portalSettingsLayout->portal_logo_file_name = 'conversion.png';
-            $portalSettingsLayout->portal_favicon_file_name = 'favicon-' . $portalSettingsLayout->id . '.ico';
+            $portalSettingsLayout->portal_favicon_file_name = 'favicon.ico';
             $portalSettingsLayout->portal_background_color = PortalSettings::get('backgroundColor');
             $portalSettingsLayout->portal_background_text_color = PortalSettings::get('backgroundTextColor');
             $portalSettingsLayout->login_header_background_color = PortalSettings::get('backgroundImageColor');
@@ -47,15 +47,16 @@ class SeedDefaultPortalSettingsLayout extends Migration
 
             try {
                 if (config('app.env') == "local") {
-                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'favicon.ico', DIRECTORY_SEPARATOR . $portalSettingsLayout->portal_favicon_file_name);
+                    Storage::disk('public_portal_local')->copy(DIRECTORY_SEPARATOR . 'favicon.ico', DIRECTORY_SEPARATOR . 'favicon-' . $portalSettingsLayout->id . '.ico');
                 } else {
-                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'favicon.ico', DIRECTORY_SEPARATOR . $portalSettingsLayout->portal_favicon_file_name );
+                    Storage::disk('public_portal')->copy(DIRECTORY_SEPARATOR . 'favicon.ico', DIRECTORY_SEPARATOR . 'favicon-' . $portalSettingsLayout->id . '.ico');
                 }
             } catch (\Exception $exception) {
                 Log::error('Copy favicon.ico mislukt : ' . $exception->getMessage());
             }
 
             $portalSettingsLayout->portal_logo_file_name = 'logo-' . $portalSettingsLayout->id . '.png';
+            $portalSettingsLayout->portal_favicon_file_name = 'favicon-' . $portalSettingsLayout->id . '.ico';
             $portalSettingsLayout->save();
 
         }

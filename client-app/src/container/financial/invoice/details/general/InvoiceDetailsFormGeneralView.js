@@ -15,7 +15,7 @@ const InvoiceDetailsFormGeneralView = props => {
         invoiceText,
         subject,
         order,
-        totalPriceInclVatAndReduction,
+        totalInclVatInclReduction,
         amountOpen,
         dateSent,
         datePaymentDue,
@@ -73,11 +73,11 @@ const InvoiceDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText
-                            label={'Prijs incl. BTW'}
+                            label={'Bedrag incl. BTW'}
                             value={
-                                totalPriceInclVatAndReduction
+                                totalInclVatInclReduction
                                     ? '€' +
-                                      totalPriceInclVatAndReduction.toLocaleString('nl', {
+                                      totalInclVatInclReduction.toLocaleString('nl', {
                                           minimumFractionDigits: 2,
                                           maximumFractionDigits: 2,
                                       })

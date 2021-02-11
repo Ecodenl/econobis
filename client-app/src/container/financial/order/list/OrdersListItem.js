@@ -38,7 +38,7 @@ class OrdersListItem extends Component {
             dateNextInvoice,
             subject,
             contact,
-            totalPriceInclVatPerYear,
+            totalInclVatInclReductionPerYear,
             paymentType,
             status,
             checked,
@@ -65,9 +65,9 @@ class OrdersListItem extends Component {
                 <td>{dateNextInvoice ? moment(dateNextInvoice).format('DD-MM-Y') : ''}</td>
                 <td>{subject ? subject : ''}</td>
                 <td>{contact ? contact.fullName : ''}</td>
-                <td className={`${totalPriceInclVatPerYear <= 0 ? 'warning-td' : ''}`}>
+                <td className={`${totalInclVatInclReductionPerYear <= 0 ? 'warning-td' : ''}`}>
                     {'€' +
-                        totalPriceInclVatPerYear.toLocaleString('nl', {
+                        totalInclVatInclReductionPerYear.toLocaleString('nl', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
                         })}

@@ -96,12 +96,12 @@ class CalculatedModelFieldsTest extends TestCase
         $this->assertEquals(109042.88, $order->total_price_incl_vat_per_year);
 
         $orderProduct = OrderProduct::find(1);
-        $this->assertEquals(1235.72, $orderProduct->total_price_incl_vat_and_reduction);
-        $this->assertEquals(4942.88, $orderProduct->total_price_incl_vat_and_reduction_per_year);
+        $this->assertEquals(1235.72, $orderProduct->getAmountInclReductionInclVat());
+        $this->assertEquals(4942.88, $orderProduct->getAmountInclReductionInclVatPerYear());
 
         $orderProduct = OrderProduct::find(2);
-        $this->assertEquals(8675, $orderProduct->total_price_incl_vat_and_reduction);
-        $this->assertEquals(104100, $orderProduct->total_price_incl_vat_and_reduction_per_year);
+        $this->assertEquals(8675, $orderProduct->getAmountInclReductionInclVat());
+        $this->assertEquals(104100, $orderProduct->getAmountInclReductionInclVatPerYear());
 
         $product = Product::find(1);
         $this->assertEquals(100, $product->current_price->price);
@@ -120,7 +120,7 @@ class CalculatedModelFieldsTest extends TestCase
     public function assertInvoicesFields()
     {
         $invoice = Invoice::find(1);
-        $this->assertEquals(109268.88, $invoice->total_price_incl_vat_and_reduction);
+        $this->assertEquals(109268.88, $invoice->total_incl_vat_incl_reduction);
         $this->assertEquals(109248.88, $invoice->amount_open);
         $this->assertEquals('2018-01-31', $invoice->date_payment_due->format('Y-m-d'));
     }

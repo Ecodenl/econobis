@@ -65,8 +65,8 @@ class FullOrder extends Resource
                 'emailTemplateExhortationId' => $this->email_template_exhortation_id,
                 'emailTemplateExhortation' => FullEmailTemplate::make($this->whenLoaded('emailTemplateExhortation')),
 
-                'totalPriceInclVat' => $this->total_price_incl_vat,
-                'totalPriceInclVatPerYear' => $this->total_price_incl_vat_per_year,
+                'totalInclVatInclReduction' => $this->getTotalInclVatInclReductionAttribute(),
+                'totalInclVatInclReductionPerYear' => $this->getTotalInclVatInclReductionPerYearAttribute(),
                 'poNumber' => $this->po_number,
                 'IBAN' => $this->IBAN,
                 'ibanAttn' => $this->iban_attn,

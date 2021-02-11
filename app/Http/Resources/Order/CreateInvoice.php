@@ -27,7 +27,7 @@ class CreateInvoice extends Resource
                 'number' => $this->number,
                 'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend',
                 'contactName' => $this->contact->full_name,
-                'totalPriceInclVat' => $this->total_price_incl_vat,
+                'totalInclVatInclReduction' => $this->getTotalInclVatInclReductionAttribute(),
             ];
     }
 }

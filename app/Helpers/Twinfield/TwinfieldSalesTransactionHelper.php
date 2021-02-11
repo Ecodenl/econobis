@@ -170,9 +170,10 @@ class TwinfieldSalesTransactionHelper
 
         //Salestransaction - Total line maken
         $idTeller = 1;
-        $totaalBedragExcl = round($invoice->getTotalPriceExVatInclReductionAttribute() * 100, 0);
-        $totaalBedragBtw  = round($invoice->getTotalVatAttribute() * 100, 0);
-        $totaalBedragIncl = new Money(($totaalBedragExcl + $totaalBedragBtw ), $this->currency );
+//        $totaalBedragExcl = round($invoice->getTotalExclVatInclReductionAttribute() * 100, 0);
+//        $totaalBedragBtw  = round($invoice->getTotalVatInclReductionAttribute() * 100, 0);
+//        $totaalBedragIncl = new Money(($totaalBedragExcl + $totaalBedragBtw ), $this->currency );
+        $totaalBedragIncl = new Money((round($invoice->getTotalInclVatInclReductionAttribute() * 100, 0) ), $this->currency );
         $twinfieldTransactionLineTotal = new SalesTransactionLine();
         $twinfieldTransactionLineTotal
             ->setId($idTeller)
@@ -211,7 +212,7 @@ class TwinfieldSalesTransactionHelper
 
             if($vatCode && $vatCode->id>0)
             {
-                $vatAmount = $invoiceProduct->getAmountVatAttribute();
+                $vatAmount = $invoiceProduct->getAmountInclReductionVat();
                 $invoiceVatAmount = new Money(round($vatAmount*100, 0), $this->currency );
                 $vatAmountOld  = isset( $vatData[$vatCodeTwinfield]) ? $vatData[$vatCodeTwinfield]['vatAmount'] : 0;
                 $vatData[$vatCodeTwinfield] = ['vatLedgerCode' => $vatLedgerCodeTwinfield, 'vatAmount' => $vatAmountOld + $vatAmount];
@@ -219,7 +220,7 @@ class TwinfieldSalesTransactionHelper
                 $invoiceVatAmount = new Money(0, $this->currency );
             }
 
-            $exclAmount = round($invoiceProduct->getPriceExVatInclReductionAttribute()*100, 0);
+            $exclAmount = round($invoiceProduct->getAmountInclReductionExclVat()*100, 0);
             $invoiceDetailExcl = new Money($exclAmount, $this->currency );
             $twinfieldTransactionLineDetail = new SalesTransactionLine();
             $idTeller++;
@@ -254,6 +255,7 @@ class TwinfieldSalesTransactionHelper
                 ->setDebitCredit($invoiceDetailExcl->getAmount()<0 ? DebitCredit::DEBIT() : DebitCredit::CREDIT());
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
         }
+
         //Salestransaction - versturen naar Twinfield
         try {
             $response = $this->transactionApiConnector->send($twinfieldSalesTransaction);

@@ -21,7 +21,7 @@ class OrderProductsFormItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            totalPrice: props.orderProduct.totalPriceInclVatAndReduction,
+            totalPrice: props.orderProduct.amountInclReductionInclVat,
             orderProduct: {
                 ...props.orderProduct,
             },
@@ -117,44 +117,69 @@ class OrderProductsFormItem extends Component {
     };
 
     updatePrice = () => {
-        let price = 0;
-        let variable_price = validator.isFloat(this.props.orderProduct.variablePrice + '')
-            ? this.props.orderProduct.variablePrice
-            : 0;
-
-        // variable prijs is excl. BTW
-        if (variable_price) {
-            price = variable_price;
-        } else {
-            price = validator.isFloat(this.props.orderProduct.product.currentPrice.priceInclVat + '')
-                ? this.props.orderProduct.product.currentPrice.priceInclVat
+        let inputInclVat = false;
+        let vatPercentage = 0;
+        if (this.state.orderProduct.product.currentPrice) {
+            inputInclVat = this.state.orderProduct.product.currentPrice.inputInclVat;
+            vatPercentage = validator.isFloat(this.state.orderProduct.product.currentPrice.vatPercentage + '')
+                ? this.state.orderProduct.product.currentPrice.vatPercentage
                 : 0;
+        }
+        const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+
+        let price_incl_vat = 0;
+        let price_excl_vat = 0;
+        let variable_price = validator.isFloat(this.state.orderProduct.variablePrice + '')
+            ? this.state.orderProduct.variablePrice
+            : 0;
+        // variable prijs
+        if (variable_price) {
+            if (inputInclVat) {
+                price_incl_vat = variable_price;
+                price_excl_vat = variable_price / vatFactor;
+            } else {
+                price_incl_vat = variable_price * vatFactor;
+                price_excl_vat = variable_price;
+            }
+        } else {
+            if (this.state.orderProduct.product.currentPrice) {
+                price_incl_vat = validator.isFloat(this.state.orderProduct.product.currentPrice.priceInclVat + '')
+                    ? this.state.orderProduct.product.currentPrice.priceInclVat
+                    : 0;
+                price_excl_vat = validator.isFloat(this.state.orderProduct.product.currentPrice.price + '')
+                    ? this.state.orderProduct.product.currentPrice.price
+                    : 0;
+            }
         }
 
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
-        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
-            ? this.state.orderProduct.percentageReduction
-            : 0;
+
+        let amountInclVat = parseFloat(price_incl_vat * amount).toFixed(2);
+        let amountExclVat = parseFloat(price_excl_vat * amount).toFixed(2);
+
         let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '')
             ? this.state.orderProduct.amountReduction
             : 0;
+        if (!inputInclVat) {
+            amountReduction = amountReduction * vatFactor;
+        }
+        amountReduction = parseFloat(amountReduction).toFixed(2);
 
-        let totalPrice = 0;
-        if (price < 0) {
-            const reduction = parseFloat(100) + parseFloat(percentageReduction);
-            totalPrice = price * amount * (reduction / 100) - amountReduction;
+        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
+            ? this.state.orderProduct.percentageReduction
+            : 0;
+        let percentageReductionFactor = percentageReduction / 100;
+
+        let amountReductionPercentage = 0;
+
+        if (inputInclVat) {
+            amountReductionPercentage = amountInclVat * percentageReductionFactor;
         } else {
-            totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
+            amountReductionPercentage = amountExclVat * percentageReductionFactor;
+            amountReductionPercentage = amountReductionPercentage * vatFactor;
         }
-
-        // variable prijs is nog excl. BTW
-        if (variable_price) {
-            let vatPercentage = validator.isFloat(this.state.orderProduct.product.currentPrice.vatPercentage + '')
-                ? this.state.orderProduct.product.currentPrice.vatPercentage
-                : 0;
-            const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
-            totalPrice = totalPrice * vatFactor;
-        }
+        amountReductionPercentage = parseFloat(amountReductionPercentage).toFixed(2);
+        let totalPrice = amountInclVat - amountReduction - amountReductionPercentage;
 
         this.setState({
             ...this.state,
@@ -356,7 +381,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderProductsFormItem);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsFormItem);

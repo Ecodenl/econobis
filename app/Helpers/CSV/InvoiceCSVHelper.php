@@ -86,9 +86,9 @@ class InvoiceCSVHelper
             }
 
             //afronden
-            $invoice->total_price_incl_vat_and_reduction_formatted = $this->formatFinancial($invoice->total_price_incl_vat_and_reduction);
-            $invoice->total_price_ex_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_price_ex_vat_incl_reduction);
-            $invoice->total_vat_formatted = $this->formatFinancial($invoice->total_vat);
+            $invoice->total_incl_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_incl_vat_incl_reduction);
+            $invoice->total_excl_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_excl_vat_incl_reduction);
+            $invoice->total_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_vat_incl_reduction);
         });
 
         $csv = $this->csvExporter->build($chunk, [
@@ -128,9 +128,9 @@ class InvoiceCSVHelper
             'email_exhortation' => 'E-mail aanmaning',
             'days_to_expire' => 'Verloopt over',
             'days_last_reminder' => 'Laatste herinnering',
-            'total_price_ex_vat_incl_reduction_formatted' => 'Notabedrag netto',
-            'total_vat_formatted' => 'Notabedrag BTW',
-            'total_price_incl_vat_and_reduction_formatted' => 'Notabedrag bruto',
+            'total_excl_vat_incl_reduction_formatted' => 'Notabedrag netto',
+            'total_vat_incl_reduction_formatted' => 'Notabedrag BTW',
+            'total_incl_vat_incl_reduction_formatted' => 'Notabedrag bruto',
             'payment_type' => 'Betaalwijze',
             'date_collection_formatted' => 'Incassodatum',
             'collection_iban' => 'Ibannr',

@@ -113,13 +113,15 @@ const OrderProductsFormEdit = props => {
                                                   'nl',
                                                   {
                                                       minimumFractionDigits: 2,
-                                                      maximumFractionDigits: props.orderProduct.product.currentPrice.priceNumberOfDecimals,
+                                                      maximumFractionDigits:
+                                                          props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                                   }
                                               )
                                             : '€' +
                                               props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
-                                                  maximumFractionDigits: props.orderProduct.product.currentPrice.priceNumberOfDecimals,
+                                                  maximumFractionDigits:
+                                                      props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                               })
                                     }
                                     readOnly={true}
@@ -137,7 +139,7 @@ const OrderProductsFormEdit = props => {
                                 onChangeAction={props.handleInputChange}
                             />
                             <InputText
-                                label={'Totaalbedrag'}
+                                label={'Totaalbedrag incl. BTW'}
                                 name={'totalPrice'}
                                 value={
                                     '€' +

@@ -19,7 +19,9 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         this.state = {
             errorMessage: false,
-            orderPrice: props.product.currentPrice.inputInclVat ? props.product.currentPrice.priceInclVat : props.product.currentPrice.price,
+            orderPrice: props.product.currentPrice.inputInclVat
+                ? props.product.currentPrice.priceInclVat
+                : props.product.currentPrice.price,
             totalPrice: '',
             orderProduct: {
                 id: props.orderProduct.id,
@@ -43,7 +45,6 @@ class OrderProductsFormNewProductOneTime extends Component {
                 description: false,
             },
         };
-
     }
 
     componentDidMount() {
@@ -109,12 +110,18 @@ class OrderProductsFormNewProductOneTime extends Component {
     };
 
     updateOrderPrice = () => {
-        let inputInclVat = this.state.product.currentPrice.inputInclVat ? this.state.product.currentPrice.inputInclVat : false;
+        let inputInclVat = this.state.product.currentPrice.inputInclVat
+            ? this.state.product.currentPrice.inputInclVat
+            : false;
         let price = 0;
         if (inputInclVat) {
-            price = validator.isFloat(this.state.product.currentPrice.priceInclVat + '') ? this.state.product.currentPrice.priceInclVat : 0;
+            price = validator.isFloat(this.state.product.currentPrice.priceInclVat + '')
+                ? this.state.product.currentPrice.priceInclVat
+                : 0;
         } else {
-            price = validator.isFloat(this.state.product.currentPrice.price + '') ? this.state.product.currentPrice.price : 0;
+            price = validator.isFloat(this.state.product.currentPrice.price + '')
+                ? this.state.product.currentPrice.price
+                : 0;
         }
 
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
@@ -185,12 +192,8 @@ class OrderProductsFormNewProductOneTime extends Component {
     };
 
     render() {
-        const {
-            amount,
-            amountReduction,
-            percentageReduction,
-        } = this.state.orderProduct;
-        const { description, costCenterId, ledgerId,} = this.state.product;
+        const { amount, amountReduction, percentageReduction } = this.state.orderProduct;
+        const { description, costCenterId, ledgerId } = this.state.product;
 
         let ledgerOptions = this.props.ledgers.filter(ledger => {
             if (!ledger.vatCode) {
@@ -275,9 +278,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                             />
                             <InputText
                                 label={
-                                    this.state.product.currentPrice.inputInclVat
-                                        ? 'Prijs incl. BTW'
-                                        : 'Prijs excl. BTW'
+                                    this.state.product.currentPrice.inputInclVat ? 'Prijs incl. BTW' : 'Prijs excl. BTW'
                                 }
                                 name={'orderPrice'}
                                 value={
@@ -301,7 +302,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={'Totaalbedrag'}
+                                label={'Totaalbedrag incl. BTW'}
                                 name={'totalPrice'}
                                 value={
                                     '€' +
@@ -355,7 +356,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderProductsFormNewProductOneTime);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderProductsFormNewProductOneTime);

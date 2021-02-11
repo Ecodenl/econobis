@@ -58,7 +58,6 @@ class OrderProductsFormNewProductOneTime extends Component {
                 description: false,
             },
         };
-
     }
 
     handleInputChange = event => {
@@ -181,10 +180,10 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         let priceNumberOfDecimals = value;
 
-        if(priceNumberOfDecimals < 2){
+        if (priceNumberOfDecimals < 2) {
             priceNumberOfDecimals = 2;
         }
-        if(priceNumberOfDecimals > 6){
+        if (priceNumberOfDecimals > 6) {
             priceNumberOfDecimals = 6;
         }
 
@@ -196,13 +195,11 @@ class OrderProductsFormNewProductOneTime extends Component {
                     priceNumberOfDecimals: priceNumberOfDecimals,
                     price: parseFloat(this.state.product.price).toFixed(priceNumberOfDecimals),
                     priceInclVat: parseFloat(this.state.product.priceInclVat).toFixed(priceNumberOfDecimals),
-
                 },
             },
             this.updatePrice
         );
     };
-
 
     updatePrice = () => {
         let inputInclVat = this.state.product.inputInclVat ? this.state.product.inputInclVat : false;
@@ -243,37 +240,51 @@ class OrderProductsFormNewProductOneTime extends Component {
     };
 
     updateOrderPrice = () => {
-        let inputInclVat = this.state.product.inputInclVat ? this.state.product.inputInclVat : false;
-        let price = 0;
-        if (inputInclVat) {
-            price = validator.isFloat(this.state.product.priceInclVat + '') ? this.state.product.priceInclVat : 0;
-        } else {
-            price = validator.isFloat(this.state.product.price + '') ? this.state.product.price : 0;
-        }
+        let inputInclVat = false;
+        let vatPercentage = 0;
+        inputInclVat = this.state.product.inputInclVat;
+        vatPercentage = validator.isFloat(this.state.product.vatPercentage + '') ? this.state.product.vatPercentage : 0;
+        const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
+
+        let price_incl_vat = validator.isFloat(this.state.product.priceInclVat + '')
+            ? this.state.product.priceInclVat
+            : 0;
+        let price_excl_vat = validator.isFloat(this.state.product.price + '') ? this.state.product.price : 0;
 
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
-        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
-            ? this.state.orderProduct.percentageReduction
-            : 0;
+
+        let amountInclVat = parseFloat(price_incl_vat * amount).toFixed(2);
+        let amountExclVat = parseFloat(price_excl_vat * amount).toFixed(2);
+
+        let orderPrice = 0;
+        if (!inputInclVat) {
+            orderPrice = price_excl_vat;
+        } else {
+            orderPrice = price_incl_vat;
+        }
         let amountReduction = validator.isFloat(this.state.orderProduct.amountReduction + '')
             ? this.state.orderProduct.amountReduction
             : 0;
-
-        let orderPrice = price;
-        let totalPrice = 0;
-        if (price < 0) {
-            const reduction = parseFloat(100) + parseFloat(percentageReduction);
-            totalPrice = price * amount * (reduction / 100) - amountReduction;
-        } else {
-            totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
-        }
         if (!inputInclVat) {
-            let vatPercentage = validator.isFloat(this.state.product.vatPercentage + '')
-                ? this.state.product.vatPercentage
-                : 0;
-            const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
-            totalPrice = totalPrice * vatFactor;
+            amountReduction = amountReduction * vatFactor;
         }
+        amountReduction = parseFloat(amountReduction).toFixed(2);
+
+        let percentageReduction = validator.isFloat(this.state.orderProduct.percentageReduction + '')
+            ? this.state.orderProduct.percentageReduction
+            : 0;
+        let percentageReductionFactor = percentageReduction / 100;
+
+        let amountReductionPercentage = 0;
+
+        if (inputInclVat) {
+            amountReductionPercentage = amountInclVat * percentageReductionFactor;
+        } else {
+            amountReductionPercentage = amountExclVat * percentageReductionFactor;
+            amountReductionPercentage = amountReductionPercentage * vatFactor;
+        }
+        amountReductionPercentage = parseFloat(amountReductionPercentage).toFixed(2);
+        let totalPrice = amountInclVat - amountReduction - amountReductionPercentage;
 
         this.setState({
             ...this.state,
@@ -331,11 +342,7 @@ class OrderProductsFormNewProductOneTime extends Component {
     };
 
     render() {
-        const {
-            amount,
-            amountReduction,
-            percentageReduction,
-        } = this.state.orderProduct;
+        const { amount, amountReduction, percentageReduction } = this.state.orderProduct;
         const {
             description,
             vatPercentage,
@@ -381,7 +388,6 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 />
                             </div>
                         ) : null}
-
 
                         <div className="row">
                             <div className="form-group col-sm-6">&nbsp;</div>
@@ -532,7 +538,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputText
-                                label={'Totaalbedrag'}
+                                label={'Totaalbedrag incl. BTW'}
                                 name={'totalPrice'}
                                 value={
                                     '€' +

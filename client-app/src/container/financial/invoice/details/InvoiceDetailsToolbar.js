@@ -56,7 +56,7 @@ class InvoiceToolbar extends Component {
 
     showSend = () => {
         let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeken';
-        if (paymentType == 'incasso' && this.props.invoiceDetails.totalPriceInclVatAndReduction < 0) {
+        if (paymentType == 'incasso' && this.props.invoiceDetails.totalInclVatInclReduction < 0) {
             this.props.setError(
                 405,
                 'Een nota met een negatief bedrag kan geen incasso zijn. Wil je a.u.b. de betaalwijze van de order aanpassen in "Overboeken".'
@@ -64,9 +64,7 @@ class InvoiceToolbar extends Component {
         } else {
             this.props.previewSend([this.props.invoiceDetails.id]);
             hashHistory.push(
-                `/financieel/${
-                    this.props.invoiceDetails.order.administrationId
-                }/notas/te-verzenden/verzenden/email/${paymentType}`
+                `/financieel/${this.props.invoiceDetails.order.administrationId}/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         }
     };
@@ -75,9 +73,7 @@ class InvoiceToolbar extends Component {
         let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeken';
         this.props.previewSend([this.props.invoiceDetails.id]);
         hashHistory.push(
-            `/financieel/${
-                this.props.invoiceDetails.order.administrationId
-            }/notas/te-verzenden/verzenden/post/${paymentType}`
+            `/financieel/${this.props.invoiceDetails.order.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
         );
     };
 
@@ -204,7 +200,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoiceToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceToolbar);

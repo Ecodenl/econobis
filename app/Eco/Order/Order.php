@@ -143,9 +143,9 @@ class Order extends Model
         return OrderStatus::get($this->status_id);
     }
 
-    public function getTotalPriceInclVatAttribute()
+        public function getTotalInclVatInclReductionAttribute()
     {
-        $total = 0;
+        $amountInclVat = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
             if($orderProduct->is_one_time_and_paid_product){
@@ -153,16 +153,16 @@ class Order extends Model
             }
             if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
-                $total += $orderProduct->total_price_incl_vat_and_reduction;
+                $amountInclVat += $orderProduct->getAmountInclReductionInclVat();
             }
         }
 
-        return $total;
+        return $amountInclVat;
     }
 
-    public function getTotalPriceExVatAttribute()
+    public function getTotalExclVatInclReductionAttribute()
     {
-        $total = 0;
+        $amountExclVat = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
             if($orderProduct->is_one_time_and_paid_product){
@@ -170,16 +170,16 @@ class Order extends Model
             }
             if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
-                $total += $orderProduct->total_price_ex_vat_incl_reduction;
+                $amountExclVat += $orderProduct->getAmountInclReductionExclVat();
             }
         }
 
-        return $total;
+        return $amountExclVat;
     }
 
-    public function getTotalPriceInclVatPerYearAttribute()
+    public function getTotalInclVatInclReductionPerYearAttribute()
     {
-        $total = 0;
+        $amountInclVatPerYear = 0;
 
         foreach ($this->orderProducts as $orderProduct) {
             if($orderProduct->is_one_time_and_paid_product){
@@ -187,11 +187,11 @@ class Order extends Model
             }
             if ((Carbon::parse($orderProduct->date_end)->gte(Carbon::today()) || $orderProduct->date_end === null)
             ) {
-                $total += $orderProduct->total_price_incl_vat_and_reduction_per_year;
+                $amountInclVatPerYear += $orderProduct->getAmountInclReductionInclVatPerYear();
             }
         }
 
-        return $total;
+        return $amountInclVatPerYear;
     }
 
     public function getCanCreateInvoiceAttribute()

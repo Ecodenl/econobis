@@ -90,34 +90,34 @@ class Invoice extends Model
         return InvoiceStatus::get($this->status_id);
     }
 
-    public function getTotalPriceInclVatAndReductionAttribute()
+    public function getTotalInclVatInclReductionAttribute()
     {
-        $price = 0;
+        $amountInclVat = 0;
 
         foreach($this->invoiceProducts as $invoiceProduct) {
-            $price += $invoiceProduct->price_incl_vat_and_reduction;
+            $amountInclVat += $invoiceProduct->getAmountInclReductionInclVat();
         }
 
-        return $price;
+        return $amountInclVat;
     }
 
-    public function getTotalPriceExVatInclReductionAttribute()
+    public function getTotalExclVatInclReductionAttribute()
     {
-        $price = 0;
+        $amountExclVat = 0;
 
         foreach($this->invoiceProducts as $invoiceProduct) {
-            $price += $invoiceProduct->price_ex_vat_incl_reduction;
+            $amountExclVat += $invoiceProduct->getAmountInclReductionExclVat();
         }
 
-        return $price;
+        return $amountExclVat;
     }
 
-    public function getTotalVatAttribute()
+    public function getTotalVatInclReductionAttribute()
     {
         $vat = 0;
 
         foreach($this->invoiceProducts as $invoiceProduct) {
-            $vat += $invoiceProduct->amount_vat;
+            $vat += $invoiceProduct->getAmountInclReductionVat();
         }
 
         return $vat;
@@ -156,7 +156,7 @@ class Invoice extends Model
 
     public function getAmountOpenAttribute()
     {
-        $amountOpen = $this->total_price_incl_vat_and_reduction;
+        $amountOpen = $this->total_incl_vat_incl_reduction;
         foreach($this->payments as $payment){
             $amountOpen -= $payment->amount;
         }
@@ -178,12 +178,12 @@ class Invoice extends Model
 
 
             if(!isset($vatInfo[$vat])){
-                $vatInfo[$vat]['total_over'] = $invoiceProduct->price_ex_vat_incl_reduction;
-                $vatInfo[$vat]['total_amount'] = $invoiceProduct->amount_vat;
+                $vatInfo[$vat]['total_over'] = $invoiceProduct->getAmountInclReductionExclVat();
+                $vatInfo[$vat]['total_amount'] = $invoiceProduct->getAmountInclReductionVat();
             }
             else{
-                $vatInfo[$vat]['total_over'] += $invoiceProduct->price_ex_vat_incl_reduction;
-                $vatInfo[$vat]['total_amount'] += $invoiceProduct->amount_vat;
+                $vatInfo[$vat]['total_over'] += $invoiceProduct->getAmountInclReductionExclVat();
+                $vatInfo[$vat]['total_amount'] += $invoiceProduct->getAmountInclReductionVat();
             }
         }
 

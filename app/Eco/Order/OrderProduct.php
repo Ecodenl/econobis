@@ -36,120 +36,192 @@ class OrderProduct extends Model
         return $this->belongsTo(CostCenter::class);
     }
 
-    public function getTotalPriceInclVatAndReductionAttribute()
+    public function getAmountExclVat()
     {
-        $priceInclVat = 0;
-
         if(!$this->product->current_price) return 0;
 
         $inputInclVat = $this->product->currentPrice->input_incl_vat;
-        $vat_percentage = $this->product->currentPrice->vat_percentage;
 
-        if($inputInclVat){
-            $productPrice = $this->product->currentPrice->price_incl_vat;
-            $priceInclVat = ($this->amount * $productPrice);
-            if ($this->percentage_reduction) {
-                if($priceInclVat < 0){
-                    $priceInclVat = ($priceInclVat * ((100 + $this->percentage_reduction) / 100));
-                }
-                else {
-                    $priceInclVat = ($priceInclVat * ((100 - $this->percentage_reduction) / 100));
-                }
-            }
-            if ($this->amount_reduction) {
-                $priceInclVat = $priceInclVat - $this->amount_reduction;
-            }
-
-        } else {
-            //indien invoer prijs excl. BTW is geweest, dan kortingsbedragen over excl. BTW bepalen en resultaat incl. BTW
-            if ($this->variable_price) {
-                //Indien variabele prijs (is ook excl.)
+        //Indien variabele prijs
+        if ($this->variable_price) {
+            if($inputInclVat) // indien ingevoerd incl. BTW dan excl. BTW bepalen.
+            {
+                $vatPercentage = $this->product->currentPrice->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $productPrice = $this->variable_price / $vatFactor;
+            } else {
                 $productPrice = $this->variable_price;
-            } else {
-                $productPrice = $this->product->currentPrice->price;
             }
-            $price = ($this->amount * $productPrice);
-
-            //indien invoer prijs excl. BTW is geweest, dan kortingsbedragen over excl. BTW bepalen en resultaat incl. BTW
-            if ($this->percentage_reduction) {
-                if ($price < 0) {
-                    $price = ($price * ((100 + $this->percentage_reduction) / 100));
-                } else {
-                    $price = ($price * ((100 - $this->percentage_reduction) / 100));
-                }
-            }
-            if ($this->amount_reduction) {
-                $price -= $this->amount_reduction;
-            }
-            if ($vat_percentage) {
-                $priceInclVat = ($price + ($price * ($vat_percentage / 100)));
-            } else {
-                $priceInclVat = $price;
-            }
+        } else {
+            $productPrice = $this->product->currentPrice->price;
         }
 
-        return $priceInclVat;
-
+        $amountExclVat = $productPrice * $this->amount;
+        return floatval( number_format( $amountExclVat, 2, '.', ''));
     }
-
-    public function getTotalPriceExVatInclReductionAttribute()
+    public function getAmountInclVat()
     {
-        $price = 0;
-
         if(!$this->product->current_price) return 0;
 
-        if($this->variable_price) {
-            $productPrice = $this->variable_price;
-        }
-        else{
-            $productPrice = $this->product->current_price->price;
-        }
+        $inputInclVat = $this->product->currentPrice->input_incl_vat;
 
-        $price += ($this->amount * $productPrice);
-
-        if ($this->percentage_reduction) {
-            if($price < 0){
-                $price = ($price * ((100 + $this->percentage_reduction) / 100));
+        //Indien variabele prijs
+        if ($this->variable_price) {
+            if(!$inputInclVat) // indien ingevoerd excl. BTW dan incl. BTW bepalen.
+            {
+                $vatPercentage = $this->product->currentPrice->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $productPrice = $this->variable_price * $vatFactor;
+            } else {
+                $productPrice = $this->variable_price;
             }
-            else {
-                $price = ($price * ((100 - $this->percentage_reduction) / 100));
-            }
+        } else {
+            $productPrice = $this->product->currentPrice->price_incl_vat;
         }
 
+        $amountInclVat = $productPrice * $this->amount;
+        return floatval( number_format( $amountInclVat, 2, '.', ''));
+    }
+    public function getAmountVat()
+    {
+        $amountVat = $this->getAmountInclVat() - $this->getAmountExclVat();
+        return floatval( number_format( $amountVat, 2, '.', ''));
+    }
+    public function getAmountReductionAmountExclVat()
+    {
+        $amountReduction = 0;
         if ($this->amount_reduction) {
-            $price -= $this->amount_reduction;
+            $amountReduction = $this->amount_reduction; // ingevoerd bedrag korting
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
+            if($inputInclVat) // indien price ingevoerd incl. BTW dan ingevoerd bedrag korting ook incl.
+            {
+                $vatPercentage = $this->product->currentPrice->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = $amountReduction / $vatFactor;
+            }
         }
+        return floatval(number_format( ($amountReduction * -1), 2, '.', ''));
+    }
+    public function getAmountReductionAmountInclVat()
+    {
+        $amountReduction = 0;
+        if ($this->amount_reduction) {
+            $amountReduction = $this->amount_reduction; // ingevoerd bedrag korting
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
+            if(!$inputInclVat) // indien price ingevoerd excl. BTW dan ingevoerd bedrag korting ook excl.
+            {
+                $vatPercentage = $this->product->currentPrice->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = $amountReduction * $vatFactor;
+            }
+        }
+        return floatval(number_format( ($amountReduction * -1), 2, '.', ''));
+    }
+    public function getAmountReductionAmountVat()
+    {
+        $amountVat = $this->getAmountReductionAmountInclVat() - $this->getAmountReductionAmountExclVat();
+        return floatval( number_format( $amountVat, 2, '.', ''));
+    }
+    public function getAmountReductionPercentageExclVat()
+    {
+        $amountReduction = 0;
+        if ($this->percentage_reduction) {
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
 
-        return $price;
+            if($inputInclVat) // indien price ingevoerd incl. BTW dan percentage korting ook over incl.
+            {
+                $amountReduction = $this->getAmountInclVat() * ($this->percentage_reduction / 100);
+                $vatPercentage = $this->product->currentPrice->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = $amountReduction / $vatFactor;
+            }else {
+                $amountReduction = $this->getAmountExclVat() * ($this->percentage_reduction) / 100;
+            }
+        }
+        return floatval( number_format(  ($amountReduction* -1), 2, '.', '') );
+    }
+    public function getAmountReductionPercentageInclVat()
+    {
+        $amountReduction = 0;
+        if ($this->percentage_reduction) {
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
 
+            if($inputInclVat) // indien price ingevoerd incl. BTW dan percentage korting ook over incl.
+            {
+                $amountReduction = $this->getAmountInclVat() * ($this->percentage_reduction / 100);
+            }else {
+                $amountReduction = $this->getAmountExclVat() * ($this->percentage_reduction) / 100;
+                $vatPercentage = $this->product->currentPrice->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = $amountReduction * $vatFactor;
+            }
+        }
+        return floatval( number_format(  ($amountReduction* -1), 2, '.', '') );
+    }
+    public function getAmountReductionPercentageVat()
+    {
+        $amountVat = $this->getAmountReductionPercentageInclVat() - $this->getAmountReductionPercentageExclVat();
+        return floatval( number_format( $amountVat, 2, '.', ''));
+    }
+    public function getAmountInclReductionExclVat()
+    {
+        $amountExclVat = $this->getAmountExclVat();
+        $amountReductionAmountExclVat = $this->getAmountReductionAmountExclVat();
+        $amountReductionPercentageExclVat = $this->getAmountReductionPercentageExclVat();
+        return floatval( number_format( ($amountExclVat + $amountReductionAmountExclVat + $amountReductionPercentageExclVat), 2, '.', ''));
     }
 
-    public function getTotalPriceInclVatAndReductionPerYearAttribute()
+    public function getAmountInclReductionInclVat()
     {
+        $amountInclVat = $this->getAmountInclVat();
+        $amountReductionAmountInclVat = $this->getAmountReductionAmountInclVat();
+        $amountReductionPercentageInclVat = $this->getAmountReductionPercentageInclVat();
+        return floatval( number_format( ($amountInclVat + $amountReductionAmountInclVat + $amountReductionPercentageInclVat), 2, '.', ''));
+    }
+
+    public function getAmountInclReductionInclVatPerYear()
+    {
+        return $this->getAmountInclReductionInclVat();
         switch ($this->product->invoice_frequency_id){
             case 'monthly':
-                return ($this->total_price_incl_vat_and_reduction * 12);
+                return ($this->getAmountInclReductionInclVat() * 12);
             case 'quarterly':
-                return ($this->total_price_incl_vat_and_reduction * 4);
+                return ($this->getAmountInclReductionInclVat() * 4);
             case 'half-year':
-                return ($this->total_price_incl_vat_and_reduction * 2);
+                return ($this->getAmountInclReductionInclVat() * 2);
             default:
-                return $this->total_price_incl_vat_and_reduction;
+                return $this->getAmountInclReductionInclVat();
         }
     }
 
-    public function getTotalPriceInclVatAndReductionForPeriodAttribute()
+    public function getAmountInclReductionInclVatForPeriod()
     {
         switch ($this->order->collection_frequency_id) {
             case 'monthly':
-                return ($this->total_price_incl_vat_and_reduction_per_year / 12);
+                return ($this->getAmountInclReductionInclVatPerYear() / 12);
             case 'quarterly':
-                return ($this->total_price_incl_vat_and_reduction_per_year / 4);
+                return ($this->getAmountInclReductionInclVatPerYear() / 4);
             case 'half-year':
-                return ($this->total_price_incl_vat_and_reduction_per_year / 2);
+                return ($this->getAmountInclReductionInclVatPerYear() / 2);
             default:
-                return $this->total_price_incl_vat_and_reduction_per_year;
+                return $this->getAmountInclReductionInclVatPerYear();
         }
+    }
+
+    private function formatFinancial($amount){
+        return number_format($amount, 2, ',', '');
     }
 
     public function getIsOneTimeAndPaidProductAttribute(){

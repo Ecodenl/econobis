@@ -30,31 +30,7 @@ class FinancialOverviewParticipantProjectController extends Controller
 
         foreach ($participants as $participant) {
             //calculate start_value en end_value of participation
-
-            $startValue = $this->calculateParticipationsValue($participant, $startDate);
-            $endValue = $this->calculateParticipationsValue($participant, $endDate);
-
-            if($startValue['quantity'] != 0 || $startValue['bookworth'] != 0 || $startValue['amount'] != 0
-                || $endValue['quantity'] != 0 || $endValue['bookworth'] != 0 || $endValue['amount'] != 0){
-                FinancialOverviewParticipantProject::create([
-                    'financial_overview_project_id' => $financialOverviewProject->id,
-                    'participant_project_id' => $participant->id,
-                    'quantity_start_value' => $startValue['quantity'],
-                    'quantity_end_value' => $endValue['quantity'],
-                    'bookworth_start_value' => $startValue['bookworth'],
-                    'bookworth_end_value' => $endValue['bookworth'],
-                    'amount_start_value' => $startValue['amount'],
-                    'amount_end_value' => $endValue['amount'],
-                ]);
-
-                FinancialOverviewContact::updateOrCreate([
-                    //Add unique field to match here
-                    'financial_overview_id'   => $financialOverviewProject->financialOverview->id,
-                    'contact_id'   => $participant->contact_id,
-                ],[
-                    'status_id' => 'concept',
-                ]);
-            }
+            $this->createFinancialOverviewParticipantProjects($participant, $startDate, $endDate, $financialOverviewProject);
 
         }
     }
@@ -68,34 +44,46 @@ class FinancialOverviewParticipantProjectController extends Controller
             $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
             $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
 
-            $startValue = $this->calculateParticipationsValue($participant, $startDate);
-            $endValue = $this->calculateParticipationsValue($participant, $endDate);
-
-            if($startValue['quantity'] != $participant->quantity_start_value || $startValue['bookworth'] != $participant->bookworth_start_value || $startValue['amount'] != $participant->amount_start_value
-                || $endValue['quantity'] != $participant->quantity_end_value || $endValue['bookworth'] != $participant->bookworth_end_value || $endValue['amount'] != $participant->amount_end_value) {
-
-                FinancialOverviewParticipantProject::updateOrCreate([
-                    //Add unique field to match here
-                    'participant_project_id' => $participant->id,
-                    'financial_overview_project_id' => $financialOverviewProject->id,
-                ], [
-                    'quantity_start_value' => $startValue['quantity'],
-                    'quantity_end_value' => $endValue['quantity'],
-                    'bookworth_start_value' => $startValue['bookworth'],
-                    'bookworth_end_value' => $endValue['bookworth'],
-                    'amount_start_value' => $startValue['amount'],
-                    'amount_end_value' => $endValue['amount'],
-                ]);
-
-                FinancialOverviewContact::updateOrCreate([
-                    //Add unique field to match here
-                    'financial_overview_id' => $financialOverviewProject->financialOverview->id,
-                    'contact_id' => $participant->contact_id,
-                ], [
-                    'status_id' => 'concept',
-                ]);
-            }
+            $this->createFinancialOverviewParticipantProjects($participant, $startDate, $endDate, $financialOverviewProject);
         }
+    }
+
+    /**
+     * @param ParticipantProject $participant
+     * @param Carbon $startDate
+     * @param Carbon $endDate
+     * @param FinancialOverviewProject $financialOverviewProject
+     */
+    protected function createFinancialOverviewParticipantProjects(ParticipantProject $participant, Carbon $startDate, Carbon $endDate, FinancialOverviewProject $financialOverviewProject)
+    {
+        $startValue = $this->calculateParticipationsValue($participant, $startDate);
+        $endValue = $this->calculateParticipationsValue($participant, $endDate);
+
+        if ($startValue['quantity'] != 0 || $startValue['bookworth'] != 0 || $startValue['amount'] != 0
+            || $endValue['quantity'] != 0 || $endValue['bookworth'] != 0 || $endValue['amount'] != 0) {
+
+            FinancialOverviewParticipantProject::updateOrCreate([
+                //Add unique field to match here
+                'financial_overview_project_id' => $financialOverviewProject->id,
+                'participant_project_id' => $participant->id,
+            ], [
+                'quantity_start_value' => $startValue['quantity'],
+                'quantity_end_value' => $endValue['quantity'],
+                'bookworth_start_value' => $startValue['bookworth'],
+                'bookworth_end_value' => $endValue['bookworth'],
+                'amount_start_value' => $startValue['amount'],
+                'amount_end_value' => $endValue['amount'],
+            ]);
+
+            FinancialOverviewContact::updateOrCreate([
+                //Add unique field to match here
+                'financial_overview_id' => $financialOverviewProject->financialOverview->id,
+                'contact_id' => $participant->contact_id,
+            ], [
+                'status_id' => 'concept',
+            ]);
+        }
+
     }
 
     protected function calculateParticipationsValue($participant, $dateReference)
@@ -105,7 +93,15 @@ class FinancialOverviewParticipantProjectController extends Controller
         $projectBookWorth = $projectValueCourse ? $projectValueCourse->book_worth : 0;
 
         $mutations = $participant->mutationsDefinitive()
-            ->whereDate('date_entry', '<', $dateReference);
+            ->whereDate('date_entry', '<=', $dateReference)
+            ->get();
+
+        $participationsQBA['quantity'] = 0;
+        $participationsQBA['bookworth'] = 0;
+        $participationsQBA['amount'] = 0;
+        if(count($mutations) == 0) {
+            return $participationsQBA;
+        }
 
         $participationsValue = 0;
 
@@ -117,13 +113,9 @@ class FinancialOverviewParticipantProjectController extends Controller
             $measureType = 'amount';
         }
 
-        foreach ($mutations->get() as $mutation) {
+        foreach ($mutations as $mutation) {
             $participationsValue += $mutation[$measureType] ;
         }
-
-        $participationsQBA['quantity'] = 0;
-        $participationsQBA['bookworth'] = 0;
-        $participationsQBA['amount'] = 0;
 
         if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
             $participationsQBA['quantity'] = $participationsValue;

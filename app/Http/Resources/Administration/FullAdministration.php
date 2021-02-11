@@ -24,7 +24,7 @@ class FullAdministration extends Resource
             [
                 'id' => $this->id,
                 'name' => $this->name,
-                'administrationNumber' => $this->administration_number,
+                'administrationCode' => $this->administration_code,
                 'address' => $this->address,
                 'postalCode' => $this->postal_code,
                 'city' => $this->city,

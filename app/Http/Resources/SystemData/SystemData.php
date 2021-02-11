@@ -66,6 +66,7 @@ use App\Eco\Team\Team;
 use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
+use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\CostCenter\FullCostCenter;
@@ -143,7 +144,7 @@ class SystemData extends Resource
 
         return [
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
-//            'administrations' => FullAdministration::collection(Administration::all()),
+            'administrationsPeek' => AdministrationPeek::collection(Administration::orderBy('id')->get()),
             'appName' => config('app.name'),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),

@@ -19,7 +19,7 @@ class GridAdministration extends Resource
            return [
                 'id' => $this->id,
                 'name' => $this->name,
-                'administration' => $this->administration_number,
+                'administration' => $this->administration_code,
                 'address' => $this->address,
                 'postalCode' => $this->postal_code,
                 'city' => $this->city,

@@ -73,7 +73,7 @@ class AdministrationController extends ApiController
 
         $data = $input
             ->string('name')->validate('required')->next()
-            ->integer('administrationNumber')->whenMissing(null)->onEmpty(null)->alias('administration_number')->next()
+            ->string('administrationCode')->whenMissing(null)->onEmpty(null)->alias('administration_code')->next()
             ->string('address')->next()
             ->string('postalCode')->alias('postal_code')->next()
             ->string('city')->next()
@@ -169,7 +169,7 @@ class AdministrationController extends ApiController
         $this->authorize('manage', Administration::class);
         $data = $input
             ->string('name')->validate('required')->next()
-            ->integer('administrationNumber')->whenMissing(null)->onEmpty(null)->alias('administration_number')->next()
+            ->string('administrationCode')->whenMissing(null)->onEmpty(null)->alias('administration_code')->next()
             ->string('address')->next()
             ->string('postalCode')->alias('postal_code')->next()
             ->string('city')->next()

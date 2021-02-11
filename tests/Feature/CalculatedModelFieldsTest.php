@@ -357,7 +357,7 @@ class CalculatedModelFieldsTest extends TestCase
 
         $ad = new Administration();
         $ad->name = 'test administratie';
-        $ad->administration_number = 1445;
+        $ad->administration_code = "1445";
         $ad->btw_number = '1233123123';
         $ad->IBAN = 'CH3608387000001080173';
         $ad->created_by_id = 1;

@@ -23,7 +23,7 @@ class SeedDefaultPortalSettingsLayout extends Migration
             $portalSettingsLayout->description = 'Standaard portal instellingen layout';
             $portalSettingsLayout->is_default = true;
             $portalSettingsLayout->portal_logo_file_name = 'conversion.png';
-            $portalSettingsLayout->portal_favicon_file_name = 'favicon.ico';
+            $portalSettingsLayout->portal_favicon_file_name = 'favicon-' . $portalSettingsLayout->id . '.ico';
             $portalSettingsLayout->portal_background_color = PortalSettings::get('backgroundColor');
             $portalSettingsLayout->portal_background_text_color = PortalSettings::get('backgroundTextColor');
             $portalSettingsLayout->login_header_background_color = PortalSettings::get('backgroundImageColor');
@@ -56,7 +56,6 @@ class SeedDefaultPortalSettingsLayout extends Migration
             }
 
             $portalSettingsLayout->portal_logo_file_name = 'logo-' . $portalSettingsLayout->id . '.png';
-            $portalSettingsLayout->portal_favicon_file_name = 'favicon-' . $portalSettingsLayout->id . '.ico';
             $portalSettingsLayout->save();
 
         }

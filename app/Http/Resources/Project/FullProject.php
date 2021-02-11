@@ -7,6 +7,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
+use App\Http\Resources\FinancialOverview\FullFinancialOverviewProject;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Task\GridTask;
@@ -105,6 +106,7 @@ class FullProject extends Resource
                 'emailTemplateAgreement' => FullEmailTemplate::make($this->whenLoaded('emailTemplateAgreement')),
                 'linkAgreeTerms' => $this->link_agree_terms,
                 'linkUnderstandInfo' => $this->link_understand_info,
+                'linkProjectInfo' => $this->link_project_info,
                 'showQuestionAboutMembership' => $this->show_question_about_membership,
                 'questionAboutMembershipGroupId' => $this->question_about_membership_group_id,
                 'questionAboutMembershipGroup' => FullContactGroup::make($this->whenLoaded('questionAboutMembershipGroup')),
@@ -116,7 +118,12 @@ class FullProject extends Resource
                 'textBecomeNoMember' => $this->text_become_no_member,
                 'noMemberGroupId' => $this->no_member_group_id,
                 'noMemberGroup' => FullContactGroup::make($this->whenLoaded('noMemberGroup')),
-
+                'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
+                'textAgreeTerms' => $this->text_agree_terms,
+                'textLinkAgreeTerms' => $this->text_link_agree_terms,
+                'textLinkUnderstandInfo' => $this->text_link_understand_info,
+                'textAcceptAgreement' => $this->text_accept_agreement,
+                'textAcceptAgreementQuestion' => $this->text_accept_agreement_question,
             ];
     }
 }

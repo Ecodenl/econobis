@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,44 +11,32 @@ import LoanDetails from './LoanDetails';
 import ObligationDetails from './ObligationDetails';
 import CapitalDetails from './CapitalDetails';
 import PcrDetails from './PcrDetails';
-import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
+import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
+import { PortalUserContext } from '../../../context/PortalUserContext';
 
 function ProjectDetails({ match }) {
-    const [portalSettings, setPortalSettings] = useState({});
+    const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
+    const { currentSelectedContact } = useContext(PortalUserContext);
     const [project, setProject] = useState({});
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        const keys =
-            '?keys[]=portalName' +
-            '&keys[]=portalWebsite' +
-            '&keys[]=portalUrl' +
-            '&keys[]=responsibleUserId' +
-            '&keys[]=checkContactTaskResponsibleUserId' +
-            '&keys[]=linkPrivacyPolicy' +
-            '&keys[]=pcrPowerKwhConsumptionPercentage' +
-            '&keys[]=pcrGeneratingCapacityOneSolorPanel';
-        PortalSettingsAPI.fetchPortalSettings(keys)
-            .then(payload => {
-                setPortalSettings({ ...payload.data });
-            })
-            .catch(error => {
-                this.setState({ isLoading: false, hasError: true });
-            });
-
-        (function callFetchProject() {
-            setLoading(true);
-            ProjectAPI.fetchProject(match.params.id)
-                .then(payload => {
-                    setProject(payload.data.data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setLoading(false);
-                });
-        })();
-    }, [match]);
+        if (currentSelectedContact.id) {
+            (function callFetchProject() {
+                setLoading(true);
+                ProjectAPI.fetchProject(match.params.id)
+                    .then(payload => {
+                        setProject(payload.data.data);
+                        setCurrentThemeSettings(payload.data.data.administration.portalSettingsLayoutAssigned);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            })();
+        }
+    }, [match, currentSelectedContact]);
 
     function renderDetails() {
         switch (project.projectType.codeRef) {
@@ -72,8 +60,18 @@ function ProjectDetails({ match }) {
             ) : (
                 <>
                     <Row>
+                        <ButtonGroup aria-label="Steps" className="float-left">
+                            <Link to={`/inschrijven-projecten`}>
+                                <Button className={'w-button'} size="sm">
+                                    Inschrijven projecten
+                                </Button>
+                            </Link>
+                        </ButtonGroup>
+                    </Row>
+                    <Row>
                         <Col>
                             <h1 className="content-heading">Inschrijven project</h1>
+                            <div className="content-subheading">Uitgevende instantie {project.administration.name}</div>
                         </Col>
                     </Row>
 
@@ -83,7 +81,7 @@ function ProjectDetails({ match }) {
                         <Col>
                             <p>
                                 Meer informatie over dit project vind je{' '}
-                                <a href={`${project.linkUnderstandInfo}`} target="_blank">
+                                <a href={`${project.linkProjectInfo}`} target="_blank">
                                     hier
                                 </a>
                             </p>

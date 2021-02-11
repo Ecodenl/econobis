@@ -16,15 +16,27 @@ import ProjectFormDefaultPostalcodeLinkCapital from '../form-default/ProjectForm
 import ProjectFormDefaultCapital from '../form-default/ProjectFormDefaultCapital';
 import ProjectFormDefaultObligation from '../form-default/ProjectFormDefaultObligation';
 import ProjectFormDefaultLoan from '../form-default/ProjectFormDefaultLoan';
+import moment from 'moment/moment';
+import { isEmpty } from 'lodash';
 
 class ProjectNewApp extends Component {
     constructor(props) {
         super(props);
 
+        const defaultTextAgreeTerms =
+            'Om deel te kunnen nemen dien je akkoord te gaan met de voorwaarden en dien je te bevestigen dat je de project informatie hebt gelezen en begrepen.';
+        const defaultTextLinkAgreeTerms = 'Ik ga akkoord met de {voorwaarden_link}';
+        const defaultTextLinkUnderstandInfo =
+            'Ik heb de {project_informatie_link} (inclusief de daarin beschreven risico’s) behorende bij het project gelezen en begrepen';
+        const defaultTextAcceptAgreement =
+            'Wanneer je akkoord gaat met het inschrijfformulier en in de inschrijving bevestigd, is je inschrijving definitief';
+        const defaultTextAcceptAgreementQuestion = 'Ik ben akkoord met deze inschrijving';
+
         this.state = {
             contactGroups: [],
             showPostalCodeLinkFields: false,
             confirmSubmit: false,
+            disableBeforeEntryDate: '',
             project: {
                 name: '',
                 code: '',
@@ -67,6 +79,11 @@ class ProjectNewApp extends Component {
                 participationsGranted: null,
                 participationsOptioned: null,
                 participationsInterresed: null,
+                textAgreeTerms: defaultTextAgreeTerms,
+                textLinkAgreeTerms: defaultTextLinkAgreeTerms,
+                textLinkUnderstandInfo: defaultTextLinkUnderstandInfo,
+                textAcceptAgreement: defaultTextAcceptAgreement,
+                textAcceptAgreementQuestion: defaultTextAcceptAgreementQuestion,
             },
             errors: {
                 name: false,
@@ -77,10 +94,12 @@ class ProjectNewApp extends Component {
                 postalCode: false,
                 // countryId: false,
                 contactGroupIds: false,
+                dateEntry: false,
             },
             loading: false,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+        this.handleInputChangeAdministration = this.handleInputChangeAdministration.bind(this);
         this.toggleShowPostalCodeLinkFields = this.toggleShowPostalCodeLinkFields.bind(this);
         this.handleContactGroupIds = this.handleContactGroupIds.bind(this);
     }
@@ -98,6 +117,28 @@ class ProjectNewApp extends Component {
 
         this.setState({
             ...this.state,
+            project: {
+                ...this.state.project,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeAdministration = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        let administration;
+
+        administration = this.props.administrations.filter(administration => administration.id == value);
+        administration = administration[0];
+        let disableBeforeEntryDate = administration.lastYearFinancialOverviewDefinitive
+            ? moment(moment().year(administration.lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
+            : '';
+        this.setState({
+            ...this.state,
+            disableBeforeEntryDate: disableBeforeEntryDate,
             project: {
                 ...this.state.project,
                 [name]: value,
@@ -183,6 +224,15 @@ class ProjectNewApp extends Component {
 
         if (project.isMembershipRequired && validator.isEmpty(project.contactGroupIds)) {
             errors.contactGroupIds = true;
+            hasErrors = true;
+        }
+
+        if (
+            !validator.isEmpty(project.dateEntry + '') &&
+            !validator.isEmpty(this.state.disableBeforeEntryDate) &&
+            project.dateEntry < this.state.disableBeforeEntryDate
+        ) {
+            errors.dateEntry = true;
             hasErrors = true;
         }
 
@@ -300,10 +350,12 @@ class ProjectNewApp extends Component {
                                         contactGroupIds={contactGroupIds}
                                         isMembershipRequired={isMembershipRequired}
                                         handleInputChange={this.handleInputChange}
+                                        handleInputChangeAdministration={this.handleInputChangeAdministration}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleContactGroupIds={this.handleContactGroupIds}
                                         errors={this.state.errors}
                                         contactGroups={this.state.contactGroups}
+                                        disableBeforeEntryDate={this.state.disableBeforeEntryDate}
                                     />
 
                                     {projectType && projectType.codeRef === 'loan' ? (

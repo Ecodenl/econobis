@@ -29,6 +29,7 @@ function Steps({
                         <StepOneLoan
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />
@@ -38,6 +39,7 @@ function Steps({
                         <StepOneObligation
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />
@@ -47,6 +49,7 @@ function Steps({
                         <StepOneCapital
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
                         />
@@ -57,6 +60,7 @@ function Steps({
                             portalSettings={portalSettings}
                             next={next}
                             project={project}
+                            contactProjectData={contactProjectData}
                             initialContact={initialContact}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
@@ -91,6 +95,7 @@ function Steps({
         case 4:
             return (
                 <StepFour
+                    contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}
                     registerValues={initialRegisterValues}

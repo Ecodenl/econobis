@@ -99,6 +99,7 @@ abstract class RequestQuery
         $query = $this->baseQuery();
         $this->applyFilter($query);
         $this->applyExtraFilter($query);
+        $this->applySort($query);
         return $query->get()->pluck('id');
     }
 

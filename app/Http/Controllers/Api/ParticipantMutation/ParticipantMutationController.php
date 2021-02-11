@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api\ParticipantMutation;
 
+use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -44,6 +45,7 @@ class ParticipantMutationController extends ApiController
             ->double('payoutKwh')->onEmpty(null)->alias('payout_kwh')->next()
             ->double('indicationOfRestitutionEnergyTax')->onEmpty(null)->alias('indication_of_restitution_energy_tax')->next()
             ->string('paidOn')->onEmpty(null)->alias('paid_on')->next()
+            ->boolean('financialOverviewDefinitive')->onEmpty(false)->alias('financial_overview_definitive')->next()
             ->get();
 
         $participantProject = ParticipantProject::find($data['participation_id']);
@@ -70,6 +72,8 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
+        $result = $this->checkMutationAllowed($participantMutation);
+
         $this->recalculateParticipantMutation($participantMutation);
 
         $dateRegisterNew = $participantMutation->participation->dateEntryFirstDeposit;
@@ -88,6 +92,9 @@ class ParticipantMutationController extends ApiController
     public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
     {
         $this->authorize('manage', ParticipantMutation::class);
+
+        $participantMutationOld = ParticipantMutation::find($participantMutation->id);
+        $result = $this->checkMutationAllowed($participantMutationOld);
 
         $dateRegisterOld = $participantMutation->participation->dateEntryFirstDeposit;
 
@@ -116,10 +123,13 @@ class ParticipantMutationController extends ApiController
             ->double('payoutKwh')->onEmpty(null)->alias('payout_kwh')->next()
             ->double('indicationOfRestitutionEnergyTax')->onEmpty(null)->alias('indication_of_restitution_energy_tax')->next()
             ->string('paidOn')->onEmpty(null)->alias('paid_on')->next()
+            ->boolean('financialOverviewDefinitive')->onEmpty(false)->alias('financial_overview_definitive')->next()
 
             ->get();
 
         $participantMutation->fill($data);
+
+        $result = $this->checkMutationAllowed($participantMutation);
 
         $this->recalculateParticipantMutation($participantMutation);
 
@@ -138,6 +148,8 @@ class ParticipantMutationController extends ApiController
     public function destroy(ParticipantMutation $participantMutation)
     {
         $this->authorize('manage', ParticipantMutation::class);
+
+        $result = $this->checkMutationAllowed($participantMutation);
 
         $melding = null;
 
@@ -161,6 +173,14 @@ class ParticipantMutationController extends ApiController
 
                 // Herbereken de afhankelijke gegevens op het project
                 $participantProject->project->calculator()->run()->save();
+            }
+
+            // Indien participation project in concept waardestaat / waardestaten, dan die ook herberekenen.
+            if($participantProject->project->financialOverviewProjects
+                && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
+            {
+                $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+                $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
             }
 
         });
@@ -204,6 +224,42 @@ class ParticipantMutationController extends ApiController
 
             // Herbereken de afhankelijke gegevens op het project
             $participantMutation->participation->project->calculator()->run()->save();
+
+            // Indien participation project in concept waardestaat / waardestaten, dan die ook herberekenen.
+            if($participantMutation->participation->project->financialOverviewProjects
+                && $participantMutation->participation->project->financialOverviewProjects->where('definitive', false)->count() > 0)
+            {
+                $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+                $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantMutation->participation);
+            }
+
         });
+
+    }
+
+    /**
+     * @param $participantProject
+     */
+    protected function checkMutationAllowed($participantMutation)
+    {
+        $project = $participantMutation->participation->project;
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        if($participantMutation->status_id === $mutationStatusFinal){
+            $dateEntryYear = Carbon::parse($participantMutation->date_entry)->year;
+            $financialOverviewProjectQuery = FinancialOverviewProject::where('project_id', $project->id)
+                ->where('definitive', true)
+                ->whereHas('financialOverview', function ($query) use ($project, $dateEntryYear) {
+                    $query->where('administration_id', $project->administration->id)
+                        ->where('year', $dateEntryYear);
+                });
+
+            if ($financialOverviewProjectQuery->exists()) {
+                $financialOverview = $financialOverviewProjectQuery->first()->financialOverview;
+                abort(409, 'Project komt al voor in definitive waardestaat ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
+                return false;
+            }
+        }
+        return true;
     }
 }

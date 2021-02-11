@@ -1,8 +1,8 @@
-.panel-financial-tree, .panel-invoices-list, .panel-orders-list, .panel-invoice-payments-list {
+.panel-financial-tree, .panel-invoices-list, .panel-orders-list, .panel-financial-overview-contacts-list, .panel-invoice-payments-list {
   padding: 0;
 }
 
-.financial-tree, .invoices-list, .orders-list, .payment-invoices-list {
+.financial-tree, .invoices-list, .orders-list, .financial-overview-contacts-list, .payment-invoices-list {
   height: 100vh;
   transition: left .3s ease-in-out;
   color: $brand-primary;
@@ -40,7 +40,7 @@
   }
 }
 
-.send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+.send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
   color: $brand-primary;
   text-overflow: ellipsis; /* will make [...] at the end */
   white-space: nowrap; /* paragraph to one line */
@@ -60,7 +60,7 @@
   }
 }
 
-.send-invoices-list-link-error, .send-orders-list-link-error {
+.send-invoices-list-link-error, .send-orders-list-link-error, .send-financial-overview-contacts-list-link-error {
   color: red;
   text-overflow: ellipsis; /* will make [...] at the end */
   white-space: nowrap; /* paragraph to one line */
@@ -80,7 +80,7 @@
   }
 }
 
-.financial-tree-sidebar-menu, .send-invoices-sidebar-menu, .send-orders-sidebar-menu, .send-payment-invoices-sidebar-menu {
+.financial-tree-sidebar-menu, .send-invoices-sidebar-menu, .send-orders-sidebar-menu, .send-financial-overview-contacts-sidebar-menu, .send-payment-invoices-sidebar-menu {
   overflow-y: auto;
   overflow-x: hidden;
   height: 100vh;
@@ -88,49 +88,49 @@
 }
 
 @media (min-width: 1160px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 12em;
   }
 }
 
 @media (min-width: 1260px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 14em;
   }
 }
 
 @media (min-width: 1360px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 16em;
   }
 }
 
 @media (min-width: 1460px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 18em;
   }
 }
 
 @media (min-width: 1560px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 20em;
   }
 }
 
 @media (min-width: 1660px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 22em;
   }
 }
 
 @media (min-width: 1760px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 24em;
   }
 }
 
 @media (min-width: 1860px) {
-  .send-invoices-list-link, .send-orders-list-link, .send-payment-invoices-list-link {
+  .send-invoices-list-link, .send-orders-list-link, .send-financial-overview-contacts-list-link, .send-payment-invoices-list-link {
     max-width: 26em;
   }
 }

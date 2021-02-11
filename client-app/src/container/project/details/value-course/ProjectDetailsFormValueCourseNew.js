@@ -9,6 +9,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import InputToggle from '../../../../components/form/InputToggle';
+import moment from 'moment/moment';
 
 class ProjectDetailsFormValueCourseNew extends Component {
     constructor(props) {
@@ -98,6 +99,10 @@ class ProjectDetailsFormValueCourseNew extends Component {
     render() {
         const { date, bookWorth, transferWorth, active } = this.state.valueCourse;
 
+        let disableBeforeDate = this.props.lastYearFinancialOverviewDefinitive
+            ? moment(moment().year(this.props.lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
+            : '';
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -114,6 +119,7 @@ class ProjectDetailsFormValueCourseNew extends Component {
                                 name={'date'}
                                 value={date}
                                 onChangeAction={this.handleInputChangeDate}
+                                disabledBefore={disableBeforeDate}
                                 required={'required'}
                                 error={this.state.errors.date}
                             />
@@ -183,7 +189,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProjectDetailsFormValueCourseNew);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetailsFormValueCourseNew);

@@ -10,6 +10,8 @@ use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\Measure\Measure;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
@@ -94,6 +96,11 @@ class Project extends Model
         return $this->hasMany(ParticipantProject::class, 'project_id');
     }
 
+    public function financialOverviewProjects()
+    {
+        return $this->hasMany(FinancialOverviewProject::class);
+    }
+
     public function participantsProjectDefinitive(){
         $projectType = $this->projectType;
         $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;
@@ -172,4 +179,12 @@ class Project extends Model
 
         return $activeProjectValueCourse->book_worth;
     }
+
+    public function getLastYearFinancialOverviewDefinitiveAttribute()
+    {
+        $financialOverviewProjectIds = $this->financialOverviewProjects()->where('definitive', true)->pluck('financial_overview_id')->toArray();;
+        $financialOverviews = FinancialOverview::whereIn('id', $financialOverviewProjectIds)->get()->sortByDesc('year')->first();
+        return $financialOverviews ? $financialOverviews->year : null;
+    }
+
 }

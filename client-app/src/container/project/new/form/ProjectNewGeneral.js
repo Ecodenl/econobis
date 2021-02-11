@@ -27,6 +27,7 @@ const ProjectFormNewGeneral = ({
     dateProduction,
     isMembershipRequired,
     handleInputChange,
+    handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
     projectTypes,
@@ -35,6 +36,7 @@ const ProjectFormNewGeneral = ({
     hasPaymentInvoices,
     users,
     contactGroups,
+    disableBeforeEntryDate,
     errors,
 }) => (
     <React.Fragment>
@@ -146,7 +148,7 @@ const ProjectFormNewGeneral = ({
                 name={'administrationId'}
                 options={administrations}
                 value={administrationId}
-                onChangeAction={handleInputChange}
+                onChangeAction={handleInputChangeAdministration}
                 required={'required'}
                 error={errors.administrationId}
             />
@@ -201,6 +203,8 @@ const ProjectFormNewGeneral = ({
                 name={'dateEntry'}
                 value={dateEntry}
                 onChangeAction={handleInputChangeDate}
+                disabledBefore={disableBeforeEntryDate}
+                error={errors.dateEntry}
             />
         </div>
     </React.Fragment>

@@ -422,7 +422,7 @@ class InvoicesList extends Component {
         let messageText = null;
         if (this.props.filter == 'fout-verzenden-incasso' || this.props.filter == 'fout-verzenden-overboeken') {
             messageText =
-                'Een fout verzonden nota is definitief aangemaakt in Econobis, maar kon niet worden verzonden. Dit omdat het contact een fout e-mailadres heeft of omdat de mailbox niet werkte. Corrigeer het e-mailadres of zorg er voor dat de mail box weer werkt. Vervolgens kan je met bovenstaande knoppen de factuur opnieuw verzenden. Omdat de nota definitief is kan je deze niet verwijderen.';
+                'Een fout verzonden nota is definitief aangemaakt in Econobis, maar kon niet worden verzonden. Dit omdat het contact een fout e-mailadres heeft of omdat de mailbox niet werkte. Corrigeer het e-mailadres of zorg er voor dat de mail box weer werkt. Vervolgens kan je met bovenstaande knoppen de nota opnieuw verzenden. Omdat de nota definitief is kan je deze niet verwijderen.';
         }
 
         let numberSelectedNumberTotal = 0;
@@ -770,7 +770,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoicesList);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoicesList);

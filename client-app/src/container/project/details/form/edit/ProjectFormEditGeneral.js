@@ -28,10 +28,13 @@ const ProjectFormEditGeneral = ({
     dateStart,
     dateEnd,
     dateEntry,
+    disableBeforeEntryDate,
+    lastYearFinancialOverviewDefinitive,
     contactGroupIds,
     dateProduction,
     isMembershipRequired,
     handleInputChange,
+    handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
     handleReactSelectChange,
@@ -49,6 +52,7 @@ const ProjectFormEditGeneral = ({
     emailTemplates,
     linkAgreeTerms,
     linkUnderstandInfo,
+    linkProjectInfo,
     showQuestionAboutMembership,
     questionAboutMembershipGroupId,
     textIsMember,
@@ -57,12 +61,21 @@ const ProjectFormEditGeneral = ({
     memberGroupId,
     textBecomeNoMember,
     noMemberGroupId,
+    textAgreeTerms,
+    textLinkAgreeTerms,
+    textLinkUnderstandInfo,
+    textAcceptAgreement,
+    textAcceptAgreementQuestion,
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
     if (amountOfParticipants) {
         projectStatusCustomOptions = projectStatuses.filter(projectStatus => projectStatus.codeRef !== 'concept');
     }
+
+    const helpTextLinkAgreeTerms = 'Gebruik {voorwaarden_link} in tekst voor plaatsing van de voorwaarden link';
+    const helpTextLinkUnderstandInfo =
+        'Gebruik {project_informatie_link} in tekst voor plaatsing van de project informatie link';
 
     return (
         <React.Fragment>
@@ -165,8 +178,8 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                 />
 
-                {/*Als er al nota's zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
-                {hasPaymentInvoices ? (
+                {/*Als er al nota's of waardestaten zijn gemaakt mag de administratie niet meer gewijzigd worden*/}
+                {hasPaymentInvoices || lastYearFinancialOverviewDefinitive != null ? (
                     <InputText
                         label={'Administratie'}
                         name={'administration'}
@@ -179,7 +192,7 @@ const ProjectFormEditGeneral = ({
                         name={'administrationId'}
                         options={administrations}
                         value={administrationId}
-                        onChangeAction={handleInputChange}
+                        onChangeAction={handleInputChangeAdministration}
                         required={'required'}
                         error={errors.administrationId}
                     />
@@ -235,59 +248,36 @@ const ProjectFormEditGeneral = ({
                     name={'dateEntry'}
                     value={dateEntry}
                     onChangeAction={handleInputChangeDate}
-                />
-            </div>
-
-            <h4>Contacten portal instellingen</h4>
-
-            <div className="row">
-                <InputTextLong
-                    label="Voorwaarden link"
-                    name={'linkAgreeTerms'}
-                    value={linkAgreeTerms}
-                    onChangeAction={handleInputChange}
-                    error={errors.linkAgreeTerms}
-                    readOnly={!permissions.managePortalSettings}
-                />
-            </div>
-            <div className="row">
-                <InputTextLong
-                    label="Projectinformatie link"
-                    name={'linkUnderstandInfo'}
-                    value={linkUnderstandInfo}
-                    onChangeAction={handleInputChange}
-                    error={errors.linkUnderstandInfo}
-                    readOnly={!permissions.managePortalSettings}
-                />
-            </div>
-            <div className="row">
-                <InputReactSelectLong
-                    label="Document template inschrijfformulier"
-                    name={'documentTemplateAgreementId'}
-                    options={documentTemplates}
-                    value={documentTemplateAgreementId}
-                    onChangeAction={handleReactSelectChange}
-                    // isLoading={peekLoading.documentTemplates}
-                    multi={false}
-                    error={errors.documentTemplateAgreementId}
-                    disabled={!permissions.managePortalSettings}
-                />
-            </div>
-            <div className="row">
-                <InputReactSelectLong
-                    label="E-mail template inschrijfbevestiging"
-                    name={'emailTemplateAgreementId'}
-                    options={emailTemplates}
-                    value={emailTemplateAgreementId}
-                    onChangeAction={handleReactSelectChange}
-                    // isLoading={peekLoading.emailTemplates}
-                    multi={false}
-                    error={errors.emailTemplateAgreementId}
-                    disabled={!permissions.managePortalSettings}
+                    disabledBefore={disableBeforeEntryDate}
+                    error={errors.dateEntry}
                 />
             </div>
 
             <hr />
+            <h4>Contacten portal instellingen</h4>
+
+            <div className="row">
+                <label htmlFor="projectInfo" className="col-sm-12">
+                    <strong>Project informatie</strong>
+                </label>
+            </div>
+            <div className="row">
+                <InputTextLong
+                    label="Informatie link"
+                    name={'linkProjectInfo'}
+                    value={linkProjectInfo}
+                    onChangeAction={handleInputChange}
+                    error={errors.linkProjectInfo}
+                    readOnly={!permissions.managePortalSettings}
+                />
+            </div>
+
+            <hr />
+            <div className="row">
+                <label htmlFor="registerProject" className="col-sm-12">
+                    <strong>Inschrijven</strong>
+                </label>
+            </div>
             <div className="row">
                 <InputToggle
                     label={'Vragen over lid worden aan of uit?'}
@@ -390,6 +380,160 @@ const ProjectFormEditGeneral = ({
                     </div>
                 </>
             )}
+
+            <hr />
+            <div className="row">
+                <label htmlFor="agreeTerms" className="col-sm-12">
+                    <strong>Voorwaarden</strong>
+                </label>
+            </div>
+            <div className={'row'}>
+                <div className="form-group col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label htmlFor="textAgreeTerms" className="col-sm-12">
+                                Voorwaarden tekst
+                            </label>
+                        </div>
+                        <div className="col-sm-8">
+                            <textarea
+                                name="textAgreeTerms"
+                                value={textAgreeTerms}
+                                onChange={handleInputChange}
+                                className="form-control input-sm"
+                                required={'required'}
+                                error={errors.textAgreeTerms}
+                                readOnly={!permissions.managePortalSettings}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div className="row">
+                <InputTextLong
+                    label="Voorwaarden link"
+                    name={'linkAgreeTerms'}
+                    value={linkAgreeTerms}
+                    onChangeAction={handleInputChange}
+                    error={errors.linkAgreeTerms}
+                    readOnly={!permissions.managePortalSettings}
+                />
+            </div>
+            <div className={'row'}>
+                <InputTextLong
+                    label={
+                        <span>
+                            Voorwaarden link tekst
+                            <br />
+                            <small style={{ color: '#ccc', fontWeight: 'normal' }}>{helpTextLinkAgreeTerms} </small>
+                        </span>
+                    }
+                    name={'textLinkAgreeTerms'}
+                    value={textLinkAgreeTerms}
+                    maxLength="191"
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.textLinkAgreeTerms}
+                    readOnly={!permissions.managePortalSettings}
+                />
+            </div>
+
+            <hr />
+            <div className="row">
+                <InputTextLong
+                    label="Project informatie link"
+                    name={'linkUnderstandInfo'}
+                    value={linkUnderstandInfo}
+                    onChangeAction={handleInputChange}
+                    error={errors.linkUnderstandInfo}
+                    readOnly={!permissions.managePortalSettings}
+                />
+            </div>
+            <div className={'row'}>
+                <InputTextLong
+                    label={
+                        <span>
+                            Project informatie link tekst
+                            <br />
+                            <small style={{ color: '#ccc', fontWeight: 'normal' }}>{helpTextLinkUnderstandInfo} </small>
+                        </span>
+                    }
+                    name={'textLinkUnderstandInfo'}
+                    value={textLinkUnderstandInfo}
+                    maxLength="191"
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.textLinkUnderstandInfo}
+                    readOnly={!permissions.managePortalSettings}
+                />
+            </div>
+
+            <hr />
+            <div className="row">
+                <label htmlFor="confirmAgreement" className="col-sm-12">
+                    <strong>Bevestigen</strong>
+                </label>
+            </div>
+            <div className={'row'}>
+                <div className="form-group col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label htmlFor="textAcceptAgreement" className="col-sm-12">
+                                Bevestigen tekst
+                            </label>
+                        </div>
+                        <div className="col-sm-8">
+                            <textarea
+                                name="textAcceptAgreement"
+                                value={textAcceptAgreement}
+                                onChange={handleInputChange}
+                                className="form-control input-sm"
+                                required={'required'}
+                                error={errors.textAcceptAgreement}
+                                readOnly={!permissions.managePortalSettings}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">
+                <InputTextLong
+                    label="Bevestigen knop tekst"
+                    name={'textAcceptAgreementQuestion'}
+                    value={textAcceptAgreementQuestion}
+                    onChangeAction={handleInputChange}
+                    error={errors.textAcceptAgreementQuestion}
+                    readOnly={!permissions.managePortalSettings}
+                />
+            </div>
+
+            <div className="row">
+                <InputReactSelectLong
+                    label="Document template inschrijfformulier"
+                    name={'documentTemplateAgreementId'}
+                    options={documentTemplates}
+                    value={documentTemplateAgreementId}
+                    onChangeAction={handleReactSelectChange}
+                    // isLoading={peekLoading.documentTemplates}
+                    multi={false}
+                    error={errors.documentTemplateAgreementId}
+                    disabled={!permissions.managePortalSettings}
+                />
+            </div>
+            <div className="row">
+                <InputReactSelectLong
+                    label="E-mail template inschrijfbevestiging"
+                    name={'emailTemplateAgreementId'}
+                    options={emailTemplates}
+                    value={emailTemplateAgreementId}
+                    onChangeAction={handleReactSelectChange}
+                    // isLoading={peekLoading.emailTemplates}
+                    multi={false}
+                    error={errors.emailTemplateAgreementId}
+                    disabled={!permissions.managePortalSettings}
+                />
+            </div>
         </React.Fragment>
     );
 };

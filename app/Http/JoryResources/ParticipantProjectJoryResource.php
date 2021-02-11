@@ -11,6 +11,13 @@ class ParticipantProjectJoryResource extends JoryResource
 
     protected function configureForApp(): void
     {
+        // Fields
+        $this->field('contact_id')->filterable()->sortable();
+        $this->field('id')->filterable()->sortable();
+
+        // Relations
+        $this->relation('contact');
+
     }
 
     protected function configureForPortal(): void

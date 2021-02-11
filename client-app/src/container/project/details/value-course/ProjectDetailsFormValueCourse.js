@@ -41,7 +41,12 @@ class ProjectDetailsFormValueCourse extends Component {
                         <ProjectDetailsFormValueCourseList />
                     </div>
                     <div className="col-md-12 margin-10-top">
-                        {this.state.showNew && <ProjectDetailsFormValueCourseNew toggleShowNew={this.toggleShowNew} />}
+                        {this.state.showNew && (
+                            <ProjectDetailsFormValueCourseNew
+                                toggleShowNew={this.toggleShowNew}
+                                lastYearFinancialOverviewDefinitive={this.props.lastYearFinancialOverviewDefinitive}
+                            />
+                        )}
                     </div>
                 </PanelBody>
             </Panel>
@@ -52,6 +57,7 @@ class ProjectDetailsFormValueCourse extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        lastYearFinancialOverviewDefinitive: state.projectDetails.lastYearFinancialOverviewDefinitive,
     };
 };
 

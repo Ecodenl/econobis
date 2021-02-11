@@ -16,6 +16,7 @@ const AdministrationDetailsFormGeneralView = props => {
         emailTemplateTransfer,
         emailTemplateReminder,
         emailTemplateExhortation,
+        emailTemplateFinancialOverview,
         city,
         country,
         kvkNumber,
@@ -45,6 +46,7 @@ const AdministrationDetailsFormGeneralView = props => {
         dateSyncTwinfieldPayments,
         usesVat,
         emailBccNotas,
+        portalSettingsLayout,
     } = props.administrationDetails;
 
     // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
@@ -125,12 +127,25 @@ const AdministrationDetailsFormGeneralView = props => {
                         <ViewText label={'Logo'} value={logoName} />
                     </div>
                     <div className="row">
+                        <ViewText
+                            label={'E-mail template waardestaat'}
+                            value={emailTemplateFinancialOverview ? emailTemplateFinancialOverview.name : ''}
+                        />
+                    </div>
+                    <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
                         <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
                     </div>
 
                     <div className="row">
                         <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={'Portal instellingen layout'}
+                            value={portalSettingsLayout ? portalSettingsLayout.description : 'gebruikt standaard'}
+                        />
                     </div>
 
                     {usesTwinfield == true && (

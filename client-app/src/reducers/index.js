@@ -67,6 +67,7 @@ import PaymentInvoicesReducer from './payment-invoice/PaymentInvoicesReducer';
 import webformsReducer from './webform/WebformsReducer';
 import webformDetailsReducer from './webform/WebformDetailsReducer';
 import loadingReducer from './general/LoadingReducer';
+import financialOverviewPreviewReducer from './financial-overview/FinancialOverviewPreviewReducer';
 
 const rootReducer = combineReducers({
     // General
@@ -111,6 +112,8 @@ const rootReducer = combineReducers({
     // Email templates
     emailTemplates: emailTemplatesReducer,
     emailTemplate: emailTemplateDetailsReducer,
+    // Financial overview
+    financialOverviewPreview: financialOverviewPreviewReducer,
     // Housing file
     housingFiles: housingFilesReducer,
     housingFileDetails: housingFileDetailsReducer,

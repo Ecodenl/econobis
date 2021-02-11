@@ -8,6 +8,7 @@ use App\Http\Resources\ContactNote\FullContactNote;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\EmailAddress\FullEmailAddress;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
+use App\Http\Resources\FinancialOverviewContact\FullFinancialOverviewContact;
 use App\Http\Resources\Invoice\FullInvoice;
 use App\Http\Resources\Occupation\FullOccupationContact;
 use App\Http\Resources\Order\FullOrder;
@@ -84,6 +85,8 @@ class FullContact extends Resource
             'relatedEmailsInbox' => $this->relatedEmailsInbox,
             'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
             'relatedEmailsSent' => $this->relatedEmailsSent,
+            'financialOverviewContactCount' => $this->financialOverviewContactsSend()->count(),
+            'relatedFinancialOverviewContacts' => FullFinancialOverviewContact::collection($this->whenLoaded('financialOverviewContactsSend')),
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'opportunityCount' => $this->opportunities()->count(),

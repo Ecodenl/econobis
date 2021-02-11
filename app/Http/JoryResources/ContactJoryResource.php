@@ -12,6 +12,9 @@ class ContactJoryResource extends JoryResource
 
     protected function configureForApp(): void
     {
+        // Fields
+        $this->field('id')->filterable()->sortable();
+        $this->field('full_name')->filterable()->sortable();
     }
 
     protected function configureForPortal(): void
@@ -30,6 +33,7 @@ class ContactJoryResource extends JoryResource
         $this->field('address_lines')->hideByDefault();
         $this->field('is_participant')->filterable()->sortable();
         $this->field('is_participant_pcr_project')->filterable()->sortable();
+        $this->field('portal_settings_layout_assigned')->filterable()->sortable();
 
         // Relations
         $this->relation('addresses');

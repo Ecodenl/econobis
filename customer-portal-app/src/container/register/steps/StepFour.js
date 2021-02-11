@@ -12,8 +12,9 @@ import ParticipantProjectAPI from '../../../api/participant-project/ParticipantP
 import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
+import FormLabel from 'react-bootstrap/FormLabel';
 
-function StepFour({ previous, next, registerValues, setSucces }) {
+function StepFour({ contactProjectData, previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
@@ -53,10 +54,30 @@ function StepFour({ previous, next, registerValues, setSucces }) {
         ),
     });
 
+    let contactDocumentOk = false;
+    if (!isEmpty('' + contactDocument)) {
+        contactDocumentOk = true;
+    }
+
     return (
         <>
             {isLoading ? (
                 <LoadingView />
+            ) : !contactDocumentOk ? (
+                <>
+                    <Row>
+                        <Col>Er ging iets mis bij het maken van het bevestingsformulier voorbeeld.</Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} md={10}>
+                            <ButtonGroup aria-label="Steps" className="float-right">
+                                <Button className={'w-button'} size="sm" onClick={previous}>
+                                    Terug
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
             ) : (
                 <Formik
                     validationSchema={validationSchema}
@@ -70,7 +91,21 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                             <Form>
                                 <Row>
                                     <Col xs={12} md={10}>
+                                        <FormLabel className={'field-label'}>Controleer de inschrijving</FormLabel>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={10}>
                                         <ViewHtmlAsText value={contactDocument} />
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={10}>
+                                        <p>{contactProjectData.textAcceptAgreementMerged}</p>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={12} md={10}>
                                         <Field
                                             name="didAgreeRegistration"
                                             render={({ field }) => (
@@ -86,7 +121,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                                         htmlFor="did_agree_registration"
                                                         className="checkbox-label w-form-label"
                                                     >
-                                                        Ik ben akkoord met het inschrijfformulier
+                                                        {contactProjectData.textAcceptAgreementQuestionMerged}
                                                     </span>
                                                     {touched[field.name] && errors[field.name] ? (
                                                         <div className={'error-message text-danger'}>
@@ -96,14 +131,6 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                                 </label>
                                             )}
                                         />
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col xs={12} md={10}>
-                                        <p>
-                                            Wanneer je akkoord gaat met het inschrijfformulier en de inschrijving
-                                            bevestigt, is je inschrijving definitief.
-                                        </p>
                                     </Col>
                                 </Row>
                                 <Row>
@@ -124,7 +151,7 @@ function StepFour({ previous, next, registerValues, setSucces }) {
                                                         Bezig met verwerken
                                                     </span>
                                                 ) : (
-                                                    'Bevestigen inschrijving'
+                                                    'Bevestig inschrijving'
                                                 )}
                                             </Button>
                                         </ButtonGroup>

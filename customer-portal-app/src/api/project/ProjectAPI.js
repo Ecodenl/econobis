@@ -15,6 +15,9 @@ export default {
                             { f: 'dateEndRegistrations', o: '>=', d: moment().format('YYYY-MM-DD') },
                         ],
                     },
+                    rlt: {
+                        administration: { fld: ['id', 'name'] },
+                    },
                 },
             },
         });
@@ -42,11 +45,13 @@ export default {
                         'maxAmountLoan',
                         'postalcodeLink',
                         'linkAgreeTerms',
+                        'linkProjectInfo',
                         'linkUnderstandInfo',
                         'showQuestionAboutMembership',
                     ],
                     rlt: {
                         projectType: { fld: ['id', 'codeRef'] },
+                        administration: { fld: ['id', 'name', 'portalSettingsLayoutAssigned'] },
                     },
                 },
             },

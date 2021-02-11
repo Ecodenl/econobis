@@ -20,6 +20,7 @@ import ViewText from '../../../../components/form/ViewText';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
 import { Link } from 'react-router';
+import PortalSettingsLayoutAPI from '../../../../api/portal-settings-layout/PortalSettingsLayoutAPI';
 import AdministrationsAPI from '../../../../api/administration/AdministrationsAPI';
 
 class AdministrationDetailsFormGeneralEdit extends Component {
@@ -40,6 +41,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             emailTemplateIdTransfer,
             emailTemplateReminderId,
             emailTemplateExhortationId,
+            emailTemplateFinancialOverviewId,
             postalCode,
             city,
             countryId,
@@ -71,6 +73,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             dateSyncTwinfieldPayments,
             usesVat,
             emailBccNotas,
+            portalSettingsLayoutId,
         } = props.administrationDetails;
 
         this.state = {
@@ -104,6 +107,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 emailTemplateIdTransfer: emailTemplateIdTransfer ? emailTemplateIdTransfer : '',
                 emailTemplateReminderId: emailTemplateReminderId ? emailTemplateReminderId : '',
                 emailTemplateExhortationId: emailTemplateExhortationId ? emailTemplateExhortationId : '',
+                emailTemplateFinancialOverviewId: emailTemplateFinancialOverviewId
+                    ? emailTemplateFinancialOverviewId
+                    : '',
                 attachment: '',
                 mailboxId: mailboxId ? mailboxId : '',
                 usesTwinfield: usesTwinfield,
@@ -121,6 +127,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 dateSyncTwinfieldPayments: dateSyncTwinfieldPayments ? dateSyncTwinfieldPayments : '',
                 usesVat: usesVat,
                 emailBccNotas: emailBccNotas ? emailBccNotas : '',
+                portalSettingsLayoutId: portalSettingsLayoutId ? portalSettingsLayoutId : '',
             },
             errors: {
                 name: false,
@@ -416,6 +423,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
+            data.append('emailTemplateFinancialOverviewId', administration.emailTemplateFinancialOverviewId);
             data.append('attachment', administration.attachment);
             data.append('mailboxId', administration.mailboxId);
             data.append('usesTwinfield', administration.usesTwinfield);
@@ -435,6 +443,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
+            data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }
@@ -448,6 +457,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             emailTemplateIdTransfer,
             emailTemplateReminderId,
             emailTemplateExhortationId,
+            emailTemplateFinancialOverviewId,
             address,
             postalCode,
             city,
@@ -481,6 +491,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             dateSyncTwinfieldPayments,
             usesVat,
             emailBccNotas,
+            portalSettingsLayoutId,
         } = this.state.administration;
 
         let disableBeforeDateSyncTwinfieldContacts = null;
@@ -698,6 +709,17 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                         </div>
 
                         <div className="row">
+                            <InputReactSelect
+                                label={'E-mail template waardestaat'}
+                                name={'emailTemplateFinancialOverviewId'}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateFinancialOverviewId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
+                        </div>
+                        <div className="row">
                             <InputSelect
                                 label={"Afzender van Rapportages en nota's is e-mail adres"}
                                 id="mailboxId"
@@ -723,6 +745,19 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 value={emailBccNotas}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailBccNotas}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Portal instellingen layout'}
+                                name={'portalSettingsLayoutId'}
+                                options={this.props.portalSettingsLayouts}
+                                optionName={'description'}
+                                value={portalSettingsLayoutId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.portalSettingsLayouts}
+                                multi={false}
                             />
                         </div>
 
@@ -942,6 +977,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
 const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
+        portalSettingsLayouts: state.systemData.portalSettingsLayouts,
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         // administrations: state.systemData.administrations,
         administrationDetails: state.administrationDetails,

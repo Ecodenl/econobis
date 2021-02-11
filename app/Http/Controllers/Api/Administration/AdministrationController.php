@@ -59,6 +59,8 @@ class AdministrationController extends ApiController
             'emailTemplateTransfer',
             'emailTemplateReminder',
             'emailTemplateExhortation',
+            'emailTemplateFinancialOverview',
+            'portalSettingsLayout',
             'sepas',
         ]);
 
@@ -91,6 +93,7 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateIdTransfer')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_transfer')->next()
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
+            ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
             ->string('twinfieldConnectionType')->whenMissing(null)->onEmpty(null)->alias('twinfield_connection_type')->next()
             ->string('twinfieldRefreshToken')->whenMissing(null)->onEmpty(null)->alias('twinfield_refresh_token')->next()
@@ -103,6 +106,7 @@ class AdministrationController extends ApiController
             ->string('dateSyncTwinfieldContacts')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_contacts')->next()
             ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
+            ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
@@ -185,6 +189,7 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateIdTransfer')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_transfer')->next()
             ->integer('emailTemplateReminderId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_reminder_id')->next()
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
+            ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
             ->string('twinfieldConnectionType')->whenMissing(null)->onEmpty(null)->alias('twinfield_connection_type')->next()
             ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
@@ -196,6 +201,7 @@ class AdministrationController extends ApiController
             ->string('dateSyncTwinfieldContacts')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_contacts')->next()
             ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
+            ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata

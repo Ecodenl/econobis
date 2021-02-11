@@ -30,6 +30,8 @@ class ProjectFormEdit extends Component {
             staticContactGroups: [],
             emailTemplates: [],
             documentTemplates: [],
+            disableBeforeEntryDate: '',
+            lastYearFinancialOverviewDefinitive: null,
             project: {
                 ...props.project,
                 isMembershipRequired: Boolean(props.project.isMembershipRequired),
@@ -46,14 +48,18 @@ class ProjectFormEdit extends Component {
                 postalCode: false,
                 // countryId: false,
                 contactGroupIds: false,
+                dateEntry: false,
             },
             isSaving: false,
         };
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
+        this.handleInputChangeAdministration = this.handleInputChangeAdministration.bind(this);
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     componentDidMount() {
+        this.setDisableBeforeEntryDate();
+
         if (this.state.project && !this.state.project.showQuestionAboutMembership) {
             const keys =
                 '?keys[]=cooperativeName' +
@@ -151,6 +157,22 @@ class ProjectFormEdit extends Component {
         });
     };
 
+    handleInputChangeAdministration = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setDisableBeforeEntryDate();
+
+        this.setState({
+            ...this.state,
+            project: {
+                ...this.state.project,
+                [name]: value,
+            },
+        });
+    };
+
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
@@ -169,6 +191,33 @@ class ProjectFormEdit extends Component {
             },
         });
     }
+
+    setDisableBeforeEntryDate() {
+        let lastYearFinancialOverviewDefinitive = 0;
+        if (this.props.project && this.props.project.lastYearFinancialOverviewDefinitive) {
+            lastYearFinancialOverviewDefinitive = this.props.project.lastYearFinancialOverviewDefinitive;
+        } else {
+            let administration;
+            administration = this.props.administrations.filter(
+                administration => administration.id == this.props.project.administrationId
+            );
+            administration = administration[0];
+            if (administration && administration.lastYearFinancialOverviewDefinitive) {
+                lastYearFinancialOverviewDefinitive = administration.lastYearFinancialOverviewDefinitive;
+            }
+        }
+        let disableBeforeEntryDate =
+            lastYearFinancialOverviewDefinitive > 0
+                ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
+                : '';
+
+        this.setState({
+            ...this.state,
+            disableBeforeEntryDate: disableBeforeEntryDate,
+            lastYearFinancialOverviewDefinitive: lastYearFinancialOverviewDefinitive,
+        });
+    }
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -232,6 +281,26 @@ class ProjectFormEdit extends Component {
                 hasErrors = true;
             }
         }
+        if (validator.isEmpty('' + project.textAgreeTerms)) {
+            errors.textAgreeTerms = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textLinkAgreeTerms)) {
+            errors.textLinkAgreeTerms = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textLinkUnderstandInfo)) {
+            errors.textLinkUnderstandInfo = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textAcceptAgreement)) {
+            errors.textAcceptAgreement = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textAcceptAgreementQuestion)) {
+            errors.textAcceptAgreementQuestion = true;
+            hasErrors = true;
+        }
 
         // todo projects doesn't have a countryId field yet
         // let countryId = project.countryId;
@@ -259,6 +328,15 @@ class ProjectFormEdit extends Component {
 
         if (project.isMembershipRequired && validator.isEmpty(project.contactGroupIds)) {
             errors.contactGroupIds = true;
+            hasErrors = true;
+        }
+
+        if (
+            !validator.isEmpty(project.dateEntry + '') &&
+            !validator.isEmpty(this.state.disableBeforeEntryDate) &&
+            project.dateEntry < this.state.disableBeforeEntryDate
+        ) {
+            errors.dateEntry = true;
             hasErrors = true;
         }
 
@@ -341,6 +419,7 @@ class ProjectFormEdit extends Component {
             emailTemplates,
             linkAgreeTerms,
             linkUnderstandInfo,
+            linkProjectInfo,
             showQuestionAboutMembership,
             questionAboutMembershipGroupId,
             textIsMember,
@@ -349,6 +428,11 @@ class ProjectFormEdit extends Component {
             memberGroupId,
             textBecomeNoMember,
             noMemberGroupId,
+            textAgreeTerms,
+            textLinkAgreeTerms,
+            textLinkUnderstandInfo,
+            textAcceptAgreement,
+            textAcceptAgreementQuestion,
         } = this.state.project;
         const {
             participationsDefinitive,
@@ -389,6 +473,7 @@ class ProjectFormEdit extends Component {
                     contactGroupIds={contactGroupIds}
                     isMembershipRequired={isMembershipRequired}
                     handleInputChange={this.handleInputChange}
+                    handleInputChangeAdministration={this.handleInputChangeAdministration}
                     handleInputChangeDate={this.handleInputChangeDate}
                     handleContactGroupIds={this.handleContactGroupIds}
                     handleReactSelectChange={this.handleReactSelectChange}
@@ -402,6 +487,7 @@ class ProjectFormEdit extends Component {
                     emailTemplates={this.state.emailTemplates}
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
+                    linkProjectInfo={linkProjectInfo}
                     showQuestionAboutMembership={showQuestionAboutMembership}
                     questionAboutMembershipGroupId={questionAboutMembershipGroupId}
                     textIsMember={textIsMember}
@@ -410,6 +496,13 @@ class ProjectFormEdit extends Component {
                     memberGroupId={memberGroupId}
                     textBecomeNoMember={textBecomeNoMember}
                     noMemberGroupId={noMemberGroupId}
+                    disableBeforeEntryDate={this.state.disableBeforeEntryDate}
+                    lastYearFinancialOverviewDefinitive={this.state.lastYearFinancialOverviewDefinitive}
+                    textAgreeTerms={textAgreeTerms}
+                    textLinkAgreeTerms={textLinkAgreeTerms}
+                    textLinkUnderstandInfo={textLinkUnderstandInfo}
+                    textAcceptAgreement={textAcceptAgreement}
+                    textAcceptAgreementQuestion={textAcceptAgreementQuestion}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (
@@ -506,10 +599,8 @@ const mapStateToProps = state => {
     return {
         project: state.projectDetails,
         projectTypes: state.systemData.projectTypes,
+        administrations: state.meDetails.administrations,
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProjectFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectFormEdit);

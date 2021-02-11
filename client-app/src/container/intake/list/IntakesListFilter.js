@@ -24,10 +24,8 @@ const IntakesListFilter = props => {
     };
     const onIntakeEndDateChange = selectedDay => {
         if (selectedDay === undefined) {
-            console.log('a');
             props.setIntakeEndDateFilter('');
         } else {
-            console.log('b');
             props.setIntakeEndDateFilter(moment(selectedDay).format('Y-MM-DD'));
         }
     };
@@ -145,7 +143,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(IntakesListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(IntakesListFilter);

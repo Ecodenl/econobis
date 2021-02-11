@@ -63,9 +63,9 @@ const InvoicesListFilter = props => {
     return (
         <tr className="thead-filter">
             {props.showSelectInvoicesToSend && (
-                <td>
+                <th>
                     <input type="checkbox" onChange={props.toggleCheckedAll} />
-                </td>
+                </th>
             )}
             <th>
                 {!props.showSelectInvoicesToSend ? (
@@ -243,7 +243,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoicesListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoicesListFilter);

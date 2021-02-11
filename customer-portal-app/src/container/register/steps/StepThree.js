@@ -17,7 +17,7 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
         ),
         didUnderstandInfo: Yup.bool().test(
             'didUnderstandInfo',
-            'Je dient te bevestigen, dat de projectinformatie gelezen en begrepen is!',
+            'Je dient te bevestigen, dat de project informatie gelezen en begrepen is!',
             value => value === true
         ),
     });
@@ -32,15 +32,16 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                 }}
                 initialValues={initialRegisterValues}
             >
-                {({ handleSubmit, touched, errors, setFieldValue }) => (
+                {({ handleSubmit, touched, errors }) => (
                     <>
                         <Form>
                             <Row>
                                 <Col xs={12} md={10}>
-                                    <p>
-                                        Om deel te kunnen nemen dien je akkoord te gaan met de voorwaarden en dien je te
-                                        bevestigen dat je de projectinformatie hebt gelezen en begrepen.
-                                    </p>
+                                    <p
+                                        dangerouslySetInnerHTML={{
+                                            __html: contactProjectData.textAgreeTermsMerged,
+                                        }}
+                                    />
                                 </Col>
                             </Row>
                             <Row>
@@ -59,12 +60,10 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                 <span
                                                     htmlFor="did_accept_agreement"
                                                     className="checkbox-label w-form-label"
-                                                >
-                                                    Ik ga akkoord met de{' '}
-                                                    <a href={project.linkAgreeTerms} target="_blank">
-                                                        voorwaarden
-                                                    </a>
-                                                </span>
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: contactProjectData.textLinkAgreeTermsMerged,
+                                                    }}
+                                                />
                                                 {touched[field.name] && errors[field.name] ? (
                                                     <div className={'error-message text-danger'}>
                                                         {errors[field.name]}
@@ -91,14 +90,10 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                 <span
                                                     htmlFor="did_understand_info"
                                                     className="checkbox-label w-form-label"
-                                                >
-                                                    Ik heb de{' '}
-                                                    <a href={`${project.linkUnderstandInfo}`} target="_blank">
-                                                        projectinformatie
-                                                    </a>{' '}
-                                                    (inclusief de daarin beschreven risico’s) behorende bij het project
-                                                    gelezen en begrepen
-                                                </span>
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: contactProjectData.textLinkUnderstandInfoMerged,
+                                                    }}
+                                                />
                                                 {touched[field.name] && errors[field.name] ? (
                                                     <div className={'error-message text-danger'}>
                                                         {errors[field.name]}
@@ -109,60 +104,6 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                     />
                                 </Col>
                             </Row>
-                            {project.showQuestionAboutMembership ? (
-                                <>
-                                    <Row>
-                                        <Col xs={12} md={10}>
-                                            <p>
-                                                {contactProjectData.belongsToMembershipGroup
-                                                    ? contactProjectData.textIsMemberMerged
-                                                    : contactProjectData.textIsNoMemberMerged}
-                                            </p>
-                                        </Col>
-                                    </Row>
-                                    {!contactProjectData.belongsToMembershipGroup ? (
-                                        <Row>
-                                            <Col xs={12} md={10}>
-                                                <Field
-                                                    name="choiceMembership"
-                                                    render={({ field }) => (
-                                                        <>
-                                                            <div className="form-check">
-                                                                <label className="radio-inline">
-                                                                    <input
-                                                                        type="radio"
-                                                                        {...field}
-                                                                        id="choice_membership_yes"
-                                                                        checked={field.value === 1}
-                                                                        value={1}
-                                                                        onChange={() =>
-                                                                            setFieldValue('choiceMembership', 1)
-                                                                        }
-                                                                    />
-                                                                    &nbsp;{contactProjectData.textBecomeMemberMerged}
-                                                                </label>
-                                                                <label className="radio-inline">
-                                                                    <input
-                                                                        type="radio"
-                                                                        {...field}
-                                                                        id="choice_membership_no"
-                                                                        checked={field.value === 2}
-                                                                        value={2}
-                                                                        onChange={() => {
-                                                                            setFieldValue('choiceMembership', 2);
-                                                                        }}
-                                                                    />
-                                                                    &nbsp;{contactProjectData.textBecomeNoMemberMerged}
-                                                                </label>
-                                                            </div>
-                                                        </>
-                                                    )}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    ) : null}
-                                </>
-                            ) : null}
                             <Row>
                                 <Col xs={12} md={10}>
                                     <ButtonGroup aria-label="Steps" className="float-right">
@@ -170,7 +111,7 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                             Terug
                                         </Button>
                                         <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                            Ga naar inschrijfformulier
+                                            Ga naar bevestigen
                                         </Button>
                                     </ButtonGroup>
                                 </Col>

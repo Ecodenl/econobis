@@ -16,6 +16,7 @@ export default {
                         'didAgreeAvg',
                         'dateDidAgreeAvg',
                         'addressLines',
+                        'portalSettingsLayoutAssigned',
                     ],
                     rlt: {
                         occupations: {

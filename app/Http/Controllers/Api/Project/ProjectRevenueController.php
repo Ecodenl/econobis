@@ -580,10 +580,20 @@ class ProjectRevenueController extends ApiController
         if (!($distributions->first())->revenue->project->administration_id) {
             abort(400,
                 'Geen administratie gekoppeld aan dit productie project');
+        }else{
+            $lastYearFinancialOverviewDefinitive =  $distributions->first()->revenue->project->lastYearFinancialOverviewDefinitive;
+            if( !empty($lastYearFinancialOverviewDefinitive) && !empty($datePayout) && Carbon::parse($datePayout)->year <= $lastYearFinancialOverviewDefinitive)
+            {
+                $variableDateText =
+                    'redemptionEuro' == $distributions->first()->revenue->category->code_ref  ? 'aflossingsdatum' : 'uitkeringsdatum';
+                abort(400,
+                    'De ' . $variableDateText . ' valt in jaar ' . Carbon::parse($datePayout)->year . ' waar al een definitive waardestaat voor dit project aanwezig is.');
+            }
         }
 
         foreach ($distributions as $distribution) {
             $projectTypeCodeRef = (ProjectType::where('id', $distribution->revenue->project->project_type_id)->first())->code_ref;
+
             //status moet nog bevestigd (confirmed zijn)
             if ($distribution->status === 'confirmed')
             {
@@ -616,7 +626,8 @@ class ProjectRevenueController extends ApiController
         }
 
         foreach ($distributions as $distribution) {
-            //status moet nu onderhanden zijn (in-progess zijn)
+            //todo WM: moet hier ook niet check op mutation allowed inzake definitieve waardestaten?
+            //status moet nu onderhanden zijn (in-progress zijn)
             if ($distribution->status === 'in-progress')
             {
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).

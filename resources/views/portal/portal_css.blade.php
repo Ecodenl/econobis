@@ -1,14 +1,13 @@
 :root {
---main-default-text-color: {{ $store->get('defaultTextColor', '#000') }};
---main-primary-color: {{ $store->get('backgroundColor', '#034b8c') }};
---main-primary-text-color: {{ $store->get('backgroundTextColor', '#fff') }};
---main-primary-rgba: {{ $store->get('backgroundImageColor', 'rgba(3, 75, 140, 0.9)') }};
---main-primary-rgba-text-color: {{ $store->get('backgroundImageTextColor', '#333') }};
---main-header-portal-icon-color: {{ $store->get('headerPortalIconColor', '#fff') }};
---main-secondary-color: {{ $store->get('backgroundSecondaryColor', '#3898EC') }};
---main-secondary-text-color: {{ $store->get('backgroundSecondaryTextColor', '#fff') }};
---button-primary-color: {{ $store->get('buttonColor', '#3898EC') }};
---button-primary-text-color: {{ $store->get('buttonTextColor', '#fff') }};
+--main-primary-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_color) ? $defaultPortalSettingsLayout->portal_background_color : '#034b8c') }};
+--main-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->portal_background_text_Color) ? $defaultPortalSettingsLayout->portal_background_text_Color : '#fff') }};
+--main-primary-rgba: {{ (!empty($defaultPortalSettingsLayout->login_header_background_color) ? $defaultPortalSettingsLayout->login_header_background_color : 'rgba(3, 75, 140, 0.9)') }};
+--main-primary-rgba-text-color: {{ (!empty($defaultPortalSettingsLayout->login_header_background_text_color) ? $defaultPortalSettingsLayout->login_header_background_text_color : '#333') }};
+--main-header-portal-icon-color: {{ (!empty($defaultPortalSettingsLayout->header_icons_color) ? $defaultPortalSettingsLayout->header_icons_color : '#fff') }};
+--main-secondary-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_color) ? $defaultPortalSettingsLayout->login_field_background_color : '#3898EC') }};
+--main-secondary-text-color: {{ (!empty($defaultPortalSettingsLayout->login_field_background_text_color) ? $defaultPortalSettingsLayout->login_field_background_text_color : '#fff') }};
+--button-primary-color: {{ (!empty($defaultPortalSettingsLayout->button_color) ? $defaultPortalSettingsLayout->button_color : '#3898EC') }};
+--button-primary-text-color: {{ (!empty($defaultPortalSettingsLayout->button_text_color) ? $defaultPortalSettingsLayout->button_text_color : '#fff') }};
 --main-warning-color: #dc3545;
 --black-color: #252525;
 }
@@ -110,6 +109,20 @@ color: var(--main-primary-color);
 font-size: 24px;
 font-weight: 400;
 text-shadow: none;
+}
+
+.content-subheading {
+color: var(--main-primary-color);
+font-size: 20px;
+font-weight: 200;
+text-shadow: none;
+margin-bottom: 32px;
+}
+
+.card-header_title {
+color: var(--main-primary-color);
+font-size: 18px;
+font-weight: 400;
 }
 
 .text-block {

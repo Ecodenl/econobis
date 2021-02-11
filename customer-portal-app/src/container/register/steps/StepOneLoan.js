@@ -13,7 +13,7 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepOneLoan({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         amountOptioned: Yup.string()
             .required('Verplicht')
@@ -35,7 +35,7 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
             }}
             initialValues={initialRegisterValues}
         >
-            {({ handleSubmit, values, touched, errors }) => (
+            {({ handleSubmit, values, touched, errors, setFieldValue }) => (
                 <>
                     <Form>
                         <Row>
@@ -67,6 +67,61 @@ function StepOneLoan({ next, project, initialRegisterValues, handleSubmitRegiste
                                 <TextBlock>{MoneyPresenter(values.amountOptioned)}</TextBlock>
                             </Col>
                         </Row>
+                        {project.showQuestionAboutMembership ? (
+                            <>
+                                <hr />
+                                <Row>
+                                    <Col xs={12} md={10}>
+                                        <p>
+                                            {contactProjectData.belongsToMembershipGroup
+                                                ? contactProjectData.textIsMemberMerged
+                                                : contactProjectData.textIsNoMemberMerged}
+                                        </p>
+                                    </Col>
+                                </Row>
+                                {!contactProjectData.belongsToMembershipGroup ? (
+                                    <Row>
+                                        <Col xs={12} md={10}>
+                                            <Field
+                                                name="choiceMembership"
+                                                render={({ field }) => (
+                                                    <>
+                                                        <div className="form-check">
+                                                            <label className="radio-inline">
+                                                                <input
+                                                                    type="radio"
+                                                                    {...field}
+                                                                    id="choice_membership_yes"
+                                                                    checked={field.value === 1}
+                                                                    value={1}
+                                                                    onChange={() =>
+                                                                        setFieldValue('choiceMembership', 1)
+                                                                    }
+                                                                />
+                                                                &nbsp;{contactProjectData.textBecomeMemberMerged}
+                                                            </label>
+                                                            <label className="radio-inline">
+                                                                <input
+                                                                    type="radio"
+                                                                    {...field}
+                                                                    id="choice_membership_no"
+                                                                    checked={field.value === 2}
+                                                                    value={2}
+                                                                    onChange={() => {
+                                                                        setFieldValue('choiceMembership', 2);
+                                                                    }}
+                                                                />
+                                                                &nbsp;{contactProjectData.textBecomeNoMemberMerged}
+                                                            </label>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            />
+                                        </Col>
+                                    </Row>
+                                ) : null}
+                            </>
+                        ) : null}
 
                         <Row>
                             <Col>

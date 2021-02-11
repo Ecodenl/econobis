@@ -32,7 +32,7 @@ function MasterForm({
                             <div className={`step ${currentStep === 1 ? 'current' : ''}`}>1. Inschrijven</div>
                             <div className={`step ${currentStep === 2 ? 'current' : ''}`}>2. Gegevens</div>
                             <div className={`step ${currentStep === 3 ? 'current' : ''}`}>3. Voorwaarden</div>
-                            <div className={`step ${currentStep === 4 ? 'current' : ''}`}>4. Inschrijfformulier</div>
+                            <div className={`step ${currentStep === 4 ? 'current' : ''}`}>4. Bevestigen</div>
                         </div>
                     </Col>
                 </Row>

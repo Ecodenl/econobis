@@ -25,7 +25,7 @@ class GridOrder extends Resource
 
             'contact' => FullContact::make($this->whenLoaded('contact')),
 
-            'totalPriceInclVatPerYear' => $this->total_price_incl_vat_per_year,
+            'totalInclVatInclReductionPerYear' => $this->getTotalInclVatInclReductionPerYearAttribute(),
 
             'paymentType' => FullEnumWithIdAndName::make($this->getPaymentType()),
             'status' => FullEnumWithIdAndName::make($this->getStatus()),

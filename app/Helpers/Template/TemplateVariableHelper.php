@@ -1634,7 +1634,7 @@ class TemplateVariableHelper
                 return $model->order->contact->iban_attn;
                 break;
             case 'totaal_incl_btw':
-                return number_format($model->total_price_incl_vat_and_reduction, 2, ',', '');
+                return number_format($model->total_incl_vat_incl_reduction, 2, ',', '');
                 break;
             case 'datum':
                 if( $model->invoice_number == 0){

@@ -249,7 +249,7 @@ class InvoiceProductsFormNew extends Component {
                                 />
                             ) : (
                                 <InputText
-                                    label={'Prijs incl. BTW'}
+                                    label={'Prijs excl. BTW'}
                                     name={'price'}
                                     value={
                                         '€' +
@@ -330,7 +330,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoiceProductsFormNew);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormNew);

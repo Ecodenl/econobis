@@ -38,7 +38,7 @@ class FullInvoiceProduct extends Resource
                 'amountReduction' => $this->amount_reduction,
                 'percentageReduction' => $this->percentage_reduction,
 
-                'priceInclVatAndReduction' => $this->price_incl_vat_and_reduction,
+                'amountInclVatInclReduction' => $this->getAmountInclReductionInclVat(),
                 'productCode' => $this->product_code,
                 'productName' => $this->product_name,
                 'description' => $this->description,

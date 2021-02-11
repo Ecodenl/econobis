@@ -81,13 +81,14 @@ const InvoiceProductsFormEdit = props => {
                                 />
                             ) : (
                                 <InputText
-                                    label={'Prijs incl. BTW'}
+                                    label={'Prijs excl. BTW'}
                                     name={'price'}
                                     value={
                                         '€' +
                                         props.invoiceProduct.product.currentPrice.priceInclVat.toLocaleString('nl', {
                                             minimumFractionDigits: 2,
-                                            maximumFractionDigits: props.invoiceProduct.product.currentPrice.priceNumberOfDecimals,
+                                            maximumFractionDigits:
+                                                props.invoiceProduct.product.currentPrice.priceNumberOfDecimals,
                                         })
                                     }
                                     readOnly={true}

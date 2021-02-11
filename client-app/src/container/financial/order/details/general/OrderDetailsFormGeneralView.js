@@ -24,7 +24,7 @@ const OrderDetailsFormGeneralView = props => {
         poNumber,
         invoiceText,
         dateRequested,
-        totalPriceInclVatPerYear,
+        totalInclVatInclReductionPerYear,
         dateNextInvoice,
     } = props.orderDetails;
 
@@ -111,7 +111,7 @@ const OrderDetailsFormGeneralView = props => {
                             label={'Totaal bedrag incl. BTW'}
                             value={
                                 '€' +
-                                totalPriceInclVatPerYear.toLocaleString('nl', {
+                                totalInclVatInclReductionPerYear.toLocaleString('nl', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
                                 })

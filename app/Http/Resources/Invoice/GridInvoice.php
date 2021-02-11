@@ -37,7 +37,7 @@ class GridInvoice extends Resource
 
             'daysToExpire' => $this->days_to_expire,
             'daysLastReminder' => $this->days_last_reminder,
-            'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
+            'totalInclVatInclReduction' => $this->total_incl_vat_incl_reduction,
             'amountOpen' => $this->amount_open,
 
             'iban' => $this->iban,

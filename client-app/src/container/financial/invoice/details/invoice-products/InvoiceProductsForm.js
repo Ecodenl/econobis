@@ -46,30 +46,30 @@ class InvoiceProductsForm extends Component {
                         <div className={'col-xs-10'}>
                             <span className="h5 text-bold">Notaregels</span>
                         </div>
-                        {this.props.permissions.manageFinancial && this.props.invoice.statusId == 'to-send' && (
-                            <div className={'col-xs-2'}>
-                                <div className="pull-right">
-                                    <span className="glyphicon glyphicon-plus" data-toggle="dropdown" role="button" />
-                                    <ul className="dropdown-menu">
-                                        <li>
-                                            <a className="btn" onClick={this.toggleShowNew}>
-                                                Bestaand product
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a className="btn" onClick={this.toggleShowNewProduct}>
-                                                Nieuw product
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a className="btn" onClick={this.toggleShowNewProductOneTime}>
-                                                Nieuw eenmalig product
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        )}
+                        {/*{this.props.permissions.manageFinancial && this.props.invoice.statusId == 'to-send' && (*/}
+                        {/*    <div className={'col-xs-2'}>*/}
+                        {/*        <div className="pull-right">*/}
+                        {/*            <span className="glyphicon glyphicon-plus" data-toggle="dropdown" role="button" />*/}
+                        {/*            <ul className="dropdown-menu">*/}
+                        {/*                <li>*/}
+                        {/*                    <a className="btn" onClick={this.toggleShowNew}>*/}
+                        {/*                        Bestaand product*/}
+                        {/*                    </a>*/}
+                        {/*                </li>*/}
+                        {/*                <li>*/}
+                        {/*                    <a className="btn" onClick={this.toggleShowNewProduct}>*/}
+                        {/*                        Nieuw product*/}
+                        {/*                    </a>*/}
+                        {/*                </li>*/}
+                        {/*                <li>*/}
+                        {/*                    <a className="btn" onClick={this.toggleShowNewProductOneTime}>*/}
+                        {/*                        Nieuw eenmalig product*/}
+                        {/*                    </a>*/}
+                        {/*                </li>*/}
+                        {/*            </ul>*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
                     </div>
                 </PanelHeader>
                 <PanelBody>

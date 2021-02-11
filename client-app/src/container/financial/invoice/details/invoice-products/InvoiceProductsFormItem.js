@@ -18,7 +18,7 @@ class InvoiceProductsFormItem extends Component {
             highlightLine: '',
             showEdit: false,
             showDelete: false,
-            totalPrice: props.invoiceProduct.priceInclVatAndReduction,
+            totalPrice: props.invoiceProduct.amountInclVatInclReduction,
             invoiceProduct: {
                 ...props.invoiceProduct,
                 variablePrice: props.invoiceProduct.priceInclVat
@@ -38,7 +38,7 @@ class InvoiceProductsFormItem extends Component {
         if (!isEqual(this.state.invoiceProduct, nextProps.invoiceProduct)) {
             this.setState({
                 ...this.state,
-                totalPrice: nextProps.invoiceProduct.priceInclVatAndReduction,
+                totalPrice: nextProps.invoiceProduct.amountInclVatInclReduction,
                 invoiceProduct: {
                     ...nextProps.invoiceProduct,
                     variablePrice: nextProps.invoiceProduct.priceInclVat
@@ -243,7 +243,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoiceProductsFormItem);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormItem);

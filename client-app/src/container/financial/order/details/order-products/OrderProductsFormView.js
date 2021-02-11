@@ -7,10 +7,10 @@ const OrderProductsFormView = props => {
     const {
         product,
         amount,
-        totalPriceInclVatAndReduction,
+        amountInclReductionInclVat,
         dateStart,
         dateEnd,
-        totalPriceInclVatAndReductionPerYear,
+        amountInclReductionInclVatPerYear,
         isOneTimeAndPaidProduct,
         period,
     } = props.orderProduct;
@@ -33,9 +33,9 @@ const OrderProductsFormView = props => {
                 <div className="col-sm-2">{product ? product.invoiceText : ''}</div>
                 <div className="col-sm-1">{amount ? amount : ''}</div>
                 <div className="col-sm-2">
-                    {totalPriceInclVatAndReduction
+                    {amountInclReductionInclVat
                         ? '€' +
-                          totalPriceInclVatAndReduction.toLocaleString('nl', {
+                          amountInclReductionInclVat.toLocaleString('nl', {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                           })
@@ -43,9 +43,9 @@ const OrderProductsFormView = props => {
                 </div>
                 <div className="col-sm-2">{product.invoiceFrequency ? product.invoiceFrequency.name : ''}</div>
                 <div className="col-sm-1">
-                    {totalPriceInclVatAndReductionPerYear
+                    {amountInclReductionInclVatPerYear
                         ? '€' +
-                          totalPriceInclVatAndReductionPerYear.toLocaleString('nl', {
+                          amountInclReductionInclVatPerYear.toLocaleString('nl', {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                           })

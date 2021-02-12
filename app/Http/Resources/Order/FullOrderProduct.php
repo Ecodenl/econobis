@@ -45,8 +45,8 @@ class FullOrderProduct extends Resource
                 'dateStart' => $this->date_start,
                 'dateEnd' => $this->date_end,
 
-                'totalPriceInclVatAndReduction' => $this->total_price_incl_vat_and_reduction,
-                'totalPriceInclVatAndReductionPerYear' => $this->total_price_incl_vat_and_reduction_per_year,
+                'amountInclReductionInclVat' => $this->getAmountInclReductionInclVat(),
+                'amountInclReductionInclVatPerYear' => $this->getAmountInclReductionInclVatPerYear(),
 
                 'orderId' => $this->order_id,
                 'order' => FullOrder::make($this->whenLoaded('order')),

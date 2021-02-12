@@ -31,7 +31,7 @@ class OrderCreateList extends Component {
                                         <NavText>
                                             <Link
                                                 className={`${
-                                                    order.totalPriceInclVat < 0
+                                                    order.totalInclVatInclReduction < 0
                                                         ? 'send-orders-list-link-error'
                                                         : 'send-orders-list-link'
                                                 }`}

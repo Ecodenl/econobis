@@ -31,16 +31,31 @@ class InvoiceProduct extends Model
         return $this->belongsTo(Product::class)->withoutGlobalScope('is_not_one_time');
     }
 
-    public function getAmountReductionAmountAttribute()
+    public function getAmountExclVat()
+    {
+        $amountExclVat = $this->price * $this->amount;
+        return floatval( number_format( $amountExclVat, 2, '.', ''));
+    }
+    public function getAmountInclVat()
+    {
+        $amountInclVat = $this->price_incl_vat * $this->amount;
+        return floatval( number_format( $amountInclVat, 2, '.', ''));
+    }
+    public function getAmountVat()
+    {
+        $amountVat = $this->getAmountInclVat() - $this->getAmountExclVat();
+        return floatval( number_format( $amountVat, 2, '.', ''));
+    }
+    public function getAmountReductionAmountExclVat()
     {
         $amountReduction = 0;
         if ($this->amount_reduction) {
-            $amountReduction = $this->amount_reduction;
+            $amountReduction = $this->amount_reduction; // ingevoerd bedrag korting
             $inputInclVat = false;
             if ($this->product->currentPrice) {
                 $inputInclVat = $this->product->currentPrice->input_incl_vat;
             }
-            if($inputInclVat)
+            if($inputInclVat) // indien price ingevoerd incl. BTW dan ingevoerd bedrag korting ook incl.
             {
                 $vatPercentage = $this->vat_percentage;
                 $vatFactor = (100 + $vatPercentage) / 100;
@@ -49,8 +64,30 @@ class InvoiceProduct extends Model
         }
         return floatval(number_format( ($amountReduction * -1), 2, '.', ''));
     }
-
-    public function getAmountReductionPercentageAttribute()
+    public function getAmountReductionAmountInclVat()
+    {
+        $amountReduction = 0;
+        if ($this->amount_reduction) {
+            $amountReduction = $this->amount_reduction; // ingevoerd bedrag korting
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
+            if(!$inputInclVat) // indien price ingevoerd excl. BTW dan ingevoerd bedrag korting ook excl.
+            {
+                $vatPercentage = $this->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = $amountReduction * $vatFactor;
+            }
+        }
+        return floatval(number_format( ($amountReduction * -1), 2, '.', ''));
+    }
+    public function getAmountReductionAmountVat()
+    {
+        $amountVat = $this->getAmountReductionAmountInclVat() - $this->getAmountReductionAmountExclVat();
+        return floatval( number_format( $amountVat, 2, '.', ''));
+    }
+    public function getAmountReductionPercentageExclVat()
     {
         $amountReduction = 0;
         if ($this->percentage_reduction) {
@@ -59,66 +96,78 @@ class InvoiceProduct extends Model
                 $inputInclVat = $this->product->currentPrice->input_incl_vat;
             }
 
-            if($inputInclVat)
+            if($inputInclVat) // indien price ingevoerd incl. BTW dan percentage korting ook over incl.
             {
-                $priceInclVat = $this->price_incl_vat;
-                if ($priceInclVat === null) {
-                    $priceInclVat = 0;
-                }
-                $priceInclVat = ($this->amount * $priceInclVat);
-                $amountReduction = $priceInclVat * ($this->percentage_reduction / 100);
+                $amountReduction = $this->getAmountInclVat() * ($this->percentage_reduction / 100);
                 $vatPercentage = $this->vat_percentage;
                 $vatFactor = (100 + $vatPercentage) / 100;
                 $amountReduction = $amountReduction / $vatFactor;
             }else {
-                $price = $this->price;
-                if ($price === null) {
-                    $price = 0;
-                }
-                $price = ($this->amount * $price);
-                $amountReduction = $price * ($this->percentage_reduction) / 100;
+                $amountReduction = $this->getAmountExclVat() * ($this->percentage_reduction) / 100;
             }
         }
-    return floatval( number_format(  ($amountReduction* -1), 2, '.', '') );
-
+        return floatval( number_format(  ($amountReduction* -1), 2, '.', '') );
     }
-
-    public function getPriceInclVatAndReductionAttribute()
+    public function getAmountReductionPercentageInclVat()
     {
-// rollback this change: other situations are not calculated correct anymore
-//        if($this->getAmountReductionAmountAttribute() == 0 && $this->getAmountReductionPercentageAttribute() == 0){
-//            return floatval( number_format( ($this->amount * $this->price_incl_vat), 2, '.', ''));
-//        }
-        $vatPercentage = $this->vat_percentage;
-        $vatFactor = (100 + $vatPercentage) / 100;
-        $priceExclVat = $this->getPriceExVatInclReductionAttribute();
-        return floatval( number_format( ($priceExclVat * $vatFactor), 2, '.', ''));
-    }
-
-    public function getPriceExVatInclReductionAttribute()
-    {
-        $priceExclVat = $this->price;
-        if ($priceExclVat === null) {
-            $priceExclVat = 0;
-        }
-        $priceExclVat = ($this->amount * $priceExclVat);
+        $amountReduction = 0;
         if ($this->percentage_reduction) {
-            $amountReductionPercentage = $this->getAmountReductionPercentageAttribute();
-            $priceExclVat = $priceExclVat + $amountReductionPercentage;
+            $inputInclVat = false;
+            if ($this->product->currentPrice) {
+                $inputInclVat = $this->product->currentPrice->input_incl_vat;
+            }
+
+            if($inputInclVat) // indien price ingevoerd incl. BTW dan percentage korting ook over incl.
+            {
+                $amountReduction = $this->getAmountInclVat() * ($this->percentage_reduction / 100);
+            }else {
+                $amountReduction = $this->getAmountExclVat() * ($this->percentage_reduction) / 100;
+                $vatPercentage = $this->vat_percentage;
+                $vatFactor = (100 + $vatPercentage) / 100;
+                $amountReduction = $amountReduction * $vatFactor;
+            }
         }
-        if ($this->amount_reduction) {
-            $amountReduction = $this->getAmountReductionAmountAttribute();
-            $priceExclVat += $amountReduction;
-        }
-        return floatval( number_format( $priceExclVat, 2, '.', '') );
+        return floatval( number_format(  ($amountReduction* -1), 2, '.', '') );
+    }
+    public function getAmountReductionPercentageVat()
+    {
+        $amountVat = $this->getAmountReductionPercentageInclVat() - $this->getAmountReductionPercentageExclVat();
+        return floatval( number_format( $amountVat, 2, '.', ''));
+    }
+    public function getAmountInclReductionExclVat()
+    {
+        $amountExclVat = $this->getAmountExclVat();
+        $amountReductionAmountExclVat = $this->getAmountReductionAmountExclVat();
+        $amountReductionPercentageExclVat = $this->getAmountReductionPercentageExclVat();
+        return floatval( number_format( ($amountExclVat + $amountReductionAmountExclVat + $amountReductionPercentageExclVat), 2, '.', ''));
+    }
+    public function getAmountInclReductionInclVat()
+    {
+        $amountInclVat = $this->getAmountInclVat();
+        $amountReductionAmountInclVat = $this->getAmountReductionAmountInclVat();
+        $amountReductionPercentageInclVat = $this->getAmountReductionPercentageInclVat();
+        return floatval( number_format( ($amountInclVat + $amountReductionAmountInclVat + $amountReductionPercentageInclVat), 2, '.', ''));
+    }
+    public function getAmountInclReductionVat()
+    {
+        $amountInclReductionVat = $this->getAmountInclReductionInclVat() - $this->getAmountInclReductionExclVat();
+        return floatval( number_format( $amountInclReductionVat, 2, '.', ''));
     }
 
-    public function getAmountVatAttribute()
-    {
-        $vatPercentage = $this->vat_percentage;
-        $vatFactor = ($vatPercentage) / 100;
-        $priceExclVat = $this->getPriceExVatInclReductionAttribute();
-        return floatval( number_format( $priceExclVat * $vatFactor, 2, '.', '') );
+    public function getAmountExclVatFormattedAttribute(){
+        return $this->formatFinancial($this->getAmountExclVat());
+    }
+
+    public function getAmountReductionAmountExclVatFormattedAttribute(){
+        return $this->formatFinancial($this->getAmountReductionAmountExclVat());
+    }
+
+    public function getAmountReductionPercentageExclVatFormattedAttribute(){
+        return $this->formatFinancial($this->getAmountReductionPercentageExclVat());
+    }
+
+    private function formatFinancial($amount){
+        return number_format($amount, 2, ',', '');
     }
 
 }

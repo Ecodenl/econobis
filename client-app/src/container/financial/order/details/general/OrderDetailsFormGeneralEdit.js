@@ -435,12 +435,12 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 label="Totaal bedrag incl. BTW"
                                 value={
                                     '€' +
-                                    this.props.orderDetails.totalPriceInclVatPerYear.toLocaleString('nl', {
+                                    this.props.orderDetails.totalInclVatInclReductionPerYear.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,
                                     })
                                 }
-                                name={'totalPriceInclVat'}
+                                name={'totalInclVatInclReduction'}
                                 readOnly={true}
                             />
                         </div>
@@ -483,7 +483,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailsFormGeneralEdit);

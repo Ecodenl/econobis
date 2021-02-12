@@ -64,13 +64,13 @@ class InvoiceController extends ApiController
                 return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
             $invoices = $invoices->reject(function ($invoice) {
-                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
                 return ( $invoice->emailToAddress === 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
-                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
         }
         elseif ($onlyPostInvoices)
@@ -79,13 +79,13 @@ class InvoiceController extends ApiController
                 return ( $invoice->emailToAddress !== 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
             $invoices = $invoices->reject(function ($invoice) {
-                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
                 return ( $invoice->emailToAddress !== 'Geen e-mail bekend' || ( empty($invoice->order->contact->iban) && $invoice->payment_type_id === 'collection' ) );
             });
             $selectedInvoices = $selectedInvoices->reject(function ($invoice) {
-                return ($invoice->total_price_incl_vat_and_reduction < 0 && $invoice->payment_type_id === 'collection');
+                return ($invoice->total_incl_vat_incl_reduction < 0 && $invoice->payment_type_id === 'collection');
             });
         }
 
@@ -93,7 +93,7 @@ class InvoiceController extends ApiController
 
         $totalPrice = 0;
         foreach ($selectedInvoices as $invoice) {
-            $totalPrice += $invoice->total_price_incl_vat_and_reduction;
+            $totalPrice += $invoice->total_incl_vat_incl_reduction;
         }
 
         return GridInvoice::collection($invoices)

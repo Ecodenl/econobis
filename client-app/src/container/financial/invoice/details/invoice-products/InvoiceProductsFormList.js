@@ -11,7 +11,7 @@ const InvoiceProductsFormList = props => {
                 <div className="col-sm-3">Productnaam</div>
                 <div className="col-sm-3">Omschrijving</div>
                 <div className="col-sm-2">Aantal</div>
-                <div className="col-sm-2">Prijs incl. BTW</div>
+                <div className="col-sm-2">Bedrag incl. BTW</div>
             </div>
             {props.invoiceProducts.length > 0 ? (
                 props.invoiceProducts.map(invoiceProduct => {

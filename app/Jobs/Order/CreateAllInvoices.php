@@ -14,6 +14,7 @@ use App\Eco\Invoice\Invoice;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Invoice\InvoiceHelper;
+use App\Helpers\Invoice\MollieInvoiceHelper;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -73,6 +74,8 @@ class CreateAllInvoices implements ShouldQueue
                 $invoice->save();
 
                 InvoiceHelper::saveInvoiceProducts($invoice, $order);
+
+                MollieInvoiceHelper::addMolliePaymentToInvoice($invoice);
 
                 $this->ordersOk += 1;
                 $jobLog = new JobsLog();

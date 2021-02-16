@@ -10,6 +10,7 @@ use App\Eco\Product\Product;
 use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Invoice\InvoiceHelper;
+use App\Helpers\Invoice\MollieInvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Sepa\SepaHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -159,6 +160,8 @@ class InvoiceController extends ApiController
         $order = $invoice->order;
         $order->status_id = 'active';
         $order->save();
+
+        MollieInvoiceHelper::addMolliePaymentToInvoice($invoice);
 
         return $this->show($invoice->fresh());
     }

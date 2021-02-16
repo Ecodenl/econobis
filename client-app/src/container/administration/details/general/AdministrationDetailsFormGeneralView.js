@@ -47,6 +47,7 @@ const AdministrationDetailsFormGeneralView = props => {
         usesVat,
         emailBccNotas,
         portalSettingsLayout,
+        usesMollie
     } = props.administrationDetails;
 
     // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
@@ -143,6 +144,10 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'Portal instellingen layout'}
                             value={portalSettingsLayout ? portalSettingsLayout.description : 'gebruikt standaard'}
                         />
+                    </div>
+
+                    <div className="row">
+                        <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
                     </div>
 
                     {usesTwinfield == true && (

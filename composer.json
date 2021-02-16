@@ -20,6 +20,7 @@
         "laravel/passport": "^9.3",
         "laravel/tinker": "~1.0",
         "league/oauth2-client": "^2.4",
+        "mollie/laravel-mollie": "^2.14",
         "particle/validator": "^2.3",
         "php-imap/php-imap": "^4.0",
         "php-twinfield/twinfield": "2.7.*",

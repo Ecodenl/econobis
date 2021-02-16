@@ -33,6 +33,10 @@ class Administration extends Model
         'twinfield_client_secret'
     ];
 
+    protected $casts = [
+        'uses_mollie' => 'bool',
+    ];
+
     //Per administratie heeft de contact een ander twinfield nummer
     public function twinfieldNumbers()
     {

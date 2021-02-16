@@ -69,6 +69,8 @@ class AdministrationNewForm extends Component {
                 usesVat: true,
                 emailBccNotas: '',
                 portalSettingsLayoutId: '',
+                usesMollie: false,
+                mollieApiKey: '',
             },
             errors: {
                 name: false,
@@ -370,6 +372,9 @@ class AdministrationNewForm extends Component {
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
             data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
+            data.append('usesMollie', administration.usesMollie);
+            data.append('usesMollie', administration.usesMollie);
+            data.append('mollieApiKey', administration.mollieApiKey);
 
             AdministrationDetailsAPI.newAdministration(data)
                 .then(payload => {
@@ -420,6 +425,8 @@ class AdministrationNewForm extends Component {
             usesVat,
             emailBccNotas,
             portalSettingsLayoutId,
+            usesMollie,
+            mollieApiKey,
         } = this.state.administration;
 
         let disableBeforeDateSyncTwinfieldContacts = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
@@ -687,6 +694,23 @@ class AdministrationNewForm extends Component {
                                 addAttachment={this.addAttachment}
                             />
                         )}
+
+                        <div className="row">
+                            <InputToggle
+                                label={'Gebruikt Mollie'}
+                                name={'usesMollie'}
+                                value={usesMollie}
+                                onChangeAction={this.handleInputChange}
+                            />
+                            {usesMollie && (
+                                <InputText
+                                    label="Mollie API key"
+                                    name={'mollieApiKey'}
+                                    value={mollieApiKey}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            )}
+                        </div>
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>

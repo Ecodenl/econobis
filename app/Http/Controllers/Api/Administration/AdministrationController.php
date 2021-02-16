@@ -133,7 +133,7 @@ class AdministrationController extends ApiController
         }
 
         $data['uses_vat'] = $usesVat;
-        $data['uses_mollie'] = (bool) $request->input('usesMollie');
+        $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
 
         $administration = new Administration($data);
 

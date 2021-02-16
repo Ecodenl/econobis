@@ -30,7 +30,8 @@ class Administration extends Model
     protected $encryptable = [
         'IBAN',
         'twinfield_password',
-        'twinfield_client_secret'
+        'twinfield_client_secret',
+        'mollie_api_key',
     ];
 
     protected $casts = [

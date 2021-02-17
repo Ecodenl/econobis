@@ -7,6 +7,7 @@ import moment from 'moment/moment';
 import InvoiceDetailsFormConclusion from './conclusion/InvoiceDetailsFormConclusion';
 import InvoiceProductsForm from './invoice-products/InvoiceProductsForm';
 import InvoicePaymentsForm from './invoice-payments/InvoicePaymentsForm';
+import InvoiceMolliePaymentsForm from './invoice-mollie-payments/InvoiceMolliePaymentsForm';
 moment.locale('nl');
 
 class InvoiceDetailsForm extends Component {
@@ -35,6 +36,7 @@ class InvoiceDetailsForm extends Component {
                 <InvoiceDetailsFormGeneral />
                 <InvoiceProductsForm />
                 <InvoicePaymentsForm />
+                <InvoiceMolliePaymentsForm />
                 <InvoiceDetailsFormConclusion />
             </div>
         );

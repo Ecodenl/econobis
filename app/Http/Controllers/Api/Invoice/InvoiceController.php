@@ -125,6 +125,7 @@ class InvoiceController extends ApiController
             'order.contact',
             'invoiceProducts',
             'payments',
+            'molliePayment',
             'tasks',
             'emails',
             'document',

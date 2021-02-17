@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class InvoiceMolliePayment extends Model
 {
-    const STATUS_OPEN = 'open';
-
     protected $guarded = ['id'];
 
     public static function addToInvoice(Invoice $invoice)
@@ -29,7 +27,7 @@ class InvoiceMolliePayment extends Model
             'invoice_id' => $invoice->id,
             'mollie_id' => $payment->id,
             'checkout_url' => $payment->getCheckoutUrl(),
-            'status' => static::STATUS_OPEN,
+            'date_paid' => null,
         ]);
 
         $invoiceMolliePayment->save();

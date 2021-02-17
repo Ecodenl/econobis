@@ -31,6 +31,7 @@ class FullInvoice extends Resource
                 'order' => FullOrder::make($this->whenLoaded('order')),
 
                 'payments' => GenericResource::make($this->whenLoaded('payments')),
+                'molliePayment' => GenericResource::make($this->whenLoaded('molliePayment')),
 
                 'invoiceProducts' => FullInvoiceProduct::collection($this->whenLoaded('invoiceProducts')),
 

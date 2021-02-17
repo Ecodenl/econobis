@@ -37,7 +37,16 @@ class IntakesListItem extends Component {
     }
 
     render() {
-        const { checked, id, fullName, createdAt, fullAddress, status, measuresRequestedNames = [] } = this.props;
+        const {
+            checked,
+            id,
+            fullName,
+            createdAt,
+            fullAddress,
+            status,
+            campaign,
+            measuresRequestedNames = [],
+        } = this.props;
 
         return (
             <tr
@@ -56,6 +65,7 @@ class IntakesListItem extends Component {
                 <td>{fullAddress}</td>
                 <td>{measuresRequestedNames.join(', ')}</td>
                 <td>{status}</td>
+                <td>{campaign.name}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -76,7 +86,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(IntakesListItem);
+export default connect(null, mapDispatchToProps)(IntakesListItem);

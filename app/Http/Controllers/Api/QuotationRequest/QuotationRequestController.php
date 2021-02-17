@@ -37,6 +37,7 @@ class QuotationRequestController extends ApiController
             'opportunity.intake.address',
             'opportunity.measureCategory',
             'opportunity.measures',
+            'opportunity.intake.campaign',
             'opportunity.intake.contact',
             'status',
         ]);

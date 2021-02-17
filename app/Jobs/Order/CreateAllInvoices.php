@@ -11,10 +11,10 @@ namespace App\Jobs\Order;
 
 use App\Eco\Email\Email;
 use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Invoice\InvoiceHelper;
-use App\Helpers\Invoice\MollieInvoiceHelper;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -75,7 +75,9 @@ class CreateAllInvoices implements ShouldQueue
 
                 InvoiceHelper::saveInvoiceProducts($invoice, $order);
 
-                MollieInvoiceHelper::addMolliePaymentToInvoice($invoice);
+                if($invoice->administration->uses_mollie){
+                    InvoiceMolliePayment::addToInvoice($invoice);
+                }
 
                 $this->ordersOk += 1;
                 $jobLog = new JobsLog();

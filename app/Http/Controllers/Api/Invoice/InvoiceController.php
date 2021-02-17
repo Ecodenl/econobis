@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Invoice;
 
 use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Product\PriceHistory;
@@ -10,7 +11,6 @@ use App\Eco\Product\Product;
 use App\Helpers\CSV\InvoiceCSVHelper;
 use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Invoice\InvoiceHelper;
-use App\Helpers\Invoice\MollieInvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Sepa\SepaHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -161,7 +161,9 @@ class InvoiceController extends ApiController
         $order->status_id = 'active';
         $order->save();
 
-        MollieInvoiceHelper::addMolliePaymentToInvoice($invoice);
+        if($invoice->administration->uses_mollie) {
+            InvoiceMolliePayment::addToInvoice($invoice);
+        }
 
         return $this->show($invoice->fresh());
     }

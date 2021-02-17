@@ -75,6 +75,10 @@ class Invoice extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function molliePayment()
+    {
+        return $this->hasOne(InvoiceMolliePayment::class);
+    }
 
     public function getPaymentType()
     {

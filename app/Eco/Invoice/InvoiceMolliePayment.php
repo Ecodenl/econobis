@@ -19,6 +19,14 @@ class InvoiceMolliePayment extends Model
             "redirectUrl" => url('test'),
         ];
 
+        /**
+         * Webhook url moet een openbare url zijn welke voor Mollie te benaderen is.
+         * Aangezien dat lokaal niet kan lokaal uitschakelen.
+         */
+        if(config('app.env') !== 'local'){
+            $data['webhookUrl'] = route('mollie.webhook');
+        }
+
         $mollieApi = $invoice->administration->getMollieApiFacade();
 
         $payment = $mollieApi->payments()->create($data);
@@ -33,4 +41,8 @@ class InvoiceMolliePayment extends Model
         $invoiceMolliePayment->save();
     }
 
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 }

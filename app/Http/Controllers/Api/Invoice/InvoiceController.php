@@ -789,4 +789,24 @@ class InvoiceController extends ApiController
         $invoiceProduct->delete();
     }
 
+    public function mollieWebhook(Request $request)
+    {
+        $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('mollie_id', $request->input('id'));
+
+        if(!$invoiceMolliePayment){
+            return;
+        }
+
+        $invoice = $invoiceMolliePayment->invoice;
+
+        $mollieApi = $invoice->administration->getMollieApiFacade();
+
+        $payment = $mollieApi->payments->get($invoiceMolliePayment->mollie_id);
+
+        if ($payment->isPaid())
+        {
+            $invoiceMolliePayment->date_paid = Carbon::now();
+            $invoiceMolliePayment->save();
+        }
+    }
 }

@@ -501,4 +501,6 @@ Route::namespace('Api')
 Route::namespace('Api')
     ->group(function () {
         Route::post('webform/external/{apiKey}', 'Webform\ExternalWebformController@post');
+
+        Route::post('mollie/webhook', [\App\Http\Controllers\Api\Invoice\InvoiceController::class, 'mollieWebhook'])->name('mollie.webhook');
     });

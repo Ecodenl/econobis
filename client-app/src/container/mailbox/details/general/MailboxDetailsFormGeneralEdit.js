@@ -13,8 +13,8 @@ import Panel from '../../../../components/panel/Panel';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
-import ViewText from "../../../../components/form/ViewText";
-import moment from "moment/moment";
+import ViewText from '../../../../components/form/ViewText';
+import moment from 'moment/moment';
 
 class MailboxDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -312,7 +312,11 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 label="Imap versleutelde verbinding"
                                 name={'imapEncryption'}
                                 value={imapEncryption}
-                                options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
+                                options={[
+                                    { id: 'ssl', name: 'SSL' },
+                                    { id: 'ssl/novalidate-cert', name: 'SSL - self-signed certificate' },
+                                    { id: 'tls', name: 'TLS' },
+                                ]}
                                 onChangeAction={this.handleInputChange}
                             />
                             {!usesMailgun && (
@@ -320,7 +324,10 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                     label="Smtp versleutelde verbinding"
                                     name={'smtpEncryption'}
                                     value={smtpEncryption}
-                                    options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
+                                    options={[
+                                        { id: 'ssl', name: 'SSL' },
+                                        { id: 'tls', name: 'TLS' },
+                                    ]}
                                     onChangeAction={this.handleInputChange}
                                 />
                             )}
@@ -341,8 +348,13 @@ class MailboxDetailsFormGeneralEdit extends Component {
                     </PanelHeader>
                     <PanelBody>
                         <div className="row">
-                            <ViewText label={'Datum email laatst opgehaald'} value={dateLastFetched}
-                                      value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}/>
+                            <ViewText
+                                label={'Datum email laatst opgehaald'}
+                                value={dateLastFetched}
+                                value={
+                                    dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'
+                                }
+                            />
                             <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
                         </div>
                     </PanelBody>
@@ -378,7 +390,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ updateMailbox, fetchSystemData }, dispatch);
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MailboxDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsFormGeneralEdit);

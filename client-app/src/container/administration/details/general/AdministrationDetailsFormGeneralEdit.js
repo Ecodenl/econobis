@@ -796,22 +796,24 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             />
                         )}
 
-                        <div className="row">
-                            <InputToggle
-                                label={'Gebruikt Mollie'}
-                                name={'usesMollie'}
-                                value={usesMollie}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            {usesMollie && (
-                                <InputText
-                                    label="Mollie API key"
-                                    name={'mollieApiKey'}
-                                    value={mollieApiKey}
+                        {this.props.permissions.manageMailgunDomain && ( // Todo; juiste permissie instellen
+                            <div className="row">
+                                <InputToggle
+                                    label={'Gebruikt Mollie'}
+                                    name={'usesMollie'}
+                                    value={usesMollie}
                                     onChangeAction={this.handleInputChange}
                                 />
-                            )}
-                        </div>
+                                {usesMollie && (
+                                    <InputText
+                                        label="Mollie API key"
+                                        name={'mollieApiKey'}
+                                        value={mollieApiKey}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                )}
+                            </div>
+                        )}
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
@@ -1026,6 +1028,7 @@ const mapStateToProps = state => {
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         administrationsPeek: state.systemData.administrationsPeek,
         administrationDetails: state.administrationDetails,
+        permissions: state.meDetails.permissions,
     };
 };
 

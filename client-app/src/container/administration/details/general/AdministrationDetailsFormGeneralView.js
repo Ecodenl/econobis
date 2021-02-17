@@ -47,7 +47,8 @@ const AdministrationDetailsFormGeneralView = props => {
         usesVat,
         emailBccNotas,
         portalSettingsLayout,
-        usesMollie
+        usesMollie,
+        mollieApiKey,
     } = props.administrationDetails;
 
     // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
@@ -148,6 +149,9 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
+                        {props.permissions.manageMailgunDomain && ( // Todo; juiste permissie instellen
+                            <ViewText label={'Mollie API key'} value={mollieApiKey} />
+                        )}
                     </div>
 
                     {usesTwinfield == true && (
@@ -263,6 +267,7 @@ const AdministrationDetailsFormGeneralView = props => {
 const mapStateToProps = state => {
     return {
         administrationDetails: state.administrationDetails,
+        permissions: state.meDetails.permissions,
     };
 };
 

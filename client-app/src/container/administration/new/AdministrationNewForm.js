@@ -695,7 +695,8 @@ class AdministrationNewForm extends Component {
                             />
                         )}
 
-                        <div className="row">
+                        {this.props.permissions.manageMailgunDomain && ( // Todo; juiste permissie instellen
+                            <div className="row">
                             <InputToggle
                                 label={'Gebruikt Mollie'}
                                 name={'usesMollie'}
@@ -711,6 +712,7 @@ class AdministrationNewForm extends Component {
                                 />
                             )}
                         </div>
+                        )}
 
                         <div className="row">
                             <div className={'panel-part panel-heading'}>
@@ -866,6 +868,7 @@ const mapStateToProps = state => {
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         administrationsPeek: state.systemData.administrationsPeek,
+        permissions: state.meDetails.permissions,
     };
 };
 

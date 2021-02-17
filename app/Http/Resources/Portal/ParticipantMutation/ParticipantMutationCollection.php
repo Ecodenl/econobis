@@ -19,7 +19,7 @@ class ParticipantMutationCollection extends Resource
         $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->first()->id;
         $mutationEnergyTaxRefundType = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->first()->id;
         $projectTypeCodeRef = $this->participation->project->projectType->code_ref;
-        $statusCodeRef = $this->status->code_ref;
+        $statusCodeRef = $this->status ? $this->status->code_ref : '';
         $date = $this->date_entry;
         switch ($statusCodeRef) {
             case 'interest':

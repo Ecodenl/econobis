@@ -19,6 +19,7 @@ use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Mollie\Laravel\Wrappers\MollieApiWrapper;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Administration extends Model
@@ -396,4 +397,22 @@ class Administration extends Model
         return $financialOverview ? $financialOverview->year : null;
     }
 
+    /**
+     * Mollie is ingesteld per administratie en kunnen de Mollie Api Key dus niet in .env zetten.
+     * Daardoor is de standaard Mollie Facade ook niet bruikbaar.
+     *
+     * Via deze functie kan een Mollie object obv administratie worden opgehaald ipv via Mollie::api().
+     */
+    public function getMollieApiFacade()
+    {
+        if(!$this->uses_mollie){
+            return;
+        }
+
+        $config = app()['config'];
+
+        $config->set('mollie.key', $this->mollie_api_key);
+
+        return new MollieApiWrapper($config, app()['mollie.api.client']);
+    }
 }

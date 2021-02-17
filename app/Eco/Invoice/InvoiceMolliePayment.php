@@ -3,7 +3,6 @@
 namespace App\Eco\Invoice;
 
 use Illuminate\Database\Eloquent\Model;
-use Mollie\Laravel\Facades\Mollie;
 
 class InvoiceMolliePayment extends Model
 {
@@ -22,7 +21,9 @@ class InvoiceMolliePayment extends Model
             "redirectUrl" => url('test'),
         ];
 
-        $payment = Mollie::api()->payments()->create($data);
+        $mollieApi = $invoice->administration->getMollieApiFacade();
+
+        $payment = $mollieApi->payments()->create($data);
 
         $invoiceMolliePayment = new InvoiceMolliePayment([
             'invoice_id' => $invoice->id,

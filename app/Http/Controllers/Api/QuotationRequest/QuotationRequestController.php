@@ -54,6 +54,7 @@ class QuotationRequestController extends ApiController
         $quotationRequest->load([
             'organisation.contact.contactPerson.contact',
             'opportunity.intake.contact',
+            'opportunity.intake.campaign.organisations',
             'opportunity.measureCategory',
             'opportunity.measures',
             'documents',
@@ -87,6 +88,7 @@ class QuotationRequestController extends ApiController
             'measures',
             'measureCategory',
             'intake.contact',
+            'intake.campaign.organisations',
         ]);
 
         return FullOpportunity::make($opportunity);

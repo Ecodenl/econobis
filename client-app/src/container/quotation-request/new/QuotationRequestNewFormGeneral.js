@@ -23,8 +23,8 @@ class QuotationRequestNewFormGeneral extends Component {
                 fullName: '',
                 fullAddress: '',
                 measureName: '',
+                organisations: [],
             },
-            organisations: [],
             quotationRequest: {
                 opportunityId: '',
                 organisationId: '',
@@ -47,6 +47,8 @@ class QuotationRequestNewFormGeneral extends Component {
                 opportunity: {
                     fullName: payload.intake.contact.fullName,
                     fullAddress: payload.intake.fullAddress,
+                    organisations:
+                        payload.intake && payload.intake.campaign ? payload.intake.campaign.organisations : '',
                     measureNames: payload.measures && payload.measures.map(measure => measure.name).join(', '),
                     measureCategoryName: payload.measureCategory.name,
                 },
@@ -59,10 +61,6 @@ class QuotationRequestNewFormGeneral extends Component {
                     quotationText: payload.quotationText ? payload.quotationText : '',
                 },
             });
-        });
-
-        OrganisationAPI.getOrganisationPeek().then(payload => {
-            this.setState({ organisations: payload });
         });
     }
     handleInputChange = event => {
@@ -119,8 +117,7 @@ class QuotationRequestNewFormGeneral extends Component {
 
     render() {
         const { organisationId, dateRecorded, statusId, dateReleased, quotationText } = this.state.quotationRequest;
-        const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
-
+        const { fullName, fullAddress, organisations, measureNames, measureCategoryName } = this.state.opportunity;
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <div className="row">
@@ -129,7 +126,7 @@ class QuotationRequestNewFormGeneral extends Component {
                         size={'col-sm-6'}
                         name="organisationId"
                         value={organisationId}
-                        options={this.state.organisations}
+                        options={organisations}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.organisation}
@@ -222,7 +219,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(QuotationRequestNewFormGeneral);
+export default connect(mapStateToProps, null)(QuotationRequestNewFormGeneral);

@@ -789,6 +789,9 @@ class InvoiceController extends ApiController
         $invoiceProduct->delete();
     }
 
+    /**
+     * Dit is de webhook die Mollie aanroept na het uitvoeren van een betaling
+     */
     public function mollieWebhook(Request $request)
     {
         $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('mollie_id', $request->input('id'));
@@ -807,6 +810,14 @@ class InvoiceController extends ApiController
         {
             $invoiceMolliePayment->date_paid = Carbon::now();
             $invoiceMolliePayment->save();
+
+            /**
+             * Als er geen gebruik wordt gemaakt van Twinfield markeren we de factuur als betaald.
+             * Bij gebruik van Twinfield is Twinfield "de waarheid" en zal de betaald status later alsnog via Twinfield moeten worden geset.
+             */
+            if(!$invoice->administration->uses_twinfield){
+                InvoiceHelper::saveInvoiceDatePaid($invoice, Carbon::now(), $invoiceMolliePayment->mollie_id);
+            }
         }
     }
 }

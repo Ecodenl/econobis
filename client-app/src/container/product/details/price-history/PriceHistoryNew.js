@@ -86,10 +86,10 @@ class PriceHistoryNew extends Component {
 
         let priceNumberOfDecimals = value;
 
-        if(priceNumberOfDecimals < 2){
+        if (priceNumberOfDecimals < 2) {
             priceNumberOfDecimals = 2;
         }
-        if(priceNumberOfDecimals > 6){
+        if (priceNumberOfDecimals > 6) {
             priceNumberOfDecimals = 6;
         }
 
@@ -101,7 +101,6 @@ class PriceHistoryNew extends Component {
                     priceNumberOfDecimals: priceNumberOfDecimals,
                     price: parseFloat(this.state.priceHistory.price).toFixed(priceNumberOfDecimals),
                     priceInclVat: parseFloat(this.state.priceHistory.priceInclVat).toFixed(priceNumberOfDecimals),
-
                 },
             },
             this.updatePrice
@@ -364,7 +363,6 @@ const mapStateToProps = state => {
         productCode: state.productDetails.code,
         hasVariablePrice: state.productDetails.hasVariablePrice,
         ledger: state.productDetails.ledger,
-        users: state.systemData.users,
         vatCodes: state.systemData.vatCodes,
         usesTwinfield: state.systemData.usesTwinfield,
     };
@@ -376,7 +374,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PriceHistoryNew);
+export default connect(mapStateToProps, mapDispatchToProps)(PriceHistoryNew);

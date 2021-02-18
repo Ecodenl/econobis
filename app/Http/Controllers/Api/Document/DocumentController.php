@@ -84,8 +84,6 @@ class DocumentController extends Controller
         //store the actual file in Alfresco
         $user = Auth::user();
 
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
         if($data['document_type'] == 'internal'){
 
             $pdf = $this->create($document);
@@ -115,14 +113,20 @@ class DocumentController extends Controller
             $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
             file_put_contents($filePath, $pdf);
 
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            }else{
+                $document->alfresco_node_id = null;
+            }
 
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
 
-
-
-            Storage::disk('documents')->delete($document->filename);
+            //delete file on server, still saved on alfresco.
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                Storage::disk('documents')->delete($document->filename);
+            }
         }
         else{
             $file = $request->file('attachment');
@@ -133,15 +137,19 @@ class DocumentController extends Controller
             $file_tmp = $file->store('', 'documents');
             $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($file_tmp);
 
-
-
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            }
 
             $document->filename = $file->getClientOriginalName();
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
             $document->save();
 
-            Storage::disk('documents')->delete($file_tmp);
+            //delete file on server, still saved on alfresco.
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                Storage::disk('documents')->delete($file_tmp);
+            }
         }
 
         return FullDocument::make($document->fresh());
@@ -187,9 +195,11 @@ class DocumentController extends Controller
 
         //delete file in Alfresco(to trashbin)
         $user = Auth::user();
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-        $alfrescoHelper->deleteFile($document->alfresco_node_id);
+            $alfrescoHelper->deleteFile($document->alfresco_node_id);
+        }
 
         $document->delete();
     }
@@ -234,6 +244,10 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
 
         $user = Auth::user();
+
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
+            return null;
+        }
 
         $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 

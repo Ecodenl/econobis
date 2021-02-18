@@ -122,7 +122,7 @@ class HousingFileNewFormGeneral extends Component {
                         label={'Bouwjaar'}
                         name={'buildYear'}
                         value={buildYear}
-                        min={'1901'}
+                        min={'1500'}
                         max={'3000'}
                         onChangeAction={this.handleInputChange}
                     />

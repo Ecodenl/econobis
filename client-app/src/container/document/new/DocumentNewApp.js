@@ -24,11 +24,11 @@ import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
 import OrdersAPI from '../../../api/order/OrdersAPI';
 import EmailDetailsAPI from '../../../api/email/EmailAPI';
+import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
 
 class DocumentNewApp extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             contacts: [],
             contactsGroups: [],
@@ -149,6 +149,23 @@ class DocumentNewApp extends Component {
                     },
                 });
             });
+        }
+        if (this.props.params.quotationRequestId) {
+            QuotationRequestDetailsAPI.fetchQuotationRequestDetails(this.props.params.quotationRequestId).then(
+                payload => {
+                    this.setState({
+                        ...this.state,
+                        document: {
+                            ...this.state.document,
+                            contactId: payload.opportunity.intake.contact.id,
+                            intakeId: payload.opportunity.intake.id,
+                            opportunityId: payload.opportunity.id,
+                            measureId: payload.opportunity.measureCategory.id,
+                            campaignId: payload.opportunity.intake.campaign.id,
+                        },
+                    });
+                }
+            );
         }
     }
 
@@ -367,7 +384,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(DocumentNewApp);
+export default connect(null, mapDispatchToProps)(DocumentNewApp);

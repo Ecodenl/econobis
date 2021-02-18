@@ -107,7 +107,6 @@ class AdministrationController extends ApiController
             ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
-            ->string('mollieApiKey')->whenMissing('')->onEmpty('')->alias('mollie_api_key')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
@@ -133,7 +132,13 @@ class AdministrationController extends ApiController
         }
 
         $data['uses_vat'] = $usesVat;
-        $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
+
+        $data['uses_mollie'] = false;
+        $data['mollie_api_key'] = '';
+        if(\Auth::user()->hasPermissionTo('manage_mailgun_domain', 'api')){
+            $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
+            $data['mollie_api_key'] = $request->input('mollieApiKey');
+        }
 
         $administration = new Administration($data);
 
@@ -204,7 +209,6 @@ class AdministrationController extends ApiController
             ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
-            ->string('mollieApiKey')->whenMissing('')->onEmpty('')->alias('mollie_api_key')->next()
             ->get();
 
         //bool als string? waarschijnlijk door formdata
@@ -230,7 +234,11 @@ class AdministrationController extends ApiController
         }
 
         $data['uses_vat'] = $usesVat;
-        $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
+
+        if(\Auth::user()->hasPermissionTo('manage_mailgun_domain', 'api')){
+            $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
+            $data['mollie_api_key'] = $request->input('mollieApiKey');
+        }
 
         $administration->fill($data);
 

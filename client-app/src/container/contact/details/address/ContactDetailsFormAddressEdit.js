@@ -7,9 +7,10 @@ import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
+import InputDate from '../../../../components/form/InputDate';
 
 const ContactDetailsFormAddressEdit = props => {
-    const { street, number, addition, postalCode, city, typeId, primary, countryId } = props.address;
+    const { street, number, addition, postalCode, city, typeId, endDate, primary, countryId } = props.address;
 
     return (
         <div>
@@ -84,13 +85,15 @@ const ContactDetailsFormAddressEdit = props => {
                                 required={'required'}
                                 error={props.typeIdError}
                             />
-                            <InputToggle
-                                label={'Primair adres'}
-                                name={'primary'}
-                                value={primary}
-                                onChangeAction={props.handleInputChange}
-                                disabled={primary}
-                            />
+                            {typeId === 'old' && (
+                                <InputDate
+                                    label="Eind datum"
+                                    name="endDate"
+                                    value={endDate}
+                                    onChangeAction={props.handleInputChangeDate}
+                                    error={props.endDateError}
+                                />
+                            )}
                         </div>
 
                         <div className="row">
@@ -103,6 +106,13 @@ const ContactDetailsFormAddressEdit = props => {
                                 value={countryId}
                                 onChangeAction={props.handleInputChange}
                                 error={props.countryIdError}
+                            />
+                            <InputToggle
+                                label={'Primair adres'}
+                                name={'primary'}
+                                value={primary}
+                                onChangeAction={props.handleInputChange}
+                                disabled={primary}
                             />
                         </div>
 
@@ -133,7 +143,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactDetailsFormAddressEdit);
+export default connect(mapStateToProps, null)(ContactDetailsFormAddressEdit);

@@ -51,6 +51,7 @@ class ContactNewFormPersonal extends Component {
                 postalCode: '',
                 city: '',
                 typeId: 'visit',
+                endDate: '',
                 primary: true,
                 countryId: '',
             },
@@ -69,6 +70,7 @@ class ContactNewFormPersonal extends Component {
             },
             addressErrors: {
                 typeId: false,
+                endDate: false,
                 postalCode: false,
                 number: false,
                 countryId: false,
@@ -143,6 +145,15 @@ class ContactNewFormPersonal extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        this.setState({
+            ...this.state,
+            address: {
+                ...this.state.address,
+                [name]: value,
+            },
+        });
+    };
+    addressHandleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             address: {
@@ -454,6 +465,7 @@ class ContactNewFormPersonal extends Component {
                             errors={this.state.addressErrors}
                             handleInputPicoChange={this.addressHandleInputPicoChange}
                             handleInputChange={this.addressHandleInputChange}
+                            handleInputChangeDate={this.addressHandleInputChangeDate}
                         />
                     )}
                 </div>

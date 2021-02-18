@@ -13,15 +13,15 @@ class InvoiceMolliePayment extends Model
         $data = [
             "amount" => [
                 'currency' => 'EUR',
-                'value' => number_format(($invoice->total_incl_vat_incl_reduction / 100), 2, '.', ','),
+                'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ','),
             ],
-            "description" => "Factuur " . $invoice->number,
+            "description" => $invoice->administration->name . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->number . ' ' . $invoice->subject,
             "redirectUrl" => url('test'),
         ];
 
         /**
          * Webhook url moet een openbare url zijn welke voor Mollie te benaderen is.
-         * Aangezien dat lokaal niet kan lokaal uitschakelen.
+         * Aangezien dat lokaal niet kan deze dan maar uitschakelen.
          */
         if(config('app.env') !== 'local'){
             $data['webhookUrl'] = route('mollie.webhook');

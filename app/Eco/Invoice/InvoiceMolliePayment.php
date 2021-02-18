@@ -9,38 +9,22 @@ class InvoiceMolliePayment extends Model
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'date_activated' => 'date:Y-m-d H:i:s',
+        'date_paid' => 'date:Y-m-d H:i:s',
+    ];
+
+    protected $dates = [
+        'date_activated',
+        'date_paid',
+    ];
+
     public static function addToInvoice(Invoice $invoice)
     {
         $molliePaymentCode = Str::random();
 
-        $data = [
-            "amount" => [
-                'currency' => 'EUR',
-                'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ','),
-            ],
-            "description" => $invoice->administration->name . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->number . ' ' . $invoice->subject,
-            "redirectUrl" => route('mollie.redirect', [
-                'invoiceMolliePaymentCode' => $molliePaymentCode
-            ]),
-        ];
-
-        /**
-         * Webhook url moet een openbare url zijn welke voor Mollie te benaderen is.
-         * Aangezien dat lokaal niet kan deze dan maar uitschakelen.
-         */
-        if(config('app.env') !== 'local'){
-            $data['webhookUrl'] = route('mollie.webhook');
-        }
-
-        $mollieApi = $invoice->administration->getMollieApiFacade();
-
-        $payment = $mollieApi->payments()->create($data);
-
         $invoiceMolliePayment = new InvoiceMolliePayment([
             'invoice_id' => $invoice->id,
-            'mollie_id' => $payment->id,
-            'checkout_url' => $payment->getCheckoutUrl(),
-            'date_paid' => null,
             "code" => $molliePaymentCode,
         ]);
 

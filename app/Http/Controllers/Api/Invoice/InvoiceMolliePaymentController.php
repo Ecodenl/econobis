@@ -44,6 +44,25 @@ class InvoiceMolliePaymentController extends ApiController
     }
 
     /**
+     * Deze link wordt vanuit de link in de factuur emails geopend.
+     * Hier maken we de Mollie transactie aan en redirecten we de gebruiker naar de betaalpagina.
+     */
+    public function pay($invoiceMolliePaymentCode)
+    {
+        $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('code', $invoiceMolliePaymentCode);
+
+        if($invoiceMolliePayment){
+            abort(404, 'Ongeldige betaallink.');
+        }
+
+        if(!$invoiceMolliePayment->mollie_id){
+            $this->createAndSaveMollieTransaction($invoiceMolliePayment);
+        }
+
+        return redirect($invoiceMolliePayment->checkout_url);
+    }
+
+    /**
      * Dit is de pagina waar de gebruiker uit komt na het doen van de betaling
      */
     public function redirect($invoiceMolliePaymentCode)
@@ -62,5 +81,40 @@ class InvoiceMolliePaymentController extends ApiController
         }
 
         return 'Bedankt voor uw betaling.';
+    }
+
+    /**
+     * Maak een transactie aan via de Mollie api en sla deze op op het InvoiceMolliePayment model.
+     */
+    private function createAndSaveMollieTransaction(InvoiceMolliePayment $invoiceMolliePayment)
+    {
+        $invoice = $invoiceMolliePayment->invoice;
+
+        $molliePostData = [
+            "amount" => [
+                'currency' => 'EUR',
+                'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ','),
+            ],
+            "description" => $invoice->administration->name . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->number . ' ' . $invoice->subject,
+            "redirectUrl" => route('mollie.redirect', [
+                'invoiceMolliePaymentCode' => $invoiceMolliePayment->code
+            ]),
+        ];
+
+        /**
+         * Webhook url moet een openbare url zijn welke voor Mollie te benaderen is.
+         * Aangezien dat lokaal niet kan deze dan maar uitschakelen.
+         */
+        if(config('app.env') !== 'local'){
+            $molliePostData['webhookUrl'] = route('mollie.webhook');
+        }
+
+        $mollieApi = $invoice->administration->getMollieApiFacade();
+        $payment = $mollieApi->payments()->create($molliePostData);
+
+        $invoiceMolliePayment->update([
+            'mollie_id' => $payment->id,
+            'checkout_url' => $payment->getCheckoutUrl(),
+        ]);
     }
 }

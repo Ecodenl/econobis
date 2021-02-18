@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
 const CampaignDetailsOrganisationView = props => {
-    const { id, contactId, address, name, amountOfQuotations, amountOfWonQuotations } = props.organisation;
+    const { id, contactId, address, contact, name, amountOfQuotations, amountOfWonQuotations } = props.organisation;
 
     return (
         <div
@@ -15,7 +15,11 @@ const CampaignDetailsOrganisationView = props => {
                 <div className="col-sm-1">{contactId}</div>
                 <div className="col-sm-2">{name}</div>
                 <div className="col-sm-2">{address ? address.city : ''}</div>
-                <div className="col-sm-2">{'???'}</div>
+                <div className="col-sm-2">
+                    {contact && contact.contactPerson && contact.contactPerson.contact
+                        ? contact.contactPerson.contact.fullName
+                        : ''}
+                </div>
                 <div className="col-sm-2">{amountOfQuotations}</div>
                 <div className="col-sm-2">{amountOfWonQuotations}</div>
             </div>

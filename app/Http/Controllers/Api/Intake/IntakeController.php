@@ -35,7 +35,7 @@ class IntakeController extends ApiController
     {
         $intakes = $requestQuery->get();
 
-        $intakes->load(['contact', 'address', 'measuresRequested', 'status']);
+        $intakes->load(['contact', 'address', 'campaign', 'measuresRequested', 'status']);
 
         return GridIntake::collection($intakes)
             ->additional(['meta' => [

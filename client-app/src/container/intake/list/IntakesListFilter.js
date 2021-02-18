@@ -9,6 +9,7 @@ import {
     setIntakeEndDateFilter,
     setFilterFullName,
     setFilterIntakeAddress,
+    setFilterIntakeCampaign,
     setFilterMeasureRequested,
     setFilterIntakeStatus,
 } from '../../../actions/intake/IntakesFiltersActions';
@@ -36,6 +37,14 @@ const IntakesListFilter = props => {
 
     const onAddressChange = e => {
         props.setFilterIntakeAddress(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onCampaignChange = e => {
+        props.setFilterIntakeCampaign(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -118,6 +127,14 @@ const IntakesListFilter = props => {
                     })}
                 </select>
             </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.campaign.data}
+                    onChange={onCampaignChange}
+                />
+            </th>
             <th />
         </tr>
     );
@@ -136,6 +153,7 @@ const mapDispatchToProps = dispatch => {
             setIntakeEndDateFilter,
             setFilterFullName,
             setFilterIntakeAddress,
+            setFilterIntakeCampaign,
             setFilterMeasureRequested,
             setFilterIntakeStatus,
         },

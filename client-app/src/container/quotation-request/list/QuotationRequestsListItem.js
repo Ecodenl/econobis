@@ -48,6 +48,7 @@ class QuotationRequestsListItem extends Component {
                 <td>{dateRecorded && moment(dateRecorded).format('DD-MM-Y')}</td>
                 <td>{status ? status.name : 'Onbekend'}</td>
                 <td>{dateReleased && moment(dateReleased).format('DD-MM-Y')}</td>
+                <td>{opportunity && opportunity.intake.campaign.name}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

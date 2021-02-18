@@ -7,6 +7,10 @@ const filtersReducerDefaultState = {
         field: 'contact',
         data: '',
     },
+    campaign: {
+        field: 'campaign',
+        data: '',
+    },
     address: {
         field: 'address',
         data: '',
@@ -61,6 +65,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
+                },
+            };
+        case 'SET_FILTER_QUOTATION_REQUEST_CAMPAIGN':
+            return {
+                ...state,
+                campaign: {
+                    ...state.campaign,
+                    data: action.campaign,
                 },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_MEASURE':

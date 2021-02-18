@@ -19,12 +19,14 @@ class Filter extends RequestFilter
         'createdAtEnd',
         'fullName',
         'address',
+        'campaign',
         'measureRequestedId',
         'statusId',
     ];
 
     protected $mapping = [
         'fullName' => 'contacts.full_name',
+        'campaign' => 'campaigns.name',
         'statusId' => 'intakes.intake_status_id',
         'measureRequestedId' => 'intake_measure_requested.measure_category_id',
     ];
@@ -32,6 +34,7 @@ class Filter extends RequestFilter
     protected $joins = [
         'fullName' => 'contact',
         'address' => 'address',
+        'campaign' => 'campaign',
         'sourceId' => 'source',
         'measureRequestedId' => 'measureRequested',
     ];

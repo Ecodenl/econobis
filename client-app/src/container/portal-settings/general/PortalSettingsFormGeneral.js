@@ -75,7 +75,7 @@ class PortalSettingsFormGeneral extends Component {
         const { permissions = {} } = this.props.meDetails;
         this.props.portalSettings.responsibleUser = '';
         if (this.props.portalSettings.responsibleUserId && this.props.portalSettings.responsibleUserId != 0) {
-            this.props.portalSettings.responsibleUser = this.props.users.find(
+            this.props.portalSettings.responsibleUser = this.props.usersAll.find(
                 user => user.id == this.props.portalSettings.responsibleUserId
             );
         }
@@ -84,7 +84,7 @@ class PortalSettingsFormGeneral extends Component {
             this.props.portalSettings.contactResponsibleOwnerUserId &&
             this.props.portalSettings.contactResponsibleOwnerUserId != 0
         ) {
-            this.props.portalSettings.contactResponsibleOwnerUser = this.props.users.find(
+            this.props.portalSettings.contactResponsibleOwnerUser = this.props.usersAll.find(
                 user => user.id == this.props.portalSettings.contactResponsibleOwnerUserId
             );
         }
@@ -125,7 +125,7 @@ class PortalSettingsFormGeneral extends Component {
         ) {
             this.props.portalSettings.checkContactTaskResponsible =
                 'user' + this.props.portalSettings.checkContactTaskResponsibleUserId;
-            this.props.portalSettings.checkContactTaskResponsibleUser = this.props.users.find(
+            this.props.portalSettings.checkContactTaskResponsibleUser = this.props.usersAll.find(
                 user => user.id == this.props.portalSettings.checkContactTaskResponsibleUserId
             );
         }
@@ -190,6 +190,7 @@ const mapStateToProps = state => {
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
         teams: state.systemData.teams,
+        usersAll: state.systemData.usersAll,
         users: state.systemData.users,
     };
 };

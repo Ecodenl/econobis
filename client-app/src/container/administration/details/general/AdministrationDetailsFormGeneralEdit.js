@@ -796,7 +796,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             />
                         )}
 
-                        {this.props.permissions.manageMailgunDomain && ( // Todo; juiste permissie instellen
+                        {this.props.meDetails.email === 'support@econobis.nl' && (
                             <div className="row">
                                 <InputToggle
                                     label={'Gebruikt Mollie'}
@@ -1028,7 +1028,6 @@ const mapStateToProps = state => {
         twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         administrationsPeek: state.systemData.administrationsPeek,
         administrationDetails: state.administrationDetails,
-        permissions: state.meDetails.permissions,
     };
 };
 

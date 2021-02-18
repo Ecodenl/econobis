@@ -149,7 +149,7 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
-                        {props.permissions.manageMailgunDomain && ( // Todo; juiste permissie instellen
+                        {props.meDetails.email === 'support@econobis.nl' && usesMollie && (
                             <ViewText label={'Mollie API key'} value={mollieApiKey} />
                         )}
                     </div>
@@ -267,7 +267,7 @@ const AdministrationDetailsFormGeneralView = props => {
 const mapStateToProps = state => {
     return {
         administrationDetails: state.administrationDetails,
-        permissions: state.meDetails.permissions,
+        meDetails: state.meDetails,
     };
 };
 

@@ -150,6 +150,23 @@ class DocumentNewApp extends Component {
                 });
             });
         }
+        if (this.props.params.quotationRequestId) {
+            QuotationRequestDetailsAPI.fetchQuotationRequestDetails(this.props.params.quotationRequestId).then(
+                payload => {
+                    this.setState({
+                        ...this.state,
+                        document: {
+                            ...this.state.document,
+                            contactId: payload.opportunity.intake.contact.id,
+                            intakeId: payload.opportunity.intake.id,
+                            opportunityId: payload.opportunity.id,
+                            measureId: payload.opportunity.measureCategory.id,
+                            campaignId: payload.opportunity.intake.campaign.id,
+                        },
+                    });
+                }
+            );
+        }
     }
 
     handleInputChange(event) {
@@ -367,7 +384,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(DocumentNewApp);
+export default connect(null, mapDispatchToProps)(DocumentNewApp);

@@ -22,6 +22,7 @@ class CreateInvoiceMolliePaymentsTable extends Migration
             $table->string('mollie_id');
             $table->string('checkout_url');
             $table->dateTime('date_paid')->nullable();
+            $table->string('code');
             $table->timestamps();
         });
     }

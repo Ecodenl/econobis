@@ -11,7 +11,10 @@
 |
 */
 
+use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
+
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
+Route::get('/mollie/redirect/{invoiceMolliePaymentCode}', [InvoiceMolliePaymentController::class, 'redirect'])->name('mollie.redirect');
 
 // Welcome
 Route::get('/', 'HomeController@welcome');

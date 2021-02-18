@@ -3,6 +3,7 @@
 namespace App\Eco\Invoice;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class InvoiceMolliePayment extends Model
 {
@@ -10,13 +11,17 @@ class InvoiceMolliePayment extends Model
 
     public static function addToInvoice(Invoice $invoice)
     {
+        $molliePaymentCode = Str::random();
+
         $data = [
             "amount" => [
                 'currency' => 'EUR',
                 'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ','),
             ],
             "description" => $invoice->administration->name . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->number . ' ' . $invoice->subject,
-            "redirectUrl" => url('test'),
+            "redirectUrl" => route('mollie.redirect', [
+                'invoiceMolliePaymentCode' => $molliePaymentCode
+            ]),
         ];
 
         /**
@@ -36,6 +41,7 @@ class InvoiceMolliePayment extends Model
             'mollie_id' => $payment->id,
             'checkout_url' => $payment->getCheckoutUrl(),
             'date_paid' => null,
+            "code" => $molliePaymentCode,
         ]);
 
         $invoiceMolliePayment->save();

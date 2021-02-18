@@ -22,6 +22,14 @@ class AddressObserver
         }
     }
 
+    public function saving(Address $address)
+    {
+        // Als type niet 'old', dan end date null
+        if($address->type_id != 'old'){
+            $address->end_date = null;
+        }
+    }
+
     public function saved(Address $address)
     {
         if($address->isDirty('primary') && $address->primary == true){

@@ -1622,7 +1622,7 @@ class TemplateVariableHelper
     public static function getInvoiceVar($model, $varname){
         switch ($varname) {
             case 'mollie_link':
-                return $model->molliePayment ? $model->molliePayment->checkout_url : '&lt;Online_betaallink_new&gt;';
+                return $model->molliePayment ? $model->molliePayment->econobis_payment_link : '&lt;Online_betaallink_new&gt;';
             case 'nummer':
                 return $model->number;
             case 'betreft':

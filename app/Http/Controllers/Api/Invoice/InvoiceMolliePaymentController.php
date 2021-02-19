@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
 class InvoiceMolliePaymentController extends ApiController
 {
     /**
-     * Dit is de webhook die Mollie aanroept na het uitvoeren van een betaling
+     * Dit is de webhook die Mollie aanroept na het uitvoeren van een betaling.
      */
     public function webhook(Request $request)
     {
@@ -51,7 +51,7 @@ class InvoiceMolliePaymentController extends ApiController
     {
         $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('code', $invoiceMolliePaymentCode);
 
-        if($invoiceMolliePayment){
+        if(!$invoiceMolliePayment){
             abort(404, 'Ongeldige betaallink.');
         }
 
@@ -115,6 +115,7 @@ class InvoiceMolliePaymentController extends ApiController
         $invoiceMolliePayment->update([
             'mollie_id' => $payment->id,
             'checkout_url' => $payment->getCheckoutUrl(),
+            'date_activated' => Carbon::now(),
         ]);
     }
 }

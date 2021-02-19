@@ -21,11 +21,9 @@ class InvoiceMolliePayment extends Model
 
     public static function addToInvoice(Invoice $invoice)
     {
-        $molliePaymentCode = Str::random();
-
         $invoiceMolliePayment = new InvoiceMolliePayment([
             'invoice_id' => $invoice->id,
-            "code" => $molliePaymentCode,
+            "code" => Str::random(32),
         ]);
 
         $invoiceMolliePayment->save();
@@ -34,5 +32,12 @@ class InvoiceMolliePayment extends Model
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);
+    }
+
+    public function getEconobisPaymentLinkAttribute()
+    {
+        return route('mollie.pay', [
+            'invoiceMolliePaymentCode' => $this->code,
+        ]);
     }
 }

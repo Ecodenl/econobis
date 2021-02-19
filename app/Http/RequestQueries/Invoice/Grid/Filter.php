@@ -87,10 +87,27 @@ class Filter extends RequestFilter
 
     protected function applyStatusIdFilter($query, $type, $data)
     {
-        $extra_statusses = ['reminder', 'to-remind', 'reminder_1', 'reminder_2', 'reminder_3', 'exhortation'];
+        $extra_statusses = ['reminder', 'to-remind', 'reminder_1', 'reminder_2', 'reminder_3', 'exhortation', 'payed-by-mollie'];
         $not_reminder_statusses = ['paid', 'irrecoverable'];
 
         if (in_array($data, $extra_statusses)) {
+            if($data === 'payed-by-mollie'){
+                $query->whereIn('status_id', ['exported', 'sent'])
+                    ->whereHas('molliePayment', function ($q) {
+                    $q->whereNotNull('date_paid');
+                });
+
+                return false;
+            }
+
+            /**
+             * Alle overige statussen zijn herinneringen en nota's met een mollie betaaldatum
+             * willen we sowieso niet herinneren, dus dit hier standaard al filteren.
+             */
+            $query->whereDoesntHave('molliePayment', function ($q) {
+                $q->whereNotNull('date_paid');
+            });
+
             switch ($data) {
                 case 'reminder':
                     $query->where(function ($q) {

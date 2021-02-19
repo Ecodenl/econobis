@@ -295,7 +295,12 @@ class Administration extends Model
                             ->where('invoices.days_to_expire', '<=', '0');
                     });
             })
-            ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])->whereNull('invoices.date_exhortation')->count();
+            ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])
+            ->whereNull('invoices.date_exhortation')
+            ->whereDoesntHave('molliePayment', function ($q) {
+                $q->whereNotNull('date_paid');
+            })
+            ->count();
 
     }
 

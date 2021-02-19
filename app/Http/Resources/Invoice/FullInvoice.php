@@ -43,6 +43,7 @@ class FullInvoice extends Resource
                 'status' => FullEnumWithIdAndName::make($this->getStatus()),
                 'subStatus' => $this->sub_status,
                 'usesTwinfield' => $this->administration->uses_twinfield,
+                'usesMollie' => $this->administration->uses_mollie,
                 'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
                 'twinfieldNumber' => $this->twinfield_number,
 

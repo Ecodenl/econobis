@@ -55,6 +55,9 @@ class InvoiceMolliePaymentController extends ApiController
             abort(404, 'Ongeldige betaallink.');
         }
 
+        /**
+         * Als de betaallink voor een tweede keer wordt geopend willen we geen nieuwe mollie transactie maken.
+         */
         if(!$invoiceMolliePayment->mollie_id){
             $this->createAndSaveMollieTransaction($invoiceMolliePayment);
         }

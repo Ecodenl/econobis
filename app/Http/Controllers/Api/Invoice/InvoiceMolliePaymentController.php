@@ -52,7 +52,7 @@ class InvoiceMolliePaymentController extends ApiController
         $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('code', $invoiceMolliePaymentCode);
 
         if(!$invoiceMolliePayment){
-            abort(404, 'Ongeldige betaallink.');
+            return view('mollie.404');
         }
 
         /**
@@ -72,18 +72,33 @@ class InvoiceMolliePaymentController extends ApiController
     {
         $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('code', $invoiceMolliePaymentCode);
 
-        $invoice = $invoiceMolliePayment->invoice;
-
-        $mollieApi = $invoice->administration->getMollieApiFacade();
-
-        $payment = $mollieApi->payments->get($invoiceMolliePayment->mollie_id);
-
-        if (!$payment->isPaid())
-        {
-            return 'Uw betaling kon niet worden verwerkt.';
+        if(!$invoiceMolliePayment){
+            return view('mollie.404');
         }
 
-        return 'Bedankt voor uw betaling.';
+        if(!$invoiceMolliePayment->date_paid){
+            /**
+             * Als de factuur nog niet betaald is zou het zo kunnen zijn dat de webhook nog niet volledig is verwerkt.
+             * In dat geval checken we nog een keer bij Mollie zelf voor de actuele status.
+             *
+             * Dit slaan we verder niet op omdat de webhook "de waarheid" bepaalt.
+             *
+             * Todo; checken of dit echt nodig is, of dat webhook altijd eerder afgerond is. Dan kan dit hele blok eruit.
+             */
+            try {
+                $mollieApi = $invoiceMolliePayment->invoice->administration->getMollieApiFacade();
+                $payment = $mollieApi->payments->get($invoiceMolliePayment->mollie_id);
+                if ($payment->isPaid()) {
+                    $invoiceMolliePayment->date_paid = Carbon::now();
+                }
+            } catch (\Exception $e) {
+                // Mollie errors negeren
+            }
+        }
+
+        return view('mollie.result', [
+            'invoiceMolliePayment' => $invoiceMolliePayment,
+        ]);
     }
 
     /**

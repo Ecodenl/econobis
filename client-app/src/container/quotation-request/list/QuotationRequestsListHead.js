@@ -33,7 +33,7 @@ const QuotationRequestsListHead = props => {
                 width={'10%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'campaignId'} title={'Campaign'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'campaignId'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>
     );

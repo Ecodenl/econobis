@@ -37,18 +37,10 @@ const IntakesListFilter = props => {
 
     const onAddressChange = e => {
         props.setFilterIntakeAddress(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
     };
 
     const onCampaignChange = e => {
         props.setFilterIntakeCampaign(e.target.value);
-
-        setTimeout(() => {
-            props.onSubmitFilter();
-        }, 100);
     };
 
     const onMeasureRequestedChange = e => {

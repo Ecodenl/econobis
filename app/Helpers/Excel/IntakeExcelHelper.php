@@ -113,17 +113,17 @@ class IntakeExcelHelper
                 $rowData[17] = $this->formatDate($intake->created_at);
                 $rowData[18] = $intake->createdBy ? $intake->createdBy->present()->fullName() : '' ;
 
-                $completeData[] = $rowData;
+//                $completeData[] = $rowData;
 
                 // measuresRequested
                 foreach ($intake->measuresRequested as $measure) {
-                    $rowData = [];
+//                    $rowData = [];
 
-                    $x = 0;
-                    while($x <= 18) {
-                        $rowData[$x] = '';
-                        $x++;
-                    }
+//                    $x = 0;
+//                    while($x <= 18) {
+//                        $rowData[$x] = '';
+//                        $x++;
+//                    }
 
                     $rowData[19] = $measure->name;
 

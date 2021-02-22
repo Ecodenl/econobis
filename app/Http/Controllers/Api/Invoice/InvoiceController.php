@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Invoice;
 
 use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Product\PriceHistory;
@@ -124,6 +125,7 @@ class InvoiceController extends ApiController
             'order.contact',
             'invoiceProducts',
             'payments',
+            'molliePayment',
             'tasks',
             'emails',
             'document',
@@ -159,6 +161,10 @@ class InvoiceController extends ApiController
         $order = $invoice->order;
         $order->status_id = 'active';
         $order->save();
+
+        if($invoice->administration->uses_mollie) {
+            InvoiceMolliePayment::addToInvoice($invoice);
+        }
 
         return $this->show($invoice->fresh());
     }
@@ -782,5 +788,4 @@ class InvoiceController extends ApiController
 
         $invoiceProduct->delete();
     }
-
 }

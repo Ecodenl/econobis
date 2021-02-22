@@ -1621,30 +1621,25 @@ class TemplateVariableHelper
 
     public static function getInvoiceVar($model, $varname){
         switch ($varname) {
+            case 'mollie_link':
+                return $model->molliePayment ? $model->molliePayment->econobis_payment_link : '&lt;Online_betaallink_new&gt;';
             case 'nummer':
                 return $model->number;
-                break;
             case 'betreft':
                 return $model->subject;
-                break;
             case 'iban':
                 return $model->order->contact->iban;
-                break;
             case 'iban_tnv':
                 return $model->order->contact->iban_attn;
-                break;
             case 'totaal_incl_btw':
                 return number_format($model->total_incl_vat_incl_reduction, 2, ',', '');
-                break;
             case 'datum':
                 if( $model->invoice_number == 0){
                     return "Nog niet bekend";
                 }
                 return $model->date_sent ? Carbon::parse($model->date_sent)->formatLocalized('%e %B %Y') : null;
-                break;
             default:
                 return '';
-                break;
         }
     }
 

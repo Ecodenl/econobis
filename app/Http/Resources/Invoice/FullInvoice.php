@@ -31,6 +31,7 @@ class FullInvoice extends Resource
                 'order' => FullOrder::make($this->whenLoaded('order')),
 
                 'payments' => GenericResource::make($this->whenLoaded('payments')),
+                'molliePayment' => GenericResource::make($this->whenLoaded('molliePayment')),
 
                 'invoiceProducts' => FullInvoiceProduct::collection($this->whenLoaded('invoiceProducts')),
 
@@ -42,6 +43,7 @@ class FullInvoice extends Resource
                 'status' => FullEnumWithIdAndName::make($this->getStatus()),
                 'subStatus' => $this->sub_status,
                 'usesTwinfield' => $this->administration->uses_twinfield,
+                'usesMollie' => $this->administration->uses_mollie,
                 'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
                 'twinfieldNumber' => $this->twinfield_number,
 

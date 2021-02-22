@@ -209,6 +209,9 @@ const InvoicesListFilter = props => {
                             <option key={'exhortation'} value={'exhortation'}>
                                 {'Aanmaning'}
                             </option>
+                            <option key={'payed-by-mollie'} value={'payed-by-mollie'}>
+                                {'Mollie betaald'}
+                            </option>
                         </optgroup>
                     </select>
                 ) : null}

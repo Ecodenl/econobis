@@ -133,6 +133,13 @@ class AdministrationController extends ApiController
 
         $data['uses_vat'] = $usesVat;
 
+        $data['uses_mollie'] = false;
+        $data['mollie_api_key'] = '';
+        if(\Auth::user()->email === 'support@econobis.nl'){
+            $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
+            $data['mollie_api_key'] = $request->input('mollieApiKey');
+        }
+
         $administration = new Administration($data);
 
         if($administration->uses_twinfield) {
@@ -227,6 +234,11 @@ class AdministrationController extends ApiController
         }
 
         $data['uses_vat'] = $usesVat;
+
+        if(\Auth::user()->email === 'support@econobis.nl'){
+            $data['uses_mollie'] = (bool) $request->input('usesMollie') && $request->input('usesMollie') !== 'false';
+            $data['mollie_api_key'] = $request->input('mollieApiKey');
+        }
 
         $administration->fill($data);
 

@@ -24,6 +24,7 @@ import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
 import OrdersAPI from '../../../api/order/OrdersAPI';
 import EmailDetailsAPI from '../../../api/email/EmailAPI';
+import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -264,27 +265,27 @@ class DocumentNewApp extends Component {
         let hasErrors = false;
 
         if (
-            validator.isEmpty(contactId) &&
-            validator.isEmpty(contactGroupId) &&
-            validator.isEmpty(intakeId) &&
-            validator.isEmpty(opportunityId) &&
-            validator.isEmpty(housingFileId) &&
-            validator.isEmpty(quotationRequestId) &&
-            validator.isEmpty(projectId) &&
-            validator.isEmpty(participantId) &&
-            validator.isEmpty(taskId) &&
-            validator.isEmpty(orderId)
+            validator.isEmpty(contactId + '') &&
+            validator.isEmpty(contactGroupId + '') &&
+            validator.isEmpty(intakeId + '') &&
+            validator.isEmpty(opportunityId + '') &&
+            validator.isEmpty(housingFileId + '') &&
+            validator.isEmpty(quotationRequestId + '') &&
+            validator.isEmpty(projectId + '') &&
+            validator.isEmpty(participantId + '') &&
+            validator.isEmpty(taskId + '') &&
+            validator.isEmpty(orderId + '')
         ) {
             errors.docLinkedAtAny = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(documentGroup)) {
+        if (validator.isEmpty(documentGroup + '')) {
             errors.documentGroup = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(templateId) && documentType == 'internal') {
+        if (validator.isEmpty(templateId + '') && documentType == 'internal') {
             errors.templateId = true;
             hasErrors = true;
         }

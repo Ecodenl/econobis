@@ -344,27 +344,15 @@ class EmailController
     }
 
     public function peek(){
-        $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->get();
-
-        foreach($contacts as $contact) {
-            foreach ($contact->emailAddresses as $emailAddress) {
-                if ($emailAddress->primary) {
-                    $people[] = [
-                        'id' => $emailAddress->id,
-                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
-                        'email' => $emailAddress->email
-                    ];
-                }
-            }
-            foreach ($contact->emailAddresses as $emailAddress) {
-                if (!$emailAddress->primary) {
-                    $people[] = [
-                        'id' => $emailAddress->id,
-                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
-                        'email' => $emailAddress->email
-                    ];
-                }
-            }
+        $contactsWithEmails = Contact::select('contacts.id', 'full_name', 'email_addresses.email')->join('email_addresses', 'contacts.id', '=', 'email_addresses.contact_id')
+            ->whereNull('email_addresses.deleted_at')->orderBy('contacts.id')->orderBy('email_addresses.primary', 'desc')->get();
+        $people = [];
+        foreach($contactsWithEmails as $contactWithEmail) {
+            $people[] = [
+                'id' => $contactWithEmail->id,
+                'name' => $contactWithEmail->full_name . ' (' . $contactWithEmail->email . ')',
+                'email' => $contactWithEmail->email
+            ];
         }
         return $people;
     }

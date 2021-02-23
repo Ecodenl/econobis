@@ -29,7 +29,6 @@ import QuotationRequestDetailsAPI from '../../../api/quotation-request/Quotation
 class DocumentNewApp extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             contacts: [],
             contactsGroups: [],

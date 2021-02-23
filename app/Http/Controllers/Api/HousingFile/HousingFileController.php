@@ -80,7 +80,7 @@ class HousingFileController extends ApiController
         $data = $request->validate([
             'addressId' => 'required|exists:addresses,id',
             'buildingTypeId' => 'exists:building_types,id',
-            'buildYear' => 'integer|between:1900,3000',
+            'buildYear' => 'integer|between:1500,3000',
             'surface' => 'integer',
             'roofTypeId' => 'exists:roof_types,id',
             'energyLabelId' => 'exists:energy_labels,id',
@@ -139,7 +139,7 @@ class HousingFileController extends ApiController
         $data = $request->validate([
             'addressId' => 'required|exists:addresses,id',
             'buildingTypeId' => 'exists:building_types,id',
-            'buildYear' => 'integer|between:1900,3000',
+            'buildYear' => 'integer|between:1500,3000',
             'surface' => 'integer',
             'roofTypeId' => 'exists:roof_types,id',
             'energyLabelId' => 'exists:energy_labels,id',

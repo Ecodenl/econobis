@@ -159,6 +159,11 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
         $email->reply_type_id = 'forward';
+        $email->intake_id = null;
+        $email->task_id = null;
+        $email->quotation_request_id =null;
+        $email->contact_group_id = null;
+
         $email->old_email_id = $email->id;
 
         return FullEmail::make($email);

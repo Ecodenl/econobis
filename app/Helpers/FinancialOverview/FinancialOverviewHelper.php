@@ -63,8 +63,12 @@ class FinancialOverviewHelper
         $contactName = null;
 
         if ($financialOverviewContact->contact->type_id == 'person') {
-            $prefix = $financialOverviewContact->contact->person->last_name_prefix;
-            $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' ' . $financialOverviewContact->contact->person->last_name : $financialOverviewContact->contact->person->first_name . ' ' . $financialOverviewContact->contact->person->last_name;
+            $title = $financialOverviewContact->contact->person->title ? $financialOverviewContact->contact->person->title->name . ' ' : '';
+            $initials = $financialOverviewContact->contact->person->initials ? $financialOverviewContact->contact->person->initials : ($financialOverviewContact->contact->person->first_name ? substr($financialOverviewContact->contact->person->first_name, 0, 1).".": "");
+            $prefix = $financialOverviewContact->contact->person->last_name_prefix ? $financialOverviewContact->contact->person->last_name_prefix . ' ' : '';
+
+            $contactName = $title . ( $initials . ' ' . $prefix . $financialOverviewContact->contact->person->last_name );
+
         } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
             $contactName = $financialOverviewContact->contact->full_name;
         }

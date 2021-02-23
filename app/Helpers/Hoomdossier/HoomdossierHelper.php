@@ -99,9 +99,11 @@ class HoomdossierHelper
         }
 
         $payload = [
-            'key' => $this->cooperation->hoom_key,
-            'contact_id' => $this->contact->id,
-            'email' => $this->contact->primaryEmailAddress->email,
+//            'key' => $this->cooperation->hoom_key,
+//            'contact_id' => $this->contact->id,
+            'extra' => ['contact_id' => $this->contact->id],
+//            'email' => $this->contact->primaryEmailAddress->email,
+            'email' => '',
             'first_name' => $this->contact->person->first_name,
             'last_name' => $lastName,
             'postal_code' => $this->contact->primaryAddress->postal_code,
@@ -112,10 +114,17 @@ class HoomdossierHelper
             'phone_number' => $this->contact->primaryphoneNumber ? $this->contact->primaryphoneNumber->number : '',
         ];
 
+//        dd($payload);
+
         $client = new Client;
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->cooperation->hoom_key,
+            'Accept'        => 'application/json',
+        ];
 
         try {
-            $response = $client->post($this->cooperation->hoom_link, $payload);
+            $response = $client->post($this->cooperation->hoom_link, $payload, compact('headers'));
+//            dd($response->getBody()->getContents());
             return $response->getBody();
         } catch (RequestException $e) {
             if ($e->hasResponse()) {

@@ -16,16 +16,17 @@ const IntakesListHead = props => {
     return (
         <tr className="thead-title">
             {props.showCheckbox ? <th width="3%" /> : null}
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'20%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'fullName'} title={'Contact'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'fullName'} title={'Contact'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureRequestedId'}
                 title={'Interesse'}
-                width={'30%'}
+                width={'15%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'campaignId'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>
     );
@@ -37,7 +38,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(IntakesListHead);
+export default connect(null, mapDispatchToProps)(IntakesListHead);

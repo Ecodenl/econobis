@@ -133,7 +133,7 @@ const AuditTrailListFilter = props => {
 
 const mapStateToProps = state => ({
     filters: state.auditTrail.filters,
-    users: state.systemData.users,
+    users: state.systemData.usersAll,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -151,7 +151,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(AuditTrailListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(AuditTrailListFilter);

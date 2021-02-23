@@ -159,11 +159,6 @@ class EmailController
         $email->cc = [];
         $email->bcc = [];
         $email->reply_type_id = 'forward';
-        $email->intake_id = null;
-        $email->task_id = null;
-        $email->quotation_request_id =null;
-        $email->contact_group_id = null;
-
         $email->old_email_id = $email->id;
 
         return FullEmail::make($email);
@@ -344,15 +339,27 @@ class EmailController
     }
 
     public function peek(){
-        $contactsWithEmails = Contact::select('contacts.id', 'full_name', 'email_addresses.email')->join('email_addresses', 'contacts.id', '=', 'email_addresses.contact_id')
-            ->whereNull('email_addresses.deleted_at')->orderBy('contacts.id')->orderBy('email_addresses.primary', 'desc')->get();
-        $people = [];
-        foreach($contactsWithEmails as $contactWithEmail) {
-            $people[] = [
-                'id' => $contactWithEmail->id,
-                'name' => $contactWithEmail->full_name . ' (' . $contactWithEmail->email . ')',
-                'email' => $contactWithEmail->email
-            ];
+        $contacts = Contact::select('id', 'full_name')->with('emailAddresses')->get();
+
+        foreach($contacts as $contact) {
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if ($emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if (!$emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }
         }
         return $people;
     }

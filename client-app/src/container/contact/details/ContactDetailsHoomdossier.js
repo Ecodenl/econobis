@@ -17,9 +17,11 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
             })
             .catch(error => {
                 if (error.response && error.response.status === 422) {
-                    if (error.response.data && error.response.data.errors) {
+                    if (error.response.data && error.response.data.message) {
                         setMessage('Niet alle benodigde gegevens zijn ingevuld:');
-                        setErrors(error.response.data.errors);
+                        // todo WM: opschonen log
+                        // console.log(JSON.parse(error.response.data.message));
+                        setErrors(JSON.parse(error.response.data.message));
                     }
                 } else {
                     alert('Er is iets misgegaan met het aanmaken van het hoomdossier');
@@ -36,9 +38,65 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
             title="Hoomdossier aanmaken"
         >
             <p>{message}</p>
-            {errors.length ? (
+            {errors && errors.email ? (
                 <ul>
-                    {errors.map(item => (
+                    {errors.email.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.first_name ? (
+                <ul>
+                    {errors.first_name.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.last_name ? (
+                <ul>
+                    {errors.last_name.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.postal_code ? (
+                <ul>
+                    {errors.postal_code.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.number ? (
+                <ul>
+                    {errors.number.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.house_number_extension ? (
+                <ul>
+                    {errors.house_number_extension.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.street ? (
+                <ul>
+                    {errors.street.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.city ? (
+                <ul>
+                    {errors.city.map(item => (
+                        <li>{item}</li>
+                    ))}
+                </ul>
+            ) : null}
+            {errors && errors.phone_number ? (
+                <ul>
+                    {errors.phone_number.map(item => (
                         <li>{item}</li>
                     ))}
                 </ul>
@@ -59,7 +117,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailHoomdossier);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailHoomdossier);

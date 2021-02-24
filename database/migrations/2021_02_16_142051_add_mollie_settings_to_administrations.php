@@ -1,5 +1,6 @@
 <?php
 
+use App\Eco\Administration\Administration;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,15 @@ class AddMollieSettingsToAdministrations extends Migration
             $table->boolean('uses_mollie')->default(false);
             $table->text('mollie_api_key');
         });
+
+        /**
+         * mollie_api_key wordt ge-encrypt.
+         * Overal eenmalig setten om fouten bij decrypten te voorkomen.
+         */
+        foreach (Administration::all() as $administration){
+            $administration->mollie_api_key = '';
+            $administration->save();
+        }
     }
 
     /**

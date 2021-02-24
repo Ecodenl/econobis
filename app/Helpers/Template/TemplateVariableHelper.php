@@ -1678,6 +1678,19 @@ class TemplateVariableHelper
             case 'iban':
                 return $model->IBAN;
                 break;
+            case 'logo':
+                $img = '';
+                if ($model->logo_filename) {
+                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $model->logo_filename);
+                    $logo = file_get_contents($path);
+
+                    $src = 'data:' . mime_content_type($path)
+                        . ';charset=binary;base64,' . base64_encode($logo);
+                    $src = str_replace(" ", "", $src);
+                    $img = '<img src="' . $src . '" width="auto" height="156px"/>';
+                }
+                return $img;
+                break;
             default:
                 return '';
                 break;

@@ -18,13 +18,16 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
             .catch(error => {
                 if (error.response && error.response.status === 422) {
                     if (error.response.data && error.response.data.message) {
-                        setMessage('Niet alle benodigde gegevens zijn ingevuld:');
-                        // todo WM: opschonen log
-                        // console.log(JSON.parse(error.response.data.message));
+                        setMessage('Niet alle benodigde gegevens zijn ingevuld, melding vanuit Hoomdossier:');
                         setErrors(JSON.parse(error.response.data.message));
                     }
                 } else {
-                    alert('Er is iets misgegaan met het aanmaken van het hoomdossier');
+                    setMessage(
+                        'Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
+                            (error.response && error.response.status) +
+                            ').'
+                    );
+                    setErrors(JSON.parse(error.response.data.message));
                 }
             });
     }, []);

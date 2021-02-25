@@ -13,7 +13,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Hoomdossier\Templates\HoomdossierMail;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
@@ -141,8 +141,10 @@ class HoomdossierHelper
             return $response->getBody();
         } catch (RequestException $e) {
             if ($e->hasResponse()) {
+                Log::error('Er is iets misgegaan met het verzenden naar Hoomdossier voor contact id ' . $this->contact->id .  ', melding: ' . $e->getCode() . ' - ' . $e->getResponse()->getBody() );
                 abort($e->getCode(), $e->getResponse()->getBody());
             } else {
+                Log::error('Er is iets misgegaan met het verzenden naar Hoomdossier voor contact id ' . $this->contact->id .  ', melding: ' . $e->getCode() );
                 abort($e->getCode(), 'Er is iets misgegaan met het verzenden naar Hoomdossier');
             }
         }

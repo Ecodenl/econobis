@@ -116,7 +116,7 @@ class HoomdossierHelper
             'extra' => ['contact_id' => $this->contact->id],
 // todo WM: weer terugzetten juiste vulling email
 //            'email' => $this->contact->primaryEmailAddress->email ? $this->contact->primaryEmailAddress->email : '',
-            'email' => '',
+            'email' => $this->contact->primaryEmailAddress->email,
             'first_name' => $this->contact->person->first_name ? $this->contact->person->first_name : '',
             'last_name' => $lastName ? $lastName : '',
             'postal_code' => $this->contact->primaryAddress->postal_code ? $this->contact->primaryAddress->postal_code : '',
@@ -131,7 +131,6 @@ class HoomdossierHelper
         $client = new Client;
         $headers = [
             'Authorization' => 'Bearer ' . $this->cooperation->hoom_key,
-            'Content-Type'  => 'application/json',
             'Accept'        => 'application/json',
 //            'data-raw'      => '{"extra":{"contact_id":62},"email":"","first_name":"Wim","last_name":"Test1","postal_code":"1111 AA","number":1,"house_number_extension":"a","street":"straat","city":"woonplaats","phone_number":""}',
         ];
@@ -154,8 +153,9 @@ class HoomdossierHelper
 //}' ];
 //dd($headers);
         try {
-            $response = $client->request('POST', $this->cooperation->hoom_link, compact('headers'), ['json' => $payload]);
-//            $response = $client->post($this->cooperation->hoom_link, compact('headers'), ['json' => $payload] );
+//            $response = $client->request('POST', $this->cooperation->hoom_link, ['headers' => $headers, 'json' => $payload]);
+            $response = $client->post($this->cooperation->hoom_link, ['headers' => $headers, 'json' => $payload]);
+//            dd($response->getBody());
             return $response->getBody();
         } catch (RequestException $e) {
             if ($e->hasResponse()) {

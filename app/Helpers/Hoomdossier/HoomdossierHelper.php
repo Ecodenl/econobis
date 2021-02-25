@@ -83,6 +83,19 @@ class HoomdossierHelper
 
         if(!$this->contact->primaryAddress) {
             $errors[] = 'Primair adres ontbreekt';
+        }else{
+            if(!$this->contact->primaryAddress->postal_code || empty($this->contact->primaryAddress->postal_code)) {
+                $errors[] = 'Postcode in adres ontbreekt';
+            }
+            if(!$this->contact->primaryAddress->street || empty($this->contact->primaryAddress->street)) {
+                $errors[] = 'Straat in adres ontbreekt';
+            }
+            if(!$this->contact->primaryAddress->number || empty($this->contact->primaryAddress->number)) {
+                $errors[] = 'Huisnummer in adres ontbreekt';
+            }
+            if(!$this->contact->primaryAddress->city || empty($this->contact->primaryAddress->city)) {
+                $errors[] = 'Plaats in adres ontbreekt';
+            }
         }
 
         if(count($errors)) throw ValidationException::withMessages($errors);

@@ -17,9 +17,17 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
             })
             .catch(error => {
                 if (error.response && error.response.status === 422) {
-                    if (error.response.data && error.response.data.message) {
-                        setMessage('Niet alle benodigde gegevens zijn ingevuld, melding vanuit Hoomdossier:');
-                        setErrors(JSON.parse(error.response.data.message));
+                    if (error.response.data && error.response.data.errors) {
+                        setMessage('Niet alle benodigde gegevens zijn ingevuld:');
+                        if (error.response.data.errors.length) {
+                            setErrors(error.response.data.errors);
+                        }
+                    } else {
+                        setMessage(
+                            'Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
+                                (error.response && error.response.status) +
+                                ').'
+                        );
                     }
                 } else {
                     setMessage(
@@ -27,7 +35,6 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
                             (error.response && error.response.status) +
                             ').'
                     );
-                    setErrors(JSON.parse(error.response.data.message));
                 }
             });
     }, []);
@@ -41,65 +48,9 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
             title="Hoomdossier aanmaken"
         >
             <p>{message}</p>
-            {errors && errors.email ? (
+            {errors.length ? (
                 <ul>
-                    {errors.email.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.first_name ? (
-                <ul>
-                    {errors.first_name.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.last_name ? (
-                <ul>
-                    {errors.last_name.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.postal_code ? (
-                <ul>
-                    {errors.postal_code.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.number ? (
-                <ul>
-                    {errors.number.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.house_number_extension ? (
-                <ul>
-                    {errors.house_number_extension.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.street ? (
-                <ul>
-                    {errors.street.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.city ? (
-                <ul>
-                    {errors.city.map(item => (
-                        <li>{item}</li>
-                    ))}
-                </ul>
-            ) : null}
-            {errors && errors.phone_number ? (
-                <ul>
-                    {errors.phone_number.map(item => (
+                    {errors.map(item => (
                         <li>{item}</li>
                     ))}
                 </ul>

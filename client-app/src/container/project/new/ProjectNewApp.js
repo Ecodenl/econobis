@@ -23,6 +23,7 @@ class ProjectNewApp extends Component {
     constructor(props) {
         super(props);
 
+        const defaultTextTransactionCosts = 'Transactiekosten';
         const defaultTextAgreeTerms =
             'Om deel te kunnen nemen dien je akkoord te gaan met de voorwaarden en dien je te bevestigen dat je de project informatie hebt gelezen en begrepen.';
         const defaultTextLinkAgreeTerms = 'Ik ga akkoord met de {voorwaarden_link}';
@@ -79,6 +80,7 @@ class ProjectNewApp extends Component {
                 participationsGranted: null,
                 participationsOptioned: null,
                 participationsInterresed: null,
+                textTransactionCosts: defaultTextTransactionCosts,
                 textAgreeTerms: defaultTextAgreeTerms,
                 textLinkAgreeTerms: defaultTextLinkAgreeTerms,
                 textLinkUnderstandInfo: defaultTextLinkUnderstandInfo,

@@ -39,6 +39,7 @@ const ProjectFormEditGeneral = ({
     handleContactGroupIds,
     handleReactSelectChange,
     projectStatuses,
+    transactionCostsCodeRefs,
     administrations,
     hasPaymentInvoices,
     users,
@@ -66,6 +67,10 @@ const ProjectFormEditGeneral = ({
     textLinkUnderstandInfo,
     textAcceptAgreement,
     textAcceptAgreementQuestion,
+    textTransactionCosts,
+    transactionCostsCodeRef,
+    transactionCostsAmount,
+    transactionCostsPercentage,
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
@@ -270,6 +275,63 @@ const ProjectFormEditGeneral = ({
                     error={errors.linkProjectInfo}
                     readOnly={!permissions.managePortalSettings}
                 />
+            </div>
+
+            <hr />
+            <div className="row">
+                <label htmlFor="transactionCosts" className="col-sm-12">
+                    <strong>Transactiekosten</strong>
+                </label>
+            </div>
+            <div className="row">
+                <InputSelect
+                    label={'Kosten'}
+                    name={'transactionCostsCodeRef'}
+                    options={transactionCostsCodeRefs}
+                    value={transactionCostsCodeRef}
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.transactionCostsCodeRef}
+                    readOnly={!permissions.managePortalSettings}
+                />
+                {transactionCostsCodeRef !== 'none' ? (
+                    <InputText
+                        type={'number'}
+                        label={transactionCostsCodeRef === 'percentage' ? 'Minimaal bedrag' : 'Bedrag per inleg'}
+                        name={'transactionCostsAmount'}
+                        value={transactionCostsAmount}
+                        onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.transactionCostsAmount}
+                        // errorMessage={errorMessage.transactionCostsAmount}
+                        readOnly={!permissions.managePortalSettings}
+                    />
+                ) : null}
+            </div>
+            <div className="row">
+                <InputText
+                    label="Naam op de portal"
+                    name={'textTransactionCosts'}
+                    value={textTransactionCosts}
+                    maxLength="50"
+                    onChangeAction={handleInputChange}
+                    required={'required'}
+                    error={errors.textTransactionCosts}
+                    readOnly={!permissions.managePortalSettings}
+                />
+                {transactionCostsCodeRef === 'percentage' ? (
+                    <InputText
+                        type={'number'}
+                        label={'% van de inleg'}
+                        name={'transactionCostsPercentage'}
+                        value={transactionCostsPercentage}
+                        onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.transactionCostsPercentage}
+                        // errorMessage={errorMessage.transactionCostsPercentage}
+                        readOnly={!permissions.managePortalSettings}
+                    />
+                ) : null}
             </div>
 
             <hr />
@@ -541,6 +603,7 @@ const ProjectFormEditGeneral = ({
 const mapStateToProps = state => {
     return {
         projectStatuses: state.systemData.projectStatus,
+        transactionCostsCodeRefs: state.systemData.transactionCostsCodeRefs,
         administrations: state.meDetails.administrations,
         permissions: state.meDetails.permissions,
         users: state.systemData.users,

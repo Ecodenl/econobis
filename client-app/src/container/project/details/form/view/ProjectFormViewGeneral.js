@@ -44,6 +44,11 @@ const ProjectFormViewGeneral = ({
     textLinkUnderstandInfo,
     textAcceptAgreement,
     textAcceptAgreementQuestion,
+    textTransactionCosts,
+    transactionCostsCodeRef,
+    transactionCostsCodeRefWithName,
+    transactionCostsAmount,
+    transactionCostsPercentage,
 }) => (
     <React.Fragment>
         <h4>Algemeen</h4>
@@ -127,6 +132,34 @@ const ProjectFormViewGeneral = ({
         </div>
         <div className="row">
             <ViewTextLong label={'Informatie link'} value={linkProjectInfo} />
+        </div>
+
+        <hr />
+        <div className="row">
+            <label htmlFor="transactionCosts" className="col-sm-12">
+                <strong>Transactiekosten</strong>
+            </label>
+        </div>
+        <div className="row">
+            <ViewText
+                label={'Kosten'}
+                value={transactionCostsCodeRefWithName ? transactionCostsCodeRefWithName.name : ''}
+            />
+            {transactionCostsCodeRef !== 'none' ? (
+                <ViewText
+                    label={transactionCostsCodeRef === 'percentage' ? 'Minimaal bedrag' : 'Bedrag per inleg'}
+                    value={transactionCostsAmount}
+                />
+            ) : null}
+            {transactionCostsCodeRef === 'percentage' ? (
+                <ViewText label={'Minimaal bedrag'} value={transactionCostsAmount} />
+            ) : null}
+        </div>
+        <div className="row">
+            <ViewText label={'Naam op de portal'} value={textTransactionCosts} />
+            {transactionCostsCodeRef === 'percentage' ? (
+                <ViewText label={'% van de inleg'} value={transactionCostsPercentage} />
+            ) : null}
         </div>
 
         <hr />

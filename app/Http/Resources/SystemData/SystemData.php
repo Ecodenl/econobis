@@ -59,6 +59,7 @@ use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\Project\ProjectRevenueType;
 use App\Eco\Project\ProjectStatus;
 use App\Eco\Project\ProjectType;
+use App\Eco\Project\TransactionCostsCodeRef;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskType;
@@ -200,6 +201,7 @@ class SystemData extends Resource
             'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
+            'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
             'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),

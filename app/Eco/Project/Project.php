@@ -137,6 +137,14 @@ class Project extends Model
         return $this->belongsTo(ContactGroup::class, 'no_member_group_id');
     }
 
+    public function getTransactionCostsCodeRef()
+    {
+        if (!$this->transaction_costs_code_ref) return null;
+
+        return TransactionCostsCodeRef::get($this->transaction_costs_code_ref);
+    }
+
+
     public function getCurrentParticipations(){
         $participants = $this->participantsProject()->get();
 

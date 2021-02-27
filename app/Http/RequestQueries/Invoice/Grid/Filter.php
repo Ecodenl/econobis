@@ -90,6 +90,19 @@ class Filter extends RequestFilter
         $extra_statusses = ['reminder', 'to-remind', 'reminder_1', 'reminder_2', 'reminder_3', 'exhortation', 'payed-by-mollie'];
         $not_reminder_statusses = ['paid', 'irrecoverable'];
 
+        if ($data === 'paid') {
+            $query->where(function ($query){
+                $query->where('status_id', 'paid')
+                    ->orWhere(function ($query) {
+                        $query->whereHas('molliePayments', function ($q) {
+                            $q->whereNotNull('date_paid');
+                        });
+                    });
+            });
+
+            return false;
+        }
+
         if (in_array($data, $extra_statusses)) {
             if($data === 'payed-by-mollie'){
                 $query->whereIn('status_id', ['exported', 'sent'])

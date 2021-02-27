@@ -311,7 +311,12 @@ class Administration extends Model
 
     public function getTotalInvoicesPaidAttribute()
     {
-        return $this->invoices()->where('status_id', 'paid')->count();
+        return $this->invoices()->where(function ($query) {
+            $query->where('status_id', 'paid')
+                ->orWhereHas('molliePayments', function ($query) {
+                    $query->whereNotNull('date_paid');
+                });
+        })->count();
     }
 
     public function getTotalInvoicesIrrecoverableAttribute()

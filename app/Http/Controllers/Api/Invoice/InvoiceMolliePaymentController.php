@@ -123,7 +123,7 @@ class InvoiceMolliePaymentController extends ApiController
                 'currency' => 'EUR',
                 'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ','),
             ],
-            "description" => $invoice->administration->name . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->number . ' ' . $invoice->subject,
+            "description" => $invoice->subject . ' ' . $invoice->number . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->administration->name,
             "redirectUrl" => route('mollie.redirect', [
                 'invoiceCode' => $invoice->code
             ]),

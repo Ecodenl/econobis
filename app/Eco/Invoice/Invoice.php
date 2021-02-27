@@ -331,4 +331,9 @@ class Invoice extends Model
 
         return '';
     }
+
+    public function getIsPayedByMollieAttribute()
+    {
+        return $this->molliePayment()->whereNotNull('date_paid')->exists();
+    }
 }

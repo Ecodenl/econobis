@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Invoice;
 
+use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -47,20 +48,27 @@ class InvoiceMolliePaymentController extends ApiController
      * Deze link wordt vanuit de link in de factuur emails geopend.
      * Hier maken we de Mollie transactie aan en redirecten we de gebruiker naar de betaalpagina.
      */
-    public function pay($invoiceMolliePaymentCode)
+    public function pay($invoiceCode)
     {
-        $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('code', $invoiceMolliePaymentCode);
+        $invoice = Invoice::firstWhere('code', $invoiceCode);
 
-        if(!$invoiceMolliePayment){
+        if(!$invoice){
             return view('mollie.404');
         }
 
-        /**
-         * Als de betaallink voor een tweede keer wordt geopend willen we geen nieuwe mollie transactie maken.
-         */
-        if(!$invoiceMolliePayment->mollie_id){
-            $this->createAndSaveMollieTransaction($invoiceMolliePayment);
+        $payedInvoiceMolliePayment = $invoice->molliePayments()->whereNotNull('date_paid')->first();
+        if($payedInvoiceMolliePayment){
+            /**
+             * Er is al een betaalde Mollie transactie.
+             * Dan redirecten we daar naartoe, zodat de gebruiker wordt omgeleid naar de "u heeft betaald" pagina.
+             */
+            return redirect($payedInvoiceMolliePayment->checkout_url);
         }
+
+        /**
+         * Er is nog niet betaald, maak een mollie transactie aan, en redirect daar naartoe.
+         */
+        $invoiceMolliePayment = $this->createInvoiceMolliePayment($invoice);
 
         return redirect($invoiceMolliePayment->checkout_url);
     }
@@ -68,17 +76,19 @@ class InvoiceMolliePaymentController extends ApiController
     /**
      * Dit is de pagina waar de gebruiker uit komt na het doen van de betaling
      */
-    public function redirect($invoiceMolliePaymentCode)
+    public function redirect($invoiceCode)
     {
-        $invoiceMolliePayment = InvoiceMolliePayment::firstWhere('code', $invoiceMolliePaymentCode);
+        $invoice = Invoice::firstWhere('code', $invoiceCode);
 
-        if(!$invoiceMolliePayment){
+        if(!$invoice){
             return view('mollie.404');
         }
 
-        if(!$invoiceMolliePayment->date_paid){
+        $datePaid = optional($invoice->molliePayments()->whereNotNull('date_paid')->first())->date_paid;
+
+        if(!$datePaid){
             /**
-             * Als de factuur nog niet betaald is zou het zo kunnen zijn dat de webhook nog niet volledig is verwerkt.
+             * Als de factuur nog niet betaald is zou het zo kunnen zijn dat de webhook nog niet volledig is verwerkt.(?)
              * In dat geval checken we nog een keer bij Mollie zelf voor de actuele status.
              *
              * Dit slaan we verder niet op omdat de webhook "de waarheid" bepaalt.
@@ -86,10 +96,11 @@ class InvoiceMolliePaymentController extends ApiController
              * Todo; checken of dit echt nodig is, of dat webhook altijd eerder afgerond is. Dan kan dit hele blok eruit.
              */
             try {
-                $mollieApi = $invoiceMolliePayment->invoice->administration->getMollieApiFacade();
+                $invoiceMolliePayment = $invoice->lastMolliePayment;
+                $mollieApi = $invoice->administration->getMollieApiFacade();
                 $payment = $mollieApi->payments->get($invoiceMolliePayment->mollie_id);
                 if ($payment->isPaid()) {
-                    $invoiceMolliePayment->date_paid = Carbon::now();
+                    $datePaid = Carbon::now();
                 }
             } catch (\Exception $e) {
                 // Mollie errors negeren
@@ -97,17 +108,16 @@ class InvoiceMolliePaymentController extends ApiController
         }
 
         return view('mollie.result', [
-            'invoiceMolliePayment' => $invoiceMolliePayment,
+            'invoice' => $invoice,
+            'datePaid' => $datePaid,
         ]);
     }
 
     /**
      * Maak een transactie aan via de Mollie api en sla deze op op het InvoiceMolliePayment model.
      */
-    private function createAndSaveMollieTransaction(InvoiceMolliePayment $invoiceMolliePayment)
+    private function createInvoiceMolliePayment(Invoice $invoice)
     {
-        $invoice = $invoiceMolliePayment->invoice;
-
         $molliePostData = [
             "amount" => [
                 'currency' => 'EUR',
@@ -115,7 +125,7 @@ class InvoiceMolliePaymentController extends ApiController
             ],
             "description" => $invoice->administration->name . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->number . ' ' . $invoice->subject,
             "redirectUrl" => route('mollie.redirect', [
-                'invoiceMolliePaymentCode' => $invoiceMolliePayment->code
+                'invoiceCode' => $invoice->code
             ]),
         ];
 
@@ -130,7 +140,8 @@ class InvoiceMolliePaymentController extends ApiController
         $mollieApi = $invoice->administration->getMollieApiFacade();
         $payment = $mollieApi->payments()->create($molliePostData);
 
-        $invoiceMolliePayment->update([
+        return InvoiceMolliePayment::create([
+            'invoice_id' => $invoice->id,
             'mollie_id' => $payment->id,
             'checkout_url' => $payment->getCheckoutUrl(),
             'date_activated' => Carbon::now(),

@@ -297,7 +297,7 @@ class Administration extends Model
             })
             ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])
             ->whereNull('invoices.date_exhortation')
-            ->whereDoesntHave('molliePayment', function ($q) {
+            ->whereDoesntHave('molliePayments', function ($q) {
                 $q->whereNotNull('date_paid');
             })
             ->count();

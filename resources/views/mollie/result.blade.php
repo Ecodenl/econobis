@@ -12,7 +12,7 @@
 <body>
 <div class="d-flex justify-content-center pt-5">
     <div class="px-3" style="width: 100%; max-width: 30rem;">
-        <h4 class="mx-1">{{ $invoiceMolliePayment->date_paid ? 'Betaling is geslaagd' : 'Betaling is niet voltooid' }}</h4>
+        <h4 class="mx-1">{{ $datePaid ? 'Betaling is geslaagd' : 'Betaling is niet voltooid' }}</h4>
         <div class="card">
             <div class="card-header">
                 Transactiegegevens
@@ -22,27 +22,27 @@
                     <tbody>
                     <tr>
                         <td>Administratie</td>
-                        <td>{{ $invoiceMolliePayment->invoice->administration->name }}</td>
+                        <td>{{ $invoice->administration->name }}</td>
                     </tr>
                     <tr>
                         <td>Nota</td>
-                        <td>{{ $invoiceMolliePayment->invoice->number }}</td>
+                        <td>{{ $invoice->number }}</td>
                     </tr>
                     <tr>
                         <td>Betreft</td>
-                        <td>{{ $invoiceMolliePayment->invoice->subject }}</td>
+                        <td>{{ $invoice->subject }}</td>
                     </tr>
                     <tr>
                         <td>Contact</td>
-                        <td>{{ $invoiceMolliePayment->invoice->order->contact->full_name }}</td>
+                        <td>{{ $invoice->order->contact->full_name }}</td>
                     </tr>
                     <tr>
                         <td>Status</td>
-                        <td>{{ $invoiceMolliePayment->date_paid ? 'Betaald' : 'Niet betaald' }}</td>
+                        <td>{{ $datePaid ? 'Betaald' : 'Niet betaald' }}</td>
                     </tr>
                     <tr>
                         <td>Datum betaald</td>
-                        <td>{{ $invoiceMolliePayment->date_paid ? $invoiceMolliePayment->date_paid->format('d-m-Y H:i:s') : '-' }}</td>
+                        <td>{{ $datePaid ? $datePaid->format('d-m-Y H:i:s') : '-' }}</td>
                     </tr>
                     </tbody>
                 </table>

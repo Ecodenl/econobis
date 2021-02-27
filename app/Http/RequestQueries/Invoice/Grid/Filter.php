@@ -93,7 +93,7 @@ class Filter extends RequestFilter
         if (in_array($data, $extra_statusses)) {
             if($data === 'payed-by-mollie'){
                 $query->whereIn('status_id', ['exported', 'sent'])
-                    ->whereHas('molliePayment', function ($q) {
+                    ->whereHas('molliePayments', function ($q) {
                     $q->whereNotNull('date_paid');
                 });
 
@@ -104,7 +104,7 @@ class Filter extends RequestFilter
              * Alle overige statussen zijn herinneringen en nota's met een mollie betaaldatum
              * willen we sowieso niet herinneren, dus dit hier standaard al filteren.
              */
-            $query->whereDoesntHave('molliePayment', function ($q) {
+            $query->whereDoesntHave('molliePayments', function ($q) {
                 $q->whereNotNull('date_paid');
             });
 

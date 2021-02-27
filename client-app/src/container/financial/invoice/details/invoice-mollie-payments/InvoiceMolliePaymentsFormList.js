@@ -11,8 +11,10 @@ const InvoiceMolliePaymentsFormList = props => {
                 <div className="col-sm-4">Aanvraag gedaan op</div>
                 <div className="col-sm-4">Betaald op</div>
             </div>
-            {props.molliePayment && props.molliePayment.mollieId ? ( // Als er nog geen mollie_id is, is er nog geen "echte" mollie transactie. Dan niet weergeven.
-                <InvoiceMolliePaymentsFormItem molliePayment={props.molliePayment} />
+            {props.molliePayments.length > 0 ? (
+                props.molliePayments.map(molliePayment => {
+                    return <InvoiceMolliePaymentsFormItem key={molliePayment.id} molliePayment={molliePayment} />;
+                })
             ) : (
                 <div>Geen online betalingstransacties bekend.</div>
             )}
@@ -22,7 +24,7 @@ const InvoiceMolliePaymentsFormList = props => {
 
 const mapStateToProps = state => {
     return {
-        molliePayment: state.invoiceDetails.molliePayment,
+        molliePayments: state.invoiceDetails.molliePayments,
     };
 };
 

@@ -240,6 +240,7 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'email');
 
         $response = [];
@@ -262,7 +263,22 @@ class FinancialOverviewContactController extends Controller
                     }
                 }
             }
-            SendAllFinancialOverviewContacts::dispatch($financialOverviewContacts, Auth::id() );
+
+            $chunkNumber = 0;
+            $itemsPerChunk = 200;
+            $numberOfChunks = ceil($financialOverviewContacts->count() / $itemsPerChunk);
+            foreach ($financialOverviewContacts->chunk($itemsPerChunk) as $financialOverviewContactsSet) {
+                $chunkNumber = $chunkNumber + 1;
+//todo wm: cleanup
+// test 1               SendAllFinancialOverviewContacts::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id())->delay(now()->addMinutes(3 * ($chunkNumber-1)));
+// test 2               $job = (new SendAllFinancialOverviewContacts($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id()))->delay(now()->addMinutes(3 * ($chunkNumber-1)) );
+// test 3               $job = null;
+// test 3               $job = (new SendAllFinancialOverviewContacts($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id()) );
+// test 3               $this->dispatch($job);
+// test 3               unset($job);
+                SendAllFinancialOverviewContacts::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id());
+            }
+
         }
 
         return $response;

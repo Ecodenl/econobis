@@ -71,13 +71,6 @@
             margin-bottom: 0px;
         }
 
-        .logo {
-            float: right;
-            margin-bottom: 12px;
-            margin-top: -12px;
-            margin-right: 32px;
-        }
-
         a:visited {
             text-decoration: none;
             border-bottom: 1px solid #551A8B;
@@ -92,29 +85,8 @@
             height: 12px;
         }
 
-        .contact-name {
-            vertical-align: top;
-        }
-
-        .contact-info-table, .invoice-data-left-table {
-            display: inline-block;
-            float: left;
-            margin-left: 0px;
-            width: 50%;
-        }
-
-        .administration-info-table, .invoice-data-right-table {
-            display: inline-block;
-            float: right;
-            margin-left: 400px;
-            width: 50%;
-        }
-
-        .clearfix::after {
-            content: " ";
-            display: block;
-            height: 0;
-            clear: both;
+        .logo-table tr td {
+            text-align: right;
         }
 
         .page-break {
@@ -125,175 +97,66 @@
 </head>
 <body>
 <div>
-    <div class="clearfix">
-        <div class="logo">
-            {!! $logo !!}
-        </div>
-    </div>
-
-    <div style="clear: both !important;"></div>
-
-    <div class="contact-info-table">
+    <div class="header-table">
         <table>
+            <thead>
             <tr>
-                <td class="contact-name">
-                    {{ $contactName }}
-                </td>
+                <th class="align-left" style="width: 60%;">&nbsp;</th>
+                <th class="align-right" style="width: 40%;">{!! $logo !!}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="align-left">{{ $contactName }}</td>
+                <td class="align-left">{{ $financialOverviewContact->financialOverview->administration->name }}</td>
             </tr>
             <tr>
-                <td>
-                    @if($contactPerson)
-                        t.a.v. {{ $contactPerson }}
-                    @else
-                        {{ $financialOverviewContact->contact->addressLines['street'] }}
-                    @endif
-                </td>
+                <td class="align-left">{{ $contactPerson ? 't.a.v. ' . $contactPerson : $financialOverviewContact->contact->addressLines['street'] }}</td>
+                <td class="align-left">{{ $financialOverviewContact->financialOverview->administration->address }}</td>
             </tr>
             <tr>
-                <td>
-                    {{--Eerst nota adres, anders primair--}}
-                    @if($contactPerson)
-                        {{ $financialOverviewContact->contact->addressLines['street'] }}
-                    @else
-                        {{ $financialOverviewContact->contact->addressLines['city']}}
-                    @endif
-                </td>
+                <td class="align-left">{{ $contactPerson ? $financialOverviewContact->contact->addressLines['street'] : $financialOverviewContact->contact->addressLines['city'] }}</td>
+                <td class="align-left">{{ $financialOverviewContact->financialOverview->administration->postal_code . ' ' . $financialOverviewContact->financialOverview->administration->city }}</td>
             </tr>
             <tr>
-                <td>
-                    @if($contactPerson)
-                        {{ $financialOverviewContact->contact->addressLines['city']}}
-                    @else
-                        {{ $financialOverviewContact->contact->addressLines['country']}}
-                    @endif
-                </td>
+                <td class="align-left">{{ $contactPerson ? $financialOverviewContact->contact->addressLines['city'] : $financialOverviewContact->contact->addressLines['country'] }}</td>
+                <td class="align-left">{!! $financialOverviewContact->financialOverview->administration->country ? $financialOverviewContact->financialOverview->administration->country->name : '&nbsp;' !!}</td>
             </tr>
             <tr>
-                <td>
-                    @if($contactPerson)
-                        {{ $financialOverviewContact->contact->addressLines['country']}}
-                    @endif
-                </td>
+                <td class="align-left">{!! ($contactPerson) ? $financialOverviewContact->contact->addressLines['country'] : '&nbsp;' !!}</td>
+                <td class="align-left"><a href="{{ 'mailto:' . $financialOverviewContact->financialOverview->administration->email }}">{{ $financialOverviewContact->financialOverview->administration->email }}</a></td>
             </tr>
             <tr>
-                <td>
-                </td>
+                <td class="align-left">&nbsp;</td>
+                <td class="align-left">{!! ($financialOverviewContact->financialOverview->administration->website) ? $financialOverviewContact->financialOverview->administration->website : '&nbsp;' !!}</td>
             </tr>
+            <tr>
+                <td class="align-left">Datum: {{ $financialOverviewContact->date_sent ? Carbon\Carbon::parse($financialOverviewContact->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}</td>
+                <td class="align-left">KvK {{ $financialOverviewContact->financialOverview->administration->kvk_number }}</td>
+            </tr>
+            <tr>
+                <td class="align-left">Referentie: {{ $financialOverviewContactReference ? $financialOverviewContactReference : 'Nog niet bekend' }}</td>
+                <td class="align-left">{{ $financialOverviewContact->financialOverview->administration->btw_number ? 'BTW-nummer ' . $financialOverviewContact->financialOverview->administration->btw_number : 'IBAN ' . $financialOverviewContact->financialOverview->administration->IBAN }}</td>
+            </tr>
+            <tr>
+                <td class="align-left">Contactnummer: {{ $financialOverviewContact->contact->number }}</td>
+                <td class="align-left">{{ $financialOverviewContact->financialOverview->administration->btw_number ? 'IBAN ' . $financialOverviewContact->financialOverview->administration->IBAN : 'BIC ' . $financialOverviewContact->financialOverview->administration->bic }}</td>
+            </tr>
+            <tr>
+                <td class="align-left">&nbsp;</td>
+                <td class="align-left">{!! ($financialOverviewContact->financialOverview->administration->btw_number) ? 'BIC ' . $financialOverviewContact->financialOverview->administration->bic : ( $financialOverviewContact->financialOverview->administration->rsin_number ? 'RSIN ' . $financialOverviewContact->financialOverview->administration->rsin_number : '&nbsp;') !!}</td>
+            </tr>
+            <tr>
+                <td class="align-left">&nbsp;</td>
+                <td class="align-left">{!! ($financialOverviewContact->financialOverview->administration->btw_number && $financialOverviewContact->financialOverview->administration->rsin_number) ? 'RSIN ' . $financialOverviewContact->financialOverview->administration->rsin_number : '&nbsp;' !!}</td>
+            </tr>
+            <tr>
+                <td class="align-left">&nbsp;</td>
+                <td class="align-left">&nbsp;</td>
+            </tr>
+            </tbody>
         </table>
     </div>
-    <div class="administration-info-table">
-        <table>
-            <tr>
-                <td>
-                    {{ $financialOverviewContact->financialOverview->administration->name }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ $financialOverviewContact->financialOverview->administration->address }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ $financialOverviewContact->financialOverview->administration->postal_code . ' ' . $financialOverviewContact->financialOverview->administration->city }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{ $financialOverviewContact->financialOverview->administration->country ? $financialOverviewContact->financialOverview->administration->country->name : '' }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="{{ 'mailto:' . $financialOverviewContact->financialOverview->administration->email }}">{{ $financialOverviewContact->financialOverview->administration->email }}</a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @if($financialOverviewContact->financialOverview->administration->website)
-                        {{ $financialOverviewContact->financialOverview->administration->website }}
-                    @else
-                        &nbsp;
-                    @endif
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div style="clear: both !important;"></div>
-
-    <div class="invoice-data-left-table">
-        <table>
-            <tr>
-                <td>
-                    Datum: {{ $financialOverviewContact->date_sent ? Carbon\Carbon::parse($financialOverviewContact->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Referentie: {{ $financialOverviewContactReference ? $financialOverviewContactReference : 'Nog niet bekend' }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Contactnummer: {{ $financialOverviewContact->contact->number }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="invoice-data-right-table">
-        <table>
-            <tr>
-                <td>
-                    KvK {{ $financialOverviewContact->financialOverview->administration->kvk_number }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @if($financialOverviewContact->financialOverview->administration->btw_number)
-                        BTW-nummer {{ $financialOverviewContact->financialOverview->administration->btw_number }}
-                    @else
-                        IBAN {{ $financialOverviewContact->financialOverview->administration->IBAN }}
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @if($financialOverviewContact->financialOverview->administration->btw_number)
-                        IBAN {{ $financialOverviewContact->financialOverview->administration->IBAN }}
-                    @else
-                        BIC {{ $financialOverviewContact->financialOverview->administration->bic }}
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @if($financialOverviewContact->financialOverview->administration->btw_number)
-                        BIC {{ $financialOverviewContact->financialOverview->administration->bic }}
-                    @elseif($financialOverviewContact->financialOverview->administration->rsin_number)
-                        RSIN {{ $financialOverviewContact->financialOverview->administration->rsin_number }}
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @if($financialOverviewContact->financialOverview->administration->btw_number && $financialOverviewContact->financialOverview->administration->rsin_number)
-                        RSIN {{ $financialOverviewContact->financialOverview->administration->rsin_number }}
-                    @endif
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <div style="clear: both !important;">&nbsp;</div>
 
     <h4 class="subject-text">Betreft: waardestaat {{ $financialOverviewContact->financialOverview->description }}</h4>
     <br/>

@@ -69,7 +69,6 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
     {
         //user voor observer
         Auth::setUser(User::find($this->userId));
-        $financialOverviewContactController = new FinancialOverviewContactController();
 
         foreach ($this->validatedFinancialOverviewContactsSet as $financialOverviewContact) {
             $jobLog = new JobsLog();
@@ -156,6 +155,6 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Waardestaten maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . ") " . $exception->getMessage());
+        Log::error("Waardestaten maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . "): " . $exception->getMessage());
     }
 }

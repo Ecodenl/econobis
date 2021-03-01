@@ -95,38 +95,36 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
                 if($financialOverviewContact->status_id === 'is-resending'){
                     $financialOverviewContact->date_sent = Carbon::today();
                 }
-//todo wm: cleanup tbv testen senden waardestaat even niet doen. Later weer herstellen.
-//                try {
-//                    $financialOverviewContactResponse = FinancialOverviewHelper::send($financialOverviewContact);
-//                    FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
-//                    array_push($response, $financialOverviewContactResponse);
-//                } catch (\Exception $e) {
-//                    Log::error($e->getMessage());
+                try {
+                    $financialOverviewContactResponse = FinancialOverviewHelper::send($financialOverviewContact);
+                    FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
+                    array_push($response, $financialOverviewContactResponse);
+                } catch (\Exception $e) {
+                    Log::error($e->getMessage());
                     FinancialOverviewHelper::financialOverviewContactErrorSending($financialOverviewContact);
-//                }
+                }
             }else{
                 if($financialOverviewContact->status_id === 'is-resending'){
                     FinancialOverviewHelper::financialOverviewContactErrorSending($financialOverviewContact);
                 }
             }
-//todo wm: cleanup tbv testen senden waardestaat even niet doen. Later weer herstellen.
-//            $jobLog = new JobsLog();
-//            if($financialOverviewContact->financialOverview->administration->administration_code){
-//                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration->administration_code . '-' . $financialOverviewContact->contact->number;
-//            } else {
-//                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->contact->number . '-' . $financialOverviewContact->financialOverview->id;
-//            }
-//
-//            if($financialOverviewContact->status_id === 'sent'){
-//                $this->financialOverviewContactsOk += 1;
-//                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . ($financialOverviewContact->id) . ') naar ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
-//            }else{
-//                $this->financialOverviewContactsError += 1;
-//                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . $financialOverviewContact->id.') naar ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
-//            }
-//            $jobLog->job_category_id = 'sent-financial-overview-contact';
-//            $jobLog->user_id = $this->userId;
-//            $jobLog->save();
+            $jobLog = new JobsLog();
+            if($financialOverviewContact->financialOverview->administration->administration_code){
+                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration->administration_code . '-' . $financialOverviewContact->contact->number;
+            } else {
+                $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->contact->number . '-' . $financialOverviewContact->financialOverview->id;
+            }
+
+            if($financialOverviewContact->status_id === 'sent'){
+                $this->financialOverviewContactsOk += 1;
+                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . ($financialOverviewContact->id) . ') naar ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
+            }else{
+                $this->financialOverviewContactsError += 1;
+                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . $financialOverviewContact->id.') naar ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
+            }
+            $jobLog->job_category_id = 'sent-financial-overview-contact';
+            $jobLog->user_id = $this->userId;
+            $jobLog->save();
         }
 
         $jobLog = new JobsLog();
@@ -140,7 +138,6 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
         $jobLog->save();
 
         //cleanup
-        unset($this->joblog);
         unset($this->chunkNumber);
         unset($this->numberOfChunks);
         unset($this->financialOverviewId);

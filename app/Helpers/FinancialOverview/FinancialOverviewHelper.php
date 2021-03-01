@@ -107,38 +107,6 @@ class FinancialOverviewHelper
             return $pdf->output();
         }
 
-//todo wm: cleanup
-//        if($financialOverviewContact->id == 4583 ||
-//           $financialOverviewContact->id == 4584 ||
-//           $financialOverviewContact->id == 4656 ||
-//           $financialOverviewContact->id == 4657){
-//            $wsHtml =  view('financial.overview.generic', [
-//                'financialOverviewContact' => $financialOverviewContact,
-//                'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-//                'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_start_value'),
-//                'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_end_value'),
-//                'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
-//                'financialOverviewContactLoanTotalEnd' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_end_value'),
-//                'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
-//                'financialOverviewContactObligationTotalEnd' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_end_value'),
-//                'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
-//                'financialOverviewContactCapitalTotalEnd' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_end_value'),
-//                'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-//                'financialOverviewContactPcrTotalEnd' => $financialOverviewContactData['financialOverviewContactPcrProjects']->sum('amount_end_value'),
-//                'contactPerson' => $contactPerson,
-//                'contactName' => $contactName,
-//                'financialOverviewContactReference' => $financialOverviewContactReference,
-//                'logo' => $img,
-//                'wsAdditionalInfo' => $wsAdditionalInfo,
-//            ]);
-//            $nameHtml = $financialOverviewContactReference . '.html';
-//            $pathHtml = 'administration_' . $financialOverviewContact->financialOverview->administration->id
-//                . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $nameHtml;
-//            $filePathHtml = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $pathHtml);
-//            file_put_contents($filePathHtml, $wsHtml);
-//
-//        }
-
         // PDF maken
         $pdf = PDF::loadView('financial.overview.generic', [
             'financialOverviewContact' => $financialOverviewContact,

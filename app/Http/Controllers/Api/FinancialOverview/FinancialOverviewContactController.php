@@ -220,7 +220,6 @@ class FinancialOverviewContactController extends Controller
             header('X-Filename:' . $financialOverviewContactReference . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact, true);
-//            return FinancialOverviewHelper::createFinancialOverviewContactDocument( $financialOverviewContact->financialOverview, $financialOverviewContact->contact, true);
         }
 
         return response()->download($filePath, $financialOverviewContact->name);
@@ -269,13 +268,6 @@ class FinancialOverviewContactController extends Controller
             $numberOfChunks = ceil($financialOverviewContacts->count() / $itemsPerChunk);
             foreach ($financialOverviewContacts->chunk($itemsPerChunk) as $financialOverviewContactsSet) {
                 $chunkNumber = $chunkNumber + 1;
-//todo wm: cleanup
-// test 1               SendAllFinancialOverviewContacts::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id())->delay(now()->addMinutes(3 * ($chunkNumber-1)));
-// test 2               $job = (new SendAllFinancialOverviewContacts($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id()))->delay(now()->addMinutes(3 * ($chunkNumber-1)) );
-// test 3               $job = null;
-// test 3               $job = (new SendAllFinancialOverviewContacts($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id()) );
-// test 3               $this->dispatch($job);
-// test 3               unset($job);
                 SendAllFinancialOverviewContacts::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id());
             }
 
@@ -289,6 +281,7 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'post');
 
         $response = [];

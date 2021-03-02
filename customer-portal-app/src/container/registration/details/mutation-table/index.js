@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table';
 import valueBasedOnTypePresenter from '../../../../helpers/ValueBasedOnTypePresenter';
 
 function RegistrationDetailsMutationTable({ participantMutations }) {
-    if (participantMutations.length === 0) return 'Geen mutaties bekend';
+    if (!participantMutations || participantMutations.length === 0) return <p>Geen mutaties bekend</p>;
 
     return (
         <Table responsive={true} className={'my-4'}>

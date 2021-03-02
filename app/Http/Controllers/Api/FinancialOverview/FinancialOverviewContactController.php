@@ -220,7 +220,6 @@ class FinancialOverviewContactController extends Controller
             header('X-Filename:' . $financialOverviewContactReference . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact, true);
-//            return FinancialOverviewHelper::createFinancialOverviewContactDocument( $financialOverviewContact->financialOverview, $financialOverviewContact->contact, true);
         }
 
         return response()->download($filePath, $financialOverviewContact->name);
@@ -240,6 +239,7 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'email');
 
         $response = [];
@@ -262,7 +262,15 @@ class FinancialOverviewContactController extends Controller
                     }
                 }
             }
-            SendAllFinancialOverviewContacts::dispatch($financialOverviewContacts, Auth::id() );
+
+            $chunkNumber = 0;
+            $itemsPerChunk = 200;
+            $numberOfChunks = ceil($financialOverviewContacts->count() / $itemsPerChunk);
+            foreach ($financialOverviewContacts->chunk($itemsPerChunk) as $financialOverviewContactsSet) {
+                $chunkNumber = $chunkNumber + 1;
+                SendAllFinancialOverviewContacts::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id());
+            }
+
         }
 
         return $response;
@@ -273,6 +281,7 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'post');
 
         $response = [];

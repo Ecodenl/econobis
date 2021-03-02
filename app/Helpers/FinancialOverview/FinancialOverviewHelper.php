@@ -43,6 +43,7 @@ class FinancialOverviewHelper
     public static function createFinancialOverviewContactDocument(FinancialOverviewcontact $financialOverviewContact, $preview = false)
     {
         $user = Auth::user();
+        $pdf = null;
 
         $img = '';
         if ($financialOverviewContact->financialOverview->administration->logo_filename) {
@@ -52,7 +53,7 @@ class FinancialOverviewHelper
             $src = 'data:' . mime_content_type($path)
                 . ';charset=binary;base64,' . base64_encode($logo);
             $src = str_replace(" ", "", $src);
-            $img = '<img src="' . $src . '" width="auto" height="156px"/>';
+            $img = '<img src="' . $src . '" style="width:auto; height:156px;" alt="logo"/>';
         }
 
         self::checkStorageDir($financialOverviewContact->financialOverview->administration->id);
@@ -102,14 +103,6 @@ class FinancialOverviewHelper
                 'logo' => $img,
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
-            $contxt = stream_context_create([
-                'ssl' => [
-                    'verify_peer' => FALSE,
-                    'verify_peer_name' => FALSE,
-                    'allow_self_signed'=> TRUE
-                ]
-            ]);
-            $pdf->getDomPDF()->setHttpContext($contxt);
 
             return $pdf->output();
         }

@@ -32,7 +32,7 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
     /**
      * @var Email
      */
-    private $first;
+    public $timeout = 300;
     private $chunkNumber;
     private $numberOfChunks;
     private $financialOverviewId;
@@ -41,8 +41,6 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
     private $countFinancialOverviewContacts;
     private $financialOverviewContactsOk;
     private $financialOverviewContactsError;
-
-//    public $timeout = 120;
 
     public function __construct($chunkNumber, $numberOfChunks, $financialOverviewId, $validatedFinancialOverviewContactsSet, $userId)
     {
@@ -69,9 +67,9 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
     {
         //user voor observer
         Auth::setUser(User::find($this->userId));
-        $financialOverviewContactController = new FinancialOverviewContactController();
 
         foreach ($this->validatedFinancialOverviewContactsSet as $financialOverviewContact) {
+
             $jobLog = new JobsLog();
             $jobLog->value = 'Start maken waardestaat (' . ($financialOverviewContact->id) . ') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ').';
             $jobLog->job_category_id = 'create-financial-overview-contact-post';
@@ -146,6 +144,18 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
         $jobLog->job_category_id = 'create-financial-overview-contact-post';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
+
+        //cleanup
+        unset($this->chunkNumber);
+        unset($this->numberOfChunks);
+        unset($this->financialOverviewId);
+        unset($this->validatedFinancialOverviewContactsSet);
+        unset($this->userId);
+        unset($this->countFinancialOverviewContacts);
+        unset($this->financialOverviewContactsOk);
+        unset($this->financialOverviewContactsError);
+        gc_collect_cycles();
+
     }
 
     public function failed(\Exception $exception)
@@ -156,6 +166,6 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Waardestaten maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . ") " . $exception->getMessage());
+        Log::error("Waardestaten maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . "): " . $exception->getMessage());
     }
 }

@@ -30,24 +30,32 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
     /**
      * @var Email
      */
-    private $validatedFinancialOverviewContacts;
+    public $timeout = 300;
+    private $chunkNumber;
+    private $numberOfChunks;
+    private $financialOverviewId;
+    private $validatedFinancialOverviewContactsSet;
     private $userId;
     private $countFinancialOverviewContacts;
     private $financialOverviewContactsOk;
     private $financialOverviewContactsError;
 
-    public function __construct($validatedFinancialOverviewContacts, $userId)
+    public function __construct($chunkNumber, $numberOfChunks, $financialOverviewId, $validatedFinancialOverviewContactsSet, $userId)
     {
-        $this->validatedFinancialOverviewContacts = $validatedFinancialOverviewContacts;
+        $this->first = true;
+        $this->chunkNumber = $chunkNumber;
+        $this->numberOfChunks = $numberOfChunks;
+        $this->financialOverviewId = $financialOverviewId;
+        $this->validatedFinancialOverviewContactsSet = $validatedFinancialOverviewContactsSet;
         $this->userId = $userId;
 
-        $countFinancialOverviewContacts = $validatedFinancialOverviewContacts ? $validatedFinancialOverviewContacts->count() : 0;
+        $countFinancialOverviewContacts = $validatedFinancialOverviewContactsSet ? $validatedFinancialOverviewContactsSet->count() : 0;
         $this->countFinancialOverviewContacts = $countFinancialOverviewContacts;
         $this->financialOverviewContactsOk = 0;
         $this->financialOverviewContactsError = 0;
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Start alle waardestaten (" . ($countFinancialOverviewContacts) . ") maken/verzenden.";
+        $jobLog->value = "Start waardestaten (" . ($countFinancialOverviewContacts) . ") maken/verzenden (" . $this->chunkNumber . "/" . $this->numberOfChunks . ").";
         $jobLog->job_category_id = 'sent-financial-overview-contact';
         $jobLog->user_id = $userId;
         $jobLog->save();
@@ -57,13 +65,11 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
     {
         //user voor observer
         Auth::setUser(User::find($this->userId));
-        $financialOverviewContactController = new FinancialOverviewContactController();
 
-        foreach ($this->validatedFinancialOverviewContacts as $financialOverviewContact) {
-            $contactInfo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
+        foreach ($this->validatedFinancialOverviewContactsSet as $financialOverviewContact) {
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'Start maken en versturen waardestaat (' . ($financialOverviewContact->id) . ') voor ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ').';
+            $jobLog->value = 'Start maken en versturen waardestaat (' . ($financialOverviewContact->id) . ') voor ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ').';
             $jobLog->job_category_id = 'sent-financial-overview-contact';
             $jobLog->user_id = $this->userId;
             $jobLog->save();
@@ -79,8 +85,7 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
         }
         $response = [];
 
-        foreach ($this->validatedFinancialOverviewContacts as $financialOverviewContact) {
-            $contactInfo = $financialOverviewContactController->getContactInfoForFinancialOverview($financialOverviewContact->contact);
+        foreach ($this->validatedFinancialOverviewContactsSet as $financialOverviewContact) {
 
             //alleen als waardestaat goed is aangemaakt, gaan we mailen
             if ($financialOverviewContact->financialOverviewsToSend()->exists() && $financialOverviewContact->financialOverviewsToSend()->first()->financial_overview_created) {
@@ -88,7 +93,6 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
                     FinancialOverviewHelper::financialOverviewContactIsSending($financialOverviewContact);
                 }
                 if($financialOverviewContact->status_id === 'is-resending'){
-
                     $financialOverviewContact->date_sent = Carbon::today();
                 }
                 try {
@@ -104,7 +108,6 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
                     FinancialOverviewHelper::financialOverviewContactErrorSending($financialOverviewContact);
                 }
             }
-
             $jobLog = new JobsLog();
             if($financialOverviewContact->financialOverview->administration->administration_code){
                 $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration->administration_code . '-' . $financialOverviewContact->contact->number;
@@ -114,36 +117,47 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
 
             if($financialOverviewContact->status_id === 'sent'){
                 $this->financialOverviewContactsOk += 1;
-                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . ($financialOverviewContact->id) . ') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
+                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . ($financialOverviewContact->id) . ') naar ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') voltooid.';
             }else{
                 $this->financialOverviewContactsError += 1;
-                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . $financialOverviewContact->id.') naar ' . ($contactInfo['contactPerson']) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
+                $jobLog->value = 'Maken en versturen waardestaat ' . ($financialOverviewContactReference) . ' (' . $financialOverviewContact->id.') naar ' . ($financialOverviewContact->contact->full_name) . ' (' . ($financialOverviewContact->contact->id) . ') mislukt. Status: '.$financialOverviewContact->status_id;
             }
             $jobLog->job_category_id = 'sent-financial-overview-contact';
             $jobLog->user_id = $this->userId;
             $jobLog->save();
-
         }
 
         $jobLog = new JobsLog();
         if($this->financialOverviewContactsError>0){
-            $jobLog->value = "Fouten bij maken/verzenden waardestaten. Verzonden waardestaten: " . ($this->financialOverviewContactsOk) . ". Niet verzonden waardestaten: " . ($this->financialOverviewContactsError) . "." ;
+            $jobLog->value = "Fouten bij maken/verzenden waardestaten (" . $this->chunkNumber . "/" . $this->numberOfChunks . "). Verzonden waardestaten: " . ($this->financialOverviewContactsOk) . ". Niet verzonden waardestaten: " . ($this->financialOverviewContactsError) . "." ;
         }else{
-            $jobLog->value = "Alle Waardestaten (" . ($this->countFinancialOverviewContacts) . ") gemaakt en verzonden";
+            $jobLog->value = "Alle Waardestaten (" . ($this->countFinancialOverviewContacts) . ") gemaakt en verzonden (" . $this->chunkNumber . "/" . $this->numberOfChunks . ").";
         }
         $jobLog->job_category_id = 'sent-financial-overview-contact';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
+
+        //cleanup
+        unset($this->chunkNumber);
+        unset($this->numberOfChunks);
+        unset($this->financialOverviewId);
+        unset($this->validatedFinancialOverviewContactsSet);
+        unset($this->userId);
+        unset($this->countFinancialOverviewContacts);
+        unset($this->financialOverviewContactsOk);
+        unset($this->financialOverviewContactsError);
+        gc_collect_cycles();
+
     }
 
     public function failed(\Exception $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = "Waardestaten maken/verzenden mislukt.";
+        $jobLog->value = "Waardestaten maken/verzenden mislukt (" . $this->chunkNumber . "/" . $this->numberOfChunks . ").";
         $jobLog->job_category_id = 'sent-financial-overview-contact';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Waardestaten maken/verzenden mislukt: " . $exception->getMessage());
+        Log::error("Waardestaten maken/verzenden mislukt (" . $this->chunkNumber . "/" . $this->numberOfChunks . "): " . $exception->getMessage());
     }
 }

@@ -170,6 +170,9 @@ return [
 
     'oauth_client_id' => env('OAUTH_CLIENT_ID', '2'),
 
+    // //locale (linux/windows verschil)
+    'LC_TIME' => env('LC_TIME', 'nl_NL.utf8'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

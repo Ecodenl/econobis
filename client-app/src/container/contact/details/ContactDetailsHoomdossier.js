@@ -18,16 +18,20 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
             .catch(error => {
                 if (error.response && error.response.status === 422) {
                     if (error.response.data && error.response.data.errors) {
-                        setMessage('Niet alle benodigde gegevens zijn ingevuld:');
-                        if (error.response.data.errors.length) {
-                            setErrors(error.response.data.errors);
+                        if (error.response.data.errors.econobis && error.response.data.errors.econobis.length) {
+                            setMessage('Niet alle benodigde gegevens zijn ingevuld:');
+                            setErrors(error.response.data.errors.econobis);
                         }
-                    } else {
+                    } else if (error.response.data && error.response.data.message) {
                         setMessage(
-                            'Er is iets misgegaan bij het aanmaken van het hoomdossier (' +
-                                (error.response && error.response.status) +
-                                ').'
+                            'Er is iets misgegaan bij het aanmaken van het hoomdossier (' + error.response.status + ').'
                         );
+                        let messageErrors = [];
+                        for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
+                            messageErrors.push(`${value}`);
+                        }
+
+                        setErrors(messageErrors);
                     }
                 } else {
                     setMessage(

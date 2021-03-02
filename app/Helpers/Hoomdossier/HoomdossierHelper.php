@@ -59,46 +59,49 @@ class HoomdossierHelper
 
     private function validateRequiredFields()
     {
-        $errors = [];
+        $errorsCheckBefore = [];
 
         if($this->contact->hoom_account_id) {
-            $errors[] = 'Koppeling hoomdossier bestaat al';
+            $errorsCheckBefore[] = 'Koppeling hoomdossier bestaat al';
         }
 
         if(!$this->contact->primaryEmailAddress) {
-            $errors[] = 'Primair mailadres ontbreekt';
+            $errorsCheckBefore[] = 'Primair mailadres ontbreekt';
         }
 
         if($this->contact->type_id == 'person') {
             if(!$this->contact->person->first_name) {
-                $errors[] = 'Voornaam ontbreekt';
+                $errorsCheckBefore[] = 'Voornaam ontbreekt';
             }
 
             if(!$this->contact->person->last_name) {
-                $errors[] = 'Achternaam ontbreekt';
+                $errorsCheckBefore[] = 'Achternaam ontbreekt';
             }
         } else {
-            $errors[] = 'Bedrijven kunnen niet worden aangemaakt bij Hoomdossier';
+            $errorsCheckBefore[] = 'Bedrijven kunnen niet worden aangemaakt bij Hoomdossier';
         }
 
         if(!$this->contact->primaryAddress) {
-            $errors[] = 'Primair adres ontbreekt';
+            $errorsCheckBefore[] = 'Primair adres ontbreekt';
         }else{
             if(!$this->contact->primaryAddress->postal_code || empty($this->contact->primaryAddress->postal_code)) {
-                $errors[] = 'Postcode in adres ontbreekt';
+                $errorsCheckBefore[] = 'Postcode in adres ontbreekt';
             }
             if(!$this->contact->primaryAddress->street || empty($this->contact->primaryAddress->street)) {
-                $errors[] = 'Straat in adres ontbreekt';
+                $errorsCheckBefore[] = 'Straat in adres ontbreekt';
             }
             if(!$this->contact->primaryAddress->number || empty($this->contact->primaryAddress->number)) {
-                $errors[] = 'Huisnummer in adres ontbreekt';
+                $errorsCheckBefore[] = 'Huisnummer in adres ontbreekt';
             }
             if(!$this->contact->primaryAddress->city || empty($this->contact->primaryAddress->city)) {
-                $errors[] = 'Plaats in adres ontbreekt';
+                $errorsCheckBefore[] = 'Plaats in adres ontbreekt';
             }
         }
-
-        if(count($errors)) throw ValidationException::withMessages($errors);
+        $errors = null;
+        if(count($errorsCheckBefore)) {
+            $errors = array("econobis" => $errorsCheckBefore);
+        };
+        if($errors) throw ValidationException::withMessages($errors);
 
         return true;
     }

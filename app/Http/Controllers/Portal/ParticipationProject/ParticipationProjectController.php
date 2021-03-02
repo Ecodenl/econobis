@@ -41,6 +41,18 @@ class ParticipationProjectController extends Controller
 {
     public function show(ParticipantProject $participantProject)
     {
+        // ophalen contactgegevens portal user (vertegenwoordiger)
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+        // portal user contact moet geautoriseerd zijn voor contact participant
+        $allowedContactIds = $portalUser->contact->occupations->pluck('primary_contact_id')->toArray();
+        $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
+        if ($portalUser->contact_id != $participantProject->contact_id && !$authorizedForContact) {
+            abort(403, 'Verboden');
+        }
+
         $participantProject->load([
             'contact',
             'project.projectType',

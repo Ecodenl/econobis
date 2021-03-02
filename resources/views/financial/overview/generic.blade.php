@@ -49,7 +49,6 @@
         table {
             border-spacing: 0px;
             width: 100%;
-            margin-right: 36px;
             margin-left: 36px;
         }
 
@@ -85,10 +84,6 @@
             height: 12px;
         }
 
-        .logo-table tr td {
-            text-align: right;
-        }
-
         .page-break {
             page-break-after: always;
             /*content: "Page " counter(page);*/
@@ -101,14 +96,13 @@
         <table>
             <thead>
             <tr>
-                <th class="align-left" style="width: 60%;">&nbsp;</th>
-                <th class="align-right" style="width: 40%;">{!! $logo !!}</th>
+                <th class="align-right" colspan="2">{!! $logo !!}</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td class="align-left">{{ $contactName }}</td>
-                <td class="align-left">{{ $financialOverviewContact->financialOverview->administration->name }}</td>
+                <td class="align-left" style="width: 58%;">{{ $contactName }}</td>
+                <td class="align-left" style="width: 42%;">{{ $financialOverviewContact->financialOverview->administration->name }}</td>
             </tr>
             <tr>
                 <td class="align-left">{{ $contactPerson ? 't.a.v. ' . $contactPerson : $financialOverviewContact->contact->addressLines['street'] }}</td>

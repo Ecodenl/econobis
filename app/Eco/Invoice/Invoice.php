@@ -75,9 +75,14 @@ class Invoice extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function molliePayment()
+    public function lastMolliePayment()
     {
-        return $this->hasOne(InvoiceMolliePayment::class);
+        return $this->hasOne(InvoiceMolliePayment::class)->orderBy('id', 'desc');
+    }
+
+    public function molliePayments()
+    {
+        return $this->hasMany(InvoiceMolliePayment::class);
     }
 
     public function getPaymentType()
@@ -300,7 +305,7 @@ class Invoice extends Model
 
     public function getSubStatusAttribute(){
         if ($this->status_id == 'sent' || $this->status_id == 'exported') {
-            if ( $this->payment_type_id == 'transfer' && $this->molliePayment && $this->molliePayment->date_paid ) {
+            if ( $this->payment_type_id == 'transfer' && $this->is_paid_by_mollie ) {
                 return "Mollie betaald";
             }
 
@@ -330,5 +335,17 @@ class Invoice extends Model
         }
 
         return '';
+    }
+
+    public function getIsPaidByMollieAttribute()
+    {
+        return $this->molliePayments()->whereNotNull('date_paid')->exists();
+    }
+
+    public function getEconobisPaymentLinkAttribute()
+    {
+        return route('mollie.pay', [
+            'invoiceCode' => $this->code,
+        ]);
     }
 }

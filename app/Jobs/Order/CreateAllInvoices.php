@@ -75,10 +75,6 @@ class CreateAllInvoices implements ShouldQueue
 
                 InvoiceHelper::saveInvoiceProducts($invoice, $order);
 
-                if($invoice->administration->uses_mollie){
-                    InvoiceMolliePayment::addToInvoice($invoice);
-                }
-
                 $this->ordersOk += 1;
                 $jobLog = new JobsLog();
                 $jobLog->value = 'Concept nota gemaakt vanuit order ('.$order->number.').';

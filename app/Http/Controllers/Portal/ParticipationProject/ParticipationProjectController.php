@@ -41,7 +41,7 @@ class ParticipationProjectController extends Controller
 {
     public function show(ParticipantProject $participantProject)
     {
-        // ophalen contactgegevens portal user (vertegenwoordiger)
+        // ophalen contactgegevens portal user
         $portalUser = Auth::user();
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
@@ -92,6 +92,14 @@ class ParticipationProjectController extends Controller
         $project = Project::find($request->projectId);
         if (!$project) {
             abort(501, 'Er is helaas een fout opgetreden (4).');
+        }
+        // project moet nog openstaan voor inschrijving
+        if ($project->date_start_registrations > Carbon::now()->format('Y-m-d')) {
+            abort(501, 'Project is nog niet open voor inschrijving.');
+        }
+        // project moet nog openstaan voor inschrijving
+        if ($project->date_end_registrations < Carbon::now()->format('Y-m-d')) {
+            abort(501, 'Project is gesloten voor inschrijving.');
         }
 
         // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id

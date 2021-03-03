@@ -46,8 +46,10 @@ class ParticipationProjectController extends Controller
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-        // portal user contact moet geautoriseerd zijn voor contact participant
-        $allowedContactIds = $portalUser->contact->occupations->pluck('primary_contact_id')->toArray();
+        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primairy', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+
         $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
         if ($portalUser->contact_id != $participantProject->contact_id && !$authorizedForContact) {
             abort(403, 'Verboden');

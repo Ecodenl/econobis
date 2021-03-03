@@ -40,7 +40,11 @@ function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId,
                                 {type && type.id === 'person' && permissions && permissions.deletePerson && (
                                     <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
                                 )}
-                                {type && type.id === 'person' && cooperation && !isEmpty(cooperation.hoom_link) ? (
+                                {type &&
+                                type.id === 'person' &&
+                                permissions.createHoomDossier &&
+                                cooperation &&
+                                !isEmpty(cooperation.hoom_link) ? (
                                     <ButtonText
                                         onClickAction={toggleShowMakeHoomdossier}
                                         buttonText={hoomAccountId ? 'Hoomdossier aangemaakt' : 'Hoomdossier aanmaken'}

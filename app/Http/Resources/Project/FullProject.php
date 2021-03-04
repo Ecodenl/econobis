@@ -7,6 +7,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\FinancialOverview\FullFinancialOverviewProject;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
@@ -124,6 +125,11 @@ class FullProject extends Resource
                 'textLinkUnderstandInfo' => $this->text_link_understand_info,
                 'textAcceptAgreement' => $this->text_accept_agreement,
                 'textAcceptAgreementQuestion' => $this->text_accept_agreement_question,
+                'textTransactionCosts' => $this->text_transaction_costs,
+                'transactionCostsCodeRef' => $this->transaction_costs_code_ref,
+                'transactionCostsCodeRefWithName' => FullEnumWithIdAndName::make($this->getTransactionCostsCodeRef()),
+                'transactionCostsAmount' => $this->transaction_costs_amount,
+                'transactionCostsPercentage' => $this->transaction_costs_percentage,
             ];
     }
 }

@@ -19,6 +19,8 @@ class ParticipantMutationCollection extends Resource
         $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->first()->id;
         $mutationEnergyTaxRefundType = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->first()->id;
         $projectTypeCodeRef = $this->participation->project->projectType->code_ref;
+        $projectTransactionCostsCodeRef = $this->participation->project->transaction_costs_code_ref;
+        $projectTextTransactionCosts = $this->participation->project->text_transaction_costs;
         $statusCodeRef = $this->status ? $this->status->code_ref : '';
         $date = $this->date_entry;
         switch ($statusCodeRef) {
@@ -40,55 +42,119 @@ class ParticipantMutationCollection extends Resource
 
         switch ($projectTypeCodeRef){
             case 'loan':
-                return
-                    [
-                        'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
-                            ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
-                            ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                            ['type' => 'money', 'label' => 'Lening rekening', 'value' => $this->amount],
-                            ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
-                            ['type' => 'string', 'label' => 'Uitgekeerd op of via', 'value' => $this->paid_on],
-                        ],
-                    ];
+                if($projectTransactionCostsCodeRef === 'none'){
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'money', 'label' => 'Lening rekening', 'value' => $this->amount],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                                ['type' => 'string', 'label' => 'Uitgekeerd op of via', 'value' => $this->paid_on],
+                            ],
+                        ];
+                } else {
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'money', 'label' => 'Lening rekening', 'value' => $this->amount],
+                                ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                                ['type' => 'string', 'label' => 'Uitgekeerd op of via', 'value' => $this->paid_on],
+                            ],
+                        ];
+                }
+                return $fields;
             case 'obligation':
-                return
-                    [
-                        'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
-                            ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
-                            ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                            ['type' => 'integer', 'label' => 'Aantal obligaties', 'value' => $this->quantity],
-                            ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
-                        ],
-                    ];
+                if($projectTransactionCostsCodeRef === 'none'){
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'integer', 'label' => 'Aantal obligaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                            ],
+                        ];
+                } else {
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'integer', 'label' => 'Aantal obligaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                            ],
+                        ];
+                }
+                return $fields;
             case 'capital':
-                return
-                    [
-                        'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
-                            ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
-                            ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                            ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
-                            ['type' => 'integer', 'label' => 'Aantal participaties', 'value' => $this->quantity],
-                            ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
-                        ],
-                    ];
+                if($projectTransactionCostsCodeRef === 'none'){
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
+                                ['type' => 'integer', 'label' => 'Aantal participaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                            ],
+                        ];
+                } else {
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
+                                ['type' => 'integer', 'label' => 'Aantal participaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                            ],
+                        ];
+                }
+                return $fields;
             case 'postalcode_link_capital':
-                return
-                    [
-                        'fields' => [
-                            ['type' => 'date', 'label' => 'Datum', 'value' => $date],
-                            ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
-                            ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                            ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
-                            ['type' => 'integer', 'label' => 'Aantal participaties', 'value' => $this->quantity],
-                            ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
-                            ['type' => 'string', 'label' => 'kWh', 'value' => $this->payout_kwh],
-                            ['type' => 'string', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
-                        ],
-                    ];
-
+                if($projectTransactionCostsCodeRef === 'none'){
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
+                                ['type' => 'integer', 'label' => 'Aantal participaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                                ['type' => 'string', 'label' => 'kWh', 'value' => $this->payout_kwh],
+                                ['type' => 'string', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
+                            ],
+                        ];
+                } else {
+                    $fields =
+                        [
+                            'fields' => [
+                                ['type' => 'date', 'label' => 'Datum', 'value' => $date],
+                                ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
+                                ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
+                                ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
+                                ['type' => 'integer', 'label' => 'Aantal participaties', 'value' => $this->quantity],
+                                ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
+                                ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
+                                ['type' => 'string', 'label' => 'kWh', 'value' => $this->payout_kwh],
+                                ['type' => 'string', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
+                            ],
+                        ];
+                }
+                return $fields;
         }
     }
 }

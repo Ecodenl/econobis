@@ -251,6 +251,50 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty('' + project.textTransactionCosts)) {
+            errors.textTransactionCosts = true;
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.transactionCostsCodeRef)) {
+            errors.transactionCostsCodeRef = true;
+            hasErrors = true;
+        }
+        if (project.transactionCostsCodeRef === 'amount') {
+            if (!project.transactionCostsAmount || validator.isEmpty(project.transactionCostsAmount + '')) {
+                errors.transactionCostsAmount = true;
+                // errorMessage.transactionCostsAmount = 'Bedrag is niet ingevuld.';
+                hasErrors = true;
+            } else if (project.transactionCostsAmount + '' < 0) {
+                errors.transactionCostsAmount = true;
+                // errorMessage.transactionCostsAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
+        if (project.transactionCostsCodeRef === 'percentage') {
+            if (!project.transactionCostsAmount || validator.isEmpty(project.transactionCostsAmount + '')) {
+                errors.transactionCostsAmount = true;
+                // errorMessage.transactionCostsAmount = 'Minimaal bedrag is niet ingevuld.';
+                hasErrors = true;
+            } else if (project.transactionCostsAmount + '' < 0) {
+                errors.transactionCostsAmount = true;
+                // errorMessage.transactionCostsAmount = 'Minimaal bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+            if (!project.transactionCostsPercentage || validator.isEmpty(project.transactionCostsPercentage + '')) {
+                errors.transactionCostsPercentage = true;
+                // errorMessage.transactionCostsPercentage = 'Percentage is niet ingevuld.';
+                hasErrors = true;
+            } else if (project.transactionCostsPercentage + '' < 0) {
+                errors.transactionCostsPercentage = true;
+                // errorMessage.transactionCostsPercentage = 'Percentage mag niet negatief zijn.';
+                hasErrors = true;
+            } else if (project.transactionCostsPercentage + '' > 100) {
+                errors.transactionCostsPercentage = true;
+                // errorMessage.transactionCostsPercentage = 'Percentage mag niet hoger dan 100% zijn.';
+                hasErrors = true;
+            }
+        }
+
         if (project.showQuestionAboutMembership) {
             if (!project.questionAboutMembershipGroupId) {
                 errors.questionAboutMembershipGroupId = true;
@@ -433,6 +477,10 @@ class ProjectFormEdit extends Component {
             textLinkUnderstandInfo,
             textAcceptAgreement,
             textAcceptAgreementQuestion,
+            textTransactionCosts,
+            transactionCostsCodeRef,
+            transactionCostsAmount,
+            transactionCostsPercentage,
         } = this.state.project;
         const {
             participationsDefinitive,
@@ -503,6 +551,10 @@ class ProjectFormEdit extends Component {
                     textLinkUnderstandInfo={textLinkUnderstandInfo}
                     textAcceptAgreement={textAcceptAgreement}
                     textAcceptAgreementQuestion={textAcceptAgreementQuestion}
+                    textTransactionCosts={textTransactionCosts}
+                    transactionCostsCodeRef={transactionCostsCodeRef}
+                    transactionCostsAmount={transactionCostsAmount}
+                    transactionCostsPercentage={transactionCostsPercentage}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (

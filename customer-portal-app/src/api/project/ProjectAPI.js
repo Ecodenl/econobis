@@ -48,6 +48,10 @@ export default {
                         'linkProjectInfo',
                         'linkUnderstandInfo',
                         'showQuestionAboutMembership',
+                        'textTransactionCosts',
+                        'transactionCostsCodeRef',
+                        'transactionCostsAmount',
+                        'transactionCostsPercentage',
                     ],
                     flt: {
                         and: [

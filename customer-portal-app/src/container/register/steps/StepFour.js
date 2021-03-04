@@ -13,8 +13,10 @@ import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import FormLabel from 'react-bootstrap/FormLabel';
+import TextBlock from '../../../components/general/TextBlock';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
-function StepFour({ contactProjectData, previous, next, registerValues, setSucces }) {
+function StepFour({ project, contactProjectData, previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
@@ -99,6 +101,41 @@ function StepFour({ contactProjectData, previous, next, registerValues, setSucce
                                         <ViewHtmlAsText value={contactDocument} />
                                     </Col>
                                 </Row>
+                                <Row>
+                                    <Col xs={12} md={6}>
+                                        <FormLabel className={'field-label'}>
+                                            {project.transactionCostsCodeRef === 'none'
+                                                ? 'Te betalen bedrag'
+                                                : 'Bedrag'}
+                                        </FormLabel>
+                                    </Col>
+                                    <Col xs={12} md={6}>
+                                        <TextBlock>{MoneyPresenter(registerValues.amount)}</TextBlock>
+                                    </Col>
+                                </Row>
+                                {project.transactionCostsCodeRef !== 'none' ? (
+                                    <>
+                                        <Row>
+                                            <Col xs={12} md={6}>
+                                                <FormLabel className={'field-label'}>
+                                                    {project.textTransactionCosts}
+                                                </FormLabel>
+                                            </Col>
+                                            <Col xs={12} md={6}>
+                                                <TextBlock>
+                                                    {MoneyPresenter(registerValues.transactionCostsAmount)}
+                                                </TextBlock>
+                                            </Col>
+                                            <Col xs={12} md={6}>
+                                                <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
+                                            </Col>
+                                            <Col xs={12} md={6}>
+                                                <TextBlock>{MoneyPresenter(registerValues.totalAmount)}</TextBlock>
+                                            </Col>
+                                        </Row>
+                                    </>
+                                ) : null}
+                                <hr />
                                 <Row>
                                     <Col xs={12} md={10}>
                                         <p>{contactProjectData.textAcceptAgreementMerged}</p>

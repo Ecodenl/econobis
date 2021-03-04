@@ -129,6 +129,10 @@ class ProjectController extends ApiController
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
+            ->string('textTransactionCosts')->alias('text_transaction_costs')->next()
+            ->string('transactionCostsCodeRef')->whenMissing('none')->onEmpty('none')->alias('transaction_costs_code_ref')->next()
+            ->double('transactionCostsAmount')->whenMissing(null)->alias('transaction_costs_amount')->next()
+            ->double('transactionCostsPercentage')->whenMissing(null)->alias('transaction_costs_percentage')->next()
             ->get();
 
         $project = new Project();
@@ -221,6 +225,10 @@ class ProjectController extends ApiController
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
+            ->string('textTransactionCosts')->alias('text_transaction_costs')->next()
+            ->string('transactionCostsCodeRef')->whenMissing('none')->onEmpty('none')->alias('transaction_costs_code_ref')->next()
+            ->double('transactionCostsAmount')->whenMissing(null)->alias('transaction_costs_amount')->next()
+            ->double('transactionCostsPercentage')->whenMissing(null)->alias('transaction_costs_percentage')->next()
             ->get();
 
         $project->fill($data);

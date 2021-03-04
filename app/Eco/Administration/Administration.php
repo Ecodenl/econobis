@@ -297,7 +297,7 @@ class Administration extends Model
             })
             ->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])
             ->whereNull('invoices.date_exhortation')
-            ->whereDoesntHave('molliePayment', function ($q) {
+            ->whereDoesntHave('molliePayments', function ($q) {
                 $q->whereNotNull('date_paid');
             })
             ->count();
@@ -311,7 +311,12 @@ class Administration extends Model
 
     public function getTotalInvoicesPaidAttribute()
     {
-        return $this->invoices()->where('status_id', 'paid')->count();
+        return $this->invoices()->where(function ($query) {
+            $query->where('status_id', 'paid')
+                ->orWhereHas('molliePayments', function ($query) {
+                    $query->whereNotNull('date_paid');
+                });
+        })->count();
     }
 
     public function getTotalInvoicesIrrecoverableAttribute()

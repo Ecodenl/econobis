@@ -121,7 +121,8 @@ class InvoiceToolbar extends Component {
                             )}
                         {(this.props.invoiceDetails.statusId === 'sent' ||
                             this.props.invoiceDetails.statusId === 'exported') &&
-                            !this.props.invoiceDetails.dateExhortation && (
+                            !this.props.invoiceDetails.dateExhortation &&
+                            !this.props.invoiceDetails.is_paid_by_mollie && (
                                 <ButtonIcon iconName={'glyphicon-bullhorn'} onClickAction={this.showSendNotification} />
                             )}
                         {this.props.invoiceDetails.statusId !== 'to-send' &&

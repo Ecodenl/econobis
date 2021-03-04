@@ -67,7 +67,12 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
         <Formik
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                handleSubmitRegisterValues(values);
+                handleSubmitRegisterValues({
+                    ...values,
+                    amount: calculateAmount(values),
+                    transactionCostsAmount: calculateTransactionCostsAmount(values),
+                    totalAmount: calculateTotalAmount(values),
+                });
                 next();
             }}
             initialValues={initialRegisterValues}

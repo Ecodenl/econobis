@@ -26,11 +26,45 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
             .matches(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/, 'Fout bedrag'),
     });
 
+    function calculateAmount(values) {
+        return values.amountOptioned ? parseFloat(values.amountOptioned) : 0;
+    }
+    function calculateTransactionCostsAmount(values) {
+        let transactionCosts = 0;
+        if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+            return 0;
+        }
+        if (project.showQuestionAboutMembership && values.choiceMembership === 1) {
+            return 0;
+        }
+
+        if (project.transactionCostsCodeRef === 'amount') {
+            transactionCosts = project.transactionCostsAmount;
+        }
+        if (project.transactionCostsCodeRef === 'percentage') {
+            transactionCosts = values.amountOptioned
+                ? parseFloat(((values.amountOptioned * project.transactionCostsPercentage) / 100).toFixed(2))
+                : 0;
+            if (transactionCosts < project.transactionCostsAmount) {
+                transactionCosts = project.transactionCostsAmount;
+            }
+        }
+        return transactionCosts;
+    }
+    function calculateTotalAmount(values) {
+        return calculateAmount(values) + calculateTransactionCostsAmount(values);
+    }
+
     return (
         <Formik
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                handleSubmitRegisterValues(values);
+                handleSubmitRegisterValues({
+                    ...values,
+                    amount: calculateAmount(values),
+                    transactionCostsAmount: calculateTransactionCostsAmount(values),
+                    totalAmount: calculateTotalAmount(values),
+                });
                 next();
             }}
             initialValues={initialRegisterValues}
@@ -63,8 +97,10 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                 />
                             </Col>
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
-                                <TextBlock>{MoneyPresenter(values.amountOptioned)}</TextBlock>
+                                <FormLabel className={'field-label'}>
+                                    {project.transactionCostsCodeRef === 'none' ? 'Te betalen bedrag' : 'Bedrag'}
+                                </FormLabel>
+                                <TextBlock>{MoneyPresenter(calculateAmount(values))}</TextBlock>
                             </Col>
                         </Row>
                         {project.showQuestionAboutMembership ? (
@@ -120,6 +156,22 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                         </Col>
                                     </Row>
                                 ) : null}
+                            </>
+                        ) : null}
+
+                        {project.transactionCostsCodeRef !== 'none' ? (
+                            <>
+                                <hr />
+                                <Row>
+                                    <Col xs={12} md={6}>
+                                        <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
+                                        <TextBlock>{MoneyPresenter(calculateTransactionCostsAmount(values))}</TextBlock>
+                                    </Col>
+                                    <Col xs={12} md={6}>
+                                        <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
+                                        <TextBlock>{MoneyPresenter(calculateTotalAmount(values))}</TextBlock>
+                                    </Col>
+                                </Row>
                             </>
                         ) : null}
 

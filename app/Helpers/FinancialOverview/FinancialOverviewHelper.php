@@ -209,17 +209,29 @@ class FinancialOverviewHelper
 
         }
 
+        $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
+        $htmlBody = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBody);
+
         $user = Auth::user();
 
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'ik', $user);
-        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $financialOverviewContact->contact);
-//        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
-//        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $financialOverviewContact->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'administratie', $financialOverviewContact->financialOverview->administration);
 
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'ik', $user);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $financialOverviewContact->contact);
-//        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
-//        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'nota', $invoice);
+        $htmlBody = TemplateTableHelper::replaceTemplateTables($htmlBody, $financialOverviewContact->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $financialOverviewContact->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'portal');
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'contacten_portal');
+        $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody, 'cooperatie');
+
+        //wettelijk vertegenwoordiger
+        if (OccupationContact::where('contact_id', $financialOverviewContact->contact->id)->where('occupation_id', 7)->exists()) {
+            $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $financialOverviewContact->contact->id)
+                ->where('occupation_id', 7)->first()->primaryContact;
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
+        }
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'ik', $user);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'administratie', $financialOverviewContact->financialOverview->administration);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 
@@ -235,9 +247,6 @@ class FinancialOverviewHelper
 //        {
 //            $mail->bcc($financialOverviewContact->financialOverview->administration->email_bcc_financial_overviews);
 //        }
-
-        $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
-        $htmlBody = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBody);
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

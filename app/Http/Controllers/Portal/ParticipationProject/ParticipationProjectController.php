@@ -26,8 +26,8 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
+use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Config;
@@ -36,9 +36,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ParticipationProjectController extends Controller
 {
+    /**
+     * @var $participationMutation ParticipantMutation
+     */
+    private $participationMutation;
+
     public function show(ParticipantProject $participantProject)
     {
         // ophalen contactgegevens portal user
@@ -116,6 +122,14 @@ class ParticipationProjectController extends Controller
             $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request);
         });
 
+        if($this->participationMutation->participation->project->administration->uses_mollie){
+            /**
+             * Als Mollie voor dit project aan staat dan returnen we die zodat er naar de betaalpagina geredirect kan worden.
+             */
+            return [
+                'payment_link' => $this->participationMutation->econobis_payment_link,
+            ];
+        }
     }
 
     protected function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request)
@@ -368,6 +382,7 @@ class ParticipationProjectController extends Controller
             'date_entry' => $dateFinal,
             'amount_final' => $amountFinal,
             'quantity_final' => $quantityFinal,
+            'code' => Str::random(32),
         ]);
 
         // Recalculate dependent data in participantProject
@@ -399,6 +414,12 @@ class ParticipationProjectController extends Controller
                 // no action
                 break;
         }
+
+        /**
+         * Deze maar even in dit object opslaan zodat we hem makkelijk weer kunnen oproepen vanuit de create() functie.
+         */
+        $this->participationMutation = $participantMutation;
+
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
         // Voor zekerheid hierna weer even Auth user herstellen met portal user
         Auth::setUser($portalUser);

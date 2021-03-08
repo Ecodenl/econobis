@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
+use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 /*
@@ -502,5 +504,6 @@ Route::namespace('Api')
     ->group(function () {
         Route::post('webform/external/{apiKey}', 'Webform\ExternalWebformController@post');
 
-        Route::post('mollie/webhook', [\App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController::class, 'webhook'])->name('mollie.webhook');
+        Route::post('mollie/webhook', [InvoiceMolliePaymentController::class, 'webhook'])->name('mollie.webhook');
+        Route::post('portal/mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');
     });

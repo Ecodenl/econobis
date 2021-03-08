@@ -56,7 +56,7 @@ class InvoiceMolliePaymentController extends ApiController
             return view('mollie.404');
         }
 
-        if($invoice->molliePayments()->whereNotNull('date_paid')->exists() || $invoice->status_id === 'paid'){
+        if($invoice->is_paid_by_mollie || $invoice->status_id === 'paid'){
             /**
              * Factuur is al betaald, redirect naar resultaatpagina.
              */
@@ -85,6 +85,15 @@ class InvoiceMolliePaymentController extends ApiController
         }
 
         $datePaid = optional($invoice->molliePayments()->whereNotNull('date_paid')->first())->date_paid;
+
+        if(!$datePaid){
+            /**
+             * Als factuur niet via Mollie is betaald, dan nog checken of de factuur buiten Mollie om op betaald is gezet.
+             */
+            if($invoice->status_id === 'paid'){
+                $datePaid = Carbon::make($invoice->payments()->latest()->first()->date_paid); // (date_paid wordt vanuit model niet gecast naar carbon)
+            }
+        }
 
         return view('mollie.result', [
             'invoice' => $invoice,

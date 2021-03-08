@@ -10,6 +10,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import validator from 'validator';
 import InputToggle from '../../../../components/form/InputToggle';
+import InputDate from '../../../../components/form/InputDate';
 
 class ContactDetailsFormAddressNew extends Component {
     constructor(props) {
@@ -24,11 +25,13 @@ class ContactDetailsFormAddressNew extends Component {
                 postalCode: '',
                 city: '',
                 typeId: 'visit',
+                endDate: '',
                 primary: false,
                 countryId: '',
             },
             errors: {
                 typeId: false,
+                endDate: false,
                 postalCode: false,
                 number: false,
                 countryId: false,
@@ -76,6 +79,16 @@ class ContactDetailsFormAddressNew extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        this.setState({
+            ...this.state,
+            address: {
+                ...this.state.address,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeDate = (value, name) => {
         this.setState({
             ...this.state,
             address: {
@@ -143,7 +156,7 @@ class ContactDetailsFormAddressNew extends Component {
     };
 
     render() {
-        const { street, number, addition, postalCode, city, typeId, primary, countryId } = this.state.address;
+        const { street, number, addition, postalCode, city, typeId, endDate, primary, countryId } = this.state.address;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -219,12 +232,15 @@ class ContactDetailsFormAddressNew extends Component {
                                 required={'required'}
                                 error={this.state.errors.typeId}
                             />
-                            <InputToggle
-                                label={'Primair adres'}
-                                name={'primary'}
-                                value={primary}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            {typeId === 'old' && (
+                                <InputDate
+                                    label="Eind datum"
+                                    name="endDate"
+                                    value={endDate}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    error={this.state.errors.endDate}
+                                />
+                            )}
                         </div>
 
                         <div className="row">
@@ -237,6 +253,12 @@ class ContactDetailsFormAddressNew extends Component {
                                 value={countryId}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.countryId}
+                            />
+                            <InputToggle
+                                label={'Primair adres'}
+                                name={'primary'}
+                                value={primary}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
 
@@ -277,7 +299,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsFormAddressNew);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormAddressNew);

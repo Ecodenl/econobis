@@ -53,6 +53,7 @@ class CampaignController extends ApiController
             'type',
             'responses.contact.primaryAddress',
             'organisations',
+            'organisations.contact.contactPerson.contact',
             'createdBy',
             'ownedBy',
             'tasks',

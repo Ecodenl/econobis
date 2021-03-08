@@ -5,7 +5,7 @@ import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../components/panel/PanelBody';
-import moment from "moment/moment";
+import moment from 'moment/moment';
 
 const MailboxDetailsFormGeneralView = props => {
     const {
@@ -91,7 +91,18 @@ const MailboxDetailsFormGeneralView = props => {
                         {!usesMailgun && <ViewText label="Smtp poort" value={smtpPort} />}
                     </div>
                     <div className="row">
-                        <ViewText label={'Imap versleutelde verbinding'} value={imapEncryption} />
+                        <ViewText
+                            label={'Imap versleutelde verbinding'}
+                            value={
+                                imapEncryption === 'ssl'
+                                    ? 'SSL'
+                                    : imapEncryption === 'ssl/novalidate-cert'
+                                    ? 'SSL - self-signed certificate'
+                                    : imapEncryption === 'tls'
+                                    ? 'TLS'
+                                    : ''
+                            }
+                        />
                         {!usesMailgun && <ViewText label="Smtp versleutelde verbinding" value={smtpEncryption} />}
                     </div>
                     <div className="row">
@@ -103,8 +114,11 @@ const MailboxDetailsFormGeneralView = props => {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Datum email laatst opgehaald'} value={dateLastFetched}
-                                  value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}/>
+                        <ViewText
+                            label={'Datum email laatst opgehaald'}
+                            value={dateLastFetched}
+                            value={dateLastFetched ? moment(dateLastFetched).format('L HH:mm:ss') : 'Nog niet bepaald'}
+                        />
                         <ViewText label={'UID email laatst opgehaald'} value={imapIdLastFetched} />
                     </div>
                 </PanelBody>

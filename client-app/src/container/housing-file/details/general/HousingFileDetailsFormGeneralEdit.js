@@ -119,7 +119,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         label={'Bouwjaar'}
                         name={'buildYear'}
                         value={buildYear}
-                        min={1901}
+                        min={1500}
                         max={3000}
                         onChangeAction={this.handleInputChange}
                     />
@@ -205,7 +205,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(HousingFileDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileDetailsFormGeneralEdit);

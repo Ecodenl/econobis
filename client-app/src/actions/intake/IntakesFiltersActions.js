@@ -17,6 +17,11 @@ export const setFilterIntakeAddress = address => ({
     address,
 });
 
+export const setFilterIntakeCampaign = campaign => ({
+    type: 'SET_FILTER_INTAKE_CAMPAIGN',
+    campaign,
+});
+
 export const setFilterMeasureRequested = measureRequested => ({
     type: 'SET_FILTER_INTAKE_MEASURE_REQUESTED',
     measureRequested,

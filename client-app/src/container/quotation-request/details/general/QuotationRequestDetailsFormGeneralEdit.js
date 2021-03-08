@@ -35,8 +35,9 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
                 measureNames: opportunity.measures && opportunity.measures.map(measure => measure.name).join(', '),
                 measureCategoryName: opportunity.measureCategory.name,
+                organisations:
+                    opportunity.intake && opportunity.intake.campaign ? opportunity.intake.campaign.organisations : '',
             },
-            organisations: [],
             quotationRequest: {
                 id,
                 opportunityId: opportunity.id,
@@ -58,11 +59,6 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
-        OrganisationAPI.getOrganisationPeek().then(payload => {
-            this.setState({ organisations: payload });
-        });
-    }
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -126,7 +122,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateReleased,
             quotationText,
         } = this.state.quotationRequest;
-        const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
+        const { fullName, fullAddress, organisations, measureNames, measureCategoryName } = this.state.opportunity;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -136,7 +132,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         size={'col-sm-6'}
                         name="organisationId"
                         value={organisationId}
-                        options={this.state.organisations}
+                        options={organisations}
                         onChangeAction={this.handleInputChange}
                         required={'required'}
                         error={this.state.errors.organisation}
@@ -250,7 +246,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(QuotationRequestDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(QuotationRequestDetailsFormGeneralEdit);

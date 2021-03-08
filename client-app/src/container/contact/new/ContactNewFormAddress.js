@@ -6,6 +6,7 @@ import InputSelect from '../../../components/form/InputSelect';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import InputToggle from '../../../components/form/InputToggle';
+import InputDate from '../../../components/form/InputDate';
 
 class ContactNewFormAddress extends Component {
     constructor(props) {
@@ -13,7 +14,7 @@ class ContactNewFormAddress extends Component {
     }
 
     render() {
-        const { street, number, addition, postalCode, city, typeId, primary, countryId } = this.props.address;
+        const { street, number, addition, postalCode, city, typeId, endDate, primary, countryId } = this.props.address;
 
         return (
             <Panel className={'panel-grey'}>
@@ -86,12 +87,15 @@ class ContactNewFormAddress extends Component {
                             required={'required'}
                             error={this.props.errors.typeId}
                         />
-                        <InputToggle
-                            label={'Primair adres'}
-                            name={'primary'}
-                            value={primary}
-                            onChangeAction={this.props.handleInputChange}
-                        />
+                        {typeId === 'old' ? (
+                            <InputDate
+                                label="Eind datum"
+                                name="endDate"
+                                value={endDate}
+                                onChangeAction={this.props.handleInputChangeDate}
+                                error={this.props.errors.endDate}
+                            />
+                        ) : null}
                     </div>
 
                     <div className="row">
@@ -104,6 +108,12 @@ class ContactNewFormAddress extends Component {
                             value={countryId}
                             onChangeAction={this.props.handleInputChange}
                             error={this.props.errors.countryId}
+                        />
+                        <InputToggle
+                            label={'Primair adres'}
+                            name={'primary'}
+                            value={primary}
+                            onChangeAction={this.props.handleInputChange}
                         />
                     </div>
                 </PanelBody>

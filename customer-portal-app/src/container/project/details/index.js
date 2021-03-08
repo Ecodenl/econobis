@@ -13,6 +13,7 @@ import CapitalDetails from './CapitalDetails';
 import PcrDetails from './PcrDetails';
 import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
 import { PortalUserContext } from '../../../context/PortalUserContext';
+import { isEmpty } from 'lodash';
 
 function ProjectDetails({ match }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -51,6 +52,19 @@ function ProjectDetails({ match }) {
             default:
                 return null;
         }
+    }
+    if (isEmpty(project)) {
+        return (
+            <Container className={'content-section'}>
+                {isLoading ? (
+                    <LoadingView />
+                ) : (
+                    <>
+                        <p>Geen projectdetails bekend</p>
+                    </>
+                )}
+            </Container>
+        );
     }
 
     return (

@@ -43,6 +43,7 @@ class FinancialOverviewHelper
     public static function createFinancialOverviewContactDocument(FinancialOverviewcontact $financialOverviewContact, $preview = false)
     {
         $user = Auth::user();
+        $pdf = null;
 
         $img = '';
         if ($financialOverviewContact->financialOverview->administration->logo_filename) {
@@ -52,7 +53,7 @@ class FinancialOverviewHelper
             $src = 'data:' . mime_content_type($path)
                 . ';charset=binary;base64,' . base64_encode($logo);
             $src = str_replace(" ", "", $src);
-            $img = '<img src="' . $src . '" width="auto" height="156px"/>';
+            $img = '<img src="' . $src . '" style="width:auto; height:156px;" alt="logo"/>';
         }
 
         self::checkStorageDir($financialOverviewContact->financialOverview->administration->id);
@@ -63,8 +64,12 @@ class FinancialOverviewHelper
         $contactName = null;
 
         if ($financialOverviewContact->contact->type_id == 'person') {
-            $prefix = $financialOverviewContact->contact->person->last_name_prefix;
-            $contactName = $prefix ? $financialOverviewContact->contact->person->first_name . ' ' . $prefix . ' ' . $financialOverviewContact->contact->person->last_name : $financialOverviewContact->contact->person->first_name . ' ' . $financialOverviewContact->contact->person->last_name;
+            $title = $financialOverviewContact->contact->person->title ? $financialOverviewContact->contact->person->title->name . ' ' : '';
+            $initials = $financialOverviewContact->contact->person->initials ? $financialOverviewContact->contact->person->initials : ($financialOverviewContact->contact->person->first_name ? substr($financialOverviewContact->contact->person->first_name, 0, 1).".": "");
+            $prefix = $financialOverviewContact->contact->person->last_name_prefix ? $financialOverviewContact->contact->person->last_name_prefix . ' ' : '';
+
+            $contactName = $title . ( $initials . ' ' . $prefix . $financialOverviewContact->contact->person->last_name );
+
         } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
             $contactName = $financialOverviewContact->contact->full_name;
         }
@@ -98,14 +103,6 @@ class FinancialOverviewHelper
                 'logo' => $img,
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
-            $contxt = stream_context_create([
-                'ssl' => [
-                    'verify_peer' => FALSE,
-                    'verify_peer_name' => FALSE,
-                    'allow_self_signed'=> TRUE
-                ]
-            ]);
-            $pdf->getDomPDF()->setHttpContext($contxt);
 
             return $pdf->output();
         }
@@ -212,17 +209,29 @@ class FinancialOverviewHelper
 
         }
 
+        $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
+        $htmlBody = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBody);
+
         $user = Auth::user();
 
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'ik', $user);
-        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $financialOverviewContact->contact);
-//        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
-//        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $financialOverviewContact->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'administratie', $financialOverviewContact->financialOverview->administration);
 
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'ik', $user);
-        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $financialOverviewContact->contact);
-//        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
-//        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'nota', $invoice);
+        $htmlBody = TemplateTableHelper::replaceTemplateTables($htmlBody, $financialOverviewContact->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $financialOverviewContact->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'portal');
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'contacten_portal');
+        $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody, 'cooperatie');
+
+        //wettelijk vertegenwoordiger
+        if (OccupationContact::where('contact_id', $financialOverviewContact->contact->id)->where('occupation_id', 7)->exists()) {
+            $wettelijkVertegenwoordiger = OccupationContact::where('contact_id', $financialOverviewContact->contact->id)
+                ->where('occupation_id', 7)->first()->primaryContact;
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'wettelijk_vertegenwoordiger', $wettelijkVertegenwoordiger);
+        }
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'ik', $user);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'administratie', $financialOverviewContact->financialOverview->administration);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 
@@ -238,9 +247,6 @@ class FinancialOverviewHelper
 //        {
 //            $mail->bcc($financialOverviewContact->financialOverview->administration->email_bcc_financial_overviews);
 //        }
-
-        $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
-        $htmlBody = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $htmlBody);
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;

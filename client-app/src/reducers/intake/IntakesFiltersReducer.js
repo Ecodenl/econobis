@@ -15,6 +15,10 @@ const filtersReducerDefaultState = {
         field: 'address',
         data: '',
     },
+    campaign: {
+        field: 'campaign',
+        data: '',
+    },
     measureRequested: {
         field: 'measureRequestedId',
         data: '',
@@ -57,6 +61,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
+                },
+            };
+        case 'SET_FILTER_INTAKE_CAMPAIGN':
+            return {
+                ...state,
+                campaign: {
+                    ...state.campaign,
+                    data: action.campaign,
                 },
             };
         case 'SET_FILTER_INTAKE_MEASURE_REQUESTED':

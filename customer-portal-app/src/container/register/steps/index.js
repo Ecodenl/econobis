@@ -7,6 +7,8 @@ import StepTwo from './StepTwo';
 import StepThree from './StepThree';
 import StepFour from './StepFour';
 import StepFive from './StepFive';
+import { isEmpty } from 'lodash';
+import Container from 'react-bootstrap/Container';
 
 function Steps({
     portalSettings,
@@ -21,6 +23,16 @@ function Steps({
     handleSubmitContactValues,
     setSucces,
 }) {
+    if (isEmpty(project)) {
+        return (
+            <Container className={'content-section'}>
+                <>
+                    <p>Fout bij ophalen project. Inschrijving niet (meer) mogelijk op dit moment.</p>
+                </>
+            </Container>
+        );
+    }
+
     switch (currentStep) {
         case 1:
             switch (project.projectType.codeRef) {

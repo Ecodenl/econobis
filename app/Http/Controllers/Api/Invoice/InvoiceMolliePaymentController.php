@@ -56,13 +56,13 @@ class InvoiceMolliePaymentController extends ApiController
             return view('mollie.404');
         }
 
-        $payedInvoiceMolliePayment = $invoice->molliePayments()->whereNotNull('date_paid')->first();
-        if($payedInvoiceMolliePayment){
+        if($invoice->molliePayments()->whereNotNull('date_paid')->exists() || $invoice->status_id === 'paid'){
             /**
-             * Er is al een betaalde Mollie transactie.
-             * Dan redirecten we daar naartoe, zodat de gebruiker wordt omgeleid naar de "u heeft betaald" pagina.
+             * Factuur is al betaald, redirect naar resultaatpagina.
              */
-            return redirect($payedInvoiceMolliePayment->checkout_url);
+            return redirect()->route('mollie.redirect', [
+                'invoiceCode' => $invoice->code
+            ]);
         }
 
         /**
@@ -85,27 +85,6 @@ class InvoiceMolliePaymentController extends ApiController
         }
 
         $datePaid = optional($invoice->molliePayments()->whereNotNull('date_paid')->first())->date_paid;
-
-        if(!$datePaid){
-            /**
-             * Als de factuur nog niet betaald is zou het zo kunnen zijn dat de webhook nog niet volledig is verwerkt.(?)
-             * In dat geval checken we nog een keer bij Mollie zelf voor de actuele status.
-             *
-             * Dit slaan we verder niet op omdat de webhook "de waarheid" bepaalt.
-             *
-             * Todo; checken of dit echt nodig is, of dat webhook altijd eerder afgerond is. Dan kan dit hele blok eruit.
-             */
-            try {
-                $invoiceMolliePayment = $invoice->lastMolliePayment;
-                $mollieApi = $invoice->administration->getMollieApiFacade();
-                $payment = $mollieApi->payments->get($invoiceMolliePayment->mollie_id);
-                if ($payment->isPaid()) {
-                    $datePaid = Carbon::now();
-                }
-            } catch (\Exception $e) {
-                // Mollie errors negeren
-            }
-        }
 
         return view('mollie.result', [
             'invoice' => $invoice,

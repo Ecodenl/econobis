@@ -87,6 +87,7 @@ class FullProject extends Resource
                 'postalcodeLink' => $this->postalcode_link,
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
+                'usesMollie' => $this->uses_mollie,
                 'hasPaymentInvoices' => $this->getHasPaymentInvoices(),
                 'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,

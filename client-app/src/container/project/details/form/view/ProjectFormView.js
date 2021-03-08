@@ -39,6 +39,7 @@ const ProjectFormView = props => {
         isMembershipRequired,
         isParticipationTransferable,
         administration,
+        usesMollie,
         postalcodeLink,
         requiresContactGroups,
         amountOfLoanNeeded,
@@ -91,6 +92,7 @@ const ProjectFormView = props => {
                 dateEndRegistrations={dateEndRegistrations}
                 ownedBy={ownedBy}
                 administration={administration}
+                usesMollie={usesMollie}
                 dateStart={dateStart}
                 dateEnd={dateEnd}
                 dateEntry={dateEntry}

@@ -17,6 +17,7 @@ const ProjectFormViewGeneral = ({
     dateEndRegistrations,
     ownedBy,
     administration,
+    usesMollie,
     dateStart,
     dateEnd,
     dateEntry,
@@ -92,6 +93,11 @@ const ProjectFormViewGeneral = ({
             />
 
             <ViewText label={'Administratie'} value={administration ? administration.name : ''} />
+        </div>
+
+        <div className="row">
+            <ViewText />
+            <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
         </div>
 
         <div className="row">

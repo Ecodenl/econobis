@@ -25,6 +25,7 @@ const ProjectFormEditGeneral = ({
     ownedById,
     administrationId,
     administration,
+    usesMollie,
     dateStart,
     dateEnd,
     dateEntry,
@@ -198,6 +199,20 @@ const ProjectFormEditGeneral = ({
                     />
                 )}
             </div>
+
+            {
+                administrations.find(a => a.id == administrationId) && administrations.find(a => a.id == administrationId).usesMollie && (
+                    <div className="row">
+                        <div className="form-group col-sm-6"/>
+                        <InputToggle
+                            label={'Gebruikt Mollie'}
+                            name={'usesMollie'}
+                            value={usesMollie}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+                )
+            }
 
             <div className="row">
                 <InputDate

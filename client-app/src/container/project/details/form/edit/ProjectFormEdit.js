@@ -392,6 +392,7 @@ class ProjectFormEdit extends Component {
             dateEndRegistrations,
             ownedById,
             administrationId,
+            usesMollie,
             dateStart,
             dateEnd,
             dateEntry,
@@ -465,6 +466,7 @@ class ProjectFormEdit extends Component {
                     ownedById={ownedById}
                     administrationId={administrationId}
                     administration={administration}
+                    usesMollie={usesMollie}
                     hasPaymentInvoices={hasPaymentInvoices}
                     dateStart={dateStart}
                     dateEnd={dateEnd}

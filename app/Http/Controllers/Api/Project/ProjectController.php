@@ -178,6 +178,7 @@ class ProjectController extends ApiController
             ->integer('ownedById')->validate('required|exists:users,id')->alias('owned_by_id')->next()
             ->integer('projectStatusId')->validate('nullable|exists:project_status,id')->onEmpty(null)->alias('project_status_id')->next()
             ->integer('administrationId')->validate('nullable|exists:administrations,id')->onEmpty(null)->alias('administration_id')->next()
+            ->boolean('usesMollie')->alias('uses_mollie')->next()
             ->date('dateStart')->validate('nullable|date')->onEmpty(null)->alias('date_start')->next()
             ->date('dateEnd')->validate('nullable|date')->onEmpty(null)->alias('date_end')->next()
             ->date('dateEntry')->validate('nullable|date')->onEmpty(null)->alias('date_entry')->next()

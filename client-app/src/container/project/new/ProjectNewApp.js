@@ -51,6 +51,7 @@ class ProjectNewApp extends Component {
                 dateEndRegistrations: '',
                 projectTypeId: '',
                 administrationId: '',
+                usesMollie: false,
                 postalCode: '',
                 address: '',
                 city: '',
@@ -302,6 +303,7 @@ class ProjectNewApp extends Component {
             isMembershipRequired,
             isParticipationTransferable,
             administrationId,
+            usesMollie,
             postalcodeLink,
             contactGroupIds,
             amountOfLoanNeeded,
@@ -343,6 +345,7 @@ class ProjectNewApp extends Component {
                                         dateEndRegistrations={dateEndRegistrations}
                                         ownedById={ownedById}
                                         administrationId={administrationId}
+                                        usesMollie={usesMollie}
                                         dateStart={dateStart}
                                         dateEnd={dateEnd}
                                         dateEntry={dateEntry}

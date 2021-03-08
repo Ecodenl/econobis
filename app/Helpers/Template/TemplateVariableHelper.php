@@ -1630,7 +1630,11 @@ class TemplateVariableHelper
                     return '&lt;Online_betaallink_new&gt;';
                 }
 
-                if(!$model->administration->uses_mollie){
+                /**
+                 * Geen Mollie link als de gekoppelde administratie geen Mollie
+                 * koppeling heeft of als het bedrag 0 of negatief is.
+                 */
+                if(!$model->administration->uses_mollie || $model->total_incl_vat_incl_reduction <= 0){
                     return '';
                 }
 

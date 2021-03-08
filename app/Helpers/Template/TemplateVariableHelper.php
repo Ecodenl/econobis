@@ -1622,7 +1622,19 @@ class TemplateVariableHelper
     public static function getInvoiceVar($model, $varname){
         switch ($varname) {
             case 'mollie_link':
-                return $model->exists ? $model->econobis_payment_link : '&lt;Online_betaallink_new&gt;';
+                if(!$model->exists){
+                    /**
+                     * Factuur is nog niet opgeslagen in database, link dus nog niet beschikbaar.
+                     * Tijdelijke melding weergeven ipv link.
+                     */
+                    return '&lt;Online_betaallink_new&gt;';
+                }
+
+                if(!$model->administration->uses_mollie){
+                    return '';
+                }
+
+                return $model->econobis_payment_link;
             case 'nummer':
                 return $model->number;
             case 'betreft':

@@ -121,9 +121,9 @@ class InvoiceMolliePaymentController extends ApiController
         $molliePostData = [
             "amount" => [
                 'currency' => 'EUR',
-                'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ','),
+                'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ''),
             ],
-            "description" => $invoice->subject . ' ' . $invoice->number . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->administration->name,
+            "description" => $invoice->subject . ' ' . $invoice->administration->name . ' ' . $invoice->number . ' ' . $invoice->order->contact->full_name,
             "redirectUrl" => route('mollie.redirect', [
                 'invoiceCode' => $invoice->code
             ]),

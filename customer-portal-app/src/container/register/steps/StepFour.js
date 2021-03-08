@@ -14,7 +14,7 @@ import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import FormLabel from 'react-bootstrap/FormLabel';
 
-function StepFour({ contactProjectData, previous, next, registerValues, setSucces }) {
+function StepFour({ contactProjectData, previous, next, registerValues, setSucces, project }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
@@ -151,7 +151,15 @@ function StepFour({ contactProjectData, previous, next, registerValues, setSucce
                                                         Bezig met verwerken
                                                     </span>
                                                 ) : (
-                                                    'Bevestig inschrijving'
+                                                    <>
+                                                        {
+                                                            project.usesMollie ? (
+                                                                <>Betaal en bevestig de inschrijving</>
+                                                            ) : (
+                                                                <>Bevestig inschrijving</>
+                                                            )
+                                                        }
+                                                    </>
                                                 )}
                                             </Button>
                                         </ButtonGroup>

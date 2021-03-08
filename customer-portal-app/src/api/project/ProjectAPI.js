@@ -48,6 +48,7 @@ export default {
                         'linkProjectInfo',
                         'linkUnderstandInfo',
                         'showQuestionAboutMembership',
+                        'usesMollie',
                     ],
                     flt: {
                         and: [

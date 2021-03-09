@@ -40,6 +40,17 @@ class InvoiceMolliePaymentController extends ApiController
              */
             if(!$invoice->administration->uses_twinfield){
                 InvoiceHelper::saveInvoiceDatePaid($invoice, Carbon::now(), $invoiceMolliePayment->mollie_id);
+                return;
+            }
+
+            /**
+             * Als er wel gebruik wordt gemaakt van Twinfield en de status van de factuur is oninbaar
+             * dan krijgen we een onlogische combi van Oninbaar i.c.m. substatus Mollie Betaald.
+             * Daarom in dat geval de status weer terugzetten naar Verzonden.
+             */
+            if($invoice->status_id === 'irrecoverable'){
+                $invoice->status_id = 'sent';
+                $invoice->save();
             }
         }
     }

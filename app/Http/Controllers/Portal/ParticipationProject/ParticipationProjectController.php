@@ -382,7 +382,6 @@ class ParticipationProjectController extends Controller
             'date_entry' => $dateFinal,
             'amount_final' => $amountFinal,
             'quantity_final' => $quantityFinal,
-            'code' => Str::random(32),
         ]);
 
         // Recalculate dependent data in participantProject

@@ -99,6 +99,7 @@ function RegistrationList(props) {
                                     <th>Uitgevende instantie</th>
                                     <th>Project</th>
                                     <th>Deelname</th>
+                                    <th>Betaald</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -277,6 +278,9 @@ function RegistrationList(props) {
                                                     ) : (
                                                         ''
                                                     )}
+                                                </td>
+                                                <td>
+                                                    Betaal nu!
                                                 </td>
                                             </tr>
                                         );

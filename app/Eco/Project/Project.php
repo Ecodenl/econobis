@@ -41,6 +41,10 @@ class Project extends Model
         'id'
     ];
 
+    protected $casts = [
+        'uses_mollie' => 'bool',
+    ];
+
     //relations
 
     public function administration()

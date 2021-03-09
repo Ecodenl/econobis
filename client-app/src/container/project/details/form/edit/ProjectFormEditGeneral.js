@@ -570,7 +570,6 @@ const ProjectFormEditGeneral = ({
                                 onChange={handleInputChange}
                                 className="form-control input-sm"
                                 required={'required'}
-                                error={errors.textRegistrationFinished}
                                 readOnly={!permissions.managePortalSettings}
                             />
                         </div>

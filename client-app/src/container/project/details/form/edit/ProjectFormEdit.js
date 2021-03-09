@@ -301,10 +301,6 @@ class ProjectFormEdit extends Component {
             errors.textAcceptAgreementQuestion = true;
             hasErrors = true;
         }
-        if (validator.isEmpty('' + project.textRegistrationFinished)) {
-            errors.textRegistrationFinished = true;
-            hasErrors = true;
-        }
 
         // todo projects doesn't have a countryId field yet
         // let countryId = project.countryId;

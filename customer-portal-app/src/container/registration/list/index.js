@@ -280,7 +280,22 @@ function RegistrationList(props) {
                                                     )}
                                                 </td>
                                                 <td>
-                                                    Betaal nu!
+                                                    {
+                                                        participation.project.usesMollie ? (
+                                                            <>
+                                                                {
+                                                                    participation.mutation.isPaidByMollie ? (
+                                                                        <span>Ja</span>
+                                                                    ) : (
+                                                                        <span>Nee, <a
+                                                                            href={participation.mutation.econobisPaymentLink}>betaal nu</a></span>
+                                                                    )
+                                                                }
+                                                            </>
+                                                        ) : (
+                                                            <>N.v.t.</>
+                                                        )
+                                                    }
                                                 </td>
                                             </tr>
                                         );

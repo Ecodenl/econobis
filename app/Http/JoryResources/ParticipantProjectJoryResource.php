@@ -54,6 +54,7 @@ class ParticipantProjectJoryResource extends JoryResource
         $this->field('type_id')->filterable()->sortable();
 
         // Relations
+        $this->relation('mutations');
         $this->relation('project');
 
     }

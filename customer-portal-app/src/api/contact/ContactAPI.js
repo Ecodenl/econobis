@@ -135,12 +135,16 @@ export default {
                                         'linkProjectInfo',
                                         'linkUnderstandInfo',
                                         'showQuestionAboutMembership',
+                                        'usesMollie',
                                     ],
                                     rlt: {
                                         projectType: { fld: ['id', 'codeRef'] },
                                         administration: { fld: ['name'] },
                                     },
                                 },
+                                'mutations:first as mutation': {
+                                    fld: ['isPaidByMollie', 'econobisPaymentLink']
+                                }
                             },
                         },
                     },

@@ -125,6 +125,7 @@ class FullProject extends Resource
                 'textLinkUnderstandInfo' => $this->text_link_understand_info,
                 'textAcceptAgreement' => $this->text_accept_agreement,
                 'textAcceptAgreementQuestion' => $this->text_accept_agreement_question,
+                'textRegistrationFinished' => $this->text_registration_finished,
             ];
     }
 }

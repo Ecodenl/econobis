@@ -130,6 +130,7 @@ class ProjectController extends ApiController
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
+            ->string('textRegistrationFinished')->alias('text_registration_finished')->next()
             ->get();
 
         $project = new Project();
@@ -223,6 +224,7 @@ class ProjectController extends ApiController
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
+            ->string('textRegistrationFinished')->alias('text_registration_finished')->next()
             ->get();
 
         $project->fill($data);

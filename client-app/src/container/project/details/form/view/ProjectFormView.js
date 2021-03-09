@@ -72,6 +72,7 @@ const ProjectFormView = props => {
         textLinkUnderstandInfo,
         textAcceptAgreement,
         textAcceptAgreementQuestion,
+        textRegistrationFinished,
     } = props.project;
     return (
         <section
@@ -117,6 +118,7 @@ const ProjectFormView = props => {
                 textLinkUnderstandInfo={textLinkUnderstandInfo}
                 textAcceptAgreement={textAcceptAgreement}
                 textAcceptAgreementQuestion={textAcceptAgreementQuestion}
+                textRegistrationFinished={textRegistrationFinished}
             />
 
             {projectType && projectType.codeRef === 'loan' ? (

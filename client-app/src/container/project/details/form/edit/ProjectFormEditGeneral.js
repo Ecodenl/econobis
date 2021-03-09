@@ -67,6 +67,7 @@ const ProjectFormEditGeneral = ({
     textLinkUnderstandInfo,
     textAcceptAgreement,
     textAcceptAgreementQuestion,
+    textRegistrationFinished,
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
@@ -548,6 +549,33 @@ const ProjectFormEditGeneral = ({
                     error={errors.emailTemplateAgreementId}
                     disabled={!permissions.managePortalSettings}
                 />
+            </div>
+            <div className="row">
+                <label className="col-sm-12">
+                    <strong>Afronden</strong>
+                </label>
+            </div>
+            <div className={'row'}>
+                <div className="form-group col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label htmlFor="textRegistrationFinished" className="col-sm-12">
+                                Inschrijving afgerond tekst
+                            </label>
+                        </div>
+                        <div className="col-sm-8">
+                            <textarea
+                                name="textRegistrationFinished"
+                                value={textRegistrationFinished}
+                                onChange={handleInputChange}
+                                className="form-control input-sm"
+                                required={'required'}
+                                error={errors.textRegistrationFinished}
+                                readOnly={!permissions.managePortalSettings}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </React.Fragment>
     );

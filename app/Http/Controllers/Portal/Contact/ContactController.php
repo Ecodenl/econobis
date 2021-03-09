@@ -209,6 +209,13 @@ class ContactController extends ApiController
         $textAcceptAgreementQuestionMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textAcceptAgreementQuestionMerged,'contacten_portal' );
         $textAcceptAgreementQuestionMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textAcceptAgreementQuestionMerged,'cooperatie' );
 
+        $textRegistrationFinishedMerged = $project->text_registration_finished;
+        $textRegistrationFinishedMerged = TemplateVariableHelper::replaceTemplateVariables($textRegistrationFinishedMerged, 'contact', $contact);
+        $textRegistrationFinishedMerged = TemplateVariableHelper::replaceTemplateVariables($textRegistrationFinishedMerged, 'ik', Auth::user());
+        $textRegistrationFinishedMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textRegistrationFinishedMerged,'portal' );
+        $textRegistrationFinishedMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textRegistrationFinishedMerged,'contacten_portal' );
+        $textRegistrationFinishedMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textRegistrationFinishedMerged,'cooperatie' );
+
         $result = [
             "belongsToMembershipGroup" => $belongsToMembershipGroup,
             "textIsMemberMerged" => $textIsMemberMerged,
@@ -220,6 +227,7 @@ class ContactController extends ApiController
             "textLinkUnderstandInfoMerged" => $textLinkUnderstandInfoMerged,
             "textAcceptAgreementMerged" => $textAcceptAgreementMerged,
             "textAcceptAgreementQuestionMerged" => $textAcceptAgreementQuestionMerged,
+            "textRegistrationFinishedMerged" => $textRegistrationFinishedMerged,
             ];
         return response()->json($result);
     }

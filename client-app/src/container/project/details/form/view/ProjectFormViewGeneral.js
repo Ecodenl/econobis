@@ -44,6 +44,7 @@ const ProjectFormViewGeneral = ({
     textLinkAgreeTerms,
     textLinkUnderstandInfo,
     textAcceptAgreement,
+    textRegistrationFinished,
     textAcceptAgreementQuestion,
 }) => (
     <React.Fragment>
@@ -243,6 +244,9 @@ const ProjectFormViewGeneral = ({
                 label={'Email template inschrijfbevestiging'}
                 value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
             />
+        </div>
+        <div className="row">
+            <ViewTextLong label={'Inschrijving afgerond tekst'} value={textRegistrationFinished} />
         </div>
     </React.Fragment>
 );

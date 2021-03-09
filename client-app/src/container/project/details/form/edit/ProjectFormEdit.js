@@ -301,6 +301,10 @@ class ProjectFormEdit extends Component {
             errors.textAcceptAgreementQuestion = true;
             hasErrors = true;
         }
+        if (validator.isEmpty('' + project.textRegistrationFinished)) {
+            errors.textRegistrationFinished = true;
+            hasErrors = true;
+        }
 
         // todo projects doesn't have a countryId field yet
         // let countryId = project.countryId;
@@ -434,6 +438,7 @@ class ProjectFormEdit extends Component {
             textLinkUnderstandInfo,
             textAcceptAgreement,
             textAcceptAgreementQuestion,
+            textRegistrationFinished,
         } = this.state.project;
         const {
             participationsDefinitive,
@@ -505,6 +510,7 @@ class ProjectFormEdit extends Component {
                     textLinkUnderstandInfo={textLinkUnderstandInfo}
                     textAcceptAgreement={textAcceptAgreement}
                     textAcceptAgreementQuestion={textAcceptAgreementQuestion}
+                    textRegistrationFinished={textRegistrationFinished}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (

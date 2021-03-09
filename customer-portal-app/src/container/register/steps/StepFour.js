@@ -37,6 +37,16 @@ function StepFour({ contactProjectData, previous, next, registerValues, setSucce
             .then(payload => {
                 // console.log(payload);
                 actions.setSubmitting(false);
+
+                /**
+                 * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
+                 * In dat geval huidige scherm verlaten en door naar mollie.
+                 */
+                if(payload.data.econobisPaymentLink){
+                    window.location.href = payload.data.econobisPaymentLink;
+                    return;
+                }
+
                 setSucces(true);
                 next();
             })

@@ -1,0 +1,121 @@
+import React, {useEffect, useState} from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import ParticipantMutationAPI from '../../../api/participant-mutation/ParticipantMutationAPI';
+import LoadingView from '../../../components/general/LoadingView';
+import {PortalUserConsumer} from '../../../context/PortalUserContext';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import {Link} from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+
+function ProjectMollieRedirect({match, currentSelectedContact}) {
+    const [participantMutation, setParticipantMutation] = useState({});
+    const [isLoading, setLoading] = useState(true);
+
+    const handlePaymentRetry = () => {
+        window.location.href = participantMutation.econobisPaymentLink;
+    }
+
+    useEffect(() => {
+        (function fetchContactAndProject() {
+            setLoading(true);
+
+            axios
+                .all([
+                    ParticipantMutationAPI.fetchByCode(match.params.code),
+                ])
+                .then(
+                    axios.spread((payloadParticipantMutation) => {
+                        setParticipantMutation(payloadParticipantMutation.data.data);
+                        setLoading(false);
+                    })
+                )
+                .catch(error => {
+                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setLoading(false);
+                });
+        })();
+    }, [match]);
+
+    return (
+        <Container className={'content-section'}>
+            {isLoading ? (
+                <LoadingView/>
+            ) : (
+                <>
+                    <Row className={'mb-4'}>
+                        <Col>
+                            <h1 className="content-heading">
+                                {
+                                    participantMutation.isPaidByMollie ? (
+                                        <>Ingeschreven voor
+                                            project <strong>{participantMutation.participation.project.name}</strong></>
+                                    ) : (
+                                        <>Betaling voor
+                                            project <strong>{participantMutation.participation.project.name}</strong> nog
+                                            niet gelukt.</>
+                                    )
+                                }
+
+                            </h1>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} md={10}>
+                            {participantMutation.isPaidByMollie ? (
+                                <>
+                                    <p>
+                                        Bedankt voor je betaling en inschrijving. Per e-mail is een bevestiging gestuurd
+                                        van je inschrijving met
+                                        informatie over de vervolgstappen.
+                                        <br/>
+                                        Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van
+                                        bijvoorbeeld Gmail
+                                        en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail
+                                        daar terug vindt.
+                                    </p>
+                                    <p>Onder de menuknop “Huidige deelnames” vind je je inschrijving terug.</p>
+                                    <p>Wil je je inschrijving aanpassen? Neem dan contact met ons op.</p>
+                                </>
+                            ) : (
+                                <>
+                                    <p>
+                                        Uw inschrijving kon nog niet worden afgerond doordat de betaling niet is gelukt,
+                                        gebruik onderstaande betaal button om de betaling alsnog uit te voeren.</p>
+                                </>
+                            )}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} md={10}>
+                            <ButtonGroup className="float-right">
+                                <Link to={`/inschrijvingen-projecten`}>
+                                    <Button className={'w-button'} size="sm">
+                                        Naar mijn huidige deelnames
+                                    </Button>
+                                </Link>
+                                {!participantMutation.isPaidByMollie && (
+                                    <Button className={'w-button'} size="sm" onClick={handlePaymentRetry}>
+                                        Betalen
+                                    </Button>
+                                )}
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
+            )}
+        </Container>
+    );
+}
+
+export default function ProjectMollieRedirectWithContext(props) {
+    return (
+        <PortalUserConsumer>
+            {({currentSelectedContact}) => (
+                <ProjectMollieRedirect {...props} currentSelectedContact={currentSelectedContact}/>
+            )}
+        </PortalUserConsumer>
+    );
+}

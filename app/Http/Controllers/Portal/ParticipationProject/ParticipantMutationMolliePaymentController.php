@@ -95,34 +95,6 @@ class ParticipantMutationMolliePaymentController extends ApiController
     }
 
     /**
-     * Dit is de pagina waar de gebruiker uit komt na het doen van de betaling
-     */
-    public function redirect($participantMutationCode)
-    {
-        $participantMutation = ParticipantMutation::firstWhere('code', $participantMutationCode);
-
-        if(!$participantMutation){
-            return view('mollie.404');
-        }
-
-        $datePaid = optional($participantMutation->molliePayments()->whereNotNull('date_paid')->first())->date_paid;
-
-        if(!$datePaid){
-            /**
-             * Als niet via Mollie is betaald, dan nog checken of de factuur buiten Mollie om op betaald is gezet.
-             */
-            if($participantMutation->status_id === ParticipantMutationStatus::where('code_ref', 'final')->first()->id){
-                $datePaid = \Illuminate\Support\Carbon::make($participantMutation->date_payment); // (date_payment wordt vanuit model niet gecast naar carbon)
-            }
-        }
-
-        return view('mollie.portal-result', [
-            'participantMutation' => $participantMutation,
-            'datePaid' => $datePaid,
-        ]);
-    }
-
-    /**
      * Maak een transactie aan via de Mollie api en sla deze op op het ParticipantMutationMolliePayment model.
      */
     private function createParticipantMutationMolliePayment(ParticipantMutation $participantMutation)
@@ -137,9 +109,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
                 'value' => number_format($bookWorth * $participantMutation->quantity, 2, '.', ''),
             ],
             "description" => $participantMutation->participation->project->name . ' ' . config('app.name'),
-            "redirectUrl" => route('portal.mollie.redirect', [
-                'participantMutationCode' => $participantMutation->code
-            ]),
+            "redirectUrl" => 'https://' . PortalSettings::get("portalUrl") . '/#/inschrijven/mollie-resultaat/' . $participantMutation->code,
         ];
 
         /**

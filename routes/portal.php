@@ -37,6 +37,8 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');
 
+        Route::get('/project/participant-mutation/by-code/{code}', 'ParticipantMutation\ParticipantMutationController@getByCode');
+
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\' . JoryController::class . '@multiple');
         Route::get('jory/{uri}/count', '\\' . JoryController::class . '@count');

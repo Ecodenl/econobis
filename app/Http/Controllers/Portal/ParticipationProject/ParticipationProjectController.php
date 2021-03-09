@@ -127,7 +127,7 @@ class ParticipationProjectController extends Controller
              * Als Mollie voor dit project aan staat dan returnen we die zodat er naar de betaalpagina geredirect kan worden.
              */
             return [
-                'payment_link' => $this->participationMutation->econobis_payment_link,
+                'econobisPaymentLink' => $this->participationMutation->econobis_payment_link,
             ];
         }
     }

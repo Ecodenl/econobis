@@ -24,6 +24,8 @@ class CreateParticipantMutationMolliePaymentsTable extends Migration
             $table->dateTime('date_activated')->nullable();
             $table->dateTime('date_paid')->nullable();
 
+            $table->text('iban')->nullable();
+
             $table->timestamps();
         });
     }

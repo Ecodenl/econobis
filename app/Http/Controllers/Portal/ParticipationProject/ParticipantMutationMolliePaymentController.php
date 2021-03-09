@@ -31,6 +31,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
 
         $mollieApi = $participantMutation->participation->project->administration->getMollieApiFacade();
 
+        /**
+         * @var $payment \Mollie\Api\Resources\Payment
+         */
         $payment = $mollieApi->payments->get($participantMutationMolliePayment->mollie_id);
 
         if ($payment->isPaid())
@@ -45,6 +48,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
             Auth::setUser(User::find($responsibleUserId));
 
             $participantMutationMolliePayment->date_paid = \Illuminate\Support\Carbon::now();
+            if($iban = optional($payment->details)->consumerAccount){
+                $participantMutationMolliePayment->iban = $iban;
+            }
             $participantMutationMolliePayment->save();
 
             $status = ParticipantMutationStatus::where('code_ref', 'final')->first();
@@ -122,7 +128,6 @@ class ParticipantMutationMolliePaymentController extends ApiController
     private function createParticipantMutationMolliePayment(ParticipantMutation $participantMutation)
     {
         $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
-            ->where('date', '<=', $participantMutation->date_entry)
             ->orderBy('date', 'desc')
             ->value('book_worth');
 

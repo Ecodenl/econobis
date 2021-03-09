@@ -40,6 +40,17 @@ class InvoiceMolliePaymentController extends ApiController
              */
             if(!$invoice->administration->uses_twinfield){
                 InvoiceHelper::saveInvoiceDatePaid($invoice, Carbon::now(), $invoiceMolliePayment->mollie_id);
+                return;
+            }
+
+            /**
+             * Als er wel gebruik wordt gemaakt van Twinfield en de status van de factuur is oninbaar
+             * dan krijgen we een onlogische combi van Oninbaar i.c.m. substatus Mollie Betaald.
+             * Daarom in dat geval de status weer terugzetten naar Verzonden.
+             */
+            if($invoice->status_id === 'irrecoverable'){
+                $invoice->status_id = 'sent';
+                $invoice->save();
             }
         }
     }
@@ -56,13 +67,13 @@ class InvoiceMolliePaymentController extends ApiController
             return view('mollie.404');
         }
 
-        $payedInvoiceMolliePayment = $invoice->molliePayments()->whereNotNull('date_paid')->first();
-        if($payedInvoiceMolliePayment){
+        if($invoice->is_paid_by_mollie || $invoice->status_id === 'paid'){
             /**
-             * Er is al een betaalde Mollie transactie.
-             * Dan redirecten we daar naartoe, zodat de gebruiker wordt omgeleid naar de "u heeft betaald" pagina.
+             * Factuur is al betaald, redirect naar resultaatpagina.
              */
-            return redirect($payedInvoiceMolliePayment->checkout_url);
+            return redirect()->route('mollie.redirect', [
+                'invoiceCode' => $invoice->code
+            ]);
         }
 
         /**
@@ -88,22 +99,10 @@ class InvoiceMolliePaymentController extends ApiController
 
         if(!$datePaid){
             /**
-             * Als de factuur nog niet betaald is zou het zo kunnen zijn dat de webhook nog niet volledig is verwerkt.(?)
-             * In dat geval checken we nog een keer bij Mollie zelf voor de actuele status.
-             *
-             * Dit slaan we verder niet op omdat de webhook "de waarheid" bepaalt.
-             *
-             * Todo; checken of dit echt nodig is, of dat webhook altijd eerder afgerond is. Dan kan dit hele blok eruit.
+             * Als factuur niet via Mollie is betaald, dan nog checken of de factuur buiten Mollie om op betaald is gezet.
              */
-            try {
-                $invoiceMolliePayment = $invoice->lastMolliePayment;
-                $mollieApi = $invoice->administration->getMollieApiFacade();
-                $payment = $mollieApi->payments->get($invoiceMolliePayment->mollie_id);
-                if ($payment->isPaid()) {
-                    $datePaid = Carbon::now();
-                }
-            } catch (\Exception $e) {
-                // Mollie errors negeren
+            if($invoice->status_id === 'paid'){
+                $datePaid = Carbon::make($invoice->payments()->latest()->first()->date_paid); // (date_paid wordt vanuit model niet gecast naar carbon)
             }
         }
 
@@ -121,9 +120,9 @@ class InvoiceMolliePaymentController extends ApiController
         $molliePostData = [
             "amount" => [
                 'currency' => 'EUR',
-                'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ','),
+                'value' => number_format($invoice->total_incl_vat_incl_reduction, 2, '.', ''),
             ],
-            "description" => $invoice->subject . ' ' . $invoice->number . ' ' . $invoice->order->contact->full_name . ' ' . $invoice->administration->name,
+            "description" => $invoice->subject . ' ' . $invoice->administration->name . ' ' . $invoice->number . ' ' . $invoice->order->contact->full_name,
             "redirectUrl" => route('mollie.redirect', [
                 'invoiceCode' => $invoice->code
             ]),

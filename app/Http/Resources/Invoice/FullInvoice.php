@@ -44,7 +44,7 @@ class FullInvoice extends Resource
                 'subStatus' => $this->sub_status,
                 'usesTwinfield' => $this->administration->uses_twinfield,
                 'usesMollie' => $this->administration->uses_mollie,
-                'is_paid_by_mollie' => $this->is_paid_by_mollie,
+                'isPaidByMollie' => $this->is_paid_by_mollie,
                 'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
                 'twinfieldNumber' => $this->twinfield_number,
 

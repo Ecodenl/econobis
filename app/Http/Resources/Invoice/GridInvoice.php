@@ -56,7 +56,9 @@ class GridInvoice extends Resource
             'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
             'twinfieldNumber' => $this->twinfield_number,
 
-            'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend'
+            'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend',
+
+            'isPaidByMollie' => $this->is_paid_by_mollie,
         ];
     }
 }

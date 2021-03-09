@@ -334,6 +334,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </NavText>
                     </Nav>
                 )}
+                {permissions.manageCooperationSettings && (
+                    <Nav id="cooperation">
+                        <NavText>
+                            <Link className="sidebar-link" to="cooperatie">
+                                Coöperatie
+                            </Link>
+                        </NavText>
+                    </Nav>
+                )}
                 {permissions.manageWebform && (
                     <Nav id="webforms">
                         <NavText>

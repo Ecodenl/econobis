@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_CONTACTDETAILS = `${URL_API}/api/contact`;
 
@@ -29,5 +30,11 @@ export default {
             .catch(error => {
                 console.log(error);
             });
+    },
+
+    makeHoomDossier: id => {
+        const requestUrl = `contact/${id}/make-hoomdossier`;
+
+        return axiosInstance.get(requestUrl);
     },
 };

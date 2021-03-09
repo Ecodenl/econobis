@@ -50,3 +50,41 @@
   border-bottom-right-radius:3px;
   border-bottom-left-radius:3px;
 }
+
+.panel-hover
+{
+  position: relative;
+
+  //&:after {
+  //  z-index: -1;
+  //  position: absolute;
+  //  content: "";
+  //  bottom: 15px;
+  //  right: 10px;
+  //  left: auto;
+  //  width: 50%;
+  //  top: 80%;
+  //  max-width:300px;
+  //  background: #777;
+  //  box-shadow: 0 15px 10px #777;
+  //  transform: rotate(3deg);
+  //}
+
+  &:hover {
+    &:after
+    {
+      z-index: -1;
+      position: absolute;
+      content: "";
+      bottom: 15px;
+      right: 10px;
+      left: auto;
+      width: 50%;
+      top: 80%;
+      max-width:300px;
+      background: #777;
+      box-shadow: 0 15px 10px #777;
+      transform: rotate(3deg);
+    }
+  }
+}

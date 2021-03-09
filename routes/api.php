@@ -48,6 +48,7 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/groups', 'Contact\ContactController@groups');
         Route::post('/contact/{contact}/delete', 'Contact\ContactController@destroy');
         Route::get('/contact/{contact}/tasks', 'Contact\ContactController@tasks');
+        Route::get('/contact/{contact}/make-hoomdossier', 'Contact\ContactController@makeHoomdossier');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
@@ -489,6 +490,10 @@ Route::namespace('Api')
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
         Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
+
+        Route::get('cooperation', 'Cooperation\CooperationController@show');
+        Route::post('cooperation', 'Cooperation\CooperationController@store');
+        Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

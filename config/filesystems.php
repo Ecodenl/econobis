@@ -63,6 +63,11 @@ return [
             'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'administrations'),
         ],
 
+        'cooperation' => [
+            'driver' => 'local',
+            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'cooperation'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

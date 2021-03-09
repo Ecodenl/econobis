@@ -86,6 +86,8 @@ class OpportunityCSVHelper
                 $opportunity->last_name_prefix = $opportunity->intake->contact->person->last_name_prefix;
                 $opportunity->last_name = $opportunity->intake->contact->person->last_name;
             }
+            $opportunity->primaryphoneNumber = $opportunity->intake->contact->primaryphoneNumber ? $opportunity->intake->contact->primaryphoneNumber->number : '';
+            $opportunity->primaryEmailAddress = $opportunity->intake->contact->primaryEmailAddress ? $opportunity->intake->contact->primaryEmailAddress->email : '';
 
             $opportunity->updated_by = $opportunity->updatedBy->present()->fullName();
             $opportunity->created_by = $opportunity->createdBy->present()->fullName();
@@ -106,6 +108,8 @@ class OpportunityCSVHelper
             'postal_code' => 'Postcode',
             'city' => 'Plaats',
             'country' => 'Land',
+            'primaryphoneNumber' => 'Telefoon',
+            'primaryEmailAddress' => 'E-mailadres',
             'measureCategory.name' => 'Maatregel categorie',
             'measures_specific' => 'Maatregelen specifiek',
             'intake.campaign.name' => 'Campagne',

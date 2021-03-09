@@ -10,7 +10,7 @@ namespace App\Http\Resources\QuotationRequest;
 
 
 use App\Http\Resources\GenericResource;
-use App\Http\Resources\Opportunity\FullOpportunity;
+use App\Http\Resources\Opportunity\OpportunityByQuotationRequest;
 use App\Http\Resources\Organisation\FullOrganisation;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -24,7 +24,7 @@ class GridQuotationRequest extends Resource
                'dateReleased' => $this->date_released,
                'quotationText' => $this->quotation_text,
                'organisation' => FullOrganisation::make($this->whenLoaded('organisation')),
-               'opportunity' => FullOpportunity::make($this->whenLoaded('opportunity')),
+               'opportunity' => OpportunityByQuotationRequest::make($this->whenLoaded('opportunity')),
                'status' => GenericResource::make($this->whenLoaded('status')),
                'createdAt' => $this->created_at,
             ];

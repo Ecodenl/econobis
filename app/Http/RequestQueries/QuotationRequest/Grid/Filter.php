@@ -18,6 +18,7 @@ class Filter extends RequestFilter
         'organisation',
         'contact',
         'address',
+        'campaign',
         'measure',
         'createdAtStart',
         'createdAtEnd',
@@ -29,6 +30,7 @@ class Filter extends RequestFilter
     protected $mapping = [
         'organisation' => 'organisations.name',
         'contact' => 'contacts.full_name',
+        'campaign' => 'campaigns.name',
         'measure' => 'measure_categories.name',
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',
@@ -39,6 +41,7 @@ class Filter extends RequestFilter
         'organisation' => 'organisation',
         'contact' => 'contact',
         'address' => 'address',
+        'campaign' => 'campaign',
         'measure' => 'measure',
     ];
 

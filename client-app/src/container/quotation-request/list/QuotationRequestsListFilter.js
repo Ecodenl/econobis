@@ -8,6 +8,7 @@ import {
     setFilterQuotationRequestStatus,
     clearFilterQuotationRequests,
     setQuotationRequestAddressFilter,
+    setQuotationRequestCampaignFilter,
     setQuotationRequestContactFilter,
     setQuotationRequestCreatedAtStartFilter,
     setQuotationRequestCreatedAtEndFilter,
@@ -30,6 +31,10 @@ const QuotationRequestsListFilter = props => {
 
     const onAddressChange = e => {
         props.setQuotationRequestAddressFilter(e.target.value);
+    };
+
+    const onCampaignChange = e => {
+        props.setQuotationRequestCampaignFilter(e.target.value);
     };
 
     const onContactChange = e => {
@@ -138,6 +143,14 @@ const QuotationRequestsListFilter = props => {
                 value={props.filters.dateReleased.data && props.filters.dateReleased.data}
                 onChangeAction={onQuotationRequestDateReleasedChange}
             />
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.campaign.data}
+                    onChange={onCampaignChange}
+                />
+            </th>
             <th />
         </tr>
     );
@@ -154,6 +167,7 @@ const mapDispatchToProps = dispatch => {
             setFilterQuotationRequestStatus,
             clearFilterQuotationRequests,
             setQuotationRequestAddressFilter,
+            setQuotationRequestCampaignFilter,
             setQuotationRequestContactFilter,
             setQuotationRequestCreatedAtStartFilter,
             setQuotationRequestCreatedAtEndFilter,
@@ -166,7 +180,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(QuotationRequestsListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(QuotationRequestsListFilter);

@@ -13,6 +13,11 @@ export const setQuotationRequestAddressFilter = address => ({
     address,
 });
 
+export const setQuotationRequestCampaignFilter = campaign => ({
+    type: 'SET_FILTER_QUOTATION_REQUEST_CAMPAIGN',
+    campaign,
+});
+
 export const setQuotationRequestMeasureFilter = measure => ({
     type: 'SET_FILTER_QUOTATION_REQUEST_MEASURE',
     measure,

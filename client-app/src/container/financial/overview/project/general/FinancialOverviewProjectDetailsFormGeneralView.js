@@ -36,7 +36,7 @@ const FinancialOverviewProjectDetailsFormGeneralView = props => {
                                 value={moneyPresenter(props.bookworthStartValue)}
                             />
                             <ViewText
-                                label={'Waarde per ' + moment(props.startDate).format('DD-MM-Y')}
+                                label={'Waarde per ' + moment(props.endDate).format('DD-MM-Y')}
                                 value={moneyPresenter(props.bookworthEndValue)}
                             />
                         </div>

@@ -25,6 +25,7 @@ class FullAddress extends Resource
             'id' => $this->id,
             'contactId' => $this->contact_id,
             'typeId' => $this->type_id,
+            'endDate' => $this->end_date,
             'type' => FullEnumWithIdAndName::make($this->getType()),
             'countryId' => $this->country_id,
             'country' => GenericResource::make($this->whenLoaded('country')),

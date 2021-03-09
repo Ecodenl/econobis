@@ -505,5 +505,4 @@ Route::namespace('Api')
         Route::post('webform/external/{apiKey}', 'Webform\ExternalWebformController@post');
 
         Route::post('mollie/webhook', [InvoiceMolliePaymentController::class, 'webhook'])->name('mollie.webhook');
-        Route::post('portal/mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');
     });

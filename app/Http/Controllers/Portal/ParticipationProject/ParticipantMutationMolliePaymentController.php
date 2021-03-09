@@ -5,9 +5,14 @@ namespace App\Http\Controllers\Portal\ParticipationProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationMolliePayment;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Eco\Project\ProjectValueCourse;
+use App\Eco\User\User;
+use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ParticipantMutationMolliePaymentController extends ApiController
 {
@@ -30,14 +35,27 @@ class ParticipantMutationMolliePaymentController extends ApiController
 
         if ($payment->isPaid())
         {
+            /**
+             * Hackje; Tijdelijk usersetten om alle observers tevreden te houden.
+             */
+            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            if (!$responsibleUserId) {
+                abort(501, 'Er is helaas een fout opgetreden.');
+            }
+            Auth::setUser(User::find($responsibleUserId));
+
             $participantMutationMolliePayment->date_paid = \Illuminate\Support\Carbon::now();
             $participantMutationMolliePayment->save();
 
             $status = ParticipantMutationStatus::where('code_ref', 'final')->first();
 
             $participantMutation->status_id = $status->id;
-            $participantMutation->date_payment = Carbon::now();
+            $participantMutation->date_payment = Carbon::now()->format('Y-m-d');
             $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now();
+            $participantMutation->save();
+
+            $participantMutationController = new ParticipantMutationController;
+            $participantMutationController->recalculateParticipantMutation($participantMutation);
         }
     }
 
@@ -81,8 +99,20 @@ class ParticipantMutationMolliePaymentController extends ApiController
             return view('mollie.404');
         }
 
+        $datePaid = optional($participantMutation->molliePayments()->whereNotNull('date_paid')->first())->date_paid;
+
+        if(!$datePaid){
+            /**
+             * Als niet via Mollie is betaald, dan nog checken of de factuur buiten Mollie om op betaald is gezet.
+             */
+            if($participantMutation->status_id === ParticipantMutationStatus::where('code_ref', 'final')->first()->id){
+                $datePaid = \Illuminate\Support\Carbon::make($participantMutation->date_payment); // (date_payment wordt vanuit model niet gecast naar carbon)
+            }
+        }
+
         return view('mollie.portal-result', [
             'participantMutation' => $participantMutation,
+            'datePaid' => $datePaid,
         ]);
     }
 
@@ -91,12 +121,17 @@ class ParticipantMutationMolliePaymentController extends ApiController
      */
     private function createParticipantMutationMolliePayment(ParticipantMutation $participantMutation)
     {
+        $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
+            ->where('date', '<=', $participantMutation->date_entry)
+            ->orderBy('date', 'desc')
+            ->value('book_worth');
+
         $molliePostData = [
             "amount" => [
                 'currency' => 'EUR',
-                'value' => number_format($participantMutation->participation_worth, 2, '.', ''),
+                'value' => number_format($bookWorth * $participantMutation->quantity, 2, '.', ''),
             ],
-            "description" => 'Uw inschrijving',
+            "description" => $participantMutation->participation->project->name . ' ' . config('app.name'),
             "redirectUrl" => route('portal.mollie.redirect', [
                 'participantMutationCode' => $participantMutation->code
             ]),

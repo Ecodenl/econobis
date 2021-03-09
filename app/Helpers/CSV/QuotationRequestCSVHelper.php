@@ -103,6 +103,7 @@ class QuotationRequestCSVHelper
             'postal_code' => 'Postcode',
             'city' => 'Plaats',
             'country' => 'Land',
+            'opportunity.number' => 'Kans ID',
             'opportunity.measureCategory.name' => 'Maatregel categorie',
             'measures' => 'Maatregelen specifiek',
             'opportunity.intake.campaign.name' => 'Campagne',

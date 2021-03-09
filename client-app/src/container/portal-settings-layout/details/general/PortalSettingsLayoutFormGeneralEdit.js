@@ -171,7 +171,7 @@ class PortalSettingsLayoutDetailsFormGeneralEdit extends Component {
         data.append('loginHeaderBackgroundColor', portalSettingsLayout.loginHeaderBackgroundColor);
         data.append('loginHeaderBackgroundTextColor', portalSettingsLayout.loginHeaderBackgroundTextColor);
         data.append('headerIconsColor', portalSettingsLayout.headerIconsColor);
-        data.append('loginHeaderBackgroundColor', portalSettingsLayout.loginHeaderBackgroundColor);
+        data.append('loginFieldBackgroundColor', portalSettingsLayout.loginFieldBackgroundColor);
         data.append('loginFieldBackgroundTextColor', portalSettingsLayout.loginFieldBackgroundTextColor);
         data.append('buttonColor', portalSettingsLayout.buttonColor);
         data.append('buttonTextColor', portalSettingsLayout.buttonTextColor);

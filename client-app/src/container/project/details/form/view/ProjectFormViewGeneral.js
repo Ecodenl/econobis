@@ -277,7 +277,6 @@ const ProjectFormViewGeneral = ({
 const mapStateToProps = state => {
     return {
         administrations: state.meDetails.administrations,
-        users: state.systemData.users,
     };
 };
 

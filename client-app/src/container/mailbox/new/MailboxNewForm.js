@@ -327,7 +327,11 @@ class MailboxNewForm extends Component {
                                 label="Imap versleutelde verbinding"
                                 name={'imapEncryption'}
                                 value={imapEncryption}
-                                options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
+                                options={[
+                                    { id: 'ssl', name: 'SSL' },
+                                    { id: 'ssl/novalidate-cert', name: 'SSL - self-signed certificate' },
+                                    { id: 'tls', name: 'TLS' },
+                                ]}
                                 onChangeAction={this.handleInputChange}
                             />
                             {!usesMailgun && (
@@ -335,7 +339,10 @@ class MailboxNewForm extends Component {
                                     label="Smtp versleutelde verbinding"
                                     name={'smtpEncryption'}
                                     value={smtpEncryption}
-                                    options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
+                                    options={[
+                                        { id: 'ssl', name: 'SSL' },
+                                        { id: 'tls', name: 'TLS' },
+                                    ]}
                                     onChangeAction={this.handleInputChange}
                                 />
                             )}
@@ -376,7 +383,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MailboxNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxNewForm);

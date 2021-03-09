@@ -90,6 +90,16 @@ class ContactDetailFormAddressItem extends Component {
         });
     };
 
+    handleInputChangeDate = (value, name) => {
+        this.setState({
+            ...this.state,
+            address: {
+                ...this.state.address,
+                [name]: value,
+            },
+        });
+    };
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -166,8 +176,10 @@ class ContactDetailFormAddressItem extends Component {
                     <ContactDetailsFormAddressEdit
                         address={this.state.address}
                         handleInputChange={this.handleInputChange}
+                        handleInputChangeDate={this.handleInputChangeDate}
                         handleSubmit={this.handleSubmit}
                         typeIdError={this.state.errors.typeId}
+                        endDateError={this.state.errors.endDate}
                         postalCodeError={this.state.errors.postalCode}
                         numberError={this.state.errors.number}
                         countryIdError={this.state.errors.countryId}
@@ -195,7 +207,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ContactDetailFormAddressItem);
+export default connect(null, mapDispatchToProps)(ContactDetailFormAddressItem);

@@ -24,15 +24,16 @@ const QuotationRequestsListHead = props => {
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateReleased'}
                 title={'Uitgebracht'}
                 width={'10%'}
                 setSorts={setSorts}
             />
+            <DataTableHeadTitleAndSort sortColumn={'campaignId'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>
     );
@@ -44,7 +45,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(QuotationRequestsListHead);
+export default connect(null, mapDispatchToProps)(QuotationRequestsListHead);

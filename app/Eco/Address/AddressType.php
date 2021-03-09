@@ -22,6 +22,7 @@ class AddressType extends EnumWithIdAndName
             new static('invoice', 'Nota'),
             new static('postal', 'Post'),
             new static('visit', 'Bezoek'),
+            new static('old', 'Oud'),
         ];
     }
 }

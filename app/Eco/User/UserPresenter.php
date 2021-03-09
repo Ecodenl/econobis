@@ -16,10 +16,19 @@ class UserPresenter extends Presenter
 
     public function fullName()
     {
-        if(empty($this->entity->last_name)) return $this->entity->first_name;
-        if(empty($this->entity->first_name)) return $this->entity->last_name;
-//        return $this->entity->last_name . ', ' . $this->entity->first_name . ($this->entity->lastNamePrefix ? ' ' . $this->entity->lastNamePrefix->name : '');
-        return $this->entity->first_name . ' ' . ($this->entity->lastNamePrefix ? $this->entity->lastNamePrefix->name . ' ' : '') . $this->entity->last_name;
+        if(empty($this->entity->last_name)){
+            $fullName =  $this->entity->first_name;
+        }
+        elseif(empty($this->entity->first_name)) {
+            $fullName =  $this->entity->last_name;
+        }else{
+            $fullName = $this->entity->first_name . ' ' . ($this->entity->lastNamePrefix ? $this->entity->lastNamePrefix->name . ' ' : '') . $this->entity->last_name;
+        }
+        if(!$this->entity->active){
+            $fullName = $fullName . ' (niet actief)';
+        }
+        return $fullName;
+
     }
 
     public function fullLastName()

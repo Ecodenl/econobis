@@ -42,8 +42,12 @@ class AppServiceProvider extends ServiceProvider
             });
             //locale linux/windows verschil
             setlocale(LC_TIME, 'nl_NL.utf8');
-        }else{
-            setlocale(LC_TIME, 'nld_nld');
+        } else {
+            if (Config::get('app.LC_TIME')) {
+                setlocale(LC_TIME, Config::get('app.LC_TIME'));
+            } else {
+                setlocale(LC_TIME, 'nld_nld');
+            }
         }
     }
 

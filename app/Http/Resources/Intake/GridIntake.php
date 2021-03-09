@@ -9,6 +9,7 @@
 namespace App\Http\Resources\Intake;
 
 
+use App\Http\Resources\Campaign\CampaignByIntake;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GridIntake extends Resource
@@ -20,6 +21,7 @@ class GridIntake extends Resource
                 'createdAt' => $this->created_at,
                 'fullName' => $this->contact()->value('full_name'),
                 'fullAddress' => $this->address ? $this->address->present()->streetAndNumber() : '',
+                'campaign' => CampaignByIntake::make($this->whenLoaded('campaign')),
                 'measuresRequestedNames' => $this->measuresRequested()->pluck('name'),
                 'status' => optional($this->status)->name,
                 'contactId' => $this->contact->id,

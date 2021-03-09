@@ -65,7 +65,7 @@ function FinancialOverviewContactItem({
     }
 
     function getFinancialOverviewPDF(financialOverviewContactId, statusId) {
-        if (statusId === 'sent') {
+        if (statusId === 'sent' || statusId === 'error-sending') {
             hashHistory.push(`/waardestaat-contact/inzien/${financialOverviewContactId}`);
         } else {
             hashHistory.push(`/waardestaat-contact/preview/${financialOverviewContactId}`);

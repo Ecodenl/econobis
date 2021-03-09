@@ -331,7 +331,12 @@ class ContactImportHelper
                     $address->city = $line[6] ? $line[6] : '';
                     $address->number = $line[7];
                     $address->addition = $line[8];
-                    $address->postal_code = $line[9] ? $line[9] : '';
+                    if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $line[9])){
+                        $address->postal_code = preg_replace('/\s+/', '', $line[9]);
+                    }else{
+                        $address->postal_code = $line[9] ? $line[9] : '';
+
+                    }
                     $address->primary = 1;
                     $address->type_id = 'visit';
                     $address->save();

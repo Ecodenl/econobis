@@ -220,7 +220,6 @@ class FinancialOverviewContactController extends Controller
             header('X-Filename:' . $financialOverviewContactReference . '.pdf');
             header('Access-Control-Expose-Headers: X-Filename');
             return FinancialOverviewHelper::createFinancialOverviewContactDocument($financialOverviewContact, true);
-//            return FinancialOverviewHelper::createFinancialOverviewContactDocument( $financialOverviewContact->financialOverview, $financialOverviewContact->contact, true);
         }
 
         return response()->download($filePath, $financialOverviewContact->name);
@@ -240,6 +239,7 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'email');
 
         $response = [];
@@ -262,7 +262,15 @@ class FinancialOverviewContactController extends Controller
                     }
                 }
             }
-            SendAllFinancialOverviewContacts::dispatch($financialOverviewContacts, Auth::id() );
+
+            $chunkNumber = 0;
+            $itemsPerChunk = 200;
+            $numberOfChunks = ceil($financialOverviewContacts->count() / $itemsPerChunk);
+            foreach ($financialOverviewContacts->chunk($itemsPerChunk) as $financialOverviewContactsSet) {
+                $chunkNumber = $chunkNumber + 1;
+                SendAllFinancialOverviewContacts::dispatch($chunkNumber, $numberOfChunks, $financialOverview->id, $financialOverviewContactsSet, Auth::id());
+            }
+
         }
 
         return $response;
@@ -273,6 +281,7 @@ class FinancialOverviewContactController extends Controller
         set_time_limit(0);
         $this->authorize('manage', FinancialOverview::class);
 
+        $financialOverviewContacts = null;
         $financialOverviewContacts = self::getFinancialOverviewContactsForSending($financialOverview, $request, 'post');
 
         $response = [];
@@ -325,10 +334,11 @@ class FinancialOverviewContactController extends Controller
             if($contact->contactPerson()->exists()){
                 $contactPerson = '';
                 if ($contact->contactPerson->contact->type_id == 'person') {
-                    $initials = $contact->contactPerson->contact->person->initials;
-                    $prefix = $contact->contactPerson->contact->person->last_name_prefix;
-                    $contactInitialsOrFirstName = $initials ? $initials : $contact->contactPerson->contact->person->first_name;
-                    $contactPerson = $prefix ? ($contactInitialsOrFirstName . ' ' . $prefix . ' ' . $contact->contactPerson->contact->person->last_name) : $contactInitialsOrFirstName . ' ' . $contact->contactPerson->contact->person->last_name;
+                    $title = $contact->contactPerson->contact->person->title ? $contact->contactPerson->contact->person->title->name . ' ' : '';
+                    $initials = $contact->contactPerson->contact->person->initials ? $contact->contactPerson->contact->person->initials : ($contact->contactPerson->contact->person->first_name ? substr($contact->contactPerson->contact->person->first_name, 0, 1).".": "");
+                    $prefix = $contact->contactPerson->contact->person->last_name_prefix ? $contact->contactPerson->contact->person->last_name_prefix . ' ' : '';
+
+                    $contactPerson = $title . ( $initials . ' ' . $prefix . $contact->contactPerson->contact->person->last_name );
                 } elseif ($contact->contactPerson->contact->type_id == 'organisation') {
                     $contactPerson = $contact->contactPerson->contact->full_name;
                 }

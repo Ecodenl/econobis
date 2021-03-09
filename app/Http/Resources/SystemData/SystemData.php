@@ -107,11 +107,13 @@ class SystemData extends Resource
         $environment = App::environment();
         //for testing
         if ($environment == 'production') {
-            $users = FullUser::collection(User::where('id', '!=', '1')->orderBy('last_name', 'asc')->get());
+            $usersAll = FullUser::collection(User::where('id', '!=', '1')->orderBy('last_name', 'asc')->get());
+            $users = FullUser::collection(User::where('id', '!=', '1')->where('active', true)->orderBy('last_name', 'asc')->get());
             $usersExtraAdministration = FullUser::collection(User::where('id', '1')->orderBy('last_name', 'asc')->get());
         }
         else {
-            $users = FullUser::collection(User::orderBy('last_name', 'asc')->get());
+            $usersAll = FullUser::collection(User::orderBy('last_name', 'asc')->get());
+            $users = FullUser::collection(User::where('active', true)->orderBy('last_name', 'asc')->get());
             $usersExtraAdministration = null;
         }
 
@@ -211,6 +213,7 @@ class SystemData extends Resource
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'titles' => FullTitle::collection(Title::all()),
             'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionTypeWithIdAndName::collection()),
+            'usersAll' => $usersAll,
             'users' => $users,
             'usersExtraAdministration' => $usersExtraAdministration,
             'usesTwinfield' => Administration::whereUsesTwinfield(1)->count() > 0 ? true : false,

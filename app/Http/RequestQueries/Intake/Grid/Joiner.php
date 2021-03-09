@@ -33,5 +33,9 @@ class Joiner extends RequestJoiner
         $query->join('intake_measure_requested', 'intakes.id', '=', 'intake_measure_requested.intake_id');
     }
 
+    protected function applyCampaignJoin($query)
+    {
+        $query->join('campaigns',  'intakes.campaign_id', '=', 'campaigns.id');
+    }
 
 }

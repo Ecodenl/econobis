@@ -50,8 +50,14 @@ export default {
                         'showQuestionAboutMembership',
                         'textTransactionCosts',
                         'transactionCostsCodeRef',
+                        'transactionCostsAmountMin',
+                        'transactionCostsAmountMax',
                         'transactionCostsAmount',
                         'transactionCostsPercentage',
+                        'transactionCostsAmount2',
+                        'transactionCostsPercentage2',
+                        'transactionCostsAmount3',
+                        'transactionCostsPercentage3',
                     ],
                     flt: {
                         and: [

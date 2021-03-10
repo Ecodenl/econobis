@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import FormLabel from 'react-bootstrap/FormLabel';
+import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 import TextBlock from '../../../components/general/TextBlock';
 import Form from 'react-bootstrap/Form';
@@ -31,33 +32,13 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
         return values.participationsOptioned ? values.participationsOptioned * project.participationWorth : 0;
     }
     function calculateTransactionCostsAmount(values) {
-        let transactionCosts = 0;
         if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
             return 0;
         }
         if (project.showQuestionAboutMembership && values.choiceMembership === 1) {
             return 0;
         }
-
-        if (project.transactionCostsCodeRef === 'amount') {
-            transactionCosts = project.transactionCostsAmount * values.participationsOptioned;
-        }
-        if (project.transactionCostsCodeRef === 'percentage') {
-            transactionCosts = values.participationsOptioned
-                ? parseFloat(
-                      (
-                          (values.participationsOptioned *
-                              project.participationWorth *
-                              project.transactionCostsPercentage) /
-                          100
-                      ).toFixed(2)
-                  )
-                : 0;
-            if (transactionCosts < project.transactionCostsAmount) {
-                transactionCosts = project.transactionCostsAmount;
-            }
-        }
-        return transactionCosts;
+        return calculateTransactionCosts(project, values);
     }
     function calculateTotalAmount(values) {
         return calculateAmount(values) + calculateTransactionCostsAmount(values);

@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
+import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
 function StepOneLoan({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -30,26 +31,13 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
         return values.amountOptioned ? parseFloat(values.amountOptioned) : 0;
     }
     function calculateTransactionCostsAmount(values) {
-        let transactionCosts = 0;
         if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
             return 0;
         }
         if (project.showQuestionAboutMembership && values.choiceMembership === 1) {
             return 0;
         }
-
-        if (project.transactionCostsCodeRef === 'amount') {
-            transactionCosts = project.transactionCostsAmount;
-        }
-        if (project.transactionCostsCodeRef === 'percentage') {
-            transactionCosts = values.amountOptioned
-                ? parseFloat(((values.amountOptioned * project.transactionCostsPercentage) / 100).toFixed(2))
-                : 0;
-            if (transactionCosts < project.transactionCostsAmount) {
-                transactionCosts = project.transactionCostsAmount;
-            }
-        }
-        return transactionCosts;
+        return calculateTransactionCosts(project, values);
     }
     function calculateTotalAmount(values) {
         return calculateAmount(values) + calculateTransactionCostsAmount(values);

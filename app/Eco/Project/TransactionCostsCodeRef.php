@@ -13,7 +13,8 @@ class TransactionCostsCodeRef extends EnumWithIdAndName
     {
         return [
             new static('none', 'Geen'),
-            new static('amount', 'Vast bedrag per inleg'),
+            new static('amount-once', 'Vast bedrag'),
+            new static('amount', 'Bedrag per participatie'),
             new static('percentage', '% van de inleg'),
         ];
     }

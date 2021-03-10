@@ -8,6 +8,7 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
+import ProjectFormEditGeneral from '../edit/ProjectFormEditGeneral';
 
 const ProjectFormView = props => {
     const {
@@ -74,8 +75,14 @@ const ProjectFormView = props => {
         textTransactionCosts,
         transactionCostsCodeRef,
         transactionCostsCodeRefWithName,
+        transactionCostsAmountMin,
+        transactionCostsAmountMax,
         transactionCostsAmount,
         transactionCostsPercentage,
+        transactionCostsAmount2,
+        transactionCostsPercentage2,
+        transactionCostsAmount3,
+        transactionCostsPercentage3,
     } = props.project;
     return (
         <section
@@ -123,8 +130,14 @@ const ProjectFormView = props => {
                 textTransactionCosts={textTransactionCosts}
                 transactionCostsCodeRef={transactionCostsCodeRef}
                 transactionCostsCodeRefWithName={transactionCostsCodeRefWithName}
+                transactionCostsAmountMin={transactionCostsAmountMin}
+                transactionCostsAmountMax={transactionCostsAmountMax}
                 transactionCostsAmount={transactionCostsAmount}
                 transactionCostsPercentage={transactionCostsPercentage}
+                transactionCostsAmount2={transactionCostsAmount2}
+                transactionCostsPercentage2={transactionCostsPercentage2}
+                transactionCostsAmount3={transactionCostsAmount3}
+                transactionCostsPercentage3={transactionCostsPercentage3}
             />
 
             {projectType && projectType.codeRef === 'loan' ? (

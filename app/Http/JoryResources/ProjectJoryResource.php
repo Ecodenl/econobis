@@ -86,6 +86,7 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_project_info')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
         $this->field('uses_mollie')->filterable()->sortable();
+        $this->field('text_registration_finished')->filterable()->sortable();
 
         // Relations
         $this->relation('administration');

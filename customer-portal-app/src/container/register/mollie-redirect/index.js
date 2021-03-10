@@ -28,7 +28,13 @@ function ProjectMollieRedirect({match, currentSelectedContact}) {
                 ])
                 .then(
                     axios.spread((payloadParticipantMutation) => {
-                        setParticipantMutation(payloadParticipantMutation.data.data);
+                        if(payloadParticipantMutation.data.data.length !== 1){
+                            alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                            setLoading(false);
+                            return;
+                        }
+
+                        setParticipantMutation(payloadParticipantMutation.data.data[0]);
                         setLoading(false);
                     })
                 )

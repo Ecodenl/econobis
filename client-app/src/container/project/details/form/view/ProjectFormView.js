@@ -8,7 +8,6 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
-import ProjectFormEditGeneral from '../edit/ProjectFormEditGeneral';
 
 const ProjectFormView = props => {
     const {

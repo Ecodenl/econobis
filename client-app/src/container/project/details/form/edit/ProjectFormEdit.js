@@ -297,8 +297,25 @@ class ProjectFormEdit extends Component {
                 hasErrors = true;
             }
         }
+        if (project.transactionCostsCodeRef === 'none') {
+            project.transactionCostsAmountMin = null;
+            project.transactionCostsAmountMax = null;
+            project.transactionCostsAmount = null;
+            project.transactionCostsPercentage = null;
+            project.transactionCostsAmount2 = null;
+            project.transactionCostsPercentage2 = null;
+            project.transactionCostsAmount3 = null;
+            project.transactionCostsPercentage3 = null;
+        }
         if (project.transactionCostsCodeRef === 'amount-once') {
-            if (!project.transactionCostsAmount || validator.isEmpty(project.transactionCostsAmount + '')) {
+            project.transactionCostsAmountMin = null;
+            project.transactionCostsAmountMax = null;
+            project.transactionCostsPercentage = null;
+            project.transactionCostsAmount2 = null;
+            project.transactionCostsPercentage2 = null;
+            project.transactionCostsAmount3 = null;
+            project.transactionCostsPercentage3 = null;
+            if (project.transactionCostsAmount === null || validator.isEmpty(project.transactionCostsAmount + '')) {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Vast bedrag is niet ingevuld.';
                 // todo WM: opschonen log
@@ -313,7 +330,12 @@ class ProjectFormEdit extends Component {
             }
         }
         if (project.transactionCostsCodeRef === 'amount') {
-            if (!project.transactionCostsAmount || validator.isEmpty(project.transactionCostsAmount + '')) {
+            project.transactionCostsPercentage = null;
+            project.transactionCostsAmount2 = null;
+            project.transactionCostsPercentage2 = null;
+            project.transactionCostsAmount3 = null;
+            project.transactionCostsPercentage3 = null;
+            if (project.transactionCostsAmount === null || validator.isEmpty(project.transactionCostsAmount + '')) {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Bedrag per inleg is niet ingevuld.';
                 // todo WM: opschonen log
@@ -458,6 +480,14 @@ class ProjectFormEdit extends Component {
                     console.log('Derde vanaf percentage mag niet hoger dan 100% zijn.');
                     hasErrors = true;
                 }
+            }
+            if (project.transactionCostsAmount2 === null || validator.isEmpty(project.transactionCostsAmount2 + '')) {
+                project.transactionCostsPercentage2 = null;
+                project.transactionCostsAmount3 = null;
+                project.transactionCostsPercentage3 = null;
+            }
+            if (project.transactionCostsAmount3 === null || validator.isEmpty(project.transactionCostsAmount3 + '')) {
+                project.transactionCostsPercentage3 = null;
             }
         }
         if (validator.isEmpty(project.transactionCostsAmountMin + '')) {

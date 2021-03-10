@@ -92,7 +92,8 @@ function StepOnePcr({
     }
 
     function calculateAmount(values) {
-        return values.participationsOptioned ? values.participationsOptioned * project.participationWorth : 0;
+        // return values.participationsOptioned ? values.participationsOptioned * project.participationWorth : 0;
+        return values.participationsOptioned ? values.participationsOptioned * project.currentBookWorth : 0;
     }
     function calculateTransactionCostsAmount(values) {
         if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
@@ -145,7 +146,8 @@ function StepOnePcr({
 
                                 <Col xs={12} md={6}>
                                     <FormLabel className={'field-label'}>Nominale waarde per participatie</FormLabel>
-                                    <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                                    {/*<TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>*/}
+                                    <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                                 </Col>
                             </Row>
 

@@ -17,7 +17,8 @@ export default function(project, values) {
             if (project.projectType.codeRef === 'loan') {
                 amount = values.amountOptioned;
             } else {
-                amount = values.participationsOptioned * project.participationWorth;
+                // amount = values.participationsOptioned * project.participationWorth;
+                amount = values.participationsOptioned * project.currentBookWorth;
             }
             // todo WM: opschonen log
             // console.log('amount: ' + amount);

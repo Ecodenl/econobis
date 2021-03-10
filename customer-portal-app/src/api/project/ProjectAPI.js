@@ -40,6 +40,7 @@ export default {
                         'maxParticipations',
                         'totalParticipations',
                         'participationWorth',
+                        'currentBookWorth',
                         'amountOfLoanNeeded',
                         'minAmountLoan',
                         'maxAmountLoan',

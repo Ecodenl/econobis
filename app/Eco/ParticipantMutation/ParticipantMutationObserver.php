@@ -8,9 +8,9 @@
 
 namespace App\Eco\ParticipantMutation;
 
-use App\Eco\ParticipantProject\ParticipantProject;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ParticipantMutationObserver
 {
@@ -20,6 +20,7 @@ class ParticipantMutationObserver
         $userId = Auth::id();
         $participantMutation->created_by_id = $userId;
         $participantMutation->updated_by_id = $userId;
+        $participantMutation->code = Str::random(32);
     }
 
     public function saved(ParticipantMutation $participantMutation)

@@ -25,6 +25,7 @@ const ProjectFormEditGeneral = ({
     ownedById,
     administrationId,
     administration,
+    usesMollie,
     dateStart,
     dateEnd,
     dateEntry,
@@ -67,6 +68,7 @@ const ProjectFormEditGeneral = ({
     textLinkUnderstandInfo,
     textAcceptAgreement,
     textAcceptAgreementQuestion,
+    textRegistrationFinished,
     textTransactionCosts,
     transactionCostsCodeRef,
     transactionCostsAmountMin,
@@ -224,6 +226,20 @@ const ProjectFormEditGeneral = ({
                     />
                 )}
             </div>
+
+            {
+                administrations.find(a => a.id == administrationId) && administrations.find(a => a.id == administrationId).usesMollie && (
+                    <div className="row">
+                        <div className="form-group col-sm-6"/>
+                        <InputToggle
+                            label={'Gebruikt Mollie'}
+                            name={'usesMollie'}
+                            value={usesMollie}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+                )
+            }
 
             <div className="row">
                 <InputDate
@@ -733,6 +749,32 @@ const ProjectFormEditGeneral = ({
                     error={errors.emailTemplateAgreementId}
                     disabled={!permissions.managePortalSettings}
                 />
+            </div>
+            <div className="row">
+                <label className="col-sm-12">
+                    <strong>Afronden</strong>
+                </label>
+            </div>
+            <div className={'row'}>
+                <div className="form-group col-sm-12">
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label htmlFor="textRegistrationFinished" className="col-sm-12">
+                                Inschrijving afgerond tekst
+                            </label>
+                        </div>
+                        <div className="col-sm-8">
+                            <textarea
+                                name="textRegistrationFinished"
+                                value={textRegistrationFinished}
+                                onChange={handleInputChange}
+                                className="form-control input-sm"
+                                required={'required'}
+                                readOnly={!permissions.managePortalSettings}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </React.Fragment>
     );

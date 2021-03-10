@@ -39,6 +39,16 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
             .then(payload => {
                 // console.log(payload);
                 actions.setSubmitting(false);
+
+                /**
+                 * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
+                 * In dat geval huidige scherm verlaten en door naar mollie.
+                 */
+                if(payload.data.econobisPaymentLink){
+                    window.location.href = payload.data.econobisPaymentLink;
+                    return;
+                }
+
                 setSucces(true);
                 next();
             })
@@ -188,7 +198,15 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                                         Bezig met verwerken
                                                     </span>
                                                 ) : (
-                                                    'Bevestig inschrijving'
+                                                    <>
+                                                        {
+                                                            project.usesMollie ? (
+                                                                <>Betaal en bevestig de inschrijving</>
+                                                            ) : (
+                                                                <>Bevestig inschrijving</>
+                                                            )
+                                                        }
+                                                    </>
                                                 )}
                                             </Button>
                                         </ButtonGroup>

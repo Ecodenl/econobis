@@ -49,6 +49,7 @@ export default {
                         'linkProjectInfo',
                         'linkUnderstandInfo',
                         'showQuestionAboutMembership',
+                        'usesMollie',
                         'textTransactionCosts',
                         'transactionCostsCodeRef',
                         'transactionCostsAmountMin',

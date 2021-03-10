@@ -11,6 +11,7 @@ import ParticipantDetailsMutationConclusion from './conclusion';
 import ButtonText from '../../../../../components/button/ButtonText';
 import * as PropTypes from 'prop-types';
 import React from 'react';
+import ParticipantDetailsMutationMolliePayments from "./mollie-payments";
 
 function MutationFormEditDeposit({
     participantMutationFromProps,
@@ -151,6 +152,8 @@ function MutationFormEditDeposit({
             )}
 
             <ParticipantDetailsMutationStatusLog statusLogs={participantMutationFromProps.statusLogs} />
+
+            <ParticipantDetailsMutationMolliePayments molliePayments={participantMutationFromProps.molliePayments} />
 
             <ParticipantDetailsMutationConclusion
                 createdAt={participantMutationFromProps.createdAt}

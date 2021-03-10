@@ -59,4 +59,21 @@ class ParticipantMutation extends Model
     public function updatedBy(){
         return $this->belongsTo(User::class);
     }
+
+    public function molliePayments()
+    {
+        return $this->hasMany(ParticipantMutationMolliePayment::class);
+    }
+
+    public function getIsPaidByMollieAttribute()
+    {
+        return $this->molliePayments()->whereNotNull('date_paid')->exists();
+    }
+
+    public function getEconobisPaymentLinkAttribute()
+    {
+        return route('portal.mollie.pay', [
+            'participantMutationCode' => $this->code,
+        ]);
+    }
 }

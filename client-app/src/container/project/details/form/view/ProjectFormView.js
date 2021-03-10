@@ -40,6 +40,7 @@ const ProjectFormView = props => {
         isMembershipRequired,
         isParticipationTransferable,
         administration,
+        usesMollie,
         postalcodeLink,
         requiresContactGroups,
         amountOfLoanNeeded,
@@ -72,6 +73,7 @@ const ProjectFormView = props => {
         textLinkUnderstandInfo,
         textAcceptAgreement,
         textAcceptAgreementQuestion,
+        textRegistrationFinished,
         textTransactionCosts,
         transactionCostsCodeRef,
         transactionCostsCodeRefWithName,
@@ -103,6 +105,7 @@ const ProjectFormView = props => {
                 dateEndRegistrations={dateEndRegistrations}
                 ownedBy={ownedBy}
                 administration={administration}
+                usesMollie={usesMollie}
                 dateStart={dateStart}
                 dateEnd={dateEnd}
                 dateEntry={dateEntry}
@@ -127,6 +130,7 @@ const ProjectFormView = props => {
                 textLinkUnderstandInfo={textLinkUnderstandInfo}
                 textAcceptAgreement={textAcceptAgreement}
                 textAcceptAgreementQuestion={textAcceptAgreementQuestion}
+                textRegistrationFinished={textRegistrationFinished}
                 textTransactionCosts={textTransactionCosts}
                 transactionCostsCodeRef={transactionCostsCodeRef}
                 transactionCostsCodeRefWithName={transactionCostsCodeRefWithName}

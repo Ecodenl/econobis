@@ -19,6 +19,7 @@ const ProjectFormNewGeneral = ({
     dateEndRegistrations,
     ownedById,
     administrationId,
+    usesMollie,
     administration,
     dateStart,
     dateEnd,
@@ -153,6 +154,20 @@ const ProjectFormNewGeneral = ({
                 error={errors.administrationId}
             />
         </div>
+
+        {
+            administrations.find(a => a.id == administrationId) && administrations.find(a => a.id == administrationId).usesMollie && (
+                <div className="row">
+                    <div className="form-group col-sm-6"/>
+                    <InputToggle
+                        label={'Gebruikt Mollie'}
+                        name={'usesMollie'}
+                        value={usesMollie}
+                        onChangeAction={handleInputChange}
+                    />
+                </div>
+            )
+        }
 
         <div className="row">
             <InputDate

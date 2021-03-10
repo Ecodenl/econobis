@@ -656,6 +656,7 @@ class ProjectFormEdit extends Component {
             dateEndRegistrations,
             ownedById,
             administrationId,
+            usesMollie,
             dateStart,
             dateEnd,
             dateEntry,
@@ -697,6 +698,7 @@ class ProjectFormEdit extends Component {
             textLinkUnderstandInfo,
             textAcceptAgreement,
             textAcceptAgreementQuestion,
+            textRegistrationFinished,
             textTransactionCosts,
             transactionCostsCodeRef,
             transactionCostsAmountMin,
@@ -739,6 +741,7 @@ class ProjectFormEdit extends Component {
                     ownedById={ownedById}
                     administrationId={administrationId}
                     administration={administration}
+                    usesMollie={usesMollie}
                     hasPaymentInvoices={hasPaymentInvoices}
                     dateStart={dateStart}
                     dateEnd={dateEnd}
@@ -777,6 +780,7 @@ class ProjectFormEdit extends Component {
                     textLinkUnderstandInfo={textLinkUnderstandInfo}
                     textAcceptAgreement={textAcceptAgreement}
                     textAcceptAgreementQuestion={textAcceptAgreementQuestion}
+                    textRegistrationFinished={textRegistrationFinished}
                     textTransactionCosts={textTransactionCosts}
                     transactionCostsCodeRef={transactionCostsCodeRef}
                     transactionCostsAmountMin={transactionCostsAmountMin}

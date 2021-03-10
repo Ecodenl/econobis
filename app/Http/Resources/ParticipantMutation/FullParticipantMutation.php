@@ -57,6 +57,10 @@ class FullParticipantMutation extends Resource
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'statusLogs' => FullParticipantMutationStatusLog::collection($this->whenLoaded('statusLog')),
+                'molliePayments' => GenericResource::collection($this->whenLoaded('molliePayments')),
+                'isPaidByMollie' => $this->is_paid_by_mollie,
+                'participation' => FullParticipantProject::make($this->whenLoaded('participation')),
+                'econobisPaymentLink' => $this->econobis_payment_link,
             ];
     }
 }

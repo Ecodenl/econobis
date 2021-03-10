@@ -111,7 +111,13 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                             Terug
                                         </Button>
                                         <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                            Ga naar bevestigen
+                                            {
+                                                project.usesMollie ? (
+                                                    <>Ga naar bevestigen en betalen</>
+                                                ) : (
+                                                    <>Ga naar bevestigen</>
+                                                )
+                                            }
                                         </Button>
                                     </ButtonGroup>
                                 </Col>

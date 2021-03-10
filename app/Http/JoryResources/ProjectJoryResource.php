@@ -86,6 +86,8 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_understand_info')->filterable()->sortable();
         $this->field('link_project_info')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
+        $this->field('uses_mollie')->filterable()->sortable();
+        $this->field('text_registration_finished')->filterable()->sortable();
         $this->field('text_transaction_costs')->filterable()->sortable();
         $this->field('transaction_costs_code_ref')->filterable()->sortable();
         $this->field('transaction_costs_amount_min')->filterable()->sortable();
@@ -100,7 +102,7 @@ class ProjectJoryResource extends JoryResource
         // Attributes
         $this->field('current_book_worth')->filterable()->sortable();
 
-        // RelationsF
+        // Relations
         $this->relation('administration');
         $this->relation('projectType');
     }

@@ -17,6 +17,7 @@ const ProjectFormViewGeneral = ({
     dateEndRegistrations,
     ownedBy,
     administration,
+    usesMollie,
     dateStart,
     dateEnd,
     dateEntry,
@@ -44,6 +45,7 @@ const ProjectFormViewGeneral = ({
     textLinkUnderstandInfo,
     textAcceptAgreement,
     textAcceptAgreementQuestion,
+    textRegistrationFinished,
     textTransactionCosts,
     transactionCostsCodeRef,
     transactionCostsCodeRefWithName,
@@ -97,6 +99,10 @@ const ProjectFormViewGeneral = ({
             />
 
             <ViewText label={'Administratie'} value={administration ? administration.name : ''} />
+        </div>
+        <div className="row">
+            <ViewText />
+            <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
         </div>
         <div className="row">
             <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
@@ -291,6 +297,9 @@ const ProjectFormViewGeneral = ({
                 label={'Email template inschrijfbevestiging'}
                 value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
             />
+        </div>
+        <div className="row">
+            <ViewTextLong label={'Inschrijving afgerond tekst'} value={textRegistrationFinished} />
         </div>
     </React.Fragment>
 );

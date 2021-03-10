@@ -188,6 +188,10 @@ class Project extends Model
         return $activeProjectValueCourse->book_worth;
     }
 
+    public function getcurrentBookWorthAttribute(){
+        return $this->currentBookWorth();
+    }
+
     public function getLastYearFinancialOverviewDefinitiveAttribute()
     {
         $financialOverviewProjectIds = $this->financialOverviewProjects()->where('definitive', true)->pluck('financial_overview_id')->toArray();;

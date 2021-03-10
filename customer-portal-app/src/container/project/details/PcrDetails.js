@@ -21,7 +21,8 @@ function PcrDetails({ project }) {
 
                 <Col xs={12} md={6}>
                     <FormLabel>Nominale waarde per participatie</FormLabel>
-                    <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                    {/*<TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>*/}
+                    <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
                     <FormLabel>Aantal participaties nodig</FormLabel>

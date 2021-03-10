@@ -1108,7 +1108,6 @@ class TemplateVariableHelper
                     return $lastMutation ? $lastMutation->quantity : 0;
                 }
                 break;
-
             case 'bedrag_laatste_mutatie_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 $lastMutationAmount = 0;
@@ -1180,6 +1179,12 @@ class TemplateVariableHelper
                     }
                 }
                 return number_format($lastMutationAmount, 2, ',', '');
+                break;
+
+            case 'transactiekosten_laatste_mutatie':
+                $lastMutation = $model->mutations->where('type_id', $mutationType)->last();
+                $lastMutationTransactionCostsAmount = $lastMutation ? $lastMutation->transaction_costs_amount : 0;
+                return number_format($lastMutationTransactionCostsAmount, 2, ',', '');
                 break;
 
             case 'datum_laatste_mutatie_interesse':

@@ -69,13 +69,34 @@ const ProjectFormEditGeneral = ({
     textAcceptAgreementQuestion,
     textTransactionCosts,
     transactionCostsCodeRef,
+    transactionCostsAmountMin,
+    transactionCostsAmountMax,
     transactionCostsAmount,
     transactionCostsPercentage,
+    transactionCostsAmount2,
+    transactionCostsPercentage2,
+    transactionCostsAmount3,
+    transactionCostsPercentage3,
 }) => {
     let projectStatusCustomOptions = projectStatuses;
 
     if (amountOfParticipants) {
         projectStatusCustomOptions = projectStatuses.filter(projectStatus => projectStatus.codeRef !== 'concept');
+    }
+
+    let transactionCostsCodeRefsOptions = transactionCostsCodeRefs;
+    if (projectType.codeRef === 'loan') {
+        transactionCostsCodeRefsOptions = transactionCostsCodeRefs.filter(
+            transactionCostsCodeRef => transactionCostsCodeRef.id !== 'amount'
+        );
+    }
+    if (projectType.codeRef === 'obligation') {
+        transactionCostsCodeRefsOptions = transactionCostsCodeRefs.map(transactionCostsCodeRef => {
+            if (transactionCostsCodeRef.id === 'amount') {
+                transactionCostsCodeRef.name = transactionCostsCodeRef.name.replace('participatie', 'obligatie');
+            }
+            return transactionCostsCodeRef;
+        });
     }
 
     const helpTextLinkAgreeTerms = 'Gebruik {voorwaarden_link} in tekst voor plaatsing van de voorwaarden link';
@@ -287,28 +308,13 @@ const ProjectFormEditGeneral = ({
                 <InputSelect
                     label={'Kosten'}
                     name={'transactionCostsCodeRef'}
-                    options={transactionCostsCodeRefs}
+                    options={transactionCostsCodeRefsOptions}
                     value={transactionCostsCodeRef}
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.transactionCostsCodeRef}
                     readOnly={!permissions.managePortalSettings}
                 />
-                {transactionCostsCodeRef !== 'none' ? (
-                    <InputText
-                        type={'number'}
-                        label={transactionCostsCodeRef === 'percentage' ? 'Minimaal bedrag' : 'Bedrag per inleg'}
-                        name={'transactionCostsAmount'}
-                        value={transactionCostsAmount}
-                        onChangeAction={handleInputChange}
-                        required={'required'}
-                        error={errors.transactionCostsAmount}
-                        // errorMessage={errorMessage.transactionCostsAmount}
-                        readOnly={!permissions.managePortalSettings}
-                    />
-                ) : null}
-            </div>
-            <div className="row">
                 <InputText
                     label="Naam op de portal"
                     name={'textTransactionCosts'}
@@ -319,20 +325,152 @@ const ProjectFormEditGeneral = ({
                     error={errors.textTransactionCosts}
                     readOnly={!permissions.managePortalSettings}
                 />
-                {transactionCostsCodeRef === 'percentage' ? (
+            </div>
+            {transactionCostsCodeRef === 'amount' || transactionCostsCodeRef === 'percentage' ? (
+                <div className="row">
                     <InputText
                         type={'number'}
-                        label={'% van de inleg'}
-                        name={'transactionCostsPercentage'}
-                        value={transactionCostsPercentage}
+                        label={'Minimaal bedrag'}
+                        name={'transactionCostsAmountMin'}
+                        value={transactionCostsAmountMin}
                         onChangeAction={handleInputChange}
-                        required={'required'}
-                        error={errors.transactionCostsPercentage}
-                        // errorMessage={errorMessage.transactionCostsPercentage}
+                        error={errors.transactionCostsAmountMin}
+                        // errorMessage={errorMessage.transactionCostsAmountMin}
                         readOnly={!permissions.managePortalSettings}
                     />
-                ) : null}
-            </div>
+                    <InputText
+                        type={'number'}
+                        label={'Maximaal bedrag'}
+                        name={'transactionCostsAmountMax'}
+                        value={transactionCostsAmountMax}
+                        onChangeAction={handleInputChange}
+                        error={errors.transactionCostsAmountMax}
+                        // errorMessage={errorMessage.transactionCostsAmountMax}
+                        readOnly={!permissions.managePortalSettings}
+                    />
+                </div>
+            ) : null}
+
+            {transactionCostsCodeRef === 'amount-once' ? (
+                <div className="row">
+                    <InputText
+                        type={'number'}
+                        label={'Vast bedrag'}
+                        name={'transactionCostsAmount'}
+                        value={transactionCostsAmount}
+                        onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.transactionCostsAmount}
+                        // errorMessage={errorMessage.transactionCostsAmount}
+                        readOnly={!permissions.managePortalSettings}
+                    />
+                </div>
+            ) : null}
+            {transactionCostsCodeRef === 'amount' ? (
+                <div className="row">
+                    <InputText
+                        type={'number'}
+                        label={
+                            projectType.codeRef === 'obligation' ? 'Bedrag per obligatie' : 'Bedrag per participatie'
+                        }
+                        name={'transactionCostsAmount'}
+                        value={transactionCostsAmount}
+                        onChangeAction={handleInputChange}
+                        required={'required'}
+                        error={errors.transactionCostsAmount}
+                        // errorMessage={errorMessage.transactionCostsAmount}
+                        readOnly={!permissions.managePortalSettings}
+                    />
+                </div>
+            ) : null}
+            {transactionCostsCodeRef === 'percentage' ? (
+                <>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={'Vanaf bedrag'}
+                            name={'transactionCostsAmount'}
+                            value={transactionCostsAmount}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.transactionCostsAmount}
+                            // errorMessage={errorMessage.transactionCostsAmount}
+                            readOnly={!permissions.managePortalSettings}
+                        />
+                        <InputText
+                            type={'number'}
+                            label={'% van de inleg'}
+                            name={'transactionCostsPercentage'}
+                            value={transactionCostsPercentage}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.transactionCostsPercentage}
+                            // errorMessage={errorMessage.transactionCostsPercentage}
+                            readOnly={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    {transactionCostsPercentage !== null ? (
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Vanaf bedrag'}
+                                name={'transactionCostsAmount2'}
+                                value={transactionCostsAmount2}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.transactionCostsAmount2}
+                                // errorMessage={errorMessage.transactionCostsAmount2}
+                                readOnly={!permissions.managePortalSettings}
+                            />
+                            {transactionCostsAmount2 !== null ? (
+                                <>
+                                    <InputText
+                                        type={'number'}
+                                        label={'% van de inleg'}
+                                        name={'transactionCostsPercentage2'}
+                                        value={transactionCostsPercentage2}
+                                        onChangeAction={handleInputChange}
+                                        required={'required'}
+                                        error={errors.transactionCostsPercentage2}
+                                        // errorMessage={errorMessage.transactionCostsPercentage2}
+                                        readOnly={!permissions.managePortalSettings}
+                                    />
+                                </>
+                            ) : null}
+                        </div>
+                    ) : null}
+                    {transactionCostsPercentage2 !== null ? (
+                        <div className="row">
+                            <>
+                                <InputText
+                                    type={'number'}
+                                    label={'Vanaf bedrag'}
+                                    name={'transactionCostsAmount3'}
+                                    value={transactionCostsAmount3}
+                                    onChangeAction={handleInputChange}
+                                    required={'required'}
+                                    error={errors.transactionCostsAmount3}
+                                    // errorMessage={errorMessage.transactionCostsAmount3}
+                                    readOnly={!permissions.managePortalSettings}
+                                />
+                                {transactionCostsAmount3 !== null ? (
+                                    <InputText
+                                        type={'number'}
+                                        label={'% van de inleg'}
+                                        name={'transactionCostsPercentage3'}
+                                        value={transactionCostsPercentage3}
+                                        onChangeAction={handleInputChange}
+                                        required={'required'}
+                                        error={errors.transactionCostsPercentage3}
+                                        // errorMessage={errorMessage.transactionCostsPercentage3}
+                                        readOnly={!permissions.managePortalSettings}
+                                    />
+                                ) : null}
+                            </>
+                        </div>
+                    ) : null}
+                </>
+            ) : null}
 
             <hr />
             <div className="row">

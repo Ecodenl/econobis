@@ -128,8 +128,14 @@ class FullProject extends Resource
                 'textTransactionCosts' => $this->text_transaction_costs,
                 'transactionCostsCodeRef' => $this->transaction_costs_code_ref,
                 'transactionCostsCodeRefWithName' => FullEnumWithIdAndName::make($this->getTransactionCostsCodeRef()),
+                'transactionCostsAmountMin' => $this->transaction_costs_amount_min,
+                'transactionCostsAmountMax' => $this->transaction_costs_amount_max,
                 'transactionCostsAmount' => $this->transaction_costs_amount,
                 'transactionCostsPercentage' => $this->transaction_costs_percentage,
+                'transactionCostsAmount2' => $this->transaction_costs_amount_2,
+                'transactionCostsPercentage2' => $this->transaction_costs_percentage_2,
+                'transactionCostsAmount3' => $this->transaction_costs_amount_3,
+                'transactionCostsPercentage3' => $this->transaction_costs_percentage_3,
             ];
     }
 }

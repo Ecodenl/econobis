@@ -88,8 +88,14 @@ class ProjectJoryResource extends JoryResource
         $this->field('show_question_about_membership')->filterable()->sortable();
         $this->field('text_transaction_costs')->filterable()->sortable();
         $this->field('transaction_costs_code_ref')->filterable()->sortable();
+        $this->field('transaction_costs_amount_min')->filterable()->sortable();
+        $this->field('transaction_costs_amount_max')->filterable()->sortable();
         $this->field('transaction_costs_amount')->filterable()->sortable();
         $this->field('transaction_costs_percentage')->filterable()->sortable();
+        $this->field('transaction_costs_amount_2')->filterable()->sortable();
+        $this->field('transaction_costs_percentage_2')->filterable()->sortable();
+        $this->field('transaction_costs_amount_3')->filterable()->sortable();
+        $this->field('transaction_costs_percentage_3')->filterable()->sortable();
 
         // Relations
         $this->relation('administration');

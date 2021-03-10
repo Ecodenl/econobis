@@ -34,6 +34,7 @@ class ProjectFormEdit extends Component {
             lastYearFinancialOverviewDefinitive: null,
             project: {
                 ...props.project,
+                showQuestionAboutMembership: Boolean(props.project.showQuestionAboutMembership),
                 isMembershipRequired: Boolean(props.project.isMembershipRequired),
                 isParticipationTransferable: Boolean(props.project.isParticipationTransferable),
                 contactGroupIds:
@@ -259,40 +260,229 @@ class ProjectFormEdit extends Component {
             errors.transactionCostsCodeRef = true;
             hasErrors = true;
         }
+        if (project.transactionCostsCodeRef === 'amount' || project.transactionCostsCodeRef === 'percentage') {
+            if (
+                project.transactionCostsAmountMin !== null &&
+                !validator.isEmpty(project.transactionCostsAmountMin + '') &&
+                project.transactionCostsAmountMin < 0
+            ) {
+                errors.transactionCostsAmountMin = true;
+                // errorMessage.transactionCostsAmountMin = 'Minimaal bedrag mag niet negatief zijn.';
+                // todo WM: opschonen log
+                console.log('Minimaal bedrag mag niet negatief zijn.');
+                hasErrors = true;
+            }
+            if (
+                project.transactionCostsAmountMax !== null &&
+                !validator.isEmpty(project.transactionCostsAmountMax + '') &&
+                project.transactionCostsAmountMax < 0
+            ) {
+                errors.transactionCostsAmountMax = true;
+                // errorMessage.transactionCostsAmountMin = 'Maximaal bedrag mag niet negatief zijn.';
+                // todo WM: opschonen log
+                console.log('Maximaal bedrag mag niet negatief zijn.');
+                hasErrors = true;
+            }
+            if (
+                project.transactionCostsAmountMin !== null &&
+                project.transactionCostsAmountMax !== null &&
+                !validator.isEmpty(project.transactionCostsAmountMin + '') &&
+                !validator.isEmpty(project.transactionCostsAmountMax + '') &&
+                Number(project.transactionCostsAmountMax) < Number(project.transactionCostsAmountMin)
+            ) {
+                errors.transactionCostsAmountMax = true;
+                // errorMessage.transactionCostsAmountMax = 'Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.';
+                // todo WM: opschonen log
+                console.log('Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.');
+                hasErrors = true;
+            }
+        }
+        if (project.transactionCostsCodeRef === 'amount-once') {
+            if (!project.transactionCostsAmount || validator.isEmpty(project.transactionCostsAmount + '')) {
+                errors.transactionCostsAmount = true;
+                // errorMessage.transactionCostsAmount = 'Vast bedrag is niet ingevuld.';
+                // todo WM: opschonen log
+                console.log('Vast bedrag is niet ingevuld.');
+                hasErrors = true;
+            } else if (Number(project.transactionCostsAmount) < 0) {
+                errors.transactionCostsAmount = true;
+                // errorMessage.transactionCostsAmount = 'Vast bedrag mag niet negatief zijn.';
+                // todo WM: opschonen log
+                console.log('Vast bedrag mag niet negatief zijn.');
+                hasErrors = true;
+            }
+        }
         if (project.transactionCostsCodeRef === 'amount') {
             if (!project.transactionCostsAmount || validator.isEmpty(project.transactionCostsAmount + '')) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Bedrag is niet ingevuld.';
+                // errorMessage.transactionCostsAmount = 'Bedrag per inleg is niet ingevuld.';
+                // todo WM: opschonen log
+                console.log('Bedrag per inleg is niet ingevuld.');
                 hasErrors = true;
-            } else if (project.transactionCostsAmount + '' < 0) {
+            } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Bedrag mag niet negatief zijn.';
+                // errorMessage.transactionCostsAmount = 'Bedrag per inleg mag niet negatief zijn.';
+                // todo WM: opschonen log
+                console.log('Bedrag per inleg mag niet negatief zijn.');
                 hasErrors = true;
             }
         }
         if (project.transactionCostsCodeRef === 'percentage') {
-            if (!project.transactionCostsAmount || validator.isEmpty(project.transactionCostsAmount + '')) {
+            if (project.transactionCostsAmount === null || validator.isEmpty(project.transactionCostsAmount + '')) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Minimaal bedrag is niet ingevuld.';
+                // errorMessage.transactionCostsAmount = 'Eerste vanaf bedrag is niet ingevuld.';
+                // todo WM: opschonen log
+                console.log('Eerste vanaf bedrag is niet ingevuld.');
                 hasErrors = true;
-            } else if (project.transactionCostsAmount + '' < 0) {
+            } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
-                // errorMessage.transactionCostsAmount = 'Minimaal bedrag mag niet negatief zijn.';
+                // errorMessage.transactionCostsAmount = 'Eerste vanaf bedrag mag niet negatief zijn.';
+                // todo WM: opschonen log
+                console.log('Eerste vanaf bedrag mag niet negatief zijn.');
                 hasErrors = true;
             }
-            if (!project.transactionCostsPercentage || validator.isEmpty(project.transactionCostsPercentage + '')) {
+            if (
+                project.transactionCostsPercentage === null ||
+                validator.isEmpty(project.transactionCostsPercentage + '')
+            ) {
                 errors.transactionCostsPercentage = true;
-                // errorMessage.transactionCostsPercentage = 'Percentage is niet ingevuld.';
+                // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage is niet ingevuld.';
+                // todo WM: opschonen log
+                console.log('Eerste vanaf percentage is niet ingevuld.');
                 hasErrors = true;
-            } else if (project.transactionCostsPercentage + '' < 0) {
+            } else if (Number(project.transactionCostsPercentage) < 0) {
                 errors.transactionCostsPercentage = true;
-                // errorMessage.transactionCostsPercentage = 'Percentage mag niet negatief zijn.';
+                // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage mag niet negatief zijn.';
+                // todo WM: opschonen log
+                console.log('Eerste vanaf percentage mag niet negatief zijn.');
                 hasErrors = true;
-            } else if (project.transactionCostsPercentage + '' > 100) {
+            } else if (Number(project.transactionCostsPercentage) > 100) {
                 errors.transactionCostsPercentage = true;
-                // errorMessage.transactionCostsPercentage = 'Percentage mag niet hoger dan 100% zijn.';
+                // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage mag niet hoger dan 100% zijn.';
+                // todo WM: opschonen log
+                console.log('Eerste vanaf percentage mag niet hoger dan 100% zijn.');
                 hasErrors = true;
             }
+            if (project.transactionCostsAmount !== null && !validator.isEmpty(project.transactionCostsAmount + '')) {
+                if (
+                    project.transactionCostsAmount2 !== null &&
+                    !validator.isEmpty(project.transactionCostsAmount2 + '') &&
+                    Number(project.transactionCostsAmount2) < 0
+                ) {
+                    errors.transactionCostsAmount2 = true;
+                    // errorMessage.transactionCostsAmount2 = 'Tweede vanaf bedrag mag niet negatief zijn.';
+                    // todo WM: opschonen log
+                    console.log('Tweede vanaf bedrag mag niet negatief zijn.');
+                    hasErrors = true;
+                }
+                if (
+                    project.transactionCostsAmount2 !== null &&
+                    !validator.isEmpty(project.transactionCostsAmount2 + '') &&
+                    Number(project.transactionCostsAmount2) < Number(project.transactionCostsAmount)
+                ) {
+                    errors.transactionCostsAmount2 = true;
+                    // errorMessage.transactionCostsAmount2 = 'Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.';
+                    // todo WM: opschonen log
+                    console.log('Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.');
+                    hasErrors = true;
+                }
+                if (
+                    project.transactionCostsAmount2 !== null &&
+                    !validator.isEmpty(project.transactionCostsAmount2 + '') &&
+                    (project.transactionCostsPercentage2 === null ||
+                        validator.isEmpty(project.transactionCostsPercentage2 + ''))
+                ) {
+                    errors.transactionCostsPercentage2 = true;
+                    // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage is niet ingevuld.';
+                    // todo WM: opschonen log
+                    console.log('Tweede vanaf percentage is niet ingevuld.');
+                    hasErrors = true;
+                } else if (Number(project.transactionCostsPercentage2) < 0) {
+                    errors.transactionCostsPercentage2 = true;
+                    // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet negatief zijn.';
+                    // todo WM: opschonen log
+                    console.log('Tweede vanaf percentage mag niet negatief zijn.');
+                    hasErrors = true;
+                } else if (Number(project.transactionCostsPercentage2) > 100) {
+                    errors.transactionCostsPercentage2 = true;
+                    // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet hoger dan 100% zijn.';
+                    // todo WM: opschonen log
+                    console.log('Tweede vanaf percentage mag niet hoger dan 100% zijn.');
+                    hasErrors = true;
+                }
+            }
+            if (project.transactionCostsAmount2 !== null && !validator.isEmpty(project.transactionCostsAmount2 + '')) {
+                if (
+                    project.transactionCostsAmount3 !== null &&
+                    !validator.isEmpty(project.transactionCostsAmount3 + '') &&
+                    Number(project.transactionCostsAmount3) < 0
+                ) {
+                    errors.transactionCostsAmount3 = true;
+                    // errorMessage.transactionCostsAmount3 = 'Derde vanaf bedrag mag niet negatief zijn.';
+                    // todo WM: opschonen log
+                    console.log('Derde vanaf bedrag mag niet negatief zijn.');
+                    hasErrors = true;
+                }
+                if (
+                    project.transactionCostsAmount3 !== null &&
+                    !validator.isEmpty(project.transactionCostsAmount3 + '') &&
+                    Number(project.transactionCostsAmount3) < Number(project.transactionCostsAmount2)
+                ) {
+                    errors.transactionCostsAmount3 = true;
+                    // errorMessage.transactionCostsAmount3 = 'Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.';
+                    // todo WM: opschonen log
+                    console.log('Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.');
+                    hasErrors = true;
+                }
+                if (
+                    project.transactionCostsAmount3 !== null &&
+                    !validator.isEmpty(project.transactionCostsAmount3 + '') &&
+                    (project.transactionCostsPercentage3 === null ||
+                        validator.isEmpty(project.transactionCostsPercentage3 + ''))
+                ) {
+                    errors.transactionCostsPercentage3 = true;
+                    // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage is niet ingevuld.';
+                    // todo WM: opschonen log
+                    console.log('Derde vanaf percentage is niet ingevuld.');
+                    hasErrors = true;
+                } else if (Number(project.transactionCostsPercentage3) < 0) {
+                    errors.transactionCostsPercentage3 = true;
+                    // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet negatief zijn.';
+                    // todo WM: opschonen log
+                    console.log('Derde vanaf percentage mag niet negatief zijn.');
+                    hasErrors = true;
+                } else if (Number(project.transactionCostsPercentage3) > 100) {
+                    errors.transactionCostsPercentage3 = true;
+                    // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet hoger dan 100% zijn.';
+                    // todo WM: opschonen log
+                    console.log('Derde vanaf percentage mag niet hoger dan 100% zijn.');
+                    hasErrors = true;
+                }
+            }
+        }
+        if (validator.isEmpty(project.transactionCostsAmountMin + '')) {
+            project.transactionCostsAmountMin = null;
+        }
+        if (validator.isEmpty(project.transactionCostsAmountMax + '')) {
+            project.transactionCostsAmountMax = null;
+        }
+        if (validator.isEmpty(project.transactionCostsAmount + '')) {
+            project.transactionCostsAmount = null;
+        }
+        if (validator.isEmpty(project.transactionCostsPercentage + '')) {
+            project.transactionCostsPercentage = null;
+        }
+        if (validator.isEmpty(project.transactionCostsAmount2 + '')) {
+            project.transactionCostsAmount2 = null;
+        }
+        if (validator.isEmpty(project.transactionCostsPercentage2 + '')) {
+            project.transactionCostsPercentage2 = null;
+        }
+        if (validator.isEmpty(project.transactionCostsAmount3 + '')) {
+            project.transactionCostsAmount3 = null;
+        }
+        if (validator.isEmpty(project.transactionCostsPercentage3 + '')) {
+            project.transactionCostsPercentage3 = null;
         }
 
         if (project.showQuestionAboutMembership) {
@@ -479,8 +669,14 @@ class ProjectFormEdit extends Component {
             textAcceptAgreementQuestion,
             textTransactionCosts,
             transactionCostsCodeRef,
+            transactionCostsAmountMin,
+            transactionCostsAmountMax,
             transactionCostsAmount,
             transactionCostsPercentage,
+            transactionCostsAmount2,
+            transactionCostsPercentage2,
+            transactionCostsAmount3,
+            transactionCostsPercentage3,
         } = this.state.project;
         const {
             participationsDefinitive,
@@ -553,8 +749,14 @@ class ProjectFormEdit extends Component {
                     textAcceptAgreementQuestion={textAcceptAgreementQuestion}
                     textTransactionCosts={textTransactionCosts}
                     transactionCostsCodeRef={transactionCostsCodeRef}
+                    transactionCostsAmountMin={transactionCostsAmountMin}
+                    transactionCostsAmountMax={transactionCostsAmountMax}
                     transactionCostsAmount={transactionCostsAmount}
                     transactionCostsPercentage={transactionCostsPercentage}
+                    transactionCostsAmount2={transactionCostsAmount2}
+                    transactionCostsPercentage2={transactionCostsPercentage2}
+                    transactionCostsAmount3={transactionCostsAmount3}
+                    transactionCostsPercentage3={transactionCostsPercentage3}
                 />
 
                 {projectType && projectType.codeRef === 'loan' ? (

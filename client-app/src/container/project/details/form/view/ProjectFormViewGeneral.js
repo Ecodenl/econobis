@@ -44,8 +44,8 @@ const ProjectFormViewGeneral = ({
     textLinkAgreeTerms,
     textLinkUnderstandInfo,
     textAcceptAgreement,
-    textRegistrationFinished,
     textAcceptAgreementQuestion,
+    textRegistrationFinished,
 }) => (
     <React.Fragment>
         <h4>Algemeen</h4>

@@ -31,6 +31,10 @@ class ProjectNewApp extends Component {
         const defaultTextAcceptAgreement =
             'Wanneer je akkoord gaat met het inschrijfformulier en in de inschrijving bevestigd, is je inschrijving definitief';
         const defaultTextAcceptAgreementQuestion = 'Ik ben akkoord met deze inschrijving';
+        const defaultTextRegistrationFinished = 'Bedankt voor je inschrijving. Per e-mail sturen wij een bevestiging van je inschrijving met informatie over de vervolgstappen. ' +
+            'Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van bijvoorbeeld Gmail en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail daar terug vindt. ' +
+            'Onder de menuknop “Huidige deelnames” vind je je inschrijving terug. ' +
+            'Wil je je inschrijving aanpassen? Neem dan contact met ons op.';
 
         this.state = {
             contactGroups: [],
@@ -85,6 +89,7 @@ class ProjectNewApp extends Component {
                 textLinkUnderstandInfo: defaultTextLinkUnderstandInfo,
                 textAcceptAgreement: defaultTextAcceptAgreement,
                 textAcceptAgreementQuestion: defaultTextAcceptAgreementQuestion,
+                textRegistrationFinished: defaultTextRegistrationFinished,
             },
             errors: {
                 name: false,

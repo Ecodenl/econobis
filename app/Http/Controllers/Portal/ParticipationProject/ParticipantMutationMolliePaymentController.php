@@ -102,7 +102,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
         $molliePostData = [
             "amount" => [
                 'currency' => 'EUR',
-                'value' => number_format($participantMutation->getMollieAmount(), 2, '.', ''),
+                'value' => $participantMutation->getMollieAmountFormatted(),
             ],
             "description" => $participantMutation->participation->project->name . ' ' . config('app.name'),
             "redirectUrl" => 'https://' . PortalSettings::get("portalUrl") . '/#/inschrijven/mollie-resultaat/' . $participantMutation->code,

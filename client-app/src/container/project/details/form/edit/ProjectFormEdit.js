@@ -269,7 +269,7 @@ class ProjectFormEdit extends Component {
                 errors.transactionCostsAmountMin = true;
                 // errorMessage.transactionCostsAmountMin = 'Minimaal bedrag mag niet negatief zijn.';
                 // todo WM: opschonen log
-                console.log('Minimaal bedrag mag niet negatief zijn.');
+                // console.log('Minimaal bedrag mag niet negatief zijn.');
                 hasErrors = true;
             }
             if (
@@ -280,7 +280,7 @@ class ProjectFormEdit extends Component {
                 errors.transactionCostsAmountMax = true;
                 // errorMessage.transactionCostsAmountMin = 'Maximaal bedrag mag niet negatief zijn.';
                 // todo WM: opschonen log
-                console.log('Maximaal bedrag mag niet negatief zijn.');
+                // console.log('Maximaal bedrag mag niet negatief zijn.');
                 hasErrors = true;
             }
             if (
@@ -293,7 +293,7 @@ class ProjectFormEdit extends Component {
                 errors.transactionCostsAmountMax = true;
                 // errorMessage.transactionCostsAmountMax = 'Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.';
                 // todo WM: opschonen log
-                console.log('Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.');
+                // console.log('Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.');
                 hasErrors = true;
             }
         }
@@ -319,13 +319,13 @@ class ProjectFormEdit extends Component {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Vast bedrag is niet ingevuld.';
                 // todo WM: opschonen log
-                console.log('Vast bedrag is niet ingevuld.');
+                // console.log('Vast bedrag is niet ingevuld.');
                 hasErrors = true;
             } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Vast bedrag mag niet negatief zijn.';
                 // todo WM: opschonen log
-                console.log('Vast bedrag mag niet negatief zijn.');
+                // console.log('Vast bedrag mag niet negatief zijn.');
                 hasErrors = true;
             }
         }
@@ -339,13 +339,13 @@ class ProjectFormEdit extends Component {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Bedrag per inleg is niet ingevuld.';
                 // todo WM: opschonen log
-                console.log('Bedrag per inleg is niet ingevuld.');
+                // console.log('Bedrag per inleg is niet ingevuld.');
                 hasErrors = true;
             } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Bedrag per inleg mag niet negatief zijn.';
                 // todo WM: opschonen log
-                console.log('Bedrag per inleg mag niet negatief zijn.');
+                // console.log('Bedrag per inleg mag niet negatief zijn.');
                 hasErrors = true;
             }
         }
@@ -354,13 +354,13 @@ class ProjectFormEdit extends Component {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Eerste vanaf bedrag is niet ingevuld.';
                 // todo WM: opschonen log
-                console.log('Eerste vanaf bedrag is niet ingevuld.');
+                // console.log('Eerste vanaf bedrag is niet ingevuld.');
                 hasErrors = true;
             } else if (Number(project.transactionCostsAmount) < 0) {
                 errors.transactionCostsAmount = true;
                 // errorMessage.transactionCostsAmount = 'Eerste vanaf bedrag mag niet negatief zijn.';
                 // todo WM: opschonen log
-                console.log('Eerste vanaf bedrag mag niet negatief zijn.');
+                // console.log('Eerste vanaf bedrag mag niet negatief zijn.');
                 hasErrors = true;
             }
             if (
@@ -370,19 +370,19 @@ class ProjectFormEdit extends Component {
                 errors.transactionCostsPercentage = true;
                 // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage is niet ingevuld.';
                 // todo WM: opschonen log
-                console.log('Eerste vanaf percentage is niet ingevuld.');
+                // console.log('Eerste vanaf percentage is niet ingevuld.');
                 hasErrors = true;
             } else if (Number(project.transactionCostsPercentage) < 0) {
                 errors.transactionCostsPercentage = true;
                 // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage mag niet negatief zijn.';
                 // todo WM: opschonen log
-                console.log('Eerste vanaf percentage mag niet negatief zijn.');
+                // console.log('Eerste vanaf percentage mag niet negatief zijn.');
                 hasErrors = true;
             } else if (Number(project.transactionCostsPercentage) > 100) {
                 errors.transactionCostsPercentage = true;
                 // errorMessage.transactionCostsPercentage = 'Eerste vanaf percentage mag niet hoger dan 100% zijn.';
                 // todo WM: opschonen log
-                console.log('Eerste vanaf percentage mag niet hoger dan 100% zijn.');
+                // console.log('Eerste vanaf percentage mag niet hoger dan 100% zijn.');
                 hasErrors = true;
             }
             if (project.transactionCostsAmount !== null && !validator.isEmpty(project.transactionCostsAmount + '')) {
@@ -394,7 +394,7 @@ class ProjectFormEdit extends Component {
                     errors.transactionCostsAmount2 = true;
                     // errorMessage.transactionCostsAmount2 = 'Tweede vanaf bedrag mag niet negatief zijn.';
                     // todo WM: opschonen log
-                    console.log('Tweede vanaf bedrag mag niet negatief zijn.');
+                    // console.log('Tweede vanaf bedrag mag niet negatief zijn.');
                     hasErrors = true;
                 }
                 if (
@@ -405,7 +405,7 @@ class ProjectFormEdit extends Component {
                     errors.transactionCostsAmount2 = true;
                     // errorMessage.transactionCostsAmount2 = 'Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.';
                     // todo WM: opschonen log
-                    console.log('Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.');
+                    // console.log('Tweede vanaf bedrag mag niet kleiner zijn dan eerste vanaf bedrag.');
                     hasErrors = true;
                 }
                 if (
@@ -417,19 +417,19 @@ class ProjectFormEdit extends Component {
                     errors.transactionCostsPercentage2 = true;
                     // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage is niet ingevuld.';
                     // todo WM: opschonen log
-                    console.log('Tweede vanaf percentage is niet ingevuld.');
+                    // console.log('Tweede vanaf percentage is niet ingevuld.');
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage2) < 0) {
                     errors.transactionCostsPercentage2 = true;
                     // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet negatief zijn.';
                     // todo WM: opschonen log
-                    console.log('Tweede vanaf percentage mag niet negatief zijn.');
+                    // console.log('Tweede vanaf percentage mag niet negatief zijn.');
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage2) > 100) {
                     errors.transactionCostsPercentage2 = true;
                     // errorMessage.transactionCostsPercentage2 = 'Tweede vanaf percentage mag niet hoger dan 100% zijn.';
                     // todo WM: opschonen log
-                    console.log('Tweede vanaf percentage mag niet hoger dan 100% zijn.');
+                    // console.log('Tweede vanaf percentage mag niet hoger dan 100% zijn.');
                     hasErrors = true;
                 }
             }
@@ -442,7 +442,7 @@ class ProjectFormEdit extends Component {
                     errors.transactionCostsAmount3 = true;
                     // errorMessage.transactionCostsAmount3 = 'Derde vanaf bedrag mag niet negatief zijn.';
                     // todo WM: opschonen log
-                    console.log('Derde vanaf bedrag mag niet negatief zijn.');
+                    // console.log('Derde vanaf bedrag mag niet negatief zijn.');
                     hasErrors = true;
                 }
                 if (
@@ -453,7 +453,7 @@ class ProjectFormEdit extends Component {
                     errors.transactionCostsAmount3 = true;
                     // errorMessage.transactionCostsAmount3 = 'Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.';
                     // todo WM: opschonen log
-                    console.log('Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.');
+                    // console.log('Derde vanaf bedrag mag niet kleiner zijn dan tweede vanaf bedrag.');
                     hasErrors = true;
                 }
                 if (
@@ -465,19 +465,19 @@ class ProjectFormEdit extends Component {
                     errors.transactionCostsPercentage3 = true;
                     // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage is niet ingevuld.';
                     // todo WM: opschonen log
-                    console.log('Derde vanaf percentage is niet ingevuld.');
+                    // console.log('Derde vanaf percentage is niet ingevuld.');
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage3) < 0) {
                     errors.transactionCostsPercentage3 = true;
                     // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet negatief zijn.';
                     // todo WM: opschonen log
-                    console.log('Derde vanaf percentage mag niet negatief zijn.');
+                    // console.log('Derde vanaf percentage mag niet negatief zijn.');
                     hasErrors = true;
                 } else if (Number(project.transactionCostsPercentage3) > 100) {
                     errors.transactionCostsPercentage3 = true;
                     // errorMessage.transactionCostsPercentage3 = 'Derde vanaf percentage mag niet hoger dan 100% zijn.';
                     // todo WM: opschonen log
-                    console.log('Derde vanaf percentage mag niet hoger dan 100% zijn.');
+                    // console.log('Derde vanaf percentage mag niet hoger dan 100% zijn.');
                     hasErrors = true;
                 }
             }

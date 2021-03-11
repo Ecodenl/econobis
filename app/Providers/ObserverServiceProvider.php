@@ -6,6 +6,8 @@ use App\Eco\Administration\Administration;
 use App\Eco\Administration\AdministrationObserver;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignObserver;
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\Cooperation\CooperationObserver;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentObserver;
 use App\Eco\DocumentTemplate\DocumentTemplateObserver;
@@ -124,6 +126,7 @@ class ObserverServiceProvider extends ServiceProvider
         FinancialOverviewProject::observe(FinancialOverviewProjectObserver::class);
         FinancialOverviewParticipantProject::observe(FinancialOverviewParticipantProjectObserver::class);
         PortalSettingsLayout::observe(PortalSettingsLayoutObserver::class);
+        Cooperation::observe(CooperationObserver::class);
     }
 
     /**

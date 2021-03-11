@@ -29,7 +29,6 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
     });
 
     function calculateAmount(values) {
-        // return values.participationsOptioned ? values.participationsOptioned * project.participationWorth : 0;
         return values.participationsOptioned ? values.participationsOptioned * project.currentBookWorth : 0;
     }
     function calculateTransactionCostsAmount(values) {
@@ -73,8 +72,7 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                             </Col>
 
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Nominale waarde per participatie</FormLabel>
-                                {/*<TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>*/}
+                                <FormLabel className={'field-label'}>Huidige boekwaarde per participatie</FormLabel>
                                 <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>

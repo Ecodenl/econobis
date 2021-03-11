@@ -29,7 +29,6 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
     });
 
     function calculateAmount(values) {
-        // return values.participationsOptioned ? values.participationsOptioned * project.participationWorth : 0;
         return values.participationsOptioned ? values.participationsOptioned * project.currentBookWorth : 0;
     }
     function calculateTransactionCostsAmount(values) {
@@ -73,8 +72,7 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                             </Col>
 
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Nominale waarde per obligatie</FormLabel>
-                                {/*<TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>*/}
+                                <FormLabel className={'field-label'}>Huidige hoofdsom per obligatie</FormLabel>
                                 <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>

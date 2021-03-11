@@ -594,6 +594,7 @@ class TemplateVariableHelper
                 return number_format($model->participation_worth, 2, ',', '');
                 break;
             case 'huidige_boekwaarde':
+            case 'huidige_hoofdsom':
                 return number_format($model->currentBookWorth(), 2, ',', '');
                 break;
             case 'opgesteld_vermogen':
@@ -641,7 +642,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_interessed, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_interessed * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_interessed * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -649,7 +650,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_optioned, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_optioned * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_optioned * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -657,7 +658,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_granted, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_granted * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_granted * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -665,9 +666,12 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_definitive, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_definitive * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_definitive * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
+                break;
+            case 'transactiekosten_naam_op_de_portal':
+                return $model->text_transaction_costs;
                 break;
             case 'aantal_participanten':
                 return $model->participantsProject->count();
@@ -817,7 +821,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_interessed, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_interessed * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_interessed * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -825,7 +829,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_optioned, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_optioned * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_optioned * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -833,7 +837,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_granted, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_granted * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_granted * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -841,7 +845,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_definitive, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_definitive * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_definitive * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;

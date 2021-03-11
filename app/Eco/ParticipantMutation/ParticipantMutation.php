@@ -82,17 +82,23 @@ class ParticipantMutation extends Model
     {
         switch ($this->participation->project->projectType->code_ref){
             case 'loan':
-                return $this->amount_option;
+                return $this->amount_option + $this->transaction_costs_amount;
             case 'obligation':
             case 'capital':
             case 'postalcode_link_capital':
-                $bookWorth = ProjectValueCourse::where('project_id', $this->participation->project_id)
-                    ->orderBy('date', 'desc')
-                    ->value('book_worth');
+                $bookWorth = $this->participation->project->currentBookWorth();
+                if($bookWorth == null){
+                    throw new \Exception('Geen huidige boekwaarde kunnen bepalen.');
+                }
 
-                return $bookWorth * $this->quantity;
+                return ($bookWorth * $this->quantity) + $this->transaction_costs_amount;
             default:
                 throw new \Exception('Onverwacht mutatie type ontvangen.');
         }
     }
+    public function getMollieAmountFormatted()
+    {
+        return number_format($this->getMollieAmount(), 2, '.', '');
+    }
+
 }

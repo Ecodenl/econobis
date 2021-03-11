@@ -117,7 +117,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
          * Aangezien dat lokaal niet kan deze dan maar uitschakelen.
          */
         if (config('app.env') !== 'local') {
-            $molliePostData['webhookUrl'] = route('portal-mollie.webhook');
+            $molliePostData['webhookUrl'] = route('portal.mollie.webhook');
         }
 
         $mollieApi = $participantMutation->participation->project->administration->getMollieApiFacade();

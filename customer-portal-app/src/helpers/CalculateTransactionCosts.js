@@ -17,20 +17,8 @@ export default function(project, values) {
             if (project.projectType.codeRef === 'loan') {
                 amount = values.amountOptioned;
             } else {
-                // amount = values.participationsOptioned * project.participationWorth;
                 amount = values.participationsOptioned * project.currentBookWorth;
             }
-            // todo WM: opschonen log
-            // console.log('amount: ' + amount);
-            // console.log('transactionCostsAmountMin: ' + project.transactionCostsAmountMin);
-            // console.log('transactionCostsAmountMax: ' + project.transactionCostsAmountMax);
-            // console.log('transactionCostsAmount3: ' + project.transactionCostsAmount3);
-            // console.log('transactionCostsPercentage3: ' + project.transactionCostsPercentage3);
-            // console.log('transactionCostsAmount2: ' + project.transactionCostsAmount2);
-            // console.log('transactionCostsPercentage2: ' + project.transactionCostsPercentage2);
-            // console.log('transactionCostsAmount: ' + project.transactionCostsAmount);
-            // console.log('transactionCostsPercentage: ' + project.transactionCostsPercentage);
-
             if (amount != 0) {
                 if (project.transactionCostsAmount3 !== null && amount >= project.transactionCostsAmount3) {
                     transactionCosts = parseFloat(((amount * project.transactionCostsPercentage3) / 100).toFixed(2));
@@ -40,8 +28,6 @@ export default function(project, values) {
                     transactionCosts = parseFloat(((amount * project.transactionCostsPercentage) / 100).toFixed(2));
                 }
             }
-            // todo WM: opschonen log
-            // console.log('transactionCosts: ' + transactionCosts);
             if (transactionCosts != 0) {
                 if (
                     project.transactionCostsAmountMin !== null &&

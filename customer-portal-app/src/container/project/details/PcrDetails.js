@@ -20,8 +20,7 @@ function PcrDetails({ project }) {
                 </Col>
 
                 <Col xs={12} md={6}>
-                    <FormLabel>Nominale waarde per participatie</FormLabel>
-                    {/*<TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>*/}
+                    <FormLabel>Huidige boekwaarde per participatie</FormLabel>
                     <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>

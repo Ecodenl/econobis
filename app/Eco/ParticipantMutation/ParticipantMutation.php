@@ -3,6 +3,7 @@
 namespace App\Eco\ParticipantMutation;
 
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Project\ProjectValueCourse;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
@@ -75,5 +76,23 @@ class ParticipantMutation extends Model
         return route('portal.mollie.pay', [
             'participantMutationCode' => $this->code,
         ]);
+    }
+
+    public function getMollieAmount()
+    {
+        switch ($this->participation->project->projectType->code_ref){
+            case 'loan':
+                return $this->amount_option;
+            case 'obligation':
+            case 'capital':
+            case 'postalcode_link_capital':
+                $bookWorth = ProjectValueCourse::where('project_id', $this->participation->project_id)
+                    ->orderBy('date', 'desc')
+                    ->value('book_worth');
+
+                return $bookWorth * $this->quantity;
+            default:
+                throw new \Exception('Onverwacht mutatie type ontvangen.');
+        }
     }
 }

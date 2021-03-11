@@ -50,9 +50,11 @@ class DocumentHelper
                 $participationsOptioned =  $request['participationsOptioned'] ? $request['participationsOptioned'] : 0;
                 $amountOptioned =  ( $request['participationsOptioned'] && $project->currentBookWorth() ) ? number_format( ( $request['participationsOptioned'] * $project->currentBookWorth() ), 2, ',', '') : 0;
             }
+            $transactionCostsAmount =  $request['transactionCostsAmount'] ? number_format($request['transactionCostsAmount'], 2, ',', '') : 0;
 
             $documentBody = str_replace('{deelname_aantal_ingeschreven}', $participationsOptioned, $documentBody);
             $documentBody = str_replace('{deelname_bedrag_ingeschreven}', $amountOptioned, $documentBody);
+            $documentBody = str_replace('{deelname_transactiekosten_laatste_mutatie}', $transactionCostsAmount, $documentBody);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'vertegenwoordigde', $portalUserContact);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'contact', $contact);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'project', $project);

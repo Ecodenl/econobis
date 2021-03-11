@@ -73,6 +73,17 @@ const ProjectFormView = props => {
         textAcceptAgreement,
         textAcceptAgreementQuestion,
         textRegistrationFinished,
+        textTransactionCosts,
+        transactionCostsCodeRef,
+        transactionCostsCodeRefWithName,
+        transactionCostsAmountMin,
+        transactionCostsAmountMax,
+        transactionCostsAmount,
+        transactionCostsPercentage,
+        transactionCostsAmount2,
+        transactionCostsPercentage2,
+        transactionCostsAmount3,
+        transactionCostsPercentage3,
     } = props.project;
     return (
         <section
@@ -119,6 +130,17 @@ const ProjectFormView = props => {
                 textAcceptAgreement={textAcceptAgreement}
                 textAcceptAgreementQuestion={textAcceptAgreementQuestion}
                 textRegistrationFinished={textRegistrationFinished}
+                textTransactionCosts={textTransactionCosts}
+                transactionCostsCodeRef={transactionCostsCodeRef}
+                transactionCostsCodeRefWithName={transactionCostsCodeRefWithName}
+                transactionCostsAmountMin={transactionCostsAmountMin}
+                transactionCostsAmountMax={transactionCostsAmountMax}
+                transactionCostsAmount={transactionCostsAmount}
+                transactionCostsPercentage={transactionCostsPercentage}
+                transactionCostsAmount2={transactionCostsAmount2}
+                transactionCostsPercentage2={transactionCostsPercentage2}
+                transactionCostsAmount3={transactionCostsAmount3}
+                transactionCostsPercentage3={transactionCostsPercentage3}
             />
 
             {projectType && projectType.codeRef === 'loan' ? (

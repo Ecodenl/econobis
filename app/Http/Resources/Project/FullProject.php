@@ -7,6 +7,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\DocumentTemplate\FullDocumentTemplate;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
+use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\FinancialOverview\FullFinancialOverviewProject;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
@@ -126,6 +127,17 @@ class FullProject extends Resource
                 'textAcceptAgreement' => $this->text_accept_agreement,
                 'textAcceptAgreementQuestion' => $this->text_accept_agreement_question,
                 'textRegistrationFinished' => $this->text_registration_finished,
+                'textTransactionCosts' => $this->text_transaction_costs,
+                'transactionCostsCodeRef' => $this->transaction_costs_code_ref,
+                'transactionCostsCodeRefWithName' => FullEnumWithIdAndName::make($this->getTransactionCostsCodeRef()),
+                'transactionCostsAmountMin' => $this->transaction_costs_amount_min,
+                'transactionCostsAmountMax' => $this->transaction_costs_amount_max,
+                'transactionCostsAmount' => $this->transaction_costs_amount,
+                'transactionCostsPercentage' => $this->transaction_costs_percentage,
+                'transactionCostsAmount2' => $this->transaction_costs_amount_2,
+                'transactionCostsPercentage2' => $this->transaction_costs_percentage_2,
+                'transactionCostsAmount3' => $this->transaction_costs_amount_3,
+                'transactionCostsPercentage3' => $this->transaction_costs_percentage_3,
             ];
     }
 }

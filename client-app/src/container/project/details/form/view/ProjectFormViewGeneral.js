@@ -46,6 +46,17 @@ const ProjectFormViewGeneral = ({
     textAcceptAgreement,
     textAcceptAgreementQuestion,
     textRegistrationFinished,
+    textTransactionCosts,
+    transactionCostsCodeRef,
+    transactionCostsCodeRefWithName,
+    transactionCostsAmountMin,
+    transactionCostsAmountMax,
+    transactionCostsAmount,
+    transactionCostsPercentage,
+    transactionCostsAmount2,
+    transactionCostsPercentage2,
+    transactionCostsAmount3,
+    transactionCostsPercentage3,
 }) => (
     <React.Fragment>
         <h4>Algemeen</h4>
@@ -53,12 +64,10 @@ const ProjectFormViewGeneral = ({
             <ViewText label={'Project'} value={name} />
             <ViewText label={'Projectcode'} value={code} />
         </div>
-
         <div className="row">
             <ViewText label={'Type project'} value={projectType ? projectType.name : ''} />
             <ViewText label={'Status'} value={projectStatus ? projectStatus.name : ''} />
         </div>
-
         <div className="row">
             <div className="col-sm-3">
                 <label htmlFor="description" className="col-sm-12">
@@ -69,16 +78,13 @@ const ProjectFormViewGeneral = ({
                 {description}
             </div>
         </div>
-
         <div className="row">
             <ViewText label={'Postcode'} value={postalCode} />
             <ViewText label={'Adres'} value={address} />
         </div>
-
         <div className="row">
             <ViewText label={'Plaats'} value={city} />
         </div>
-
         <div className="row">
             <ViewText
                 label={'Start inschrijving'}
@@ -86,7 +92,6 @@ const ProjectFormViewGeneral = ({
             />
             <ViewText label={'Verantwoordelijke'} value={ownedBy ? ownedBy.fullName : ''} />
         </div>
-
         <div className="row">
             <ViewText
                 label={'Eind inschrijving'}
@@ -105,7 +110,6 @@ const ProjectFormViewGeneral = ({
             <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
             <ViewText label={'Deelname aan groep verplicht'} value={isMembershipRequired ? 'Ja' : 'Nee'} />
         </div>
-
         <div className="row">
             <ViewText label={'Einde project'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
             {isMembershipRequired ? (
@@ -118,15 +122,12 @@ const ProjectFormViewGeneral = ({
                 />
             ) : null}
         </div>
-
         <div className="row">
             <ViewText label={'Start productie'} value={dateProduction ? moment(dateProduction).format('L') : ''} />
             <ViewText label={'Standaard ingangsdatum mutatie'} value={dateEntry ? moment(dateEntry).format('L') : ''} />
         </div>
-
         <hr />
         <h4>Contacten portal instellingen</h4>
-
         <div className="row">
             <label htmlFor="projectInfo" className="col-sm-12">
                 <strong>Project informatie</strong>
@@ -135,7 +136,64 @@ const ProjectFormViewGeneral = ({
         <div className="row">
             <ViewTextLong label={'Informatie link'} value={linkProjectInfo} />
         </div>
-
+        <hr />
+        <div className="row">
+            <label htmlFor="transactionCosts" className="col-sm-12">
+                <strong>Transactiekosten</strong>
+            </label>
+        </div>
+        <div className="row">
+            <ViewText
+                label={'Kosten'}
+                value={
+                    transactionCostsCodeRefWithName
+                        ? projectType.codeRef === 'obligation'
+                            ? transactionCostsCodeRefWithName.name.replace('participatie', 'obligatie')
+                            : transactionCostsCodeRefWithName.name
+                        : ''
+                }
+            />
+            <ViewText label={'Naam op de portal'} value={textTransactionCosts} />
+        </div>
+        {transactionCostsCodeRef === 'amount' || transactionCostsCodeRef === 'percentage' ? (
+            <div className="row">
+                <ViewText label={'Minimaal bedrag'} value={transactionCostsAmountMin} />
+                <ViewText label={'Maximaal bedrag'} value={transactionCostsAmountMax} />
+            </div>
+        ) : null}
+        {transactionCostsCodeRef === 'amount-once' ? (
+            <div className="row">
+                <ViewText label={'Vast bedrag'} value={transactionCostsAmount} />
+            </div>
+        ) : null}
+        {transactionCostsCodeRef === 'amount' ? (
+            <div className="row">
+                <ViewText
+                    label={projectType.codeRef === 'obligation' ? 'Bedrag per obligatie' : 'Bedrag per participatie'}
+                    value={transactionCostsAmount}
+                />
+            </div>
+        ) : null}
+        {transactionCostsCodeRef === 'percentage' ? (
+            <>
+                <div className="row">
+                    <ViewText label={'Vanaf bedrag'} value={transactionCostsAmount} />
+                    <ViewText label={'% van de inleg'} value={transactionCostsPercentage} />
+                </div>
+                {transactionCostsAmount2 !== null ? (
+                    <div className="row">
+                        <ViewText label={'Vanaf bedrag'} value={transactionCostsAmount2} />
+                        <ViewText label={'% van de inleg'} value={transactionCostsPercentage2} />
+                    </div>
+                ) : null}
+                {transactionCostsAmount3 !== null ? (
+                    <div className="row">
+                        <ViewText label={'Vanaf bedrag'} value={transactionCostsAmount3} />
+                        <ViewText label={'% van de inleg'} value={transactionCostsPercentage3} />
+                    </div>
+                ) : null}
+            </>
+        ) : null}
         <hr />
         <div className="row">
             <label htmlFor="registerProject" className="col-sm-12">
@@ -181,7 +239,6 @@ const ProjectFormViewGeneral = ({
                 </div>
             </>
         )}
-
         <hr />
         <div className="row">
             <label htmlFor="agreeTerms" className="col-sm-12">
@@ -205,7 +262,6 @@ const ProjectFormViewGeneral = ({
         <div className="row">
             <ViewTextLong label={'Voorwaarden link tekst'} value={textLinkAgreeTerms} />
         </div>
-
         <hr />
         <div className="row">
             <ViewTextLong label={'Project informatie link'} value={linkUnderstandInfo} />
@@ -213,7 +269,6 @@ const ProjectFormViewGeneral = ({
         <div className="row">
             <ViewTextLong label={'Project informatie link tekst'} value={textLinkUnderstandInfo} />
         </div>
-
         <hr />
         <div className="row">
             <label htmlFor="confirmAgreement" className="col-sm-12">

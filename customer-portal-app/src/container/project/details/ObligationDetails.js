@@ -20,8 +20,8 @@ function ObligationDetails({ project }) {
                 </Col>
 
                 <Col xs={12} md={6}>
-                    <FormLabel>Nominale waarde per obligatie</FormLabel>
-                    <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                    <FormLabel>Huidige hoofdsom per obligatie</FormLabel>
+                    <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
                     <FormLabel>Aantal obligaties nodig</FormLabel>

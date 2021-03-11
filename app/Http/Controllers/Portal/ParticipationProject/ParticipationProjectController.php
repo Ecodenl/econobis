@@ -52,7 +52,7 @@ class ParticipationProjectController extends Controller
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primairy', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
         $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
         $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
 
@@ -351,13 +351,14 @@ class ParticipationProjectController extends Controller
         $participationMutationDate = null;
         $participationMutationAmount = null;
         $participationMutationQuantity = null;
-
+        $participationMutationTransactionCostsAmount = null;
 
         switch($status->code_ref){
             case 'option' :
                 $participationMutationDate = $today ?: null;
                 $participationMutationAmount = $request->amountOptioned ?: null;
                 $participationMutationQuantity = $request->participationsOptioned ?: null;
+                $participationMutationTransactionCostsAmount = $request->transactionCostsAmount ?: null;
                 $dateOption = $participationMutationDate;
                 $amountOption = $participationMutationAmount;
                 $quantityOption = $participationMutationQuantity;
@@ -382,6 +383,7 @@ class ParticipationProjectController extends Controller
             'date_entry' => $dateFinal,
             'amount_final' => $amountFinal,
             'quantity_final' => $quantityFinal,
+            'transaction_costs_amount' => $participationMutationTransactionCostsAmount,
         ]);
 
         // Recalculate dependent data in participantProject

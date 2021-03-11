@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
+import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
 function StepOneObligation({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -27,11 +28,32 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
             .required('Verplicht'),
     });
 
+    function calculateAmount(values) {
+        return values.participationsOptioned ? values.participationsOptioned * project.currentBookWorth : 0;
+    }
+    function calculateTransactionCostsAmount(values) {
+        if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+            return 0;
+        }
+        if (project.showQuestionAboutMembership && values.choiceMembership === 1) {
+            return 0;
+        }
+        return calculateTransactionCosts(project, values);
+    }
+    function calculateTotalAmount(values) {
+        return calculateAmount(values) + calculateTransactionCostsAmount(values);
+    }
+
     return (
         <Formik
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                handleSubmitRegisterValues(values);
+                handleSubmitRegisterValues({
+                    ...values,
+                    amount: calculateAmount(values),
+                    transactionCostsAmount: calculateTransactionCostsAmount(values),
+                    totalAmount: calculateTotalAmount(values),
+                });
                 next();
             }}
             initialValues={initialRegisterValues}
@@ -50,8 +72,8 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                             </Col>
 
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Nominale waarde per obligatie</FormLabel>
-                                <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                                <FormLabel className={'field-label'}>Huidige hoofdsom per obligatie</FormLabel>
+                                <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>
                                 <Form.Label className={'field-label'}>Gewenst aantal obligaties</Form.Label>
@@ -68,10 +90,10 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                 />
                             </Col>
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
-                                <TextBlock>
-                                    {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
-                                </TextBlock>
+                                <FormLabel className={'field-label'}>
+                                    {project.transactionCostsCodeRef === 'none' ? 'Te betalen bedrag' : 'Bedrag'}
+                                </FormLabel>
+                                <TextBlock>{MoneyPresenter(calculateAmount(values))}</TextBlock>
                             </Col>
                         </Row>
                         {project.showQuestionAboutMembership ? (
@@ -127,6 +149,22 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                         </Col>
                                     </Row>
                                 ) : null}
+                            </>
+                        ) : null}
+
+                        {project.transactionCostsCodeRef !== 'none' ? (
+                            <>
+                                <hr />
+                                <Row>
+                                    <Col xs={12} md={6}>
+                                        <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
+                                        <TextBlock>{MoneyPresenter(calculateTransactionCostsAmount(values))}</TextBlock>
+                                    </Col>
+                                    <Col xs={12} md={6}>
+                                        <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
+                                        <TextBlock>{MoneyPresenter(calculateTotalAmount(values))}</TextBlock>
+                                    </Col>
+                                </Row>
                             </>
                         ) : null}
 

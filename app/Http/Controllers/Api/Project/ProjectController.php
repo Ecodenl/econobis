@@ -131,6 +131,16 @@ class ProjectController extends ApiController
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->string('textRegistrationFinished')->alias('text_registration_finished')->next()
+            ->string('textTransactionCosts')->alias('text_transaction_costs')->next()
+            ->string('transactionCostsCodeRef')->whenMissing('none')->onEmpty('none')->alias('transaction_costs_code_ref')->next()
+            ->double('transactionCostsAmountMin')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_min')->next()
+            ->double('transactionCostsAmountMax')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_max')->next()
+            ->double('transactionCostsAmount')->validate('nullable|numeric')->whenMissing(null)->whenMissing(null)->alias('transaction_costs_amount')->next()
+            ->double('transactionCostsPercentage')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage')->next()
+            ->double('transactionCostsAmount2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_2')->next()
+            ->double('transactionCostsPercentage2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_2')->next()
+            ->double('transactionCostsAmount3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_3')->next()
+            ->double('transactionCostsPercentage3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_3')->next()
             ->get();
 
         $project = new Project();
@@ -225,6 +235,16 @@ class ProjectController extends ApiController
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->string('textRegistrationFinished')->alias('text_registration_finished')->next()
+            ->string('textTransactionCosts')->alias('text_transaction_costs')->next()
+            ->string('transactionCostsCodeRef')->whenMissing('none')->onEmpty('none')->alias('transaction_costs_code_ref')->next()
+            ->double('transactionCostsAmountMin')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_min')->next()
+            ->double('transactionCostsAmountMax')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_max')->next()
+            ->double('transactionCostsAmount')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount')->next()
+            ->double('transactionCostsPercentage')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage')->next()
+            ->double('transactionCostsAmount2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_2')->next()
+            ->double('transactionCostsPercentage2')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_2')->next()
+            ->double('transactionCostsAmount3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_amount_3')->next()
+            ->double('transactionCostsPercentage3')->validate('nullable|numeric')->whenMissing(null)->alias('transaction_costs_percentage_3')->next()
             ->get();
 
         $project->fill($data);

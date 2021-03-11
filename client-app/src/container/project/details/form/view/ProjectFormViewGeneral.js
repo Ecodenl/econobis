@@ -100,6 +100,7 @@ const ProjectFormViewGeneral = ({
 
             <ViewText label={'Administratie'} value={administration ? administration.name : ''} />
         </div>
+
         <div className="row">
             <ViewText />
             <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />

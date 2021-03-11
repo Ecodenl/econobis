@@ -122,7 +122,7 @@ class ParticipationProjectController extends Controller
             $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request);
         });
 
-        if($this->participationMutation->participation->project->administration->uses_mollie){
+        if($this->participationMutation->participation->project->uses_mollie){
             /**
              * Als Mollie voor dit project aan staat dan returnen we die zodat er naar de betaalpagina geredirect kan worden.
              */

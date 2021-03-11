@@ -99,14 +99,10 @@ class ParticipantMutationMolliePaymentController extends ApiController
      */
     private function createParticipantMutationMolliePayment(ParticipantMutation $participantMutation)
     {
-        $bookWorth = ProjectValueCourse::where('project_id', $participantMutation->participation->project_id)
-            ->orderBy('date', 'desc')
-            ->value('book_worth');
-
         $molliePostData = [
             "amount" => [
                 'currency' => 'EUR',
-                'value' => number_format($bookWorth * $participantMutation->quantity, 2, '.', ''),
+                'value' => number_format($participantMutation->getMollieAmount(), 2, '.', ''),
             ],
             "description" => $participantMutation->participation->project->name . ' ' . config('app.name'),
             "redirectUrl" => 'https://' . PortalSettings::get("portalUrl") . '/#/inschrijven/mollie-resultaat/' . $participantMutation->code,

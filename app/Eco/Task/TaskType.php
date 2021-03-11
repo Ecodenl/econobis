@@ -28,5 +28,9 @@ class TaskType extends Model
     {
         return $this->belongsTo(EmailTemplate::class, 'email_template_id_wf_expired_task');
     }
+    public function emailTemplateWorkflowNewTask()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_wf_new_task');
+    }
 
 }

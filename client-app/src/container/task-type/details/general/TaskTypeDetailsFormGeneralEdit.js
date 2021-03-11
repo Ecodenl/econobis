@@ -31,6 +31,8 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                 numberOfDaysToSendEmailCompletedTask: false,
                 usesWfExpiredTask: false,
                 emailTemplateIdWfExpiredTask: false,
+                usesWfNewTask: false,
+                emailTemplateIdWfNewTask: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -84,12 +86,6 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (taskType.usesWfExpiredTask == true) {
-            if (!taskType.emailTemplateIdWfExpiredTask) {
-                errors.emailTemplateIdWfExpiredTask = true;
-                hasErrors = true;
-            }
-        }
         if (taskType.usesWfCompletedTask == true) {
             if (!taskType.emailTemplateIdWfCompletedTask) {
                 errors.emailTemplateIdWfCompletedTask = true;
@@ -97,6 +93,18 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
             }
             if (validator.isEmpty(taskType.numberOfDaysToSendEmailCompletedTask.toString())) {
                 errors.numberOfDaysToSendEmailCompletedTask = true;
+                hasErrors = true;
+            }
+        }
+        if (taskType.usesWfExpiredTask == true) {
+            if (!taskType.emailTemplateIdWfExpiredTask) {
+                errors.emailTemplateIdWfExpiredTask = true;
+                hasErrors = true;
+            }
+        }
+        if (taskType.usesWfNewTask == true) {
+            if (!taskType.emailTemplateIdWfNewTask) {
+                errors.emailTemplateIdWfNewTask = true;
                 hasErrors = true;
             }
         }
@@ -124,6 +132,8 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
             numberOfDaysToSendEmailCompletedTask,
             usesWfExpiredTask,
             emailTemplateIdWfExpiredTask,
+            usesWfNewTask,
+            emailTemplateIdWfNewTask,
         } = this.state.taskType;
 
         return (
@@ -225,6 +235,43 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
                                 </div>
                             </React.Fragment>
                         )}
+
+                        <div className="row">
+                            <InputToggle
+                                label={'Gebruikt workflow nieuwe taak'}
+                                divSize={'col-sm-10'}
+                                name={'usesWfNewTask'}
+                                value={usesWfNewTask}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        {usesWfNewTask == true && (
+                            <React.Fragment>
+                                <div className="row">
+                                    <ViewText
+                                        label={'Uitleg workflow nieuwe taak'}
+                                        divSize={'col-sm-10'}
+                                        value={this.props.explanationWfNewTask}
+                                        className={'col-sm-10 form-group'}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputReactSelect
+                                        label={'Template email nieuwe taak'}
+                                        divSize={'col-sm-10'}
+                                        name={'emailTemplateIdWfNewTask'}
+                                        options={this.state.emailTemplates}
+                                        value={emailTemplateIdWfNewTask}
+                                        onChangeAction={this.handleReactSelectChange}
+                                        isLoading={this.state.peekLoading.emailTemplates}
+                                        multi={false}
+                                        required={'required'}
+                                        error={this.state.errors.emailTemplateIdWfNewTask}
+                                    />
+                                </div>
+                            </React.Fragment>
+                        )}
                     </PanelBody>
 
                     <PanelBody>
@@ -245,7 +292,4 @@ class TaskTypeDetailsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(TaskTypeDetailsFormGeneralEdit);
+export default connect(null, mapDispatchToProps)(TaskTypeDetailsFormGeneralEdit);

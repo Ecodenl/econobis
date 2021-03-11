@@ -11,8 +11,10 @@ const TaskTypeDetailsFormGeneralView = ({
     numberOfDaysToSendEmailCompletedTask,
     usesWfExpiredTask,
     emailTemplateWorkflowExpiredTask,
+    usesWfNewTask,
+    emailTemplateWorkflowNewTask,
     switchToEdit,
-    explanationWfExpiredTask,
+    explanationWfNewTask,
     explanationWfCompletedTask,
 }) => {
     return (
@@ -95,6 +97,36 @@ const TaskTypeDetailsFormGeneralView = ({
                                     label={'Aantal dagen email na afgehandelde taak'}
                                     divSize={'col-sm-10'}
                                     value={numberOfDaysToSendEmailCompletedTask}
+                                    className={'col-sm-10 form-group'}
+                                />
+                            </div>
+                        </React.Fragment>
+                    )}
+
+                    <div className="row">
+                        <ViewText
+                            label={'Gebruikt workflow nieuwe taak'}
+                            divSize={'col-sm-10'}
+                            value={usesWfNewTask ? 'Ja' : 'Nee'}
+                            className={'col-sm-10 form-group'}
+                        />
+                    </div>
+
+                    {usesWfNewTask == true && (
+                        <React.Fragment>
+                            <div className="row">
+                                <ViewText
+                                    label={'Uitleg workflow nieuwe taak'}
+                                    divSize={'col-sm-10'}
+                                    value={explanationWfNewTask}
+                                    className={'col-sm-10 form-group'}
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Template email nieuwe taak'}
+                                    divSize={'col-sm-10'}
+                                    value={emailTemplateWorkflowNewTask ? emailTemplateWorkflowNewTask.name : ''}
                                     className={'col-sm-10 form-group'}
                                 />
                             </div>

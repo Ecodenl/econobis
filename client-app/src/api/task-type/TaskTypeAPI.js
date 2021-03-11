@@ -15,6 +15,8 @@ export default {
                         'numberOfDaysToSendEmailCompletedTask',
                         'usesWfExpiredTask',
                         'emailTemplateIdWfExpiredTask',
+                        'usesWfNewTask',
+                        'emailTemplateIdWfNewTask',
                     ],
                 },
             },

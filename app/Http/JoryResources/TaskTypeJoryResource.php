@@ -19,12 +19,15 @@ class TaskTypeJoryResource extends JoryResource
         $this->field('number_of_days_to_send_email_completed_task')->filterable()->sortable();
         $this->field('uses_wf_expired_task')->filterable()->sortable();
         $this->field('email_template_id_wf_expired_task')->filterable()->sortable();
+        $this->field('uses_wf_new_task')->filterable()->sortable();
+        $this->field('email_template_id_wf_new_task')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
 
         // Relations
         $this->relation('emailTemplateWorkflowCompletedTask');
         $this->relation('emailTemplateWorkflowExpiredTask');
+        $this->relation('emailTemplateWorkflowNewTask');
     }
 
     protected function configureForPortal(): void

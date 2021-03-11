@@ -25,6 +25,8 @@ class TaskTypeController extends Controller
             ->integer('numberOfDaysToSendEmailCompletedTask')->alias('number_of_days_to_send_email_completed_task')->next()
             ->boolean('usesWfExpiredTask')->alias('uses_wf_expired_task')->next()
             ->integer('emailTemplateIdWfExpiredTask')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_wf_expired_task')->next()
+            ->boolean('usesWfNewTask')->alias('uses_wf_new_task')->next()
+            ->integer('emailTemplateIdWfNewTask')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_wf_new_task')->next()
             ->get();
 
         $taskType->fill($data);

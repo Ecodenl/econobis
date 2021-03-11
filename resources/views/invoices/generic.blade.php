@@ -340,19 +340,22 @@
             <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($invoice->total_excl_vat_incl_reduction, 2, ',', '.') }}</strong></td>
         </tr>
         <tr>
-            <td></td>
+            <td>&nbsp;</td>
             <td class="align-right">BTW</td>
-            <td class="align-right">Over</td>
+            <td class="align-right">{!! $invoice->has_rounding_difference ? '&nbsp;' :  'Over' !!}</td>
             <td class="align-right">Bedrag</td>
-            <td></td>
+            <td>&nbsp;</td>
         </tr>
         @foreach($invoice->vatInfo as $percentage => $vatInfo)
             <tr>
-                <td></td>
+                <td>&nbsp;</td>
                 <td class="align-right">{{ $percentage}}</td>
-                <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
+                @if($invoice->has_rounding_difference)
+                    <td>&nbsp;</td>
+                @else
+                    <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
+                @endif
                 <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
-                <td></td>
             </tr>
         @endforeach
         <tr>

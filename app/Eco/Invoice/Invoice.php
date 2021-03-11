@@ -185,7 +185,6 @@ class Invoice extends Model
                 $vat = $invoiceProduct->vat_percentage . '%';
             }
 
-
             if(!isset($vatInfo[$vat])){
                 $vatInfo[$vat]['total_over'] = $invoiceProduct->getAmountInclReductionExclVat();
                 $vatInfo[$vat]['total_amount'] = $invoiceProduct->getAmountInclReductionVat();
@@ -194,11 +193,23 @@ class Invoice extends Model
                 $vatInfo[$vat]['total_over'] += $invoiceProduct->getAmountInclReductionExclVat();
                 $vatInfo[$vat]['total_amount'] += $invoiceProduct->getAmountInclReductionVat();
             }
+
+            $vatFactor = $invoiceProduct->vat_percentage / 100;
+            $vatAmountFromTotalExcl = floatval( number_format( ($vatInfo[$vat]['total_over'] *  $vatFactor), 2, '.', '') );
+            $vatInfo[$vat]['rounding_difference'] =  $vatAmountFromTotalExcl - $vatInfo[$vat]['total_amount'];
         }
 
         return $vatInfo;
     }
-
+    public function getHasRoundingDifferenceAttribute()
+    {
+        foreach($this->vatInfo as $vatInfo) {
+            if($vatInfo['rounding_difference'] != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
     public function getIbanAttribute(){
         if($this->status_id === null || $this->status_id === 'to-send' || $this->status_id === 'error-sending'){
             return $this->order->contact->iban;

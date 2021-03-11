@@ -189,6 +189,7 @@ const OpportunityStatusDetailsApp = React.lazy(() =>
     import('./container/opportunity-status/details/OpportunityStatusDetailsApp')
 );
 const ProcessesListApp = React.lazy(() => import('./container/processes/list'));
+const CooperationDetailsApp = React.lazy(() => import('./container/cooperation/details'));
 
 const Routes = () => {
     return (
@@ -239,6 +240,8 @@ const Routes = () => {
                     <Route path="campagne/:id" component={CampaignDetailsApp} />
                     <Route path="campagnes" component={CampaignsListApp} />
                     <Route path="contacten/:filter/:value" component={ContactsListApp} />
+                    /* Cooperation */
+                    <Route path="cooperatie" component={CooperationDetailsApp} />
                     /* Documents */
                     <Route path="documenten" component={DocumentsListApp} />
                     <Route path="document/nieuw/:type/email-bijlage/:emailAttachmentId" component={DocumentNewApp} />

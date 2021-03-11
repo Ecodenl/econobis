@@ -181,6 +181,8 @@ export default function(state = {}, action) {
                     contactEnergySupplier => contactEnergySupplier.id !== action.id
                 ),
             };
+        case 'UPDATE_HOOM_ACCOUNT_ID':
+            return { ...state, hoomAccountId: action.hoomAccountId };
         default:
             return state;
     }

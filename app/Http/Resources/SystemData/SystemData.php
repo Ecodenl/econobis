@@ -7,6 +7,7 @@ use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\ContactGroupType;
+use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
 use App\Eco\Document\DocumentGroup;
 use App\Eco\Document\DocumentType;
@@ -159,6 +160,7 @@ class SystemData extends Resource
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
+            'cooperation' => Cooperation::select(['id', 'hoom_link'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),
@@ -182,7 +184,6 @@ class SystemData extends Resource
             'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
             'measures' => MeasurePeek::collection(Measure::all()),
             'occupations' => FullOccupation::collection(Occupation::all()),
-            'primaryOccupations' => PrimaryOccupation::collection(Occupation::all()),
             'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
@@ -195,6 +196,7 @@ class SystemData extends Resource
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
+            'primaryOccupations' => PrimaryOccupation::collection(Occupation::all()),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),

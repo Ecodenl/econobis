@@ -14,6 +14,7 @@ const TaskTypeDetailsFormGeneralView = ({
     usesWfNewTask,
     emailTemplateWorkflowNewTask,
     switchToEdit,
+    explanationWfExpiredTask,
     explanationWfNewTask,
     explanationWfCompletedTask,
 }) => {

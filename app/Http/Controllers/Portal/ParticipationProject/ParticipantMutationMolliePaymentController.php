@@ -48,8 +48,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
             Auth::setUser(User::find($responsibleUserId));
 
             $participantMutationMolliePayment->date_paid = \Illuminate\Support\Carbon::now();
-            if($iban = optional($payment->details)->consumerAccount){
-                $participantMutationMolliePayment->iban = $iban;
+            if($payment->details){
+                $participantMutationMolliePayment->iban = $payment->details->consumerAccount;
+                $participantMutationMolliePayment->iban_name = $payment->details->consumerName;;
             }
             $participantMutationMolliePayment->save();
 

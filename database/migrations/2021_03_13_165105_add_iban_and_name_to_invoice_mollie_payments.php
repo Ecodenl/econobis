@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIbanNameToParticipantMutationMolliePayments extends Migration
+class AddIbanAndNameToInvoiceMolliePayments extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,8 @@ class AddIbanNameToParticipantMutationMolliePayments extends Migration
      */
     public function up()
     {
-        Schema::table('participant_mutation_mollie_payments', function (Blueprint $table) {
+        Schema::table('invoice_mollie_payments', function (Blueprint $table) {
+            $table->text('iban')->nullable();
             $table->string('iban_name')->nullable();
         });
     }
@@ -25,7 +26,8 @@ class AddIbanNameToParticipantMutationMolliePayments extends Migration
      */
     public function down()
     {
-        Schema::table('participant_mutation_mollie_payments', function (Blueprint $table) {
+        Schema::table('invoice_mollie_payments', function (Blueprint $table) {
+            $table->dropColumn('iban');
             $table->dropColumn('iban_name');
         });
     }

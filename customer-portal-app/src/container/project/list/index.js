@@ -148,7 +148,7 @@ function ProjectList(props) {
                                                 <>
                                                     { project.name }
                                                     {unpaidParticipations.some(item => item.project.id === project.id) && (
-                                                        <> (<Link to={`/project/${project.id}`}>aanpassen</Link>)</>
+                                                        <> (<Link to={`/project/${project.id}`}>wijzig inschrijving</Link>)</>
                                                     )}
                                                 </>
                                             ) : (
@@ -160,7 +160,7 @@ function ProjectList(props) {
                                                 <>
                                                     {unpaidParticipations.some(item => item.project.id === project.id) ? (
                                                         <div className="text-success text-center">
-                                                            <a href={unpaidParticipations.find(item => item.project.id === project.id).mutation.econobisPaymentLink}>Betalen</a>
+                                                            <a href={unpaidParticipations.find(item => item.project.id === project.id).mutation.econobisPaymentLink}>Betaal</a>
                                                         </div>
                                                     ) : (
                                                         <div className="text-success text-center">✔</div>

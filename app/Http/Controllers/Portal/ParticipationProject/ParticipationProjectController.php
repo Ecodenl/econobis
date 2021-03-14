@@ -132,7 +132,14 @@ class ParticipationProjectController extends Controller
             }
 
             $participation = $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
-            $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request);
+
+            /**
+             * Alleen aanmaken en mailen als Mollie is uitgeschakeld, als Mollie
+             * is ingeschakeld willen we deze stap pas na de betaling uitvoeren.
+             */
+            if(!$project->uses_mollie) {
+                $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $this->participationMutation);
+            }
         });
 
         if($this->participationMutation->participation->project->uses_mollie){
@@ -145,7 +152,7 @@ class ParticipationProjectController extends Controller
         }
     }
 
-    protected function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request)
+    public function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, ParticipantMutation $participantMutation)
     {
         $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
@@ -154,7 +161,11 @@ class ParticipationProjectController extends Controller
         {
             $documentBody = '';
         }else{
-            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, $request);
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, [
+                'amountOptioned' => $participantMutation->amount,
+                'participationsOptioned' => $participantMutation->quantity,
+                'transactionCostsAmount' => $participantMutation->transaction_costs_amount,
+            ]);
         }
 
         $emailTemplateAgreementId = $project ? $project->email_template_agreement_id : 0;
@@ -250,12 +261,12 @@ class ParticipationProjectController extends Controller
 
             if($projectTypeCodeRef == 'loan'){
                 $participationsOptioned =  0;
-                $amountOptioned =  $request['amountOptioned'] ? number_format($request['amountOptioned'], 2, ',', '') : 0;
+                $amountOptioned =  $participantMutation->amount ? number_format($participantMutation->amount, 2, ',', '') : 0;
             }else{
-                $participationsOptioned =  $request['participationsOptioned'] ? $request['participationsOptioned'] : 0;
-                $amountOptioned =  ( $request['participationsOptioned'] && $project->currentBookWorth() ) ? number_format( ( $request['participationsOptioned'] * $project->currentBookWorth() ), 2, ',', '') : 0;
+                $participationsOptioned =  $participantMutation->quantity ? $participantMutation->quantity : 0;
+                $amountOptioned =  ( $participantMutation->quantity && $project->currentBookWorth() ) ? number_format( ( $participantMutation->quantity * $project->currentBookWorth() ), 2, ',', '') : 0;
             }
-            $transactionCostsAmount =  $request['transactionCostsAmount'] ? number_format($request['transactionCostsAmount'], 2, ',', '') : 0;
+            $transactionCostsAmount =  $participantMutation->transaction_costs_amount ? number_format($participantMutation->transaction_costs_amount, 2, ',', '') : 0;
 
             $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
             $htmlBodyWithContactVariables = str_replace('{deelname_aantal_ingeschreven}', $participationsOptioned, $htmlBodyWithContactVariables);

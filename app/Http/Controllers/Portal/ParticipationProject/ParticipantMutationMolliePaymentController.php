@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ParticipantMutationMolliePaymentController extends ApiController
 {
@@ -23,7 +24,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         $participantMutationMolliePayment = ParticipantMutationMolliePayment::firstWhere('mollie_id', $request->input('id'));
 
-        if(!$participantMutationMolliePayment){
+        if (!$participantMutationMolliePayment) {
             return;
         }
 
@@ -36,33 +37,40 @@ class ParticipantMutationMolliePaymentController extends ApiController
          */
         $payment = $mollieApi->payments->get($participantMutationMolliePayment->mollie_id);
 
-        if ($payment->isPaid())
-        {
+        if ($payment->isPaid()) {
             /**
-             * Hackje; Tijdelijk usersetten om alle observers tevreden te houden.
+             * Hackje; Tijdelijk user setten om alle observers tevreden te houden.
              */
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
-            if (!$responsibleUserId) {
-                abort(501, 'Er is helaas een fout opgetreden.');
-            }
-            Auth::setUser(User::find($responsibleUserId));
+            $responsibleUser = User::find(PortalSettings::get('responsibleUserId'));
+            Auth::setUser($responsibleUser);
 
-            $participantMutationMolliePayment->date_paid = \Illuminate\Support\Carbon::now();
-            if($payment->details){
-                $participantMutationMolliePayment->iban = $payment->details->consumerAccount;
-                $participantMutationMolliePayment->iban_name = $payment->details->consumerName;;
-            }
-            $participantMutationMolliePayment->save();
+                $participantMutationMolliePayment->date_paid = \Illuminate\Support\Carbon::now();
+                if ($payment->details) {
+                    $participantMutationMolliePayment->iban = $payment->details->consumerAccount;
+                    $participantMutationMolliePayment->iban_name = $payment->details->consumerName;;
+                }
+                $participantMutationMolliePayment->save();
 
-            $status = ParticipantMutationStatus::where('code_ref', 'final')->first();
+                $status = ParticipantMutationStatus::where('code_ref', 'final')->first();
 
-            $participantMutation->status_id = $status->id;
-            $participantMutation->date_payment = Carbon::now()->format('Y-m-d');
-            $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now();
-            $participantMutation->save();
+                $participantMutation->status_id = $status->id;
+                $participantMutation->date_payment = Carbon::now()->format('Y-m-d');
+                $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now();
+                $participantMutation->save();
 
-            $participantMutationController = new ParticipantMutationController;
-            $participantMutationController->recalculateParticipantMutation($participantMutation);
+                $participantMutationController = new ParticipantMutationController;
+                $participantMutationController->recalculateParticipantMutation($participantMutation);
+
+            /**
+             * Todo; createAndSendRegistrationDocument() los halen van ParticipationProjectController een controller
+             */
+            (new ParticipationProjectController())->createAndSendRegistrationDocument(
+                $participantMutation->participation->contact,
+                $participantMutation->participation->project,
+                $participantMutation->participation,
+                $responsibleUser->id,
+                $participantMutation,
+            );
         }
     }
 
@@ -74,11 +82,11 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         $participantMutation = ParticipantMutation::firstWhere('code', $participantMutationCode);
 
-        if(!$participantMutation){
+        if (!$participantMutation) {
             return view('mollie.404');
         }
 
-        if($participantMutation->is_paid_by_mollie){
+        if ($participantMutation->is_paid_by_mollie) {
             /**
              * Factuur is al betaald, redirect naar resultaatpagina.
              */

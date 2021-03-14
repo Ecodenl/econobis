@@ -140,7 +140,26 @@ function RegisterProject({ match, currentSelectedContact }) {
                 const projectId = match.params.id;
 
                 if (contactProjecten.includes(Number(projectId))) {
-                    setRegistered(true);
+                    let participation = payload.data.data.participations.find(p => p.project.id === Number(projectId));
+
+                    if(participation.project.usesMollie && !participation.mutation.isPaidByMollie){
+                        /**
+                         * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
+                         * wel geopend worden en stellen we de eerder ingevoerde gegevens in.
+                         */
+                        setRegistered(false);
+
+                        setRegisterValues((current) => {
+                            return {
+                                ...current,
+                                participationsOptioned: participation.participationsOptioned,
+                                didAcceptAgreement: true,
+                                didUnderstandInfo: true,
+                            }
+                        });
+                    }else{
+                        setRegistered(true);
+                    }
                 } else {
                     setRegistered(false);
                 }

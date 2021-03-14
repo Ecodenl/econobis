@@ -19,6 +19,7 @@ use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -118,6 +119,18 @@ class ParticipationProjectController extends Controller
         }
 
         DB::transaction(function () use ($contact, $project, $request, $portalUser, $responsibleUserId) {
+            /**
+             * Als er eerder op dit project is ingeschreven dan kan de
+             * participatie nog worden overschreven, maar alleen als:
+             * 1) Het project gebruik maakt van Mollie, en
+             * 2) De betaling nog niet is gedaan.
+             */
+            $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
+            $previousMutation = optional(optional($previousParticipantProject)->mutations())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+            if($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie){
+                $this->deleteParticipantProject($previousMutation, $previousParticipantProject);
+            }
+
             $participation = $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
             $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request);
         });
@@ -429,5 +442,22 @@ class ParticipationProjectController extends Controller
         Auth::setUser($portalUser);
 
         return $participation;
+    }
+
+    protected function deleteParticipantProject($previousMutation): void
+    {
+        foreach ($previousMutation->statusLog as $statusLog) {
+            $statusLog->delete();
+        }
+        foreach ($previousMutation->molliePayments as $molliePayment) {
+            $molliePayment->delete();
+        }
+        $previousMutation->delete();
+
+        $result = (new DeleteParticipation($previousMutation->participation))->delete();
+
+        if (count($result) > 0) {
+            abort(412, implode(";", array_unique($result)));
+        }
     }
 }

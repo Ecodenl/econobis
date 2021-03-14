@@ -57,6 +57,7 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                 next();
             }}
             initialValues={initialRegisterValues}
+            enableReinitialize={true}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => (
                 <>

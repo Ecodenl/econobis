@@ -145,7 +145,12 @@ function ProjectList(props) {
                                         <td>{project.administration.name}</td>
                                         <td>
                                             {contactProjectsArray.includes(project.id) ? (
-                                                project.name
+                                                <>
+                                                    { project.name }
+                                                    {unpaidParticipations.some(item => item.project.id === project.id) && (
+                                                        <> (<Link to={`/project/${project.id}`}>aanpassen</Link>)</>
+                                                    )}
+                                                </>
                                             ) : (
                                                 <Link to={`/project/${project.id}`}>{project.name}</Link>
                                             )}
@@ -153,14 +158,13 @@ function ProjectList(props) {
                                         <td>
                                             {contactProjectsArray.includes(project.id) ? (
                                                 <>
-                                                    {unpaidParticipations.map(item => item.project.id).includes(project.id) ? (
+                                                    {unpaidParticipations.some(item => item.project.id === project.id) ? (
                                                         <div className="text-success text-center">
                                                             <a href={unpaidParticipations.find(item => item.project.id === project.id).mutation.econobisPaymentLink}>Betalen</a>
                                                         </div>
                                                     ) : (
                                                         <div className="text-success text-center">✔</div>
-                                                    )
-                                                    }
+                                                    )}
                                                 </>
                                             ) : (
                                                 ''

@@ -123,6 +123,7 @@ function StepOnePcr({
             initialValues={{
                 ...initialRegisterValues,
             }}
+            enableReinitialize={true}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
                 let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);

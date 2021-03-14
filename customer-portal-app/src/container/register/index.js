@@ -147,16 +147,18 @@ function RegisterProject({ match, currentSelectedContact }) {
                          * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
                          * wel geopend worden en stellen we de eerder ingevoerde gegevens in.
                          */
-                        setRegistered(false);
-
                         setRegisterValues((current) => {
                             return {
                                 ...current,
                                 participationsOptioned: participation.participationsOptioned,
+                                amountOptioned: participation.amountOptioned,
+                                pcrYearlyPowerKwhConsumption: participation.powerKwhConsumption,
                                 didAcceptAgreement: true,
                                 didUnderstandInfo: true,
                             }
                         });
+
+                        setRegistered(false);
                     }else{
                         setRegistered(true);
                     }

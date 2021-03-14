@@ -52,6 +52,7 @@ class ParticipantProjectJoryResource extends JoryResource
         $this->field('power_kwh_consumption')->filterable()->sortable();
         $this->field('project_id')->filterable()->sortable();
         $this->field('type_id')->filterable()->sortable();
+        $this->field('power_kwh_consumption')->filterable()->sortable();
 
         // Relations
         $this->relation('mutations');

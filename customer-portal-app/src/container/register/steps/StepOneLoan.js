@@ -56,6 +56,7 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                 next();
             }}
             initialValues={initialRegisterValues}
+            enableReinitialize={true}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => (
                 <>

@@ -57,6 +57,7 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                 next();
             }}
             initialValues={initialRegisterValues}
+            enableReinitialize={true}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => (
                 <>

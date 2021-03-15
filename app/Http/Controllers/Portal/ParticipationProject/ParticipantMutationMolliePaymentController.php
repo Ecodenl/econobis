@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Portal\ParticipationProject;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationMolliePayment;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
-use App\Eco\Project\ProjectValueCourse;
+use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Api\ApiController;
@@ -23,12 +23,11 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         $participantMutationMolliePayment = ParticipantMutationMolliePayment::firstWhere('mollie_id', $request->input('id'));
 
-        if(!$participantMutationMolliePayment){
+        if (!$participantMutationMolliePayment) {
             return;
         }
 
         $participantMutation = $participantMutationMolliePayment->participantMutation;
-
         $mollieApi = $participantMutation->participation->project->administration->getMollieApiFacade();
 
         /**
@@ -36,32 +35,48 @@ class ParticipantMutationMolliePaymentController extends ApiController
          */
         $payment = $mollieApi->payments->get($participantMutationMolliePayment->mollie_id);
 
-        if ($payment->isPaid())
-        {
+        if ($payment->isPaid()) {
             /**
-             * Hackje; Tijdelijk usersetten om alle observers tevreden te houden.
+             * Hackje; Tijdelijk user setten om alle observers tevreden te houden.
              */
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
-            if (!$responsibleUserId) {
-                abort(501, 'Er is helaas een fout opgetreden.');
-            }
-            Auth::setUser(User::find($responsibleUserId));
+            $responsibleUser = User::find(PortalSettings::get('responsibleUserId'));
+            Auth::setUser($responsibleUser);
 
             $participantMutationMolliePayment->date_paid = \Illuminate\Support\Carbon::now();
-            if($iban = optional($payment->details)->consumerAccount){
-                $participantMutationMolliePayment->iban = $iban;
+            if ($payment->details) {
+                $participantMutationMolliePayment->iban = $payment->details->consumerAccount;
+                $participantMutationMolliePayment->iban_name = $payment->details->consumerName;;
             }
             $participantMutationMolliePayment->save();
 
-            $status = ParticipantMutationStatus::where('code_ref', 'final')->first();
-
-            $participantMutation->status_id = $status->id;
+            $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->first()->id;
             $participantMutation->date_payment = Carbon::now()->format('Y-m-d');
             $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now();
             $participantMutation->save();
 
-            $participantMutationController = new ParticipantMutationController;
-            $participantMutationController->recalculateParticipantMutation($participantMutation);
+            (new ParticipantMutationController())->recalculateParticipantMutation($participantMutation);
+
+            (new ParticipationProjectController())->createAndSendRegistrationDocument(
+                $participantMutation->participation->contact,
+                $participantMutation->participation->project,
+                $participantMutation->participation,
+                $responsibleUser->id,
+                $participantMutation,
+            );
+
+            /**
+             * Als de gebruikte iban niet overeenkomt met de iban van het
+             * contact maken we hier ter controle een taak voor aan.
+             *
+             * Checken of consumerBic is gevuld om zeker te weten dat iban ook echt een iban bevat, bij bijv.
+             * PayPal komt hier nl. een e-mailadres in te staan en kunnen we dus geen zinvolle check doen.
+             */
+            if ($payment->details &&
+                $payment->details->consumerBic &&
+                trim($participantMutationMolliePayment->iban) !== trim($participantMutationMolliePayment->participantMutation->participation->contact->iban)) {
+
+                $this->createIbanMismatchTask($participantMutationMolliePayment);
+            }
         }
     }
 
@@ -73,11 +88,11 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         $participantMutation = ParticipantMutation::firstWhere('code', $participantMutationCode);
 
-        if(!$participantMutation){
+        if (!$participantMutation) {
             return view('mollie.404');
         }
 
-        if($participantMutation->is_paid_by_mollie){
+        if ($participantMutation->is_paid_by_mollie) {
             /**
              * Factuur is al betaald, redirect naar resultaatpagina.
              */
@@ -125,5 +140,27 @@ class ParticipantMutationMolliePaymentController extends ApiController
             'checkout_url' => $payment->getCheckoutUrl(),
             'date_activated' => \Illuminate\Support\Carbon::now(),
         ]);
+    }
+
+    private function createIbanMismatchTask(ParticipantMutationMolliePayment $participantMutationMolliePayment)
+    {
+        $note = "IBAN gegevens van contact komen niet overeen met Mollie betaling:\n" .
+            "Contact IBAN: " . $participantMutationMolliePayment->participantMutation->participation->contact->iban . "\n" .
+            "Mollie betaling IBAN: " . $participantMutationMolliePayment->iban . "\n";
+
+        $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
+        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+
+        $newTask = new Task();
+        $newTask->note = $note;
+        $newTask->type_id = 15;
+        $newTask->contact_id = $participantMutationMolliePayment->participantMutation->participation->contact_id;
+        $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId
+            : null;
+        $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId
+            : null;
+        $newTask->date_planned_start = Carbon::today();
+
+        $newTask->save();
     }
 }

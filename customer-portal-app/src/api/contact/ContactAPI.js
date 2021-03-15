@@ -125,6 +125,7 @@ export default {
                                 'amountGranted',
                                 'amountOptioned',
                                 'amountInteressed',
+                                'powerKwhConsumption',
                             ],
                             rlt: {
                                 project: {

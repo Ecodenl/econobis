@@ -32,6 +32,10 @@ class InvoiceMolliePaymentController extends ApiController
         if ($payment->isPaid())
         {
             $invoiceMolliePayment->date_paid = Carbon::now();
+            if($payment->details){
+                $invoiceMolliePayment->iban = $payment->details->consumerAccount;
+                $invoiceMolliePayment->iban_name = $payment->details->consumerName;;
+            }
             $invoiceMolliePayment->save();
 
             /**

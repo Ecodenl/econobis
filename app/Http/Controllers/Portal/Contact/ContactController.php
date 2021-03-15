@@ -133,7 +133,11 @@ class ContactController extends ApiController
         {
             $documentBody = '';
         }else{
-            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, $request);
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, [
+                'amountOptioned' => $request->amountOptioned,
+                'participationsOptioned' => $request->participationsOptioned,
+                'transactionCostsAmount' => $request->transactionCostsAmount,
+            ]);
         }
         return $documentBody;
     }

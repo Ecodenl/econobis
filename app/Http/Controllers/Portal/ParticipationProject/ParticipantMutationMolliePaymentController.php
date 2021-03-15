@@ -6,6 +6,7 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationMolliePayment;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\Task\Task;
+use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Api\ApiController;
@@ -150,17 +151,20 @@ class ParticipantMutationMolliePaymentController extends ApiController
 
         $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
         $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
-        $newTask = new Task();
-        $newTask->note = $note;
-        $newTask->type_id = 15;
-        $newTask->contact_id = $participantMutationMolliePayment->participantMutation->participation->contact_id;
-        $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId
-            : null;
-        $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId
-            : null;
-        $newTask->date_planned_start = Carbon::today();
+        if($taskTypeForPortal){
+            $newTask = new Task();
+            $newTask->note = $note;
+            $newTask->type_id = $taskTypeForPortal->id;
+            $newTask->contact_id = $participantMutationMolliePayment->participantMutation->participation->contact_id;
+            $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId
+                : null;
+            $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId
+                : null;
+            $newTask->date_planned_start = Carbon::today();
 
-        $newTask->save();
+            $newTask->save();
+        }
     }
 }

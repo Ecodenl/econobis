@@ -99,7 +99,6 @@ function RegistrationList(props) {
                                     <th>Uitgevende instantie</th>
                                     <th>Project</th>
                                     <th>Deelname</th>
-                                    <th>Betaald</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -278,24 +277,6 @@ function RegistrationList(props) {
                                                     ) : (
                                                         ''
                                                     )}
-                                                </td>
-                                                <td>
-                                                    {
-                                                        participation.project.usesMollie ? (
-                                                            <>
-                                                                {
-                                                                    participation.mutation.isPaidByMollie ? (
-                                                                        <span>Ja</span>
-                                                                    ) : (
-                                                                        <span>Nee, <a
-                                                                            href={participation.mutation.econobisPaymentLink}>betaal nu</a></span>
-                                                                    )
-                                                                }
-                                                            </>
-                                                        ) : (
-                                                            <>N.v.t.</>
-                                                        )
-                                                    }
                                                 </td>
                                             </tr>
                                         );

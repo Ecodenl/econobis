@@ -14,6 +14,7 @@ import Button from 'react-bootstrap/Button';
 
 function ProjectList(props) {
     const [contactProjectsArray, setContactProjectsArray] = useState([]);
+    const [unpaidParticipations, setUnpaidParticipations] = useState([]);
     const [contact, setContact] = useState({});
     const [projectData, setProjectData] = useState({});
     const [isLoading, setLoading] = useState(true);
@@ -48,6 +49,10 @@ function ProjectList(props) {
                 let contactProjecten = [];
                 payload.data.data.participations.map(item => contactProjecten.push(item.project.id));
                 setContactProjectsArray(contactProjecten);
+
+                setUnpaidParticipations(payload.data.data.participations
+                    .filter(item => item.project.usesMollie && !item.mutation.isPaidByMollie)
+                );
             })
             .catch(error => {
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -140,14 +145,27 @@ function ProjectList(props) {
                                         <td>{project.administration.name}</td>
                                         <td>
                                             {contactProjectsArray.includes(project.id) ? (
-                                                project.name
+                                                <>
+                                                    { project.name }
+                                                    {unpaidParticipations.some(item => item.project.id === project.id) && (
+                                                        <> (<Link to={`/project/${project.id}`}>wijzig inschrijving</Link>)</>
+                                                    )}
+                                                </>
                                             ) : (
                                                 <Link to={`/project/${project.id}`}>{project.name}</Link>
                                             )}
                                         </td>
                                         <td>
                                             {contactProjectsArray.includes(project.id) ? (
-                                                <div className="text-success text-center">✔</div>
+                                                <>
+                                                    {unpaidParticipations.some(item => item.project.id === project.id) ? (
+                                                        <div className="text-success text-center">
+                                                            <a href={unpaidParticipations.find(item => item.project.id === project.id).mutation.econobisPaymentLink}>Betaal</a>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-success text-center">✔</div>
+                                                    )}
+                                                </>
                                             ) : (
                                                 ''
                                             )}

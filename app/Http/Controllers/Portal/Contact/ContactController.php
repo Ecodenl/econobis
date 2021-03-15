@@ -20,6 +20,7 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\Project\Project;
 use App\Eco\Task\Task;
+use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -133,7 +134,11 @@ class ContactController extends ApiController
         {
             $documentBody = '';
         }else{
-            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, $request);
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, [
+                'amountOptioned' => $request->amountOptioned,
+                'participationsOptioned' => $request->participationsOptioned,
+                'transactionCostsAmount' => $request->transactionCostsAmount,
+            ]);
         }
         return $documentBody;
     }
@@ -568,16 +573,19 @@ class ContactController extends ApiController
 
                 $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
                 $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+                $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
-                $newTask = new Task();
-                $newTask->note = $note;
-                $newTask->type_id = 15;
-                $newTask->contact_id = $contact->id;
-                $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId : null;
-                $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : null;
-                $newTask->date_planned_start = Carbon::today();
+                if($taskTypeForPortal) {
+                    $newTask = new Task();
+                    $newTask->note = $note;
+                    $newTask->type_id = $taskTypeForPortal->id;
+                    $newTask->contact_id = $contact->id;
+                    $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId : null;
+                    $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId : null;
+                    $newTask->date_planned_start = Carbon::today();
 
-                $newTask->save();
+                    $newTask->save();
+                }
 
 
             }
@@ -600,18 +608,21 @@ class ContactController extends ApiController
 
         $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
         $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
-        $newTask = new Task();
-        $newTask->note = $note;
-        $newTask->type_id = 15;
-        $newTask->contact_id = $contact->id;
-        $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId
-            : null;
-        $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId
-            : null;
-        $newTask->date_planned_start = Carbon::today();
+        if($taskTypeForPortal) {
+            $newTask = new Task();
+            $newTask->note = $note;
+            $newTask->type_id = $taskTypeForPortal->id;
+            $newTask->contact_id = $contact->id;
+            $newTask->responsible_user_id = !empty($checkContactTaskResponsibleUserId) ? $checkContactTaskResponsibleUserId
+                : null;
+            $newTask->responsible_team_id = !empty($checkContactTaskResponsibleTeamId) ? $checkContactTaskResponsibleTeamId
+                : null;
+            $newTask->date_planned_start = Carbon::today();
 
-        $newTask->save();
+            $newTask->save();
+        }
     }
 
     public function financialOverviewDocuments(Contact $contact)

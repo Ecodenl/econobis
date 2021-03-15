@@ -153,6 +153,13 @@ class ParticipantMutationController extends ApiController
 
         $result = $this->checkMutationAllowed($participantMutation);
 
+        if ($participantMutation->participantInDefinitiveRevenue) {
+            abort(409, 'Mutatie komt al voor in een definitieve verdeling');
+        }
+        if ($participantMutation->isPaidByMollie) {
+            abort(409, 'Mutatie heeft al definitieve mollie betaling');
+        }
+
         $melding = null;
 
         $participantProject = $participantMutation->participation;
@@ -161,8 +168,13 @@ class ParticipantMutationController extends ApiController
 
         DB::transaction(function () use ($participantMutation, $participantProject) {
 
-            if( !$participantProject->participantInDefinitiveRevenue )
+            if( !$participantProject->participantInDefinitiveRevenue && !$participantProject->isPaidByMollie)
             {
+                $molliePayments = $participantMutation->molliePayments->whereNull('date_paid');
+                foreach ($molliePayments as $molliePayment)
+                {
+                    $molliePayment->delete();
+                }
                 $statusLogs = $participantMutation->statusLog;
                 foreach ($statusLogs as $statusLog)
                 {

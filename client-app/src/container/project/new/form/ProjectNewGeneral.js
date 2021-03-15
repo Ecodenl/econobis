@@ -155,19 +155,18 @@ const ProjectFormNewGeneral = ({
             />
         </div>
 
-        {
-            administrations.find(a => a.id == administrationId) && administrations.find(a => a.id == administrationId).usesMollie && (
+        {administrations.find(a => a.id == administrationId) &&
+            administrations.find(a => a.id == administrationId).usesMollie && (
                 <div className="row">
-                    <div className="form-group col-sm-6"/>
+                    <div className="form-group col-sm-6" />
                     <InputToggle
-                        label={'Gebruikt Mollie'}
+                        label={'Direct elektronisch betalen via Mollie'}
                         name={'usesMollie'}
                         value={usesMollie}
                         onChangeAction={handleInputChange}
                     />
                 </div>
-            )
-        }
+            )}
 
         <div className="row">
             <InputDate

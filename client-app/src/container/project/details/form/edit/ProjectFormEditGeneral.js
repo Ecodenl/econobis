@@ -227,20 +227,6 @@ const ProjectFormEditGeneral = ({
                 )}
             </div>
 
-            {
-                administrations.find(a => a.id == administrationId) && administrations.find(a => a.id == administrationId).usesMollie && (
-                    <div className="row">
-                        <div className="form-group col-sm-6"/>
-                        <InputToggle
-                            label={'Gebruikt Mollie'}
-                            name={'usesMollie'}
-                            value={usesMollie}
-                            onChangeAction={handleInputChange}
-                        />
-                    </div>
-                )
-            }
-
             <div className="row">
                 <InputDate
                     label={'Start project'}
@@ -750,11 +736,32 @@ const ProjectFormEditGeneral = ({
                     disabled={!permissions.managePortalSettings}
                 />
             </div>
+
+            <hr />
             <div className="row">
                 <label className="col-sm-12">
-                    <strong>Afronden</strong>
+                    <strong>Bevestigen en betalen</strong>
                 </label>
             </div>
+            {administrations.find(a => a.id == administrationId) &&
+                administrations.find(a => a.id == administrationId).usesMollie && (
+                    <div className="row">
+                        <InputToggle
+                            label={'Direct elektronisch betalen via Mollie'}
+                            name={'usesMollie'}
+                            value={usesMollie}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+                )}
+
+            <hr />
+            <div className="row">
+                <label className="col-sm-12">
+                    <strong>Bevestiging inschrijving</strong>
+                </label>
+            </div>
+
             <div className={'row'}>
                 <div className="form-group col-sm-12">
                     <div className="row">

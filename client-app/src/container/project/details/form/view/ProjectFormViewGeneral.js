@@ -102,11 +102,6 @@ const ProjectFormViewGeneral = ({
         </div>
 
         <div className="row">
-            <ViewText />
-            <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
-        </div>
-
-        <div className="row">
             <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
             <ViewText label={'Deelname aan groep verplicht'} value={isMembershipRequired ? 'Ja' : 'Nee'} />
         </div>
@@ -299,6 +294,22 @@ const ProjectFormViewGeneral = ({
                 label={'Email template inschrijfbevestiging'}
                 value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
             />
+        </div>
+        <hr />
+        <div className="row">
+            <label htmlFor="confirmAgreementAndPayment" className="col-sm-12">
+                <strong>Bevestigen en betalen</strong>
+            </label>
+        </div>
+        <div className="row">
+            <ViewText label={'Direct elektronisch betalen via Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
+        </div>
+
+        <hr />
+        <div className="row">
+            <label htmlFor="registrationConfirmed" className="col-sm-12">
+                <strong>Bevestiging inschrijving</strong>
+            </label>
         </div>
         <div className="row">
             <ViewTextLong label={'Inschrijving afgerond tekst'} value={textRegistrationFinished} />

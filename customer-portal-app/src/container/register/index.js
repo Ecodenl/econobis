@@ -142,12 +142,12 @@ function RegisterProject({ match, currentSelectedContact }) {
                 if (contactProjecten.includes(Number(projectId))) {
                     let participation = payload.data.data.participations.find(p => p.project.id === Number(projectId));
 
-                    if(participation.project.usesMollie && !participation.mutation.isPaidByMollie){
+                    if (participation.project.usesMollie && !participation.mutation.isPaidByMollie) {
                         /**
                          * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
                          * wel geopend worden en stellen we de eerder ingevoerde gegevens in.
                          */
-                        setRegisterValues((current) => {
+                        setRegisterValues(current => {
                             return {
                                 ...current,
                                 participationsOptioned: participation.participationsOptioned,
@@ -155,11 +155,11 @@ function RegisterProject({ match, currentSelectedContact }) {
                                 pcrYearlyPowerKwhConsumption: participation.powerKwhConsumption,
                                 didAcceptAgreement: true,
                                 didUnderstandInfo: true,
-                            }
+                            };
                         });
 
                         setRegistered(false);
-                    }else{
+                    } else {
                         setRegistered(true);
                     }
                 } else {

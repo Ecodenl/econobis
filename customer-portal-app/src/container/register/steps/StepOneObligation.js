@@ -17,6 +17,7 @@ import calculateTransactionCosts from '../../../helpers/CalculateTransactionCost
 function StepOneObligation({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
+            .integer('Alleen gehele aantallen')
             .typeError('Alleen nummers')
             .test(
                 'participationsOptioned',
@@ -28,20 +29,23 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
             .required('Verplicht'),
     });
 
-    function calculateAmount(values) {
-        return values.participationsOptioned ? values.participationsOptioned * project.currentBookWorth : 0;
+    function calculateAmount(participationsOptioned) {
+        return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
     }
-    function calculateTransactionCostsAmount(values) {
+    function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
         if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
             return 0;
         }
-        if (project.showQuestionAboutMembership && values.choiceMembership === 1) {
+        if (project.showQuestionAboutMembership && choiceMembership === 1) {
             return 0;
         }
-        return calculateTransactionCosts(project, values);
+        return calculateTransactionCosts(project, null, participationsOptioned);
     }
-    function calculateTotalAmount(values) {
-        return calculateAmount(values) + calculateTransactionCostsAmount(values);
+    function calculateTotalAmount(participationsOptioned, choiceMembership) {
+        return (
+            calculateAmount(participationsOptioned) +
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        ).toFixed(2);
     }
 
     return (
@@ -50,9 +54,12 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
             onSubmit={function(values, actions) {
                 handleSubmitRegisterValues({
                     ...values,
-                    amount: calculateAmount(values),
-                    transactionCostsAmount: calculateTransactionCostsAmount(values),
-                    totalAmount: calculateTotalAmount(values),
+                    amount: calculateAmount(values.participationsOptioned),
+                    transactionCostsAmount: calculateTransactionCostsAmount(
+                        values.participationsOptioned,
+                        values.choiceMembership
+                    ),
+                    totalAmount: calculateTotalAmount(values.participationsOptioned, values.choiceMembership),
                 });
                 next();
             }}
@@ -94,7 +101,7 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                 <FormLabel className={'field-label'}>
                                     {project.transactionCostsCodeRef === 'none' ? 'Te betalen bedrag' : 'Bedrag'}
                                 </FormLabel>
-                                <TextBlock>{MoneyPresenter(calculateAmount(values))}</TextBlock>
+                                <TextBlock>{MoneyPresenter(calculateAmount(values.participationsOptioned))}</TextBlock>
                             </Col>
                         </Row>
                         {project.showQuestionAboutMembership ? (
@@ -159,11 +166,25 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                 <Row>
                                     <Col xs={12} md={6}>
                                         <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
-                                        <TextBlock>{MoneyPresenter(calculateTransactionCostsAmount(values))}</TextBlock>
+                                        <TextBlock>
+                                            {MoneyPresenter(
+                                                calculateTransactionCostsAmount(
+                                                    values.participationsOptioned,
+                                                    values.choiceMembership
+                                                )
+                                            )}
+                                        </TextBlock>
                                     </Col>
                                     <Col xs={12} md={6}>
                                         <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
-                                        <TextBlock>{MoneyPresenter(calculateTotalAmount(values))}</TextBlock>
+                                        <TextBlock>
+                                            {MoneyPresenter(
+                                                calculateTotalAmount(
+                                                    values.participationsOptioned,
+                                                    values.choiceMembership
+                                                )
+                                            )}
+                                        </TextBlock>
                                     </Col>
                                 </Row>
                             </>

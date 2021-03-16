@@ -11,7 +11,7 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
 function StepOneObligation({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
@@ -27,6 +27,11 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
             .max(project.maxParticipations, 'Maximum van ${max} bereikt')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),
+        choiceMembership: Yup.number().test(
+            'choiceMembership',
+            'Verplicht',
+            value => !project.showQuestionAboutMembership || contactProjectData.belongsToMembershipGroup || value != 0
+        ),
     });
 
     function calculateAmount(participationsOptioned) {
@@ -123,6 +128,12 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                                 name="choiceMembership"
                                                 render={({ field }) => (
                                                     <>
+                                                        {get(errors, field.name, '') &&
+                                                            get(touched, field.name, '') && (
+                                                                <small className="text-danger">
+                                                                    {get(errors, field.name, '')}
+                                                                </small>
+                                                            )}
                                                         <div className="form-check">
                                                             <label className="radio-inline">
                                                                 <input

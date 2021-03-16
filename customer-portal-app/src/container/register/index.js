@@ -87,7 +87,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     ...registerValues,
                                     projectId: match.params.id,
                                     contactId: currentSelectedContact.id,
-                                    choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
                                     ...initialPcrValues,
                                     pcrPostalCode,
                                 });
@@ -96,7 +96,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     ...registerValues,
                                     projectId: match.params.id,
                                     contactId: currentSelectedContact.id,
-                                    choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
                                 });
                             }
 

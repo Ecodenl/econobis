@@ -11,7 +11,7 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
 function StepOnePcr({
@@ -49,6 +49,11 @@ function StepOnePcr({
             ),
         pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
+        choiceMembership: Yup.number().test(
+            'choiceMembership',
+            'Verplicht',
+            value => !project.showQuestionAboutMembership || contactProjectData.belongsToMembershipGroup || value != 0
+        ),
     });
 
     // const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
@@ -411,6 +416,12 @@ function StepOnePcr({
                                                     name="choiceMembership"
                                                     render={({ field }) => (
                                                         <>
+                                                            {get(errors, field.name, '') &&
+                                                                get(touched, field.name, '') && (
+                                                                    <small className="text-danger">
+                                                                        {get(errors, field.name, '')}
+                                                                    </small>
+                                                                )}
                                                             <div className="form-check">
                                                                 <label className="radio-inline">
                                                                     <input

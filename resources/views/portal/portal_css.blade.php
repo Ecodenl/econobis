@@ -201,6 +201,12 @@ margin-top: 20px;
 /*font-size: 12px;*/
 /*text-shadow: none;*/
 }
+.field-label-text
+{
+padding-top: .375rem;
+padding-bottom: .375rem;
+min-height: 28px;
+}
 label.required:after {
 content: " *";
 color: red;

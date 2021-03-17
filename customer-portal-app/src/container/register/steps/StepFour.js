@@ -113,7 +113,7 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                 </Row>
                                 <Row>
                                     <Col xs={12} md={3}>
-                                        <FormLabel className={'field-label'}>
+                                        <FormLabel className={'field-label-text'}>
                                             {project.transactionCostsCodeRef === 'none'
                                                 ? 'Te betalen bedrag'
                                                 : 'Bedrag'}
@@ -129,7 +129,7 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                     <>
                                         <Row>
                                             <Col xs={12} md={3}>
-                                                <FormLabel className={'field-label'}>
+                                                <FormLabel className={'field-label-text'}>
                                                     {project.textTransactionCosts}
                                                 </FormLabel>
                                             </Col>
@@ -141,7 +141,7 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                         </Row>
                                         <Row>
                                             <Col xs={12} md={3}>
-                                                <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
+                                                <FormLabel className={'field-label-text'}>Totaal te betalen</FormLabel>
                                             </Col>
                                             <Col xs={12} md={3}>
                                                 <TextBlock className={'float-right'}>

@@ -334,7 +334,9 @@ class ParticipationProjectController extends Controller
     protected function createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId)
     {
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
-        Auth::setUser(User::find($responsibleUserId));
+        $responsibleUser = User::find($responsibleUserId);
+        $responsibleUser->occupation = '@portal-update@';
+        Auth::setUser($responsibleUser);
 
         $today = Carbon::now();
 
@@ -349,6 +351,7 @@ class ParticipationProjectController extends Controller
         }
         $powerKwhConsumption = ($request->pcrYearlyPowerKwhConsumption && $request->pcrYearlyPowerKwhConsumption!= '') ? $request->pcrYearlyPowerKwhConsumption : 0;
         $participation = ParticipantProject::create([
+            'created_with' => 'portal',
             'contact_id' => $contact->id,
             'project_id' => $project->id,
             'type_id' => $payoutTypeId,

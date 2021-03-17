@@ -23,6 +23,10 @@ class ContactObserver
         $userId = Auth::id();
         $contact->created_by_id = $userId;
         $contact->updated_by_id = $userId;
+        if($contact->created_with == null){
+            $contact->created_with = 'econobis';
+        }
+        $contact->updated_with = $contact->created_with;
     }
 
     public function created(Contact $contact)
@@ -48,6 +52,17 @@ class ContactObserver
     {
         $userId = Auth::id();
         $contact->updated_by_id = $userId;
+        switch (Auth::user()->occupation){
+            case '@portal-update@':
+                $contact->updated_with = 'portal';
+                break;
+            case '@webform-update@':
+                $contact->updated_with = 'webform';
+                break;
+            default:
+                $contact->updated_with = 'econobis';
+                break;
+        }
 
         if($contact->isDirty('did_agree_avg') && $contact->did_agree_avg ) {
             $contact->date_did_agree_avg = Carbon::now();

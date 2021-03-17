@@ -41,6 +41,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
              * Hackje; Tijdelijk user setten om alle observers tevreden te houden.
              */
             $responsibleUser = User::find(PortalSettings::get('responsibleUserId'));
+            $responsibleUser->occupation = '@portal-update@';
             Auth::setUser($responsibleUser);
 
             $participantMutationMolliePayment->date_paid = \Illuminate\Support\Carbon::now();

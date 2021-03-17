@@ -57,7 +57,9 @@ class ContactController extends ApiController
             abort(501, 'Er is helaas een fout opgetreden.');
         }
 
-        Auth::setUser(User::find($responsibleUserId));
+        $updateUser = User::find($responsibleUserId);
+        $updateUser->occupation = '@portal-update@';
+        Auth::setUser($updateUser);
 
         DB::transaction(function () use ($request) {
 

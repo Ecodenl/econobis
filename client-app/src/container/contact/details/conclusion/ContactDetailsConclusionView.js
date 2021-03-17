@@ -6,7 +6,17 @@ moment.locale('nl');
 import ViewText from '../../../../components/form/ViewText';
 
 const ContactDetailsConclusionView = props => {
-    const { owner = {}, status = {}, updatedBy = {}, createdBy = {}, createdAt = {}, updatedAt = {} } = props.contact;
+    const {
+        owner = {},
+        status = {},
+        createdBy = {},
+        updatedBy = {},
+        createdAt = {},
+        updatedAt = {},
+        createdWith = {},
+        updatedWith = {},
+    } = props.contact;
+
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
@@ -20,14 +30,16 @@ const ContactDetailsConclusionView = props => {
                 <ViewText
                     label={'Gemaakt door'}
                     value={
-                        status && (status.id == 'portal' || status.id == 'webform')
-                            ? status.name
+                        createdWith == 'portal'
+                            ? 'Portaal'
+                            : createdWith == 'webform'
+                            ? 'Webformulier'
                             : createdBy
                             ? createdBy.fullName
                             : 'Onbekend'
                     }
                     link={
-                        status && (status.id == 'portal' || status.id == 'webform')
+                        createdWith == 'portal' || createdWith == 'webform'
                             ? ''
                             : createdBy
                             ? 'gebruiker/' + createdBy.id
@@ -36,8 +48,22 @@ const ContactDetailsConclusionView = props => {
                 />
                 <ViewText
                     label={'Laatste update door'}
-                    value={updatedBy ? updatedBy.fullName : 'Onbekend'}
-                    link={updatedBy ? 'gebruiker/' + updatedBy.id : ''}
+                    value={
+                        updatedWith == 'portal'
+                            ? 'Portaal'
+                            : updatedWith == 'webform'
+                            ? 'Webformulier'
+                            : updatedBy
+                            ? updatedBy.fullName
+                            : 'Onbekend'
+                    }
+                    link={
+                        updatedWith == 'portal' || updatedWith == 'webform'
+                            ? ''
+                            : updatedBy
+                            ? 'gebruiker/' + updatedBy.id
+                            : ''
+                    }
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>

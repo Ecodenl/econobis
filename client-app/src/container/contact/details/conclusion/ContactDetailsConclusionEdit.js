@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import validator from 'validator';
 
-import InputText from '../../../../components/form/InputText';
 import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
@@ -11,19 +9,24 @@ import PanelFooter from '../../../../components/panel/PanelFooter';
 import ContactDetailsAPI from '../../../../api/contact/ContactDetailsAPI';
 
 import { fetchContactDetails } from '../../../../actions/contact/ContactDetailsActions';
-import InputDate from '../../../../components/form/InputDate';
+
+import ViewText from '../../../../components/form/ViewText';
+import moment from 'moment';
+moment.locale('nl');
 
 class ContactDetailsConclusionEdit extends Component {
     constructor(props) {
         super(props);
         const {
             id,
+            owner = {},
             status = {},
             createdBy = {},
             updatedBy = {},
             createdAt = {},
             updatedAt = {},
-            owner = {},
+            createdWith = {},
+            updatedWith = {},
         } = props.contact;
 
         this.state = {
@@ -35,6 +38,8 @@ class ContactDetailsConclusionEdit extends Component {
                 ownedById: owner ? owner.id : '',
                 createdAt: createdAt ? createdAt : '',
                 updatedAt: updatedAt ? updatedAt : '',
+                createdWith: createdWith ? createdWith : '',
+                updatedWith: updatedWith ? updatedWith : '',
             },
             errors: {
                 ownedBy: false,
@@ -79,7 +84,16 @@ class ContactDetailsConclusionEdit extends Component {
     };
 
     render() {
-        const { status, createdBy, updatedBy, ownedById, createdAt, updatedAt } = this.state.contact;
+        const {
+            status,
+            createdBy,
+            updatedBy,
+            ownedById,
+            createdAt,
+            updatedAt,
+            createdWith,
+            updatedWith,
+        } = this.state.contact;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -96,28 +110,43 @@ class ContactDetailsConclusionEdit extends Component {
                     />
                 </div>
                 <div className="row">
-                    <InputText
+                    <ViewText
                         label={'Gemaakt door'}
-                        name={'createdBy'}
-                        value={status.id == 'portal' || status.id == 'webform' ? status.name : createdBy}
-                        readOnly={true}
+                        className={'form-group col-md-6'}
+                        value={
+                            createdWith == 'portal'
+                                ? 'Portaal'
+                                : createdWith == 'webform'
+                                ? 'Webformulier'
+                                : createdBy
+                                ? createdBy
+                                : 'Onbekend'
+                        }
                     />
-                    <InputText label={'Laatste update door'} name={'updatedBy'} value={updatedBy} readOnly={true} />
+                    <ViewText
+                        label={'Laatste update door'}
+                        className={'form-group col-md-6'}
+                        value={
+                            updatedWith == 'portal'
+                                ? 'Portaal'
+                                : updatedWith == 'webform'
+                                ? 'Webformulier'
+                                : updatedBy
+                                ? updatedBy
+                                : 'Onbekend'
+                        }
+                    />
                 </div>
                 <div className="row">
-                    <InputDate
+                    <ViewText
                         label={'Gemaakt op'}
-                        size={'col-sm-6'}
-                        name={'createdAt'}
-                        value={createdAt ? moment(createdAt).format('LL') : 'Onbekend'}
-                        readOnly={true}
+                        className={'form-group col-md-6'}
+                        value={createdAt ? moment(createdAt).format('L') : 'Onbekend'}
                     />
-                    <InputDate
+                    <ViewText
                         label={'Laatste update op'}
-                        size={'col-sm-6'}
-                        name={'updatedAt'}
-                        value={updatedAt ? moment(updatedAt).format('LL') : 'Onbekend'}
-                        readOnly={true}
+                        className={'form-group col-md-6'}
+                        value={updatedAt ? moment(updatedAt).format('L') : 'Onbekend'}
                     />
                 </div>
                 <PanelFooter>
@@ -153,7 +182,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsConclusionEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsConclusionEdit);

@@ -11,13 +11,17 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
+import InputTextCurrency from '../../../components/form/InputTextCurrency';
 
 function StepOneLoan({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         amountOptioned: Yup.string()
             .required('Verplicht')
+            .transform(function(value, originalvalue) {
+                return value ? value.replace(',', '.') : 0;
+            })
             .test('amountOptioned', 'Minimum van ' + project.minAmountLoan + ' nodig', value =>
                 value ? value.replace(',', '.') : 0 >= project.minAmountLoan
             )
@@ -25,22 +29,32 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                 value ? value.replace(',', '.') : 0 <= project.maxAmountLoan
             )
             .matches(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/, 'Fout bedrag'),
+        choiceMembership: Yup.number().test(
+            'choiceMembership',
+            'Verplicht',
+            value => !project.showQuestionAboutMembership || contactProjectData.belongsToMembershipGroup || value != 0
+        ),
     });
 
-    function calculateAmount(values) {
-        return values.amountOptioned ? parseFloat(values.amountOptioned) : 0;
+    function setAmountOptioned(amountOptioned) {
+        return amountOptioned ? amountOptioned.toString().replace(',', '.') : '';
     }
-    function calculateTransactionCostsAmount(values) {
+    function calculateAmount(amountOptioned) {
+        return amountOptioned ? parseFloat(amountOptioned.toString().replace(',', '.')) : 0;
+    }
+    function calculateTransactionCostsAmount(amountOptioned, choiceMembership) {
         if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
             return 0;
         }
-        if (project.showQuestionAboutMembership && values.choiceMembership === 1) {
+        if (project.showQuestionAboutMembership && choiceMembership === 1) {
             return 0;
         }
-        return calculateTransactionCosts(project, values);
+        return calculateTransactionCosts(project, amountOptioned, null);
     }
-    function calculateTotalAmount(values) {
-        return calculateAmount(values) + calculateTransactionCostsAmount(values);
+    function calculateTotalAmount(amountOptioned, choiceMembership) {
+        return (
+            calculateAmount(amountOptioned) + calculateTransactionCostsAmount(amountOptioned, choiceMembership)
+        ).toFixed(2);
     }
 
     return (
@@ -49,9 +63,13 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
             onSubmit={function(values, actions) {
                 handleSubmitRegisterValues({
                     ...values,
-                    amount: calculateAmount(values),
-                    transactionCostsAmount: calculateTransactionCostsAmount(values),
-                    totalAmount: calculateTotalAmount(values),
+                    amountOptioned: setAmountOptioned(values.amountOptioned),
+                    amount: calculateAmount(values.amountOptioned),
+                    transactionCostsAmount: calculateTransactionCostsAmount(
+                        values.amountOptioned,
+                        values.choiceMembership
+                    ),
+                    totalAmount: calculateTotalAmount(values.amountOptioned, values.choiceMembership),
                 });
                 next();
             }}
@@ -76,7 +94,7 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                 <Field
                                     name="amountOptioned"
                                     render={({ field }) => (
-                                        <InputText
+                                        <InputTextCurrency
                                             field={field}
                                             errors={errors}
                                             touched={touched}
@@ -89,7 +107,7 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                 <FormLabel className={'field-label'}>
                                     {project.transactionCostsCodeRef === 'none' ? 'Te betalen bedrag' : 'Bedrag'}
                                 </FormLabel>
-                                <TextBlock>{MoneyPresenter(calculateAmount(values))}</TextBlock>
+                                <TextBlock>{MoneyPresenter(calculateAmount(values.amountOptioned))}</TextBlock>
                             </Col>
                         </Row>
                         {project.showQuestionAboutMembership ? (
@@ -111,6 +129,12 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                                 name="choiceMembership"
                                                 render={({ field }) => (
                                                     <>
+                                                        {get(errors, field.name, '') &&
+                                                            get(touched, field.name, '') && (
+                                                                <small className="text-danger">
+                                                                    {get(errors, field.name, '')}
+                                                                </small>
+                                                            )}
                                                         <div className="form-check">
                                                             <label className="radio-inline">
                                                                 <input
@@ -154,11 +178,22 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                 <Row>
                                     <Col xs={12} md={6}>
                                         <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
-                                        <TextBlock>{MoneyPresenter(calculateTransactionCostsAmount(values))}</TextBlock>
+                                        <TextBlock>
+                                            {MoneyPresenter(
+                                                calculateTransactionCostsAmount(
+                                                    values.amountOptioned,
+                                                    values.choiceMembership
+                                                )
+                                            )}
+                                        </TextBlock>
                                     </Col>
                                     <Col xs={12} md={6}>
                                         <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
-                                        <TextBlock>{MoneyPresenter(calculateTotalAmount(values))}</TextBlock>
+                                        <TextBlock>
+                                            {MoneyPresenter(
+                                                calculateTotalAmount(values.amountOptioned, values.choiceMembership)
+                                            )}
+                                        </TextBlock>
                                     </Col>
                                 </Row>
                             </>

@@ -159,8 +159,8 @@ function ProjectList(props) {
                                             {contactProjectsArray.includes(project.id) ? (
                                                 <>
                                                     {unpaidParticipations.some(item => item.project.id === project.id) ? (
-                                                        <div className="text-success text-center">
-                                                            <a href={unpaidParticipations.find(item => item.project.id === project.id).mutation.econobisPaymentLink}>Betaal</a>
+                                                        <div className="text-center">
+                                                            Nog niet betaald,<br/><a href={unpaidParticipations.find(item => item.project.id === project.id).mutation.econobisPaymentLink}>betaal nu</a>
                                                         </div>
                                                     ) : (
                                                         <div className="text-success text-center">✔</div>

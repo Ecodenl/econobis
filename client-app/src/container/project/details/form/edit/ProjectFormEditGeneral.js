@@ -332,7 +332,7 @@ const ProjectFormEditGeneral = ({
                 <div className="row">
                     <InputText
                         type={'number'}
-                        label={'Minimaal bedrag'}
+                        label={'Minimaal kosten'}
                         name={'transactionCostsAmountMin'}
                         value={transactionCostsAmountMin}
                         onChangeAction={handleInputChange}
@@ -342,7 +342,7 @@ const ProjectFormEditGeneral = ({
                     />
                     <InputText
                         type={'number'}
-                        label={'Maximaal bedrag'}
+                        label={'Maximaal kosten'}
                         name={'transactionCostsAmountMax'}
                         value={transactionCostsAmountMax}
                         onChangeAction={handleInputChange}
@@ -390,7 +390,7 @@ const ProjectFormEditGeneral = ({
                     <div className="row">
                         <InputText
                             type={'number'}
-                            label={'Vanaf bedrag'}
+                            label={'Vanaf inleg'}
                             name={'transactionCostsAmount'}
                             value={transactionCostsAmount}
                             onChangeAction={handleInputChange}
@@ -415,11 +415,10 @@ const ProjectFormEditGeneral = ({
                         <div className="row">
                             <InputText
                                 type={'number'}
-                                label={'Vanaf bedrag'}
+                                label={'Vanaf inleg'}
                                 name={'transactionCostsAmount2'}
                                 value={transactionCostsAmount2}
                                 onChangeAction={handleInputChange}
-                                required={'required'}
                                 error={errors.transactionCostsAmount2}
                                 // errorMessage={errorMessage.transactionCostsAmount2}
                                 readOnly={!permissions.managePortalSettings}
@@ -432,7 +431,6 @@ const ProjectFormEditGeneral = ({
                                         name={'transactionCostsPercentage2'}
                                         value={transactionCostsPercentage2}
                                         onChangeAction={handleInputChange}
-                                        required={'required'}
                                         error={errors.transactionCostsPercentage2}
                                         // errorMessage={errorMessage.transactionCostsPercentage2}
                                         readOnly={!permissions.managePortalSettings}
@@ -446,11 +444,10 @@ const ProjectFormEditGeneral = ({
                             <>
                                 <InputText
                                     type={'number'}
-                                    label={'Vanaf bedrag'}
+                                    label={'Vanaf inleg'}
                                     name={'transactionCostsAmount3'}
                                     value={transactionCostsAmount3}
                                     onChangeAction={handleInputChange}
-                                    required={'required'}
                                     error={errors.transactionCostsAmount3}
                                     // errorMessage={errorMessage.transactionCostsAmount3}
                                     readOnly={!permissions.managePortalSettings}
@@ -462,7 +459,6 @@ const ProjectFormEditGeneral = ({
                                         name={'transactionCostsPercentage3'}
                                         value={transactionCostsPercentage3}
                                         onChangeAction={handleInputChange}
-                                        required={'required'}
                                         error={errors.transactionCostsPercentage3}
                                         // errorMessage={errorMessage.transactionCostsPercentage3}
                                         readOnly={!permissions.managePortalSettings}

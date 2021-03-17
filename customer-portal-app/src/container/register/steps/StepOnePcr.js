@@ -11,7 +11,7 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
 function StepOnePcr({
@@ -25,6 +25,7 @@ function StepOnePcr({
 }) {
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
+            .integer('Alleen gehele aantallen')
             .typeError('Alleen nummers')
             .test(
                 'participationsOptioned',
@@ -48,6 +49,11 @@ function StepOnePcr({
             ),
         pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
+        choiceMembership: Yup.number().test(
+            'choiceMembership',
+            'Verplicht',
+            value => !project.showQuestionAboutMembership || contactProjectData.belongsToMembershipGroup || value != 0
+        ),
     });
 
     // const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
@@ -91,20 +97,23 @@ function StepOnePcr({
         return pcrAdviseMaxNumberOfParticipations;
     }
 
-    function calculateAmount(values) {
-        return values.participationsOptioned ? values.participationsOptioned * project.currentBookWorth : 0;
+    function calculateAmount(participationsOptioned) {
+        return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
     }
-    function calculateTransactionCostsAmount(values) {
+    function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
         if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
             return 0;
         }
-        if (project.showQuestionAboutMembership && values.choiceMembership === 1) {
+        if (project.showQuestionAboutMembership && choiceMembership === 1) {
             return 0;
         }
-        return calculateTransactionCosts(project, values);
+        return calculateTransactionCosts(project, null, participationsOptioned);
     }
-    function calculateTotalAmount(values) {
-        return calculateAmount(values) + calculateTransactionCostsAmount(values);
+    function calculateTotalAmount(participationsOptioned, choiceMembership) {
+        return (
+            calculateAmount(participationsOptioned) +
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        ).toFixed(2);
     }
 
     return (
@@ -114,9 +123,12 @@ function StepOnePcr({
                 handleSubmitRegisterValues({
                     ...values,
                     powerKwhConsumption: calculatePowerKwhConsumption(values),
-                    amount: calculateAmount(values),
-                    transactionCostsAmount: calculateTransactionCostsAmount(values),
-                    totalAmount: calculateTotalAmount(values),
+                    amount: calculateAmount(values.participationsOptioned),
+                    transactionCostsAmount: calculateTransactionCostsAmount(
+                        values.participationsOptioned,
+                        values.choiceMembership
+                    ),
+                    totalAmount: calculateTotalAmount(values.participationsOptioned, values.choiceMembership),
                 });
                 next();
             }}
@@ -380,7 +392,9 @@ function StepOnePcr({
                                     <FormLabel className={'field-label'}>
                                         {project.transactionCostsCodeRef === 'none' ? 'Te betalen bedrag' : 'Bedrag'}
                                     </FormLabel>
-                                    <TextBlock>{MoneyPresenter(calculateAmount(values))}</TextBlock>
+                                    <TextBlock>
+                                        {MoneyPresenter(calculateAmount(values.participationsOptioned))}
+                                    </TextBlock>
                                 </Col>
                             </Row>
                             {project.showQuestionAboutMembership ? (
@@ -402,6 +416,12 @@ function StepOnePcr({
                                                     name="choiceMembership"
                                                     render={({ field }) => (
                                                         <>
+                                                            {get(errors, field.name, '') &&
+                                                                get(touched, field.name, '') && (
+                                                                    <small className="text-danger">
+                                                                        {get(errors, field.name, '')}
+                                                                    </small>
+                                                                )}
                                                             <div className="form-check">
                                                                 <label className="radio-inline">
                                                                     <input
@@ -448,12 +468,24 @@ function StepOnePcr({
                                                 {project.textTransactionCosts}
                                             </FormLabel>
                                             <TextBlock>
-                                                {MoneyPresenter(calculateTransactionCostsAmount(values))}
+                                                {MoneyPresenter(
+                                                    calculateTransactionCostsAmount(
+                                                        values.participationsOptioned,
+                                                        values.choiceMembership
+                                                    )
+                                                )}
                                             </TextBlock>
                                         </Col>
                                         <Col xs={12} md={6}>
                                             <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
-                                            <TextBlock>{MoneyPresenter(calculateTotalAmount(values))}</TextBlock>
+                                            <TextBlock>
+                                                {MoneyPresenter(
+                                                    calculateTotalAmount(
+                                                        values.participationsOptioned,
+                                                        values.choiceMembership
+                                                    )
+                                                )}
+                                            </TextBlock>
                                         </Col>
                                     </Row>
                                 </>

@@ -152,8 +152,8 @@ const ProjectFormViewGeneral = ({
         </div>
         {transactionCostsCodeRef === 'amount' || transactionCostsCodeRef === 'percentage' ? (
             <div className="row">
-                <ViewText label={'Minimaal bedrag'} value={transactionCostsAmountMin} />
-                <ViewText label={'Maximaal bedrag'} value={transactionCostsAmountMax} />
+                <ViewText label={'Minimaal kosten'} value={transactionCostsAmountMin} />
+                <ViewText label={'Maximaal kosten'} value={transactionCostsAmountMax} />
             </div>
         ) : null}
         {transactionCostsCodeRef === 'amount-once' ? (
@@ -172,18 +172,18 @@ const ProjectFormViewGeneral = ({
         {transactionCostsCodeRef === 'percentage' ? (
             <>
                 <div className="row">
-                    <ViewText label={'Vanaf bedrag'} value={transactionCostsAmount} />
+                    <ViewText label={'Vanaf inleg'} value={transactionCostsAmount} />
                     <ViewText label={'% van de inleg'} value={transactionCostsPercentage} />
                 </div>
                 {transactionCostsAmount2 !== null ? (
                     <div className="row">
-                        <ViewText label={'Vanaf bedrag'} value={transactionCostsAmount2} />
+                        <ViewText label={'Vanaf inleg'} value={transactionCostsAmount2} />
                         <ViewText label={'% van de inleg'} value={transactionCostsPercentage2} />
                     </div>
                 ) : null}
                 {transactionCostsAmount3 !== null ? (
                     <div className="row">
-                        <ViewText label={'Vanaf bedrag'} value={transactionCostsAmount3} />
+                        <ViewText label={'Vanaf inleg'} value={transactionCostsAmount3} />
                         <ViewText label={'% van de inleg'} value={transactionCostsPercentage3} />
                     </div>
                 ) : null}

@@ -32,6 +32,9 @@ class ParticipantMutationCollection extends Resource
                 $date = $this->date_granted;
                 break;
             case 'final':
+                $date = $this->date_entry;
+                break;
+            case null:
                 if($this->type_id == $mutationResultType || $this->type_id == $mutationEnergyTaxRefundType){
                     $date = $this->date_payment;
                 }
@@ -84,8 +87,8 @@ class ParticipantMutationCollection extends Resource
                             ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
                             ['type' => 'integer', 'label' => 'Aantal participaties', 'value' => $this->quantity],
                             ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
-                            ['type' => 'string', 'label' => 'kWh', 'value' => $this->payout_kwh],
-                            ['type' => 'string', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
+                            ['type' => 'decimal', 'label' => 'kWh', 'value' => $this->payout_kwh],
+                            ['type' => 'money', 'label' => 'Indicatie teruggave EB', 'value' => $this->indication_of_restitution_energy_tax],
                         ],
                     ];
 

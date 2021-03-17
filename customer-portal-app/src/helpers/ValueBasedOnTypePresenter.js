@@ -6,10 +6,12 @@ export default field => {
         case 'date':
             return field.value ? moment(field.value).format('L') : '';
         case 'decimal':
-            return field.value.toLocaleString('nl', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
+            return field.value
+                ? field.value.toLocaleString('nl', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                  })
+                : '';
         case 'money':
             return moneyPresenter(field.value);
         case 'string':

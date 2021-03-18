@@ -20,6 +20,10 @@ class ParticipantMutationObserver
         $userId = Auth::id();
         $participantMutation->created_by_id = $userId;
         $participantMutation->updated_by_id = $userId;
+        if($participantMutation->created_with == null){
+            $participantMutation->created_with = 'econobis';
+        }
+        $participantMutation->updated_with = $participantMutation->created_with;
         $participantMutation->code = Str::random(32);
     }
 
@@ -58,6 +62,17 @@ class ParticipantMutationObserver
     {
         $userId = Auth::id();
         $participantMutation->updated_by_id = $userId;
+        switch (Auth::user()->occupation){
+            case '@portal-update@':
+                $participantMutation->updated_with = 'portal';
+                break;
+            case '@webform-update@':
+                $participantMutation->updated_with = 'webform';
+                break;
+            default:
+                $participantMutation->updated_with = 'econobis';
+                break;
+        }
     }
 
     public function deleted(ParticipantMutation $participantMutation)

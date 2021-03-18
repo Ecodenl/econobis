@@ -5,21 +5,56 @@ import moment from 'moment/moment';
 
 moment.locale('nl');
 
-const ParticipantDetailsMutationConclusionView = ({ createdAt, createdBy, updatedAt, updatedBy }) => {
+const ParticipantDetailsMutationConclusionView = ({
+    createdAt,
+    createdWith,
+    createdBy,
+    updatedAt,
+    updatedWith,
+    updatedBy,
+}) => {
     return (
         <React.Fragment>
             <div className="row">
                 <ViewText
                     label={'Gemaakt door'}
                     className={'col-sm-6 form-group'}
-                    value={createdBy ? createdBy.fullName : 'Onbekend'}
-                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
+                    value={
+                        createdWith == 'portal'
+                            ? 'Portaal'
+                            : createdWith == 'webform'
+                            ? 'Webformulier'
+                            : createdBy
+                            ? createdBy.fullName
+                            : 'Onbekend'
+                    }
+                    link={
+                        createdWith == 'portal' || createdWith == 'webform'
+                            ? ''
+                            : createdBy
+                            ? 'gebruiker/' + createdBy.id
+                            : ''
+                    }
                 />
                 <ViewText
                     label={'Laatste update door'}
                     className={'col-sm-6 form-group'}
-                    value={updatedBy ? updatedBy.fullName : 'Onbekend'}
-                    link={updatedBy ? 'gebruiker/' + updatedBy.id : ''}
+                    value={
+                        updatedWith == 'portal'
+                            ? 'Portaal'
+                            : updatedWith == 'webform'
+                            ? 'Webformulier'
+                            : updatedBy
+                            ? updatedBy.fullName
+                            : 'Onbekend'
+                    }
+                    link={
+                        updatedWith == 'portal' || updatedWith == 'webform'
+                            ? ''
+                            : updatedBy
+                            ? 'gebruiker/' + updatedBy.id
+                            : ''
+                    }
                 />
             </div>
             <div className="row">

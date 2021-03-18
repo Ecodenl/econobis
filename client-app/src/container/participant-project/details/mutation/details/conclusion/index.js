@@ -3,7 +3,14 @@ import React, { useState } from 'react';
 import ParticipantDetailsMutationConclusionView from './View';
 import PanelHeader from '../../../../../../components/panel/PanelHeader';
 
-const ParticipantDetailsMutationConclusion = ({ createdAt, createdBy, updatedAt, updatedBy }) => {
+const ParticipantDetailsMutationConclusion = ({
+    createdAt,
+    createdWith,
+    createdBy,
+    updatedAt,
+    updatedWith,
+    updatedBy,
+}) => {
     const [showConclusion, toggleConclusion] = useState(true);
 
     return (
@@ -21,8 +28,10 @@ const ParticipantDetailsMutationConclusion = ({ createdAt, createdBy, updatedAt,
             {showConclusion ? (
                 <ParticipantDetailsMutationConclusionView
                     createdAt={createdAt}
+                    createdWith={createdWith}
                     createdBy={createdBy}
                     updatedAt={updatedAt}
+                    updatedWith={updatedWith}
                     updatedBy={updatedBy}
                 />
             ) : null}

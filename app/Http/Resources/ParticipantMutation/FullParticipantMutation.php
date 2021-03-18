@@ -54,6 +54,8 @@ class FullParticipantMutation extends Resource
                 'financialOverviewDefinitive' => $this->financial_overview_definitive,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+                'createdWith' => $this->created_with,
+                'updatedWith' => $this->updated_with,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'statusLogs' => FullParticipantMutationStatusLog::collection($this->whenLoaded('statusLog')),

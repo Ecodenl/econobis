@@ -7,7 +7,7 @@ import moment from 'moment/moment';
 moment.locale('nl');
 
 const ParticipantDetailsConclusionView = ({ participantProjectDetails }) => {
-    const { createdAt, createdWith, createdBy, updatedWith, updatedAt, updatedBy } = participantProjectDetails;
+    const { createdAt, createdWith, createdBy, updatedAt, updatedWith, updatedBy } = participantProjectDetails;
 
     return (
         <div>

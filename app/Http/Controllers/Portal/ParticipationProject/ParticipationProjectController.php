@@ -397,6 +397,7 @@ class ParticipationProjectController extends Controller
 
         $participantMutation = ParticipantMutation::create([
             'participation_id' => $participation->id,
+            'created_with' => 'portal',
             'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->value('id'),
             'status_id' => $status->id,
             'amount' => $participationMutationAmount,

@@ -16,8 +16,10 @@ function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
         paymentReference,
         paidOn,
         createdAt,
+        createdWith,
         createdBy,
         updatedAt,
+        updatedWith,
         updatedBy,
     } = participantMutationFromProps;
 
@@ -62,8 +64,10 @@ function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
 
             <ParticipantDetailsMutationConclusion
                 createdAt={createdAt}
+                createdWith={createdWith}
                 createdBy={createdBy}
                 updatedAt={updatedAt}
+                updatedWith={updatedWith}
                 updatedBy={updatedBy}
             />
 
@@ -83,8 +87,10 @@ MutationFormEditResult.propTypes = {
     paidOn: PropTypes.string,
     cancelEdit: PropTypes.func,
     createdAt: PropTypes.object,
+    createdWith: PropTypes.object,
     createdBy: PropTypes.object,
     updatedAt: PropTypes.object,
+    updatedWith: PropTypes.object,
     updatedBy: PropTypes.object,
 };
 

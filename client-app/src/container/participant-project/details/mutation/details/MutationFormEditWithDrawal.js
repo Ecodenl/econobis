@@ -115,8 +115,10 @@ function MutationFormEditWithDrawal({
 
             <ParticipantDetailsMutationConclusion
                 createdAt={participantMutationFromProps.createdAt}
+                createdWith={participantMutationFromProps.createdWith}
                 createdBy={participantMutationFromProps.createdBy}
                 updatedAt={participantMutationFromProps.updatedAt}
+                updatedWith={participantMutationFromProps.updatedWith}
                 updatedBy={participantMutationFromProps.updatedBy}
             />
 

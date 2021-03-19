@@ -14,22 +14,22 @@ class AddTransactionCostsFieldsToProjectsTable extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->string('text_transaction_costs')->default('');
-            $table->string('transaction_costs_code_ref', 16)->nullable()->default(null);
+            $table->string('text_transaction_costs')->default('Transactiekosten');
+            $table->string('transaction_costs_code_ref', 16)->nullable()->default('none');
             $table->double('transaction_costs_amount', 10, 2)->nullable();
             $table->double('transaction_costs_percentage', 10, 2)->nullable();
         });
 
-        $defaultTextTransactionCosts = 'Transactiekosten';
-        $defaultTransactionCostsCodeRef = 'none';
-
-        $projects = \App\Eco\Project\Project::all();
-
-        foreach ($projects as $project){
-            $project->text_transaction_costs = $defaultTextTransactionCosts;
-            $project->transaction_costs_code_ref =$defaultTransactionCostsCodeRef;
-            $project->save();
-        }
+//        $defaultTextTransactionCosts = 'Transactiekosten';
+//        $defaultTransactionCostsCodeRef = 'none';
+//
+//        $projects = \App\Eco\Project\Project::all();
+//
+//        foreach ($projects as $project){
+//            $project->text_transaction_costs = $defaultTextTransactionCosts;
+//            $project->transaction_costs_code_ref =$defaultTransactionCostsCodeRef;
+//            $project->save();
+//        }
 
     }
 

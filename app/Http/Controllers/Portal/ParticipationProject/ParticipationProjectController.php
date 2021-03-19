@@ -419,28 +419,34 @@ class ParticipationProjectController extends Controller
         // Recalculate dependent data in project
         $participantMutation->participation->project->calculator()->run()->save();
 
-        $contactGroupController = new ContactGroupController();
-        // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
-        switch ($participation->choice_membership) {
-            case 1:
-                // koppel aan member_group_id
-                $contactGroupMember = ContactGroup::find($project->member_group_id);
-                $contactGroupPivotExists = $contact->groups()->where('id', $project->member_group_id)->exists();
-                if($contactGroupMember && !$contactGroupPivotExists){
-                    $contactGroupController->addContact($contactGroupMember, $contact);
-                }
-                break;
-            case 2:
-                // koppel aan no_member_group_id
-                $contactGroupNoMember = ContactGroup::find($project->no_member_group_id);
-                $contactGroupPivotExists = $contact->groups()->where('id', $project->no_member_group_id)->exists();
-                if($contactGroupNoMember && !$contactGroupPivotExists){
-                    $contactGroupController->addContact($contactGroupNoMember, $contact);
-                }
-                break;
-            default:
-                // no action
-                break;
+        /**
+         * Alleen koppelen aan juiste contactgroup als Mollie is uitgeschakeld, als Mollie
+         * is ingeschakeld willen we koppelen pas na de betaling uitvoeren.
+         */
+        if(!$project->uses_mollie) {
+            $contactGroupController = new ContactGroupController();
+            // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
+            switch ($participation->choice_membership) {
+                case 1:
+                    // koppel aan member_group_id
+                    $contactGroupMember = ContactGroup::find($project->member_group_id);
+                    $contactGroupPivotExists = $contact->groups()->where('id', $project->member_group_id)->exists();
+                    if ($contactGroupMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupMember, $contact);
+                    }
+                    break;
+                case 2:
+                    // koppel aan no_member_group_id
+                    $contactGroupNoMember = ContactGroup::find($project->no_member_group_id);
+                    $contactGroupPivotExists = $contact->groups()->where('id', $project->no_member_group_id)->exists();
+                    if ($contactGroupNoMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupNoMember, $contact);
+                    }
+                    break;
+                default:
+                    // no action
+                    break;
+            }
         }
 
         /**

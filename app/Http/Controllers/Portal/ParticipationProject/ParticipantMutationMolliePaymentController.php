@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Portal\ParticipationProject;
 
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationMolliePayment;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
@@ -10,6 +11,7 @@ use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -56,6 +58,33 @@ class ParticipantMutationMolliePaymentController extends ApiController
             $participantMutation->save();
 
             (new ParticipantMutationController())->recalculateParticipantMutation($participantMutation);
+
+            /**
+             * Koppelen aan juiste contactgroup
+             */
+            $contactGroupController = new ContactGroupController();
+            // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
+            switch ($participantMutation->participation->choice_membership) {
+                case 1:
+                    // koppel aan member_group_id
+                    $contactGroupMember = ContactGroup::find($participantMutation->participation->project->member_group_id);
+                    $contactGroupPivotExists = $participantMutation->participation->contact->groups()->where('id', $participantMutation->participation->project->member_group_id)->exists();
+                    if ($contactGroupMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupMember, $participantMutation->participation->contact);
+                    }
+                    break;
+                case 2:
+                    // koppel aan no_member_group_id
+                    $contactGroupNoMember = ContactGroup::find($participantMutation->participation->project->no_member_group_id);
+                    $contactGroupPivotExists = $participantMutation->participation->contact->groups()->where('id', $participantMutation->participation->project->no_member_group_id)->exists();
+                    if ($contactGroupNoMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupNoMember, $participantMutation->participation->contact);
+                    }
+                    break;
+                default:
+                    // no action
+                    break;
+            }
 
             (new ParticipationProjectController())->createAndSendRegistrationDocument(
                 $participantMutation->participation->contact,

@@ -16,17 +16,9 @@ class AddMollieSettingsToAdministrations extends Migration
     {
         Schema::table('administrations', function (Blueprint $table) {
             $table->boolean('uses_mollie')->default(false);
-            $table->text('mollie_api_key')->nullable()->default('');
+            $table->text('mollie_api_key');
         });
 
-        /**
-         * mollie_api_key wordt ge-encrypt.
-         * Overal eenmalig setten om fouten bij decrypten te voorkomen.
-         */
-//        foreach (Administration::all() as $administration){
-//            $administration->mollie_api_key = '';
-//            $administration->save();
-//        }
     }
 
     /**

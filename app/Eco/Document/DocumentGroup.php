@@ -24,17 +24,18 @@ class DocumentGroup extends EnumWithIdAndName
     {
         return [
             new static('general', 'Algemeen'),
+            new static('contract', 'Contract'),
+            new static('participation', 'Deelname'),
+            new static('registration', 'Inschrijvingsbevestiging'),
+            new static('infrared', 'Infraroodopnames'),
+            new static('membership', 'Lidmaatschap'),
+            new static('invoice', 'Nota'),
             new static('quotation', 'Offerte'),
             new static('revenue', 'Opbrengst'),
             new static('order', 'Order'),
-            new static('invoice', 'Nota'),
-            new static('contract', 'Contract'),
-            new static('membership', 'Lidmaatschap'),
             new static('privacy', 'Privacyverklaring'),
             new static('consultation', 'Verslag adviesgesprek'),
             new static('pre-registration', 'Voorinschrijving'),
-            new static('registration', 'Inschrijvingsbevestiging'),
-            new static('participation', 'Deelname'),
             new static('financial-overview', 'Waardestaat'),
         ];
     }

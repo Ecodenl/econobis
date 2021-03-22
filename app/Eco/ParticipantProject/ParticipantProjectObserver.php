@@ -22,6 +22,10 @@ class ParticipantProjectObserver
         $userId = Auth::id();
         $participantProject->created_by_id = $userId;
         $participantProject->updated_by_id = $userId;
+        if($participantProject->created_with == null){
+            $participantProject->created_with = 'econobis';
+        }
+        $participantProject->updated_with = $participantProject->created_with;
     }
 
     public function saved(ParticipantProject $participantProject)
@@ -90,6 +94,17 @@ class ParticipantProjectObserver
     {
         $userId = Auth::id();
         $participantProject->updated_by_id = $userId;
+        switch (Auth::user()->occupation){
+            case '@portal-update@':
+                $participantProject->updated_with = 'portal';
+                break;
+            case '@webform-update@':
+                $participantProject->updated_with = 'webform';
+                break;
+            default:
+                $participantProject->updated_with = 'econobis';
+                break;
+        }
 
         if($participantProject->isDirty('did_accept_agreement') && $participantProject->did_accept_agreement ) {
             $participantProject->date_did_accept_agreement = Carbon::now();

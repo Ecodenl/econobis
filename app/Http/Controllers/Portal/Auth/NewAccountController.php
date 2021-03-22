@@ -66,7 +66,9 @@ class NewAccountController extends Controller
                 abort(501, 'Er is helaas een fout opgetreden (6).');
             }
 
-            Auth::setUser(User::find($responsibleUserId));
+            $responsibleUser = User::find($responsibleUserId);
+            $responsibleUser->occupation = '@portal-update@';
+            Auth::setUser($responsibleUser);
 
             DB::transaction(function () use ($request, $responsibleUserId, $emailTemplateNewAccountId) {
 
@@ -164,6 +166,7 @@ class NewAccountController extends Controller
             $contactOrganisation = Contact::create([
                 'type_id' => ContactType::ORGANISATION,
                 'status_id' => 'portal',
+                'created_with' => 'portal',
             ]);
 
             $organisation = Organisation::create([
@@ -174,6 +177,7 @@ class NewAccountController extends Controller
             $contactPerson = Contact::create([
                 'type_id' => ContactType::PERSON,
                 'status_id' => 'portal',
+                'created_with' => 'portal',
             ]);
 
             // Validatie op title_id
@@ -208,6 +212,7 @@ class NewAccountController extends Controller
         $contact = Contact::create([
             'type_id' => ContactType::PERSON,
             'status_id' => 'portal',
+            'created_with' => 'portal',
             'owner_id' => $contactResponsibleOwnerUserId,
         ]);
 

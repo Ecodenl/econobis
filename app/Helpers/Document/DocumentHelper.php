@@ -23,7 +23,7 @@ class DocumentHelper
      *
      * @return string
      */
-    public static function getDocumentBody(Contact $contact, Project $project, DocumentTemplate $documentTemplate, Request $request)
+    public static function getDocumentBody(Contact $contact, Project $project, DocumentTemplate $documentTemplate, array $data)
     {
             $documentTemplate->load('footer', 'baseTemplate', 'header');
 
@@ -45,14 +45,16 @@ class DocumentHelper
 
             if($projectTypeCodeRef == 'loan'){
                 $participationsOptioned =  0;
-                $amountOptioned =  $request['amountOptioned'] ? number_format($request['amountOptioned'], 2, ',', '') : 0;
+                $amountOptioned =  $data['amountOptioned'] ? number_format($data['amountOptioned'], 2, ',', '') : 0;
             }else{
-                $participationsOptioned =  $request['participationsOptioned'] ? $request['participationsOptioned'] : 0;
-                $amountOptioned =  ( $request['participationsOptioned'] && $project->currentBookWorth() ) ? number_format( ( $request['participationsOptioned'] * $project->currentBookWorth() ), 2, ',', '') : 0;
+                $participationsOptioned =  $data['participationsOptioned'] ? $data['participationsOptioned'] : 0;
+                $amountOptioned =  ( $data['participationsOptioned'] && $project->currentBookWorth() ) ? number_format( ( $data['participationsOptioned'] * $project->currentBookWorth() ), 2, ',', '') : 0;
             }
+            $transactionCostsAmount =  $data['transactionCostsAmount'] ? number_format($data['transactionCostsAmount'], 2, ',', '') : 0;
 
             $documentBody = str_replace('{deelname_aantal_ingeschreven}', $participationsOptioned, $documentBody);
             $documentBody = str_replace('{deelname_bedrag_ingeschreven}', $amountOptioned, $documentBody);
+            $documentBody = str_replace('{deelname_transactiekosten_laatste_mutatie}', $transactionCostsAmount, $documentBody);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'vertegenwoordigde', $portalUserContact);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'contact', $contact);
             $documentBody = TemplateVariableHelper::replaceTemplateVariables($documentBody, 'project', $project);

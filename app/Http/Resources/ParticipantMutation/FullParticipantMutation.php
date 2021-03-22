@@ -44,6 +44,7 @@ class FullParticipantMutation extends Resource
                 'quantityOption' => $this->quantity_option,
                 'quantityGranted' => $this->quantity_granted,
                 'quantityFinal' => $this->quantity_final,
+                'transactionCostsAmount' => $this->transaction_costs_amount,
                 'participationWorth' => $this->participation_worth,
                 'returns' => $this->returns,
                 'payoutKwhPrice' => $this->payout_kwh_price,
@@ -56,6 +57,10 @@ class FullParticipantMutation extends Resource
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'statusLogs' => FullParticipantMutationStatusLog::collection($this->whenLoaded('statusLog')),
+                'molliePayments' => GenericResource::collection($this->whenLoaded('molliePayments')),
+                'isPaidByMollie' => $this->is_paid_by_mollie,
+                'participation' => FullParticipantProject::make($this->whenLoaded('participation')),
+                'econobisPaymentLink' => $this->econobis_payment_link,
             ];
     }
 }

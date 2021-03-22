@@ -19,6 +19,7 @@ use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -26,8 +27,8 @@ use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
+use App\Http\Resources\Portal\ParticipantProject\ParticipantProjectResource;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Config;
@@ -36,9 +37,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ParticipationProjectController extends Controller
 {
+    /**
+     * @var $participationMutation ParticipantMutation
+     */
+    private $participationMutation;
+
     public function show(ParticipantProject $participantProject)
     {
         // ophalen contactgegevens portal user
@@ -112,13 +119,40 @@ class ParticipationProjectController extends Controller
         }
 
         DB::transaction(function () use ($contact, $project, $request, $portalUser, $responsibleUserId) {
+            /**
+             * Als er eerder op dit project is ingeschreven dan kan de
+             * participatie nog worden overschreven, maar alleen als:
+             * 1) Het project gebruik maakt van Mollie, en
+             * 2) De betaling nog niet is gedaan.
+             */
+            $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
+            $previousMutation = optional(optional($previousParticipantProject)->mutations())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+            if($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie){
+                $this->deleteParticipantProject($previousMutation, $previousParticipantProject);
+            }
+
             $participation = $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
-            $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request);
+
+            /**
+             * Alleen aanmaken en mailen als Mollie is uitgeschakeld, als Mollie
+             * is ingeschakeld willen we deze stap pas na de betaling uitvoeren.
+             */
+            if(!$project->uses_mollie) {
+                $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $this->participationMutation);
+            }
         });
 
+        if($this->participationMutation->participation->project->uses_mollie){
+            /**
+             * Als Mollie voor dit project aan staat dan returnen we die zodat er naar de betaalpagina geredirect kan worden.
+             */
+            return [
+                'econobisPaymentLink' => $this->participationMutation->econobis_payment_link,
+            ];
+        }
     }
 
-    protected function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $request)
+    public function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, ParticipantMutation $participantMutation)
     {
         $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
@@ -127,7 +161,11 @@ class ParticipationProjectController extends Controller
         {
             $documentBody = '';
         }else{
-            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, $request);
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, [
+                'amountOptioned' => $participantMutation->amount,
+                'participationsOptioned' => $participantMutation->quantity,
+                'transactionCostsAmount' => $participantMutation->transaction_costs_amount,
+            ]);
         }
 
         $emailTemplateAgreementId = $project ? $project->email_template_agreement_id : 0;
@@ -223,15 +261,17 @@ class ParticipationProjectController extends Controller
 
             if($projectTypeCodeRef == 'loan'){
                 $participationsOptioned =  0;
-                $amountOptioned =  $request['amountOptioned'] ? number_format($request['amountOptioned'], 2, ',', '') : 0;
+                $amountOptioned =  $participantMutation->amount ? number_format($participantMutation->amount, 2, ',', '') : 0;
             }else{
-                $participationsOptioned =  $request['participationsOptioned'] ? $request['participationsOptioned'] : 0;
-                $amountOptioned =  ( $request['participationsOptioned'] && $project->currentBookWorth() ) ? number_format( ( $request['participationsOptioned'] * $project->currentBookWorth() ), 2, ',', '') : 0;
+                $participationsOptioned =  $participantMutation->quantity ? $participantMutation->quantity : 0;
+                $amountOptioned =  ( $participantMutation->quantity && $project->currentBookWorth() ) ? number_format( ( $participantMutation->quantity * $project->currentBookWorth() ), 2, ',', '') : 0;
             }
+            $transactionCostsAmount =  $participantMutation->transaction_costs_amount ? number_format($participantMutation->transaction_costs_amount, 2, ',', '') : 0;
 
             $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $contact);
             $htmlBodyWithContactVariables = str_replace('{deelname_aantal_ingeschreven}', $participationsOptioned, $htmlBodyWithContactVariables);
             $htmlBodyWithContactVariables = str_replace('{deelname_bedrag_ingeschreven}', $amountOptioned, $htmlBodyWithContactVariables);
+            $htmlBodyWithContactVariables = str_replace('{deelname_transactiekosten_laatste_mutatie}', $transactionCostsAmount, $htmlBodyWithContactVariables);
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $contact);
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'contacten_portal' );
@@ -248,6 +288,7 @@ class ParticipationProjectController extends Controller
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'vertegenwoordigde', $portalUserContact);
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'administratie', $project->administration);
             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'project', $project);
+            $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'deelname', $participation);
             $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
 //            $subject = str_replace('{contactpersoon}', $contactInfo['contactPerson'], $subject);
@@ -337,13 +378,14 @@ class ParticipationProjectController extends Controller
         $participationMutationDate = null;
         $participationMutationAmount = null;
         $participationMutationQuantity = null;
-
+        $participationMutationTransactionCostsAmount = null;
 
         switch($status->code_ref){
             case 'option' :
                 $participationMutationDate = $today ?: null;
                 $participationMutationAmount = $request->amountOptioned ?: null;
                 $participationMutationQuantity = $request->participationsOptioned ?: null;
+                $participationMutationTransactionCostsAmount = $request->transactionCostsAmount ?: null;
                 $dateOption = $participationMutationDate;
                 $amountOption = $participationMutationAmount;
                 $quantityOption = $participationMutationQuantity;
@@ -368,6 +410,7 @@ class ParticipationProjectController extends Controller
             'date_entry' => $dateFinal,
             'amount_final' => $amountFinal,
             'quantity_final' => $quantityFinal,
+            'transaction_costs_amount' => $participationMutationTransactionCostsAmount,
         ]);
 
         // Recalculate dependent data in participantProject
@@ -376,33 +419,62 @@ class ParticipationProjectController extends Controller
         // Recalculate dependent data in project
         $participantMutation->participation->project->calculator()->run()->save();
 
-        $contactGroupController = new ContactGroupController();
-        // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
-        switch ($participation->choice_membership) {
-            case 1:
-                // koppel aan member_group_id
-                $contactGroupMember = ContactGroup::find($project->member_group_id);
-                $contactGroupPivotExists = $contact->groups()->where('id', $project->member_group_id)->exists();
-                if($contactGroupMember && !$contactGroupPivotExists){
-                    $contactGroupController->addContact($contactGroupMember, $contact);
-                }
-                break;
-            case 2:
-                // koppel aan no_member_group_id
-                $contactGroupNoMember = ContactGroup::find($project->no_member_group_id);
-                $contactGroupPivotExists = $contact->groups()->where('id', $project->no_member_group_id)->exists();
-                if($contactGroupNoMember && !$contactGroupPivotExists){
-                    $contactGroupController->addContact($contactGroupNoMember, $contact);
-                }
-                break;
-            default:
-                // no action
-                break;
+        /**
+         * Alleen koppelen aan juiste contactgroup als Mollie is uitgeschakeld, als Mollie
+         * is ingeschakeld willen we koppelen pas na de betaling uitvoeren.
+         */
+        if(!$project->uses_mollie) {
+            $contactGroupController = new ContactGroupController();
+            // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
+            switch ($participation->choice_membership) {
+                case 1:
+                    // koppel aan member_group_id
+                    $contactGroupMember = ContactGroup::find($project->member_group_id);
+                    $contactGroupPivotExists = $contact->groups()->where('id', $project->member_group_id)->exists();
+                    if ($contactGroupMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupMember, $contact);
+                    }
+                    break;
+                case 2:
+                    // koppel aan no_member_group_id
+                    $contactGroupNoMember = ContactGroup::find($project->no_member_group_id);
+                    $contactGroupPivotExists = $contact->groups()->where('id', $project->no_member_group_id)->exists();
+                    if ($contactGroupNoMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupNoMember, $contact);
+                    }
+                    break;
+                default:
+                    // no action
+                    break;
+            }
         }
+
+        /**
+         * Deze maar even in dit object opslaan zodat we hem makkelijk weer kunnen oproepen vanuit de create() functie.
+         */
+        $this->participationMutation = $participantMutation;
+
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
         // Voor zekerheid hierna weer even Auth user herstellen met portal user
         Auth::setUser($portalUser);
 
         return $participation;
+    }
+
+    protected function deleteParticipantProject($previousMutation): void
+    {
+        foreach ($previousMutation->statusLog as $statusLog) {
+            $statusLog->delete();
+        }
+        foreach ($previousMutation->molliePayments as $molliePayment) {
+            $molliePayment->delete();
+        }
+        $previousMutation->delete();
+
+        $result = (new DeleteParticipation($previousMutation->participation))->delete();
+
+        if (count($result) > 0) {
+            abort(412, implode(";", array_unique($result)));
+        }
     }
 }

@@ -11,7 +11,8 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
+import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
 function StepOnePcr({
     portalSettings,
@@ -24,6 +25,7 @@ function StepOnePcr({
 }) {
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
+            .integer('Alleen gehele aantallen')
             .typeError('Alleen nummers')
             .test(
                 'participationsOptioned',
@@ -47,6 +49,11 @@ function StepOnePcr({
             ),
         pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),
+        choiceMembership: Yup.number().test(
+            'choiceMembership',
+            'Verplicht',
+            value => !project.showQuestionAboutMembership || contactProjectData.belongsToMembershipGroup || value != 0
+        ),
     });
 
     // const PCR_POWER_KWH_CONSUMPTION_PERCENTAGE = 0.8;
@@ -90,16 +97,45 @@ function StepOnePcr({
         return pcrAdviseMaxNumberOfParticipations;
     }
 
+    function calculateAmount(participationsOptioned) {
+        return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
+    }
+    function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
+        if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+            return 0;
+        }
+        if (project.showQuestionAboutMembership && choiceMembership === 1) {
+            return 0;
+        }
+        return calculateTransactionCosts(project, null, participationsOptioned);
+    }
+    function calculateTotalAmount(participationsOptioned, choiceMembership) {
+        return (
+            calculateAmount(participationsOptioned) +
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        ).toFixed(2);
+    }
+
     return (
         <Formik
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                handleSubmitRegisterValues({ ...values, powerKwhConsumption: calculatePowerKwhConsumption(values) });
+                handleSubmitRegisterValues({
+                    ...values,
+                    powerKwhConsumption: calculatePowerKwhConsumption(values),
+                    amount: calculateAmount(values.participationsOptioned),
+                    transactionCostsAmount: calculateTransactionCostsAmount(
+                        values.participationsOptioned,
+                        values.choiceMembership
+                    ),
+                    totalAmount: calculateTotalAmount(values.participationsOptioned, values.choiceMembership),
+                });
                 next();
             }}
             initialValues={{
                 ...initialRegisterValues,
             }}
+            enableReinitialize={true}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => {
                 let pcrEstimatedGeneratedNumberOfKwh = calculateEstimatedGeneratedNumberOfKwh(values);
@@ -121,8 +157,8 @@ function StepOnePcr({
                                 </Col>
 
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Nominale waarde per participatie</FormLabel>
-                                    <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                                    <FormLabel className={'field-label'}>Huidige boekwaarde per participatie</FormLabel>
+                                    <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                                 </Col>
                             </Row>
 
@@ -353,9 +389,11 @@ function StepOnePcr({
                                     />
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
+                                    <FormLabel className={'field-label'}>
+                                        {project.transactionCostsCodeRef === 'none' ? 'Te betalen bedrag' : 'Bedrag'}
+                                    </FormLabel>
                                     <TextBlock>
-                                        {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
+                                        {MoneyPresenter(calculateAmount(values.participationsOptioned))}
                                     </TextBlock>
                                 </Col>
                             </Row>
@@ -378,6 +416,12 @@ function StepOnePcr({
                                                     name="choiceMembership"
                                                     render={({ field }) => (
                                                         <>
+                                                            {get(errors, field.name, '') &&
+                                                                get(touched, field.name, '') && (
+                                                                    <small className="text-danger">
+                                                                        {get(errors, field.name, '')}
+                                                                    </small>
+                                                                )}
                                                             <div className="form-check">
                                                                 <label className="radio-inline">
                                                                     <input
@@ -412,6 +456,38 @@ function StepOnePcr({
                                             </Col>
                                         </Row>
                                     ) : null}
+                                </>
+                            ) : null}
+
+                            {project.transactionCostsCodeRef !== 'none' ? (
+                                <>
+                                    <hr />
+                                    <Row>
+                                        <Col xs={12} md={6}>
+                                            <FormLabel className={'field-label'}>
+                                                {project.textTransactionCosts}
+                                            </FormLabel>
+                                            <TextBlock>
+                                                {MoneyPresenter(
+                                                    calculateTransactionCostsAmount(
+                                                        values.participationsOptioned,
+                                                        values.choiceMembership
+                                                    )
+                                                )}
+                                            </TextBlock>
+                                        </Col>
+                                        <Col xs={12} md={6}>
+                                            <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
+                                            <TextBlock>
+                                                {MoneyPresenter(
+                                                    calculateTotalAmount(
+                                                        values.participationsOptioned,
+                                                        values.choiceMembership
+                                                    )
+                                                )}
+                                            </TextBlock>
+                                        </Col>
+                                    </Row>
                                 </>
                             ) : null}
 

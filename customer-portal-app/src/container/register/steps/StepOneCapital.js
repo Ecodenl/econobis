@@ -11,11 +11,13 @@ import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
+import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
 function StepOneCapital({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
+            .integer('Alleen gehele aantallen')
             .typeError('Alleen nummers')
             .test(
                 'participationsOptioned',
@@ -25,16 +27,49 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
             .max(project.maxParticipations, 'Maximum van ${max} bereikt')
             .positive('Getal moet groter zijn dan 0')
             .required('Verplicht'),
+        choiceMembership: Yup.number().test(
+            'choiceMembership',
+            'Verplicht',
+            value => !project.showQuestionAboutMembership || contactProjectData.belongsToMembershipGroup || value != 0
+        ),
     });
+
+    function calculateAmount(participationsOptioned) {
+        return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
+    }
+    function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
+        if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+            return 0;
+        }
+        if (project.showQuestionAboutMembership && choiceMembership === 1) {
+            return 0;
+        }
+        return calculateTransactionCosts(project, null, participationsOptioned);
+    }
+    function calculateTotalAmount(participationsOptioned, choiceMembership) {
+        return (
+            calculateAmount(participationsOptioned) +
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        ).toFixed(2);
+    }
 
     return (
         <Formik
             validationSchema={validationSchema}
             onSubmit={function(values, actions) {
-                handleSubmitRegisterValues(values);
+                handleSubmitRegisterValues({
+                    ...values,
+                    amount: calculateAmount(values.participationsOptioned),
+                    transactionCostsAmount: calculateTransactionCostsAmount(
+                        values.participationsOptioned,
+                        values.choiceMembership
+                    ),
+                    totalAmount: calculateTotalAmount(values.participationsOptioned, values.choiceMembership),
+                });
                 next();
             }}
             initialValues={initialRegisterValues}
+            enableReinitialize={true}
         >
             {({ handleSubmit, values, touched, errors, setFieldValue }) => (
                 <>
@@ -50,8 +85,8 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                             </Col>
 
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Nominale waarde per participatie</FormLabel>
-                                <TextBlock>{MoneyPresenter(project.participationWorth)}</TextBlock>
+                                <FormLabel className={'field-label'}>Huidige boekwaarde per participatie</FormLabel>
+                                <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>
                                 <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
@@ -68,10 +103,10 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                 />
                             </Col>
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Te betalen bedrag</FormLabel>
-                                <TextBlock>
-                                    {MoneyPresenter(values.participationsOptioned * project.participationWorth)}
-                                </TextBlock>
+                                <FormLabel className={'field-label'}>
+                                    {project.transactionCostsCodeRef === 'none' ? 'Te betalen bedrag' : 'Bedrag'}
+                                </FormLabel>
+                                <TextBlock>{MoneyPresenter(calculateAmount(values.participationsOptioned))}</TextBlock>
                             </Col>
                         </Row>
                         {project.showQuestionAboutMembership ? (
@@ -93,6 +128,12 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                                 name="choiceMembership"
                                                 render={({ field }) => (
                                                     <>
+                                                        {get(errors, field.name, '') &&
+                                                            get(touched, field.name, '') && (
+                                                                <small className="text-danger">
+                                                                    {get(errors, field.name, '')}
+                                                                </small>
+                                                            )}
                                                         <div className="form-check">
                                                             <label className="radio-inline">
                                                                 <input
@@ -127,6 +168,36 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                         </Col>
                                     </Row>
                                 ) : null}
+                            </>
+                        ) : null}
+
+                        {project.transactionCostsCodeRef !== 'none' ? (
+                            <>
+                                <hr />
+                                <Row>
+                                    <Col xs={12} md={6}>
+                                        <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
+                                        <TextBlock>
+                                            {MoneyPresenter(
+                                                calculateTransactionCostsAmount(
+                                                    values.participationsOptioned,
+                                                    values.choiceMembership
+                                                )
+                                            )}
+                                        </TextBlock>
+                                    </Col>
+                                    <Col xs={12} md={6}>
+                                        <FormLabel className={'field-label'}>Totaal te betalen</FormLabel>
+                                        <TextBlock>
+                                            {MoneyPresenter(
+                                                calculateTotalAmount(
+                                                    values.participationsOptioned,
+                                                    values.choiceMembership
+                                                )
+                                            )}
+                                        </TextBlock>
+                                    </Col>
+                                </Row>
                             </>
                         ) : null}
 

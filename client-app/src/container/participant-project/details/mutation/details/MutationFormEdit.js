@@ -18,6 +18,8 @@ const MutationFormEdit = ({
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
+    projectTransactionCostsCodeRef,
+    projectCurrentBookWorth,
     cancelEdit,
     participantMutationStatuses,
     participantProjectDateRegister,
@@ -81,6 +83,8 @@ const MutationFormEdit = ({
                             errors={errors}
                             errorMessage={errorMessage}
                             projectTypeCodeRef={projectTypeCodeRef}
+                            projectTransactionCostsCodeRef={projectTransactionCostsCodeRef}
+                            projectCurrentBookWorth={projectCurrentBookWorth}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
                             cancelEdit={cancelEdit}
@@ -132,6 +136,8 @@ const MutationFormEdit = ({
 const mapStateToProps = state => {
     return {
         projectTypeCodeRef: state.participantProjectDetails.project.projectType.codeRef,
+        projectTransactionCostsCodeRef: state.participantProjectDetails.project.transactionCostsCodeRef,
+        projectCurrentBookWorth: state.participantProjectDetails.project.currentBookWorth,
         participantProjectDateRegister: state.participantProjectDetails.dateRegister,
         participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,
         participantMutationStatuses: state.systemData.participantMutationStatuses,

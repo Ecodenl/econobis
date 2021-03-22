@@ -224,7 +224,7 @@ class InvoicesListItem extends Component {
                     )}
                     {this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') &&
-                    !this.props.dateExhortation ? (
+                    !this.props.dateExhortation && !this.props.isPaidByMollie ? (
                         <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
                             <span className="glyphicon glyphicon-bullhorn mybtn-success" />{' '}
                         </a>

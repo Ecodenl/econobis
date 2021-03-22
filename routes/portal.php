@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Setting\SettingController;
+use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
@@ -42,3 +43,5 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
         Route::get('jory/{uri}/{id}', '\\' . JoryController::class . '@find');
         Route::get('jory/{uri}', '\\' . JoryController::class . '@get');
     });
+
+Route::post('mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');

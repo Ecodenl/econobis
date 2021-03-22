@@ -28,6 +28,13 @@ class AdministrationObserver
             $invoice->save();
         }
 
+        if(!$administration->uses_mollie){
+            foreach ($administration->projects as $project){
+                $project->uses_mollie = false;
+                $project->save();
+            }
+        }
+
         //TODO moet dit? Niet in eerste versie met Twinfield aanpassingen. We bekijken dit opnieuw in volgende sprint met Twinfield aanpassingen
         //Als er iets in de twinfield instelling veranderd is moeten we dit opnieuw synchroniseren
 //        if(

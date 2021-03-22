@@ -39,6 +39,7 @@ const ProjectFormView = props => {
         isMembershipRequired,
         isParticipationTransferable,
         administration,
+        usesMollie,
         postalcodeLink,
         requiresContactGroups,
         amountOfLoanNeeded,
@@ -71,6 +72,18 @@ const ProjectFormView = props => {
         textLinkUnderstandInfo,
         textAcceptAgreement,
         textAcceptAgreementQuestion,
+        textRegistrationFinished,
+        textTransactionCosts,
+        transactionCostsCodeRef,
+        transactionCostsCodeRefWithName,
+        transactionCostsAmountMin,
+        transactionCostsAmountMax,
+        transactionCostsAmount,
+        transactionCostsPercentage,
+        transactionCostsAmount2,
+        transactionCostsPercentage2,
+        transactionCostsAmount3,
+        transactionCostsPercentage3,
     } = props.project;
     return (
         <section
@@ -91,6 +104,7 @@ const ProjectFormView = props => {
                 dateEndRegistrations={dateEndRegistrations}
                 ownedBy={ownedBy}
                 administration={administration}
+                usesMollie={usesMollie}
                 dateStart={dateStart}
                 dateEnd={dateEnd}
                 dateEntry={dateEntry}
@@ -115,6 +129,18 @@ const ProjectFormView = props => {
                 textLinkUnderstandInfo={textLinkUnderstandInfo}
                 textAcceptAgreement={textAcceptAgreement}
                 textAcceptAgreementQuestion={textAcceptAgreementQuestion}
+                textRegistrationFinished={textRegistrationFinished}
+                textTransactionCosts={textTransactionCosts}
+                transactionCostsCodeRef={transactionCostsCodeRef}
+                transactionCostsCodeRefWithName={transactionCostsCodeRefWithName}
+                transactionCostsAmountMin={transactionCostsAmountMin}
+                transactionCostsAmountMax={transactionCostsAmountMax}
+                transactionCostsAmount={transactionCostsAmount}
+                transactionCostsPercentage={transactionCostsPercentage}
+                transactionCostsAmount2={transactionCostsAmount2}
+                transactionCostsPercentage2={transactionCostsPercentage2}
+                transactionCostsAmount3={transactionCostsAmount3}
+                transactionCostsPercentage3={transactionCostsPercentage3}
             />
 
             {projectType && projectType.codeRef === 'loan' ? (

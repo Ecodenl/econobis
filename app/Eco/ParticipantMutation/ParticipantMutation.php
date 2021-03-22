@@ -3,6 +3,7 @@
 namespace App\Eco\ParticipantMutation;
 
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Project\ProjectValueCourse;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
@@ -59,4 +60,45 @@ class ParticipantMutation extends Model
     public function updatedBy(){
         return $this->belongsTo(User::class);
     }
+
+    public function molliePayments()
+    {
+        return $this->hasMany(ParticipantMutationMolliePayment::class);
+    }
+
+    public function getIsPaidByMollieAttribute()
+    {
+        return $this->molliePayments()->whereNotNull('date_paid')->exists();
+    }
+
+    public function getEconobisPaymentLinkAttribute()
+    {
+        return route('portal.mollie.pay', [
+            'participantMutationCode' => $this->code,
+        ]);
+    }
+
+    public function getMollieAmount()
+    {
+        switch ($this->participation->project->projectType->code_ref){
+            case 'loan':
+                return $this->amount_option + $this->transaction_costs_amount;
+            case 'obligation':
+            case 'capital':
+            case 'postalcode_link_capital':
+                $bookWorth = $this->participation->project->currentBookWorth();
+                if($bookWorth == null){
+                    throw new \Exception('Geen huidige boekwaarde kunnen bepalen.');
+                }
+
+                return ($bookWorth * $this->quantity) + $this->transaction_costs_amount;
+            default:
+                throw new \Exception('Onverwacht mutatie type ontvangen.');
+        }
+    }
+    public function getMollieAmountFormatted()
+    {
+        return number_format($this->getMollieAmount(), 2, '.', '');
+    }
+
 }

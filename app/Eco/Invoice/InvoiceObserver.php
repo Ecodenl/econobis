@@ -11,6 +11,7 @@ namespace App\Eco\Invoice;
 use App\Eco\Order\Order;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class InvoiceObserver
 {
@@ -33,6 +34,9 @@ class InvoiceObserver
 
         $invoice->administration_id = $order->administration_id;
         $invoice->payment_type_id = $order->payment_type_id;
+
+        // Code voor Mollie om de factuur van buitenaf veilig op te kunnen roepen.
+        $invoice->code = Str::random(32);
     }
 
     public function created(Invoice $invoice)

@@ -41,6 +41,10 @@ class Project extends Model
         'id'
     ];
 
+    protected $casts = [
+        'uses_mollie' => 'bool',
+    ];
+
     //relations
 
     public function administration()
@@ -137,6 +141,14 @@ class Project extends Model
         return $this->belongsTo(ContactGroup::class, 'no_member_group_id');
     }
 
+    public function getTransactionCostsCodeRef()
+    {
+        if (!$this->transaction_costs_code_ref) return null;
+
+        return TransactionCostsCodeRef::get($this->transaction_costs_code_ref);
+    }
+
+
     public function getCurrentParticipations(){
         $participants = $this->participantsProject()->get();
 
@@ -178,6 +190,10 @@ class Project extends Model
         if(!$activeProjectValueCourse) return null;
 
         return $activeProjectValueCourse->book_worth;
+    }
+
+    public function getcurrentBookWorthAttribute(){
+        return $this->currentBookWorth();
     }
 
     public function getLastYearFinancialOverviewDefinitiveAttribute()

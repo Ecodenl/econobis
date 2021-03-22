@@ -22,6 +22,7 @@ import RegistrationDetails from './container/registration/details';
 import FinancialOverviewDocuments from './container/financial-overview-documents/list';
 import { ThemeSettingsProvider } from './context/ThemeSettingsContext';
 import AboutUsAdministration from './container/about-us/details';
+import ProjectMollieRedirectWithContext from "./container/register/mollie-redirect";
 
 function App() {
     return (
@@ -33,6 +34,7 @@ function App() {
                             <ProtectedRoute exact path="/" component={ContactDetails} />
                             <ProtectedRoute path="/gegevens" component={ContactDetails} />
                             <ProtectedRoute path="/mijn-interessegebieden" component={MyAreasOfInterest} />
+                            <ProtectedRoute path="/inschrijven/mollie-resultaat/:code" component={ProjectMollieRedirectWithContext} />
                             <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
                             <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                             <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />

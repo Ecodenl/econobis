@@ -13,8 +13,10 @@ import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 import FormLabel from 'react-bootstrap/FormLabel';
+import TextBlock from '../../../components/general/TextBlock';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
-function StepFour({ contactProjectData, previous, next, registerValues, setSucces }) {
+function StepFour({ project, contactProjectData, previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
@@ -37,6 +39,16 @@ function StepFour({ contactProjectData, previous, next, registerValues, setSucce
             .then(payload => {
                 // console.log(payload);
                 actions.setSubmitting(false);
+
+                /**
+                 * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
+                 * In dat geval huidige scherm verlaten en door naar mollie.
+                 */
+                if (payload.data.econobisPaymentLink) {
+                    window.location.href = payload.data.econobisPaymentLink;
+                    return;
+                }
+
                 setSucces(true);
                 next();
             })
@@ -100,6 +112,47 @@ function StepFour({ contactProjectData, previous, next, registerValues, setSucce
                                     </Col>
                                 </Row>
                                 <Row>
+                                    <Col xs={12} md={3}>
+                                        <FormLabel className={'field-label-text'}>
+                                            {project.transactionCostsCodeRef === 'none'
+                                                ? 'Te betalen bedrag'
+                                                : 'Bedrag'}
+                                        </FormLabel>
+                                    </Col>
+                                    <Col xs={12} md={3}>
+                                        <TextBlock className={'float-right'}>
+                                            {MoneyPresenter(registerValues.amount)}
+                                        </TextBlock>
+                                    </Col>
+                                </Row>
+                                {project.transactionCostsCodeRef !== 'none' ? (
+                                    <>
+                                        <Row>
+                                            <Col xs={12} md={3}>
+                                                <FormLabel className={'field-label-text'}>
+                                                    {project.textTransactionCosts}
+                                                </FormLabel>
+                                            </Col>
+                                            <Col xs={12} md={3}>
+                                                <TextBlock className={'float-right'}>
+                                                    {MoneyPresenter(registerValues.transactionCostsAmount)}
+                                                </TextBlock>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col xs={12} md={3}>
+                                                <FormLabel className={'field-label-text'}>Totaal te betalen</FormLabel>
+                                            </Col>
+                                            <Col xs={12} md={3}>
+                                                <TextBlock className={'float-right'}>
+                                                    {MoneyPresenter(registerValues.totalAmount)}
+                                                </TextBlock>
+                                            </Col>
+                                        </Row>
+                                    </>
+                                ) : null}
+                                <hr />
+                                <Row>
                                     <Col xs={12} md={10}>
                                         <p>{contactProjectData.textAcceptAgreementMerged}</p>
                                     </Col>
@@ -151,7 +204,13 @@ function StepFour({ contactProjectData, previous, next, registerValues, setSucce
                                                         Bezig met verwerken
                                                     </span>
                                                 ) : (
-                                                    'Bevestig inschrijving'
+                                                    <>
+                                                        {project.usesMollie ? (
+                                                            <>Betaal en bevestig de inschrijving</>
+                                                        ) : (
+                                                            <>Bevestig inschrijving</>
+                                                        )}
+                                                    </>
                                                 )}
                                             </Button>
                                         </ButtonGroup>

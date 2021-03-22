@@ -135,6 +135,8 @@ class FullAdministration extends Resource
                 'portalSettingsLayoutId' => $this->portal_settings_layout_id,
                 'portalSettingsLayout' => $this->portalSettingsLayout,
 
+                'usesMollie' => $this->uses_mollie,
+                'mollieApiKey' => $this->mollie_api_key,
             ];
     }
 }

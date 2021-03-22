@@ -594,6 +594,7 @@ class TemplateVariableHelper
                 return number_format($model->participation_worth, 2, ',', '');
                 break;
             case 'huidige_boekwaarde':
+            case 'huidige_hoofdsom':
                 return number_format($model->currentBookWorth(), 2, ',', '');
                 break;
             case 'opgesteld_vermogen':
@@ -641,7 +642,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_interessed, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_interessed * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_interessed * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -649,7 +650,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_optioned, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_optioned * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_optioned * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -657,7 +658,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_granted, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_granted * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_granted * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -665,9 +666,12 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_definitive, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_definitive * $model->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_definitive * $model->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
+                break;
+            case 'transactiekosten_naam_op_de_portal':
+                return $model->text_transaction_costs;
                 break;
             case 'aantal_participanten':
                 return $model->participantsProject->count();
@@ -817,7 +821,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_interessed, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_interessed * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_interessed * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -825,7 +829,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_optioned, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_optioned * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_optioned * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -833,7 +837,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_granted, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_granted * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_granted * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -841,7 +845,7 @@ class TemplateVariableHelper
                 if($projectTypeCodeRef == 'loan') {
                     $amount = number_format($model->amount_definitive, 2, ',', '');
                 }else{
-                    $amount = number_format(($model->participations_definitive * $model->project->participation_worth), 2, ',', '');
+                    $amount = number_format(($model->participations_definitive * $model->project->currentBookWorth()), 2, ',', '');
                 }
                 return $amount;
                 break;
@@ -1108,7 +1112,6 @@ class TemplateVariableHelper
                     return $lastMutation ? $lastMutation->quantity : 0;
                 }
                 break;
-
             case 'bedrag_laatste_mutatie_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 $lastMutationAmount = 0;
@@ -1180,6 +1183,12 @@ class TemplateVariableHelper
                     }
                 }
                 return number_format($lastMutationAmount, 2, ',', '');
+                break;
+
+            case 'transactiekosten_laatste_mutatie':
+                $lastMutation = $model->mutations->where('type_id', $mutationType)->last();
+                $lastMutationTransactionCostsAmount = $lastMutation ? $lastMutation->transaction_costs_amount : 0;
+                return number_format($lastMutationTransactionCostsAmount, 2, ',', '');
                 break;
 
             case 'datum_laatste_mutatie_interesse':
@@ -1621,30 +1630,41 @@ class TemplateVariableHelper
 
     public static function getInvoiceVar($model, $varname){
         switch ($varname) {
+            case 'mollie_link':
+                if(!$model->exists){
+                    /**
+                     * Factuur is nog niet opgeslagen in database, link dus nog niet beschikbaar.
+                     * Tijdelijke melding weergeven ipv link.
+                     */
+                    return '&lt;Online_betaallink_new&gt;';
+                }
+
+                /**
+                 * Geen Mollie link als de gekoppelde administratie geen Mollie
+                 * koppeling heeft of als het bedrag 0 of negatief is.
+                 */
+                if(!$model->administration->uses_mollie || $model->total_incl_vat_incl_reduction <= 0){
+                    return '';
+                }
+
+                return $model->econobis_payment_link;
             case 'nummer':
                 return $model->number;
-                break;
             case 'betreft':
                 return $model->subject;
-                break;
             case 'iban':
                 return $model->order->contact->iban;
-                break;
             case 'iban_tnv':
                 return $model->order->contact->iban_attn;
-                break;
             case 'totaal_incl_btw':
                 return number_format($model->total_incl_vat_incl_reduction, 2, ',', '');
-                break;
             case 'datum':
                 if( $model->invoice_number == 0){
                     return "Nog niet bekend";
                 }
                 return $model->date_sent ? Carbon::parse($model->date_sent)->formatLocalized('%e %B %Y') : null;
-                break;
             default:
                 return '';
-                break;
         }
     }
 

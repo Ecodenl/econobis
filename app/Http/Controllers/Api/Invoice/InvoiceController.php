@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Invoice;
 
 use App\Eco\Invoice\Invoice;
+use App\Eco\Invoice\InvoiceMolliePayment;
 use App\Eco\Invoice\InvoicePayment;
 use App\Eco\Invoice\InvoiceProduct;
 use App\Eco\Product\PriceHistory;
@@ -124,6 +125,7 @@ class InvoiceController extends ApiController
             'order.contact',
             'invoiceProducts',
             'payments',
+            'molliePayments',
             'tasks',
             'emails',
             'document',
@@ -782,5 +784,4 @@ class InvoiceController extends ApiController
 
         $invoiceProduct->delete();
     }
-
 }

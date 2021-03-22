@@ -47,6 +47,8 @@ const AdministrationDetailsFormGeneralView = props => {
         usesVat,
         emailBccNotas,
         portalSettingsLayout,
+        usesMollie,
+        mollieApiKey,
     } = props.administrationDetails;
 
     // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
@@ -143,6 +145,13 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'Portal instellingen layout'}
                             value={portalSettingsLayout ? portalSettingsLayout.description : 'gebruikt standaard'}
                         />
+                    </div>
+
+                    <div className="row">
+                        <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
+                        {props.meDetails.email === 'support@econobis.nl' && usesMollie && (
+                            <ViewText label={'Mollie API key'} value={mollieApiKey} />
+                        )}
                     </div>
 
                     {usesTwinfield == true && (
@@ -258,6 +267,7 @@ const AdministrationDetailsFormGeneralView = props => {
 const mapStateToProps = state => {
     return {
         administrationDetails: state.administrationDetails,
+        meDetails: state.meDetails,
     };
 };
 

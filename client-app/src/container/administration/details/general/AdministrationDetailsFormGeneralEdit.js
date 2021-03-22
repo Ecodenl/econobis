@@ -74,6 +74,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             usesVat,
             emailBccNotas,
             portalSettingsLayoutId,
+            usesMollie,
+            mollieApiKey,
         } = props.administrationDetails;
 
         this.state = {
@@ -128,6 +130,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 usesVat: usesVat,
                 emailBccNotas: emailBccNotas ? emailBccNotas : '',
                 portalSettingsLayoutId: portalSettingsLayoutId ? portalSettingsLayoutId : '',
+                usesMollie: usesMollie,
+                mollieApiKey,
             },
             errors: {
                 name: false,
@@ -463,6 +467,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
             data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
+            data.append('usesMollie', administration.usesMollie);
+            data.append('mollieApiKey', administration.mollieApiKey);
 
             this.props.updateAdministration(data, administration.id, this.props.switchToView);
         }
@@ -511,6 +517,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             usesVat,
             emailBccNotas,
             portalSettingsLayoutId,
+            usesMollie,
+            mollieApiKey,
         } = this.state.administration;
 
         let disableBeforeDateSyncTwinfieldContacts = null;
@@ -786,6 +794,25 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 toggleShowNew={this.toggleNewLogo}
                                 addAttachment={this.addAttachment}
                             />
+                        )}
+
+                        {this.props.meDetails.email === 'support@econobis.nl' && (
+                            <div className="row">
+                                <InputToggle
+                                    label={'Gebruikt Mollie'}
+                                    name={'usesMollie'}
+                                    value={usesMollie}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                                {usesMollie && (
+                                    <InputText
+                                        label="Mollie API key"
+                                        name={'mollieApiKey'}
+                                        value={mollieApiKey}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                )}
+                            </div>
                         )}
 
                         <div className="row">

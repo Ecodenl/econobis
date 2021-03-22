@@ -11,12 +11,15 @@ import ParticipantDetailsMutationConclusion from './conclusion';
 import ButtonText from '../../../../../components/button/ButtonText';
 import * as PropTypes from 'prop-types';
 import React from 'react';
+import ParticipantDetailsMutationMolliePayments from "./mollie-payments";
 
 function MutationFormEditDeposit({
     participantMutationFromProps,
     participantMutationFromState,
     participantMutationStatusesOptions,
     projectTypeCodeRef,
+    projectTransactionCostsCodeRef,
+    projectCurrentBookWorth,
     handleInputChange,
     handleInputChangeDate,
     cancelEdit,
@@ -54,13 +57,46 @@ function MutationFormEditDeposit({
                 )}
             </div>
 
-            {projectTypeCodeRef === 'loan' ? null : (
+            {projectTypeCodeRef === 'loan' ? (
                 <div className="row">
                     <ViewText
-                        label={'Bedrag'}
+                        label={
+                            'Bedrag ' +
+                            (participantMutationFromProps.status.codeRef === 'final'
+                                ? '(definitief)'
+                                : '(nog niet definitief)')
+                        }
                         id={'participationWorth'}
                         className={'col-sm-6 form-group'}
-                        value={MoneyPresenter(participantMutationFromProps.participationWorth)}
+                        value={MoneyPresenter(participantMutationFromProps.amount)}
+                    />
+                </div>
+            ) : (
+                <div className="row">
+                    <ViewText
+                        label={
+                            'Bedrag ' +
+                            (participantMutationFromProps.status.codeRef === 'final'
+                                ? '(definitief)'
+                                : '(nog niet definitief)')
+                        }
+                        id={'participationWorth'}
+                        className={'col-sm-6 form-group'}
+                        value={MoneyPresenter(
+                            participantMutationFromProps.status.codeRef === 'final'
+                                ? participantMutationFromProps.participationWorth
+                                : participantMutationFromProps.quantity * projectCurrentBookWorth
+                        )}
+                    />
+                </div>
+            )}
+            {projectTransactionCostsCodeRef === 'none' ? null : (
+                <div className="row">
+                    <ViewText
+                        label={'Transactiekosten'}
+                        id={'transactionCostsAmount'}
+                        className={'col-sm-6 form-group'}
+                        value={MoneyPresenter(participantMutationFromProps.transactionCostsAmount)}
                     />
                 </div>
             )}
@@ -116,6 +152,8 @@ function MutationFormEditDeposit({
             )}
 
             <ParticipantDetailsMutationStatusLog statusLogs={participantMutationFromProps.statusLogs} />
+
+            <ParticipantDetailsMutationMolliePayments molliePayments={participantMutationFromProps.molliePayments} />
 
             <ParticipantDetailsMutationConclusion
                 createdAt={participantMutationFromProps.createdAt}

@@ -206,6 +206,7 @@ class ParticipationProjectController extends ApiController
             'mutations.type',
             'mutations.status',
             'mutations.statusLog',
+            'mutations.molliePayments',
             'mutations.createdBy',
             'mutations.updatedBy',
             'obligationNumbers',

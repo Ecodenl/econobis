@@ -107,6 +107,7 @@ function Steps({
         case 4:
             return (
                 <StepFour
+                    project={project}
                     contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}

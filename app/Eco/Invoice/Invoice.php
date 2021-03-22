@@ -9,6 +9,7 @@ use App\Eco\Order\Order;
 use App\Eco\Order\OrderPaymentType;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -16,9 +17,14 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Invoice extends Model
 {
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, Encryptable, SoftDeletes;
 
     protected $guarded = ['id'];
+
+// todo WM: iban ge-encrypt opslaan, nog goed testen!
+    protected $encryptable = [
+        'iban'
+    ];
 
     public function invoiceProducts()
     {

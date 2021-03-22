@@ -13,15 +13,21 @@ class AddCzAndNzToCountriesTable extends Migration
      */
     public function up()
     {
-        $country = new \App\Eco\Country\Country();
-        $country->id = 'NZ';
-        $country->name = 'Nieuw-Zeeland';
-        $country->save();
+        $countryNZ = \App\Eco\Country\Country::find('NZ');
+        if(!$countryNZ){
+            $country = new \App\Eco\Country\Country();
+            $country->id = 'NZ';
+            $country->name = 'Nieuw-Zeeland';
+            $country->save();
+        }
 
-        $country = new \App\Eco\Country\Country();
-        $country->id = 'CZ';
-        $country->name = 'Tsjechië';
-        $country->save();
+        $countryCZ = \App\Eco\Country\Country::find('CZ');
+        if(!$countryCZ) {
+            $country = new \App\Eco\Country\Country();
+            $country->id = 'CZ';
+            $country->name = 'Tsjechië';
+            $country->save();
+        }
     }
 
     /**

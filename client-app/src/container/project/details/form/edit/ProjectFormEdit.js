@@ -31,7 +31,7 @@ class ProjectFormEdit extends Component {
             emailTemplates: [],
             documentTemplates: [],
             disableBeforeEntryDate: '',
-            lastYearFinancialOverviewDefinitive: null,
+            hasLastYearFinancialOverviewDefinitive: false,
             project: {
                 ...props.project,
                 showQuestionAboutMembership: Boolean(props.project.showQuestionAboutMembership),
@@ -212,10 +212,12 @@ class ProjectFormEdit extends Component {
                 ? moment(moment().year(lastYearFinancialOverviewDefinitive + 1)).format('YYYY-01-01')
                 : '';
 
+        const hasLastYearFinancialOverviewDefinitive = lastYearFinancialOverviewDefinitive > 0;
+
         this.setState({
             ...this.state,
             disableBeforeEntryDate: disableBeforeEntryDate,
-            lastYearFinancialOverviewDefinitive: lastYearFinancialOverviewDefinitive,
+            hasLastYearFinancialOverviewDefinitive: hasLastYearFinancialOverviewDefinitive,
         });
     }
 
@@ -774,7 +776,7 @@ class ProjectFormEdit extends Component {
                     textBecomeNoMember={textBecomeNoMember}
                     noMemberGroupId={noMemberGroupId}
                     disableBeforeEntryDate={this.state.disableBeforeEntryDate}
-                    lastYearFinancialOverviewDefinitive={this.state.lastYearFinancialOverviewDefinitive}
+                    hasLastYearFinancialOverviewDefinitive={this.state.hasLastYearFinancialOverviewDefinitive}
                     textAgreeTerms={textAgreeTerms}
                     textLinkAgreeTerms={textLinkAgreeTerms}
                     textLinkUnderstandInfo={textLinkUnderstandInfo}

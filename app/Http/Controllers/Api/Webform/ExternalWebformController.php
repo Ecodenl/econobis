@@ -860,6 +860,7 @@ class ExternalWebformController extends Controller
 
     protected function addContact(array $data, User $ownerAndResponsibleUser)
     {
+        $ownerAndResponsibleUser->occupation = '@webform-update@';
         Auth::setUser($ownerAndResponsibleUser);
         $this->log('Contact verantwoordelijke gebruiker (zelfde als eigenaar) : ' . $ownerAndResponsibleUser->id);
 

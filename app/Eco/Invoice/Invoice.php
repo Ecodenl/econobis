@@ -207,12 +207,12 @@ class Invoice extends Model
         }
         return false;
     }
-    public function getIbanAttribute(){
+    public function getIbanContactOrInvoiceAttribute(){
         if($this->status_id === null || $this->status_id === 'to-send' || $this->status_id === 'error-sending'){
-            return $this->order->contact->iban;
+            return optional(optional($this->order)->contact)->iban;
         }
         else{
-            return $this->attributes['iban'];
+            return $this->iban;
         }
     }
 

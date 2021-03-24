@@ -6,8 +6,11 @@ namespace App\Http\Controllers\Portal\Auth;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Portal\PortalUser;
+use App\Eco\User\User;
+use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -19,6 +22,16 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        // Voor aanmaak van Contact wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden (1).');
+        }
+
+        $responsibleUser = User::find($responsibleUserId);
+        $responsibleUser->occupation = '@portal-update@';
+        Auth::setUser($responsibleUser);
+
         $this->validate($request, [
             'email' => ['required', 'exists:email_addresses,email'],
             'password' => ['required'],

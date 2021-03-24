@@ -55,8 +55,7 @@ class NewAccountController extends Controller
         $resultJson = json_decode($result);
 
         if($resultJson->success) {
-            // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
-            // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+            // Voor aanmaak van Contact wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
             $responsibleUserId = PortalSettings::get('responsibleUserId');
             if (!$responsibleUserId) {
                 abort(501, 'Er is helaas een fout opgetreden (5).');
@@ -286,10 +285,6 @@ class NewAccountController extends Controller
         if($organisationName){
             $htmlBody = str_replace('{organisatie_naam}', $organisationName, $htmlBody);
         }
-
-//        $user = Auth::user();
-//        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,
-//            'ik', $user);
 
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $contact);
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'portal' );

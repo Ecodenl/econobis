@@ -62,7 +62,11 @@ class ParticipantMutationObserver
     {
         $userId = Auth::id();
         $participantMutation->updated_by_id = $userId;
-        switch (Auth::user()->occupation){
+        $updatedWith = '';
+        if(Auth::user()){
+            $updatedWith = Auth::user()->occupation;
+        }
+        switch ($updatedWith){
             case '@portal-update@':
                 $participantMutation->updated_with = 'portal';
                 break;

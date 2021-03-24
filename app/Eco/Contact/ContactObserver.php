@@ -52,7 +52,11 @@ class ContactObserver
     {
         $userId = Auth::id();
         $contact->updated_by_id = $userId;
-        switch (Auth::user()->occupation){
+        $updatedWith = '';
+        if(Auth::user()){
+            $updatedWith = Auth::user()->occupation;
+        }
+        switch ($updatedWith){
             case '@portal-update@':
                 $contact->updated_with = 'portal';
                 break;

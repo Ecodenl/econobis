@@ -21,7 +21,6 @@ class Invoice extends Model
 
     protected $guarded = ['id'];
 
-// todo WM: iban ge-encrypt opslaan, nog goed testen!
     protected $encryptable = [
         'iban'
     ];

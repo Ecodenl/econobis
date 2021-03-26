@@ -196,6 +196,14 @@ class Project extends Model
         return $this->currentBookWorth();
     }
 
+    public function currentTransferWorth()
+    {
+        $activeProjectValueCourse = $this->projectValueCourses()->where('active', 1)->first();
+        if(!$activeProjectValueCourse) return null;
+
+        return $activeProjectValueCourse->transfer_worth;
+    }
+
     public function getLastYearFinancialOverviewDefinitiveAttribute()
     {
         $financialOverviewProjectIds = $this->financialOverviewProjects()->where('definitive', true)->pluck('financial_overview_id')->toArray();;

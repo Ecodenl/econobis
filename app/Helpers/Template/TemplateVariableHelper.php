@@ -597,6 +597,9 @@ class TemplateVariableHelper
             case 'huidige_hoofdsom':
                 return number_format($model->currentBookWorth(), 2, ',', '');
                 break;
+            case 'huidige_overdrachtswaarde':
+                return number_format($model->currentTransferWorth(), 2, ',', '');
+                break;
             case 'opgesteld_vermogen':
                 return $model->power_kw_available;
                 break;

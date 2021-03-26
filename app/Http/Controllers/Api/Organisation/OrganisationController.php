@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Api\Organisation;
 
+use App\Eco\Address\Address;
+use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
+use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Contact\ContactController;
@@ -13,6 +19,7 @@ use App\Http\Resources\Organisation\OrganisationPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class OrganisationController extends ApiController
 {
@@ -21,42 +28,124 @@ class OrganisationController extends ApiController
     {
         $this->authorize('create', Organisation::class);
 
-        $contactData = $request->validate([
-            'iban' => '',
-            'ibanAttn' => '',
-            'liable' => 'boolean',
-            'liabilityAmount' => 'numeric',
-            'ownerId' => 'exists:users,id',
-            'didAgreeAvg' => 'boolean',
-        ]);
+        Validator::make($request['organisation'],
+            [
+                'ownerId' => 'exists:users,id',
+                'didAgreeAvg' => 'boolean',
+                'iban' => '',
+                'ibanAttn' => '',
+                'typeId' => 'exists:organisation_types,id',
+                'name' => '',
+                'website' => '',
+                'chamberOfCommerceNumber' => '',
+                'vatNumber' => '',
+                'industryId' => 'exists:industries,id',
+                'squareMeters' => 'integer',
+            ]);
 
-        $organisationData = $request->validate([
-            'typeId' => 'exists:organisation_types,id',
-            'name' => '',
-            'website' => '',
-            'chamberOfCommerceNumber' => '',
-            'vatNumber' => '',
-            'industryId' => 'exists:industries,id',
-            'squareMeters' => 'integer',
-        ]);
-
-        $contactData = $this->sanitizeData($contactData, [
+        $contactData = $this->sanitizeData($request['organisation'], [
             'ownerId' => 'nullable',
             'liable' => 'boolean',
-        ]);
-        $contact = new Contact($this->arrayKeysToSnakeCase($contactData));
-
-        $organisationData = $this->sanitizeData($organisationData, [
             'typeId' => 'nullable',
             'industryId' => 'nullable',
             'squareMeters' => 'integer',
         ]);
-        $organisation = new Organisation($this->arrayKeysToSnakeCase($organisationData));
 
-        DB::transaction(function () use ($organisation, $contact) {
+        $contactData = $this->arrayKeysToSnakeCase($contactData);
+        $contactArray =
+            [
+                'iban' => $contactData['iban'],
+                'iban_attn' => $contactData['iban_attn'],
+                'owner_id' => $contactData['owner_id'],
+                'did_agree_avg' => $contactData['did_agree_avg'],
+            ];
+
+        $organisationArray =
+            [
+                'name' => $contactData['name'],
+                'website' => $contactData['website'],
+                'chamber_of_commerce_number' => $contactData['chamber_of_commerce_number'],
+                'vat_number' => $contactData['vat_number'],
+            ];
+
+        $contact = new Contact($contactArray);
+        $organisation = new Organisation($organisationArray);
+
+        $emailAddress = null;
+        $address = null;
+        $phoneNumber = null;
+
+        if ($request['emailAddress']['email']) {
+            Validator::make($request['emailAddress'], [
+                'typeId' => new EnumExists(EmailAddressType::class),
+                'email' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $data = $this->sanitizeData($request['emailAddress'], [
+                'typeId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+
+            $emailAddress
+                = new EmailAddress($this->arrayKeysToSnakeCase($data));
+        }
+
+        if ($request['address']['postalCode']) {
+            Validator::make($request['address'], [
+                'countryId' => 'nullable|exists:countries,id',
+                'typeId' => new EnumExists(AddressType::class),
+                'street' => '',
+                'number' => 'integer',
+                'addition' => 'string',
+                'city' => '',
+                'postalCode' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $data = $this->sanitizeData($request['address'], [
+                'typeId' => 'nullable',
+                'countryId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+            $address = new Address($this->arrayKeysToSnakeCase($data));
+
+        }
+
+        if ($request['phoneNumber']['number']) {
+            Validator::make($request['phoneNumber'], [
+                'typeId' => new EnumExists(PhoneNumberType::class),
+                'number' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $data = $this->sanitizeData($request['phoneNumber'], [
+                'typeId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+            $phoneNumber = new PhoneNumber($this->arrayKeysToSnakeCase($data));
+
+        }
+
+        DB::transaction(function () use ($organisation, $contact, $emailAddress, $address, $phoneNumber) {
             $contact->save();
             $organisation->contact_id = $contact->id;
             $organisation->save();
+            if($emailAddress) {
+                $emailAddress->contact_id = $contact->id;
+                $this->authorize('create', $emailAddress);
+                $emailAddress->save();
+            }
+            if($address) {
+                $address->contact_id = $contact->id;
+                $this->authorize('create', $address);
+                $address->save();
+            }
+            if($phoneNumber) {
+                $phoneNumber->contact_id = $contact->id;
+                $this->authorize('create', $phoneNumber);
+                $phoneNumber->save();
+            }
         });
 
         // Contact exact zo teruggeven als bij het openen van een bestaand contact

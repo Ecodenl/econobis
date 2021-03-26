@@ -24,9 +24,9 @@ class ContactNewFormPersonal extends Component {
 
         this.state = {
             buttonLoading: false,
-            showAddress: false,
-            showEmail: false,
-            showPhone: false,
+            showAddress: true,
+            showEmail: true,
+            showPhone: true,
             showConfirmDuplicate: false,
             duplicateText: '',
             person: {
@@ -316,6 +316,7 @@ class ContactNewFormPersonal extends Component {
             phoneErrors: phoneErrors,
             emailErrors: emailErrors,
         });
+
         // If no errors send form
         if (!hasErrors) {
             if (this.state.buttonLoading) {

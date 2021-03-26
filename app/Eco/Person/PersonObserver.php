@@ -17,11 +17,9 @@ class PersonObserver
 
     public function creating(Person $person)
     {
-        // Als dit het eerste persoon voor deze organisation is wordt deze altijd primary
-        // 20180913; niet meer van toepassing? people() functie bestaat nl niet meer
-//        if($person->organisation && !$person->organisation->people()->exists()){
-//            $person->primary = true;
-//        }
+        if(empty($person->first_name) && !empty($person->initials)){
+            $person->first_name = $person->initials;
+        }
     }
 
     public function saved(Person $person)

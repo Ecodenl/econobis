@@ -20,10 +20,16 @@ use App\Eco\EnergySupplier\ContactEnergySupplier;
 use App\Eco\EnergySupplier\ContactEnergySupplierStatus;
 use App\Eco\EnergySupplier\ContactEnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\HousingFile\BuildingType;
+use App\Eco\HousingFile\EnergyLabel;
+use App\Eco\HousingFile\EnergyLabelStatus;
+use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
 use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Order\Order;
@@ -189,13 +195,15 @@ class ExternalWebformController extends Controller
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
         if ($this->address) {
             $intake = $this->addIntakeToAddress($this->address, $data['intake']);
+            $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
         } else {
             $intake = null;
-            $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake kan niet worden aangemaakt.");
+            $housingFile = null;
+            $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake en woondossier konden niet worden aangemaakt.");
         }
         $participation = $this->addParticipationToContact($contact, $data['participation'], $webform);
         $order = $this->addOrderToContact($contact, $data['order']);
-        $this->addTaskToContact($contact, $data['responsible_ids'], $data['task'], $webform, $intake, $participation, $order);
+        $this->addTaskToContact($contact, $data['responsible_ids'], $data['task'], $webform, $intake, $housingFile, $participation, $order);
     }
 
 
@@ -297,6 +305,20 @@ class ExternalWebformController extends Controller
                 'intake_status_id' => 'status_id',
                 'intake_opmerkingen_bewoner' => 'note',
             ],
+            'housing_file' => [
+                // HousingFile
+                'woondossier_woningtype_id' => 'building_type_id',
+                'woondossier_bouwjaar' => 'build_year',
+                'woondossier_gebruiksoppervlakte' => 'surface',
+                'woondossier_daktype_id' => 'roof_type_id',
+                'woondossier_energielabel_id' => 'energy_label_id',
+                'woondossier_aantal_bouwlagen' => 'floors',
+                'woondossier_status_energielabel_id' => 'energy_label_status_id',
+                'woondossier_momument' => 'is_monument',
+                'woondossier_maatregelen_ids' => 'measure_ids',
+                'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
+            ],
+
         ];
 
         // Task properties toevoegen met prefix 'taak_'
@@ -1104,6 +1126,142 @@ class ExternalWebformController extends Controller
         }
     }
 
+    protected function addHousingFileToAddress(Address $address, array $data, Webform $webform)
+    {
+        if($data['building_type_id'] == ''
+            && $data['build_year'] == ''
+            && $data['surface'] == ''
+            && $data['roof_type_id'] == ''
+            && $data['energy_label_id'] == ''
+            && $data['floors'] == ''
+            && $data['energy_label_status_id'] == ''
+            && $data['is_monument'] == ''
+            && $data['measure_ids'] == ''
+            && $data['measure_dates'] == ''
+        ){
+            $this->log('Er zijn geen woondossiergegevens meegegeven.');
+            return null;
+        }
+
+        // Voor aanmaak van Housing file wordt created by and updated by via HousingFileObserver altijd bepaald obv Auth::id
+        // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+        $responsibleUser = User::find($webform->responsible_user_id);
+        if($responsibleUser){
+            Auth::setUser($responsibleUser);
+            $this->log('Woondossier verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+        }else{
+            $responsibleTeam = Team::find($webform->responsible_team_id);
+            if($responsibleTeam && $responsibleTeam->users ){
+                $teamFirstUser = $responsibleTeam->users->first();
+                Auth::setUser($teamFirstUser);
+                $this->log('Woondossier verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+            }else{
+                $this->log('Woondossier verantwoordelijke gebruiker : onbekend');
+            }
+        }
+
+        $buildYear = null;
+        if (isset($data['build_year']) && is_numeric($data['build_year']) && (1500 <= $data['build_year']) && ($data['build_year'] <= 3000) ) {
+            $buildYear = $data['build_year'];
+        }
+
+        $buildingType = BuildingType::find($data['building_type_id']);
+        if (!$buildingType) {
+            $this->log('Er is geen bekende waarde voor woning type meegegeven, default naar "geen"');
+            $buildingType = null;
+        }
+
+        $eneryLabel = EnergyLabel::find($data['energy_label_id']);
+        if (!$eneryLabel) {
+            $this->log('Er is geen bekende waarde voor energie label meegegeven, default naar "geen"');
+            $eneryLabel = null;
+        }
+
+        $eneryLabelStatus = EnergyLabelStatus::find($data['energy_label_status_id']);
+        if (!$eneryLabelStatus) {
+            $this->log('Er is geen bekende waarde voor status energie label meegegeven, default naar "geen"');
+            $eneryLabelStatus = null;
+        }
+
+        $rofeType = RoofType::find($data['roof_type_id']);
+        if (!$rofeType) {
+            $this->log('Er is geen bekende waarde voor dak type meegegeven, default naar "geen"');
+            $rofeType = null;
+        }
+
+        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
+        $measureDates = explode(',', $data['measure_dates']);
+
+        $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
+        // Nog geen woondossier op adres, nieuw aanmaken
+        if (!$housingFile) {
+            $this->log('Er is geen woondossier gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier aanmaken.');
+
+            $housingFile = HousingFile::create([
+                'address_id' =>  $address->id,
+                'building_type_id' => $buildingType ? $buildingType->id : null,
+                'build_year' => $buildYear ? $buildYear : null,
+                'surface' => is_numeric($data['surface']) ? $data['surface'] : null,
+                'roof_type_id' => $rofeType ? $rofeType->id : null,
+                'energy_label_id' => $eneryLabel ? $eneryLabel->id : null,
+                'floors' => is_numeric($data['floors']) ? $data['floors'] : null,
+                'energy_label_status_id' => $eneryLabelStatus ? $eneryLabelStatus->id : null,
+                'is_monument' => (bool)$data['is_monument'],
+            ]);
+            $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
+
+            if($measures){
+                if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
+                    $this->log('Er zijn geen datum(s) realisaties meegegeven.');
+                }
+
+                foreach ($measures as $key=>$measure) {
+                    if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
+                        $address->measuresTaken()->attach($measure->id, ['measure_date' => null]);
+                    }else{
+                        $address->measuresTaken()->attach($measure->id, ['measure_date' => $measureDates[$key]]);
+                    }
+                }
+            } else {
+                $this->log("Er zijn geen maatregelen opgenomen voor woondossier.");
+            }
+
+            return $housingFile;
+        } else {
+            $this->log('Er is een woondossier met ' . $housingFile->id . ' gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier bijwerken.');
+
+            $housingFile->building_type_id = $buildingType ? $buildingType->id : null;
+            $housingFile->build_year = $buildYear ? $buildYear : null;
+            $housingFile->surface = is_numeric($data['surface']) ? $data['surface'] : null;
+            $housingFile->roof_type_id = $rofeType ? $rofeType->id : null;
+            $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : null;
+            $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
+            $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
+            $housingFile->is_monument = (bool)$data['is_monument'];
+            $housingFile->save();
+            $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
+
+            if(isset($measures)){
+                if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
+                    $this->log('Er zijn geen datum(s) realisaties meegegeven.');
+                }
+                foreach ($measures as $key=>$measure) {
+                    if(!$address->measuresTaken()->where('measure_id', $measure->id)->exists()){
+                        if(!$data['measure_dates'] || !isset($data['measure_dates']) ){
+                            $address->measuresTaken()->attach($measure->id, ['measure_date' => null]);
+                        }else{
+                            $address->measuresTaken()->attach($measure->id, ['measure_date' => $measureDates[$key]]);
+                        }
+                    }
+                }
+            } else {
+                $this->log("Er zijn geen maatregelen opgenomen voor woondossier.");
+            }
+
+            return $housingFile;
+        }
+    }
+
     protected function addParticipationToContact(Contact $contact, array $data, Webform $webform )
     {
         if ($data['project_id']) {
@@ -1291,7 +1449,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addTaskToContact(Contact $contact, array $responsibleIds, array $data, Webform $webform, Intake $intake = null, ParticipantProject $participation = null, Order $order = null)
+    protected function addTaskToContact(Contact $contact, array $responsibleIds, array $data, Webform $webform, Intake $intake = null, HousingFile $housingFile = null, ParticipantProject $participation = null, Order $order = null)
     {
         // Default date planned finish
         $datePlannedFinish = null;
@@ -1379,6 +1537,7 @@ class ExternalWebformController extends Controller
             'responsible_user_id' => $responsibleUserId,
             'responsible_team_id' => $responsibleTeamId,
             'intake_id' => $intake ? $intake->id : null,
+            'housing_file_id' => $housingFile ? $housingFile->id : null,
             'project_id' => $participation ? $participation->project_id : null,
             'participation_project_id' => $participation ? $participation->id : null,
             'order_id' => $order ? $order->id : null,

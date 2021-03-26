@@ -1,6 +1,7 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
 import valueBasedOnTypePresenter from '../../../../helpers/ValueBasedOnTypePresenter';
+import classNameBasedOnTypePresenter from '../../../../helpers/classNameBasedOnTypePresenter';
 
 function RegistrationDetailsMutationTable({ participantMutations }) {
     if (!participantMutations || participantMutations.length === 0) return <p>Geen mutaties bekend</p>;
@@ -18,7 +19,9 @@ function RegistrationDetailsMutationTable({ participantMutations }) {
                 {participantMutations.map((participantMutation, index) => (
                     <tr key={index}>
                         {participantMutation.fields.map((field, index) => (
-                            <td key={index}>{valueBasedOnTypePresenter(field)}</td>
+                            <td class={classNameBasedOnTypePresenter(field)} key={index}>
+                                {valueBasedOnTypePresenter(field)}
+                            </td>
                         ))}
                     </tr>
                 ))}

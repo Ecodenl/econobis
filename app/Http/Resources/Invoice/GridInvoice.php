@@ -40,7 +40,7 @@ class GridInvoice extends Resource
             'totalInclVatInclReduction' => $this->total_incl_vat_incl_reduction,
             'amountOpen' => $this->amount_open,
 
-            'iban' => $this->iban,
+            'ibanContactOrInvoice' => $this->ibanContactOrInvoice,
 
             'dateReminder1' => $this->date_reminder_1,
             'dateReminder2' => $this->date_reminder_2,

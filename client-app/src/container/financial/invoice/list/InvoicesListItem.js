@@ -86,7 +86,7 @@ class InvoicesListItem extends Component {
         if (
             this.props.onlyEmailInvoices &&
             (this.props.emailToAddress === 'Geen e-mail bekend' ||
-                (!this.props.iban && this.props.paymentTypeId === 'collection'))
+                (!this.props.ibanContactOrInvoice && this.props.paymentTypeId === 'collection'))
         ) {
             hideRowClass = 'hide';
         }
@@ -94,7 +94,7 @@ class InvoicesListItem extends Component {
         if (
             this.props.onlyPostInvoices &&
             (this.props.emailToAddress !== 'Geen e-mail bekend' ||
-                (!this.props.iban && this.props.paymentTypeId === 'collection'))
+                (!this.props.ibanContactOrInvoice && this.props.paymentTypeId === 'collection'))
         ) {
             hideRowClass = 'hide';
         }
@@ -120,7 +120,7 @@ class InvoicesListItem extends Component {
             totalInclVatInclReduction,
             amountOpen,
             emailToAddress,
-            iban,
+            ibanContactOrInvoice,
             subStatus,
             invoiceInTwinfield,
         } = this.props;
@@ -181,8 +181,8 @@ class InvoicesListItem extends Component {
                 <td>{paymentType ? paymentType.name : ''}</td>
                 <td>{status ? status.name : ''}</td>
                 <td>{subStatus}</td>
-                <td className={iban || paymentType.id === 'transfer' ? '' : 'warning-td'}>
-                    {iban || paymentType.id === 'transfer' ? iban : 'Geen IBAN bekend'}
+                <td className={ibanContactOrInvoice || paymentType.id === 'transfer' ? '' : 'warning-td'}>
+                    {ibanContactOrInvoice || paymentType.id === 'transfer' ? ibanContactOrInvoice : 'Geen IBAN bekend'}
                 </td>
                 <td>
                     {this.state.showActionButtons ? (

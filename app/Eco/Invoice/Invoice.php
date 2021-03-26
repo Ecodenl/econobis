@@ -9,6 +9,7 @@ use App\Eco\Order\Order;
 use App\Eco\Order\OrderPaymentType;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
+use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -16,9 +17,13 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Invoice extends Model
 {
-    use RevisionableTrait, SoftDeletes;
+    use RevisionableTrait, Encryptable, SoftDeletes;
 
     protected $guarded = ['id'];
+
+    protected $encryptable = [
+        'iban'
+    ];
 
     public function invoiceProducts()
     {
@@ -210,12 +215,12 @@ class Invoice extends Model
         }
         return false;
     }
-    public function getIbanAttribute(){
+    public function getIbanContactOrInvoiceAttribute(){
         if($this->status_id === null || $this->status_id === 'to-send' || $this->status_id === 'error-sending'){
-            return $this->order->contact->iban;
+            return optional(optional($this->order)->contact)->iban;
         }
         else{
-            return $this->attributes['iban'];
+            return $this->iban;
         }
     }
 

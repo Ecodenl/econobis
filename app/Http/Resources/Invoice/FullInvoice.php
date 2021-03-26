@@ -68,7 +68,7 @@ class FullInvoice extends Resource
 
                 'subject' => $this->subject,
                 'invoiceText' => $this->invoice_text,
-                'iban' => $this->iban,
+                'ibanContactOrInvoice' => $this->ibanContactOrInvoice,
 
                 'daysToExpire' => $this->days_to_expire,
                 'daysLastReminder' => $this->days_last_reminder,

@@ -32,6 +32,8 @@ use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\OccupationContact;
+use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderCollectionFrequency;
 use App\Eco\Order\OrderPaymentType;
@@ -1119,6 +1121,29 @@ class ExternalWebformController extends Controller
 
             $intake->measuresRequested()->sync($measureCategories->pluck('id'));
             $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
+
+            $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
+
+            // indien intake status 'Afgesloten met kans' en er zijn maatregelen, dan ook meteen kans aanmaken.
+            if($intakeStatus->id == $statusIdClosedWithOpportunity && $measureCategories){
+                $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans per maatregel aanmaken (status Actief)");
+                $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
+                if($statusOpportunity) {
+
+                    foreach ($measureCategories as $measureCategory) {
+                        $opportunity = Opportunity::create([
+                            'measure_category_id' => $measureCategory->id,
+                            'status_id' => $statusOpportunity,
+                            'intake_id' => $intake->id,
+                            'quotation_text' => '',
+                            'desired_date' => null,
+                            'evaluation_agreed_date' => null,
+                        ]);
+                        $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel  " . $measureCategory->name. " en gekoppeld aan intake id " . $intake->id . ".");
+                    }
+                }
+
+            }
 
             return $intake;
         } else {

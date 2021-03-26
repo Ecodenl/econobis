@@ -93,6 +93,7 @@ class ExternalWebformController extends Controller
     protected $webform = null;
 
     private $contactActie = null;
+    private $newContactCreated = false;
 
     public function post(string $apiKey, Request $request)
     {
@@ -164,6 +165,27 @@ class ExternalWebformController extends Controller
         $data = $this->getDataFromRequest($request);
 
         $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], $webform);
+
+        // IBAN nummer meegegeven, dan deze wijzigen.
+        // Hoeft niet indien: contact new aangemaakt is, dan is IBAN al overgenomen.
+        // En hoeft dus niet als IBAN niet is meegegeven (leeg maken / verwijderen van IBAN via mutatie kan dus niet).
+        // Voor IBAN tnv idem
+        if($contact && !$this->newContactCreated){
+            if($data['contact']['iban'] != ''
+                && $data['contact']['iban'] != $contact->iban){
+                $iban = $this->checkIban($data['contact']['iban'], 'contact.');
+                $contact->iban = $iban;
+                $contact->save();
+                $this->log("IBAN gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+            }
+            if($data['contact']['iban_attn'] != ''
+                && $data['contact']['iban_attn'] != $contact->iban_attn){
+                $contact->iban_attn = $data['contact']['iban_attn'];
+                $contact->save();
+                $this->log("IBAN tnv gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+            }
+        }
+
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
         if ($this->address) {
             $intake = $this->addIntakeToAddress($this->address, $data['intake']);
@@ -860,6 +882,8 @@ class ExternalWebformController extends Controller
 
     protected function addContact(array $data, $ownerUserId)
     {
+        $this->newContactCreated = false;
+
         // Functie voor afvangen ongeldige waarden in title_id
         $titleValidator = function ($titleId) {
             if ($titleId != '') {
@@ -888,6 +912,7 @@ class ExternalWebformController extends Controller
                 'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
                 'owner_id' => $ownerUserId,
             ]);
+            $this->newContactCreated = true;
 
             $organisation = Organisation::create([
                 'contact_id' => $contactOrganisation->id,
@@ -942,7 +967,7 @@ class ExternalWebformController extends Controller
         // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
         $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
 
-        $iban = $this->checkIban($data['iban'], 'contactpersoon.');
+        $iban = $this->checkIban($data['iban'], 'persoon.');
         $contact = Contact::create([
             'type_id' => 'person',
             'status_id' => 'webform',
@@ -957,6 +982,7 @@ class ExternalWebformController extends Controller
             'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
             'owner_id' => $ownerUserId,
         ]);
+        $this->newContactCreated = true;
 
         $lastName = $data['last_name'];
         if (!$lastName) {

@@ -56,6 +56,12 @@ class TaskTypeDetailsFormGeneral extends Component {
                 is, rekening houdend met het opgegeven aantal dagen.
             </span>
         );
+        const explanationWfNewTask = (
+            <span>
+                Er zal automatisch een email verstuurd worden naar de verantwoordelijke als de nieuwe taak wordt
+                opgeslagen.
+            </span>
+        );
 
         return (
             <div
@@ -69,6 +75,7 @@ class TaskTypeDetailsFormGeneral extends Component {
                         switchToView={this.switchToView}
                         updateState={this.props.updateState}
                         explanationWfExpiredTask={explanationWfExpiredTask}
+                        explanationWfNewTask={explanationWfNewTask}
                         explanationWfCompletedTask={explanationWfCompletedTask}
                     />
                 ) : (
@@ -76,6 +83,7 @@ class TaskTypeDetailsFormGeneral extends Component {
                         {...this.props.taskType}
                         switchToEdit={this.switchToEdit}
                         explanationWfExpiredTask={explanationWfExpiredTask}
+                        explanationWfNewTask={explanationWfNewTask}
                         explanationWfCompletedTask={explanationWfCompletedTask}
                     />
                 )}

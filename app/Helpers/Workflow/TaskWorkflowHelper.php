@@ -88,6 +88,41 @@ class TaskWorkflowHelper
         return true;
     }
 
+    public function processWorkflowEmailNewTask(){
+        set_time_limit(0);
+
+        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
+        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
+        (new EmailHelper())->setConfigToDefaultMailbox();
+
+        if (!$this->task_type) {
+            return false;
+        }
+        if (!$this->responsibleUser && !$this->responsibleTeam) {
+            return false;
+        }
+
+        $emailTemplate = EmailTemplate::find($this->task_type->email_template_id_wf_new_task);
+        if (!$emailTemplate) {
+            return false;
+        }
+
+        $users = (new User())->newCollection();
+        if ($this->responsibleUser) {
+            $users->push($this->responsibleUser);
+        } elseif ($this->responsibleTeam && $this->responsibleTeam->users()->exists()) {
+            $users = $this->responsibleTeam->users;
+        }
+        if(count($users) == 0)
+        {
+            return false;
+        }
+
+        $mail = Mail::to($users->pluck('email')->toArray());
+        $this->mailWorkflow($emailTemplate, $mail);
+        return true;
+    }
+
     public function mailWorkflow($emailTemplate, $mail)
     {
 //        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
@@ -104,9 +139,13 @@ class TaskWorkflowHelper
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
         }
+        if($this->task) {
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'taak', $this->task);
+        }
 
-//todo toevoegen custom-portal branch
-//        $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody,'cooperatie' );
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'portal' );
+        $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'contacten_portal' );
+        $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody,'cooperatie' );
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 

@@ -6,6 +6,7 @@ use App\Eco\Email\Email;
 use App\Eco\Task\Task;
 use App\Helpers\Delete\Models\DeleteTask;
 use App\Helpers\RequestInput\RequestInput;
+use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\Task\Grid\TaskRequestQuery;
 use App\Http\Controllers\Api\Task\Grid\NoteRequestQuery;
 use App\Http\Resources\Task\GridTask;
@@ -117,6 +118,14 @@ class TaskController extends Controller
             $task->finished_by_id = Auth::id();
         }
         $task->save();
+
+        $taskWorkflowHelper = new TaskWorkflowHelper($task);
+        $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+        if($processed)
+        {
+            $task->date_sent_wf_new_task =  Carbon::now();
+            $task->save();
+        }
 
         return $this->show($task);
     }

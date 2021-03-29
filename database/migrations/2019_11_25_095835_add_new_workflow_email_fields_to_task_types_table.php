@@ -37,10 +37,5 @@ class AddNewWorkflowEmailFieldsToTaskTypesTable extends Migration
     public function down()
     {
         //
-//        Schema::dropIfExists('email_template_id_wf_expired_task');
-//        Schema::dropIfExists('uses_wf_expired_task');
-//        Schema::dropIfExists('number_of_days_to_send_email_completed_task');
-//        Schema::dropIfExists('email_template_id_wf_completed_task');
-//        Schema::dropIfExists('uses_wf_completed_task');
     }
 }

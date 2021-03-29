@@ -1143,7 +1143,9 @@ class ExternalWebformController extends Controller
                             'desired_date' => null,
                             'evaluation_agreed_date' => null,
                         ]);
-                        $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie " . $measure->measureCategory->name. " (maatregel: " . $measure->name . ") en gekoppeld aan intake id " . $intake->id . ".");
+                        $opportunity->measures()->sync($measure->id);
+
+                        $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name. "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
                     } else {
                         $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
                     }

@@ -12,6 +12,8 @@ class OrganisationJoryResource extends JoryResource
 
     protected function configureForApp(): void
     {
+        $this->field('id')->filterable()->sortable();
+        $this->field('name')->filterable()->sortable();
     }
 
     protected function configureForPortal(): void

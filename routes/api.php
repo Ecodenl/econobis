@@ -206,6 +206,9 @@ Route::namespace('Api')
         Route::post('measure/{measure}/delete', 'Measure\MeasureController@destroy');
         Route::get('measure/{measure}/attachments', 'Measure\MeasureController@attachments');
 
+        Route::get('measure-category/jory', 'Measure\MeasureCategoryController@jory');
+        Route::post('measure-category/{measureCategory}', 'Measure\MeasureCategoryController@update');
+
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');

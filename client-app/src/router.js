@@ -84,6 +84,12 @@ import Main from './container/global/Main';
 import LoadingPage from './container/global/LoadingPage';
 const MeasuresListApp = React.lazy(() => import('./container/measures/list/MeasuresListApp'));
 const MeasureDetailsApp = React.lazy(() => import('./container/measures/details/MeasureDetailsApp'));
+const MeasureCategoriesListApp = React.lazy(() =>
+    import('./container/measure-categories/list/MeasureCategoriesListApp')
+);
+const MeasureCategoryDetailsApp = React.lazy(() =>
+    import('./container/measure-categories/details/MeasureCategoryDetailsApp')
+);
 const NotFoundedPage = React.lazy(() => import('./container/global/NotFoundedPage'));
 const OpportunitiesListApp = React.lazy(() => import('./container/opportunities/list/OpportunitiesListApp'));
 const OpportunityDetailsApp = React.lazy(() => import('./container/opportunities/details/OpportunityDetailsApp'));
@@ -336,6 +342,9 @@ const Routes = () => {
                     <Route path="portal-instellingen-layout" component={PortalSettingsLayoutListApp} />
                     <Route path="portal-instellingen-layout/nieuw" component={PortalSettingsLayoutNewApp} />
                     <Route path="portal-instellingen-layout/:id" component={PortalSettingsLayoutApp} />
+                    /* MeasureCategories */
+                    <Route path="maatregel-categorieen" component={MeasureCategoriesListApp} />
+                    <Route path="maatregel-categorie/:id" component={MeasureCategoryDetailsApp} />
                     /* Measures */
                     <Route path="maatregelen" component={MeasuresListApp} />
                     <Route path="maatregel/:id" component={MeasureDetailsApp} />

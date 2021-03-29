@@ -302,6 +302,7 @@ class ExternalWebformController extends Controller
                 // Intake
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
+                'intake_maatregel_id' => 'measure_id',
                 'intake_interesse_ids' => 'measure_categorie_ids',
                 'intake_aanmeldingsbron_ids' => 'source_ids',
                 'intake_status_id' => 'status_id',
@@ -1132,21 +1133,28 @@ class ExternalWebformController extends Controller
             $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
 
             // indien intake status 'Afgesloten met kans' en er zijn maatregelen, dan ook meteen kans aanmaken.
-            if($intakeStatus->id == $statusIdClosedWithOpportunity && $measureCategories){
+            if($intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans per maatregel aanmaken (status Actief)");
-                $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
-                if($statusOpportunity) {
 
-                    foreach ($measureCategories as $measureCategory) {
+                $measure = Measure::find($data['measure_id']);
+                if (!$measure) {
+                    $this->log('Er is geen (bekende) waarde voor maatregel meegegeven, kans niet aangemaakt.');
+                }else{
+                    $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
+                    if($statusOpportunity) {
                         $opportunity = Opportunity::create([
-                            'measure_category_id' => $measureCategory->id,
+                            'measure_category_id' => $measure->measureCategory->id,
                             'status_id' => $statusOpportunity,
                             'intake_id' => $intake->id,
                             'quotation_text' => '',
                             'desired_date' => null,
                             'evaluation_agreed_date' => null,
                         ]);
-                        $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel  " . $measureCategory->name. " en gekoppeld aan intake id " . $intake->id . ".");
+                        $opportunity->measures()->sync($measure->id);
+
+                        $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name. "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
+                    } else {
+                        $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
                     }
                 }
 

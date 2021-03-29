@@ -17,9 +17,6 @@ class PersonObserver
 
     public function creating(Person $person)
     {
-        if(empty($person->first_name) && !empty($person->initials)){
-            $person->first_name = $person->initials;
-        }
     }
 
     public function saved(Person $person)
@@ -37,7 +34,7 @@ class PersonObserver
             }
         }
 
-        if($person->isDirty(['first_name', 'last_name', 'last_name_prefix'])){
+        if($person->isDirty(['initials', 'first_name', 'last_name', 'last_name_prefix'])){
             $contact = $person->contact;
             $contact->full_name = $this->contactFullNameFormat($person);
             $contact->save();

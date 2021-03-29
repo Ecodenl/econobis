@@ -19,7 +19,7 @@ class PersonPresenter extends Presenter
         $person = $this->entity;
 
         if(empty($person->last_name)) return $person->first_name;
-        if(empty($person->first_name)) return $person->last_name;
+        if(empty($person->first_name)) return $person->last_name . ', ' . (empty($person->initials) ? '' : $person->initials . ' ') . ($person->last_name_prefix ? ' ' . $person->last_name_prefix : '');
         return $person->last_name . ', ' . $person->first_name . ($person->last_name_prefix ? ' ' . $person->last_name_prefix : '');
     }
 

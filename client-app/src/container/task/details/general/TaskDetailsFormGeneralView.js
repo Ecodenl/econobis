@@ -27,6 +27,7 @@ const TaskDetailsFormGeneralView = props => {
         dateFinished,
         dateSentWfCompletedTask,
         dateSentWfExpiredTask,
+        dateSentWfNewTask,
         responsibleUser,
         responsibleTeam,
         finishedBy,
@@ -104,6 +105,14 @@ const TaskDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Email taak verlopen verzonden'}
                             value={dateSentWfExpiredTask ? moment(dateSentWfExpiredTask).format('L HH:mm') : ''}
+                        />
+                    ) : (
+                        ''
+                    )}
+                    {type && type.usesWfNewTask && dateSentWfNewTask ? (
+                        <ViewText
+                            label={'Email taak nieuw verzonden'}
+                            value={dateSentWfNewTask ? moment(dateSentWfNewTask).format('L HH:mm') : ''}
                         />
                     ) : (
                         ''

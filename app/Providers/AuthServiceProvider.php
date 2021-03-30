@@ -40,6 +40,8 @@ use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Mailbox\MailgunDomainPolicy;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasurePolicy;
+use App\Eco\Measure\MeasureCategory;
+use App\Eco\Measure\MeasureCategoryPolicy;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityPolicy;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -117,6 +119,7 @@ class AuthServiceProvider extends ServiceProvider
         HousingFile::class => HousingFilePolicy::class,
         Campaign::class => CampaignPolicy::class,
         Measure::class => MeasurePolicy::class,
+        MeasureCategory::class => MeasureCategoryPolicy::class,
         Document::class => DocumentPolicy::class,
         DocumentTemplate::class => DocumentTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,

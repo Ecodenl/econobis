@@ -318,6 +318,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
+                    <Nav id="maatregel-categorieen">
+                        <NavText>
+                            <Link className="sidebar-link" to="maatregel-categorieen">
+                                Intake maatregelen
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
             )}
             <Nav id="instellingen">

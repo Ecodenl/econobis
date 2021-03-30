@@ -70,6 +70,7 @@ class FullTask extends Resource
                 'dateFinished' => $this->date_finished,
                 'dateSentWfCompletedTask' => $this->date_sent_wf_completed_task,
                 'dateSentWfExpiredTask' => $this->date_sent_wf_expired_task,
+                'dateSentWfNewTask' => $this->date_sent_wf_new_task,
                 'responsibleUserId' => $this->responsible_user_id,
                 'responsibleUser' => FullUser::make($this->whenLoaded('responsibleUser')),
                 'responsibleTeamId' => $this->responsible_team_id,

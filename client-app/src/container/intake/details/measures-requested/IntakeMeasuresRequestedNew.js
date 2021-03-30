@@ -8,6 +8,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import { hashHistory } from 'react-router';
 
 class IntakeMeasuresRequestedNew extends Component {
     constructor(props) {
@@ -67,6 +68,9 @@ class IntakeMeasuresRequestedNew extends Component {
                 .then(payload => {
                     this.props.newIntakeMeasureRequested(payload);
                     this.props.toggleShowNew();
+                    setTimeout(() => {
+                        hashHistory.push(`/intake/${props.intakeId}`);
+                    }, 200);
                 })
                 .catch(function(error) {
                     alert(error.response.data.message);
@@ -138,7 +142,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(IntakeMeasuresRequestedNew);
+export default connect(mapStateToProps, mapDispatchToProps)(IntakeMeasuresRequestedNew);

@@ -16,6 +16,7 @@ use App\Eco\Measure\MeasureCategory;
 use App\Helpers\CSV\IntakeCSVHelper;
 use App\Helpers\Delete\Models\DeleteIntake;
 use App\Helpers\Excel\IntakeExcelHelper;
+use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
@@ -205,6 +206,12 @@ class IntakeController extends ApiController
         $this->authorize('manage', Intake::class);
 
         $intake->measuresRequested()->attach($measureCategory->id);
+
+        //Indien maak kans
+        if($measureCategory->uses_wf_create_opportunity){
+            $intakeWorkflowHelper = new IntakeWorkflowHelper($intake, $measureCategory);
+            $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+        }
 
         return GenericResource::make($measureCategory);
     }

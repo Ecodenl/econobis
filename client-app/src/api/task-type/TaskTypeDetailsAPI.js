@@ -11,8 +11,14 @@ const defaultFields = {
         'numberOfDaysToSendEmailCompletedTask',
         'usesWfExpiredTask',
         'emailTemplateIdWfExpiredTask',
+        'usesWfNewTask',
+        'emailTemplateIdWfNewTask',
     ],
-    rlt: { emailTemplateWorkflowCompletedTask: [], emailTemplateWorkflowExpiredTask: [] },
+    rlt: {
+        emailTemplateWorkflowCompletedTask: [],
+        emailTemplateWorkflowExpiredTask: [],
+        emailTemplateWorkflowNewTask: [],
+    },
 };
 
 export default {

@@ -6,6 +6,7 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Intake\Intake;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Organisation\Organisation;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\Email\EmailHelper;
@@ -23,7 +24,6 @@ class IntakeWorkflowHelper
         $this->opportunity = null;
         $this->quotationRequest = null;
         $this->measureCategory = $measureCategory;
-        $this->contact = $intake->contact;
         $this->cooperativeName = PortalSettings::get('cooperativeName');
 
     }
@@ -38,9 +38,6 @@ class IntakeWorkflowHelper
         if (!$this->measureCategory) {
             return false;
         }
-        if (!$this->contact) {
-            return false;
-        }
 
         $this->opportunity = Opportunity::create([
             'measure_category_id' => $this->measureCategory->id,
@@ -50,6 +47,7 @@ class IntakeWorkflowHelper
             'desired_date' => null,
             'evaluation_agreed_date' => null,
         ]);
+        $this->opportunity->measures()->sync($this->measureCategory->measure_id_wf_create_opportunity);
 
         //Indien maak offerte verzoek
         if($this->measureCategory->uses_wf_create_quotation_request){
@@ -96,26 +94,32 @@ class IntakeWorkflowHelper
         if (!$emailTemplate) {
             return false;
         }
-        if(!$this->contact->primaryEmailAddress)
+
+        $organisation = Organisation::find($this->measureCategory->organisation_id_wf_create_quotation_request);
+        $organisationContactperson = null;
+        if(optional(optional($organisation->contact->contactPerson)->contact)->type_id == 'person'){
+            $organisationContactperson = optional($organisation->contact->contactPerson)->contact;
+        }
+        if(!$organisationContactperson || !$organisationContactperson->primaryEmailAddress)
         {
             return false;
         }
 
-        $mail = Mail::to($this->contact->primaryEmailAddress);
-        $this->mailWorkflow($emailTemplate, $mail);
+        $mail = Mail::to($organisationContactperson->primaryEmailAddress->email);
+        $this->mailWorkflow($emailTemplate, $mail, $organisationContactperson);
         return true;
     }
 
-    public function mailWorkflow($emailTemplate, $mail)
+    public function mailWorkflow($emailTemplate, $mail, $organisationContactperson)
     {
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
         $htmlBody = $emailTemplate->html_body;
 
         $subject = str_replace('{cooperatie_naam}', $this->cooperativeName, $subject);
-        if($this->contact) {
-            $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
-            $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
-            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
+        if($organisationContactperson) {
+            $subject = str_replace('{contactpersoon}', $organisationContactperson->full_name, $subject);
+            $htmlBody = str_replace('{contactpersoon}', $organisationContactperson->full_name, $htmlBody);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $organisationContactperson);
         }
         if($this->intake) {
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake', $this->intake);

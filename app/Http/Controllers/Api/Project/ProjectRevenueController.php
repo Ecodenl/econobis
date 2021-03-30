@@ -534,11 +534,11 @@ class ProjectRevenueController extends ApiController
 
             $alfrescoResponse = $alfrescoHelper->createFile($filePath,
                 $document->filename, $document->getDocumentGroup()->name);
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
         }else{
             $alfrescoResponse = null;
         }
 
-        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
         $document->save();
 
         //delete file on server, still saved on alfresco.

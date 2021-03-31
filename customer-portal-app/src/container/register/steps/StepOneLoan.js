@@ -22,11 +22,15 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
             .transform(function(value, originalvalue) {
                 return value ? value.replace(',', '.') : 0;
             })
-            .test('amountOptioned', 'Minimum van ' + project.minAmountLoan + ' nodig', value =>
-                value ? value.replace(',', '.') : 0 >= project.minAmountLoan
+            .test(
+                'amountOptioned',
+                'Minimum van ' + project.minAmountLoan + ' nodig',
+                value => value >= project.minAmountLoan
             )
-            .test('amountOptioned', 'Maximum van ' + project.maxAmountLoan + ' bereikt', value =>
-                value ? value.replace(',', '.') : 0 <= project.maxAmountLoan
+            .test(
+                'amountOptioned',
+                'Maximum van ' + project.maxAmountLoan + ' bereikt',
+                value => value <= project.maxAmountLoan
             )
             .matches(/^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$/, 'Fout bedrag'),
         choiceMembership: Yup.number().test(

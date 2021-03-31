@@ -4,6 +4,7 @@ namespace App\Helpers\Workflow;
 
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Intake\Intake;
+use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
@@ -48,6 +49,10 @@ class IntakeWorkflowHelper
             'evaluation_agreed_date' => null,
         ]);
         $this->opportunity->measures()->sync($this->measureCategory->measure_id_wf_create_opportunity);
+
+        //intake kan nu op status Afgesloten met kans gezet worden.
+        $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
+        $this->intake->intake_status_id = $statusIdClosedWithOpportunity;
 
         //Indien maak offerte verzoek
         if($this->measureCategory->uses_wf_create_quotation_request){

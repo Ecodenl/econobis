@@ -17,6 +17,7 @@ import MeasureAPI from '../../../../api/measure/MeasureAPI';
 import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import validator from 'validator';
+import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 
 class MeasureCategoryDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -160,6 +161,8 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
             usesWfEmailQuotationRequest,
             emailTemplateIdWfCreateQuotationRequest,
         } = this.state.measureCategory;
+
+        const measuresMatchToCategory = MeasuresOfCategory(this.state.measures, this.state.measureCategory.id);
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -197,7 +200,7 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                         label={'Voor welke maatregel kans maken?'}
                                         divSize={'col-sm-10'}
                                         name={'measureIdWfCreateOpportunity'}
-                                        options={this.state.measures}
+                                        options={measuresMatchToCategory}
                                         value={measureIdWfCreateOpportunity}
                                         onChangeAction={this.handleReactSelectChange}
                                         isLoading={this.state.peekLoading.measures}

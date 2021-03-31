@@ -57,6 +57,7 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
@@ -196,7 +197,7 @@ class ExternalWebformController extends Controller
 
         $this->addEnergySupplierToContact($contact, $data['energy_supplier']);
         if ($this->address) {
-            $intake = $this->addIntakeToAddress($this->address, $data['intake']);
+            $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
         } else {
             $intake = null;
@@ -1094,9 +1095,27 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addIntakeToAddress(Address $address, array $data)
+    protected function addIntakeToAddress(Address $address, array $data, Webform $webform)
     {
         if ($data['campaign_id']) {
+
+            // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            $responsibleUser = User::find($webform->responsible_user_id);
+            if($responsibleUser){
+                Auth::setUser($responsibleUser);
+                $this->log('Intake verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+            }else{
+                $responsibleTeam = Team::find($webform->responsible_team_id);
+                if($responsibleTeam && $responsibleTeam->users ){
+                    $teamFirstUser = $responsibleTeam->users->first();
+                    Auth::setUser($teamFirstUser);
+                    $this->log('Intake verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+                }else{
+                    $this->log('Intake verantwoordelijke gebruiker : onbekend');
+                }
+            }
+
             $this->log('Er is een campagne meegegeven, intake aanmaken.');
             $campaign = Campaign::find($data['campaign_id']);
             if (!$campaign) $this->error('Er is een ongeldige waarde voor campagne meegegeven.');
@@ -1132,32 +1151,36 @@ class ExternalWebformController extends Controller
 
             $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
 
-            // indien intake status 'Afgesloten met kans' en er zijn maatregelen, dan ook meteen kans aanmaken.
-            if($intakeStatus->id == $statusIdClosedWithOpportunity){
-                $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans per maatregel aanmaken (status Actief)");
+            $measure = Measure::find($data['measure_id']);
 
-                $measure = Measure::find($data['measure_id']);
-                if (!$measure) {
-                    $this->log('Er is geen (bekende) waarde voor maatregel meegegeven, kans niet aangemaakt.');
-                }else{
-                    $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
-                    if($statusOpportunity) {
-                        $opportunity = Opportunity::create([
-                            'measure_category_id' => $measure->measureCategory->id,
-                            'status_id' => $statusOpportunity,
-                            'intake_id' => $intake->id,
-                            'quotation_text' => '',
-                            'desired_date' => null,
-                            'evaluation_agreed_date' => null,
-                        ]);
-                        $opportunity->measures()->sync($measure->id);
-
-                        $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name. "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
-                    } else {
-                        $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
-                    }
+            // check workflow maak kans voor interesses (maatregel categorieen). indien aan, maak kans (en vandaar uit wellicht ook nog offerteverzoek)
+            foreach ($measureCategories as $measureCategory) {
+                if($measureCategory->uses_wf_create_opportunity) {
+                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . " heeft workflow kans maken.");
+                    $intakeWorkflowHelper = new IntakeWorkflowHelper($intake, $measureCategory);
+                    $intakeWorkflowHelper->processWorkflowCreateOpportunity();
                 }
+            }
 
+            // indien intake status 'Afgesloten met kans' en er is specifieke maatregel meegegeven, dan ook meteen kans aanmaken.
+            if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
+                $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "'  aanmaken (status Actief)");
+                $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
+                if($statusOpportunity) {
+                    $opportunity = Opportunity::create([
+                        'measure_category_id' => $measure->measureCategory->id,
+                        'status_id' => $statusOpportunity,
+                        'intake_id' => $intake->id,
+                        'quotation_text' => '',
+                        'desired_date' => null,
+                        'evaluation_agreed_date' => null,
+                    ]);
+                    $opportunity->measures()->sync($measure->id);
+
+                    $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name. "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
+                } else {
+                    $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
+                }
             }
 
             return $intake;

@@ -11,11 +11,11 @@ const MeasureCategoriesLists = ({ measureCategories, hasError, isLoading }) => {
     let loading = true;
 
     if (hasError) {
-        loadingText = 'Fout bij het ophalen van maatregel categorien.';
+        loadingText = 'Fout bij het ophalen van maatregel categorieën.';
     } else if (isLoading) {
         loadingText = 'Gegevens aan het laden.';
     } else if (measureCategories.length === 0) {
-        loadingText = 'Geen maatregel categorien gevonden!';
+        loadingText = 'Geen maatregel categorieën gevonden!';
     } else {
         loading = false;
     }

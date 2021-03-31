@@ -46,12 +46,24 @@ function ProjectList(props) {
     function callFetchContactProjects() {
         ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
             .then(payload => {
-                let contactProjecten = [];
-                payload.data.data.participations.map(item => contactProjecten.push(item.project.id));
-                setContactProjectsArray(contactProjecten);
+                let result = payload.data.data.participations.map(item => {
+                    return {
+                        ...item,
+                        mutation: item.mutations.length > 0 ? item.mutations[0] : null,
+                    };
+                });
 
-                setUnpaidParticipations(payload.data.data.participations
-                    .filter(item => item.project.usesMollie && !item.mutation.isPaidByMollie)
+                let contactProjecten = [];
+                result.map(item => contactProjecten.push(item.project.id));
+                setContactProjectsArray(contactProjecten);
+                // console.log(result);
+                setUnpaidParticipations(
+                    result.filter(
+                        item =>
+                            item.project.usesMollie &&
+                            !item.mutation.isPaidByMollie &&
+                            item.mutation.status.codeRef === 'option'
+                    )
                 );
             })
             .catch(error => {
@@ -146,9 +158,18 @@ function ProjectList(props) {
                                         <td>
                                             {contactProjectsArray.includes(project.id) ? (
                                                 <>
-                                                    { project.name }
-                                                    {unpaidParticipations.some(item => item.project.id === project.id) && (
-                                                        <> (<Link to={`/project/${project.id}`}>wijzig inschrijving</Link>)</>
+                                                    {project.name}
+                                                    {unpaidParticipations.some(
+                                                        item => item.project.id === project.id
+                                                    ) && (
+                                                        <>
+                                                            {' '}
+                                                            (
+                                                            <Link to={`/project/${project.id}`}>
+                                                                wijzig inschrijving
+                                                            </Link>
+                                                            )
+                                                        </>
                                                     )}
                                                 </>
                                             ) : (
@@ -158,9 +179,21 @@ function ProjectList(props) {
                                         <td>
                                             {contactProjectsArray.includes(project.id) ? (
                                                 <>
-                                                    {unpaidParticipations.some(item => item.project.id === project.id) ? (
+                                                    {unpaidParticipations.some(
+                                                        item => item.project.id === project.id
+                                                    ) ? (
                                                         <div className="text-center">
-                                                            Nog niet betaald,<br/><a href={unpaidParticipations.find(item => item.project.id === project.id).mutation.econobisPaymentLink}>betaal nu</a>
+                                                            Nog niet betaald,
+                                                            <br />
+                                                            <a
+                                                                href={
+                                                                    unpaidParticipations.find(
+                                                                        item => item.project.id === project.id
+                                                                    ).mutation.econobisPaymentLink
+                                                                }
+                                                            >
+                                                                betaal nu
+                                                            </a>
                                                         </div>
                                                     ) : (
                                                         <div className="text-success text-center">✔</div>

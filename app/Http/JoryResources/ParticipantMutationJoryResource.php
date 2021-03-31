@@ -28,6 +28,7 @@ class ParticipantMutationJoryResource extends JoryResource
         $this->filter('code');
 
         $this->relation('participation');
+        $this->relation('status');
     }
 
     public function authorize($builder, $user = null): void

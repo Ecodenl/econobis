@@ -11,20 +11,14 @@ export default {
                         f: 'code',
                         d: code,
                     },
-                    fld: [
-                        'econobisPaymentLink',
-                        'isPaidByMollie',
-                    ],
+                    fld: ['econobisPaymentLink', 'isPaidByMollie'],
                     rlt: {
                         participation: {
                             rlt: {
                                 project: {
-                                    fld: [
-                                        'name',
-                                        'textRegistrationFinished',
-                                    ]
-                                }
-                            }
+                                    fld: ['name', 'textRegistrationFinished'],
+                                },
+                            },
                         },
                     },
                 },

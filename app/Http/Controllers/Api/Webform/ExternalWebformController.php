@@ -304,6 +304,7 @@ class ExternalWebformController extends Controller
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_maatregel_id' => 'measure_id',
+                'intake_maatregel_ids' => 'measure_ids',
                 'intake_interesse_ids' => 'measure_categorie_ids',
                 'intake_aanmeldingsbron_ids' => 'source_ids',
                 'intake_status_id' => 'status_id',
@@ -1128,7 +1129,15 @@ class ExternalWebformController extends Controller
 
             $reasons = IntakeReason::whereIn('id', explode(',', $data['reason_ids']))->get();
             $sources = IntakeSource::whereIn('id', explode(',', $data['source_ids']))->get();
-            $measureCategories = MeasureCategory::whereIn('id', explode(',', $data['measure_categorie_ids']))->get();
+            $intakeMeasures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
+            $measure = Measure::find($data['measure_id']);
+            if ($intakeMeasures && count($intakeMeasures)>0 ){
+                $measureCategories = MeasureCategory::whereIn('id', array_unique($intakeMeasures->pluck('measure_category_id')->toArray() ) )->get();
+            } elseif ($measure) {
+                $measureCategories = MeasureCategory::where('id', $measure->measure_category_id)->get();
+            } else {
+                $measureCategories = MeasureCategory::whereIn('id', explode(',', $data['measure_categorie_ids']))->get();
+            }
 
             $intake = Intake::make([
                 'contact_id' => $address->contact->id,
@@ -1151,41 +1160,44 @@ class ExternalWebformController extends Controller
 
             $statusIdClosedWithOpportunity = IntakeStatus::where('name', 'Afgesloten met kans')->first()->id;
 
-            $measure = Measure::find($data['measure_id']);
-
-            // check workflow maak kans voor interesses (maatregel categorieen). indien aan, maak kans (en vandaar uit wellicht ook nog offerteverzoek)
-            foreach ($measureCategories as $measureCategory) {
-                if($measureCategory->uses_wf_create_opportunity) {
-                    $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . " heeft workflow kans maken.");
-                    $intakeWorkflowHelper = new IntakeWorkflowHelper($intake, $measureCategory);
-                    $intakeWorkflowHelper->processWorkflowCreateOpportunity();
-                }
+            // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
+            foreach ($intakeMeasures as $intakeMeasure) {
+                $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $intakeMeasure->name . "'  aanmaken (status Actief)");
+                $this->addOpportunity($intakeMeasure, $intake);
             }
 
             // indien intake status 'Afgesloten met kans' en er is specifieke maatregel meegegeven, dan ook meteen kans aanmaken.
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "'  aanmaken (status Actief)");
-                $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
-                if($statusOpportunity) {
-                    $opportunity = Opportunity::create([
-                        'measure_category_id' => $measure->measureCategory->id,
-                        'status_id' => $statusOpportunity,
-                        'intake_id' => $intake->id,
-                        'quotation_text' => '',
-                        'desired_date' => null,
-                        'evaluation_agreed_date' => null,
-                    ]);
-                    $opportunity->measures()->sync($measure->id);
-
-                    $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name. "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
-                } else {
-                    $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
-                }
+                $this->addOpportunity($measure, $intake);
             }
 
             return $intake;
         } else {
             $this->log('Er is geen campagne meegegeven, intake niet aanmaken.');
+        }
+    }
+
+    /**
+     * @param $measure
+     * @param $intake
+     */
+    protected function addOpportunity($measure, $intake)
+    {
+        $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
+        if($statusOpportunity) {
+            $opportunity = Opportunity::create([
+                'measure_category_id' => $measure->measureCategory->id,
+                'status_id' => $statusOpportunity,
+                'intake_id' => $intake->id,
+                'quotation_text' => '',
+                'desired_date' => null,
+                'evaluation_agreed_date' => null,
+            ]);
+            $opportunity->measures()->sync($measure->id);
+            $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name . "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
+        } else {
+            $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
         }
     }
 
@@ -1836,4 +1848,5 @@ class ExternalWebformController extends Controller
     {
         $this->taskErrors[] = $error;
     }
+
 }

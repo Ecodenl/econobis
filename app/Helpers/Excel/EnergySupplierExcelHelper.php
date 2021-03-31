@@ -192,18 +192,23 @@ class EnergySupplierExcelHelper
         $completeData = [];
 
         $headerData = [];
-        $headerData[] = 'Volgnr';
-        $headerData[] = 'KlantNaam';
-        $headerData[] = 'Postcode';
-        $headerData[] = 'KlantNummer';
+        $headerData[] = 'ZonId';
         $headerData[] = 'EanCode';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'Huisnummer';
+        $headerData[] = 'Toevoeging';
         $headerData[] = 'OntvangstDatum';
         $headerData[] = 'BeginDatum';
         $headerData[] = 'EindDatum';
-        $headerData[] = 'Aantal participaties';
-        $headerData[] = 'Verwachte opbrengst';
-        $headerData[] = 'ProductieHoeveelheid';
         $headerData[] = 'BestandsNaam';
+        $headerData[] = 'KlantNummer';
+        $headerData[] = 'KlantNaam';
+        $headerData[] = 'Collectief';
+        $headerData[] = 'Project';
+        $headerData[] = 'Totaal certificaten';
+        $headerData[] = 'Totaal Productie';
+        $headerData[] = 'Certificaten Adres';
+        $headerData[] = 'Productie Adres';
 
         $completeData[] = $headerData;
 
@@ -217,21 +222,30 @@ class EnergySupplierExcelHelper
 
                 foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
-                    ++$this->counter;
-                    $rowData[] = $this->counter;
-                    $rowData[] = $distribution->contact->full_name;
-                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
-                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
-                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+//                    ++$this->counter;
+//                    $rowData[] = $this->counter;
+                    $rowData[] = $distribution->participation_id;
                     $rowData[] = $distribution->contact->primaryContactEnergySupplier && !empty($distribution->contact->primaryContactEnergySupplier->ean_electricity)
                         ? 'EAN: ' . $distribution->contact->primaryContactEnergySupplier->ean_electricity : '';
+                    $rowData[] = str_replace(' ', '', $distribution->postal_code);
+                    $rowData[] = $distribution->street_number;
+                    $rowData[] = $distribution->street_number_addition;
                     $rowData[] = $this->formatDate(new Carbon('now'));
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
-                    $rowData[] = $deliveredKwhPeriod->participations_quantity;
-                    $rowData[] = '';
-                    $rowData[] = $deliveredKwhPeriod->delivered_kwh;
                     $rowData[] = $this->fileName;
+                    $rowData[] = $distribution->contact->primaryContactEnergySupplier
+                        ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
+                    $rowData[] = $distribution->contact->full_name;
+                    $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
+                    $rowData[] = $this->projectRevenue->project->name;
+                    $rowData[] = $deliveredKwhPeriod->participations_quantity;
+                    $rowData[] = $deliveredKwhPeriod->delivered_kwh;
+//                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_supply)
+//                        ? 'EAN: ' . $this->projectRevenue->project->ean_supply : '';
+                    $rowData[] = '';
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
 
                     $completeData[] = $rowData;
                 }

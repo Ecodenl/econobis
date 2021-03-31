@@ -143,9 +143,12 @@ export default {
                                         administration: { fld: ['name'] },
                                     },
                                 },
-                                'mutations:first as mutation': {
-                                    fld: ['isPaidByMollie', 'econobisPaymentLink']
-                                }
+                                mutations: {
+                                    fld: ['isPaidByMollie', 'econobisPaymentLink'],
+                                    rlt: {
+                                        status: { fld: ['codeRef'] },
+                                    },
+                                },
                             },
                         },
                     },

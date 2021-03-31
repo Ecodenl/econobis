@@ -254,6 +254,8 @@ class ProjectController extends ApiController
 
             $project->save();
             if($participationWorthChanged){
+//todo WM: Bij veel deelnemers loopt hij hier nu tegen timelimit van 30sec aan.
+//         Deze procedure zullen we nog moeten ombouwen naar verwerking in job(s).
                 foreach ($project->participantsProject as $participantProject){
                     $participantProject->participations_definitive_worth = $participantProject->calculator()->participationsDefinitiveWorth();
                     if($project->projectType->code_ref == 'capital' || $project->projectType->code_ref == 'postalcode_link_capital') {
@@ -289,11 +291,16 @@ class ProjectController extends ApiController
             }
 
             $project->requiresContactGroups()->sync($contactGroupIds);
+//todo WM: Dit is overbodig hier. Herberekenen participantsprojects is alleen
+//         noodzakelijk als nominale waarde wijzigt. Herberekekingenn daarvoor
+//         zijn hierboven al gedaan in eerdere foreach project->participantsProject lus.
+//         Bij veel deelnemers loopt hij daar nu overigens al tegen timelimit van 30sec aan.
+//         Die procedure zullen we nog moeten ombouwen naar verwerking in job(s).
+//            foreach ($project->participantsProject as $participantProject){
+//                // Herbereken de afhankelijke gegevens op het participantProject
+//                $participantProject->calculator()->run()->save();
+//            }
 
-            foreach ($project->participantsProject as $participantProject){
-                // Herbereken de afhankelijke gegevens op het participantProject
-                $participantProject->calculator()->run()->save();
-            }
             // Herbereken de afhankelijke gegevens op het project
             $project->calculator()->run()->save();
 

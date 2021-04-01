@@ -1165,6 +1165,19 @@ class ExternalWebformController extends Controller
                 $this->addOpportunity($measure, $intake);
             }
 
+            // Indien geen intake maatregelen zijn mee gegeven (niet via intake_maatregel_ids en niet via intake_maatregel_id),
+            // dan nog wel interesses doorlopen voor check of er een workflow intake maatregel van toepassing is.
+            if((!$intakeMeasures || count($intakeMeasures) == 0) && !$measure) {
+                $this->log("Intake interesses meegegeven. Check op workflow intake per interesse");
+                // check workflow maak kans voor interesses (maatregel categorieen). indien aan, maak kans (en vandaar uit wellicht ook nog offerteverzoek)
+                foreach ($measureCategories as $measureCategory) {
+                    if ($measureCategory->uses_wf_create_opportunity) {
+                        $this->log("Intake interesse (maatregel categorie) '" . $measureCategory->name . " heeft workflow kans maken. Deze uitvoeren");
+                        $intakeWorkflowHelper = new IntakeWorkflowHelper($intake, $measureCategory);
+                        $intakeWorkflowHelper->processWorkflowCreateOpportunity();
+                    }
+                }
+            }
             return $intake;
         } else {
             $this->log('Er is geen campagne meegegeven, intake niet aanmaken.');

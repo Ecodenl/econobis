@@ -1162,13 +1162,13 @@ class ExternalWebformController extends Controller
 
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
             foreach ($intakeMeasures as $intakeMeasure) {
-                $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $intakeMeasure->name . "'  aanmaken (status Actief)");
+                $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
                 $this->addOpportunity($intakeMeasure, $intake);
             }
 
             // indien intake status 'Afgesloten met kans' en er is specifieke maatregel meegegeven, dan ook meteen kans aanmaken.
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
-                $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "'  aanmaken (status Actief)");
+                $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "' aanmaken (status Actief)");
                 $this->addOpportunity($measure, $intake);
             }
 

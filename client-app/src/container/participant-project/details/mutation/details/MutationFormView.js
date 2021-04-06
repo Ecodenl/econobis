@@ -47,7 +47,20 @@ const MutationFormView = ({
         indicationOfRestitutionEnergyTax,
         deletedAt,
         financialOverviewDefinitive,
+        isPaidByMollie,
     } = participantMutation;
+
+    let allowDelete = false;
+    if (status && status.codeRef !== 'final') {
+        allowDelete = true;
+    } else if (
+        !isPaidByMollie &&
+        !financialOverviewDefinitive &&
+        !participantInDefinitiveRevenue &&
+        participantProjectDateTerminated === null
+    ) {
+        allowDelete = true;
+    }
 
     return (
         <div
@@ -86,11 +99,7 @@ const MutationFormView = ({
                         ) : (
                             ''
                         )}
-                        {!participantInDefinitiveRevenue &&
-                        !financialOverviewDefinitive &&
-                        participantProjectDateTerminated === null &&
-                        showActionButtons &&
-                        permissions.manageFinancial ? (
+                        {allowDelete && showActionButtons && permissions.manageFinancial ? (
                             <a role="button" onClick={toggleDelete}>
                                 <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                             </a>

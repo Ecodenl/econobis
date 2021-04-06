@@ -153,41 +153,46 @@ class ParticipantMutationController extends ApiController
 
         $result = $this->checkMutationAllowed($participantMutation);
 
-        if ($participantMutation->participantInDefinitiveRevenue) {
-            abort(409, 'Mutatie komt al voor in een definitieve verdeling');
-        }
-        if ($participantMutation->isPaidByMollie) {
-            abort(409, 'Mutatie heeft al definitieve mollie betaling');
-        }
-
         $melding = null;
 
         $participantProject = $participantMutation->participation;
 
         $dateRegisterOld = $participantProject->dateEntryFirstDeposit;
 
+        if($participantMutation->status->code_ref == 'final'){
+            if ($participantProject->participantInDefinitiveRevenue) {
+                abort(409, 'Deelnemer komt al voor in een definitieve verdeling, definitieve mutaties kunnen niet meer verwijderd worden.');
+            }
+            if ($participantProject->date_terminated != null) {
+                abort(409, 'Deelnemer is beeindigd, definitieve mutaties kunnen niet meer verwijderd worden.');
+            }
+            if ($participantMutation->financialOverviewDefinitive) {
+                abort(409, 'Mutatie komt al voor in een definitieve waardestaat.');
+            }
+            if ($participantMutation->isPaidByMollie) {
+                abort(409, 'Mutatie heeft al definitieve mollie betaling.');
+            }
+        }
+
         DB::transaction(function () use ($participantMutation, $participantProject) {
 
-            if( !$participantProject->participantInDefinitiveRevenue && !$participantProject->isPaidByMollie)
+            $molliePayments = $participantMutation->molliePayments->whereNull('date_paid');
+            foreach ($molliePayments as $molliePayment)
             {
-                $molliePayments = $participantMutation->molliePayments->whereNull('date_paid');
-                foreach ($molliePayments as $molliePayment)
-                {
-                    $molliePayment->delete();
-                }
-                $statusLogs = $participantMutation->statusLog;
-                foreach ($statusLogs as $statusLog)
-                {
-                    $statusLog->delete();
-                }
-                $participantMutation->delete();
-
-                // Herbereken de afhankelijke gegevens op het participantProject
-                $participantProject->calculator()->run()->save();
-
-                // Herbereken de afhankelijke gegevens op het project
-                $participantProject->project->calculator()->run()->save();
+                $molliePayment->delete();
             }
+            $statusLogs = $participantMutation->statusLog;
+            foreach ($statusLogs as $statusLog)
+            {
+                $statusLog->delete();
+            }
+            $participantMutation->delete();
+
+            // Herbereken de afhankelijke gegevens op het participantProject
+            $participantProject->calculator()->run()->save();
+
+            // Herbereken de afhankelijke gegevens op het project
+            $participantProject->project->calculator()->run()->save();
 
             // Indien participation project in concept waardestaat / waardestaten, dan die ook herberekenen.
             if($participantProject->project->financialOverviewProjects

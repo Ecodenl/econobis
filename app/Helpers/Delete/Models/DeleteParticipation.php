@@ -61,10 +61,6 @@ class DeleteParticipation implements DeleteInterface
         if($this->participation->mutations()->count() > 0){
             array_push($this->errorMessage, "Er is nog een mutatie.");
         }
-
-        if($this->participation->status_id === 2){
-            array_push($this->errorMessage, "Er is nog een participatie.");
-        }
     }
 
     /** Deletes models recursive

@@ -21,25 +21,25 @@ class AppServiceProvider extends ServiceProvider
         date_default_timezone_set('Europe/Amsterdam');
 
         if ($this->app->environment() == 'production') { // alleen errors naar slack versturen in productie
-//            $monolog = Log::getLogger(); // onderliggende monolog instatie ophalen
-//            $slackHandler
-//                = new SlackHandler( // nieuwe slackhandler
-//                    Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen
-//                    '#eco', // slack channel naam
-//                    'econobis', // slack username
-//                    true,
-//                    null,
-//                    \Monolog\Logger::ERROR, // vanaf welk level de errors naar slack worden verstuurd
-//                    true,
-//                    false,
-//                    true); // extra data toevoegen
-//
-//            //nieuwe handler die de coöperatie toevoegd aan elke log
-//            $monolog->pushHandler($slackHandler);
-//            $monolog->pushProcessor(function ($record) {
-//                $record['extra']['Coöperatie'] = config('app.name');
-//                return $record;
-//            });
+            $monolog = Log::getLogger(); // onderliggende monolog instatie ophalen
+            $slackHandler
+                = new SlackHandler( // nieuwe slackhandler
+                    Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen
+                    '#eco', // slack channel naam
+                    'econobis', // slack username
+                    true,
+                    null,
+                    \Monolog\Logger::ERROR, // vanaf welk level de errors naar slack worden verstuurd
+                    true,
+                    false,
+                    true); // extra data toevoegen
+
+            //nieuwe handler die de coöperatie toevoegd aan elke log
+            $monolog->pushHandler($slackHandler);
+            $monolog->pushProcessor(function ($record) {
+                $record['extra']['Coöperatie'] = config('app.name');
+                return $record;
+            });
             //locale linux/windows verschil
             setlocale(LC_TIME, 'nl_NL.utf8');
         } else {

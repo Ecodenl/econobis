@@ -86,9 +86,11 @@ const MutationFormView = ({
                         ) : (
                             ''
                         )}
-                        {!participantInDefinitiveRevenue &&
-                        !financialOverviewDefinitive &&
-                        participantProjectDateTerminated === null &&
+                        {((status.codeRef === 'final' &&
+                            !participantInDefinitiveRevenue &&
+                            !financialOverviewDefinitive &&
+                            participantProjectDateTerminated === null) ||
+                            status.codeRef !== 'final') &&
                         showActionButtons &&
                         permissions.manageFinancial ? (
                             <a role="button" onClick={toggleDelete}>

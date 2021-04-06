@@ -17,13 +17,9 @@ use Venturecraft\Revisionable\RevisionableTrait;
 
 class Invoice extends Model
 {
-    use RevisionableTrait, Encryptable, SoftDeletes;
+    use RevisionableTrait, SoftDeletes;
 
     protected $guarded = ['id'];
-
-    protected $encryptable = [
-        'iban'
-    ];
 
     public function invoiceProducts()
     {

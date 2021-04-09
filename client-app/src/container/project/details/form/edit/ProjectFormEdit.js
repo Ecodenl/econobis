@@ -165,6 +165,19 @@ class ProjectFormEdit extends Component {
         });
     };
 
+    handleInputChangeSubsidyProvided = event => {
+        const target = event.target;
+        const subsidyProvided = target.checked;
+        this.setState({
+            ...this.state,
+            project: {
+                ...this.state.project,
+                subsidyProvided: subsidyProvided,
+                checkDoubleAddresses: subsidyProvided === true ? false : this.state.project.checkDoubleAddresses,
+            },
+        });
+    };
+
     handleInputChangeAdministration = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -811,6 +824,7 @@ class ProjectFormEdit extends Component {
                     visibleForAllContacts={visibleForAllContacts}
                     textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                     handleInputChange={this.handleInputChange}
+                    handleInputChangeSubsidyProvided={this.handleInputChangeSubsidyProvided}
                     handleInputChangeAdministration={this.handleInputChangeAdministration}
                     handleInputChangeDate={this.handleInputChangeDate}
                     handleContactGroupIds={this.handleContactGroupIds}

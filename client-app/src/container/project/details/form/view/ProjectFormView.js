@@ -98,16 +98,18 @@ const ProjectFormView = props => {
     //	waterkracht: mimimaal één deelnemer per 1 kWp vermogen;
     let requiredParticipations = 0;
 
-    switch (baseProjectCodeRefWithName.id) {
-        case 'solar-energy':
-            requiredParticipations = Math.ceil(powerKwAvailable / 5);
-            break;
-        case 'wind':
-            requiredParticipations = Math.ceil(powerKwAvailable / 2);
-            break;
-        case 'hydropower':
-            requiredParticipations = Math.ceil(powerKwAvailable);
-            break;
+    if (baseProjectCodeRefWithName) {
+        switch (baseProjectCodeRefWithName.id) {
+            case 'solar-energy':
+                requiredParticipations = Math.ceil(powerKwAvailable / 5);
+                break;
+            case 'wind':
+                requiredParticipations = Math.ceil(powerKwAvailable / 2);
+                break;
+            case 'hydropower':
+                requiredParticipations = Math.ceil(powerKwAvailable);
+                break;
+        }
     }
     const numberOfParticipantsStillNeeded = requiredParticipations;
 

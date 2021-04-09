@@ -21,6 +21,9 @@ import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import PortalSettingsAPI from '../../../../../api/portal-settings/PortalSettingsAPI';
 
+const defaultTextInfoProjectOnlyMembers =
+    'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
+
 class ProjectFormEdit extends Component {
     constructor(props) {
         super(props);
@@ -67,7 +70,7 @@ class ProjectFormEdit extends Component {
                 '&keys[]=defaultContactGroupMemberId' +
                 '&keys[]=defaultContactGroupNoMemberId';
             PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
-                let defaultTextIsMember;
+                let defaultTextIsMember = '';
                 let defaultTextIsNoMember = '';
                 let defaultTextBecomeMember = '';
                 let defaultTextBecomeNoMember = '';
@@ -97,6 +100,10 @@ class ProjectFormEdit extends Component {
                 this.setState({
                     project: {
                         ...this.state.project,
+
+                        textInfoProjectOnlyMembers: isEmpty(this.state.project.textInfoProjectOnlyMembers)
+                            ? defaultTextInfoProjectOnlyMembers
+                            : this.state.project.textInfoProjectOnlyMembers,
                         textIsMember: isEmpty(this.state.project.textIsMember)
                             ? defaultTextIsMember
                             : this.state.project.textIsMember,
@@ -236,6 +243,11 @@ class ProjectFormEdit extends Component {
 
         if (validator.isEmpty('' + project.code)) {
             errors.code = true;
+            hasErrors = true;
+        }
+
+        if (project.isSceProject && validator.isEmpty('' + project.baseProjectCodeRef)) {
+            errors.baseProjectCodeRef = true;
             hasErrors = true;
         }
 
@@ -611,6 +623,13 @@ class ProjectFormEdit extends Component {
             project.contactGroupIds = '';
         }
 
+        // If isSceProject is false, set checkDoubleAddresses and visibleForAllContacts to false and textInfoProjectOnlyMembers to default text
+        if (!project.isSceProject) {
+            project.checkDoubleAddresses = false;
+            project.visibleForAllContacts = false;
+            project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
+        }
+
         if (isNaN(project.amountOfLoanNeeded)) {
             project.amountOfLoanNeeded = project.amountOfLoanNeeded.replace(/,/g, '.');
         }
@@ -651,6 +670,10 @@ class ProjectFormEdit extends Component {
             projectStatusId,
             projectTypeId,
             projectType,
+            isSceProject,
+            baseProjectCodeRef,
+            checkDoubleAddresses,
+            subsidyProvided,
             address,
             postalCode,
             city,
@@ -665,6 +688,8 @@ class ProjectFormEdit extends Component {
             dateProduction,
             contactGroupIds,
             isMembershipRequired,
+            visibleForAllContacts,
+            textInfoProjectOnlyMembers,
             amountOfLoanNeeded,
             minAmountLoan,
             maxAmountLoan,
@@ -727,6 +752,29 @@ class ProjectFormEdit extends Component {
             amountOfParticipants,
         } = this.props.project;
 
+        // Benodigd aantal deelnemers: is opgesteld vermogen delen door Deelnemers per kWp van soort project
+        //  zonne-energieprojecten: Minimaal één deelnemer per 5 kWp vermogen;
+        //  windprojecten: minimaal één deelnemer per 2 kWp vermogen;
+        //	waterkracht: mimimaal één deelnemer per 1 kWp vermogen;
+        let requiredParticipations = 0;
+
+        switch (baseProjectCodeRef) {
+            case 'solar-energy':
+                requiredParticipations = Math.ceil(powerKwAvailable / 5);
+                break;
+            case 'wind':
+                requiredParticipations = Math.ceil(powerKwAvailable / 2);
+                break;
+            case 'hydropower':
+                requiredParticipations = Math.ceil(powerKwAvailable);
+                break;
+        }
+        const numberOfParticipantsStillNeeded = requiredParticipations;
+        let useSceProject = false;
+        if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+            useSceProject = true;
+        }
+
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <ProjectFormEditGeneral
@@ -735,6 +783,15 @@ class ProjectFormEdit extends Component {
                     description={description}
                     projectStatusId={projectStatusId}
                     projectType={projectType}
+                    useSceProject={useSceProject}
+                    isSceProject={isSceProject}
+                    baseProjectCodeRef={baseProjectCodeRef}
+                    powerKwAvailable={powerKwAvailable}
+                    checkDoubleAddresses={checkDoubleAddresses}
+                    postalcodeLink={postalcodeLink}
+                    subsidyProvided={subsidyProvided}
+                    requiredParticipations={requiredParticipations}
+                    numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                     address={address}
                     postalCode={postalCode}
                     city={city}
@@ -751,6 +808,8 @@ class ProjectFormEdit extends Component {
                     dateProduction={dateProduction}
                     contactGroupIds={contactGroupIds}
                     isMembershipRequired={isMembershipRequired}
+                    visibleForAllContacts={visibleForAllContacts}
+                    textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                     handleInputChange={this.handleInputChange}
                     handleInputChangeAdministration={this.handleInputChangeAdministration}
                     handleInputChangeDate={this.handleInputChangeDate}
@@ -816,7 +875,6 @@ class ProjectFormEdit extends Component {
                         participationsGranted={participationsGranted}
                         participationsOptioned={participationsOptioned}
                         participationsInteressed={participationsInteressed}
-                        powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
                         isParticipationTransferable={isParticipationTransferable}
@@ -835,7 +893,6 @@ class ProjectFormEdit extends Component {
                         participationsGranted={participationsGranted}
                         participationsOptioned={participationsOptioned}
                         participationsInteressed={participationsInteressed}
-                        powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
                         isParticipationTransferable={isParticipationTransferable}

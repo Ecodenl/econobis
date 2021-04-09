@@ -55,6 +55,7 @@ use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
+use App\Eco\Project\BaseProjectCodeRef;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\Project\ProjectRevenueType;
@@ -150,6 +151,7 @@ class SystemData extends Resource
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
             'administrationsPeek' => AdministrationPeek::collection(Administration::orderBy('id')->get()),
             'appName' => config('app.name'),
+            'baseProjectCodeRefs' => FullEnumWithIdAndName::collection(BaseProjectCodeRef::collection()),
             'buildingTypes' => BuildingType::select(['id', 'name'])->get(),
             'campaigns' => Campaign::select(['id', 'name'])->get(),
             'campaignStatuses' => FullEnumWithIdAndName::collection(CampaignStatus::all()),
@@ -205,8 +207,8 @@ class SystemData extends Resource
             'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
-            'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
+            'projectTypesActive' => GenericResource::collection(ProjectType::where('is_active', true)->get()),
             'quotationRequestStatus' => FullEnumWithIdAndName::collection(QuotationRequestStatus::orderBy('order')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
@@ -214,6 +216,7 @@ class SystemData extends Resource
             'taskTypes' => GenericResource::collection(TaskType::all()),
             'teams' => FullTeam::collection(Team::orderBy('name', 'asc')->get()),
             'titles' => FullTitle::collection(Title::all()),
+            'transactionCostsCodeRefs' => FullEnumWithIdAndName::collection(TransactionCostsCodeRef::collection()),
             'twinfieldConnectionTypes' => FullEnumWithIdAndName::collection(TwinfieldConnectionTypeWithIdAndName::collection()),
             'usersAll' => $usersAll,
             'users' => $users,

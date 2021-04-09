@@ -23,6 +23,10 @@ const ProjectFormView = props => {
         dateStartRegistrations,
         dateEndRegistrations,
         projectType,
+        isSceProject,
+        baseProjectCodeRefWithName,
+        checkDoubleAddresses,
+        subsidyProvided,
         postalCode,
         address,
         city,
@@ -37,6 +41,8 @@ const ProjectFormView = props => {
         totalParticipations,
         minParticipations,
         isMembershipRequired,
+        visibleForAllContacts,
+        textInfoProjectOnlyMembers,
         isParticipationTransferable,
         administration,
         usesMollie,
@@ -85,6 +91,26 @@ const ProjectFormView = props => {
         transactionCostsAmount3,
         transactionCostsPercentage3,
     } = props.project;
+
+    // Benodigd aantal deelnemers: is opgesteld vermogen delen door Deelnemers per kWp van soort project
+    //  zonne-energieprojecten: Minimaal één deelnemer per 5 kWp vermogen;
+    //  windprojecten: minimaal één deelnemer per 2 kWp vermogen;
+    //	waterkracht: mimimaal één deelnemer per 1 kWp vermogen;
+    let requiredParticipations = 0;
+
+    switch (baseProjectCodeRefWithName.id) {
+        case 'solar-energy':
+            requiredParticipations = Math.ceil(powerKwAvailable / 5);
+            break;
+        case 'wind':
+            requiredParticipations = Math.ceil(powerKwAvailable / 2);
+            break;
+        case 'hydropower':
+            requiredParticipations = Math.ceil(powerKwAvailable);
+            break;
+    }
+    const numberOfParticipantsStillNeeded = requiredParticipations;
+
     return (
         <section
             onClick={
@@ -97,6 +123,14 @@ const ProjectFormView = props => {
                 description={description}
                 projectStatus={projectStatus}
                 projectType={projectType}
+                isSceProject={isSceProject}
+                baseProjectCodeRefWithName={baseProjectCodeRefWithName}
+                powerKwAvailable={powerKwAvailable}
+                checkDoubleAddresses={checkDoubleAddresses}
+                postalcodeLink={postalcodeLink}
+                subsidyProvided={subsidyProvided}
+                requiredParticipations={requiredParticipations}
+                numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                 address={address}
                 postalCode={postalCode}
                 city={city}
@@ -110,6 +144,8 @@ const ProjectFormView = props => {
                 dateEntry={dateEntry}
                 dateProduction={dateProduction}
                 isMembershipRequired={isMembershipRequired}
+                visibleForAllContacts={visibleForAllContacts}
+                textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                 requiresContactGroups={requiresContactGroups}
                 documentTemplateAgreement={documentTemplateAgreement}
                 emailTemplateAgreement={emailTemplateAgreement}
@@ -163,7 +199,6 @@ const ProjectFormView = props => {
                     participationsGranted={participationsGranted}
                     participationsOptioned={participationsOptioned}
                     participationsInteressed={participationsInteressed}
-                    powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
                     isParticipationTransferable={isParticipationTransferable}
@@ -180,7 +215,6 @@ const ProjectFormView = props => {
                     participationsGranted={participationsGranted}
                     participationsOptioned={participationsOptioned}
                     participationsInteressed={participationsInteressed}
-                    powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
                     isParticipationTransferable={isParticipationTransferable}

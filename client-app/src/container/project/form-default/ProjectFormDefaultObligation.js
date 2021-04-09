@@ -11,7 +11,6 @@ const ProjectFormEditObligation = ({
     participationsGranted,
     participationsOptioned,
     participationsInteressed,
-    powerKwAvailable,
     minParticipations,
     maxParticipations,
     isParticipationTransferable,
@@ -24,7 +23,7 @@ const ProjectFormEditObligation = ({
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
-            <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
+            <h4>Obligatie</h4>
             <div className="row">
                 <InputText
                     type={'number'}
@@ -97,13 +96,6 @@ const ProjectFormEditObligation = ({
                     label={'Max. aantal obligaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
-                    onChangeAction={handleInputChange}
-                />
-                <InputText
-                    type={'number'}
-                    label={'Opgesteld vermogen kWp'}
-                    name={'powerKwAvailable'}
-                    value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
             </div>

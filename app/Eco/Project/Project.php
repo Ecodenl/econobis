@@ -148,6 +148,12 @@ class Project extends Model
         return TransactionCostsCodeRef::get($this->transaction_costs_code_ref);
     }
 
+    public function getBaseProjectCodeRef()
+    {
+        if (!$this->base_project_code_ref) return null;
+
+        return BaseProjectCodeRef::get($this->base_project_code_ref);
+    }
 
     public function getCurrentParticipations(){
         $participants = $this->participantsProject()->get();

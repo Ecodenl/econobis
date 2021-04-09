@@ -10,6 +10,14 @@ const ProjectFormViewGeneral = ({
     description,
     projectStatus,
     projectType,
+    isSceProject,
+    baseProjectCodeRefWithName,
+    checkDoubleAddresses,
+    powerKwAvailable,
+    requiredParticipations,
+    postalcodeLink,
+    numberOfParticipantsStillNeeded,
+    subsidyProvided,
     postalCode,
     address,
     city,
@@ -24,6 +32,8 @@ const ProjectFormViewGeneral = ({
     contactGroupIds,
     dateProduction,
     isMembershipRequired,
+    visibleForAllContacts,
+    textInfoProjectOnlyMembers,
     administrations,
     hasPaymentInvoices,
     requiresContactGroups,
@@ -69,6 +79,39 @@ const ProjectFormViewGeneral = ({
             <ViewText label={'Status'} value={projectStatus ? projectStatus.name : ''} />
         </div>
         <div className="row">
+            <ViewText label={'SCE project'} value={isSceProject ? 'Ja' : 'Nee'} />
+            <ViewText
+                label={'Basis project'}
+                value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
+            />
+        </div>
+        <div className="row">
+            <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
+            {isSceProject == true && (
+                <ViewText
+                    className={'form-group col-sm-6'}
+                    label={'Benodigde aantal deelnemers'}
+                    value={requiredParticipations}
+                />
+            )}
+        </div>
+        {isSceProject == true && (
+            <>
+                <div className="row">
+                    <ViewText label={'Postcoderoos'} value={postalcodeLink} />
+                    <ViewText
+                        className={'form-group col-sm-6'}
+                        label={'Aantal deelnemers nog nodig'}
+                        value={numberOfParticipantsStillNeeded}
+                    />
+                </div>
+                <div className="row">
+                    <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />
+                    <ViewText label={'Subsidie verstrekt'} value={subsidyProvided ? 'Ja' : 'Nee'} />
+                </div>
+            </>
+        )}
+        <div className="row">
             <div className="col-sm-3">
                 <label htmlFor="description" className="col-sm-12">
                     Omschrijving
@@ -100,7 +143,6 @@ const ProjectFormViewGeneral = ({
 
             <ViewText label={'Administratie'} value={administration ? administration.name : ''} />
         </div>
-
         <div className="row">
             <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
             <ViewText label={'Deelname aan groep verplicht'} value={isMembershipRequired ? 'Ja' : 'Nee'} />
@@ -117,6 +159,20 @@ const ProjectFormViewGeneral = ({
                 />
             ) : null}
         </div>
+        {isMembershipRequired ? (
+            <>
+                <div className="row">
+                    <div className="col-sm-6" />
+                    <ViewText label={'Zichtbaar voor alle contacten'} value={visibleForAllContacts ? 'Ja' : 'Nee'} />
+                </div>
+                {visibleForAllContacts ? (
+                    <div className="row">
+                        <div className="col-sm-6" />
+                        <ViewText label={'Groepsinfo tekst'} value={textInfoProjectOnlyMembers} />
+                    </div>
+                ) : null}
+            </>
+        ) : null}
         <div className="row">
             <ViewText label={'Start productie'} value={dateProduction ? moment(dateProduction).format('L') : ''} />
             <ViewText label={'Standaard ingangsdatum mutatie'} value={dateEntry ? moment(dateEntry).format('L') : ''} />
@@ -304,7 +360,6 @@ const ProjectFormViewGeneral = ({
         <div className="row">
             <ViewText label={'Direct elektronisch betalen via Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
         </div>
-
         <hr />
         <div className="row">
             <label htmlFor="registrationConfirmed" className="col-sm-12">

@@ -22,6 +22,7 @@ class ParticipantNewApp extends Component {
 
         this.state = {
             showModal: false,
+            showModalError: false,
             modalText: [],
             modalRedirectTask: '',
             modalRedirectParticipation: '',
@@ -128,6 +129,12 @@ class ParticipantNewApp extends Component {
         hashHistory.push(this.state.modalRedirectParticipation);
     };
 
+    closeShowModalError = () => {
+        this.setState({
+            ...this.state,
+            showModalError: false,
+        });
+    };
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -231,7 +238,14 @@ class ParticipantNewApp extends Component {
             this.setState({ isLoading: true });
 
             ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
-                if (payload.data.message !== undefined && payload.data.message.length > 0) {
+                if (payload.data.message !== undefined && payload.data.message.length > 0 && payload.data.id == 0) {
+                    console.log('Deelnemer niet aangemaakt !');
+                    console.log(payload.data.message);
+                    this.setState({
+                        showModalError: true,
+                        modalText: payload.data.message,
+                    });
+                } else if (payload.data.message !== undefined && payload.data.message.length > 0) {
                     this.setState({
                         showModal: true,
                         modalText: payload.data.message,
@@ -249,6 +263,7 @@ class ParticipantNewApp extends Component {
     };
 
     render() {
+        console.log('showModalError: ' + this.state.showModalError);
         return (
             <div className="row">
                 <div className="col-md-9">
@@ -282,8 +297,20 @@ class ParticipantNewApp extends Component {
                     </div>
                 </div>
                 <div className="col-md-3" />
+                {this.state.showModalError && (
+                    <MultipleMessagesModal
+                        title={'Melding'}
+                        closeModal={this.closeShowModalError}
+                        buttonCancelText={'Sluiten'}
+                        showConfirmAction={false}
+                        closingText={'De deelname is niet aangemaakt!'}
+                    >
+                        {this.state.modalText}
+                    </MultipleMessagesModal>
+                )}
                 {this.state.showModal && (
                     <MultipleMessagesModal
+                        title={'Waarschuwing'}
                         closeModal={this.redirectParticipation}
                         buttonCancelText={'Nee'}
                         confirmAction={this.redirectTask}

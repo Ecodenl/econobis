@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Api\ParticipationProject;
 
+use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
@@ -231,10 +232,19 @@ class ParticipationProjectController extends ApiController
 
         $participantProject->fill($data);
 
-        $participantProject->save();
-
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
+
+        $errors = [];
+
+        if($project->check_double_addresses){
+            $hasError = $this->checkDoubleAddresses($errors, $project, $contact);
+            if($hasError){
+                return ['id' => 0, 'message' => $errors];
+            }
+        }
+
+        $participantProject->save();
 
         // Loan / Obligation: Default type id is account.
         if($project->projectType->code_ref == 'loan' ||$project->projectType->code_ref == 'obligation'){
@@ -475,6 +485,32 @@ class ParticipationProjectController extends ApiController
         $participants->load(['contact', 'project']);
 
         return ParticipantProjectPeek::collection($participants);
+    }
+
+    public function checkDoubleAddresses(&$errors, Project $project, Contact $contact)
+    {
+        $contactAddresses = $contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray();
+
+        // For SCE projects with check on double addresses (as long as subsidy isn't provided):
+        // Check if all addresses of contact don't already exists as address of other participants.
+        $contactAddressesParticipants = [];
+        foreach ($project->participantsProject as $participant){
+            if($contact->id != $participant->contact->id){
+                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray()));
+            }
+        }
+
+        $addressIsDouble = false;
+        foreach ($contactAddresses as $key => $contactAddressId){
+            if( array_key_exists($key, $contactAddressesParticipants) ){
+                $address = Address::find($contactAddressId);
+                $checkText = 'Dubbel adres (postcode: ' . $address->postal_code . ', nummer: ' . $address->number . ($address->addition ? ( '-' . $address->addition) : '') . ') gevonden.';
+                array_push($errors, $checkText );
+                $addressIsDouble = true;
+            }
+        }
+
+        return $addressIsDouble;
     }
 
     public function validatePostalCode(&$message, Project $project, Contact $contact)

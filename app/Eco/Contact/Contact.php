@@ -30,6 +30,7 @@ use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +66,11 @@ class Contact extends Model
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function addressesActive()
+    {
+        return $this->hasMany(Address::class)->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
     }
 
     public function primaryAddress()

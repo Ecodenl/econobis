@@ -26,6 +26,7 @@ class ContactDetailFormAddressItem extends Component {
                 postalCode: false,
                 number: false,
                 countryId: false,
+                endDate: false,
             },
         };
     }
@@ -144,6 +145,11 @@ class ContactDetailFormAddressItem extends Component {
 
         if (validator.isEmpty(address.typeId + '')) {
             errors.typeId = true;
+            hasErrors = true;
+        }
+
+        if (address.typeId === 'old' && (address.endDate === null || validator.isEmpty(address.endDate))) {
+            errors.endDate = true;
             hasErrors = true;
         }
 

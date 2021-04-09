@@ -91,6 +91,7 @@ const ContactDetailsFormAddressEdit = props => {
                                     name="endDate"
                                     value={endDate}
                                     onChangeAction={props.handleInputChangeDate}
+                                    required={'required'}
                                     error={props.endDateError}
                                 />
                             )}

@@ -276,18 +276,18 @@ class ParticipationProjectController extends ApiController
             }
         }
 
-        switch($project->projectType->code_ref) {
-            case 'postalcode_link_capital': //Postalcode link capital
-                $this->validatePostalCode($message, $project, $contact);
-                $this->validateUsage($message, $project, $participantProject);
-                $this->validateEnergySupplier($message, $contact);
-                break;
-            default:
-                return ['id' => $participantProject->id];
-                break;
+        if($project->projectType->code_ref === 'postalcode_link_capital'){
+            $this->validatePostalCode($message, $project, $contact);
+            $this->validateUsage($message, $project, $participantProject);
+            $this->validateEnergySupplier($message, $contact);
+            return ['id' => $participantProject->id, 'message' => $message];
+        }
+        if($project->is_sce_project){
+            $this->validatePostalCode($message, $project, $contact);
+            return ['id' => $participantProject->id, 'message' => $message];
         }
 
-        return ['id' => $participantProject->id, 'message' => $message];
+        return ['id' => $participantProject->id];
     }
 
 
@@ -507,7 +507,7 @@ class ParticipationProjectController extends ApiController
             return false;
         }
         if(!in_array($postalCodeAreaContact, $validPostalAreas)){
-            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' van deelnemer niet gevonden in deelnemende postcode(s) in postcoderoos project: ' . implode(', ', $validPostalAreas) . '.');
+            array_push($message, $checkText . 'Postcode nummer ' . $postalCodeAreaContact . ' van deelnemer niet gevonden in deelnemende postcode(s) in ' . $project->projectType->name . ' project: ' . implode(', ', $validPostalAreas) . '.');
             return false;
         }
     }

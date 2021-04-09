@@ -43,61 +43,58 @@ class AddNewWorkflowFieldsToMeasureCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('measure_categories', function (Blueprint $table) {
-
-            if (Schema::hasColumn('measure_categories', 'email_template_id_wf_create_quotation_request'))
+        if (Schema::hasColumn('measure_categories', 'email_template_id_wf_create_quotation_request'))
+        {
+            Schema::table('measure_categories', function (Blueprint $table)
             {
-                Schema::table('measure_categories', function (Blueprint $table)
-                {
-                    $table->dropForeign('measure_categories_email_template_id_wf_cqr_foreign');
-                    $table->dropColumn('email_template_id_wf_create_quotation_request');
-                });
-            }
-            if (Schema::hasColumn('measure_categories', 'uses_wf_email_quotation_request'))
+                $table->dropForeign('measure_categories_email_template_id_wf_cqr_foreign');
+                $table->dropColumn('email_template_id_wf_create_quotation_request');
+            });
+        }
+        if (Schema::hasColumn('measure_categories', 'uses_wf_email_quotation_request'))
+        {
+            Schema::table('measure_categories', function (Blueprint $table)
             {
-                Schema::table('measure_categories', function (Blueprint $table)
-                {
-                    $table->dropColumn('uses_wf_email_quotation_request');
-                });
-            }
-            if (Schema::hasColumn('measure_categories', 'organisation_id_wf_create_quotation_request'))
+                $table->dropColumn('uses_wf_email_quotation_request');
+            });
+        }
+        if (Schema::hasColumn('measure_categories', 'organisation_id_wf_create_quotation_request'))
+        {
+            Schema::table('measure_categories', function (Blueprint $table)
             {
-                Schema::table('measure_categories', function (Blueprint $table)
-                {
-                    $table->dropForeign('measure_categories_organisation_id_wf_cqr_foreign');
-                    $table->dropColumn('organisation_id_wf_create_quotation_request');
-                });
-            }
-            if (Schema::hasColumn('measure_categories', 'uses_wf_create_quotation_request'))
+                $table->dropForeign('measure_categories_organisation_id_wf_cqr_foreign');
+                $table->dropColumn('organisation_id_wf_create_quotation_request');
+            });
+        }
+        if (Schema::hasColumn('measure_categories', 'uses_wf_create_quotation_request'))
+        {
+            Schema::table('measure_categories', function (Blueprint $table)
             {
-                Schema::table('measure_categories', function (Blueprint $table)
-                {
-                    $table->dropColumn('uses_wf_create_quotation_request');
-                });
-            }
-            if (Schema::hasColumn('measure_categories', 'opportunity_status_id_wf_create_opportunity'))
+                $table->dropColumn('uses_wf_create_quotation_request');
+            });
+        }
+        if (Schema::hasColumn('measure_categories', 'opportunity_status_id_wf_create_opportunity'))
+        {
+            Schema::table('measure_categories', function (Blueprint $table)
             {
-                Schema::table('measure_categories', function (Blueprint $table)
-                {
-                    $table->dropForeign('measure_categories_opportunity_status_id_wf_cqr_foreign');
-                    $table->dropColumn('opportunity_status_id_wf_create_opportunity');
-                });
-            }
-            if (Schema::hasColumn('measure_categories', 'measure_id_wf_create_opportunity'))
+                $table->dropForeign('measure_categories_opportunity_status_id_wf_cqr_foreign');
+                $table->dropColumn('opportunity_status_id_wf_create_opportunity');
+            });
+        }
+        if (Schema::hasColumn('measure_categories', 'measure_id_wf_create_opportunity'))
+        {
+            Schema::table('measure_categories', function (Blueprint $table)
             {
-                Schema::table('measure_categories', function (Blueprint $table)
-                {
-                    $table->dropForeign('measure_categories_measure_id_wf_co_foreign');
-                    $table->dropColumn('measure_id_wf_create_opportunity');
-                });
-            }
-            if (Schema::hasColumn('measure_categories', 'uses_wf_create_opportunity'))
+                $table->dropForeign('measure_categories_measure_id_wf_co_foreign');
+                $table->dropColumn('measure_id_wf_create_opportunity');
+            });
+        }
+        if (Schema::hasColumn('measure_categories', 'uses_wf_create_opportunity'))
+        {
+            Schema::table('measure_categories', function (Blueprint $table)
             {
-                Schema::table('measure_categories', function (Blueprint $table)
-                {
-                    $table->dropColumn('uses_wf_create_opportunity');
-                });
-            }
-        });
+                $table->dropColumn('uses_wf_create_opportunity');
+            });
+        }
     }
 }

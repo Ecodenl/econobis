@@ -145,11 +145,10 @@ class ProjectNewApp extends Component {
 
     handleInputChangeProjectType = event => {
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        const projectTypeId = target.value;
 
         let projectType;
-        projectType = this.props.projectTypesActive.find(projectType => projectType.id == value);
+        projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
 
         this.setState({
             ...this.state,
@@ -159,7 +158,7 @@ class ProjectNewApp extends Component {
                     projectType && projectType.codeRef === 'postalcode_link_capital'
                         ? false
                         : this.state.project.isSceProject,
-                projectTypeId: value,
+                projectTypeId: projectTypeId,
             },
         });
     };

@@ -79,6 +79,11 @@ class AddressController extends ApiController
         }
 
         $address->fill($this->arrayKeysToSnakeCase($data));
+
+// todo WM: Hier moet controle komen op dubbele adressen bij deelnemers SCE projecten
+//          waar check daarop aanstaat.
+//        abort(412, 'Fout produceren');
+
         $address->save();
 
         // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.

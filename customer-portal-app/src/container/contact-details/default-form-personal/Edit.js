@@ -282,7 +282,9 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="postal_code"
                                     placeholder={'Postcode'}
-                                    disabled={initialContact.isParticipantPcrProject}
+                                    disabled={
+                                        initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject
+                                    }
                                 />
                             )}
                         />

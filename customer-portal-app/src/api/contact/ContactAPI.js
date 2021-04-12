@@ -20,6 +20,7 @@ export default {
                         'addressLines',
                         'isParticipant',
                         'isParticipantPcrProject',
+                        'isParticipantSceProject',
                     ],
                     rlt: {
                         person: {

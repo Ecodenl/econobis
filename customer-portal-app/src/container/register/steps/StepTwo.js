@@ -53,6 +53,8 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
             validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
             if (project.projectType.codeRef === 'postalcode_link_capital') {
                 validationSchema = validationSchema.concat(validationSchemaPcrAdditional);
+            }
+            if (project.isSceProject) {
                 validationSchema = validationSchema.concat(validationSchemaPcrPersonal);
             }
             break;
@@ -63,6 +65,8 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
             validationSchema = validationSchemaBasic.concat(validationSchemaAdditional);
             if (project.projectType.codeRef === 'postalcode_link_capital') {
                 validationSchema = validationSchema.concat(validationSchemaPcrAdditional);
+            }
+            if (project.isSceProject) {
                 validationSchema = validationSchema.concat(validationSchemaPcrOrganisation);
             }
             break;

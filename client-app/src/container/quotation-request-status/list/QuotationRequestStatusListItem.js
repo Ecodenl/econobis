@@ -31,7 +31,7 @@ class QuotationRequestStatusListItem extends Component {
     }
 
     render() {
-        const { id, name, permissions } = this.props;
+        const { id, name, usesWf, numberOfDaysToSendEmail, permissions } = this.props;
 
         return (
             <tr
@@ -41,6 +41,8 @@ class QuotationRequestStatusListItem extends Component {
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{name}</td>
+                <td>{usesWf ? 'Ja' : 'Nee'}</td>
+                <td>{usesWf ? (numberOfDaysToSendEmail === 0 ? 'Direct' : numberOfDaysToSendEmail) : ''}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

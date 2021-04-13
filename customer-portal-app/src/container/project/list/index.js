@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ProjectAPI from '../../../api/project/ProjectAPI';
 import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import moment from 'moment';
@@ -11,12 +10,11 @@ import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 function ProjectList(props) {
     const [contactProjectsArray, setContactProjectsArray] = useState([]);
-    const [unpaidParticipations, setUnpaidParticipations] = useState([]);
-    const [contact, setContact] = useState({});
-    const [projectData, setProjectData] = useState({});
     const [isLoading, setLoading] = useState(true);
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
 
@@ -28,54 +26,16 @@ function ProjectList(props) {
                 // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
                 if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
                     callFetchContactProjects();
-                    callFetchContact();
                 }
             }
-            ProjectAPI.fetchProjects()
-                .then(payload => {
-                    setProjectData(payload.data.data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setLoading(false);
-                });
         })();
     }, [props.currentSelectedContact]);
 
     function callFetchContactProjects() {
-        ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
+        ContactAPI.fetchContactProjects(props.currentSelectedContact.id)
             .then(payload => {
-                let result = payload.data.data.participations.map(item => {
-                    return {
-                        ...item,
-                        mutation: item.mutations.length > 0 ? item.mutations[0] : null,
-                    };
-                });
-
-                let contactProjecten = [];
-                result.map(item => contactProjecten.push(item.project.id));
-                setContactProjectsArray(contactProjecten);
-                // console.log(result);
-                setUnpaidParticipations(
-                    result.filter(
-                        item =>
-                            item.project.usesMollie &&
-                            !item.mutation.isPaidByMollie &&
-                            item.mutation.status.codeRef === 'option'
-                    )
-                );
-            })
-            .catch(error => {
-                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setContactProjectsArray(payload.data);
                 setLoading(false);
-            });
-    }
-
-    function callFetchContact() {
-        ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
-            .then(payload => {
-                setContact(payload.data.data);
             })
             .catch(error => {
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -125,7 +85,8 @@ function ProjectList(props) {
             <Row>
                 <Col>
                     <h1 className="content-heading">
-                        Overzicht projecten waarop <strong>{formatFullName(contact.fullName)}</strong> kan inschrijven.
+                        Overzicht projecten waarop{' '}
+                        <strong>{formatFullName(props.currentSelectedContact.fullName)}</strong> kan inschrijven.
                     </h1>
                 </Col>
             </Row>
@@ -138,7 +99,7 @@ function ProjectList(props) {
                 <Col>
                     {isLoading ? (
                         <LoadingView />
-                    ) : projectData.length === 0 ? (
+                    ) : contactProjectsArray.length === 0 ? (
                         'Geen projecten beschikbaar om op in te schrijven.'
                     ) : (
                         <Table responsive>
@@ -152,55 +113,73 @@ function ProjectList(props) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {projectData.map(project => (
+                                {contactProjectsArray.map(project => (
                                     <tr key={project.id}>
-                                        <td>{project.administration.name}</td>
                                         <td>
-                                            {contactProjectsArray.includes(project.id) ? (
+                                            {project.administrationName}
+                                            {/*todo WM: opschonen log na implementatie / test check op dubbele adressen */}
+                                            {/*<br />*/}
+                                            {/*Aanwezig: {project.hasParticipation ? 'Ja' : 'Nee'}*/}
+                                            {/*<br />*/}
+                                            {/*Wijzig: {project.allowChangeParticipation ? 'Ja' : 'Nee'}*/}
+                                            {/*<br />*/}
+                                            {/*Mollie: {project.allowPayMollie ? 'Ja' : 'Nee'}*/}
+                                            {/*<br />*/}
+                                            {/*Inschrijven: {project.allowRegisterToProject ? 'Ja' : 'Nee'}*/}
+                                        </td>
+                                        <td>
+                                            {project.allowChangeParticipation ? (
                                                 <>
-                                                    {project.name}
-                                                    {unpaidParticipations.some(
-                                                        item => item.project.id === project.id
-                                                    ) && (
+                                                    {project.name} (
+                                                    <Link to={`/project/${project.id}`}>wijzig inschrijving</Link>)
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {!project.hasParticipation && project.allowRegisterToProject ? (
+                                                        <Link to={`/project/${project.id}`}>
+                                                            {project.name} {project.allowRegisterToProject}
+                                                        </Link>
+                                                    ) : (
                                                         <>
-                                                            {' '}
-                                                            (
-                                                            <Link to={`/project/${project.id}`}>
-                                                                wijzig inschrijving
-                                                            </Link>
-                                                            )
+                                                            {project.name} {project.allowRegisterToProject}
                                                         </>
                                                     )}
                                                 </>
-                                            ) : (
-                                                <Link to={`/project/${project.id}`}>{project.name}</Link>
                                             )}
                                         </td>
                                         <td>
-                                            {contactProjectsArray.includes(project.id) ? (
+                                            {project.hasParticipation ? (
                                                 <>
-                                                    {unpaidParticipations.some(
-                                                        item => item.project.id === project.id
-                                                    ) ? (
+                                                    {project.allowPayMollie ? (
                                                         <div className="text-center">
                                                             Nog niet betaald,
                                                             <br />
-                                                            <a
-                                                                href={
-                                                                    unpaidParticipations.find(
-                                                                        item => item.project.id === project.id
-                                                                    ).mutation.econobisPaymentLink
-                                                                }
-                                                            >
-                                                                betaal nu
-                                                            </a>
+                                                            <a href={project.econobisPaymentLink}>betaal nu</a>
                                                         </div>
                                                     ) : (
                                                         <div className="text-success text-center">✔</div>
                                                     )}
                                                 </>
                                             ) : (
-                                                ''
+                                                <div className="text-center">
+                                                    {!project.allowRegisterToProject ? (
+                                                        <>
+                                                            <FaInfoCircle
+                                                                color={'red'}
+                                                                size={'15px'}
+                                                                data-tip={`${project.textNotAllowedRegisterToProject}`}
+                                                            />
+                                                            <ReactTooltip
+                                                                effect="float"
+                                                                place="bottom"
+                                                                multiline={true}
+                                                                aria-haspopup="true"
+                                                            />
+                                                        </>
+                                                    ) : (
+                                                        ''
+                                                    )}
+                                                </div>
                                             )}
                                         </td>
                                         <td>

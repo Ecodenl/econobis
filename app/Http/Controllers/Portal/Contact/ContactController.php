@@ -26,8 +26,10 @@ use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
+use App\Http\Resources\Project\ProjectRegister;
 use App\Rules\EnumExists;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -145,8 +147,22 @@ class ContactController extends ApiController
         return $documentBody;
     }
 
+    public function getContactProjects(Contact $contact)
+    {
+
+        $projects = Project::where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
+            ->where('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'))
+            ->get();
+        foreach ($projects as $key => $project) {
+            $this->setContactProjectIndicators($project, $contact, $projects, $key);
+        }
+        return response()->json(ProjectRegister::collection($projects));
+    }
+
     public function getContactProjectData(Contact $contact, Project $project)
     {
+        $this->setContactProjectIndicators($project, $contact, null, 0);
+
         $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllStaticAndDynamicGroups() );
 
         $textIsMemberMerged = $project->text_is_member;
@@ -224,6 +240,7 @@ class ContactController extends ApiController
         $textRegistrationFinishedMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textRegistrationFinishedMerged,'cooperatie' );
 
         $result = [
+            "projectRegisterIndicators" => ProjectRegister::make($project),
             "belongsToMembershipGroup" => $belongsToMembershipGroup,
             "textIsMemberMerged" => $textIsMemberMerged,
             "textIsNoMemberMerged" => $textIsNoMemberMerged,
@@ -653,6 +670,85 @@ class ContactController extends ApiController
         }
 
         return AdministrationResource::collection($administrations);
+    }
+
+    /**
+     * @param $project
+     * @param Contact $contact
+     * @param $projects
+     * @param int $key
+     */
+    protected function setContactProjectIndicators($project, Contact $contact, $projects, int $key)
+    {
+        $project->hasParticipation = false;
+        $project->allowChangeParticipation = false;
+        $project->allowPayMollie = false;
+        $project->econobisPaymentLink = '';
+        $project->allowRegisterToProject = false;
+        $project->textNotAllowedRegisterToProject = '';
+        $project->participationsOptioned = 0;
+        $project->amountOptioned = 0;
+        $project->powerKwhConsumption = 0;
+
+        $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
+        if ($previousParticipantProject) {
+            $project->hasParticipation = true;
+            $project->participationsOptioned = $previousParticipantProject->participations_optioned;
+            $project->amountOptioned = $previousParticipantProject->amount_optioned;
+            $project->powerKwhConsumption = $previousParticipantProject->power_kwh_consumption;
+            $previousMutation = optional(optional($previousParticipantProject)->mutations())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+            if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status->code_ref === 'option') {
+                $project->allowChangeParticipation = true;
+                $project->allowPayMollie = true;
+                $project->econobisPaymentLink = $previousMutation->econobis_payment_link;
+            }
+        } else {
+            if (!$project->is_membership_required) {
+                $project->allowRegisterToProject = true;
+            } elseif (!$project->visible_for_all_contacts) {
+                if ($project->requiresContactGroups()) {
+                    foreach ($project->requiresContactGroups as $contactGroup) {
+                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                            $project->allowRegisterToProject = true;
+                            continue;
+                        }
+                    }
+                    if($projects){
+                        $projects->forget($key);
+                    }
+                } else {
+                    if($projects){
+                        $projects->forget($key);
+                    }
+                }
+            } else {
+                if ($project->requiresContactGroups()) {
+                    $contactInRequiredContactGroup = false;
+                    foreach ($project->requiresContactGroups as $contactGroup) {
+                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                            $contactInRequiredContactGroup = true;
+                            continue;
+                        }
+                    }
+                    if($contactInRequiredContactGroup){
+                        $project->allowRegisterToProject = true;
+                    }else{
+                        $project->textNotAllowedRegisterToProject = $project->text_info_project_only_members;
+                    }
+                }
+            }
+            //todo WM: Indien allowRegisterToProject nu true, dan nog check op dubbele adres (indien check bij project ingesteld)
+            if($project->check_double_addresses && $project->allowRegisterToProject) {
+                $participationProjectController = new ParticipationProjectController();
+                $errors = [];
+                $hasError = $participationProjectController->checkDoubleAddresses($errors, $project, $contact);
+                if($hasError){
+                    $project->allowRegisterToProject = false;
+                    $project->textNotAllowedRegisterToProject = 'Er is al een deelnemer ingeschreven op een adres van ' . $contact->full_name . '<br />' . (implode('<br />', $errors));
+                }
+            }
+
+        }
     }
 
 }

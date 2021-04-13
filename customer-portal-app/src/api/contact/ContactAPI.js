@@ -170,6 +170,12 @@ export default {
         return axiosInstance.post(requestUrl, registerValues);
     },
 
+    fetchContactProjects: function(contactId, projectId) {
+        const requestUrl = `/contact/${contactId}/contact-projects`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     fetchContactProjectData: function(contactId, projectId) {
         const requestUrl = `/contact/${contactId}/${projectId}/contact-project-data`;
 

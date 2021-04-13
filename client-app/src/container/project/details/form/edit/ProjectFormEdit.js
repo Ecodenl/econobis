@@ -631,16 +631,21 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
-        // If isMemberShipRequired is false, set contactGroupIds to empty string
+        // If isMemberShipRequired is false, set contactGroupIds to empty string, visibleForAllContacts to false
         if (!project.isMembershipRequired) {
             project.contactGroupIds = '';
+            project.visibleForAllContacts = false;
+        }
+
+        // If visibleForAllContacts is false, set textInfoProjectOnlyMembers to default
+        if (!project.visibleForAllContacts) {
+            project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
         }
 
         // If isSceProject is false, set checkDoubleAddresses and visibleForAllContacts to false and textInfoProjectOnlyMembers to default text
         if (!project.isSceProject) {
             project.checkDoubleAddresses = false;
-            project.visibleForAllContacts = false;
-            project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
+            project.subsidyProvided = false;
         }
 
         if (isNaN(project.amountOfLoanNeeded)) {
@@ -699,8 +704,8 @@ class ProjectFormEdit extends Component {
             dateEnd,
             dateEntry,
             dateProduction,
-            contactGroupIds,
             isMembershipRequired,
+            contactGroupIds,
             visibleForAllContacts,
             textInfoProjectOnlyMembers,
             amountOfLoanNeeded,

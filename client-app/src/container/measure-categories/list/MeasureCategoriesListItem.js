@@ -31,7 +31,14 @@ class MeasureCategoriesListItem extends Component {
     }
 
     render() {
-        const { id, name, permissions } = this.props;
+        const {
+            id,
+            name,
+            usesWfCreateOpportunity,
+            usesWfCreateQuotationRequest,
+            usesWfEmailQuotationRequest,
+            permissions,
+        } = this.props;
 
         return (
             <tr
@@ -41,6 +48,9 @@ class MeasureCategoriesListItem extends Component {
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{name}</td>
+                <td>{usesWfCreateOpportunity ? 'Ja' : 'Nee'}</td>
+                <td>{usesWfCreateOpportunity ? (usesWfCreateQuotationRequest ? 'Ja' : 'Nee') : ''}</td>
+                <td>{usesWfCreateQuotationRequest ? (usesWfEmailQuotationRequest ? 'Ja' : 'Nee') : ''}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

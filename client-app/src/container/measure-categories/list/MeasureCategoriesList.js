@@ -25,13 +25,17 @@ const MeasureCategoriesLists = ({ measureCategories, hasError, isLoading }) => {
             <DataTable>
                 <DataTableHead>
                     <tr className="thead-title">
-                        <DataTableHeadTitle title={'Omschrijving'} width={'100%'} />
+                        <DataTableHeadTitle title={'Omschrijving'} width={'30%'} />
+                        <DataTableHeadTitle title={'Maak kans'} width={'20%'} />
+                        <DataTableHeadTitle title={'Maak Offerteverzoek'} width={'20%'} />
+                        <DataTableHeadTitle title={'Email Offerteverzoek'} width={'20%'} />
+                        <DataTableHeadTitle title={''} width={'10%'} />
                     </tr>
                 </DataTableHead>
                 <DataTableBody>
                     {loading ? (
                         <tr>
-                            <td colSpan={4}>{loadingText}</td>
+                            <td colSpan={5}>{loadingText}</td>
                         </tr>
                     ) : (
                         measureCategories.map(measureCategory => {

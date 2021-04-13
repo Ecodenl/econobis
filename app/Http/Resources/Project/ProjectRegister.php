@@ -23,17 +23,16 @@ class ProjectRegister extends Resource
                 'dateEndRegistrations' => $this->date_end_registrations,
                 'administrationName' => $this->administration->name,
                 'hasParticipation' => $this->hasParticipation,
+                'isSceOrPcrProject' => $this->isSceOrPcrProject,
+                'postalcodeLink' => $this->postalcode_link,
                 'allowChangeParticipation' => $this->allowChangeParticipation,
                 'allowPayMollie' => $this->allowPayMollie,
                 'econobisPaymentLink' => $this->econobisPaymentLink,
                 'allowRegisterToProject' => $this->allowRegisterToProject,
-//                'textInfoProjectOnlyMembers' => $this->text_info_project_only_members,
                 'textNotAllowedRegisterToProject' => $this->textNotAllowedRegisterToProject,
                 'participationsOptioned' => $this->participationsOptioned,
                 'amountOptioned' => $this->amountOptioned,
                 'powerKwhConsumption' => $this->powerKwhConsumption,
-
-
         ];
     }
 }

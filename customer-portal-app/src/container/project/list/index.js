@@ -12,9 +12,13 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
+import rebaseContact from '../../../helpers/RebaseContact';
+import { Alert } from 'react-bootstrap';
 
 function ProjectList(props) {
+    const [contact, setContact] = useState({});
     const [contactProjectsArray, setContactProjectsArray] = useState([]);
+    const [sceOrPcrProjectsAvailable, setSceOrPcrProjectsAvailable] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
 
@@ -25,11 +29,38 @@ function ProjectList(props) {
             if (props.currentSelectedContact.id) {
                 // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
                 if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
+                    callFetchContact();
                     callFetchContactProjects();
                 }
             }
         })();
     }, [props.currentSelectedContact]);
+
+    useEffect(() => {
+        (function determineSceOrPcrProjectsAvailable() {
+            console.log('Test determineSceOrPcrProjectsAvailable');
+            console.log(contactProjectsArray);
+            if (contactProjectsArray.length > 0) {
+                contactProjectsArray.find(function(project) {
+                    return project.isSceOrPcrProject && setSceOrPcrProjectsAvailable(true);
+                });
+            }
+        })();
+    }, [contactProjectsArray.length > 0]);
+
+    function callFetchContact() {
+        setLoading(true);
+        ContactAPI.fetchContact(props.currentSelectedContact.id)
+            .then(payload => {
+                const contactData = rebaseContact(payload.data.data);
+
+                setContact(contactData);
+            })
+            .catch(error => {
+                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                setLoading(false);
+            });
+    }
 
     function callFetchContactProjects() {
         ContactAPI.fetchContactProjects(props.currentSelectedContact.id)
@@ -90,115 +121,150 @@ function ProjectList(props) {
                     </h1>
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <p>Klik op het project voor meer details.</p>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {isLoading ? (
-                        <LoadingView />
-                    ) : contactProjectsArray.length === 0 ? (
-                        'Geen projecten beschikbaar om op in te schrijven.'
-                    ) : (
-                        <Table responsive>
-                            <thead>
-                                <tr>
-                                    <th>Uitgevende instantie</th>
-                                    <th>Project</th>
-                                    <th>Ingeschreven</th>
-                                    <th>Start inschrijving</th>
-                                    <th>Einde inschrijving</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {contactProjectsArray.map(project => (
-                                    <tr key={project.id}>
-                                        <td>
-                                            {project.administrationName}
-                                            {/*todo WM: opschonen log na implementatie / test check op dubbele adressen */}
-                                            {/*<br />*/}
-                                            {/*Aanwezig: {project.hasParticipation ? 'Ja' : 'Nee'}*/}
-                                            {/*<br />*/}
-                                            {/*Wijzig: {project.allowChangeParticipation ? 'Ja' : 'Nee'}*/}
-                                            {/*<br />*/}
-                                            {/*Mollie: {project.allowPayMollie ? 'Ja' : 'Nee'}*/}
-                                            {/*<br />*/}
-                                            {/*Inschrijven: {project.allowRegisterToProject ? 'Ja' : 'Nee'}*/}
-                                        </td>
-                                        <td>
-                                            {project.allowChangeParticipation ? (
-                                                <>
-                                                    {project.name} (
-                                                    <Link to={`/project/${project.id}`}>wijzig inschrijving</Link>)
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {!project.hasParticipation && project.allowRegisterToProject ? (
-                                                        <Link to={`/project/${project.id}`}>
-                                                            {project.name} {project.allowRegisterToProject}
-                                                        </Link>
-                                                    ) : (
-                                                        <>
-                                                            {project.name} {project.allowRegisterToProject}
-                                                        </>
-                                                    )}
-                                                </>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {project.hasParticipation ? (
-                                                <>
-                                                    {project.allowPayMollie ? (
-                                                        <div className="text-center">
-                                                            Nog niet betaald,
-                                                            <br />
-                                                            <a href={project.econobisPaymentLink}>betaal nu</a>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="text-success text-center">✔</div>
-                                                    )}
-                                                </>
-                                            ) : (
-                                                <div className="text-center">
-                                                    {!project.allowRegisterToProject ? (
-                                                        <>
-                                                            <FaInfoCircle
-                                                                color={'red'}
-                                                                size={'15px'}
-                                                                data-tip={`${project.textNotAllowedRegisterToProject}`}
-                                                            />
-                                                            <ReactTooltip
-                                                                effect="float"
-                                                                place="bottom"
-                                                                multiline={true}
-                                                                aria-haspopup="true"
-                                                            />
-                                                        </>
-                                                    ) : (
-                                                        ''
-                                                    )}
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {project.dateStartRegistrations
-                                                ? moment(project.dateStartRegistrations).format('LL')
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {project.dateEndRegistrations
-                                                ? moment(project.dateEndRegistrations).format('LL')
-                                                : ''}
-                                        </td>
+
+            {sceOrPcrProjectsAvailable && contact.noAddressesFound && (
+                <>
+                    <Row>
+                        <Col>
+                            <div className="alert-wrapper">
+                                <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                    Op dit moment zijn je adresgegevens nog niet bij ons bekend.
+                                    <br />
+                                    Er zijn projecten waarop je kan inschrijven die afhankelijk van je adres zijn.
+                                </Alert>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <ButtonGroup aria-label="Steps" className="float-right">
+                                <Link to={`/gegevens`}>
+                                    <Button className={'w-button'} size="sm">
+                                        Adresgegevens toevoegen
+                                    </Button>
+                                </Link>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
+            )}
+            <>
+                <Row>
+                    <Col>
+                        <p>Klik op het project voor meer details.</p>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {isLoading ? (
+                            <LoadingView />
+                        ) : contactProjectsArray.length === 0 ? (
+                            'Geen projecten beschikbaar om op in te schrijven.'
+                        ) : (
+                            <Table responsive>
+                                <thead>
+                                    <tr>
+                                        <th>Uitgevende instantie</th>
+                                        <th>Project</th>
+                                        <th>Ingeschreven</th>
+                                        <th>Start inschrijving</th>
+                                        <th>Einde inschrijving</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-                </Col>
-            </Row>
+                                </thead>
+                                <tbody>
+                                    {contactProjectsArray.map(project => (
+                                        <tr key={project.id}>
+                                            <td>
+                                                {project.administrationName}
+                                                {/*todo WM: opschonen log na implementatie / test check op dubbele adressen*/}
+                                                {/*<br />*/}
+                                                {/*SCE of PCR: {project.isSceOrPcrProject ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Postcoderoos: {project.postalcodeLink}*/}
+                                                {/*<br />*/}
+                                                {/*Aanwezig: {project.hasParticipation ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Wijzig: {project.allowChangeParticipation ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Mollie: {project.allowPayMollie ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Inschrijven: {project.allowRegisterToProject ? 'Ja' : 'Nee'}*/}
+                                            </td>
+                                            <td>
+                                                {project.allowChangeParticipation ? (
+                                                    <>
+                                                        {project.name} (
+                                                        <Link to={`/project/${project.id}`}>wijzig inschrijving</Link>)
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {!project.hasParticipation && project.allowRegisterToProject ? (
+                                                            <Link to={`/project/${project.id}`}>
+                                                                {project.name} {project.allowRegisterToProject}
+                                                            </Link>
+                                                        ) : (
+                                                            <>
+                                                                {project.name} {project.allowRegisterToProject}
+                                                            </>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {project.hasParticipation ? (
+                                                    <>
+                                                        {project.allowPayMollie ? (
+                                                            <div className="text-center">
+                                                                Nog niet betaald,
+                                                                <br />
+                                                                <a href={project.econobisPaymentLink}>betaal nu</a>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-success text-center">✔</div>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <div className="text-center">
+                                                        {!project.allowRegisterToProject ? (
+                                                            <>
+                                                                <FaInfoCircle
+                                                                    color={'red'}
+                                                                    size={'15px'}
+                                                                    data-tip={`${project.textNotAllowedRegisterToProject}`}
+                                                                    data-for={`project-${project.id}`}
+                                                                />
+                                                                <ReactTooltip
+                                                                    id={`project-${project.id}`}
+                                                                    effect="float"
+                                                                    place="bottom"
+                                                                    multiline={true}
+                                                                    aria-haspopup="true"
+                                                                />
+                                                            </>
+                                                        ) : (
+                                                            ''
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {project.dateStartRegistrations
+                                                    ? moment(project.dateStartRegistrations).format('LL')
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {project.dateEndRegistrations
+                                                    ? moment(project.dateEndRegistrations).format('LL')
+                                                    : ''}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+                    </Col>
+                </Row>
+            </>
         </Container>
     );
 }

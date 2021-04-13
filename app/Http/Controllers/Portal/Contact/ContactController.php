@@ -680,6 +680,7 @@ class ContactController extends ApiController
      */
     protected function setContactProjectIndicators($project, Contact $contact, $projects, int $key)
     {
+        $project->isSceOrPcrProject = $project->projectType->code_ref === 'postalcode_link_capital' || $project->is_sce_project;
         $project->hasParticipation = false;
         $project->allowChangeParticipation = false;
         $project->allowPayMollie = false;
@@ -691,37 +692,35 @@ class ContactController extends ApiController
         $project->powerKwhConsumption = 0;
 
         $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
+        // Is there allready a participation for this contact/project ?
         if ($previousParticipantProject) {
             $project->hasParticipation = true;
             $project->participationsOptioned = $previousParticipantProject->participations_optioned;
             $project->amountOptioned = $previousParticipantProject->amount_optioned;
             $project->powerKwhConsumption = $previousParticipantProject->power_kwh_consumption;
             $previousMutation = optional(optional($previousParticipantProject)->mutations())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+
+            // Is mollie is used and there was a first mutation with status option with is paid by mollie false, then:
+            // - allow change of option participation
+            // - allow to pay for mollie (still open)
+            // - return also the econobisPaymentLink to pay with mollie
             if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status->code_ref === 'option') {
                 $project->allowChangeParticipation = true;
                 $project->allowPayMollie = true;
                 $project->econobisPaymentLink = $previousMutation->econobis_payment_link;
             }
+
+        // no participation for this contact/project yet
         } else {
+
+            // no membership required, then allow register to project
             if (!$project->is_membership_required) {
                 $project->allowRegisterToProject = true;
+
+            // membership required and project not visible for all contacts
             } elseif (!$project->visible_for_all_contacts) {
-                if ($project->requiresContactGroups()) {
-                    foreach ($project->requiresContactGroups as $contactGroup) {
-                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
-                            $project->allowRegisterToProject = true;
-                            continue;
-                        }
-                    }
-                    if($projects){
-                        $projects->forget($key);
-                    }
-                } else {
-                    if($projects){
-                        $projects->forget($key);
-                    }
-                }
-            } else {
+
+                // determine if contact is member (through the linked contactgroups of project)
                 if ($project->requiresContactGroups()) {
                     $contactInRequiredContactGroup = false;
                     foreach ($project->requiresContactGroups as $contactGroup) {
@@ -730,18 +729,88 @@ class ContactController extends ApiController
                             continue;
                         }
                     }
+
+                    // if contact is member (through the linked contactgroups of project), then allow register to project
+                    if($contactInRequiredContactGroup){
+                        $project->allowRegisterToProject = true;
+                    }else {
+                        // Contact not a member and if function came with incoming collection projects, then we remove (forget) this project.
+                        if (!$project->allowRegisterToProject && $projects) {
+                            $projects->forget($key);
+                        }
+                    }
+
+                // no linked contactgroups available, then don't show project
+                } else {
+                    // If function came with incoming collection projects, then we remove (forget) this project.
+                    if($projects){
+                        $projects->forget($key);
+                    }
+                }
+
+            // membership required but project is visible for all contacts
+            } else {
+
+                // determine if contact is member (through the linked contactgroups of project)
+                if ($project->requiresContactGroups()) {
+                    $contactInRequiredContactGroup = false;
+                    foreach ($project->requiresContactGroups as $contactGroup) {
+                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                            $contactInRequiredContactGroup = true;
+                            continue;
+                        }
+                    }
+                    // if contact is member (through the linked contactgroups of project), then allow register to project
                     if($contactInRequiredContactGroup){
                         $project->allowRegisterToProject = true;
                     }else{
+                        // Contact not a member, still show project, but don't allow register to project, and put info text in textfield not allowed register to project.
                         $project->textNotAllowedRegisterToProject = $project->text_info_project_only_members;
                     }
                 }
+                // no linked contactgroups available, then don't show project
             }
-            //todo WM: Indien allowRegisterToProject nu true, dan nog check op dubbele adres (indien check bij project ingesteld)
+
+            // if project is sce or pcr project and register to project was still allowed at this moment
+            if($project->isSceOrPcrProject && $project->allowRegisterToProject) {
+                // if sce project and no addresses found, than register to project not allowed
+                if($contact->noAddressesFound) {
+                    $project->allowRegisterToProject = false;
+                    $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moeten er adresgegevens bekend zijn.';
+
+                // if addresses found, check postalcode
+                }else{
+                    // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
+                    if (strpos($project->postalcode_link, ',') !== false) {
+                        $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
+                        $validPostalAreas = explode(',', $projectPostalcodeLink);
+                    }else{
+                        $validPostalAreas = explode(' ', $project->postalcode_link);
+                    }
+                    $postalCodeAreaContact = substr($contact->addressForPostalCodeCheck->postal_code, 0 , 4);
+                    // if postalcode contact not in postalcode link of project, then don't allow register to project;
+                    if($validPostalAreas && !in_array($postalCodeAreaContact, $validPostalAreas)){
+//todo WM: for testing it is handy to show the projects where postalcode contact not in poratlcode link proejct
+                        // If function came with incoming collection projects, then we remove (forget) this project.
+//                        if($projects){
+//                            $projects->forget($key);
+//                        }else{
+                            $project->allowRegisterToProject = false;
+                            $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moet postcode nummer ' . $postalCodeAreaContact . ' van deelnemer voorkomen in deelnemende postcode(s): ' . implode(', ', $validPostalAreas) . '.';
+                            return false;
+//                        }
+
+                    }
+
+                }
+            }
+
+            // if to check double addresses (not allowed) and register to project was still allowed at this moment
             if($project->check_double_addresses && $project->allowRegisterToProject) {
                 $participationProjectController = new ParticipationProjectController();
                 $errors = [];
                 $hasError = $participationProjectController->checkDoubleAddresses($errors, $project, $contact);
+                // if check double addresses returns with hasError true, than don't allow register to project, and put info text in textfield not allowed register to project.
                 if($hasError){
                     $project->allowRegisterToProject = false;
                     $project->textNotAllowedRegisterToProject = 'Er is al een deelnemer ingeschreven op een adres van ' . $contact->full_name . '<br />' . (implode('<br />', $errors));

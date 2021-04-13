@@ -425,6 +425,34 @@ class Contact extends Model
         return( $this->participations && $this->participations->count() > 0 );
     }
 
+    public function getAddressForPostalCodeCheckAttribute()
+    {
+        if($this->type_id === ContactType::PERSON) {
+            return $this->primaryAddress;
+        }
+        if($this->type_id === ContactType::ORGANISATION) {
+            return Address::where('contact_id', $this->id)->where('type_id', 'visit')->first();
+        }
+    }
+
+    public function getNoAddressesFoundAttribute()
+    {
+        if($this->type_id === ContactType::PERSON) {
+            if ($this->primaryAddress) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        if($this->type_id === ContactType::ORGANISATION) {
+            if(Address::where('contact_id', $this->id)->where('type_id', 'visit')->exists()){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
     public function getIsParticipantPcrProjectAttribute()
     {
         foreach($this->participations as $participation)

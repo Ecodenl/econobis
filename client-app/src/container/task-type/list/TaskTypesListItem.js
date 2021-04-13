@@ -31,7 +31,15 @@ class TaskTypesListItem extends Component {
     }
 
     render() {
-        const { id, name, permissions } = this.props;
+        const {
+            id,
+            name,
+            usesWfExpiredTask,
+            usesWfCompletedTask,
+            numberOfDaysToSendEmailCompletedTask,
+            usesWfNewTask,
+            permissions,
+        } = this.props;
 
         return (
             <tr
@@ -41,6 +49,12 @@ class TaskTypesListItem extends Component {
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{name}</td>
+                <td>{usesWfExpiredTask ? 'Ja' : 'Nee'}</td>
+                <td>{usesWfCompletedTask ? 'Ja' : 'Nee'}</td>
+                {/*<td>{usesWfCompletedTask ? (numberOfDaysToSendEmailCompletedTask === 0 ? 'Direct' : numberOfDaysToSendEmailCompletedTask) : ''}</td>*/}
+                <td>{usesWfCompletedTask ? numberOfDaysToSendEmailCompletedTask : ''}</td>
+                <td>{usesWfNewTask ? 'Ja' : 'Nee'}</td>
+
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

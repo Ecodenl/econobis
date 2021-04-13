@@ -12,7 +12,7 @@ const MeasureCategoriesListToolbar = ({ measureCategoriesCount, refreshMeasureCa
                 </div>
             </div>
             <div className="col-md-4">
-                <h3 className="text-center table-title">Maatregel categorieën</h3>
+                <h3 className="text-center table-title">Workflows op Maatregel categorieën</h3>
             </div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: {measureCategoriesCount}</div>

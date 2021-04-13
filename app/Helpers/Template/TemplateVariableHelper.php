@@ -1542,7 +1542,7 @@ class TemplateVariableHelper
                 return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
                 break;
             case 'gemaakt_door':
-                return optional($model->createdBy)->present()->fullName();
+                return optional(optional($model->createdBy)->present())->fullName();
                 break;
             default:
                 return '';

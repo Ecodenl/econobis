@@ -162,7 +162,6 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
                                         label={'Aantal dagen email na deze status'}
                                         divSize={'col-sm-10'}
                                         type={'number'}
-                                        min={'1'}
                                         id={'numberOfDaysToSendEmail'}
                                         name={'numberOfDaysToSendEmail'}
                                         value={numberOfDaysToSendEmail}
@@ -193,7 +192,4 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(OpportunityStatusDetailsFormGeneralEdit);
+export default connect(null, mapDispatchToProps)(OpportunityStatusDetailsFormGeneralEdit);

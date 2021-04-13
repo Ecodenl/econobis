@@ -42,7 +42,8 @@ class processWorkflowEmailOpportunityStatus extends Command
      */
     public function handle()
     {
-        $opportunityStatusesToProcess = OpportunityStatus::where('uses_wf', true)->get();
+        // Get opportunity statussen with workflow enabled and number of days to send not 0 (they are sent immediately)
+        $opportunityStatusesToProcess = OpportunityStatus::where('uses_wf', true)->where('number_of_days_to_send_email', '!=', 0)->get();
         foreach ($opportunityStatusesToProcess as $opportunityStatus) {
             Log::info("Proces: Workflow email voor status '" . $opportunityStatus->name . "' met aantal dagen na datum status: " . $opportunityStatus->number_of_days_to_send_email);
 
@@ -52,7 +53,6 @@ class processWorkflowEmailOpportunityStatus extends Command
             foreach ($opportunitiesToProcess as $opportunity) {
                 $opportunityWorkflowHelper = new OpportunityWorkflowHelper($opportunity);
                 $opportunityWorkflowHelper->processWorkflowEmail();
-
             }
         }
     }

@@ -42,16 +42,15 @@ class processWorkflowEmailQuotationRequestStatus extends Command
      */
     public function handle()
     {
-        $quotationRequestStatusesToProcess = QuotationRequestStatus::where('uses_wf', true)->get();
+        // Get quotation request statussen with workflow enabled and number of days to send not 0 (they are sent immediately)
+        $quotationRequestStatusesToProcess = QuotationRequestStatus::where('uses_wf', true)->where('number_of_days_to_send_email', '!=', 0)->get();
         foreach ($quotationRequestStatusesToProcess as $quotationRequestStatus) {
-// echo "Proces: Workflow email voor status '" . $quotationRequestStatus->name . "' (" . $quotationRequestStatus->id . ") met aantal dagen na datum status: " . $quotationRequestStatus->number_of_days_to_send_email . "\n";
             Log::info("Proces: Workflow email voor status '" . $quotationRequestStatus->name . "' (" . $quotationRequestStatus->id . ") met aantal dagen na datum status: " . $quotationRequestStatus->number_of_days_to_send_email);
 
             $quotationRequestsToProcess = QuotationRequest::where('status_id', $quotationRequestStatus->id)
                 ->where('date_planned_to_send_wf_email_status','=', Carbon::now()->startOfDay()->toDateString())
                 ->get();
             foreach ($quotationRequestsToProcess as $quotationRequest) {
-// echo "We gaan mailen!";
                 $quotationRequestWorkflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
                 $quotationRequestWorkflowHelper->processWorkflowEmail();
             }

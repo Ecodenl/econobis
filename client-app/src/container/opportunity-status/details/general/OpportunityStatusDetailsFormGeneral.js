@@ -50,6 +50,8 @@ class OpportunityStatusDetailsFormGeneral extends Component {
                 gaan worden naar contact als kans op deze status is gezet.
                 <br />
                 De verzenddatum wordt dan bepaald, rekening houdend met het opgegeven aantal dagen.
+                <br />
+                Bij aantal dagen 0 zal de email direct verzonden worden.
             </span>
         );
 

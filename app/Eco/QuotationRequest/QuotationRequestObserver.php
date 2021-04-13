@@ -8,6 +8,7 @@
 
 namespace App\Eco\QuotationRequest;
 
+use App\Helpers\Workflow\QuotationRequestWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,8 +33,20 @@ class QuotationRequestObserver
         if ($quotationRequest->isDirty('status_id'))
         {
             $days = $quotationRequest->status->uses_wf ? $quotationRequest->status->number_of_days_to_send_email : 0;
-            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+//            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+            $mailDate = Carbon::now()->addDays($days);
             $quotationRequest->date_planned_to_send_wf_email_status = $mailDate;
+        }
+    }
+
+    public function saved(QuotationRequest $quotationRequest)
+    {
+        if ($quotationRequest->isDirty('status_id'))
+        {
+            if ($quotationRequest->status->uses_wf && $quotationRequest->status->number_of_days_to_send_email === 0){
+                $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
+                $quotationRequestflowHelper->processWorkflowEmail();
+            }
         }
     }
 

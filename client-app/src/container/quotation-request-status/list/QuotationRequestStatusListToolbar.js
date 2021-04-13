@@ -16,7 +16,7 @@ const QuotationRequestStatusListToolbar = ({
                 </div>
             </div>
             <div className="col-md-4">
-                <h3 className="text-center table-title">Offerte verzoek statussen</h3>
+                <h3 className="text-center table-title">Workflows op Offerte verzoek statussen</h3>
             </div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: {quotationRequestStatusCount}</div>
@@ -31,7 +31,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(QuotationRequestStatusListToolbar);
+export default connect(mapStateToProps, null)(QuotationRequestStatusListToolbar);

@@ -101,11 +101,13 @@ function StepOnePcr({
         return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
     }
     function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
-        if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
-            return 0;
-        }
-        if (project.showQuestionAboutMembership && choiceMembership === 1) {
-            return 0;
+        if (!project.useTransactionCostsWithMembership) {
+            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+                return 0;
+            }
+            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+                return 0;
+            }
         }
         return calculateTransactionCosts(project, null, participationsOptioned);
     }

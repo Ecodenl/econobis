@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import toast from 'toasted-notes';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
@@ -79,7 +80,19 @@ const ContactDetails = function(props) {
                 switchToView();
             })
             .catch(error => {
-                actions.setSubmitting(false);
+                // todo WM: fouten bij update contact hier tonen met toast.notify
+                //                 console.log(error.response.status);
+                //                 console.log(error.response.data.message);
+                //                 actions.setSubmitting(false);
+                //                 toast.notify(
+                //                     <p style={{ border: 'solid black 2px', background: 'red', color: '#FFF' }}>
+                //                         {error.response.data.message}
+                //                     </p>,
+                //                     {
+                //                         duration: null,
+                //                         position: 'top',
+                //                     }
+                //                 );
                 alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }

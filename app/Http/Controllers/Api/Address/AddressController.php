@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Address;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
+use App\Eco\Contact\Contact;
+use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteAddress;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -46,6 +48,10 @@ class AddressController extends ApiController
 
         $this->authorize('create', $address);
 
+// todo WM: Hier moet controle komen op dubbele adressen bij deelnemers SCE projecten
+//          waar check daarop aanstaat.
+//        abort(412, 'Fout produceren 1');
+
         $address->save();
 
         return new FullAddress($address->fresh()->load('country'));
@@ -82,7 +88,19 @@ class AddressController extends ApiController
 
 // todo WM: Hier moet controle komen op dubbele adressen bij deelnemers SCE projecten
 //          waar check daarop aanstaat.
-//        abort(412, 'Fout produceren');
+//        abort(412, 'Fout produceren 2');
+
+//        $project = Project::find($participantProject->project_id);
+//        $contact = Contact::find($participantProject->contact_id);
+//
+//        $errors = [];
+//
+//        if($project->check_double_addresses){
+//            $hasError = $this->checkDoubleAddresses($errors, $project, $contact);
+//            if($hasError){
+//                return ['id' => 0, 'message' => $errors];
+//            }
+//        }
 
         $address->save();
 

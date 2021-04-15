@@ -450,6 +450,10 @@ class ContactController extends ApiController
 
     protected function updateAddress($contact, $addressData, $addressType)
     {
+// todo WM: Hier moet controle komen op dubbele adressen bij deelnemers SCE projecten
+//          waar check daarop aanstaat.
+//        abort(412, 'Fout produceren voor portal');
+
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
             $addressData['countryId'] = null;

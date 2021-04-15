@@ -134,15 +134,26 @@ function RegisterProject({ match, currentSelectedContact }) {
     function callFetchContactProjects() {
         ContactAPI.fetchContactWithParticipants(currentSelectedContact.id)
             .then(payload => {
+                let result = payload.data.data.participations.map(item => {
+                    return {
+                        ...item,
+                        mutation: item.mutations.length > 0 ? item.mutations[0] : null,
+                    };
+                });
+
                 let contactProjecten = [];
-                payload.data.data.participations.map(item => contactProjecten.push(item.project.id));
+                result.map(item => contactProjecten.push(item.project.id));
 
                 const projectId = match.params.id;
 
                 if (contactProjecten.includes(Number(projectId))) {
-                    let participation = payload.data.data.participations.find(p => p.project.id === Number(projectId));
-
-                    if (participation.project.usesMollie && !participation.mutation.isPaidByMollie) {
+                    let participation = result.find(p => p.project.id === Number(projectId));
+                    if (
+                        participation.project.usesMollie &&
+                        participation.mutation &&
+                        !participation.mutation.isPaidByMollie &&
+                        participation.mutation.status.codeRef === 'option'
+                    ) {
                         /**
                          * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
                          * wel geopend worden en stellen we de eerder ingevoerde gegevens in.

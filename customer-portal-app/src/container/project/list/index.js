@@ -61,6 +61,7 @@ function ProjectList(props) {
                     result.filter(
                         item =>
                             item.project.usesMollie &&
+                            item.mutation &&
                             !item.mutation.isPaidByMollie &&
                             item.mutation.status.codeRef === 'option'
                     )

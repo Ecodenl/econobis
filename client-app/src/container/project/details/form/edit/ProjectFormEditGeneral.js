@@ -56,6 +56,7 @@ const ProjectFormEditGeneral = ({
     linkUnderstandInfo,
     linkProjectInfo,
     showQuestionAboutMembership,
+    useTransactionCostsWithMembership,
     questionAboutMembershipGroupId,
     textIsMember,
     textIsNoMember,
@@ -484,6 +485,15 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                     disabled={!permissions.managePortalSettings}
                 />
+                {showQuestionAboutMembership == true && (
+                    <InputToggle
+                        label={'Transactiekosten ook bij lidmaatschap?'}
+                        name={'useTransactionCostsWithMembership'}
+                        value={useTransactionCostsWithMembership}
+                        onChangeAction={handleInputChange}
+                        disabled={!permissions.managePortalSettings}
+                    />
+                )}
             </div>
             {showQuestionAboutMembership == true && (
                 <>

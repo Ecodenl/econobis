@@ -45,6 +45,7 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_understand_info')->filterable()->sortable();
         $this->field('link_project_info')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
+        $this->field('use_transaction_costs_with_membership')->filterable()->sortable();
 
         // Relations
         $this->relation('projectType');
@@ -86,6 +87,7 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_understand_info')->filterable()->sortable();
         $this->field('link_project_info')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
+        $this->field('use_transaction_costs_with_membership')->filterable()->sortable();
         $this->field('uses_mollie')->filterable()->sortable();
         $this->field('text_registration_finished')->filterable()->sortable();
         $this->field('text_transaction_costs')->filterable()->sortable();

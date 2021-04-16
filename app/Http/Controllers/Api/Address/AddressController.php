@@ -6,10 +6,10 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
-use App\Eco\Project\Project;
 use App\Helpers\Delete\Models\DeleteAddress;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use App\Http\Resources\Address\FullAddress;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
@@ -48,9 +48,10 @@ class AddressController extends ApiController
 
         $this->authorize('create', $address);
 
-// todo WM: Hier moet controle komen op dubbele adressen bij deelnemers SCE projecten
-//          waar check daarop aanstaat.
-//        abort(412, 'Fout produceren 1');
+        $contact = Contact::find($data['contactId']);
+        if($contact){
+            $errors = $this->checkDoubleAddress($contact, $address);
+        }
 
         $address->save();
 
@@ -86,21 +87,10 @@ class AddressController extends ApiController
 
         $address->fill($this->arrayKeysToSnakeCase($data));
 
-// todo WM: Hier moet controle komen op dubbele adressen bij deelnemers SCE projecten
-//          waar check daarop aanstaat.
-//        abort(412, 'Fout produceren 2');
-
-//        $project = Project::find($participantProject->project_id);
-//        $contact = Contact::find($participantProject->contact_id);
-//
-//        $errors = [];
-//
-//        if($project->check_double_addresses){
-//            $hasError = $this->checkDoubleAddresses($errors, $project, $contact);
-//            if($hasError){
-//                return ['id' => 0, 'message' => $errors];
-//            }
-//        }
+        $contact = Contact::find($address->contact_id);
+        if($contact){
+            $errors = $this->checkDoubleAddress($contact, $address);
+        }
 
         $address->save();
 
@@ -176,5 +166,26 @@ class AddressController extends ApiController
 
         return ['street' => $street, 'city' => $city];
 
+    }
+
+    /**
+     * @param $contact
+     * @param Address $address
+     * @return array
+     */
+    protected function checkDoubleAddress($contact, Address $address): array
+    {
+        foreach ($contact->participations as $participation) {
+            if ($participation->project->check_double_addresses) {
+                $participationProjectController = new ParticipationProjectController();
+                $errors = [];
+                $hasError = $participationProjectController->checkDoubleAddress($errors, $participation->project, $contact->id, ($address->postal_code . '-' . $address->number . '-' . $address->addition));
+                // if check double addresses returns with hasError true, than don't allow register to project, and put info text in textfield not allowed register to project.
+                if ($hasError) {
+                    abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                }
+            }
+        }
+        return $errors;
     }
 }

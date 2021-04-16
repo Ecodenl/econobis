@@ -479,11 +479,9 @@ class ContactController extends ApiController
                             $hasError = $participationProjectController->checkDoubleAddress($errors, $participation->project, $contact->id,  ($address->postal_code . '-' . $address->number . '-' . $address->addition) );
                             // if check double addresses returns with hasError true, than don't allow register to project, and put info text in textfield not allowed register to project.
                             if($hasError){
-                                abort(412, 'Er is al een deelnemer ingeschreven op dit adres' );
+                                abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.' );
                             }
-
                         }
-
                     }
 
                     $address->save();

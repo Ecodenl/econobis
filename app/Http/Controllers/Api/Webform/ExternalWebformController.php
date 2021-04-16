@@ -1360,9 +1360,9 @@ class ExternalWebformController extends Controller
             // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
             $responsibleUser = User::find($webform->responsible_user_id);
-            $responsibleUser->occupation = '@webform-update@';
 
             if($responsibleUser){
+                $responsibleUser->occupation = '@webform-update@';
                 Auth::setUser($responsibleUser);
                 $this->log('Deelname mutatie verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
             }else{

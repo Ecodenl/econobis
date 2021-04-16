@@ -513,6 +513,29 @@ class ParticipationProjectController extends ApiController
         return $addressIsDouble;
     }
 
+    public function checkDoubleAddress(&$errors, Project $project, $contactId, $postalCodeNumberAddition)
+    {
+        // For SCE projects with check on double addresses (as long as subsidy isn't provided):
+        // Check if all addresses of contact don't already exists as address of other participants.
+        $contactAddressesParticipants = [];
+        foreach ($project->participantsProject as $participant){
+            if($contactId != $participant->contact->id){
+                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray()));
+            }
+        }
+
+        $addressIsDouble = false;
+        if( array_key_exists($postalCodeNumberAddition, $contactAddressesParticipants) ){
+//            $address = Address::find($contactAddressId);
+//            $checkText = 'Dubbel adres (postcode: ' . $address->postal_code . ', nummer: ' . $address->number . ($address->addition ? ( '-' . $address->addition) : '') . ') gevonden.';
+            $checkText = 'Dubbel adres gevonden.';
+            array_push($errors, $checkText );
+            $addressIsDouble = true;
+        }
+
+        return $addressIsDouble;
+    }
+
     public function validatePostalCode(&$message, Project $project, Contact $contact)
     {
         $checkText = 'Postcode check: ';

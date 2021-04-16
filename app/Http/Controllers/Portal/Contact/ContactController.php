@@ -450,10 +450,6 @@ class ContactController extends ApiController
 
     protected function updateAddress($contact, $addressData, $addressType)
     {
-// todo WM: Hier moet controle komen op dubbele adressen bij deelnemers SCE projecten
-//          waar check daarop aanstaat.
-//        abort(412, 'Fout produceren voor portal');
-
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
             $addressData['countryId'] = null;
@@ -475,6 +471,21 @@ class ContactController extends ApiController
                     $address->delete();
                 }else{
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
+
+                    foreach ($contact->participations as $participation) {
+                        if($participation->project->check_double_addresses){
+                            $participationProjectController = new ParticipationProjectController();
+                            $errors = [];
+                            $hasError = $participationProjectController->checkDoubleAddress($errors, $participation->project, $contact->id,  ($address->postal_code . '-' . $address->number . '-' . $address->addition) );
+                            // if check double addresses returns with hasError true, than don't allow register to project, and put info text in textfield not allowed register to project.
+                            if($hasError){
+                                abort(412, 'Er is al een deelnemer ingeschreven op dit adres' );
+                            }
+
+                        }
+
+                    }
+
                     $address->save();
                 }
             }

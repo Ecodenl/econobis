@@ -81,19 +81,33 @@ const ContactDetails = function(props) {
             })
             .catch(error => {
                 // todo WM: fouten bij update contact hier tonen met toast.notify
-                //                 console.log(error.response.status);
-                //                 console.log(error.response.data.message);
-                //                 actions.setSubmitting(false);
-                //                 toast.notify(
-                //                     <p style={{ border: 'solid black 2px', background: 'red', color: '#FFF' }}>
-                //                         {error.response.data.message}
-                //                     </p>,
-                //                     {
-                //                         duration: null,
-                //                         position: 'top',
-                //                     }
-                //                 );
-                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                // console.log(error.response.status);
+                // console.log(error.response.data.message);
+                actions.setSubmitting(false);
+                toast.notify(
+                    <div>
+                        <div>
+                            <div>
+                                <div
+                                    style={{
+                                        padding: '5px',
+                                        border: 'solid black 2px',
+                                        background: 'red',
+                                        color: '#FFF',
+                                    }}
+                                >
+                                    <p>{error.response.data.message}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>,
+
+                    {
+                        duration: null,
+                        position: 'top-left',
+                    }
+                );
+                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
 

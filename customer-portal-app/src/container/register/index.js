@@ -15,6 +15,7 @@ import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 import axios from 'axios';
 import { ThemeSettingsContext } from '../../context/ThemeSettingsContext';
 import { Alert } from 'react-bootstrap';
+import toast from 'toasted-notes';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -191,7 +192,31 @@ function RegisterProject({ match, currentSelectedContact }) {
             })
             .catch(error => {
                 actions.setSubmitting(false);
-                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                toast.notify(
+                    <div>
+                        <div>
+                            <div>
+                                <div
+                                    style={{
+                                        padding: '5px',
+                                        border: 'solid black 2px',
+                                        background: 'red',
+                                        color: '#FFF',
+                                    }}
+                                >
+                                    <p>{error.response.data.message}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>,
+
+                    {
+                        duration: null,
+                        position: 'top-left',
+                    }
+                );
+
+                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
 

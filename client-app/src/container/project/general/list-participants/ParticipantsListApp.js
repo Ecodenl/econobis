@@ -323,6 +323,37 @@ class ParticipantsListApp extends Component {
         }
     };
 
+    getExcelParticipants = () => {
+        this.props.blockUI();
+
+        const maxParticipants = 1000;
+        const amountFiles = Math.ceil(this.props.participantsProject.meta.total / maxParticipants);
+        const splitsExcel = this.props.participantsProject.meta.total > maxParticipants;
+        var counter = 1;
+        for (var i = 1; i <= amountFiles; i++) {
+            var offset = i * maxParticipants - maxParticipants;
+            var pagination = { limit: maxParticipants, offset: offset };
+            const filters = filterHelper(this.props.participantsProjectFilters);
+            const extraFilters = this.state.extraFilters;
+            const sorts = this.props.participantsProjectSorts;
+            ParticipantsProjectAPI.getExcelParticipants(filters, extraFilters, sorts, pagination, true)
+                .then(payload => {
+                    excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+                    if (splitsExcel) {
+                        var excelFileName = `Deelnemers-${moment().format(
+                            'YYYY-MM-DD HH:mm:ss'
+                        )} (${counter} van ${amountFiles}).xlsx`;
+                    }
+                    fileDownload(payload.data, excelFileName);
+                    counter = counter + 1;
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }
+    };
+
     saveAsGroup = () => {
         const extraFilters = this.state.extraFilters;
         const filters = filterHelper(this.props.participantsProjectFilters);
@@ -374,6 +405,7 @@ class ParticipantsListApp extends Component {
                                 handleExtraFiltersChange={this.handleExtraFiltersChange}
                                 toggleShowExtraFilters={this.toggleShowExtraFilters}
                                 getExcel={this.getExcel}
+                                getExcelParticipants={this.getExcelParticipants}
                                 saveAsGroup={this.saveAsGroup}
                             />
                         </div>
@@ -500,7 +532,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParticipantsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListApp);

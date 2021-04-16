@@ -189,6 +189,32 @@ class ParticipationProjectController extends ApiController
         return $participantExcelHelper->downloadExcel();
     }
 
+    public function excelParticipants(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+
+        $participants = $requestQuery->getQuery()->get();
+
+        $participants->load([
+            'contact.person.title',
+            'contact.organisation',
+            'contact.contactPerson.contact.person.title',
+            'contact.contactPerson.contact.primaryEmailaddress',
+            'contact.contactPerson.contact.primaryphoneNumber',
+            'contact.contactPerson.occupation',
+            'contact.primaryEmailAddress',
+            'contact.primaryphoneNumber',
+            'contact.primaryAddress',
+            'contact.primaryAddress.country',
+            'project',
+            'participantProjectPayoutType',
+        ]);
+
+        $participantExcelHelper = new ParticipantExcelHelper($participants);
+
+        return $participantExcelHelper->downloadExcelParticipants();
+    }
+
     public function show(ParticipantProject $participantProject)
     {
         $participantProject->load([

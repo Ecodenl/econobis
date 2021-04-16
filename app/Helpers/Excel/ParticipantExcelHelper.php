@@ -542,6 +542,91 @@ class ParticipantExcelHelper
         $document = $writer->save('php://output');
         return $document;
     }
+
+    public function downloadExcelParticipants()
+    {
+        set_time_limit(300);
+
+        $completeData = [];
+
+        $headerData = [];
+        $headerData[] = 'Contactnummer';
+        $headerData[] = 'Organisatie';
+        $headerData[] = 'Aanspreektitel';
+        $headerData[] = 'Voorletters';
+        $headerData[] = 'Voornaam';
+        $headerData[] = 'Achternaam';
+        $headerData[] = 'Straat';
+        $headerData[] = 'Huisnummer';
+        $headerData[] = 'Huisnummer toevoeging';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'Plaats';
+        $headerData[] = 'Email primair';
+        $headerData[] = 'Telefoonnummer primair';
+        $headerData[] = 'Aantal deelnames definitief';
+        $headerData[] = 'Lening deelname definitief';
+        $headerData[] = 'Eerste ingangsdatum deelname';
+
+        $completeData[] = $headerData;
+
+        foreach ($this->participants->chunk(500) as $chunk) {
+            foreach ($chunk as $participant) {
+
+                // person/organisation fields
+                if ($participant->contact->type_id === 'person') {
+                    $participant->title = $participant->contact->person->title;
+                    $participant->initials = $participant->contact->person->initials;
+                    $participant->first_name = $participant->contact->person->first_name;
+                    $participant->last_name_prefix = $participant->contact->person->last_name_prefix;
+                    $participant->last_name = $participant->contact->person->last_name;
+                }
+                // Reformat dates
+                $participant->date_register = $participant->date_register
+                    ? Carbon::parse($participant->date_register)
+                        ->format('d-m-Y') : '';
+
+                $rowData = [];
+                $rowData[] = $participant->contact->number;
+                $rowData[] = $participant->contact->organisation ? $participant->contact->organisation->name : '';
+                $rowData[] = $participant->title ? $participant->title->name : '';
+                $rowData[] = $participant->initials;
+                $rowData[] = $participant->first_name;
+                $rowData[] = $participant->last_name_prefix ? $participant->last_name_prefix . ' ' . $participant->last_name : $participant->last_name ;
+                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->street : '';
+                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->number : '';
+                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->addition : '';
+                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->postal_code : '';
+                $rowData[] = $participant->contact->primaryAddress ? $participant->contact->primaryAddress->city : '';
+                $rowData[] = $participant->contact->primaryEmailAddress ? $participant->contact->primaryEmailAddress->email : '';
+                $rowData[] = $participant->contact->primaryphoneNumber ? $participant->contact->primaryphoneNumber->number : '';
+                $rowData[] = $participant->participations_definitive ;
+                $rowData[] = $participant->amount_definitive ;
+                $rowData[] = $participant->date_register;
+
+                $completeData[] = $rowData;
+
+            }
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        for ($col = 'A'; $col !== 'Q'; $col++) {
+            $spreadsheet->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+        $sheet->getStyle('1:1')->getFont()->setBold(true);
+
+        // Load all data in worksheet
+        $sheet->fromArray($completeData);
+
+        $writer = new Xlsx($spreadsheet);
+        $document = $writer->save('php://output');
+        return $document;
+    }
+
     private function formatDate($date) {
         $formatDate = $date ? new Carbon($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';

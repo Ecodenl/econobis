@@ -35,6 +35,22 @@ export default {
         });
     },
 
+    getExcelParticipants: (filters, extraFilters, sorts, pagination, fetchFromProject) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/excelParticipants`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
+                fetchFromProject: fetchFromProject,
+            },
+            responseType: 'blob',
+        });
+    },
+
     peekParticipantsProjects: () => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/peek`;
 

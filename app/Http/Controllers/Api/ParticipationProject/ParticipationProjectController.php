@@ -1005,7 +1005,8 @@ class ParticipationProjectController extends ApiController
 
         $participantMutation->fill($mutationData);
 
-        $result = $this->checkMutationAllowed($participantMutation);
+        $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
+        $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         // Calculate participation worth based on current book worth of project
         if($participantMutation->status->code_ref === 'final' && $project->projectType->code_ref !== 'loan') {
@@ -1064,7 +1065,10 @@ class ParticipationProjectController extends ApiController
                 $participantMutation->participation_worth = $bookWorth * $participantMutation->quantity;
             }
 
-            $result = $this->checkMutationAllowed($participantMutation);
+            // we controleren in jaar van beeindigsdatum + 1 dag
+            // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
+            $dateEntryYear = \Carbon\Carbon::parse($participantProject['date_terminated'])->addDay(1)->year;
+            $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
             $participantMutation->save();
 
@@ -1102,7 +1106,8 @@ class ParticipationProjectController extends ApiController
         }
         $participantMutation->paid_on = 'Bijschrijven';
 
-        $result = $this->checkMutationAllowed($participantMutation);
+        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->year;
+        $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         $participantMutation->save();
 
@@ -1191,13 +1196,12 @@ class ParticipationProjectController extends ApiController
     /**
      * @param $participantProject
      */
-    protected function checkMutationAllowed($participantMutation)
+    protected function checkMutationAllowed($participantMutation, $dateEntryYear)
     {
         $project = $participantMutation->participation->project;
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
 
         if($participantMutation->status_id === $mutationStatusFinal){
-            $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
             $financialOverviewProjectQuery = FinancialOverviewProject::where('project_id', $project->id)
                 ->where('definitive', true)
                 ->whereHas('financialOverview', function ($query) use ($project, $dateEntryYear) {
@@ -1207,7 +1211,7 @@ class ParticipationProjectController extends ApiController
 
             if ($financialOverviewProjectQuery->exists()) {
                 $financialOverview = $financialOverviewProjectQuery->first()->financialOverview;
-                abort(409, 'Project komt al voor in definitive waardestaat  ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
+                abort(409, 'Project komt al voor in definitive waardestaat ' . $financialOverview->description . '. Deze mutatie is niet meer mogelijk.');
                 return false;
             }
         }

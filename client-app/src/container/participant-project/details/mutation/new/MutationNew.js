@@ -13,6 +13,7 @@ import MutationNewValidateForm from './MutationNewValidateForm';
 import MutationNewSubmitHelper from './MutationNewSubmitHelper';
 import MutationNewWithDrawal from './MutationNewWithDrawal';
 import Modal from '../../../../../components/modal/Modal';
+import ErrorModal from '../../../../../components/modal/ErrorModal';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -42,6 +43,8 @@ class MutationFormNew extends Component {
             },
             errors: {},
             errorMessage: {},
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
@@ -131,18 +134,33 @@ class MutationFormNew extends Component {
                 this.props.projectTypeCodeRef
             );
 
-            ParticipantMutationAPI.newParticipantMutation(values).then(payload => {
-                this.props.fetchParticipantProjectDetails(this.props.id);
-                if (payload.data) {
+            ParticipantMutationAPI.newParticipantMutation(values)
+                .then(payload => {
+                    this.props.fetchParticipantProjectDetails(this.props.id);
+                    if (payload.data) {
+                        this.setState({
+                            ...this.state,
+                            successNewMessage: payload.data,
+                        });
+                    } else {
+                        this.props.toggleShowNew();
+                    }
+                })
+                .catch(error => {
+                    let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
+                    if (error.response.status !== 500) {
+                        errorMessage = error.response.data.message;
+                    }
                     this.setState({
-                        ...this.state,
-                        successNewMessage: payload.data,
+                        showErrorModal: true,
+                        modalErrorMessage: errorMessage,
                     });
-                } else {
-                    this.props.toggleShowNew();
-                }
-            });
+                });
         }
+    };
+
+    closeErrorModal = () => {
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
 
     render() {
@@ -249,6 +267,13 @@ class MutationFormNew extends Component {
                             return <p key={index}>{messageLine}</p>;
                         })}
                     </Modal>
+                )}
+                {this.state.showErrorModal && (
+                    <ErrorModal
+                        closeModal={this.closeErrorModal}
+                        title={'Fout bij opslaan'}
+                        errorMessage={this.state.modalErrorMessage}
+                    />
                 )}
             </React.Fragment>
         );

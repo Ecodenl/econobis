@@ -38,6 +38,7 @@ function ProjectList(props) {
 
     useEffect(() => {
         (function determineSceOrPcrProjectsAvailable() {
+            // todo WM: opschonen log na implementatie / test check op dubbele adressen
             console.log('Test determineSceOrPcrProjectsAvailable');
             console.log(contactProjectsArray);
             if (contactProjectsArray.length > 0) {
@@ -200,11 +201,11 @@ function ProjectList(props) {
                                                     <>
                                                         {!project.hasParticipation && project.allowRegisterToProject ? (
                                                             <Link to={`/project/${project.id}`}>
-                                                                {project.name} {project.allowRegisterToProject}
+                                                                {project.name}
                                                             </Link>
                                                         ) : (
                                                             <>
-                                                                {project.name} {project.allowRegisterToProject}
+                                                                {project.name}
                                                             </>
                                                         )}
                                                     </>

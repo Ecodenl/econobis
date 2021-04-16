@@ -9,7 +9,6 @@ import TextBlock from '../../../components/general/TextBlock';
 import Form from 'react-bootstrap/Form';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
-import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
@@ -47,11 +46,13 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
         return amountOptioned ? parseFloat(amountOptioned.toString().replace(',', '.')) : 0;
     }
     function calculateTransactionCostsAmount(amountOptioned, choiceMembership) {
-        if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
-            return 0;
-        }
-        if (project.showQuestionAboutMembership && choiceMembership === 1) {
-            return 0;
+        if (!project.useTransactionCostsWithMembership) {
+            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+                return 0;
+            }
+            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+                return 0;
+            }
         }
         return calculateTransactionCosts(project, amountOptioned, null);
     }

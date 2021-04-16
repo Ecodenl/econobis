@@ -43,6 +43,7 @@ const ProjectFormViewGeneral = ({
     linkUnderstandInfo,
     linkProjectInfo,
     showQuestionAboutMembership,
+    useTransactionCostsWithMembership,
     questionAboutMembershipGroup,
     textIsMember,
     textIsNoMember,
@@ -253,6 +254,12 @@ const ProjectFormViewGeneral = ({
         </div>
         <div className="row">
             <ViewText label={'Vragen over lid worden aan of uit?'} value={showQuestionAboutMembership ? 'Ja' : 'Nee'} />
+            {showQuestionAboutMembership == true && (
+                <ViewText
+                    label={'Transactiekosten ook bij lidmaatschap?'}
+                    value={useTransactionCostsWithMembership ? 'Ja' : 'Nee'}
+                />
+            )}
         </div>
         {showQuestionAboutMembership == true && (
             <>

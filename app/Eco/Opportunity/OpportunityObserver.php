@@ -8,6 +8,7 @@
 
 namespace App\Eco\Opportunity;
 
+use App\Helpers\Workflow\OpportunityWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,8 +43,20 @@ class OpportunityObserver
         if ($opportunity->isDirty('status_id'))
         {
             $days = $opportunity->status->uses_wf ? $opportunity->status->number_of_days_to_send_email : 0;
-            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+//            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+            $mailDate = Carbon::now()->addDays($days);
             $opportunity->date_planned_to_send_wf_email_status = $mailDate;
+        }
+    }
+
+    public function saved(Opportunity $opportunity)
+    {
+        if ($opportunity->isDirty('status_id'))
+        {
+            if ($opportunity->status->uses_wf && $opportunity->status->number_of_days_to_send_email === 0){
+                $opportunityWorkflowHelper = new OpportunityWorkflowHelper($opportunity);
+                $opportunityWorkflowHelper->processWorkflowEmail();
+            }
         }
     }
 

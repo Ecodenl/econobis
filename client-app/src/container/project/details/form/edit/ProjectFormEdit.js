@@ -38,6 +38,7 @@ class ProjectFormEdit extends Component {
             project: {
                 ...props.project,
                 showQuestionAboutMembership: Boolean(props.project.showQuestionAboutMembership),
+                useTransactionCostsWithMembership: Boolean(props.project.useTransactionCostsWithMembership),
                 isMembershipRequired: Boolean(props.project.isMembershipRequired),
                 isParticipationTransferable: Boolean(props.project.isParticipationTransferable),
                 contactGroupIds:
@@ -731,6 +732,7 @@ class ProjectFormEdit extends Component {
             linkUnderstandInfo,
             linkProjectInfo,
             showQuestionAboutMembership,
+            useTransactionCostsWithMembership,
             questionAboutMembershipGroupId,
             textIsMember,
             textIsNoMember,
@@ -846,6 +848,7 @@ class ProjectFormEdit extends Component {
                     linkUnderstandInfo={linkUnderstandInfo}
                     linkProjectInfo={linkProjectInfo}
                     showQuestionAboutMembership={showQuestionAboutMembership}
+                    useTransactionCostsWithMembership={useTransactionCostsWithMembership}
                     questionAboutMembershipGroupId={questionAboutMembershipGroupId}
                     textIsMember={textIsMember}
                     textIsNoMember={textIsNoMember}

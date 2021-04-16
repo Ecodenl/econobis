@@ -117,6 +117,7 @@ class FullProject extends Resource
                 'linkUnderstandInfo' => $this->link_understand_info,
                 'linkProjectInfo' => $this->link_project_info,
                 'showQuestionAboutMembership' => $this->show_question_about_membership,
+                'useTransactionCostsWithMembership' => $this->use_transaction_costs_with_membership,
                 'questionAboutMembershipGroupId' => $this->question_about_membership_group_id,
                 'questionAboutMembershipGroup' => FullContactGroup::make($this->whenLoaded('questionAboutMembershipGroup')),
                 'textIsMember' => $this->text_is_member,

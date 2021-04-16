@@ -12,7 +12,7 @@ const OpportunityStatusListToolbar = ({ opportunityStatusCount, refreshOpportuni
                 </div>
             </div>
             <div className="col-md-4">
-                <h3 className="text-center table-title">Kans statussen</h3>
+                <h3 className="text-center table-title">Workflows op Kans statussen</h3>
             </div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: {opportunityStatusCount}</div>
@@ -27,7 +27,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(OpportunityStatusListToolbar);
+export default connect(mapStateToProps, null)(OpportunityStatusListToolbar);

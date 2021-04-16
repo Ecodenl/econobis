@@ -12,7 +12,7 @@ const TaskTypesListToolbar = ({ taskTypesCount, refreshTaskTypesData, permission
                 </div>
             </div>
             <div className="col-md-4">
-                <h3 className="text-center table-title">Taak types</h3>
+                <h3 className="text-center table-title">Workflows op Taak types</h3>
             </div>
             <div className="col-md-4">
                 <div className="pull-right">Resultaten: {taskTypesCount}</div>
@@ -27,7 +27,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TaskTypesListToolbar);
+export default connect(mapStateToProps, null)(TaskTypesListToolbar);

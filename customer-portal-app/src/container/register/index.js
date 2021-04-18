@@ -15,7 +15,6 @@ import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 import axios from 'axios';
 import { ThemeSettingsContext } from '../../context/ThemeSettingsContext';
 import { Alert } from 'react-bootstrap';
-import toast from 'toasted-notes';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -175,7 +174,7 @@ function RegisterProject({ match, currentSelectedContact }) {
     }
 
     function handleSubmitContactValues(values, actions, nextStep) {
-        const updatedContact = { ...contact, ...values };
+        const updatedContact = { ...contact, ...values, projectId: project.id };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
                 ContactAPI.fetchContact(currentSelectedContact.id)
@@ -192,30 +191,9 @@ function RegisterProject({ match, currentSelectedContact }) {
             })
             .catch(error => {
                 actions.setSubmitting(false);
-                toast.notify(
-                    <div>
-                        <div>
-                            <div>
-                                <div
-                                    style={{
-                                        padding: '5px',
-                                        border: 'solid black 2px',
-                                        background: 'red',
-                                        color: '#FFF',
-                                    }}
-                                >
-                                    <p>{error.response.data.message}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>,
-
-                    {
-                        duration: null,
-                        position: 'top-left',
-                    }
-                );
-
+                actions.setStatus({
+                    message: error.response.data.message,
+                });
                 // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }

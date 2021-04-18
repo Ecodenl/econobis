@@ -11,7 +11,6 @@ import { Link } from 'react-router-dom';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import toast from 'toasted-notes';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
@@ -72,7 +71,7 @@ const ContactDetails = function(props) {
     }
 
     function handleSubmitContactValues(values, actions, switchToView) {
-        const updatedContact = { ...contact, ...values };
+        const updatedContact = { ...contact, ...values, projectId: null };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
                 callFetchContact();
@@ -80,33 +79,10 @@ const ContactDetails = function(props) {
                 switchToView();
             })
             .catch(error => {
-                // todo WM: fouten bij update contact hier tonen met toast.notify
-                // console.log(error.response.status);
-                // console.log(error.response.data.message);
                 actions.setSubmitting(false);
-                toast.notify(
-                    <div>
-                        <div>
-                            <div>
-                                <div
-                                    style={{
-                                        padding: '5px',
-                                        border: 'solid black 2px',
-                                        background: 'red',
-                                        color: '#FFF',
-                                    }}
-                                >
-                                    <p>{error.response.data.message}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>,
-
-                    {
-                        duration: null,
-                        position: 'top-left',
-                    }
-                );
+                actions.setStatus({
+                    message: error.response.data.message,
+                });
                 // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }

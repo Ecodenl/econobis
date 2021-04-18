@@ -23,9 +23,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "^3.4.0",
     "react-spinners": "^0.5.13",
-    "react-spring": "^8.0",
     "react-tooltip": "^4.2.17",
-    "toasted-notes": "^3.2.0",
     "yup": "^0.27.0"
   },
   "devDependencies": {

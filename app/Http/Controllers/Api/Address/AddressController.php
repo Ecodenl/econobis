@@ -50,7 +50,7 @@ class AddressController extends ApiController
 
         $contact = Contact::find($data['contactId']);
         if($contact){
-            $errors = $this->checkDoubleAddress($contact, $address);
+            $contactAddresAllowed = $this->checkDoubleAddressAllowed($contact, $address);
         }
 
         $address->save();
@@ -89,7 +89,7 @@ class AddressController extends ApiController
 
         $contact = Contact::find($address->contact_id);
         if($contact){
-            $errors = $this->checkDoubleAddress($contact, $address);
+            $contactAddresAllowed = $this->checkDoubleAddressAllowed($contact, $address);
         }
 
         $address->save();
@@ -171,21 +171,19 @@ class AddressController extends ApiController
     /**
      * @param $contact
      * @param Address $address
-     * @return array
+     * @return bool
      */
-    protected function checkDoubleAddress($contact, Address $address): array
+    protected function checkDoubleAddressAllowed($contact, Address $address): bool
     {
         foreach ($contact->participations as $participation) {
             if ($participation->project->check_double_addresses) {
                 $participationProjectController = new ParticipationProjectController();
-                $errors = [];
-                $hasError = $participationProjectController->checkDoubleAddress($errors, $participation->project, $contact->id, ($address->postal_code . '-' . $address->number . '-' . $address->addition));
-                // if check double addresses returns with hasError true, than don't allow register to project, and put info text in textfield not allowed register to project.
-                if ($hasError) {
+                if( $participationProjectController->checkDoubleAddress($participation->project, $contact->id, $address->postalCodeNumberAddition) ) {
                     abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                    return false;
                 }
             }
         }
-        return $errors;
+        return true;
     }
 }

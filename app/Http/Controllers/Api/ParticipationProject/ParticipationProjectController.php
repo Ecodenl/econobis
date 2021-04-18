@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\ParticipationProject;
 
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
@@ -261,11 +262,22 @@ class ParticipationProjectController extends ApiController
         $project = Project::find($participantProject->project_id);
         $contact = Contact::find($participantProject->contact_id);
 
-        $errors = [];
-
         if($project->check_double_addresses){
-            $hasError = $this->checkDoubleAddresses($errors, $project, $contact);
-            if($hasError){
+            $errors = [];
+
+            $address = null;
+            // PERSON
+            if ($contact->type_id == ContactType::PERSON) {
+                $address = $contact->primaryAddress;
+            }
+            // ORGANISATION, use visit address
+            if ($contact->type_id == ContactType::ORGANISATION) {
+                $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
+            }
+
+            $addressIsDouble = $this->checkDoubleAddress($project, $contact->id,  $address->postalCodeNumberAddition );
+            if($addressIsDouble){
+                array_push($errors, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.' );
                 return ['id' => 0, 'message' => $errors];
             }
         }
@@ -513,33 +525,8 @@ class ParticipationProjectController extends ApiController
         return ParticipantProjectPeek::collection($participants);
     }
 
-    public function checkDoubleAddresses(&$errors, Project $project, Contact $contact)
-    {
-        $contactAddresses = $contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray();
 
-        // For SCE projects with check on double addresses (as long as subsidy isn't provided):
-        // Check if all addresses of contact don't already exists as address of other participants.
-        $contactAddressesParticipants = [];
-        foreach ($project->participantsProject as $participant){
-            if($contact->id != $participant->contact->id){
-                $contactAddressesParticipants = array_unique(array_merge($contactAddressesParticipants, $participant->contact->addressesActive->pluck('id', 'postalCodeNumberAddition')->toArray()));
-            }
-        }
-
-        $addressIsDouble = false;
-        foreach ($contactAddresses as $key => $contactAddressId){
-            if( array_key_exists($key, $contactAddressesParticipants) ){
-                $address = Address::find($contactAddressId);
-                $checkText = 'Dubbel adres (postcode: ' . $address->postal_code . ', nummer: ' . $address->number . ($address->addition ? ( '-' . $address->addition) : '') . ') gevonden.';
-                array_push($errors, $checkText );
-                $addressIsDouble = true;
-            }
-        }
-
-        return $addressIsDouble;
-    }
-
-    public function checkDoubleAddress(&$errors, Project $project, $contactId, $postalCodeNumberAddition)
+    public function checkDoubleAddress(Project $project, $contactId, $postalCodeNumberAddition)
     {
         // For SCE projects with check on double addresses (as long as subsidy isn't provided):
         // Check if all addresses of contact don't already exists as address of other participants.
@@ -552,10 +539,6 @@ class ParticipationProjectController extends ApiController
 
         $addressIsDouble = false;
         if( array_key_exists($postalCodeNumberAddition, $contactAddressesParticipants) ){
-//            $address = Address::find($contactAddressId);
-//            $checkText = 'Dubbel adres (postcode: ' . $address->postal_code . ', nummer: ' . $address->number . ($address->addition ? ( '-' . $address->addition) : '') . ') gevonden.';
-            $checkText = 'Dubbel adres gevonden.';
-            array_push($errors, $checkText );
             $addressIsDouble = true;
         }
 

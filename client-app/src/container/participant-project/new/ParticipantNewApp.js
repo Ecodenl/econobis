@@ -238,10 +238,7 @@ class ParticipantNewApp extends Component {
             this.setState({ isLoading: true });
 
             ParticipantProjectDetailsAPI.storeParticipantProject(values).then(payload => {
-                // todo WM: testen show modal error daarna opschonen log regels
                 if (payload.data.message !== undefined && payload.data.message.length > 0 && payload.data.id == 0) {
-                    console.log('Deelnemer niet aangemaakt !');
-                    console.log(payload.data.message);
                     this.setState({
                         showModalError: true,
                         modalText: payload.data.message,
@@ -264,8 +261,6 @@ class ParticipantNewApp extends Component {
     };
 
     render() {
-        // todo WM: testen show modal error daarna opschonen log regels
-        console.log('showModalError: ' + this.state.showModalError);
         return (
             <div className="row">
                 <div className="col-md-9">

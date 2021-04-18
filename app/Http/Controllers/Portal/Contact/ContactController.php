@@ -92,7 +92,7 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['primaryAddress'])) {
-                    $this->updateAddress($contact, $request['primaryAddress'], 'visit');
+                    $this->updateAddress($contact, $request['primaryAddress'], 'visit', $request->projectId);
                 }
                 if (isset($request['primaryContactEnergySupplier']) && $request['primaryContactEnergySupplier'] != null ) {
                     $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);
@@ -108,13 +108,13 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['visitAddress'])) {
-                    $this->updateAddress($contact, $request['visitAddress'], 'visit');
+                    $this->updateAddress($contact, $request['visitAddress'], 'visit', $request->projectId);
                 }
                 if (isset($request['postalAddress'])) {
-                    $this->updateAddress($contact, $request['postalAddress'], 'postal');
+                    $this->updateAddress($contact, $request['postalAddress'], 'postal', null);
                 }
                 if (isset($request['invoiceAddress'])) {
-                    $this->updateAddress($contact, $request['invoiceAddress'], 'invoice');
+                    $this->updateAddress($contact, $request['invoiceAddress'], 'invoice', null);
                 }
                 if (isset($request['primaryContactEnergySupplier']) && $request['primaryContactEnergySupplier'] != null ) {
                     $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);
@@ -448,7 +448,7 @@ class ContactController extends ApiController
 
     }
 
-    protected function updateAddress($contact, $addressData, $addressType)
+    protected function updateAddress($contact, $addressData, $addressType, $projectId)
     {
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
@@ -472,13 +472,23 @@ class ContactController extends ApiController
                 }else{
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
 
+                    if ($projectId) {
+                        $project = Project::find($projectId);
+                        if($project->check_double_addresses) {
+                            $participationProjectController = new ParticipationProjectController();
+                            $addressIsDouble = $participationProjectController->checkDoubleAddress($project, $contact->id, $address->postalCodeNumberAddition);
+                            if ($addressIsDouble) {
+                                abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                            }
+                        }
+                    }
+
                     foreach ($contact->participations as $participation) {
+
                         if($participation->project->check_double_addresses){
                             $participationProjectController = new ParticipationProjectController();
-                            $errors = [];
-                            $hasError = $participationProjectController->checkDoubleAddress($errors, $participation->project, $contact->id,  ($address->postal_code . '-' . $address->number . '-' . $address->addition) );
-                            // if check double addresses returns with hasError true, than don't allow register to project, and put info text in textfield not allowed register to project.
-                            if($hasError){
+                            $addressIsDouble = $participationProjectController->checkDoubleAddress($participation->project, $contact->id,  $address->postalCodeNumberAddition );
+                            if($addressIsDouble){
                                 abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.' );
                             }
                         }
@@ -803,7 +813,7 @@ class ContactController extends ApiController
                     $postalCodeAreaContact = substr($contact->addressForPostalCodeCheck->postal_code, 0 , 4);
                     // if postalcode contact not in postalcode link of project, then don't allow register to project;
                     if($validPostalAreas && !in_array($postalCodeAreaContact, $validPostalAreas)){
-//todo WM: for testing it is handy to show the projects where postalcode contact not in poratlcode link proejct
+//todo WM: for testing it is handy to show the projects where postalcode contact not in postalcode link project
                         // If function came with incoming collection projects, then we remove (forget) this project.
 //                        if($projects){
 //                            $projects->forget($key);
@@ -821,13 +831,22 @@ class ContactController extends ApiController
             // if to check double addresses (not allowed) and register to project was still allowed at this moment
             if($project->check_double_addresses && $project->allowRegisterToProject) {
                 $participationProjectController = new ParticipationProjectController();
-                $errors = [];
-                $hasError = $participationProjectController->checkDoubleAddresses($errors, $project, $contact);
-                // if check double addresses returns with hasError true, than don't allow register to project, and put info text in textfield not allowed register to project.
-                if($hasError){
-                    $project->allowRegisterToProject = false;
-                    $project->textNotAllowedRegisterToProject = 'Er is al een deelnemer ingeschreven op een adres van ' . $contact->full_name . '<br />' . (implode('<br />', $errors));
+
+                $address = null;
+                // PERSON
+                if ($contact->type_id == ContactType::PERSON) {
+                    $address = $contact->primaryAddress;
                 }
+                // ORGANISATION, use visit address
+                if ($contact->type_id == ContactType::ORGANISATION) {
+                    $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
+                }
+                $addressIsDouble = $participationProjectController->checkDoubleAddress($project, $contact->id,  $address->postalCodeNumberAddition );
+                if($addressIsDouble){
+                    $project->allowRegisterToProject = false;
+                    $project->textNotAllowedRegisterToProject = 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.';
+                }
+
             }
 
         }

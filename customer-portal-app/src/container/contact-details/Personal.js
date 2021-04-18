@@ -37,7 +37,7 @@ function ContactDetailsPersonal({
                         actions.setSubmitting(true);
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
-                    render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
+                    render={({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit
@@ -84,6 +84,17 @@ function ContactDetailsPersonal({
                                             <div className="alert-wrapper">
                                                 <Alert key={'form-general-error-alert'} variant={'warning'}>
                                                     Niet alle verplichten velden zijn (juist) ingevuld!
+                                                </Alert>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                ) : null}
+                                {status && status.message ? (
+                                    <Row>
+                                        <Col>
+                                            <div className="alert-wrapper">
+                                                <Alert key={'form-general-error-alert'} variant={'danger'}>
+                                                    {status.message}
                                                 </Alert>
                                             </div>
                                         </Col>

@@ -81,7 +81,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                     actions.setSubmitting(true);
                     handleSubmitContactValues(values, actions, next);
                 }}
-                render={({ errors, touched, setFieldValue, isSubmitting, values, handleSubmit }) => {
+                render={({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                     // console.log(errors);
                     return (
                         <Form>
@@ -142,6 +142,17 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                             <Alert key={'form-general-error-alert'} variant={'warning'}>
                                                 Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
                                                 volgende stap!
+                                            </Alert>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            ) : null}
+                            {status && status.message ? (
+                                <Row>
+                                    <Col>
+                                        <div className="alert-wrapper">
+                                            <Alert key={'form-general-error-alert'} variant={'danger'}>
+                                                {status.message}
                                             </Alert>
                                         </div>
                                     </Col>

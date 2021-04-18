@@ -4,7 +4,9 @@
 namespace App\Http\Controllers\Portal\ParticipationProject;
 
 
+use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Document\Document;
 use App\Eco\DocumentTemplate\DocumentTemplate;
@@ -116,6 +118,24 @@ class ParticipationProjectController extends Controller
         $responsibleUserId = PortalSettings::get('responsibleUserId');
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (5).');
+        }
+
+        $address = null;
+        // PERSON
+        if ($contact->type_id == ContactType::PERSON) {
+            $address = $contact->primaryAddress;
+        }
+        // ORGANISATION, use visit address
+        if ($contact->type_id == ContactType::ORGANISATION) {
+            $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
+        }
+
+        if($project->check_double_addresses) {
+            $apiParticipationProjectController = new \App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController();
+            if ($apiParticipationProjectController->checkDoubleAddress($project, $contact->id, $address->postalCodeNumberAddition)) {
+                abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                return false;
+            }
         }
 
         DB::transaction(function () use ($contact, $project, $request, $portalUser, $responsibleUserId) {

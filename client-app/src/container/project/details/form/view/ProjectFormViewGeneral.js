@@ -200,7 +200,7 @@ const ProjectFormViewGeneral = ({
             <ViewText label={'Vragen over lid worden aan of uit?'} value={showQuestionAboutMembership ? 'Ja' : 'Nee'} />
             {showQuestionAboutMembership == true && (
                 <ViewText
-                    label={'Transactiekosten ook bij lidmaatschap?'}
+                    label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                     value={useTransactionCostsWithMembership ? 'Ja' : 'Nee'}
                 />
             )}

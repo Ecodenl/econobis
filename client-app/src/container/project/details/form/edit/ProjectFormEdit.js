@@ -326,6 +326,10 @@ class ProjectFormEdit extends Component {
                 hasErrors = true;
             }
         }
+
+        if (validator.isEmpty('' + project.baseProjectCodeRef)) {
+            project.baseProjectCodeRef = null;
+        }
         if (project.transactionCostsCodeRef === 'none') {
             project.transactionCostsAmountMin = null;
             project.transactionCostsAmountMax = null;

@@ -94,7 +94,10 @@ const ProjectFormView = props => {
         transactionCostsPercentage3,
     } = props.project;
 
-    const requiredParticipations = RequiredParticipationsHelper(baseProjectCodeRefWithName.id, powerKwAvailable);
+    const requiredParticipations = RequiredParticipationsHelper(
+        baseProjectCodeRefWithName ? baseProjectCodeRefWithName.id : '',
+        powerKwAvailable
+    );
 
     const numberOfParticipantsStillNeeded = requiredParticipations;
 

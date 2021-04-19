@@ -70,7 +70,7 @@ class Contact extends Model
 
     public function addressesActive()
     {
-        return $this->hasMany(Address::class)->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
+        return $this->addresses()->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
     }
 
     public function primaryAddress()

@@ -62,6 +62,7 @@ class ContactDetailsFormAddressNew extends Component {
                 validator.isEmpty(address.street)
             ) {
                 AddressAPI.getPicoAddress(address.postalCode, address.number).then(payload => {
+                    console.log(payload);
                     this.setState({
                         ...this.state,
                         address: {
@@ -152,7 +153,7 @@ class ContactDetailsFormAddressNew extends Component {
                     if (address.primary) {
                         this.props.unsetPrimaryAddresses();
                     }
-                    this.props.newAddress(payload);
+                    this.props.newAddress(payload.data.data);
                     this.props.toggleShowNew();
                 })
                 .catch(error => {

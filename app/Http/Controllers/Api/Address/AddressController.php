@@ -50,7 +50,7 @@ class AddressController extends ApiController
 
         $contact = Contact::find($data['contactId']);
         if($contact){
-            $contactAddresAllowed = $this->checkDoubleAddressAllowed($contact, $address);
+            $contactAddressAllowed = $this->checkDoubleAddressAllowed($contact, $address);
         }
 
         $address->save();
@@ -89,7 +89,7 @@ class AddressController extends ApiController
 
         $contact = Contact::find($address->contact_id);
         if($contact){
-            $contactAddresAllowed = $this->checkDoubleAddressAllowed($contact, $address);
+            $contactAddressAllowed = $this->checkDoubleAddressAllowed($contact, $address);
         }
 
         $address->save();

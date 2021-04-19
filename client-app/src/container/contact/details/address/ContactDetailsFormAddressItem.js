@@ -162,7 +162,7 @@ class ContactDetailFormAddressItem extends Component {
                     if (address.primary) {
                         this.props.unsetPrimaryAddresses();
                     }
-                    this.props.updateAddress(payload);
+                    this.props.updateAddress(payload.data.data);
                     this.closeEdit();
                 })
                 .catch(error => {

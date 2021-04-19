@@ -592,7 +592,7 @@ const ProjectFormEditGeneral = ({
                 />
                 {showQuestionAboutMembership == true && (
                     <InputToggle
-                        label={'Transactiekosten ook bij lidmaatschap?'}
+                        label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                         name={'useTransactionCostsWithMembership'}
                         value={useTransactionCostsWithMembership}
                         onChangeAction={handleInputChange}

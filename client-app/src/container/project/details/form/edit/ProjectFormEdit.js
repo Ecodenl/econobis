@@ -20,6 +20,7 @@ import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/Proje
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import PortalSettingsAPI from '../../../../../api/portal-settings/PortalSettingsAPI';
+import RequiredParticipationsHelper from '../../../../../helpers/RequiredParticipationsHelper';
 
 const defaultTextInfoProjectOnlyMembers =
     'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
@@ -772,23 +773,8 @@ class ProjectFormEdit extends Component {
             amountOfParticipants,
         } = this.props.project;
 
-        // Benodigd aantal deelnemers: is opgesteld vermogen delen door Deelnemers per kWp van soort project
-        //  zonne-energieprojecten: Minimaal één deelnemer per 5 kWp vermogen;
-        //  windprojecten: minimaal één deelnemer per 2 kWp vermogen;
-        //	waterkracht: mimimaal één deelnemer per 1 kWp vermogen;
-        let requiredParticipations = 0;
+        const requiredParticipations = RequiredParticipationsHelper(baseProjectCodeRef, powerKwAvailable);
 
-        switch (baseProjectCodeRef) {
-            case 'solar-energy':
-                requiredParticipations = Math.ceil(powerKwAvailable / 5);
-                break;
-            case 'wind':
-                requiredParticipations = Math.ceil(powerKwAvailable / 2);
-                break;
-            case 'hydropower':
-                requiredParticipations = Math.ceil(powerKwAvailable);
-                break;
-        }
         const numberOfParticipantsStillNeeded = requiredParticipations;
         let useSceProject = false;
         if (projectType && projectType.codeRef !== 'postalcode_link_capital') {

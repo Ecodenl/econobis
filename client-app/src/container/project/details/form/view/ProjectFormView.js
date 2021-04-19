@@ -8,6 +8,7 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
+import RequiredParticipationsHelper from '../../../../../helpers/RequiredParticipationsHelper';
 
 const ProjectFormView = props => {
     const {
@@ -93,25 +94,8 @@ const ProjectFormView = props => {
         transactionCostsPercentage3,
     } = props.project;
 
-    // Benodigd aantal deelnemers: is opgesteld vermogen delen door Deelnemers per kWp van soort project
-    //  zonne-energieprojecten: Minimaal één deelnemer per 5 kWp vermogen;
-    //  windprojecten: minimaal één deelnemer per 2 kWp vermogen;
-    //	waterkracht: mimimaal één deelnemer per 1 kWp vermogen;
-    let requiredParticipations = 0;
+    const requiredParticipations = RequiredParticipationsHelper(baseProjectCodeRefWithName.id, powerKwAvailable);
 
-    if (baseProjectCodeRefWithName) {
-        switch (baseProjectCodeRefWithName.id) {
-            case 'solar-energy':
-                requiredParticipations = Math.ceil(powerKwAvailable / 5);
-                break;
-            case 'wind':
-                requiredParticipations = Math.ceil(powerKwAvailable / 2);
-                break;
-            case 'hydropower':
-                requiredParticipations = Math.ceil(powerKwAvailable);
-                break;
-        }
-    }
     const numberOfParticipantsStillNeeded = requiredParticipations;
 
     return (

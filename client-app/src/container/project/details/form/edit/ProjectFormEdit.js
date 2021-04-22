@@ -20,7 +20,7 @@ import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/Proje
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import PortalSettingsAPI from '../../../../../api/portal-settings/PortalSettingsAPI';
-import RequiredParticipationsHelper from '../../../../../helpers/RequiredParticipationsHelper';
+import RequiredParticipantsHelper from '../../../../../helpers/RequiredParticipantsHelper';
 
 const defaultTextInfoProjectOnlyMembers =
     'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
@@ -777,9 +777,9 @@ class ProjectFormEdit extends Component {
             amountOfParticipants,
         } = this.props.project;
 
-        const requiredParticipations = RequiredParticipationsHelper(baseProjectCodeRef, powerKwAvailable);
+        const requiredParticipants = RequiredParticipantsHelper(baseProjectCodeRef, powerKwAvailable);
 
-        const numberOfParticipantsStillNeeded = requiredParticipations - amountOfParticipants;
+        const numberOfParticipantsStillNeeded = requiredParticipants - amountOfParticipants;
         let useSceProject = false;
         if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
             useSceProject = true;
@@ -800,7 +800,7 @@ class ProjectFormEdit extends Component {
                     checkDoubleAddresses={checkDoubleAddresses}
                     postalcodeLink={postalcodeLink}
                     subsidyProvided={subsidyProvided}
-                    requiredParticipations={requiredParticipations}
+                    requiredParticipants={requiredParticipants}
                     numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                     address={address}
                     postalCode={postalCode}

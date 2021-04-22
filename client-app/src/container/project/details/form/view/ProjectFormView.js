@@ -8,7 +8,7 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
-import RequiredParticipationsHelper from '../../../../../helpers/RequiredParticipationsHelper';
+import RequiredParticipantsHelper from '../../../../../helpers/RequiredParticipantsHelper';
 
 const ProjectFormView = props => {
     const {
@@ -95,12 +95,12 @@ const ProjectFormView = props => {
         transactionCostsPercentage3,
     } = props.project;
 
-    const requiredParticipations = RequiredParticipationsHelper(
+    const requiredParticipants = RequiredParticipantsHelper(
         baseProjectCodeRefWithName ? baseProjectCodeRefWithName.id : '',
         powerKwAvailable
     );
 
-    const numberOfParticipantsStillNeeded = requiredParticipations - amountOfParticipants;
+    const numberOfParticipantsStillNeeded = requiredParticipants - amountOfParticipants;
 
     return (
         <section
@@ -120,7 +120,7 @@ const ProjectFormView = props => {
                 checkDoubleAddresses={checkDoubleAddresses}
                 postalcodeLink={postalcodeLink}
                 subsidyProvided={subsidyProvided}
-                requiredParticipations={requiredParticipations}
+                requiredParticipants={requiredParticipants}
                 numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                 address={address}
                 postalCode={postalCode}

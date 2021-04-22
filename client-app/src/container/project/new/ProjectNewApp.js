@@ -18,7 +18,7 @@ import ProjectFormDefaultObligation from '../form-default/ProjectFormDefaultObli
 import ProjectFormDefaultLoan from '../form-default/ProjectFormDefaultLoan';
 import moment from 'moment/moment';
 import { isEmpty } from 'lodash';
-import RequiredParticipationsHelper from '../../../helpers/RequiredParticipationsHelper';
+import RequiredParticipantsHelper from '../../../helpers/RequiredParticipantsHelper';
 
 const defaultTextInfoProjectOnlyMembers =
     'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
@@ -377,9 +377,9 @@ class ProjectNewApp extends Component {
 
         const projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
 
-        const requiredParticipations = RequiredParticipationsHelper(baseProjectCodeRef, powerKwAvailable);
+        const requiredParticipants = RequiredParticipantsHelper(baseProjectCodeRef, powerKwAvailable);
 
-        const numberOfParticipantsStillNeeded = requiredParticipations;
+        const numberOfParticipantsStillNeeded = requiredParticipants;
         let useSceProject = false;
         if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
             useSceProject = true;
@@ -408,7 +408,7 @@ class ProjectNewApp extends Component {
                                         baseProjectCodeRef={baseProjectCodeRef}
                                         powerKwAvailable={powerKwAvailable}
                                         checkDoubleAddresses={checkDoubleAddresses}
-                                        requiredParticipations={requiredParticipations}
+                                        requiredParticipants={requiredParticipants}
                                         numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                                         address={address}
                                         postalCode={postalCode}

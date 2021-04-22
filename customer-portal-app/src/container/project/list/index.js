@@ -199,7 +199,7 @@ function ProjectList(props) {
                                                         {!project.hasParticipation && project.allowRegisterToProject ? (
                                                             <Link to={`/project/${project.id}`}>{project.name}</Link>
                                                         ) : (
-                                                            <>{project.name}</>
+                                                            <span className={'text-muted'}>{project.name}</span>
                                                         )}
                                                     </>
                                                 )}

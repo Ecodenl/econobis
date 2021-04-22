@@ -37,6 +37,7 @@ const ProjectFormView = props => {
         eanSupply,
         participationWorth,
         powerKwAvailable,
+        amountOfParticipants,
         maxParticipations,
         taxReferral,
         totalParticipations,
@@ -99,7 +100,7 @@ const ProjectFormView = props => {
         powerKwAvailable
     );
 
-    const numberOfParticipantsStillNeeded = requiredParticipations;
+    const numberOfParticipantsStillNeeded = requiredParticipations - amountOfParticipants;
 
     return (
         <section

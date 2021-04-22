@@ -779,7 +779,7 @@ class ProjectFormEdit extends Component {
 
         const requiredParticipations = RequiredParticipationsHelper(baseProjectCodeRef, powerKwAvailable);
 
-        const numberOfParticipantsStillNeeded = requiredParticipations;
+        const numberOfParticipantsStillNeeded = requiredParticipations - amountOfParticipants;
         let useSceProject = false;
         if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
             useSceProject = true;

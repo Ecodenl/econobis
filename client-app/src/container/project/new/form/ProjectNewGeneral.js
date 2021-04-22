@@ -20,7 +20,7 @@ const ProjectFormNewGeneral = ({
     baseProjectCodeRefs,
     checkDoubleAddresses,
     powerKwAvailable,
-    requiredParticipations,
+    requiredParticipants,
     numberOfParticipantsStillNeeded,
     postalCode,
     address,
@@ -126,7 +126,7 @@ const ProjectFormNewGeneral = ({
                 <ViewText
                     className={'form-group col-sm-6'}
                     label={'Benodigde aantal deelnemers'}
-                    value={requiredParticipations}
+                    value={requiredParticipants}
                 />
             )}
         </div>

@@ -4,19 +4,19 @@ export default (baseProjectCodeRef, powerKwAvailable) => {
         windprojecten: minimaal één deelnemer per 2 kWp vermogen;
         waterkracht: mimimaal één deelnemer per 1 kWp vermogen; */
 
-    let requiredParticipations = 0;
+    let requiredParticipants = 0;
 
     switch (baseProjectCodeRef) {
         case 'solar-energy':
-            requiredParticipations = Math.ceil(powerKwAvailable / 5);
+            requiredParticipants = Math.ceil(powerKwAvailable / 5);
             break;
         case 'wind':
-            requiredParticipations = Math.ceil(powerKwAvailable / 2);
+            requiredParticipants = Math.ceil(powerKwAvailable / 2);
             break;
         case 'hydropower':
-            requiredParticipations = Math.ceil(powerKwAvailable);
+            requiredParticipants = Math.ceil(powerKwAvailable);
             break;
     }
 
-    return requiredParticipations;
+    return requiredParticipants;
 };

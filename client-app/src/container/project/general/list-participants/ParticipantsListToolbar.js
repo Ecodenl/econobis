@@ -33,7 +33,7 @@ const ParticipantsListToolbar = props => {
                     />
                     <ButtonIcon
                         iconName={'glyphicon-download-alt'}
-                        title="Download deelnemers"
+                        title="Download unieke deelnemers"
                         onClickAction={props.getExcelParticipants}
                     />
                     <ButtonText buttonText={'Rapportage'} onClickAction={props.toggleShowCheckboxList} />

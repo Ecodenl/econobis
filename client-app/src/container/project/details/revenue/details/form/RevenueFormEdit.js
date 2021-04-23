@@ -236,7 +236,6 @@ class RevenueFormEdit extends Component {
             hasErrors = true;
         }
 
-
         if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
@@ -277,10 +276,10 @@ class RevenueFormEdit extends Component {
             (this.props.revenue.project.projectType.codeRef === 'loan' ||
                 this.props.revenue.project.projectType.codeRef === 'obligation') &&
             moment(revenue.dateBegin).format('Y-MM-DD') <
-            moment(revenue.dateEnd)
-                .add(-1, 'year')
-                .add(1, 'day')
-                .format('Y-MM-DD')
+                moment(revenue.dateEnd)
+                    .add(-1, 'year')
+                    .add(1, 'day')
+                    .format('Y-MM-DD')
         ) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Periode mag maximaal 1 jaar zijn.';
@@ -319,14 +318,13 @@ class RevenueFormEdit extends Component {
                 hasErrors = true;
             }
         }
-
         if (this.props.revenue.category.codeRef === 'revenueKwh') {
-            if (revenue.kwhEndHigh < revenue.kwhStartHigh) {
+            if (parseFloat(revenue.kwhEndHigh) < parseFloat(revenue.kwhStartHigh)) {
                 errors.kwhEndHigh = true;
                 errorMessage.kwhEndHigh = 'Eindstand kWh hoog mag niet lager zijn dan Beginstand kWh hoog.';
                 hasErrors = true;
             }
-            if (revenue.kwhEndLow < revenue.kwhStartLow) {
+            if (parseFloat(revenue.kwhEndLow) < parseFloat(revenue.kwhStartLow)) {
                 errors.kwhEndLow = true;
                 errorMessage.kwhEndLow = 'Eindstand kWh laag mag niet lager zijn dan Beginstand kWh laag.';
                 hasErrors = true;
@@ -492,7 +490,7 @@ class RevenueFormEdit extends Component {
                         name={'dateBegin'}
                         value={dateBegin}
                         onChangeAction={this.handleInputChangeDate}
-                        required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
+                        required={category.codeRef !== 'redemptionEuro' ? 'required' : ''}
                         error={this.state.errors.dateBegin}
                         errorMessage={this.state.errorMessage.dateBegin}
                         disabledBefore={
@@ -513,27 +511,27 @@ class RevenueFormEdit extends Component {
                         name={'dateEnd'}
                         value={dateEnd}
                         onChangeAction={this.handleInputChangeDate}
-                        required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
+                        required={category.codeRef !== 'redemptionEuro' ? 'required' : ''}
                         error={this.state.errors.dateEnd}
                         errorMessage={this.state.errorMessage.dateEnd}
                         disabledBefore={dateBegin}
                         disabledAfter={
                             category.codeRef === 'revenueKwh'
                                 ? moment(dateBegin)
-                                    .add(1, 'year')
-                                    .add(6, 'month')
-                                    .add(-1, 'day')
-                                    .format('Y-MM-DD')
+                                      .add(1, 'year')
+                                      .add(6, 'month')
+                                      .add(-1, 'day')
+                                      .format('Y-MM-DD')
                                 : category.codeRef === 'redemptionEuro' ||
-                                (category.codeRef === 'revenueEuro' &&
-                                    (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation'))
+                                  (category.codeRef === 'revenueEuro' &&
+                                      (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation'))
                                 ? moment(dateBegin)
-                                    .add(1, 'year')
-                                    .add(-1, 'day')
-                                    .format('Y-MM-DD')
+                                      .add(1, 'year')
+                                      .add(-1, 'day')
+                                      .format('Y-MM-DD')
                                 : moment(dateBegin)
-                                    .endOf('year')
-                                    .format('Y-MM-DD')
+                                      .endOf('year')
+                                      .format('Y-MM-DD')
                         }
                     />
                 </div>

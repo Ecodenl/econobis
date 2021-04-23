@@ -255,7 +255,6 @@ class RevenueNewApp extends Component {
             hasErrors = true;
         }
 
-
         if (!hasErrors && revenue.dateEnd < revenue.dateBegin) {
             errors.dateEnd = true;
             errorMessage.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
@@ -296,10 +295,10 @@ class RevenueNewApp extends Component {
             (this.state.project.projectType.codeRef === 'loan' ||
                 this.state.project.projectType.codeRef === 'obligation') &&
             moment(revenue.dateBegin).format('Y-MM-DD') <
-            moment(revenue.dateEnd)
-                .add(-1, 'year')
-                .add(1, 'day')
-                .format('Y-MM-DD')
+                moment(revenue.dateEnd)
+                    .add(-1, 'year')
+                    .add(1, 'day')
+                    .format('Y-MM-DD')
         ) {
             errors.dateBegin = true;
             errorMessage.dateBegin = 'Periode mag maximaal 1 jaar zijn.';
@@ -340,12 +339,12 @@ class RevenueNewApp extends Component {
         }
 
         if (category.codeRef === 'revenueKwh') {
-            if (revenue.kwhEndHigh < revenue.kwhStartHigh) {
+            if (parseFloat(revenue.kwhEndHigh) < parseFloat(revenue.kwhStartHigh)) {
                 errors.kwhEndHigh = true;
                 errorMessage.kwhEndHigh = 'Eindstand kWh hoog mag niet lager zijn dan Beginstand kWh hoog.';
                 hasErrors = true;
             }
-            if (revenue.kwhEndLow < revenue.kwhStartLow) {
+            if (parseFloat(revenue.kwhEndLow) < parseFloat(revenue.kwhStartLow)) {
                 errors.kwhEndLow = true;
                 errorMessage.kwhEndLow = 'Eindstand kWh laag mag niet lager zijn dan Beginstand kWh laag.';
                 hasErrors = true;

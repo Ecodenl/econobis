@@ -52,7 +52,17 @@ class EmailsInListItem extends Component {
                 <td>{mailboxName}</td>
                 <td>{from}</td>
                 <td>{to && to.map(to => to).join(', ')}</td>
-                <td>{contacts && contacts.map(contact => contact.fullName).join(', ')}</td>
+                <td>
+                    {contacts && contacts.length > 3
+                        ? contacts
+                              .slice(0, 3)
+                              .map(contact => contact.fullName)
+                              .join(', ') +
+                          ' ... en nog ' +
+                          (contacts.length - 3) +
+                          ' andere'
+                        : contacts.map(contact => contact.fullName).join(', ')}
+                </td>
                 <td>{subject}</td>
                 {folder === 'inbox' && <td>{status ? status.name : ''}</td>}
                 {folder === 'sent' && <td>{'Verzonden'}</td>}

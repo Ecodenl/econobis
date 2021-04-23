@@ -289,18 +289,24 @@ class MailFetcher
             }
         }
 
+        $emailAddressesIds = [];
         // Link contact from email to address
         if($email->mailbox->link_contact_from_email_to_address) {
-            $emailAddressesIds = EmailAddress::where('email', $email->to)->pluck('contact_id')->toArray();
+            if(!empty($email->to)) {
+                $emailAddressesIds = EmailAddress::where('email', $email->to)->pluck('contact_id')->toArray();
+            }
         // Link contact from email from address
         } else {
-            $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
+            if(!empty($email->from)) {
+                $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
+            }
         }
 
-        //If contact has twice same emailaddress
-        $uniqueEmailAddressesIds = array_unique($emailAddressesIds);
-
-        $email->contacts()->attach($uniqueEmailAddressesIds);
+        if(!empty($emailAddressesIds)) {
+            //If contact has twice same emailaddress
+            $uniqueEmailAddressesIds = array_unique($emailAddressesIds);
+            $email->contacts()->attach($uniqueEmailAddressesIds);
+        }
     }
 
     public function getFetchedEmails()

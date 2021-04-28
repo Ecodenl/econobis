@@ -24,7 +24,7 @@ class FullCampaignResponse extends Resource
         return [
             'id' => $this->id,
             'contact' => FullContact::make($this->whenLoaded('contact')),
-            'address' => $this->contact->primaryAddress,
+            'address' => $this->contact ? $this->contact->primaryAddress : null,
             'dateResponded' => $this->date_responded,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

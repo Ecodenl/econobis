@@ -14,6 +14,7 @@ import React from 'react';
 import ParticipantDetailsMutationMolliePayments from './mollie-payments';
 
 function MutationFormEditDeposit({
+    readOnly,
     participantMutationFromProps,
     participantMutationFromState,
     participantMutationStatusesOptions,
@@ -22,7 +23,7 @@ function MutationFormEditDeposit({
     projectCurrentBookWorth,
     handleInputChange,
     handleInputChangeDate,
-    cancelEdit,
+    cancelDetails,
     handleSubmit,
     errors,
     errorMessage,
@@ -39,7 +40,7 @@ function MutationFormEditDeposit({
                     className={'col-sm-6 form-group'}
                     value={participantMutationFromProps.type.name}
                 />
-                {participantMutationFromProps.status.codeRef === 'final' ? (
+                {readOnly || participantMutationFromProps.status.codeRef === 'final' ? (
                     <ViewText
                         label={'Status'}
                         id={'status'}
@@ -56,7 +57,6 @@ function MutationFormEditDeposit({
                     />
                 )}
             </div>
-
             {projectTypeCodeRef === 'loan' ? (
                 <div className="row">
                     <ViewText
@@ -100,9 +100,9 @@ function MutationFormEditDeposit({
                     />
                 </div>
             )}
-
             {participantMutationFromProps.status.codeRef === 'interest' && (
                 <MutationFormEditStatusInterest
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -112,9 +112,9 @@ function MutationFormEditDeposit({
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
-
             {participantMutationFromProps.status.codeRef === 'option' && (
                 <MutationFormEditStatusOption
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -124,9 +124,9 @@ function MutationFormEditDeposit({
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
-
             {participantMutationFromProps.status.codeRef === 'granted' && (
                 <MutationFormEditStatusGranted
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -136,9 +136,9 @@ function MutationFormEditDeposit({
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
-
             {participantMutationFromProps.status.codeRef === 'final' && (
                 <MutationFormEditStatusFinal
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -165,8 +165,23 @@ function MutationFormEditDeposit({
             />
 
             <div className="pull-right btn-group" role="group">
-                <ButtonText buttonClassName={'btn-default'} buttonText={'Annuleren'} onClickAction={cancelEdit} />
-                <ButtonText buttonText={buttonText} onClickAction={handleSubmit} type={'submit'} value={'Submit'} />
+                {readOnly ? (
+                    <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={cancelDetails} />
+                ) : (
+                    <>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={cancelDetails}
+                        />
+                        <ButtonText
+                            buttonText={buttonText}
+                            onClickAction={handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
+                    </>
+                )}
             </div>
         </PanelBody>
     );
@@ -182,7 +197,7 @@ MutationFormEditDeposit.propTypes = {
     errors: PropTypes.any,
     errorMessage: PropTypes.any,
     participantMutation: PropTypes.any,
-    cancelEdit: PropTypes.any,
+    cancelDetails: PropTypes.any,
     buttonText: PropTypes.string,
     handleSubmit: PropTypes.any,
     participantProjectDateRegister: PropTypes.any,

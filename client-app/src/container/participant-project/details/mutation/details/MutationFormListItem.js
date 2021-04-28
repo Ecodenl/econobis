@@ -22,7 +22,7 @@ class MutationFormListItem extends Component {
             successUpdateMessage: '',
             successDeleteMessage: '',
             highlightLine: '',
-            showEdit: false,
+            showDetails: false,
             showDelete: false,
             participantMutation: {
                 ...props.participantMutation,
@@ -151,16 +151,16 @@ class MutationFormListItem extends Component {
         });
     };
 
-    openEdit = () => {
-        this.setState({ showEdit: true });
+    openDetails = () => {
+        this.setState({ showDetails: true });
     };
 
-    closeEdit = () => {
-        this.setState({ showEdit: false, successUpdateMessage: '' });
+    closeDetails = () => {
+        this.setState({ showDetails: false, successUpdateMessage: '' });
         this.props.fetchParticipantProjectDetails(this.props.id);
     };
 
-    cancelEdit = () => {
+    cancelDetails = () => {
         this.setState({
             ...this.state,
             participantMutation: {
@@ -189,7 +189,7 @@ class MutationFormListItem extends Component {
             },
         });
 
-        this.closeEdit();
+        this.closeDetails();
     };
 
     toggleDelete = () => {
@@ -249,7 +249,7 @@ class MutationFormListItem extends Component {
                             successUpdateMessage: payload.data,
                         });
                     } else {
-                        this.closeEdit();
+                        this.closeDetails();
                     }
                 })
                 .catch(error => {
@@ -300,6 +300,9 @@ class MutationFormListItem extends Component {
     };
 
     render() {
+        const readOnly =
+            this.props.participantMutation.financialOverviewDefinitive || !this.props.permissions.manageFinancial;
+
         return (
             <React.Fragment>
                 <div>
@@ -308,24 +311,23 @@ class MutationFormListItem extends Component {
                         showActionButtons={this.state.showActionButtons}
                         onLineEnter={this.onLineEnter}
                         onLineLeave={this.onLineLeave}
-                        openEdit={this.openEdit}
+                        openDetails={this.openDetails}
                         toggleDelete={this.toggleDelete}
                         participantMutation={this.props.participantMutation}
                     />
-                    {this.state.showEdit &&
-                        !this.props.participantMutation.financialOverviewDefinitive &&
-                        this.props.permissions.manageFinancial && (
-                            <MutationFormEdit
-                                participantMutationFromState={this.state.participantMutation}
-                                participantMutationFromProps={this.props.participantMutation}
-                                handleInputChange={this.handleInputChange}
-                                handleInputChangeDate={this.handleInputChangeDate}
-                                handleSubmit={this.handleSubmit}
-                                cancelEdit={this.cancelEdit}
-                                errors={this.state.errors}
-                                errorMessage={this.state.errorMessage}
-                            />
-                        )}
+                    {this.state.showDetails && (
+                        <MutationFormEdit
+                            readOnly={readOnly}
+                            participantMutationFromState={this.state.participantMutation}
+                            participantMutationFromProps={this.props.participantMutation}
+                            handleInputChange={this.handleInputChange}
+                            handleInputChangeDate={this.handleInputChangeDate}
+                            handleSubmit={this.handleSubmit}
+                            cancelDetails={this.cancelDetails}
+                            errors={this.state.errors}
+                            errorMessage={this.state.errorMessage}
+                        />
+                    )}
                     {this.state.showDelete &&
                         !this.props.participantMutation.financialOverviewDefinitive &&
                         this.props.permissions.manageFinancial && (
@@ -337,7 +339,7 @@ class MutationFormListItem extends Component {
                         )}
                     {this.state.successUpdateMessage && (
                         <Modal
-                            closeModal={this.closeEdit}
+                            closeModal={this.closeDetails}
                             buttonCancelText={'Ok'}
                             showConfirmAction={false}
                             title={'Succes'}

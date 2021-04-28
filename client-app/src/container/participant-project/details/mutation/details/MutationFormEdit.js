@@ -10,6 +10,7 @@ import MutationFormEditWithDrawal from './MutationFormEditWithDrawal';
 import MutationFormEditRedemption from './MutationFormEditRedemption';
 
 const MutationFormEdit = ({
+    readOnly,
     participantMutationFromState,
     participantMutationFromProps,
     errors,
@@ -20,15 +21,13 @@ const MutationFormEdit = ({
     projectTypeCodeRef,
     projectTransactionCostsCodeRef,
     projectCurrentBookWorth,
-    cancelEdit,
+    cancelDetails,
     participantMutationStatuses,
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
 }) => {
     const { type, statusId } = participantMutationFromState;
-
     let buttonTextSubmit = 'Opslaan';
-
     let participantMutationStatusesOptions = [];
 
     if (participantMutationFromProps.status) {
@@ -77,6 +76,7 @@ const MutationFormEdit = ({
                 <Panel className={'panel-grey'}>
                     {type.codeRef === 'first_deposit' || type.codeRef === 'deposit' ? (
                         <MutationFormEditDeposit
+                            readOnly={readOnly}
                             participantMutationFromState={participantMutationFromState}
                             participantMutationFromProps={participantMutationFromProps}
                             participantMutationStatusesOptions={participantMutationStatusesOptions}
@@ -87,7 +87,7 @@ const MutationFormEdit = ({
                             projectCurrentBookWorth={projectCurrentBookWorth}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
-                            cancelEdit={cancelEdit}
+                            cancelDetails={cancelDetails}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
                             participantProjectDateRegister={participantProjectDateRegister}
@@ -96,6 +96,7 @@ const MutationFormEdit = ({
                     ) : null}
                     {type.codeRef === 'withDrawal' || type.codeRef === 'sell' ? (
                         <MutationFormEditWithDrawal
+                            readOnly={readOnly}
                             participantMutationFromState={participantMutationFromState}
                             participantMutationFromProps={participantMutationFromProps}
                             participantMutationStatusesOptions={participantMutationStatusesOptions}
@@ -104,7 +105,7 @@ const MutationFormEdit = ({
                             projectTypeCodeRef={projectTypeCodeRef}
                             handleInputChange={handleInputChange}
                             handleInputChangeDate={handleInputChangeDate}
-                            cancelEdit={cancelEdit}
+                            cancelDetails={cancelDetails}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
                         />
@@ -112,19 +113,19 @@ const MutationFormEdit = ({
                     {type.codeRef === 'result' ? (
                         <MutationFormEditResult
                             participantMutationFromProps={participantMutationFromProps}
-                            cancelEdit={cancelEdit}
+                            cancelDetails={cancelDetails}
                         />
                     ) : null}
                     {type.codeRef === 'redemption' ? (
                         <MutationFormEditRedemption
                             participantMutationFromProps={participantMutationFromProps}
-                            cancelEdit={cancelEdit}
+                            cancelDetails={cancelDetails}
                         />
                     ) : null}
                     {type.codeRef === 'energyTaxRefund' ? (
                         <MutationFormEditEnergyTaxRefund
                             participantMutationFromProps={participantMutationFromProps}
-                            cancelEdit={cancelEdit}
+                            cancelDetails={cancelDetails}
                         />
                     ) : null}
                 </Panel>

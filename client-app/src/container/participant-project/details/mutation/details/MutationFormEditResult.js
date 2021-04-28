@@ -7,7 +7,7 @@ import * as PropTypes from 'prop-types';
 import React from 'react';
 import ParticipantDetailsMutationConclusion from './conclusion';
 
-function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
+function MutationFormEditResult({ participantMutationFromProps, cancelDetails }) {
     const {
         type,
         returns,
@@ -72,7 +72,7 @@ function MutationFormEditResult({ participantMutationFromProps, cancelEdit }) {
             />
 
             <div className="pull-right btn-group" role="group">
-                <ButtonText buttonText={'Sluiten'} onClickAction={cancelEdit} />
+                <ButtonText buttonText={'Sluiten'} onClickAction={cancelDetails} />
             </div>
         </PanelBody>
     );
@@ -85,7 +85,7 @@ MutationFormEditResult.propTypes = {
     datePayment: PropTypes.object,
     entry: PropTypes.string,
     paidOn: PropTypes.string,
-    cancelEdit: PropTypes.func,
+    cancelDetails: PropTypes.func,
     createdAt: PropTypes.object,
     createdWith: PropTypes.object,
     createdBy: PropTypes.object,

@@ -32,6 +32,7 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
                     <StyledColumn>Kapitaal rekening</StyledColumn>
                 )}
+                {projectTypeCodeRef === 'obligation' && <StyledColumn>Obligatie rekening</StyledColumn>}
                 {projectTypeCodeRef === 'obligation' && <StyledColumn>Aantal obligaties</StyledColumn>}
                 {(projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital') && (
                     <StyledColumn>Aantal participaties</StyledColumn>

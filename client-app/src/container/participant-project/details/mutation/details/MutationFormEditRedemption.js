@@ -7,7 +7,7 @@ import * as PropTypes from 'prop-types';
 import React from 'react';
 import ParticipantDetailsMutationConclusion from './conclusion';
 
-function MutationFormEditRedemption({ participantMutationFromProps, cancelEdit }) {
+function MutationFormEditRedemption({ participantMutationFromProps, cancelDetails }) {
     const {
         type,
         amount,
@@ -72,7 +72,7 @@ function MutationFormEditRedemption({ participantMutationFromProps, cancelEdit }
             />
 
             <div className="pull-right btn-group" role="group">
-                <ButtonText buttonText={'Sluiten'} onClickAction={cancelEdit} />
+                <ButtonText buttonText={'Sluiten'} onClickAction={cancelDetails} />
             </div>
         </PanelBody>
     );
@@ -86,7 +86,7 @@ MutationFormEditRedemption.propTypes = {
     paymentReference: PropTypes.string,
     entry: PropTypes.string,
     paidOn: PropTypes.string,
-    cancelEdit: PropTypes.func,
+    cancelDetails: PropTypes.func,
     createdAt: PropTypes.object,
     createdWith: PropTypes.object,
     createdBy: PropTypes.object,

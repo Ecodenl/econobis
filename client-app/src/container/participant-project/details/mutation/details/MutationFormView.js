@@ -24,7 +24,7 @@ const MutationFormView = ({
     highlightLine,
     onLineEnter,
     onLineLeave,
-    openEdit,
+    openDetails,
     showActionButtons,
     toggleDelete,
     permissions,
@@ -68,14 +68,16 @@ const MutationFormView = ({
             onMouseEnter={() => onLineEnter()}
             onMouseLeave={() => onLineLeave()}
         >
-            <StyledContainer onClick={openEdit}>
+            <StyledContainer onClick={openDetails}>
                 <StyledColumn columnWidth={'100px'}>{type.name}</StyledColumn>
                 <StyledColumn columnWidth={'80px'}>{status && status.name}</StyledColumn>
                 <StyledColumn columnWidth={'100px'}>{datePayment ? moment(datePayment).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'100px'}>{dateEntry ? moment(dateEntry).format('L') : ''}</StyledColumn>
                 <StyledColumn columnWidth={'120px'}>{type.description}</StyledColumn>
                 {projectTypeCodeRef === 'loan' ? <StyledColumn>{amount && moneyPresenter(amount)}</StyledColumn> : null}
-                {projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                {projectTypeCodeRef === 'obligation' ||
+                projectTypeCodeRef === 'capital' ||
+                projectTypeCodeRef === 'postalcode_link_capital' ? (
                     <StyledColumn>
                         {(amount || participationWorth) && moneyPresenter(amount + participationWorth)}
                     </StyledColumn>
@@ -93,7 +95,7 @@ const MutationFormView = ({
                 {!deletedAt && (
                     <StyledColumn columnWidth={'6%'}>
                         {showActionButtons && !financialOverviewDefinitive && permissions.manageFinancial ? (
-                            <a role="button" onClick={openEdit}>
+                            <a role="button" onClick={openDetails}>
                                 <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                             </a>
                         ) : (

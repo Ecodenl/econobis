@@ -6,6 +6,7 @@ import InputDate from '../../../../../../components/form/InputDate';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusInterest = ({
+    readOnly,
     participantMutationFromState,
     participantMutationFromProps,
     handleInputChange,
@@ -15,35 +16,36 @@ const MutationFormEditStatusInterest = ({
     projectTypeCodeRef,
 }) => (
     <React.Fragment>
-        {participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) ? (
-            <React.Fragment>
-                <div className="row">
-                    {projectTypeCodeRef === 'loan' ? (
-                        <ViewText
-                            label={'Bedrag interesse'}
-                            id={'amountInterest'}
-                            className={'col-sm-6 form-group'}
-                            value={MoneyPresenter(participantMutationFromProps.amountInterest)}
-                        />
-                    ) : (
-                        <ViewText
-                            label={'Aantal interesse'}
-                            id={'quantityInterest'}
-                            className={'col-sm-6 form-group'}
-                            value={participantMutationFromProps.quantityInterest}
-                        />
-                    )}
-
+        {readOnly && participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) && (
+            <div className="row">
+                {projectTypeCodeRef === 'loan' ? (
                     <ViewText
-                        label={'Interessedatum'}
-                        id={'dateInterest'}
+                        label={'Bedrag interesse'}
+                        id={'amountInterest'}
                         className={'col-sm-6 form-group'}
-                        value={
-                            participantMutationFromProps.dateInterest &&
-                            moment(participantMutationFromProps.dateInterest).format('L')
-                        }
+                        value={MoneyPresenter(participantMutationFromProps.amountInterest)}
                     />
-                </div>
+                ) : (
+                    <ViewText
+                        label={'Aantal interesse'}
+                        id={'quantityInterest'}
+                        className={'col-sm-6 form-group'}
+                        value={participantMutationFromProps.quantityInterest}
+                    />
+                )}
+                <ViewText
+                    label={'Interessedatum'}
+                    id={'dateInterest'}
+                    className={'col-sm-6 form-group'}
+                    value={
+                        participantMutationFromProps.dateInterest &&
+                        moment(participantMutationFromProps.dateInterest).format('L')
+                    }
+                />
+            </div>
+        )}
+        {!readOnly &&
+            (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
@@ -70,7 +72,6 @@ const MutationFormEditStatusInterest = ({
                             errorMessage={errorMessage.quantityOption}
                         />
                     )}
-
                     <InputDate
                         label={'Inschrijvingsdatum'}
                         name={'dateOption'}
@@ -80,40 +81,39 @@ const MutationFormEditStatusInterest = ({
                         error={errors.dateOption}
                     />
                 </div>
-            </React.Fragment>
-        ) : (
-            <div className="row">
-                {projectTypeCodeRef === 'loan' ? (
-                    <InputText
-                        type={'number'}
-                        label={'Bedrag interesse'}
-                        id={'amountInterest'}
-                        name={'amountInterest'}
-                        value={participantMutationFromState.amountInterest}
-                        onChangeAction={handleInputChange}
-                        error={errors.amountInterest}
-                        errorMessage={errorMessage.amountInterest}
+            ) : (
+                <div className="row">
+                    {projectTypeCodeRef === 'loan' ? (
+                        <InputText
+                            type={'number'}
+                            label={'Bedrag interesse'}
+                            id={'amountInterest'}
+                            name={'amountInterest'}
+                            value={participantMutationFromState.amountInterest}
+                            onChangeAction={handleInputChange}
+                            error={errors.amountInterest}
+                            errorMessage={errorMessage.amountInterest}
+                        />
+                    ) : (
+                        <InputText
+                            type={'number'}
+                            label={'Aantal interesse'}
+                            id={'quantityInterest'}
+                            name={'quantityInterest'}
+                            value={participantMutationFromState.quantityInterest}
+                            onChangeAction={handleInputChange}
+                            error={errors.quantityInterest}
+                            errorMessage={errorMessage.quantityInterest}
+                        />
+                    )}
+                    <InputDate
+                        label={'Interessedatum'}
+                        name={'dateInterest'}
+                        value={participantMutationFromState.dateInterest}
+                        onChangeAction={handleInputChangeDate}
                     />
-                ) : (
-                    <InputText
-                        type={'number'}
-                        label={'Aantal interesse'}
-                        id={'quantityInterest'}
-                        name={'quantityInterest'}
-                        value={participantMutationFromState.quantityInterest}
-                        onChangeAction={handleInputChange}
-                        error={errors.quantityInterest}
-                        errorMessage={errorMessage.quantityInterest}
-                    />
-                )}
-                <InputDate
-                    label={'Interessedatum'}
-                    name={'dateInterest'}
-                    value={participantMutationFromState.dateInterest}
-                    onChangeAction={handleInputChangeDate}
-                />
-            </div>
-        )}
+                </div>
+            ))}
     </React.Fragment>
 );
 

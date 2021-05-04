@@ -9,7 +9,6 @@ const ProjectFormViewObligation = ({
     participationsGranted,
     participationsOptioned,
     participationsInteressed,
-    powerKwAvailable,
     minParticipations,
     maxParticipations,
     isParticipationTransferable,
@@ -21,7 +20,7 @@ const ProjectFormViewObligation = ({
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
-            <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
+            <h4>Obligatie</h4>
             <div className="row">
                 <ViewText label={'Nominale waarde obligatie'} value={MoneyPresenter(participationWorth)} />
                 <ViewText
@@ -62,7 +61,6 @@ const ProjectFormViewObligation = ({
             </div>
             <div className="row">
                 <ViewText label={'Max. aantal obligaties p/p'} value={maxParticipations} />
-                <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
             </div>
             <div className="row">
                 <ViewText label={'Obligaties overdraagbaar'} value={isParticipationTransferable ? 'Ja' : 'Nee'} />

@@ -9,7 +9,6 @@ const ProjectFormViewCapital = ({
     participationsGranted,
     participationsOptioned,
     participationsInteressed,
-    powerKwAvailable,
     minParticipations,
     maxParticipations,
     isParticipationTransferable,
@@ -21,7 +20,7 @@ const ProjectFormViewCapital = ({
     return (
         <React.Fragment>
             <hr style={{ margin: '10px 0' }} />
-            <h4>Obligatie, Kapitaal of Postcoderoos kapitaal</h4>
+            <h4>Participatie, Kapitaal of Postcoderoos kapitaal</h4>
             <div className="row">
                 <ViewText label={'Nominale waarde participatie'} value={MoneyPresenter(participationWorth)} />
                 <ViewText
@@ -65,7 +64,6 @@ const ProjectFormViewCapital = ({
             </div>
             <div className="row">
                 <ViewText label={'Max. aantal participaties p/p'} value={maxParticipations} />
-                <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
             </div>
             <div className="row">
                 <ViewText label={'Participaties overdraagbaar'} value={isParticipationTransferable ? 'Ja' : 'Nee'} />

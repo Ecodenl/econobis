@@ -23,6 +23,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "^3.4.0",
     "react-spinners": "^0.5.13",
+    "react-tooltip": "^4.2.17",
     "yup": "^0.27.0"
   },
   "devDependencies": {

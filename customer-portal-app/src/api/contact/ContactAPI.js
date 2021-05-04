@@ -19,7 +19,9 @@ export default {
                         'dateDidAgreeAvg',
                         'addressLines',
                         'isParticipant',
+                        'noAddressesFound',
                         'isParticipantPcrProject',
+                        'isParticipantSceProject',
                     ],
                     rlt: {
                         person: {
@@ -143,12 +145,13 @@ export default {
                                         administration: { fld: ['name'] },
                                     },
                                 },
-                                mutations: {
-                                    fld: ['isPaidByMollie', 'econobisPaymentLink'],
-                                    rlt: {
-                                        status: { fld: ['codeRef'] },
-                                    },
-                                },
+                                // todo WM: deze hebben we hier bij contact niet meer nodig, nog goed testen, dan opschonen
+                                // mutations: {
+                                //     fld: ['isPaidByMollie', 'econobisPaymentLink'],
+                                //     rlt: {
+                                //         status: { fld: ['codeRef'] },
+                                //     },
+                                // },
                             },
                         },
                     },
@@ -167,6 +170,12 @@ export default {
         const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/preview-document`;
 
         return axiosInstance.post(requestUrl, registerValues);
+    },
+
+    fetchContactProjects: function(contactId, projectId) {
+        const requestUrl = `/contact/${contactId}/contact-projects`;
+
+        return axiosInstance.get(requestUrl);
     },
 
     fetchContactProjectData: function(contactId, projectId) {

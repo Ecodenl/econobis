@@ -98,7 +98,7 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                     }}
                     initialValues={{ didAgreeRegistration: false }}
                 >
-                    {({ handleSubmit, touched, errors, isSubmitting }) => (
+                    {({ handleSubmit, touched, errors, isSubmitting, status }) => (
                         <>
                             <Form>
                                 <Row>
@@ -223,6 +223,17 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                                 <Alert key={'form-general-error-alert'} variant={'warning'}>
                                                     Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
                                                     volgende stap!
+                                                </Alert>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                ) : null}
+                                {status && status.message ? (
+                                    <Row>
+                                        <Col>
+                                            <div className="alert-wrapper">
+                                                <Alert key={'form-general-error-alert'} variant={'danger'}>
+                                                    {status.message}
                                                 </Alert>
                                             </div>
                                         </Col>

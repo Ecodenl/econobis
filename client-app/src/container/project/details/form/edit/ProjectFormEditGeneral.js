@@ -17,6 +17,16 @@ const ProjectFormEditGeneral = ({
     description,
     projectStatusId,
     projectType,
+    useSceProject,
+    isSceProject,
+    baseProjectCodeRef,
+    baseProjectCodeRefs,
+    checkDoubleAddresses,
+    powerKwAvailable,
+    requiredParticipants,
+    postalcodeLink,
+    numberOfParticipantsStillNeeded,
+    subsidyProvided,
     postalCode,
     address,
     city,
@@ -33,7 +43,10 @@ const ProjectFormEditGeneral = ({
     contactGroupIds,
     dateProduction,
     isMembershipRequired,
+    visibleForAllContacts,
+    textInfoProjectOnlyMembers,
     handleInputChange,
+    handleInputChangeSubsidyProvided,
     handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
@@ -144,6 +157,74 @@ const ProjectFormEditGeneral = ({
                     error={errors.projectStatusId}
                 />
             </div>
+            <div className="row">
+                <InputToggle
+                    label={'SCE project'}
+                    name={'isSceProject'}
+                    value={isSceProject}
+                    onChangeAction={handleInputChange}
+                    disabled={!useSceProject}
+                />
+                <InputSelect
+                    label={'Basis project'}
+                    name={'baseProjectCodeRef'}
+                    options={baseProjectCodeRefs}
+                    value={baseProjectCodeRef}
+                    onChangeAction={handleInputChange}
+                    required={isSceProject ? 'required' : ''}
+                    error={errors.baseProjectCodeRef}
+                />
+            </div>
+
+            <div className="row">
+                <InputText
+                    type={'number'}
+                    label={'Opgesteld vermogen kWp'}
+                    name={'powerKwAvailable'}
+                    value={powerKwAvailable}
+                    onChangeAction={handleInputChange}
+                />
+                {isSceProject == true && (
+                    <ViewText
+                        className={'form-group col-sm-6'}
+                        label={'Benodigde aantal deelnemers'}
+                        value={requiredParticipants}
+                    />
+                )}
+            </div>
+
+            {isSceProject == true && (
+                <>
+                    <div className="row">
+                        <InputText
+                            label={'Postcoderoos'}
+                            name={'postalcodeLink'}
+                            value={postalcodeLink}
+                            onChangeAction={handleInputChange}
+                        />
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Aantal deelnemers nog nodig'}
+                            value={numberOfParticipantsStillNeeded}
+                        />
+                    </div>
+                    <div className="row">
+                        <InputToggle
+                            label={'Controle op dubbele adressen'}
+                            name={'checkDoubleAddresses'}
+                            value={checkDoubleAddresses}
+                            onChangeAction={handleInputChange}
+                            disabled={subsidyProvided}
+                        />
+                        <InputToggle
+                            label={'Subsidie verstrekt'}
+                            name={'subsidyProvided'}
+                            value={subsidyProvided}
+                            onChangeAction={handleInputChangeSubsidyProvided}
+                        />
+                    </div>
+                </>
+            )}
 
             <div className="row">
                 <div className="form-group col-sm-12">
@@ -264,6 +345,30 @@ const ProjectFormEditGeneral = ({
                     </div>
                 )}
             </div>
+            {isMembershipRequired ? (
+                <>
+                    <div className="row">
+                        <div className="form-group col-sm-6" />
+                        <InputToggle
+                            label={'Zichtbaar voor alle contacten'}
+                            name={'visibleForAllContacts'}
+                            value={visibleForAllContacts}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+                    {visibleForAllContacts ? (
+                        <div className="row">
+                            <div className="form-group col-sm-6" />
+                            <InputText
+                                label={'Groepsinfo tekst'}
+                                name={'textInfoProjectOnlyMembers'}
+                                value={textInfoProjectOnlyMembers}
+                                onChangeAction={handleInputChange}
+                            />
+                        </div>
+                    ) : null}
+                </>
+            ) : null}
 
             <div className="row">
                 <InputDate
@@ -797,6 +902,7 @@ const mapStateToProps = state => {
     return {
         projectStatuses: state.systemData.projectStatus,
         transactionCostsCodeRefs: state.systemData.transactionCostsCodeRefs,
+        baseProjectCodeRefs: state.systemData.baseProjectCodeRefs,
         administrations: state.meDetails.administrations,
         permissions: state.meDetails.permissions,
         users: state.systemData.users,

@@ -26,7 +26,16 @@ const ParticipantsListToolbar = props => {
                         />
                     )}
                     <ButtonIcon iconName={'glyphicon-filter'} onClickAction={props.toggleShowExtraFilters} />
-                    <ButtonIcon iconName={'glyphicon-download-alt'} onClickAction={props.getExcel} />
+                    <ButtonIcon
+                        iconName={'glyphicon-download-alt'}
+                        title="Download deelnemers met mutaties"
+                        onClickAction={props.getExcel}
+                    />
+                    <ButtonIcon
+                        iconName={'glyphicon-download-alt'}
+                        title="Download unieke deelnemers"
+                        onClickAction={props.getExcelParticipants}
+                    />
                     <ButtonText buttonText={'Rapportage'} onClickAction={props.toggleShowCheckboxList} />
                 </div>
             </div>
@@ -50,7 +59,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ParticipantsListToolbar);
+export default connect(mapStateToProps, null)(ParticipantsListToolbar);

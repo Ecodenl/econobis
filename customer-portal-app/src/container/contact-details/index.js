@@ -71,7 +71,7 @@ const ContactDetails = function(props) {
     }
 
     function handleSubmitContactValues(values, actions, switchToView) {
-        const updatedContact = { ...contact, ...values };
+        const updatedContact = { ...contact, ...values, projectId: null };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
                 callFetchContact();
@@ -80,7 +80,10 @@ const ContactDetails = function(props) {
             })
             .catch(error => {
                 actions.setSubmitting(false);
-                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                actions.setStatus({
+                    message: error.response.data.message,
+                });
+                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
 

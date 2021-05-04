@@ -32,7 +32,9 @@ class ContactJoryResource extends JoryResource
         // Custom attributes
         $this->field('address_lines')->hideByDefault();
         $this->field('is_participant')->filterable()->sortable();
+        $this->field('no_addresses_found')->filterable()->sortable();
         $this->field('is_participant_pcr_project')->filterable()->sortable();
+        $this->field('is_participant_sce_project')->filterable()->sortable();
         $this->field('portal_settings_layout_assigned')->filterable()->sortable();
 
         // Relations

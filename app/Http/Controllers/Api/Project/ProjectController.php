@@ -75,7 +75,6 @@ class ProjectController extends ApiController
 
     public function store(Request $request, RequestInput $requestInput)
     {
-
         $this->authorize('manage', Project::class);
 
         $data = $requestInput
@@ -93,6 +92,10 @@ class ProjectController extends ApiController
             ->date('dateStartRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_start_registrations')->next()
             ->date('dateEndRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_end_registrations')->next()
             ->integer('projectTypeId')->validate('required|exists:project_type,id')->onEmpty(null)->alias('project_type_id')->next()
+            ->boolean('isSceProject')->alias('is_sce_project')->next()
+            ->string('baseProjectCodeRef')->alias('base_project_code_ref')->next()
+            ->boolean('checkDoubleAddresses')->alias('check_double_addresses')->next()
+            ->boolean('subsidyProvided')->alias('subsidy_provided')->next()
             ->string('postalCode')->alias('postal_code')->next()
             ->string('address')->next()
             ->string('city')->next()
@@ -108,6 +111,8 @@ class ProjectController extends ApiController
             ->integer('totalParticipations')->alias('total_participations')->next()
             ->integer('minParticipations')->alias('min_participations')->next()
             ->boolean('isMembershipRequired')->alias('is_membership_required')->next()
+            ->boolean('visibleForAllContacts')->alias('visible_for_all_contacts')->next()
+            ->string('textInfoProjectOnlyMembers')->alias('text_info_project_only_members')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
             ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()
@@ -198,6 +203,10 @@ class ProjectController extends ApiController
             ->date('dateStartRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_start_registrations')->next()
             ->date('dateEndRegistrations')->validate('nullable|date')->onEmpty(null)->alias('date_end_registrations')->next()
             ->integer('projectTypeId')->validate('required|exists:project_type,id')->onEmpty(null)->alias('project_type_id')->next()
+            ->boolean('isSceProject')->alias('is_sce_project')->next()
+            ->string('baseProjectCodeRef')->alias('base_project_code_ref')->next()
+            ->boolean('checkDoubleAddresses')->alias('check_double_addresses')->next()
+            ->boolean('subsidyProvided')->alias('subsidy_provided')->next()
             ->string('postalCode')->alias('postal_code')->next()
             ->string('address')->next()
             ->string('city')->next()
@@ -213,6 +222,8 @@ class ProjectController extends ApiController
             ->integer('totalParticipations')->alias('total_participations')->next()
             ->integer('minParticipations')->alias('min_participations')->next()
             ->boolean('isMembershipRequired')->alias('is_membership_required')->next()
+            ->boolean('visibleForAllContacts')->alias('visible_for_all_contacts')->next()
+            ->string('textInfoProjectOnlyMembers')->alias('text_info_project_only_members')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
             ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()

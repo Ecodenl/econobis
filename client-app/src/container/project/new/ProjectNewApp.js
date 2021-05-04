@@ -18,6 +18,10 @@ import ProjectFormDefaultObligation from '../form-default/ProjectFormDefaultObli
 import ProjectFormDefaultLoan from '../form-default/ProjectFormDefaultLoan';
 import moment from 'moment/moment';
 import { isEmpty } from 'lodash';
+import RequiredParticipantsHelper from '../../../helpers/RequiredParticipantsHelper';
+
+const defaultTextInfoProjectOnlyMembers =
+    'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
 
 class ProjectNewApp extends Component {
     constructor(props) {
@@ -32,7 +36,8 @@ class ProjectNewApp extends Component {
         const defaultTextAcceptAgreement =
             'Wanneer je akkoord gaat met het inschrijfformulier en in de inschrijving bevestigd, is je inschrijving definitief';
         const defaultTextAcceptAgreementQuestion = 'Ik ben akkoord met deze inschrijving';
-        const defaultTextRegistrationFinished = 'Bedankt voor je inschrijving. Per e-mail sturen wij een bevestiging van je inschrijving met informatie over de vervolgstappen. ' +
+        const defaultTextRegistrationFinished =
+            'Bedankt voor je inschrijving. Per e-mail sturen wij een bevestiging van je inschrijving met informatie over de vervolgstappen. ' +
             'Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van bijvoorbeeld Gmail en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail daar terug vindt. ' +
             'Onder de menuknop “Huidige deelnames” vind je je inschrijving terug. ' +
             'Wil je je inschrijving aanpassen? Neem dan contact met ons op.';
@@ -42,6 +47,7 @@ class ProjectNewApp extends Component {
             showPostalCodeLinkFields: false,
             confirmSubmit: false,
             disableBeforeEntryDate: '',
+
             project: {
                 name: '',
                 code: '',
@@ -55,6 +61,9 @@ class ProjectNewApp extends Component {
                 dateStartRegistrations: '',
                 dateEndRegistrations: '',
                 projectTypeId: '',
+                isSceProject: false,
+                baseProjectCodeRef: '',
+                checkDoubleAddresses: false,
                 administrationId: '',
                 usesMollie: false,
                 postalCode: '',
@@ -71,6 +80,8 @@ class ProjectNewApp extends Component {
                 totalParticipations: '',
                 minParticipations: '',
                 isMembershipRequired: false,
+                visibleForAllContacts: false,
+                textInfoProjectOnlyMembers: defaultTextInfoProjectOnlyMembers,
                 isParticipationTransferable: false,
                 postalcodeLink: '',
                 contactGroupIds: '',
@@ -97,6 +108,7 @@ class ProjectNewApp extends Component {
                 name: false,
                 code: false,
                 projectTypeId: false,
+                baseProjectCodeRef: false,
                 projectStatusId: false,
                 ownedById: false,
                 postalCode: false,
@@ -128,6 +140,26 @@ class ProjectNewApp extends Component {
             project: {
                 ...this.state.project,
                 [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeProjectType = event => {
+        const target = event.target;
+        const projectTypeId = target.value;
+
+        let projectType;
+        projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
+
+        this.setState({
+            ...this.state,
+            project: {
+                ...this.state.project,
+                isSceProject:
+                    projectType && projectType.codeRef === 'postalcode_link_capital'
+                        ? false
+                        : this.state.project.isSceProject,
+                projectTypeId: projectTypeId,
             },
         });
     };
@@ -191,6 +223,11 @@ class ProjectNewApp extends Component {
             hasErrors = true;
         }
 
+        if (project.isSceProject && validator.isEmpty('' + baseProjectCodeRef)) {
+            errors.baseProjectCodeRef = true;
+            hasErrors = true;
+        }
+
         if (!project.projectStatusId) {
             errors.projectStatusId = true;
             hasErrors = true;
@@ -249,6 +286,13 @@ class ProjectNewApp extends Component {
             project.contactGroupIds = '';
         }
 
+        // If isSceProject is false, set checkDoubleAddresses to empty string
+        if (!project.isSceProject) {
+            project.checkDoubleAddresses = false;
+            project.visibleForAllContacts = false;
+            project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         if (!hasErrors) {
@@ -294,6 +338,9 @@ class ProjectNewApp extends Component {
             dateStartRegistrations,
             dateEndRegistrations,
             projectTypeId,
+            isSceProject,
+            baseProjectCodeRef,
+            checkDoubleAddresses,
             postalCode,
             address,
             city,
@@ -308,6 +355,8 @@ class ProjectNewApp extends Component {
             totalParticipations,
             minParticipations,
             isMembershipRequired,
+            visibleForAllContacts,
+            textInfoProjectOnlyMembers,
             isParticipationTransferable,
             administrationId,
             usesMollie,
@@ -326,7 +375,15 @@ class ProjectNewApp extends Component {
             participationsInteressed,
         } = this.state.project;
 
-        const projectType = this.props.projectTypes.find(projectType => projectType.id == projectTypeId);
+        const projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
+
+        const requiredParticipants = RequiredParticipantsHelper(baseProjectCodeRef, powerKwAvailable);
+
+        const numberOfParticipantsStillNeeded = requiredParticipants;
+        let useSceProject = false;
+        if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+            useSceProject = true;
+        }
 
         return (
             <div className="row">
@@ -345,6 +402,14 @@ class ProjectNewApp extends Component {
                                         description={description}
                                         projectStatusId={projectStatusId}
                                         projectTypeId={projectTypeId}
+                                        useSceProject={useSceProject}
+                                        isSceProject={isSceProject}
+                                        postalcodeLink={postalcodeLink}
+                                        baseProjectCodeRef={baseProjectCodeRef}
+                                        powerKwAvailable={powerKwAvailable}
+                                        checkDoubleAddresses={checkDoubleAddresses}
+                                        requiredParticipants={requiredParticipants}
+                                        numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                                         address={address}
                                         postalCode={postalCode}
                                         city={city}
@@ -359,7 +424,10 @@ class ProjectNewApp extends Component {
                                         dateProduction={dateProduction}
                                         contactGroupIds={contactGroupIds}
                                         isMembershipRequired={isMembershipRequired}
+                                        visibleForAllContacts={visibleForAllContacts}
+                                        textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                                         handleInputChange={this.handleInputChange}
+                                        handleInputChangeProjectType={this.handleInputChangeProjectType}
                                         handleInputChangeAdministration={this.handleInputChangeAdministration}
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleContactGroupIds={this.handleContactGroupIds}
@@ -389,7 +457,6 @@ class ProjectNewApp extends Component {
                                             participationsGranted={participationsGranted}
                                             participationsOptioned={participationsOptioned}
                                             participationsInteressed={participationsInteressed}
-                                            powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}
                                             isParticipationTransferable={isParticipationTransferable}
@@ -407,7 +474,6 @@ class ProjectNewApp extends Component {
                                             participationsGranted={participationsGranted}
                                             participationsOptioned={participationsOptioned}
                                             participationsInteressed={participationsInteressed}
-                                            powerKwAvailable={powerKwAvailable}
                                             minParticipations={minParticipations}
                                             maxParticipations={maxParticipations}
                                             isParticipationTransferable={isParticipationTransferable}
@@ -475,7 +541,7 @@ class ProjectNewApp extends Component {
 const mapStateToProps = state => {
     return {
         administrations: state.meDetails.administrations,
-        projectTypes: state.systemData.projectTypes,
+        projectTypesActive: state.systemData.projectTypesActive,
     };
 };
 

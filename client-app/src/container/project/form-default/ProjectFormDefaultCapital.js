@@ -11,7 +11,6 @@ const ProjectFormDefaultCapital = ({
     participationsGranted,
     participationsOptioned,
     participationsInteressed,
-    powerKwAvailable,
     minParticipations,
     maxParticipations,
     isParticipationTransferable,
@@ -97,13 +96,6 @@ const ProjectFormDefaultCapital = ({
                     label={'Max. aantal participaties p/p'}
                     name={'maxParticipations'}
                     value={maxParticipations}
-                    onChangeAction={handleInputChange}
-                />
-                <InputText
-                    type={'number'}
-                    label={'Opgesteld vermogen kWp'}
-                    name={'powerKwAvailable'}
-                    value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
             </div>

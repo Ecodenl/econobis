@@ -44,6 +44,7 @@ export default {
                         'amountOfLoanNeeded',
                         'minAmountLoan',
                         'maxAmountLoan',
+                        'isSceProject',
                         'postalcodeLink',
                         'linkAgreeTerms',
                         'linkProjectInfo',

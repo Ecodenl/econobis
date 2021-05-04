@@ -20,6 +20,10 @@ import ProjectFormDefaultPostalcodeLinkCapital from '../../../form-default/Proje
 import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import PortalSettingsAPI from '../../../../../api/portal-settings/PortalSettingsAPI';
+import RequiredParticipantsHelper from '../../../../../helpers/RequiredParticipantsHelper';
+
+const defaultTextInfoProjectOnlyMembers =
+    'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
 
 class ProjectFormEdit extends Component {
     constructor(props) {
@@ -68,7 +72,7 @@ class ProjectFormEdit extends Component {
                 '&keys[]=defaultContactGroupMemberId' +
                 '&keys[]=defaultContactGroupNoMemberId';
             PortalSettingsAPI.fetchPortalSettings(keys).then(payload => {
-                let defaultTextIsMember;
+                let defaultTextIsMember = '';
                 let defaultTextIsNoMember = '';
                 let defaultTextBecomeMember = '';
                 let defaultTextBecomeNoMember = '';
@@ -98,6 +102,10 @@ class ProjectFormEdit extends Component {
                 this.setState({
                     project: {
                         ...this.state.project,
+
+                        textInfoProjectOnlyMembers: isEmpty(this.state.project.textInfoProjectOnlyMembers)
+                            ? defaultTextInfoProjectOnlyMembers
+                            : this.state.project.textInfoProjectOnlyMembers,
                         textIsMember: isEmpty(this.state.project.textIsMember)
                             ? defaultTextIsMember
                             : this.state.project.textIsMember,
@@ -155,6 +163,19 @@ class ProjectFormEdit extends Component {
             project: {
                 ...this.state.project,
                 [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeSubsidyProvided = event => {
+        const target = event.target;
+        const subsidyProvided = target.checked;
+        this.setState({
+            ...this.state,
+            project: {
+                ...this.state.project,
+                subsidyProvided: subsidyProvided,
+                checkDoubleAddresses: subsidyProvided === true ? false : this.state.project.checkDoubleAddresses,
             },
         });
     };
@@ -240,6 +261,11 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
+        if (project.isSceProject && validator.isEmpty('' + project.baseProjectCodeRef)) {
+            errors.baseProjectCodeRef = true;
+            hasErrors = true;
+        }
+
         if (!project.projectStatusId) {
             errors.projectStatusId = true;
             hasErrors = true;
@@ -299,6 +325,10 @@ class ProjectFormEdit extends Component {
                 // console.log('Maximaal bedrag mag niet kleiner zijn dan minimaal bedrag.');
                 hasErrors = true;
             }
+        }
+
+        if (validator.isEmpty('' + project.baseProjectCodeRef)) {
+            project.baseProjectCodeRef = null;
         }
         if (project.transactionCostsCodeRef === 'none') {
             project.transactionCostsAmountMin = null;
@@ -607,9 +637,21 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
-        // If isMemberShipRequired is false, set contactGroupIds to empty string
+        // If isMemberShipRequired is false, set contactGroupIds to empty string, visibleForAllContacts to false
         if (!project.isMembershipRequired) {
             project.contactGroupIds = '';
+            project.visibleForAllContacts = false;
+        }
+
+        // If visibleForAllContacts is false, set textInfoProjectOnlyMembers to default
+        if (!project.visibleForAllContacts) {
+            project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
+        }
+
+        // If isSceProject is false, set checkDoubleAddresses and visibleForAllContacts to false and textInfoProjectOnlyMembers to default text
+        if (!project.isSceProject) {
+            project.checkDoubleAddresses = false;
+            project.subsidyProvided = false;
         }
 
         if (isNaN(project.amountOfLoanNeeded)) {
@@ -652,6 +694,10 @@ class ProjectFormEdit extends Component {
             projectStatusId,
             projectTypeId,
             projectType,
+            isSceProject,
+            baseProjectCodeRef,
+            checkDoubleAddresses,
+            subsidyProvided,
             address,
             postalCode,
             city,
@@ -664,8 +710,10 @@ class ProjectFormEdit extends Component {
             dateEnd,
             dateEntry,
             dateProduction,
-            contactGroupIds,
             isMembershipRequired,
+            contactGroupIds,
+            visibleForAllContacts,
+            textInfoProjectOnlyMembers,
             amountOfLoanNeeded,
             minAmountLoan,
             maxAmountLoan,
@@ -729,6 +777,14 @@ class ProjectFormEdit extends Component {
             amountOfParticipants,
         } = this.props.project;
 
+        const requiredParticipants = RequiredParticipantsHelper(baseProjectCodeRef, powerKwAvailable);
+
+        const numberOfParticipantsStillNeeded = requiredParticipants - amountOfParticipants;
+        let useSceProject = false;
+        if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+            useSceProject = true;
+        }
+
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <ProjectFormEditGeneral
@@ -737,6 +793,15 @@ class ProjectFormEdit extends Component {
                     description={description}
                     projectStatusId={projectStatusId}
                     projectType={projectType}
+                    useSceProject={useSceProject}
+                    isSceProject={isSceProject}
+                    baseProjectCodeRef={baseProjectCodeRef}
+                    powerKwAvailable={powerKwAvailable}
+                    checkDoubleAddresses={checkDoubleAddresses}
+                    postalcodeLink={postalcodeLink}
+                    subsidyProvided={subsidyProvided}
+                    requiredParticipants={requiredParticipants}
+                    numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                     address={address}
                     postalCode={postalCode}
                     city={city}
@@ -753,7 +818,10 @@ class ProjectFormEdit extends Component {
                     dateProduction={dateProduction}
                     contactGroupIds={contactGroupIds}
                     isMembershipRequired={isMembershipRequired}
+                    visibleForAllContacts={visibleForAllContacts}
+                    textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                     handleInputChange={this.handleInputChange}
+                    handleInputChangeSubsidyProvided={this.handleInputChangeSubsidyProvided}
                     handleInputChangeAdministration={this.handleInputChangeAdministration}
                     handleInputChangeDate={this.handleInputChangeDate}
                     handleContactGroupIds={this.handleContactGroupIds}
@@ -819,7 +887,6 @@ class ProjectFormEdit extends Component {
                         participationsGranted={participationsGranted}
                         participationsOptioned={participationsOptioned}
                         participationsInteressed={participationsInteressed}
-                        powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
                         isParticipationTransferable={isParticipationTransferable}
@@ -838,7 +905,6 @@ class ProjectFormEdit extends Component {
                         participationsGranted={participationsGranted}
                         participationsOptioned={participationsOptioned}
                         participationsInteressed={participationsInteressed}
-                        powerKwAvailable={powerKwAvailable}
                         minParticipations={minParticipations}
                         maxParticipations={maxParticipations}
                         isParticipationTransferable={isParticipationTransferable}

@@ -14,6 +14,7 @@ import MasterForm from './MasterForm';
 import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 import axios from 'axios';
 import { ThemeSettingsContext } from '../../context/ThemeSettingsContext';
+import { Alert } from 'react-bootstrap';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -44,7 +45,6 @@ function RegisterProject({ match, currentSelectedContact }) {
     const [portalSettings, setPortalSettings] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isSucces, setSucces] = useState(false);
-    const [isRegistered, setRegistered] = useState(false);
     const [contactProjectData, setContactProjectData] = useState({});
 
     useEffect(() => {
@@ -66,7 +66,6 @@ function RegisterProject({ match, currentSelectedContact }) {
                             setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
                             const contactData = rebaseContact(contact);
                             setContact(contactData);
-                            callFetchContactProjects();
 
                             setContactProjectData(payloadContactProjectData.data);
 
@@ -97,6 +96,31 @@ function RegisterProject({ match, currentSelectedContact }) {
                                     projectId: match.params.id,
                                     contactId: currentSelectedContact.id,
                                     // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                });
+                            }
+
+                            if (
+                                payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
+                                payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
+                            ) {
+                                /**
+                                 * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
+                                 * wel geopend worden en stellen we de eerder ingevoerde gegevens in. projectRegisterIndicators
+                                 */
+                                setRegisterValues(current => {
+                                    return {
+                                        ...current,
+                                        participationsOptioned:
+                                            payloadContactProjectData.data.projectRegisterIndicators
+                                                .participationsOptioned,
+                                        amountOptioned:
+                                            payloadContactProjectData.data.projectRegisterIndicators.amountOptioned,
+                                        pcrYearlyPowerKwhConsumption:
+                                            payloadContactProjectData.data.projectRegisterIndicators
+                                                .powerKwhConsumption,
+                                        didAcceptAgreement: true,
+                                        didUnderstandInfo: true,
+                                    };
                                 });
                             }
 
@@ -131,58 +155,6 @@ function RegisterProject({ match, currentSelectedContact }) {
         })();
     }, [match, currentSelectedContact]);
 
-    function callFetchContactProjects() {
-        ContactAPI.fetchContactWithParticipants(currentSelectedContact.id)
-            .then(payload => {
-                let result = payload.data.data.participations.map(item => {
-                    return {
-                        ...item,
-                        mutation: item.mutations.length > 0 ? item.mutations[0] : null,
-                    };
-                });
-
-                let contactProjecten = [];
-                result.map(item => contactProjecten.push(item.project.id));
-
-                const projectId = match.params.id;
-
-                if (contactProjecten.includes(Number(projectId))) {
-                    let participation = result.find(p => p.project.id === Number(projectId));
-                    if (
-                        participation.project.usesMollie &&
-                        participation.mutation &&
-                        !participation.mutation.isPaidByMollie &&
-                        participation.mutation.status.codeRef === 'option'
-                    ) {
-                        /**
-                         * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
-                         * wel geopend worden en stellen we de eerder ingevoerde gegevens in.
-                         */
-                        setRegisterValues(current => {
-                            return {
-                                ...current,
-                                participationsOptioned: participation.participationsOptioned,
-                                amountOptioned: participation.amountOptioned,
-                                pcrYearlyPowerKwhConsumption: participation.powerKwhConsumption,
-                                didAcceptAgreement: true,
-                                didUnderstandInfo: true,
-                            };
-                        });
-
-                        setRegistered(false);
-                    } else {
-                        setRegistered(true);
-                    }
-                } else {
-                    setRegistered(false);
-                }
-            })
-            .catch(error => {
-                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                setLoading(false);
-            });
-    }
-
     function formatFullName(fullName) {
         if (fullName) {
             if (fullName.search(',') < 0) {
@@ -202,7 +174,7 @@ function RegisterProject({ match, currentSelectedContact }) {
     }
 
     function handleSubmitContactValues(values, actions, nextStep) {
-        const updatedContact = { ...contact, ...values };
+        const updatedContact = { ...contact, ...values, projectId: project.id };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
                 ContactAPI.fetchContact(currentSelectedContact.id)
@@ -219,7 +191,10 @@ function RegisterProject({ match, currentSelectedContact }) {
             })
             .catch(error => {
                 actions.setSubmitting(false);
-                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                actions.setStatus({
+                    message: error.response.data.message,
+                });
+                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
 
@@ -227,7 +202,48 @@ function RegisterProject({ match, currentSelectedContact }) {
         <Container className={'content-section'}>
             {isLoading ? (
                 <LoadingView />
-            ) : isRegistered ? (
+            ) : !contactProjectData.projectRegisterIndicators.hasParticipation &&
+              !contactProjectData.projectRegisterIndicators.allowRegisterToProject ? (
+                <>
+                    <Row>
+                        <Col>
+                            <h1 className="content-heading">
+                                Inschrijving voor project <strong>{project.name}</strong>
+                            </h1>
+                            <Row className={'mb-4'}>
+                                <Col>
+                                    <div className="alert-wrapper">
+                                        <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                            {contactProjectData.projectRegisterIndicators.textNotAllowedRegisterToProject
+                                                .split('<br />')
+                                                .map((item, key) => {
+                                                    return (
+                                                        <span key={key}>
+                                                            {item}
+                                                            <br />
+                                                        </span>
+                                                    );
+                                                })}
+                                        </Alert>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} md={10}>
+                            <ButtonGroup className="float-right">
+                                <Link to={`/inschrijvingen-projecten`}>
+                                    <Button className={'w-button'} size="sm">
+                                        Naar huidige deelnames
+                                    </Button>
+                                </Link>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
+            ) : contactProjectData.projectRegisterIndicators.hasParticipation &&
+              !contactProjectData.projectRegisterIndicators.allowChangeParticipation ? (
                 <>
                     <Row>
                         <Col>

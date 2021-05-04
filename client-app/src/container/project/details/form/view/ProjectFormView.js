@@ -8,6 +8,7 @@ import ProjectFormViewLoan from './ProjectFormViewLoan';
 import ProjectFormViewObligation from './ProjectFormViewObligation';
 import ProjectFormViewPostalcodeLinkCapital from './ProjectFormViewPostalcodeLinkCapital';
 import ProjectFormViewCapital from './ProjectFormViewCapital';
+import RequiredParticipantsHelper from '../../../../../helpers/RequiredParticipantsHelper';
 
 const ProjectFormView = props => {
     const {
@@ -23,6 +24,10 @@ const ProjectFormView = props => {
         dateStartRegistrations,
         dateEndRegistrations,
         projectType,
+        isSceProject,
+        baseProjectCodeRefWithName,
+        checkDoubleAddresses,
+        subsidyProvided,
         postalCode,
         address,
         city,
@@ -32,11 +37,14 @@ const ProjectFormView = props => {
         eanSupply,
         participationWorth,
         powerKwAvailable,
+        amountOfParticipants,
         maxParticipations,
         taxReferral,
         totalParticipations,
         minParticipations,
         isMembershipRequired,
+        visibleForAllContacts,
+        textInfoProjectOnlyMembers,
         isParticipationTransferable,
         administration,
         usesMollie,
@@ -86,6 +94,14 @@ const ProjectFormView = props => {
         transactionCostsAmount3,
         transactionCostsPercentage3,
     } = props.project;
+
+    const requiredParticipants = RequiredParticipantsHelper(
+        baseProjectCodeRefWithName ? baseProjectCodeRefWithName.id : '',
+        powerKwAvailable
+    );
+
+    const numberOfParticipantsStillNeeded = requiredParticipants - amountOfParticipants;
+
     return (
         <section
             onClick={
@@ -98,6 +114,14 @@ const ProjectFormView = props => {
                 description={description}
                 projectStatus={projectStatus}
                 projectType={projectType}
+                isSceProject={isSceProject}
+                baseProjectCodeRefWithName={baseProjectCodeRefWithName}
+                powerKwAvailable={powerKwAvailable}
+                checkDoubleAddresses={checkDoubleAddresses}
+                postalcodeLink={postalcodeLink}
+                subsidyProvided={subsidyProvided}
+                requiredParticipants={requiredParticipants}
+                numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                 address={address}
                 postalCode={postalCode}
                 city={city}
@@ -111,6 +135,8 @@ const ProjectFormView = props => {
                 dateEntry={dateEntry}
                 dateProduction={dateProduction}
                 isMembershipRequired={isMembershipRequired}
+                visibleForAllContacts={visibleForAllContacts}
+                textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                 requiresContactGroups={requiresContactGroups}
                 documentTemplateAgreement={documentTemplateAgreement}
                 emailTemplateAgreement={emailTemplateAgreement}
@@ -165,7 +191,6 @@ const ProjectFormView = props => {
                     participationsGranted={participationsGranted}
                     participationsOptioned={participationsOptioned}
                     participationsInteressed={participationsInteressed}
-                    powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
                     isParticipationTransferable={isParticipationTransferable}
@@ -182,7 +207,6 @@ const ProjectFormView = props => {
                     participationsGranted={participationsGranted}
                     participationsOptioned={participationsOptioned}
                     participationsInteressed={participationsInteressed}
-                    powerKwAvailable={powerKwAvailable}
                     minParticipations={minParticipations}
                     maxParticipations={maxParticipations}
                     isParticipationTransferable={isParticipationTransferable}

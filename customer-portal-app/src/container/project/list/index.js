@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import ProjectAPI from '../../../api/project/ProjectAPI';
 import { Link } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import moment from 'moment';
@@ -11,12 +10,15 @@ import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
+import rebaseContact from '../../../helpers/RebaseContact';
+import { Alert } from 'react-bootstrap';
 
 function ProjectList(props) {
-    const [contactProjectsArray, setContactProjectsArray] = useState([]);
-    const [unpaidParticipations, setUnpaidParticipations] = useState([]);
     const [contact, setContact] = useState({});
-    const [projectData, setProjectData] = useState({});
+    const [contactProjectsArray, setContactProjectsArray] = useState([]);
+    const [sceOrPcrProjectsAvailable, setSceOrPcrProjectsAvailable] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
 
@@ -27,45 +29,30 @@ function ProjectList(props) {
             if (props.currentSelectedContact.id) {
                 // If there is no previous selected contact OR previous selected contact is not the same as current selected contact
                 if (!prevCurrentSelectedContact || prevCurrentSelectedContact.id != props.currentSelectedContact.id) {
-                    callFetchContactProjects();
                     callFetchContact();
+                    callFetchContactProjects();
                 }
             }
-            ProjectAPI.fetchProjects()
-                .then(payload => {
-                    setProjectData(payload.data.data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setLoading(false);
-                });
         })();
     }, [props.currentSelectedContact]);
 
-    function callFetchContactProjects() {
-        ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
-            .then(payload => {
-                let result = payload.data.data.participations.map(item => {
-                    return {
-                        ...item,
-                        mutation: item.mutations.length > 0 ? item.mutations[0] : null,
-                    };
+    useEffect(() => {
+        (function determineSceOrPcrProjectsAvailable() {
+            if (contactProjectsArray.length > 0) {
+                contactProjectsArray.find(function(project) {
+                    return project.isSceOrPcrProject && setSceOrPcrProjectsAvailable(true);
                 });
+            }
+        })();
+    }, [contactProjectsArray.length > 0]);
 
-                let contactProjecten = [];
-                result.map(item => contactProjecten.push(item.project.id));
-                setContactProjectsArray(contactProjecten);
-                // console.log(result);
-                setUnpaidParticipations(
-                    result.filter(
-                        item =>
-                            item.project.usesMollie &&
-                            item.mutation &&
-                            !item.mutation.isPaidByMollie &&
-                            item.mutation.status.codeRef === 'option'
-                    )
-                );
+    function callFetchContact() {
+        setLoading(true);
+        ContactAPI.fetchContact(props.currentSelectedContact.id)
+            .then(payload => {
+                const contactData = rebaseContact(payload.data.data);
+
+                setContact(contactData);
             })
             .catch(error => {
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -73,10 +60,11 @@ function ProjectList(props) {
             });
     }
 
-    function callFetchContact() {
-        ContactAPI.fetchContactWithParticipants(props.currentSelectedContact.id)
+    function callFetchContactProjects() {
+        ContactAPI.fetchContactProjects(props.currentSelectedContact.id)
             .then(payload => {
-                setContact(payload.data.data);
+                setContactProjectsArray(payload.data);
+                setLoading(false);
             })
             .catch(error => {
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -126,101 +114,151 @@ function ProjectList(props) {
             <Row>
                 <Col>
                     <h1 className="content-heading">
-                        Overzicht projecten waarop <strong>{formatFullName(contact.fullName)}</strong> kan inschrijven.
+                        Overzicht projecten waarop{' '}
+                        <strong>{formatFullName(props.currentSelectedContact.fullName)}</strong> kan inschrijven.
                     </h1>
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <p>Klik op het project voor meer details.</p>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {isLoading ? (
-                        <LoadingView />
-                    ) : projectData.length === 0 ? (
-                        'Geen projecten beschikbaar om op in te schrijven.'
-                    ) : (
-                        <Table responsive>
-                            <thead>
-                                <tr>
-                                    <th>Uitgevende instantie</th>
-                                    <th>Project</th>
-                                    <th>Ingeschreven</th>
-                                    <th>Start inschrijving</th>
-                                    <th>Einde inschrijving</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {projectData.map(project => (
-                                    <tr key={project.id}>
-                                        <td>{project.administration.name}</td>
-                                        <td>
-                                            {contactProjectsArray.includes(project.id) ? (
-                                                <>
-                                                    {project.name}
-                                                    {unpaidParticipations.some(
-                                                        item => item.project.id === project.id
-                                                    ) && (
-                                                        <>
-                                                            {' '}
-                                                            (
-                                                            <Link to={`/project/${project.id}`}>
-                                                                wijzig inschrijving
-                                                            </Link>
-                                                            )
-                                                        </>
-                                                    )}
-                                                </>
-                                            ) : (
-                                                <Link to={`/project/${project.id}`}>{project.name}</Link>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {contactProjectsArray.includes(project.id) ? (
-                                                <>
-                                                    {unpaidParticipations.some(
-                                                        item => item.project.id === project.id
-                                                    ) ? (
-                                                        <div className="text-center">
-                                                            Nog niet betaald,
-                                                            <br />
-                                                            <a
-                                                                href={
-                                                                    unpaidParticipations.find(
-                                                                        item => item.project.id === project.id
-                                                                    ).mutation.econobisPaymentLink
-                                                                }
-                                                            >
-                                                                betaal nu
-                                                            </a>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="text-success text-center">✔</div>
-                                                    )}
-                                                </>
-                                            ) : (
-                                                ''
-                                            )}
-                                        </td>
-                                        <td>
-                                            {project.dateStartRegistrations
-                                                ? moment(project.dateStartRegistrations).format('LL')
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {project.dateEndRegistrations
-                                                ? moment(project.dateEndRegistrations).format('LL')
-                                                : ''}
-                                        </td>
+
+            {sceOrPcrProjectsAvailable && contact.noAddressesFound && (
+                <>
+                    <Row>
+                        <Col>
+                            <div className="alert-wrapper">
+                                <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                    Op dit moment zijn je adresgegevens nog niet bij ons bekend.
+                                    <br />
+                                    Er zijn projecten waarop je kan inschrijven die afhankelijk van je adres zijn.
+                                </Alert>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <ButtonGroup aria-label="Steps" className="float-right">
+                                <Link to={`/gegevens`}>
+                                    <Button className={'w-button'} size="sm">
+                                        Adresgegevens toevoegen
+                                    </Button>
+                                </Link>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
+            )}
+            <>
+                <Row>
+                    <Col>
+                        <p>Klik op het project voor meer details.</p>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {isLoading ? (
+                            <LoadingView />
+                        ) : contactProjectsArray.length === 0 ? (
+                            'Geen projecten beschikbaar om op in te schrijven.'
+                        ) : (
+                            <Table responsive>
+                                <thead>
+                                    <tr>
+                                        <th>Uitgevende instantie</th>
+                                        <th>Project</th>
+                                        <th>Ingeschreven</th>
+                                        <th>Start inschrijving</th>
+                                        <th>Einde inschrijving</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-                </Col>
-            </Row>
+                                </thead>
+                                <tbody>
+                                    {contactProjectsArray.map(project => (
+                                        <tr key={project.id}>
+                                            <td>
+                                                {project.administrationName}
+                                                {/*todo WM: opschonen log na implementatie / test check op dubbele adressen*/}
+                                                {/*<br />*/}
+                                                {/*SCE of PCR: {project.isSceOrPcrProject ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Postcoderoos: {project.postalcodeLink}*/}
+                                                {/*<br />*/}
+                                                {/*Aanwezig: {project.hasParticipation ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Wijzig: {project.allowChangeParticipation ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Mollie: {project.allowPayMollie ? 'Ja' : 'Nee'}*/}
+                                                {/*<br />*/}
+                                                {/*Inschrijven: {project.allowRegisterToProject ? 'Ja' : 'Nee'}*/}
+                                            </td>
+                                            <td>
+                                                {project.allowChangeParticipation ? (
+                                                    <>
+                                                        {project.name} (
+                                                        <Link to={`/project/${project.id}`}>wijzig inschrijving</Link>)
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {!project.hasParticipation && project.allowRegisterToProject ? (
+                                                            <Link to={`/project/${project.id}`}>{project.name}</Link>
+                                                        ) : (
+                                                            <span className={'text-muted'}>{project.name}</span>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {project.hasParticipation ? (
+                                                    <>
+                                                        {project.allowPayMollie ? (
+                                                            <div className="text-center">
+                                                                Nog niet betaald,
+                                                                <br />
+                                                                <a href={project.econobisPaymentLink}>betaal nu</a>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-success text-center">✔</div>
+                                                        )}
+                                                    </>
+                                                ) : (
+                                                    <div className="text-center">
+                                                        {!project.allowRegisterToProject ? (
+                                                            <>
+                                                                <FaInfoCircle
+                                                                    color={'red'}
+                                                                    size={'15px'}
+                                                                    data-tip={`${project.textNotAllowedRegisterToProject}`}
+                                                                    data-for={`project-${project.id}`}
+                                                                />
+                                                                <ReactTooltip
+                                                                    id={`project-${project.id}`}
+                                                                    effect="float"
+                                                                    place="bottom"
+                                                                    multiline={true}
+                                                                    aria-haspopup="true"
+                                                                />
+                                                            </>
+                                                        ) : (
+                                                            ''
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {project.dateStartRegistrations
+                                                    ? moment(project.dateStartRegistrations).format('LL')
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {project.dateEndRegistrations
+                                                    ? moment(project.dateEndRegistrations).format('LL')
+                                                    : ''}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+                    </Col>
+                </Row>
+            </>
         </Container>
     );
 }

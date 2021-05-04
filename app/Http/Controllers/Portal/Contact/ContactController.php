@@ -26,8 +26,10 @@ use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\ParticipationProject\ParticipationProjectController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
+use App\Http\Resources\Project\ProjectRegister;
 use App\Rules\EnumExists;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -90,7 +92,7 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['primaryAddress'])) {
-                    $this->updateAddress($contact, $request['primaryAddress'], 'visit');
+                    $this->updateAddress($contact, $request['primaryAddress'], 'visit', $request->projectId);
                 }
                 if (isset($request['primaryContactEnergySupplier']) && $request['primaryContactEnergySupplier'] != null ) {
                     $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);
@@ -106,13 +108,13 @@ class ContactController extends ApiController
                 $this->updatePhoneNumberPrimary($contact, $request);
                 $this->updatePhoneNumberTwo($contact, $request);
                 if (isset($request['visitAddress'])) {
-                    $this->updateAddress($contact, $request['visitAddress'], 'visit');
+                    $this->updateAddress($contact, $request['visitAddress'], 'visit', $request->projectId);
                 }
                 if (isset($request['postalAddress'])) {
-                    $this->updateAddress($contact, $request['postalAddress'], 'postal');
+                    $this->updateAddress($contact, $request['postalAddress'], 'postal', null);
                 }
                 if (isset($request['invoiceAddress'])) {
-                    $this->updateAddress($contact, $request['invoiceAddress'], 'invoice');
+                    $this->updateAddress($contact, $request['invoiceAddress'], 'invoice', null);
                 }
                 if (isset($request['primaryContactEnergySupplier']) && $request['primaryContactEnergySupplier'] != null ) {
                     $this->updateEnergySupplierToContact($contact, $request['primaryContactEnergySupplier']);
@@ -145,8 +147,22 @@ class ContactController extends ApiController
         return $documentBody;
     }
 
+    public function getContactProjects(Contact $contact)
+    {
+
+        $projects = Project::where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
+            ->where('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'))
+            ->get();
+        foreach ($projects as $key => $project) {
+            $this->setContactProjectIndicators($project, $contact, $projects, $key);
+        }
+        return response()->json(ProjectRegister::collection($projects));
+    }
+
     public function getContactProjectData(Contact $contact, Project $project)
     {
+        $this->setContactProjectIndicators($project, $contact, null, 0);
+
         $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllStaticAndDynamicGroups() );
 
         $textIsMemberMerged = $project->text_is_member;
@@ -224,6 +240,7 @@ class ContactController extends ApiController
         $textRegistrationFinishedMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textRegistrationFinishedMerged,'cooperatie' );
 
         $result = [
+            "projectRegisterIndicators" => ProjectRegister::make($project),
             "belongsToMembershipGroup" => $belongsToMembershipGroup,
             "textIsMemberMerged" => $textIsMemberMerged,
             "textIsNoMemberMerged" => $textIsNoMemberMerged,
@@ -431,7 +448,7 @@ class ContactController extends ApiController
 
     }
 
-    protected function updateAddress($contact, $addressData, $addressType)
+    protected function updateAddress($contact, $addressData, $addressType, $projectId)
     {
         unset($addressData['country']);
         if($addressData['countryId'] == ''){
@@ -454,6 +471,29 @@ class ContactController extends ApiController
                     $address->delete();
                 }else{
                     $address->fill($this->arrayKeysToSnakeCase($addressData));
+
+                    if ($projectId) {
+                        $project = Project::find($projectId);
+                        if($project->check_double_addresses) {
+                            $participationProjectController = new ParticipationProjectController();
+                            $addressIsDouble = $participationProjectController->checkDoubleAddress($project, $contact->id, $address->postalCodeNumberAddition);
+                            if ($addressIsDouble) {
+                                abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                            }
+                        }
+                    }
+
+                    foreach ($contact->participations as $participation) {
+
+                        if($participation->project->check_double_addresses){
+                            $participationProjectController = new ParticipationProjectController();
+                            $addressIsDouble = $participationProjectController->checkDoubleAddress($participation->project, $contact->id,  $address->postalCodeNumberAddition );
+                            if($addressIsDouble){
+                                abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.' );
+                            }
+                        }
+                    }
+
                     $address->save();
                 }
             }
@@ -653,6 +693,163 @@ class ContactController extends ApiController
         }
 
         return AdministrationResource::collection($administrations);
+    }
+
+    /**
+     * @param $project
+     * @param Contact $contact
+     * @param $projects
+     * @param int $key
+     */
+    protected function setContactProjectIndicators($project, Contact $contact, $projects, int $key)
+    {
+        $project->isSceOrPcrProject = $project->projectType->code_ref === 'postalcode_link_capital' || $project->is_sce_project;
+        $project->hasParticipation = false;
+        $project->allowChangeParticipation = false;
+        $project->allowPayMollie = false;
+        $project->econobisPaymentLink = '';
+        $project->allowRegisterToProject = false;
+        $project->textNotAllowedRegisterToProject = '';
+        $project->participationsOptioned = 0;
+        $project->amountOptioned = 0;
+        $project->powerKwhConsumption = 0;
+
+        $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
+        // Is there allready a participation for this contact/project ?
+        if ($previousParticipantProject) {
+            $project->hasParticipation = true;
+            $project->participationsOptioned = $previousParticipantProject->participations_optioned;
+            $project->amountOptioned = $previousParticipantProject->amount_optioned;
+            $project->powerKwhConsumption = $previousParticipantProject->power_kwh_consumption;
+            $previousMutation = optional(optional($previousParticipantProject)->mutations())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+
+            /* If mollie is used and there was a first mutation with status option and isn't paid by mollie yet, then:
+               - allow change of option participation
+               - allow to pay for mollie (still open)
+               - return also the econobisPaymentLink to pay with mollie */
+            if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status->code_ref === 'option') {
+                $project->allowChangeParticipation = true;
+                $project->allowPayMollie = true;
+                $project->econobisPaymentLink = $previousMutation->econobis_payment_link;
+            }
+
+        // no participation for this contact/project yet
+        } else {
+
+            // no membership required, then allow register to project
+            if (!$project->is_membership_required) {
+                $project->allowRegisterToProject = true;
+
+            // membership required and project not visible for all contacts
+            } elseif (!$project->visible_for_all_contacts) {
+
+                // determine if contact is member (through the linked contactgroups of project)
+                if ($project->requiresContactGroups()) {
+                    $contactInRequiredContactGroup = false;
+                    foreach ($project->requiresContactGroups as $contactGroup) {
+                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                            $contactInRequiredContactGroup = true;
+                            continue;
+                        }
+                    }
+
+                    // if contact is member (through the linked contactgroups of project), then allow register to project
+                    if($contactInRequiredContactGroup){
+                        $project->allowRegisterToProject = true;
+                    }else {
+                        // Contact not a member and if function came with incoming collection projects, then we remove (forget) this project.
+                        if (!$project->allowRegisterToProject && $projects) {
+                            $projects->forget($key);
+                        }
+                    }
+
+                // no linked contactgroups available, then don't show project
+                } else {
+                    // If function came with incoming collection projects, then we remove (forget) this project.
+                    if($projects){
+                        $projects->forget($key);
+                    }
+                }
+
+            // membership required but project is visible for all contacts
+            } else {
+
+                // determine if contact is member (through the linked contactgroups of project)
+                if ($project->requiresContactGroups()) {
+                    $contactInRequiredContactGroup = false;
+                    foreach ($project->requiresContactGroups as $contactGroup) {
+                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                            $contactInRequiredContactGroup = true;
+                            continue;
+                        }
+                    }
+                    // if contact is member (through the linked contactgroups of project), then allow register to project
+                    if($contactInRequiredContactGroup){
+                        $project->allowRegisterToProject = true;
+                    }else{
+                        // Contact not a member, still show project, but don't allow register to project, and put info text in textfield not allowed register to project.
+                        $project->textNotAllowedRegisterToProject = $project->text_info_project_only_members;
+                    }
+                }
+                // no linked contactgroups available, then don't show project
+            }
+
+            // if project is sce or pcr project and register to project was still allowed at this moment
+            if($project->isSceOrPcrProject && $project->allowRegisterToProject) {
+                // if sce project and no addresses found, than register to project not allowed
+                if($contact->noAddressesFound) {
+                    $project->allowRegisterToProject = false;
+                    $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moeten er adresgegevens bekend zijn.';
+
+                // if addresses found, check postalcode
+                }else{
+                    // Check / get array postalcodes from postalcode_link. Postalcodes may be separted by a comma+space ('1001, 1002') or comma ('1001,1002') or space ('1001 1002');
+                    if (strpos($project->postalcode_link, ',') !== false) {
+                        $projectPostalcodeLink = str_replace(" ","", $project->postalcode_link);
+                        $validPostalAreas = explode(',', $projectPostalcodeLink);
+                    }else{
+                        $validPostalAreas = explode(' ', $project->postalcode_link);
+                    }
+                    $postalCodeAreaContact = substr($contact->addressForPostalCodeCheck->postal_code, 0 , 4);
+                    // if postalcode contact not in postalcode link of project, then don't allow register to project;
+                    if($validPostalAreas && !in_array($postalCodeAreaContact, $validPostalAreas)){
+//todo WM: for testing it is handy to show the projects where postalcode contact not in postalcode link project
+                        // If function came with incoming collection projects, then we remove (forget) this project.
+//                        if($projects){
+//                            $projects->forget($key);
+//                        }else{
+                            $project->allowRegisterToProject = false;
+                            $project->textNotAllowedRegisterToProject = 'Om in te schrijven voor dit project moet postcode nummer ' . $postalCodeAreaContact . ' van deelnemer voorkomen in deelnemende postcode(s): ' . implode(', ', $validPostalAreas) . '.';
+                            return false;
+//                        }
+
+                    }
+
+                }
+            }
+
+            // if to check double addresses (not allowed) and register to project was still allowed at this moment
+            if($project->check_double_addresses && $project->allowRegisterToProject) {
+                $participationProjectController = new ParticipationProjectController();
+
+                $address = null;
+                // PERSON
+                if ($contact->type_id == ContactType::PERSON) {
+                    $address = $contact->primaryAddress;
+                }
+                // ORGANISATION, use visit address
+                if ($contact->type_id == ContactType::ORGANISATION) {
+                    $address = Address::where('contact_id', $contact->id)->where('type_id', 'visit')->first();
+                }
+                $addressIsDouble = $participationProjectController->checkDoubleAddress($project, $contact->id,  $address->postalCodeNumberAddition );
+                if($addressIsDouble){
+                    $project->allowRegisterToProject = false;
+                    $project->textNotAllowedRegisterToProject = 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.';
+                }
+
+            }
+
+        }
     }
 
 }

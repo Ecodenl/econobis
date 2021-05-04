@@ -30,6 +30,7 @@ use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Traits\Encryptable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -65,6 +66,11 @@ class Contact extends Model
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    public function addressesActive()
+    {
+        return $this->addresses()->where('type_id', '!=', 'old')->orWhere('end_date', '>=', Carbon::parse('now')->format('Y-m-d'));
     }
 
     public function primaryAddress()
@@ -419,11 +425,50 @@ class Contact extends Model
         return( $this->participations && $this->participations->count() > 0 );
     }
 
+    public function getAddressForPostalCodeCheckAttribute()
+    {
+        if($this->type_id === ContactType::PERSON) {
+            return $this->primaryAddress;
+        }
+        if($this->type_id === ContactType::ORGANISATION) {
+            return Address::where('contact_id', $this->id)->where('type_id', 'visit')->first();
+        }
+    }
+
+    public function getNoAddressesFoundAttribute()
+    {
+        if($this->type_id === ContactType::PERSON) {
+            if ($this->primaryAddress) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        if($this->type_id === ContactType::ORGANISATION) {
+            if(Address::where('contact_id', $this->id)->where('type_id', 'visit')->exists()){
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
     public function getIsParticipantPcrProjectAttribute()
     {
         foreach($this->participations as $participation)
         {
             if($participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital' ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getIsParticipantSceProjectAttribute()
+    {
+        foreach($this->participations as $participation)
+        {
+            if($participation->project && $participation->project->is_sce_project ){
                 return true;
             }
         }

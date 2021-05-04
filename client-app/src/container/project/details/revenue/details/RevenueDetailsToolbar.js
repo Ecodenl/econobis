@@ -60,6 +60,9 @@ class RevenueDetailsToolbar extends Component {
                                     {this.props.permissions.manageFinancial && !this.props.revenue.confirmed && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                                     )}
+
+                                    {/*todo: wm moet hier nog wat met revenueKwhSplit ?*/}
+
                                     {revenue.confirmed == 1 && categoryCodeRef === 'revenueKwh' && (
                                         <div className="nav navbar-nav btn-group" role="group">
                                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
@@ -111,7 +114,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueDetailsToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsToolbar);

@@ -238,7 +238,7 @@ class ProjectRevenueController extends ApiController
     {
         $project = $projectRevenue->project;
 
-        if($projectRevenue->category->code_ref == 'revenueKwh')
+        if($projectRevenue->category->code_ref == 'revenueKwh' || $projectRevenue->category->code_ref == 'revenueKwhSplit' )
         {
             $participants = $project->participantsProject;
         }else{
@@ -284,6 +284,8 @@ class ProjectRevenueController extends ApiController
                 $distribution->save();
             }
         }
+
+        //todo: wm moet hier nog wat met revenueKwhSplit ?
     }
 
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)
@@ -351,6 +353,7 @@ class ProjectRevenueController extends ApiController
             $this->saveDeliveredKwhPeriod($distribution);
             return;
         }
+//todo: wm moet hier nog wat met revenueKwhSplit ?
 
         // Recalculate values of distribution after saving
         $distribution->calculator()->runRevenueEuro();
@@ -583,6 +586,7 @@ class ProjectRevenueController extends ApiController
             }
         }
 
+//todo: wm moet hier nog wat met revenueKwhSplit ?
         foreach ($distributions as $distribution) {
             $projectTypeCodeRef = (ProjectType::where('id', $distribution->revenue->project->project_type_id)->first())->code_ref;
 
@@ -617,6 +621,7 @@ class ProjectRevenueController extends ApiController
             }
         }
 
+//todo: wm moet hier nog wat met revenueKwhSplit ?
         foreach ($distributions as $distribution) {
             //todo WM: moet hier ook niet check op mutation allowed inzake definitieve waardestaten?
             //status moet nu onderhanden zijn (in-progress zijn)

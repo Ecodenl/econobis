@@ -403,6 +403,11 @@ const Routes = () => {
                     <Route path="projecten" component={ProjectsListApp} />
                     <Route path="deelnemers" component={ParticipantListApp} />
                     <Route path="project/deelnemer/:participationId/overdragen" component={ParticipationTransferApp} />
+                    {/*todo: wm moet hier nog wat met revenueKwhSplit ?*/}
+                    <Route
+                        path="project/deelnemer/:participationId/opbrengst/nieuw/:projectId/:categoryId"
+                        component={ProjectRevenueNewApp}
+                    />
                     <Route path="project/deelnemer/nieuw/:projectId" component={ParticipantNewApp} />
                     <Route path="project/deelnemer/nieuw/contact/:contactId" component={ParticipantNewApp} />
                     <Route path="project/deelnemer/:id" component={ParticipantDetailsApp} />

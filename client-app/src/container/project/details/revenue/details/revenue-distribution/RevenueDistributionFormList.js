@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import RevenueDistributionFormView from './RevenueDistributionFormView';
 import DataTablePagination from '../../../../../../components/dataTable/DataTablePagination';
 
+// todo: wm moet hier nog wat met revenueKwhSplit ?
+
 const RevenueDistributionFormList = props => {
     return (
         <div>

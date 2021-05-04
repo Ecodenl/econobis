@@ -16,6 +16,8 @@ const StyledEm = styled.em`
     font-weight: normal;
 `;
 
+// todo: wm moet hier nog wat met revenueKwhSplit ?
+
 const RevenueNew = props => {
     const {
         distributionTypeId,
@@ -125,7 +127,7 @@ const RevenueNew = props => {
                     name={'dateBegin'}
                     value={dateBegin}
                     onChangeAction={props.handleInputChangeDate}
-                    required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
+                    required={category.codeRef !== 'redemptionEuro' ? 'required' : ''}
                     error={props.errors.dateBegin}
                     errorMessage={props.errorMessage.dateBegin}
                     disabledBefore={
@@ -146,27 +148,27 @@ const RevenueNew = props => {
                     name={'dateEnd'}
                     value={dateEnd}
                     onChangeAction={props.handleInputChangeDate}
-                    required={(category.codeRef !== 'redemptionEuro' ? 'required' : '')}
+                    required={category.codeRef !== 'redemptionEuro' ? 'required' : ''}
                     error={props.errors.dateEnd}
                     errorMessage={props.errorMessage.dateEnd}
                     disabledBefore={dateBegin}
                     disabledAfter={
                         category.codeRef === 'revenueKwh'
                             ? moment(dateBegin)
-                                .add(1, 'year')
-                                .add(6, 'month')
-                                .add(-1, 'day')
-                                .format('Y-MM-DD')
+                                  .add(1, 'year')
+                                  .add(6, 'month')
+                                  .add(-1, 'day')
+                                  .format('Y-MM-DD')
                             : category.codeRef === 'redemptionEuro' ||
-                            (category.codeRef === 'revenueEuro' &&
-                                (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation'))
+                              (category.codeRef === 'revenueEuro' &&
+                                  (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation'))
                             ? moment(dateBegin)
-                                .add(1, 'year')
-                                .add(-1, 'day')
-                                .format('Y-MM-DD')
+                                  .add(1, 'year')
+                                  .add(-1, 'day')
+                                  .format('Y-MM-DD')
                             : moment(dateBegin)
-                                .endOf('year')
-                                .format('Y-MM-DD')
+                                  .endOf('year')
+                                  .format('Y-MM-DD')
                     }
                 />
             </div>

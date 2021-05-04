@@ -4,6 +4,8 @@ import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 import validator from 'validator';
 moment.locale('nl');
 
+// todo: wm moet hier nog wat met revenueKwhSplit ?
+
 const RevenueDistributionFormView = props => {
     const {
         id,

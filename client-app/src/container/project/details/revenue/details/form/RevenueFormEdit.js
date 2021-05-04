@@ -22,6 +22,8 @@ const StyledEm = styled.em`
     font-weight: normal;
 `;
 
+// todo: wm moet hier nog wat met revenueKwhSplit ?
+
 class RevenueFormEdit extends Component {
     constructor(props) {
         super(props);

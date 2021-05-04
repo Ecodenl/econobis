@@ -12,6 +12,8 @@ const StyledEm = styled.em`
     font-weight: normal;
 `;
 
+// todo: wm moet hier nog wat met revenueKwhSplit ?
+
 const RevenueFormView = props => {
     const {
         confirmed,
@@ -149,7 +151,10 @@ const RevenueFormView = props => {
                         {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
                             <React.Fragment>
                                 <div>
-                                    <ViewText label={'Uitkering (rente) %'} value={payPercentage && payPercentage + '%'} />
+                                    <ViewText
+                                        label={'Uitkering (rente) %'}
+                                        value={payPercentage && payPercentage + '%'}
+                                    />
                                     <ViewText
                                         label={
                                             project.projectType.codeRef === 'loan'

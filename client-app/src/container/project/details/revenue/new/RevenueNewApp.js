@@ -11,13 +11,16 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import ParticipantProjectDetailsAPI from '../../../../../api/participant-project/ParticipantProjectDetailsAPI';
+
+// todo: wm moet hier nog wat met revenueKwhSplit ?
 
 class RevenueNewApp extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             revenue: {
+                participationId: props.params.participationId,
                 projectId: props.params.projectId,
                 categoryId: props.params.categoryId,
                 distributionTypeId: '',
@@ -62,6 +65,7 @@ class RevenueNewApp extends Component {
                 kwhEndLow: '',
                 payAmount: '',
             },
+            participationName: '',
             project: {},
             isLoading: false,
         };
@@ -71,6 +75,9 @@ class RevenueNewApp extends Component {
 
     componentDidMount() {
         this.fetchProject(this.props.params.projectId);
+        if (this.props.params.participationId) {
+            this.fetchParticipantProjectDetails(this.props.params.participationId);
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -133,6 +140,15 @@ class RevenueNewApp extends Component {
                 ...this.state,
                 project: payload,
                 revenue,
+            });
+        });
+    };
+
+    fetchParticipantProjectDetails = id => {
+        ParticipantProjectDetailsAPI.fetchParticipantProject(id).then(payload => {
+            this.setState({
+                ...this.state,
+                participationName: payload.name,
             });
         });
     };
@@ -414,7 +430,7 @@ class RevenueNewApp extends Component {
             <div className="row">
                 <div className="col-md-9">
                     <div className="col-md-12">
-                        <RevenueNewToolbar />
+                        <RevenueNewToolbar participationName={this.state.participationName} />
                     </div>
 
                     <div className="col-md-12">

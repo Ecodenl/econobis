@@ -32,6 +32,7 @@ class EnergySupplierExcelNewApp extends Component {
     componentDidMount() {
         let templates = [];
 
+        templates.push({ id: 0, name: '** Per energie leverancier **' });
         templates.push({ id: 1, name: 'Eneco' });
         templates.push({ id: 2, name: 'Greenchoice' });
         templates.push({ id: 3, name: 'Oxxio' });

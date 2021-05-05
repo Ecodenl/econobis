@@ -290,9 +290,11 @@ class ProjectNewApp extends Component {
         // If isSceProject is false, set checkDoubleAddresses to empty string
         if (!project.isSceProject) {
             project.checkDoubleAddresses = false;
-            project.checkPostalcodeLink = false;
             project.visibleForAllContacts = false;
             project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
+        }
+        if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
+            project.checkPostalcodeLink = false;
         }
 
         this.setState({ ...this.state, errors: errors });

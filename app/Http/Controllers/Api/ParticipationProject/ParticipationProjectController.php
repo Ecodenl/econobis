@@ -330,7 +330,7 @@ class ParticipationProjectController extends ApiController
             $this->validateEnergySupplier($message, $contact);
             return ['id' => $participantProject->id, 'message' => $message];
         }
-        if($project->is_sce_project){
+        if($project->check_postalcode_link && $project->is_sce_project){
             $this->validatePostalCode($message, $project, $contact);
             return ['id' => $participantProject->id, 'message' => $message];
         }

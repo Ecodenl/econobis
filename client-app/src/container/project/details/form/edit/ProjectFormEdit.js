@@ -652,6 +652,8 @@ class ProjectFormEdit extends Component {
         if (!project.isSceProject) {
             project.checkDoubleAddresses = false;
             project.subsidyProvided = false;
+        }
+        if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
             project.checkPostalcodeLink = false;
         }
 

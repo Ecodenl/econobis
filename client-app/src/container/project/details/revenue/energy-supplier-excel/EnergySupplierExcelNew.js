@@ -9,34 +9,46 @@ import PanelFooter from '../../../../../components/panel/PanelFooter';
 import InputText from '../../../../../components/form/InputText';
 
 const EnergySupplierExcelNew = props => {
-    const { templateId, energySupplierId, documentName } = props.excel;
+    // todo: wm opschonen
+    // const { templateId, energySupplierId, documentName } = props.excel;
+    const { energySupplierId, documentName } = props.excel;
+
+    let energySupplierOptions = [];
+    energySupplierOptions.push({ id: 0, name: '** Alle energie leveranciers **' });
+    props.energySuppliers.map(energySupplier => {
+        energySupplierOptions.push({ id: energySupplier.id, name: energySupplier.name });
+    });
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
-            <div className="row">
-                <InputSelect
-                    label={'Excel template'}
-                    name={'templateId'}
-                    options={props.templates}
-                    value={templateId}
-                    onChangeAction={props.handleInputChange}
-                    required={'required'}
-                    error={props.errors.templateId}
-                />
-                (Kijk op de Wiki welke template je moet gebruiken voor welke leverancier)
-            </div>
+            {/*todo: wm opschonen*/}
+            {/*<div className="row">*/}
+            {/*    <InputSelect*/}
+            {/*        label={'Excel template'}*/}
+            {/*        name={'templateId'}*/}
+            {/*        options={props.templates}*/}
+            {/*        emptyOption={false}*/}
+            {/*        value={templateId}*/}
+            {/*        onChangeAction={props.handleInputChange}*/}
+            {/*        required={'required'}*/}
+            {/*        error={props.errors.templateId}*/}
+            {/*    />*/}
+            {/*    (Kijk op de Wiki welke template je moet gebruiken voor welke leverancier)*/}
+            {/*</div>*/}
 
             <div className="row">
                 <InputSelect
                     label={'Contacten van Energie Leverancier'}
                     name={'energySupplierId'}
-                    options={props.energySuppliers}
+                    options={energySupplierOptions}
+                    emptyOption={false}
                     value={energySupplierId}
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.energySupplierId}
                 />
-                (Maak per leverancier een overzicht)
+                Maak overzicht per leverancier voor alle leveranciers (bestand per leverancier) of een specifieke
+                leverancier
             </div>
 
             <div className="row">
@@ -48,7 +60,9 @@ const EnergySupplierExcelNew = props => {
                     required={'required'}
                     error={props.errors.documentName}
                 />
-                .xlsx
+                {energySupplierId == 0
+                    ? '(Bestandsnaam wordt aangevuld met afkorting leverancier en ingestelde bestandsformaat)'
+                    : '(Bestandsnaam wordt aangevuld met ingestelde bestandsformaat bij leverancier)'}
             </div>
 
             <PanelFooter>

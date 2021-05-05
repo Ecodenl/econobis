@@ -14,15 +14,18 @@ class EnergySupplierExcelNewApp extends Component {
         super(props);
 
         this.state = {
-            templates: [],
+            // todo: wm opschonen
+            // templates: [],
             excel: {
                 revenueId: props.params.revenueId,
-                templateId: '',
-                energySupplierId: '',
+                // todo: wm opschonen
+                // templateId: 0,
+                energySupplierId: 0,
                 documentName: '',
             },
             errors: {
-                templateId: false,
+                // todo: wm opschonen
+                // templateId: false,
                 energySupplierId: false,
                 documentName: false,
             },
@@ -30,20 +33,19 @@ class EnergySupplierExcelNewApp extends Component {
     }
 
     componentDidMount() {
-        let templates = [];
-
-        templates.push({ id: 0, name: '** Per energie leverancier **' });
-        templates.push({ id: 1, name: 'Eneco' });
-        templates.push({ id: 2, name: 'Greenchoice' });
-        templates.push({ id: 3, name: 'Oxxio' });
-        templates.push({ id: 4, name: 'Vattenfall' });
-        templates.push({ id: 5, name: 'Energie VanOns' });
-        templates.push({ id: 6, name: 'Uniform' });
-        templates.push({ id: 7, name: 'OM' });
-
-        this.setState({
-            templates: templates,
-        });
+        // todo: wm opschonen
+        // let templates = [];
+        // templates.push({ id: 0, name: '** Gebruik instelling bij energie leverancier **' });
+        // templates.push({ id: 1, name: 'Eneco' });
+        // templates.push({ id: 2, name: 'Greenchoice' });
+        // templates.push({ id: 3, name: 'Oxxio' });
+        // templates.push({ id: 4, name: 'Vattenfall' });
+        // templates.push({ id: 5, name: 'Energie VanOns' });
+        // templates.push({ id: 6, name: 'Uniform' });
+        // templates.push({ id: 7, name: 'OM' });
+        // this.setState({
+        //     templates: templates,
+        // });
     }
 
     handleInputChange = event => {
@@ -68,10 +70,11 @@ class EnergySupplierExcelNewApp extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(excel.templateId + '')) {
-            errors.templateId = true;
-            hasErrors = true;
-        }
+        // todo: wm opschonen
+        // if (validator.isEmpty(excel.templateId + '')) {
+        //     errors.templateId = true;
+        //     hasErrors = true;
+        // }
 
         if (validator.isEmpty(excel.energySupplierId + '')) {
             errors.energySupplierId = true;
@@ -88,7 +91,8 @@ class EnergySupplierExcelNewApp extends Component {
         !hasErrors &&
             ProjectRevenueAPI.createEnergySupplierExcel(
                 excel.revenueId,
-                excel.templateId,
+                // todo: wm opschonen
+                // excel.templateId,
                 excel.energySupplierId,
                 excel.documentName
             ).then(payload => {
@@ -111,7 +115,8 @@ class EnergySupplierExcelNewApp extends Component {
                                     <EnergySupplierExcelNew
                                         excel={this.state.excel}
                                         errors={this.state.errors}
-                                        templates={this.state.templates}
+                                        // todo: wm opschonen
+                                        // templates={this.state.templates}
                                         handleInputChange={this.handleInputChange}
                                         handleSubmit={this.handleSubmit}
                                     />

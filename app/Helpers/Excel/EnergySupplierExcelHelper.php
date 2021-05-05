@@ -16,6 +16,7 @@ class EnergySupplierExcelHelper
     private $projectRevenue;
     private $distributions;
     private $counter;
+    private $fileName;
 
     public function __construct(
         EnergySupplier $energySupplier,

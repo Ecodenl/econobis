@@ -22,7 +22,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                 'postal-code-primary-address-in-pcr-area',
                 'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
                 function(value) {
-                    return project.postalcodeLink.includes(value.substring(0, 4));
+                    return !project.checkPostalcodeLink || project.postalcodeLink.includes(value.substring(0, 4));
                 }
             ),
         }),
@@ -32,9 +32,9 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
             postalCode: Yup.string()
                 .test(
                     'postal-code-visit-address-in-pcr-area',
-                    'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
+                    'xxHelaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
                     function(value) {
-                        return project.postalcodeLink.includes(value.substring(0, 4));
+                        return !project.checkPostalcodeLink || project.postalcodeLink.includes(value.substring(0, 4));
                     }
                 )
                 .required('Verplicht'),

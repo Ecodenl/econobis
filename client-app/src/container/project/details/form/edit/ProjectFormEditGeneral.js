@@ -27,6 +27,7 @@ const ProjectFormEditGeneral = ({
     postalcodeLink,
     numberOfParticipantsStillNeeded,
     subsidyProvided,
+    checkPostalcodeLink,
     postalCode,
     address,
     city,
@@ -196,16 +197,25 @@ const ProjectFormEditGeneral = ({
             {isSceProject == true && (
                 <>
                     <div className="row">
+                        <div className="form-group col-sm-6" />
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Aantal deelnemers nog nodig'}
+                            value={numberOfParticipantsStillNeeded}
+                        />
+                    </div>
+                    <div className="row">
                         <InputText
                             label={'Postcoderoos'}
                             name={'postalcodeLink'}
                             value={postalcodeLink}
                             onChangeAction={handleInputChange}
                         />
-                        <ViewText
-                            className={'form-group col-sm-6'}
-                            label={'Aantal deelnemers nog nodig'}
-                            value={numberOfParticipantsStillNeeded}
+                        <InputToggle
+                            label={'Controle postcode in postcoderoos'}
+                            name={'checkPostalcodeLink'}
+                            value={checkPostalcodeLink}
+                            onChangeAction={handleInputChange}
                         />
                     </div>
                     <div className="row">
@@ -217,7 +227,7 @@ const ProjectFormEditGeneral = ({
                             disabled={subsidyProvided}
                         />
                         <InputToggle
-                            label={'Subsidie verstrekt'}
+                            label={'Subsidie toegekend'}
                             name={'subsidyProvided'}
                             value={subsidyProvided}
                             onChangeAction={handleInputChangeSubsidyProvided}

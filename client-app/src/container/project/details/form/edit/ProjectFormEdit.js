@@ -653,6 +653,9 @@ class ProjectFormEdit extends Component {
             project.checkDoubleAddresses = false;
             project.subsidyProvided = false;
         }
+        if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
+            project.checkPostalcodeLink = false;
+        }
 
         if (isNaN(project.amountOfLoanNeeded)) {
             project.amountOfLoanNeeded = project.amountOfLoanNeeded.replace(/,/g, '.');
@@ -698,6 +701,7 @@ class ProjectFormEdit extends Component {
             baseProjectCodeRef,
             checkDoubleAddresses,
             subsidyProvided,
+            checkPostalcodeLink,
             address,
             postalCode,
             city,
@@ -800,6 +804,7 @@ class ProjectFormEdit extends Component {
                     checkDoubleAddresses={checkDoubleAddresses}
                     postalcodeLink={postalcodeLink}
                     subsidyProvided={subsidyProvided}
+                    checkPostalcodeLink={checkPostalcodeLink}
                     requiredParticipants={requiredParticipants}
                     numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
                     address={address}

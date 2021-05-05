@@ -25,7 +25,6 @@ export default {
 
     fetchProject: function(id) {
         const requestUrl = `/jory/project/${id}`;
-
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
@@ -45,6 +44,7 @@ export default {
                         'minAmountLoan',
                         'maxAmountLoan',
                         'isSceProject',
+                        'checkPostalcodeLink',
                         'postalcodeLink',
                         'linkAgreeTerms',
                         'linkProjectInfo',

@@ -19,6 +19,7 @@ class Sort extends RequestSort
         'contact',
         'address',
         'measure',
+        'campaign',
         'createdAt',
         'dateRecorded',
         'statusId',
@@ -29,6 +30,7 @@ class Sort extends RequestSort
         'organisation' => 'organisations.name',
         'contact' => 'contacts.full_name',
         'measure' => 'measure_categories.name',
+        'campaign' => 'campaigns.name',
         'createdAt' => 'quotation_requests.created_at',
         'dateRecorded' => 'quotation_requests.date_recorded',
         'statusId' => 'quotation_requests.status_id',
@@ -40,5 +42,6 @@ class Sort extends RequestSort
         'contact' => 'contact',
         'address' => 'address',
         'measure' => 'measure',
+        'campaign' => 'campaign',
     ];
 }

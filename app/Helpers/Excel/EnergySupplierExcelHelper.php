@@ -239,13 +239,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
                     $rowData[] = $this->projectRevenue->project->name;
+                    $rowData[] = $this->projectRevenue->project->total_participations;
+                    $rowData[] = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
                     $rowData[] = $deliveredKwhPeriod->participations_quantity;
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;
-//                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_supply)
-//                        ? 'EAN: ' . $this->projectRevenue->project->ean_supply : '';
-                    $rowData[] = '';
-                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
-                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
 
                     $completeData[] = $rowData;
                 }

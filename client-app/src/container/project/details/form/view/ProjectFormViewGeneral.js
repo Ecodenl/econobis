@@ -108,7 +108,7 @@ const ProjectFormViewGeneral = ({
                 </div>
                 <div className="row">
                     <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />
-                    <ViewText label={'Subsidie verstrekt'} value={subsidyProvided ? 'Ja' : 'Nee'} />
+                    <ViewText label={'Subsidie toegekend'} value={subsidyProvided ? 'Ja' : 'Nee'} />
                 </div>
             </>
         )}

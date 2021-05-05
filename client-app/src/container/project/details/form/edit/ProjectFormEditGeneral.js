@@ -217,7 +217,7 @@ const ProjectFormEditGeneral = ({
                             disabled={subsidyProvided}
                         />
                         <InputToggle
-                            label={'Subsidie verstrekt'}
+                            label={'Subsidie toegekend'}
                             name={'subsidyProvided'}
                             value={subsidyProvided}
                             onChangeAction={handleInputChangeSubsidyProvided}

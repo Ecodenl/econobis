@@ -18,6 +18,7 @@ const ProjectFormViewGeneral = ({
     postalcodeLink,
     numberOfParticipantsStillNeeded,
     subsidyProvided,
+    checkPostalcodeLink,
     postalCode,
     address,
     city,
@@ -99,12 +100,16 @@ const ProjectFormViewGeneral = ({
         {isSceProject == true && (
             <>
                 <div className="row">
-                    <ViewText label={'Postcoderoos'} value={postalcodeLink} />
+                    <div className="col-sm-6" />
                     <ViewText
                         className={'form-group col-sm-6'}
                         label={'Aantal deelnemers nog nodig'}
                         value={numberOfParticipantsStillNeeded}
                     />
+                </div>
+                <div className="row">
+                    <ViewText label={'Postcoderoos'} value={postalcodeLink} />
+                    <ViewText label={'Controle postcode in postcoderoos'} value={checkPostalcodeLink ? 'Ja' : 'Nee'} />
                 </div>
                 <div className="row">
                     <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />

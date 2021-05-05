@@ -84,6 +84,7 @@ class ProjectNewApp extends Component {
                 textInfoProjectOnlyMembers: defaultTextInfoProjectOnlyMembers,
                 isParticipationTransferable: false,
                 postalcodeLink: '',
+                checkPostalcodeLink: false,
                 contactGroupIds: '',
                 amountOfLoanNeeded: null,
                 minAmountLoan: null,
@@ -223,7 +224,7 @@ class ProjectNewApp extends Component {
             hasErrors = true;
         }
 
-        if (project.isSceProject && validator.isEmpty('' + baseProjectCodeRef)) {
+        if (project.isSceProject && validator.isEmpty('' + project.baseProjectCodeRef)) {
             errors.baseProjectCodeRef = true;
             hasErrors = true;
         }
@@ -289,6 +290,7 @@ class ProjectNewApp extends Component {
         // If isSceProject is false, set checkDoubleAddresses to empty string
         if (!project.isSceProject) {
             project.checkDoubleAddresses = false;
+            project.checkPostalcodeLink = false;
             project.visibleForAllContacts = false;
             project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
         }
@@ -361,6 +363,7 @@ class ProjectNewApp extends Component {
             administrationId,
             usesMollie,
             postalcodeLink,
+            checkPostalcodeLink,
             contactGroupIds,
             amountOfLoanNeeded,
             minAmountLoan,
@@ -405,6 +408,7 @@ class ProjectNewApp extends Component {
                                         useSceProject={useSceProject}
                                         isSceProject={isSceProject}
                                         postalcodeLink={postalcodeLink}
+                                        checkPostalcodeLink={checkPostalcodeLink}
                                         baseProjectCodeRef={baseProjectCodeRef}
                                         powerKwAvailable={powerKwAvailable}
                                         checkDoubleAddresses={checkDoubleAddresses}

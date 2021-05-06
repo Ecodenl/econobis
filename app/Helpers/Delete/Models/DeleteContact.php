@@ -152,8 +152,8 @@ class DeleteContact implements DeleteInterface
             $document->save();
         }
 
-        foreach ($this->contact->responses as $respons){
-            $respons->delete();
+        foreach ($this->contact->responses as $response){
+            $response->delete();
         }
     }
 

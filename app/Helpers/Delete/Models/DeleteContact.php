@@ -80,6 +80,11 @@ class DeleteContact implements DeleteInterface
             array_push($this->errorMessage, "Er is nog een portal gebruiker aanwezig.");
         }
 
+        if($this->contact->organisation && $this->contact->organisation->campaigns->count() > 0){
+            $campaignNumbers = $this->contact->organisation->campaigns->pluck('number')->toArray();
+            array_push($this->errorMessage, "Organisatie is nog betrokken bij een of meer campagnes: " . implode(',', $campaignNumbers));
+        }
+
     }
 
     /** Deletes models recursive
@@ -145,6 +150,10 @@ class DeleteContact implements DeleteInterface
         foreach ($this->contact->documents as $document){
             $document->contact()->dissociate();
             $document->save();
+        }
+
+        foreach ($this->contact->responses as $response){
+            $response->delete();
         }
     }
 

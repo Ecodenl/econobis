@@ -136,6 +136,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 name="memberSince"
                                 value={memberSince}
                                 onChangeAction={this.handleInputChangeDate}
+                                readOnly={isCurrentSupplier}
                             />
                             <InputText
                                 label={'EAN electriciteit'}
@@ -186,6 +187,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                                 name={'isCurrentSupplier'}
                                 value={isCurrentSupplier}
                                 onChangeAction={this.handleInputChange}
+                                disabled={validator.isEmpty('' + memberSince)}
                             />
                         </div>
 
@@ -224,7 +226,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsFormContactEnergySupplierNew);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierNew);

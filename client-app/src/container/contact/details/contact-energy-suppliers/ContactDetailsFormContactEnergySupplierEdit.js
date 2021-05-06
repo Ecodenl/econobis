@@ -9,6 +9,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment/moment';
 import InputToggle from '../../../../components/form/InputToggle';
+import validator from 'validator';
 moment.locale('nl');
 
 const ContactDetailsFormContactEnergySupplierEdit = props => {
@@ -56,6 +57,7 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 name="memberSince"
                                 value={memberSince ? memberSince : ''}
                                 onChangeAction={props.handleInputChangeDate}
+                                readOnly={isCurrentSupplier}
                             />
                             <InputText
                                 label={'EAN electriciteit'}
@@ -119,6 +121,7 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 name={'isCurrentSupplier'}
                                 value={isCurrentSupplier}
                                 onChangeAction={props.handleInputChange}
+                                disabled={validator.isEmpty('' + memberSince)}
                             />
                         </div>
 
@@ -150,7 +153,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactDetailsFormContactEnergySupplierEdit);
+export default connect(mapStateToProps, null)(ContactDetailsFormContactEnergySupplierEdit);

@@ -43,6 +43,9 @@ class FullContactEnergySupplier extends Resource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'esNumber' => $this->es_number,
+            // todo: wm hier functies voor indicaties over contactEnergySupplier al voorkomt in revenues
+            'isInProjectRevenueKwh' => $this->is_in_project_revenue_kwh,
+            'isInProjectRevenueKwhSplit' => $this->is_in_project_revenue_kwh_split,
         ];
     }
 }

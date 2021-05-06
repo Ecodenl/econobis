@@ -38,4 +38,16 @@ class ContactEnergySupplier extends Model
     public function createdBy(){
         return $this->belongsTo(User::class);
     }
+
+    // todo: wm hier functies voor indicaties over contactEnergySupplier al voorkomt in revenues
+    public function getIsInProjectRevenueKwhAttribute()
+    {
+        return false;
+    }
+
+    public function getIsInProjectRevenueKwhSplitAttribute()
+    {
+        return false;
+    }
+
 }

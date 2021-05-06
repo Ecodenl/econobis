@@ -44,6 +44,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ProjectRevenueController extends ApiController
@@ -464,6 +465,7 @@ class ProjectRevenueController extends ApiController
         $document = new Document();
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
+        $document->project_id = $projectRevenue->project->id;
 
         $document->filename = $documentName . '.pdf';
 
@@ -485,18 +487,52 @@ class ProjectRevenueController extends ApiController
         Storage::disk('documents')->delete($document->filename);
     }
 
-    public function createEnergySupplierExcel(
+    public function createEnergySupplierAllExcel(
+        Request $request,
+        ProjectRevenue $projectRevenue
+    )
+    {
+        $energySupplierIds = array_unique($projectRevenue->distribution()->pluck('es_id')->toArray());
+        foreach ($energySupplierIds as $energySupplierId) {
+            $energySupplier = EnergySupplier::find($energySupplierId);
+            $this->createEnergySupplierExcel($request, $projectRevenue, $energySupplier, true);
+        }
+    }
+
+    public function createEnergySupplierOneExcel(
         Request $request,
         ProjectRevenue $projectRevenue,
         EnergySupplier $energySupplier
     )
     {
-        $documentName = $request->input('documentName');
-        $fileName = $documentName . '.xlsx';
-        $templateId = $request->input('templateId');
-        if($templateId == 0){
-            $templateId = $energySupplier->excel_template_id;
+            $this->createEnergySupplierExcel($request, $projectRevenue, $energySupplier, false);
+    }
+
+    protected function createEnergySupplierExcel(
+        Request $request,
+        ProjectRevenue $projectRevenue,
+        EnergySupplier $energySupplier,
+        $createAll
+    )
+    {
+        switch ($energySupplier->file_format_id){
+            case 1:
+                $fileFormat = '.xls';
+                break;
+            default:
+                $fileFormat = '.xlsx';
+                break;
         }
+
+        $documentName = $request->input('documentName');
+        $fileName = $createAll ? ($documentName . '-' . $energySupplier->abbreviation . $fileFormat) : $documentName . $fileFormat;
+
+        // todo: wm opschonen
+//        $templateId = $request->input('templateId');
+//        if($templateId == 0){
+//            $templateId = $energySupplier->excel_template_id;
+//        }
+            $templateId = $energySupplier->excel_template_id;
 
         if ($templateId) {
             set_time_limit(0);
@@ -510,6 +546,7 @@ class ProjectRevenueController extends ApiController
         $document = new Document();
         $document->document_type = 'internal';
         $document->document_group = 'revenue';
+        $document->project_id = $projectRevenue->project->id;
 
         $document->filename = $fileName;
 
@@ -518,7 +555,14 @@ class ProjectRevenueController extends ApiController
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR
             . $document->filename));
 
-        $writer = new Xlsx($excel);
+        switch ($energySupplier->file_format_id){
+            case 1:
+                $writer = new Xls($excel);
+                break;
+            default:
+                $writer = new Xlsx($excel);
+                break;
+        }
         $writer->save($filePath);
 
 //        die("stop hier maar even voor testdoeleinden Excel (behoud file.xlsx in storage/app/documents)");

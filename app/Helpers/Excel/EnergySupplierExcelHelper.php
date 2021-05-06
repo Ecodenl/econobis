@@ -239,7 +239,7 @@ class EnergySupplierExcelHelper
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
                     $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = $this->projectRevenue->project->total_participations;
+                    $rowData[] = $this->projectRevenue->project->participations_definitive;
                     $rowData[] = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
                     $rowData[] = $deliveredKwhPeriod->participations_quantity;
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;

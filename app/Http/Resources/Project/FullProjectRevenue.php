@@ -21,6 +21,7 @@ class FullProjectRevenue extends Resource
         return
             [
                 'id' => $this->id,
+                'participationId' => $this->participation_id,
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
                 'distributionTypeId' => $this->distribution_type_id,

@@ -22,8 +22,6 @@ import InputDate from '../../../../../../components/form/InputDate';
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../components/modal/ErrorModal';
 
-// todo: wm moet hier nog wat met revenueKwhSplit ?
-
 class RevenueDistributionForm extends Component {
     constructor(props) {
         super(props);

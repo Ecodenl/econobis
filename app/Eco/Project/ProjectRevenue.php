@@ -2,6 +2,7 @@
 
 namespace App\Eco\Project;
 
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +36,10 @@ class ProjectRevenue extends Model
     //relations
     public function project(){
         return $this->belongsTo(Project::class);
+    }
+
+    public function participant(){
+        return $this->belongsTo(ParticipantProject::class, 'participation_id');
     }
 
     public function type(){

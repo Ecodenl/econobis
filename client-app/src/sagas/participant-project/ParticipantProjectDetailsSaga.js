@@ -4,8 +4,6 @@ import ParticipantMutationAPI from '../../api/participant-project/ParticipantMut
 import ParticipantObligationNumberAPI from '../../api/participant-project/ParticipantObligationNumberAPI';
 import { browserHistory, hashHistory } from 'react-router';
 
-// todo: wm moet hier nog wat met revenueKwhSplit ?
-
 export function* fetchParticipantProjectDetailsSaga({ payload }) {
     try {
         yield put({ type: 'IS_LOADING' });
@@ -14,6 +12,7 @@ export function* fetchParticipantProjectDetailsSaga({ payload }) {
             type: 'FETCH_PARTICIPANT_PROJECT_DETAILS_SUCCESS',
             participantProjectDetails,
         });
+        // todo: wm check of dit nog nodig is?
         const projectId = participantProjectDetails.projectId;
         yield put({
             type: 'FETCH_PROJECT',

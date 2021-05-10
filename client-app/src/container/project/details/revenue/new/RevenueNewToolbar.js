@@ -5,16 +5,12 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 
-// todo: wm moet hier nog wat met revenueKwhSplit ?
-
 class RevenueNewToolbar extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        const { participationName } = this.props;
-
         return (
             <div className="row">
                 <div className="col-sm-12">
@@ -29,11 +25,7 @@ class RevenueNewToolbar extends Component {
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <h3 className="text-center table-title">
-                                    {participationName
-                                        ? 'Tussentijdse opbrengst ' + participationName
-                                        : 'Nieuwe opbrengst'}
-                                </h3>
+                                <h3 className="text-center table-title">Nieuwe opbrengst</h3>
                             </div>
                             <div className="col-md-4" />
                         </PanelBody>

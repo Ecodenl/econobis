@@ -97,27 +97,6 @@ class ProjectRevenueController extends ApiController
 
     }
 
-    public function getRevenueParticipants(ProjectRevenue $projectRevenue, Request $request)
-    {
-        $limit = 100;
-        $offset = $request->input('page') ? $request->input('page') * $limit : 0;
-
-        $participants = $projectRevenue->project->participantsProject()->limit($limit)->offset($offset)->get();
-        $participantIdsTotal = $projectRevenue->project->participantsProject()->pluck('id')->toArray();
-        $total = $projectRevenue->project->participantsProject()->count();
-
-        $participants->load([
-            'participantProjectPayoutType',
-        ]);
-
-        return FullRevenueParticipantProject::collection($participants)
-            ->additional(['meta' => [
-                'total' => $total,
-                'participantIdsTotal' => $participantIdsTotal,
-            ]
-            ]);
-    }
-
     public function store(RequestInput $requestInput)
     {
         $this->authorize('manage', ProjectRevenue::class);
@@ -239,15 +218,43 @@ class ProjectRevenueController extends ApiController
     {
         $project = $projectRevenue->project;
 
-        if($projectRevenue->category->code_ref == 'revenueKwh' || $projectRevenue->category->code_ref == 'revenueKwhSplit' )
-        {
-            $participants = $project->participantsProject;
-        }else{
-            $participants = $project->participantsProjectDefinitive;
-        }
+        if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
+            $totalKwh = $projectRevenue->kwh_end - $projectRevenue->kwh_start;
+            $totalSumOfParticipationsAndDays = 0;
+            $totalDeliveredKwhPeriodThisParticipant = 0;
+            $quantityOfParticipationsThisParticipant = 0;
+            foreach ($project->participantsProject as $participant) {
+                $result = $this->determineTotalDistribution($projectRevenue, $participant);
+                $totalDeliveredKwhPeriod = $result['totalDeliveredKwhPeriod'];
+                $quantityOfParticipations = $result['quantityOfParticipations'];
 
-        foreach ($participants as $participant) {
-            $this->saveDistribution($projectRevenue, $participant);
+                if($participant->id == $projectRevenue->participant->id){
+                    $totalDeliveredKwhPeriodThisParticipant = $totalDeliveredKwhPeriod;
+                    $quantityOfParticipationsThisParticipant = $quantityOfParticipations;
+                }
+
+                $totalSumOfParticipationsAndDays = $totalSumOfParticipationsAndDays + $totalDeliveredKwhPeriod;
+            }
+            // Save returns per Kwh period
+            $delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $totalDeliveredKwhPeriodThisParticipant, 2);
+
+            $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant);
+
+            $distribution->delivered_total = $delivered_kwh;
+            $distribution->payout_kwh = $projectRevenue->payout_kwh;
+            $distribution->participations_amount = $quantityOfParticipationsThisParticipant;
+            $distribution->save();
+
+
+        }else {
+            if ($projectRevenue->category->code_ref == 'revenueKwh') {
+                $participants = $project->participantsProject;
+            } else {
+                $participants = $project->participantsProjectDefinitive;
+            }
+            foreach ($participants as $participant) {
+                $this->saveDistribution($projectRevenue, $participant);
+            }
         }
 
         $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
@@ -279,14 +286,52 @@ class ProjectRevenueController extends ApiController
             }
         }
 
-        if($projectRevenue->category->code_ref == 'revenueKwh') {
+        if($projectRevenue->category->code_ref == 'revenueKwh' || $projectRevenue->category->code_ref == 'revenueKwhSplit') {
             foreach($projectRevenue->distribution as $distribution) {
                 $distribution->calculator()->runRevenueKwh();
                 $distribution->save();
             }
         }
 
-        //todo: wm moet hier nog wat met revenueKwhSplit ?
+    }
+
+    public function determineTotalDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)
+    {
+        $dateBeginFromRevenue = Carbon::parse($projectRevenue->date_begin);
+        $dateEndFromRevenue = Carbon::parse($projectRevenue->date_end);
+
+        if (!$dateBeginFromRevenue || !$dateEndFromRevenue) return 0;
+
+        $quantityOfParticipations = 0;
+        $totalDeliveredKwhPeriod = 0;
+
+        $mutations = $participant->mutationsDefinitive;
+        foreach ($mutations as $index => $mutation) {
+            $dateBegin = $dateBeginFromRevenue;
+            $dateEnd = $dateEndFromRevenue;
+
+            $nextMutation = $mutations->get(++$index);
+
+            if($nextMutation) {
+                $dateEnd = Carbon::parse($nextMutation->date_entry)->subDay();
+            }
+
+            $dateEntry = Carbon::parse($mutation->date_entry);
+
+            // If date entry is after date begin then date begin is equal to date entry
+            if($dateEntry > $dateBegin) $dateBegin = $dateEntry;
+
+            $dateEndForPeriod = clone $dateEnd;
+            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
+
+            $quantityOfParticipations += $mutation->quantity;
+
+            $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
+            $totalDeliveredKwhPeriod = $totalDeliveredKwhPeriod + $deliveredKwhPeriod;
+        }
+        $returnParm['quantityOfParticipations'] = $quantityOfParticipations;
+        $returnParm['totalDeliveredKwhPeriod'] = $totalDeliveredKwhPeriod;
+        return $returnParm;
     }
 
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)
@@ -354,11 +399,15 @@ class ProjectRevenueController extends ApiController
             $this->saveDeliveredKwhPeriod($distribution);
             return;
         }
-//todo: wm moet hier nog wat met revenueKwhSplit ?
+        if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
+            return $distribution;
+        }
 
-        // Recalculate values of distribution after saving
-        $distribution->calculator()->runRevenueEuro();
-        $distribution->save();
+        if($projectRevenue->category->code_ref == 'revenueEuro' || $projectRevenue->category->code_ref == 'redemptionEuro') {
+            // Recalculate values of distribution after saving
+            $distribution->calculator()->runRevenueEuro();
+            $distribution->save();
+        }
     }
 
     public function saveDeliveredKwhPeriod(ProjectRevenueDistribution $distribution)
@@ -638,7 +687,7 @@ class ProjectRevenueController extends ApiController
             if ($distribution->status === 'confirmed')
             {
                 // indien Opbrengst Kwh, dan geen voorwaarden inzake adres of IBAN
-                if ($distribution->revenue->category->code_ref === 'revenueKwh') {
+                if ($distribution->revenue->category->code_ref === 'revenueKwh' || $distribution->revenue->category->code_ref === 'revenueKwhSplit') {
                     $distribution->status = 'in-progress';
                     $distribution->save();
                 }else{
@@ -665,14 +714,13 @@ class ProjectRevenueController extends ApiController
             }
         }
 
-//todo: wm moet hier nog wat met revenueKwhSplit ?
         foreach ($distributions as $distribution) {
             //todo WM: moet hier ook niet check op mutation allowed inzake definitieve waardestaten?
             //status moet nu onderhanden zijn (in-progress zijn)
             if ($distribution->status === 'in-progress')
             {
                 // indien Opbrengst Kwh, dan alleen mutation aanmaken en daarna status op Afgehandeld (processed).
-                if ($distribution->revenue->category->code_ref === 'revenueKwh') {
+                if ($distribution->revenue->category->code_ref === 'revenueKwh' || $distribution->revenue->category->code_ref === 'revenueKwhSplit') {
                     $this->createParticipantMutationForRevenueKwh($distribution, $datePayout);
                     $distribution->status = 'processed';
                     $distribution->save();

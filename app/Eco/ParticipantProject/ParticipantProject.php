@@ -9,6 +9,7 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -63,6 +64,10 @@ class ParticipantProject extends Model
     public function legalRepContact()
     {
         return $this->belongsTo(Contact::class);
+    }
+
+    public function projectRevenues(){
+        return $this->hasMany(ProjectRevenue::class, 'participation_id');
     }
 
     public function projectRevenueDistributions()

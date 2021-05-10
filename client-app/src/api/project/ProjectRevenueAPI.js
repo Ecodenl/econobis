@@ -83,20 +83,6 @@ export default {
             });
     },
 
-    // todo: wm opschonen
-    // createEnergySupplierExcel: (revenueId, templateId, energySupplierId, documentName) => {
-    //     const requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}${
-    //         energySupplierId != 0 ? '/' + energySupplierId : ''
-    //     }`;
-    //     console.log(requestUrl);
-    //     return axiosInstance
-    //         .post(requestUrl, { documentName: documentName, templateId: templateId })
-    //         .then(response => response.data.data)
-    //         .catch(error => {
-    //             console.log(error);
-    //         });
-    // },
-
     createEnergySupplierExcel: (revenueId, energySupplierId, documentName) => {
         let requestUrl = '';
         if (energySupplierId == 0) {
@@ -134,12 +120,6 @@ export default {
 
     fetchProjectRevenueDistribution: (id, page) => {
         const requestUrl = `${URL_REVENUE}/${id}/distribution`;
-
-        return axiosInstance.post(requestUrl, { page: page });
-    },
-
-    fetchProjectRevenueParticipants: (id, page) => {
-        const requestUrl = `${URL_REVENUE}/${id}/participants`;
 
         return axiosInstance.post(requestUrl, { page: page });
     },

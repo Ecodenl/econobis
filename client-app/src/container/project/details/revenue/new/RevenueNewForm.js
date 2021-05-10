@@ -16,8 +16,6 @@ const StyledEm = styled.em`
     font-weight: normal;
 `;
 
-// todo: wm moet hier nog wat met revenueKwhSplit ?
-
 const RevenueNew = props => {
     const {
         distributionTypeId,

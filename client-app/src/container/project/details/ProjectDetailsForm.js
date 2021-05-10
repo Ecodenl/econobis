@@ -7,8 +7,6 @@ import ProjectDetailsFormConclusion from './conclusion/ProjectDetailsFormConclus
 import ProjectDetailsFormValueCourse from './value-course/ProjectDetailsFormValueCourse';
 import RevenuesListForm from './revenue/list/RevenuesListForm';
 
-// todo: wm moet hier nog wat met revenueKwhSplit ?
-
 class ProjectDetailsForm extends Component {
     constructor(props) {
         super(props);
@@ -38,8 +36,9 @@ class ProjectDetailsForm extends Component {
                 {this.props.project.projectType && this.props.project.projectType.codeRef !== 'loan' ? (
                     <ProjectDetailsFormValueCourse />
                 ) : null}
-
-                <RevenuesListForm projectId={this.props.project.id} participantId={null} />
+                {this.props.project.projectStatus.codeRef !== 'concept' && (
+                    <RevenuesListForm projectId={this.props.project.id} />
+                )}
                 <ProjectDetailsFormConclusion />
             </div>
         );

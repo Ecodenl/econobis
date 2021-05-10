@@ -32,6 +32,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
             errors: {
                 energySupplierId: false,
                 contactEnergySupplyTypeId: false,
+                memberSince: false,
             },
         };
 
@@ -77,6 +78,14 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
 
         if (validator.isEmpty(contactEnergySupplier.contactEnergySupplyTypeId)) {
             errors.contactEnergySupplyTypeId = true;
+            hasErrors = true;
+        }
+
+        if (
+            contactEnergySupplier.isCurrentSupplier &&
+            (!contactEnergySupplier.memberSince || validator.isEmpty(contactEnergySupplier.memberSince))
+        ) {
+            errors.memberSince = true;
             hasErrors = true;
         }
 
@@ -134,9 +143,10 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                             <InputDate
                                 label="Klant sinds"
                                 name="memberSince"
-                                value={memberSince}
+                                value={memberSince ? memberSince : ''}
                                 onChangeAction={this.handleInputChangeDate}
-                                readOnly={isCurrentSupplier}
+                                required={isCurrentSupplier ? 'required' : ''}
+                                error={this.state.errors.memberSince}
                             />
                             <InputText
                                 label={'EAN electriciteit'}
@@ -169,7 +179,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                             <InputDate
                                 label="Mogelijke overstap datum"
                                 name="switchDate"
-                                value={switchDate}
+                                value={switchDate ? switchDate : ''}
                                 onChangeAction={this.handleInputChangeDate}
                             />
                             <InputText
@@ -185,7 +195,7 @@ class ContactDetailsFormContactEnergySupplierNew extends Component {
                             <InputToggle
                                 label={'Is huidige leverancier'}
                                 name={'isCurrentSupplier'}
-                                value={isCurrentSupplier}
+                                value={Boolean(isCurrentSupplier)}
                                 onChangeAction={this.handleInputChange}
                                 disabled={validator.isEmpty('' + memberSince)}
                             />

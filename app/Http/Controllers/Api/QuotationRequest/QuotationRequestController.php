@@ -125,7 +125,7 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = $data['dateReleased'];
         }
 
-        if ($data['quotationText']) {
+        if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
         }
 
@@ -162,7 +162,7 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = $data['dateReleased'];
         }
 
-        if ($data['quotationText']) {
+        if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
         }
 

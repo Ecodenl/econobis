@@ -4,6 +4,7 @@ namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
 use App\Eco\Campaign\Campaign;
+use App\Eco\Campaign\CampaignResponse;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
@@ -184,6 +185,10 @@ class Contact extends Model
 
     public function campaigns(){
         return $this->belongsToMany(Campaign::class);
+    }
+
+    public function responses(){
+        return $this->hasMany(CampaignResponse::class);
     }
 
     public function documents()

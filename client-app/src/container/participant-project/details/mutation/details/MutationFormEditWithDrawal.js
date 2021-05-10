@@ -13,13 +13,14 @@ import * as PropTypes from 'prop-types';
 import React from 'react';
 
 function MutationFormEditWithDrawal({
+    readOnly,
     participantMutationFromProps,
     participantMutationFromState,
     participantMutationStatusesOptions,
     projectTypeCodeRef,
     handleInputChange,
     handleInputChangeDate,
-    cancelEdit,
+    cancelDetails,
     handleSubmit,
     errors,
     errorMessage,
@@ -34,7 +35,7 @@ function MutationFormEditWithDrawal({
                     className={'col-sm-6 form-group'}
                     value={participantMutationFromProps.type.name}
                 />
-                {participantMutationFromProps.status.codeRef === 'final' ? (
+                {readOnly || participantMutationFromProps.status.codeRef === 'final' ? (
                     <ViewText
                         label={'Status'}
                         id={'status'}
@@ -51,7 +52,6 @@ function MutationFormEditWithDrawal({
                     />
                 )}
             </div>
-
             {projectTypeCodeRef === 'loan' ? null : (
                 <div className="row">
                     <ViewText
@@ -62,9 +62,9 @@ function MutationFormEditWithDrawal({
                     />
                 </div>
             )}
-
             {participantMutationFromProps.status.codeRef === 'interest' && (
                 <MutationFormEditStatusInterest
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -74,9 +74,9 @@ function MutationFormEditWithDrawal({
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
-
             {participantMutationFromProps.status.codeRef === 'option' && (
                 <MutationFormEditStatusOption
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -86,9 +86,9 @@ function MutationFormEditWithDrawal({
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
-
             {participantMutationFromProps.status.codeRef === 'granted' && (
                 <MutationFormEditStatusGranted
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -98,9 +98,9 @@ function MutationFormEditWithDrawal({
                     projectTypeCodeRef={projectTypeCodeRef}
                 />
             )}
-
             {participantMutationFromProps.status.codeRef === 'final' && (
                 <MutationFormEditStatusFinal
+                    readOnly={readOnly}
                     participantMutationFromProps={participantMutationFromProps}
                     participantMutationFromState={participantMutationFromState}
                     handleInputChange={handleInputChange}
@@ -123,8 +123,23 @@ function MutationFormEditWithDrawal({
             />
 
             <div className="pull-right btn-group" role="group">
-                <ButtonText buttonClassName={'btn-default'} buttonText={'Annuleren'} onClickAction={cancelEdit} />
-                <ButtonText buttonText={buttonText} onClickAction={handleSubmit} type={'submit'} value={'Submit'} />
+                {readOnly ? (
+                    <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={cancelDetails} />
+                ) : (
+                    <>
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={cancelDetails}
+                        />
+                        <ButtonText
+                            buttonText={buttonText}
+                            onClickAction={handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
+                    </>
+                )}
             </div>
         </PanelBody>
     );
@@ -140,7 +155,7 @@ MutationFormEditWithDrawal.propTypes = {
     errors: PropTypes.any,
     errorMessage: PropTypes.any,
     participantMutation: PropTypes.any,
-    cancelEdit: PropTypes.any,
+    cancelDetails: PropTypes.any,
     buttonText: PropTypes.string,
     handleSubmit: PropTypes.any,
 };

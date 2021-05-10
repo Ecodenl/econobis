@@ -9,8 +9,6 @@ import PanelFooter from '../../../../../components/panel/PanelFooter';
 import InputText from '../../../../../components/form/InputText';
 
 const EnergySupplierExcelNew = props => {
-    // todo: wm opschonen
-    // const { templateId, energySupplierId, documentName } = props.excel;
     const { energySupplierId, documentName } = props.excel;
 
     let energySupplierOptions = [];
@@ -21,21 +19,6 @@ const EnergySupplierExcelNew = props => {
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
-            {/*todo: wm opschonen*/}
-            {/*<div className="row">*/}
-            {/*    <InputSelect*/}
-            {/*        label={'Excel template'}*/}
-            {/*        name={'templateId'}*/}
-            {/*        options={props.templates}*/}
-            {/*        emptyOption={false}*/}
-            {/*        value={templateId}*/}
-            {/*        onChangeAction={props.handleInputChange}*/}
-            {/*        required={'required'}*/}
-            {/*        error={props.errors.templateId}*/}
-            {/*    />*/}
-            {/*    (Kijk op de Wiki welke template je moet gebruiken voor welke leverancier)*/}
-            {/*</div>*/}
-
             <div className="row">
                 <InputSelect
                     label={'Contacten van Energie Leverancier'}

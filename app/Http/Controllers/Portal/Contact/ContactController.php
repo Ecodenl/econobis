@@ -794,8 +794,8 @@ class ContactController extends ApiController
                 // no linked contactgroups available, then don't show project
             }
 
-            // if project is sce or pcr project and register to project was still allowed at this moment
-            if($project->isSceOrPcrProject && $project->allowRegisterToProject) {
+            // if check postalcode link and project is sce or pcr project and register to project was still allowed at this moment
+            if($project->check_postalcode_link && $project->isSceOrPcrProject && $project->allowRegisterToProject) {
                 // if sce project and no addresses found, than register to project not allowed
                 if($contact->noAddressesFound) {
                     $project->allowRegisterToProject = false;

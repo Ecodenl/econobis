@@ -45,7 +45,10 @@ function StepOnePcr({
             .test(
                 'pcrPostalCode',
                 'Helaas je postcode ligt niet binnen het gebied van potentiele deelnemers',
-                value => value && project.postalcodeLink && project.postalcodeLink.includes(value.substring(0, 4))
+                value =>
+                    value &&
+                    (!project.checkPostalcodeLink ||
+                        (project.postalcodeLink && project.postalcodeLink.includes(value.substring(0, 4))))
             ),
         pcrNumberOfSolarPanels: Yup.number().typeError('Alleen nummers'),
         pcrInputGeneratedNumberOfKwh: Yup.number().typeError('Alleen nummers'),

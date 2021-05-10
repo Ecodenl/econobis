@@ -6,6 +6,7 @@ import InputDate from '../../../../../../components/form/InputDate';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusFinal = ({
+    readOnly,
     participantMutationFromState,
     participantMutationFromProps,
     handleInputChange,
@@ -13,7 +14,6 @@ const MutationFormEditStatusFinal = ({
     errors,
     errorMessage,
     projectTypeCodeRef,
-    participantProjectDateRegister,
     participantInDefinitiveRevenue,
 }) => (
     <React.Fragment>
@@ -95,9 +95,10 @@ const MutationFormEditStatusFinal = ({
                 }
             />
         </div>
+
         <div className="row">
             {projectTypeCodeRef === 'loan' ? (
-                participantInDefinitiveRevenue ? (
+                readOnly || participantInDefinitiveRevenue ? (
                     <ViewText
                         label={'Bedrag definitief'}
                         id={'amountFinal'}
@@ -118,7 +119,7 @@ const MutationFormEditStatusFinal = ({
                         errorMessage={errorMessage.amountFinal}
                     />
                 )
-            ) : participantInDefinitiveRevenue ? (
+            ) : readOnly || participantInDefinitiveRevenue ? (
                 <ViewText
                     label={'Aantal definitief'}
                     id={'quantityFinal'}
@@ -139,7 +140,7 @@ const MutationFormEditStatusFinal = ({
                     errorMessage={errorMessage.quantityFinal}
                 />
             )}
-            {participantInDefinitiveRevenue ? (
+            {readOnly || participantInDefinitiveRevenue ? (
                 <ViewText
                     label={'Ingangsdatum'}
                     id={'dateEntry'}
@@ -151,7 +152,6 @@ const MutationFormEditStatusFinal = ({
                     label={'Ingangsdatum'}
                     name={'dateEntry'}
                     value={participantMutationFromState.dateEntry}
-                    // disabledBefore={participantProjectDateRegister}
                     onChangeAction={handleInputChangeDate}
                     required={'required'}
                     readOnly={participantInDefinitiveRevenue}
@@ -159,29 +159,63 @@ const MutationFormEditStatusFinal = ({
                 />
             )}
         </div>
-        <div className="row">
-            <InputDate
-                label={'Contract retour'}
-                name={'dateContractRetour'}
-                value={participantMutationFromState.dateContractRetour}
-                onChangeAction={handleInputChangeDate}
-            />
-            <InputDate
-                label={'Betaal datum'}
-                name={'datePayment'}
-                value={participantMutationFromState.datePayment}
-                onChangeAction={handleInputChangeDate}
-            />
-        </div>
+        {readOnly ? (
+            <div className="row">
+                <ViewText
+                    label={'Contract retour'}
+                    id={'dateContractRetour'}
+                    className={'col-sm-6 form-group'}
+                    value={
+                        participantMutationFromProps.dateContractRetour
+                            ? moment(participantMutationFromProps.dateContractRetour).format('L')
+                            : ''
+                    }
+                />
+                <ViewText
+                    label={'Betaal datum'}
+                    id={'datePayment'}
+                    className={'col-sm-6 form-group'}
+                    value={
+                        participantMutationFromProps.dateContractRetour
+                            ? moment(participantMutationFromProps.dateContractRetour).format('L')
+                            : ''
+                    }
+                />
+            </div>
+        ) : (
+            <div className="row">
+                <InputDate
+                    label={'Contract retour'}
+                    name={'dateContractRetour'}
+                    value={participantMutationFromState.dateContractRetour}
+                    onChangeAction={handleInputChangeDate}
+                />
+                <InputDate
+                    label={'Betaal datum'}
+                    name={'datePayment'}
+                    value={participantMutationFromState.datePayment}
+                    onChangeAction={handleInputChangeDate}
+                />
+            </div>
+        )}
         <div className="row">
             <div className={'form-group col-md-6'} />
-            <InputText
-                label={'Betalingskenmerk'}
-                id={'paymentReference'}
-                name={'paymentReference'}
-                value={participantMutationFromState.paymentReference}
-                onChangeAction={handleInputChange}
-            />
+            {readOnly ? (
+                <ViewText
+                    label={'Betalingskenmerk'}
+                    id={'paymentReference'}
+                    className={'col-sm-6 form-group'}
+                    value={participantMutationFromProps.paymentReference}
+                />
+            ) : (
+                <InputText
+                    label={'Betalingskenmerk'}
+                    id={'paymentReference'}
+                    name={'paymentReference'}
+                    value={participantMutationFromState.paymentReference}
+                    onChangeAction={handleInputChange}
+                />
+            )}
         </div>
     </React.Fragment>
 );

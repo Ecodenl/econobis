@@ -6,6 +6,7 @@ import InputDate from '../../../../../../components/form/InputDate';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
 
 const MutationFormEditStatusOption = ({
+    readOnly,
     participantMutationFromState,
     participantMutationFromProps,
     handleInputChange,
@@ -15,8 +16,8 @@ const MutationFormEditStatusOption = ({
     projectTypeCodeRef,
 }) => (
     <React.Fragment>
-        {participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) ? (
-            <React.Fragment>
+        {readOnly && participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) && (
+            <>
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <ViewText
@@ -69,6 +70,10 @@ const MutationFormEditStatusOption = ({
                         }
                     />
                 </div>
+            </>
+        )}
+        {!readOnly &&
+            (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) ? (
                 <div className="row">
                     {projectTypeCodeRef === 'loan' ? (
                         <InputText
@@ -104,72 +109,71 @@ const MutationFormEditStatusOption = ({
                         error={errors.dateGranted}
                     />
                 </div>
-            </React.Fragment>
-        ) : (
-            <React.Fragment>
-                <div className="row">
-                    {projectTypeCodeRef === 'loan' ? (
+            ) : (
+                <>
+                    <div className="row">
+                        {projectTypeCodeRef === 'loan' ? (
+                            <ViewText
+                                label={'Bedrag interesse'}
+                                id={'amountInterest'}
+                                className={'col-sm-6 form-group'}
+                                value={MoneyPresenter(participantMutationFromProps.amountInterest)}
+                            />
+                        ) : (
+                            <ViewText
+                                label={'Aantal interesse'}
+                                id={'quantityInterest'}
+                                className={'col-sm-6 form-group'}
+                                value={participantMutationFromProps.quantityInterest}
+                            />
+                        )}
                         <ViewText
-                            label={'Bedrag interesse'}
-                            id={'amountInterest'}
+                            label={'Interessedatum'}
+                            id={'dateInterest'}
                             className={'col-sm-6 form-group'}
-                            value={MoneyPresenter(participantMutationFromProps.amountInterest)}
+                            value={
+                                participantMutationFromProps.dateInterest &&
+                                moment(participantMutationFromProps.dateInterest).format('L')
+                            }
                         />
-                    ) : (
-                        <ViewText
-                            label={'Aantal interesse'}
-                            id={'quantityInterest'}
-                            className={'col-sm-6 form-group'}
-                            value={participantMutationFromProps.quantityInterest}
-                        />
-                    )}
-                    <ViewText
-                        label={'Interessedatum'}
-                        id={'dateInterest'}
-                        className={'col-sm-6 form-group'}
-                        value={
-                            participantMutationFromProps.dateInterest &&
-                            moment(participantMutationFromProps.dateInterest).format('L')
-                        }
-                    />
-                </div>
-                <div className="row">
-                    {projectTypeCodeRef === 'loan' ? (
-                        <InputText
-                            type={'number'}
-                            label={'Bedrag inschrijving'}
-                            id={'amountOption'}
-                            name={'amountOption'}
-                            value={participantMutationFromState.amountOption}
-                            onChangeAction={handleInputChange}
+                    </div>
+                    <div className="row">
+                        {projectTypeCodeRef === 'loan' ? (
+                            <InputText
+                                type={'number'}
+                                label={'Bedrag inschrijving'}
+                                id={'amountOption'}
+                                name={'amountOption'}
+                                value={participantMutationFromState.amountOption}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.amountOption}
+                                errorMessage={errorMessage.amountOption}
+                            />
+                        ) : (
+                            <InputText
+                                type={'number'}
+                                label={'Aantal inschrijving'}
+                                id={'quantityOption'}
+                                name={'quantityOption'}
+                                value={participantMutationFromState.quantityOption}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.quantityOption}
+                                errorMessage={errorMessage.quantityOption}
+                            />
+                        )}
+                        <InputDate
+                            label={'Inschrijvingsdatum'}
+                            name={'dateOption'}
+                            value={participantMutationFromState.dateOption}
+                            onChangeAction={handleInputChangeDate}
                             required={'required'}
-                            error={errors.amountOption}
-                            errorMessage={errorMessage.amountOption}
+                            error={errors.dateOption}
                         />
-                    ) : (
-                        <InputText
-                            type={'number'}
-                            label={'Aantal inschrijving'}
-                            id={'quantityOption'}
-                            name={'quantityOption'}
-                            value={participantMutationFromState.quantityOption}
-                            onChangeAction={handleInputChange}
-                            required={'required'}
-                            error={errors.quantityOption}
-                            errorMessage={errorMessage.quantityOption}
-                        />
-                    )}
-                    <InputDate
-                        label={'Inschrijvingsdatum'}
-                        name={'dateOption'}
-                        value={participantMutationFromState.dateOption}
-                        onChangeAction={handleInputChangeDate}
-                        required={'required'}
-                        error={errors.dateOption}
-                    />
-                </div>
-            </React.Fragment>
-        )}
+                    </div>
+                </>
+            ))}
     </React.Fragment>
 );
 

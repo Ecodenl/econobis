@@ -20,6 +20,7 @@ class Sort extends RequestSort
         'address',
         'measureRequestedId',
         'statusId',
+        'campaign',
     ];
 
     protected $mapping = [
@@ -28,6 +29,7 @@ class Sort extends RequestSort
         'address' => 'addresses.street',
         'statusId' => 'intakes.intake_status_id',
         'measureRequestedId' => 'intake_measure_requested.measure_category_id',
+        'campaign' => 'campaigns.name',
     ];
 
     protected $joins = [
@@ -35,5 +37,6 @@ class Sort extends RequestSort
         'address' => 'address',
         'sourceId' => 'source',
         'measureRequestedId' => 'measureRequested',
+        'campaign' => 'campaign',
     ];
 }

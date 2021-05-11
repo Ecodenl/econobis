@@ -47,6 +47,11 @@ class ContactListAddPersonToGroup extends Component {
                 confirmAction={() => this.props.addPersonToGroup(this.state.personId)}
                 title={`Contact toevoegen aan groep: ${this.props.groupName}`}
             >
+                {this.props.sendEmailNewContactLink ? (
+                    <div className="alert alert-danger" role="alert">
+                        Na toevoegen zal er automatisch een email verzonden worden naar dit contact.
+                    </div>
+                ) : null}
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
                     <div className="row">
                         <InputReactSelect
@@ -82,7 +87,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactListAddPersonToGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactListAddPersonToGroup);

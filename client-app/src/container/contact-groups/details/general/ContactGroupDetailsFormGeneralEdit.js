@@ -11,7 +11,9 @@ import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputSelect from '../../../../components/form/InputSelect';
-import {fetchSystemData} from "../../../../actions/general/SystemDataActions";
+import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
+import InputReactSelect from '../../../../components/form/InputReactSelect';
+import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 
 class ContactGroupDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -27,11 +29,14 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             contactGroupComposedType,
             type,
             dynamicFilterType,
+            sendEmailNewContactLink,
+            emailTemplateIdNewContactLink,
         } = props.contactGroupDetails;
 
         this.state = {
             contactsWithPermission: [],
             contactGroups: [],
+            emailTemplates: [],
             oldName: props.contactGroupDetails.name ? props.contactGroupDetails.name : '',
             contactGroup: {
                 ...props.contactGroupDetails,
@@ -44,11 +49,18 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 contactGroupComposedType: contactGroupComposedType ? contactGroupComposedType : 'one',
                 type: type.id,
                 dynamicFilterType: dynamicFilterType ? dynamicFilterType : 'and',
+                sendEmailNewContactLink: sendEmailNewContactLink ? sendEmailNewContactLink : false,
+                emailTemplateIdNewContactLink: emailTemplateIdNewContactLink ? emailTemplateIdNewContactLink : '',
             },
             errors: {
                 name: false,
+                emailTemplateIdNewContactLink: false,
+            },
+            peekLoading: {
+                emailTemplates: true,
             },
         };
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     componentDidMount() {
@@ -62,6 +74,16 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
+
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(emailTemplates =>
+            this.setState({
+                emailTemplates,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    emailTemplates: false,
+                },
+            })
+        );
     }
 
     handleInputChange = event => {
@@ -77,6 +99,16 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             },
         });
     };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                [name]: selectedOption,
+            },
+        });
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -102,6 +134,13 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             errorMessage = 'Naam moet uniek zijn.';
             errors.name = true;
             hasErrors = true;
+        }
+
+        if (contactGroup.sendEmailNewContactLink == true) {
+            if (!contactGroup.emailTemplateIdNewContactLink) {
+                errors.emailTemplateIdNewContactLink = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({ ...this.state, errors, errorMessage });
@@ -172,6 +211,8 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             editPortal,
             showContactForm,
             type,
+            sendEmailNewContactLink,
+            emailTemplateIdNewContactLink,
         } = this.state.contactGroup;
 
         return (
@@ -343,7 +384,10 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             label="Type"
                             name={'type'}
                             value={type}
-                            options={[{ id: 'dynamic', name: 'Dynamisch' }, { id: 'static', name: 'Statisch' }]}
+                            options={[
+                                { id: 'dynamic', name: 'Dynamisch' },
+                                { id: 'static', name: 'Statisch' },
+                            ]}
                             onChangeAction={this.handleInputChange}
                         />
                     ) : (
@@ -352,6 +396,29 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             name={'type'}
                             value={this.props.contactGroupDetails.type.name}
                             readOnly={true}
+                        />
+                    )}
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={'Verstuur e-mail bij nieuwe contactkoppeling'}
+                        name={'sendEmailNewContactLink'}
+                        value={sendEmailNewContactLink}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    {sendEmailNewContactLink == true && (
+                        <InputReactSelect
+                            label={'Template email nieuwe contactkoppeling'}
+                            divSize={'col-sm-6'}
+                            name={'emailTemplateIdNewContactLink'}
+                            options={this.state.emailTemplates}
+                            value={emailTemplateIdNewContactLink}
+                            onChangeAction={this.handleReactSelectChange}
+                            isLoading={this.state.peekLoading.emailTemplates}
+                            multi={false}
+                            required={sendEmailNewContactLink ? 'required' : ''}
+                            error={this.state.errors.emailTemplateIdNewContactLink}
                         />
                     )}
                 </div>
@@ -400,7 +467,6 @@ const mapStateToProps = state => {
     };
 };
 
-
 const mapDispatchToProps = dispatch => ({
     updateContactGroupDetails: payload => {
         dispatch(updateContactGroupDetails(payload));
@@ -410,7 +476,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactGroupDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupDetailsFormGeneralEdit);

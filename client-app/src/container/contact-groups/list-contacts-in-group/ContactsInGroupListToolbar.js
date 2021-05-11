@@ -17,6 +17,7 @@ class ContactsInGroupListToolbar extends Component {
             showModalAddToGroup: false,
             showModalEmail: false,
             groupName: '',
+            sendEmailNewContactLink: '',
         };
     }
 
@@ -28,7 +29,7 @@ class ContactsInGroupListToolbar extends Component {
 
     componentDidMount() {
         ContactGroupAPI.fetchContactGroup(this.props.groupId).then(payload => {
-            this.setState({ groupName: payload.name });
+            this.setState({ groupName: payload.name, sendEmailNewContactLink: payload.sendEmailNewContactLink });
         });
     }
 
@@ -119,6 +120,7 @@ class ContactsInGroupListToolbar extends Component {
                         closeModalAddToGroup={this.closeModalAddToGroup}
                         addPersonToGroup={this.addPersonToGroup}
                         groupName={this.state.groupName}
+                        sendEmailNewContactLink={this.state.sendEmailNewContactLink}
                     />
                 )}
             </div>
@@ -136,7 +138,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactsInGroupListToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupListToolbar);

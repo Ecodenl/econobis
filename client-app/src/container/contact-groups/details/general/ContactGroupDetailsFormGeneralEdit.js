@@ -54,6 +54,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             },
             errors: {
                 name: false,
+                emailTemplateIdNewContactLink: false,
             },
             peekLoading: {
                 emailTemplates: true,
@@ -133,6 +134,13 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             errorMessage = 'Naam moet uniek zijn.';
             errors.name = true;
             hasErrors = true;
+        }
+
+        if (contactGroup.sendEmailNewContactLink == true) {
+            if (!contactGroup.emailTemplateIdNewContactLink) {
+                errors.emailTemplateIdNewContactLink = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({ ...this.state, errors, errorMessage });
@@ -410,6 +418,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             isLoading={this.state.peekLoading.emailTemplates}
                             multi={false}
                             required={sendEmailNewContactLink ? 'required' : ''}
+                            error={this.state.errors.emailTemplateIdNewContactLink}
                         />
                     )}
                 </div>

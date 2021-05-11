@@ -56,7 +56,7 @@
     "jquery": "^3.4.1",
     "js-file-download": "^0.4.4",
     "loader-utils": "^1.2.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mgr-pdf-viewer-react": "^1.0.1",
     "moment": "^2.23.0",
     "moment-business-days": "^1.1.3",

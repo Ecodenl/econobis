@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// Import TinyMCE
+
+// TinyMCE so the global var exists
+// eslint-disable-next-line no-unused-vars
 import tinymce from 'tinymce/tinymce';
-// A theme is also required
-import 'tinymce/themes/modern/theme';
+// Theme
+import 'tinymce/themes/silver';
+// Toolbar icons
+import 'tinymce/icons/default';
+// Editor styles
+import 'tinymce/skins/ui/oxide/skin.min.css';
 // Any plugins you want to use has to be imported
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
@@ -13,7 +19,6 @@ import 'tinymce/plugins/lists';
 import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/paste';
 import 'tinymce/plugins/pagebreak';
-import 'tinymce/plugins/textcolor';
 
 import { Editor } from '@tinymce/tinymce-react';
 
@@ -31,10 +36,12 @@ const InputTinyMCE = props => {
                 <Editor
                     initialValue={value}
                     init={{
+                        skin: false,
+                        content_css: false,
                         branding: false,
                         language: 'nl',
                         menubar: false,
-                        plugins: 'paste lists advlist link image code table textcolor pagebreak',
+                        plugins: 'paste lists advlist link image code table pagebreak',
                         toolbar:
                             'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
                         height: '300',

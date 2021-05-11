@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\ContactGroup;
 
-use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
@@ -48,6 +48,9 @@ class FullContactGroup extends Resource
             'contactGroupComposedType' => $this->composed_group_type,
             'dynamicFilterType' => $this->dynamic_filter_type,
             'composedOf' => $this->composed_of,
+            'sendEmailNewContactLink' => $this->send_email_new_contact_link,
+            'emailTemplateIdNewContactLink' => $this->email_template_id_new_contact_link,
+            'emailTemplateNewContactLink' => FullEmailTemplate::make($this->whenLoaded('emailTemplateNewContactLink')),
         ];
     }
 }

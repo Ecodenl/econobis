@@ -12,6 +12,10 @@ import ButtonText from '../../../components/button/ButtonText';
 import InputToggle from '../../../components/form/InputToggle';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+import InputReactSelect from '../../../components/form/InputReactSelect';
+import ViewText from '../../../components/form/ViewText';
+import PanelBody from '../../../components/panel/PanelBody';
+import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 
 class ContactGroupNewForm extends Component {
     constructor(props) {
@@ -20,6 +24,7 @@ class ContactGroupNewForm extends Component {
         this.state = {
             contactsWithPermission: [],
             contactGroups: [],
+            emailTemplates: [],
             contactGroup: {
                 id: '',
                 name: '',
@@ -33,12 +38,19 @@ class ContactGroupNewForm extends Component {
                 editPortal: false,
                 contactGroupIds: '',
                 contactGroupComposedType: '',
+                sendEmailNewContactLink: false,
+                emailTemplateIdNewContactLink: '',
             },
             errors: {
                 name: false,
                 nameUnique: false,
+                emailTemplateIdNewContactLink: false,
+            },
+            peekLoading: {
+                emailTemplates: true,
             },
         };
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     componentDidMount() {
@@ -53,6 +65,16 @@ class ContactGroupNewForm extends Component {
         ContactGroupAPI.peekContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
+
+        EmailTemplateAPI.fetchEmailTemplatesPeek().then(emailTemplates =>
+            this.setState({
+                emailTemplates,
+                peekLoading: {
+                    ...this.state.peekLoading,
+                    emailTemplates: false,
+                },
+            })
+        );
     }
 
     handleInputChange = event => {
@@ -68,6 +90,16 @@ class ContactGroupNewForm extends Component {
             },
         });
     };
+
+    handleReactSelectChange(selectedOption, name) {
+        this.setState({
+            ...this.state,
+            contactGroup: {
+                ...this.state.contactGroup,
+                [name]: selectedOption,
+            },
+        });
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -93,6 +125,13 @@ class ContactGroupNewForm extends Component {
             errorMessage = 'Naam moet uniek zijn.';
             errors.name = true;
             hasErrors = true;
+        }
+
+        if (contactGroup.sendEmailNewContactLink == true) {
+            if (!contactGroup.emailTemplateIdNewContactLink) {
+                errors.emailTemplateIdNewContactLink = true;
+                hasErrors = true;
+            }
         }
 
         this.setState({ ...this.state, errors, errorMessage });
@@ -161,6 +200,8 @@ class ContactGroupNewForm extends Component {
             editPortal,
             showContactForm,
             contactGroupIds,
+            sendEmailNewContactLink,
+            emailTemplateIdNewContactLink,
         } = this.state.contactGroup;
 
         return (
@@ -267,6 +308,29 @@ class ContactGroupNewForm extends Component {
                         value={showContactForm}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={'Verstuur e-mail bij nieuwe contactkoppeling'}
+                        name={'sendEmailNewContactLink'}
+                        value={sendEmailNewContactLink}
+                        onChangeAction={this.handleInputChange}
+                    />
+                    {sendEmailNewContactLink == true && (
+                        <InputReactSelect
+                            label={'Template email nieuwe contactkoppeling'}
+                            divSize={'col-sm-6'}
+                            name={'emailTemplateIdNewContactLink'}
+                            options={this.state.emailTemplates}
+                            value={emailTemplateIdNewContactLink}
+                            onChangeAction={this.handleReactSelectChange}
+                            isLoading={this.state.peekLoading.emailTemplates}
+                            multi={false}
+                            required={sendEmailNewContactLink ? 'required' : ''}
+                            error={this.state.errors.emailTemplateIdNewContactLink}
+                        />
+                    )}
                 </div>
 
                 <div className="row">

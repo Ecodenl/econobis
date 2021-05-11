@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ComposedContactGroup;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
 use App\Helpers\RequestInput\RequestInput;
@@ -46,7 +47,7 @@ class ContactGroupController extends Controller
 
     public function show(ContactGroup $contactGroup)
     {
-        $contactGroup->load(['responsibleUser', 'createdBy', 'tasks']);
+        $contactGroup->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
         return FullContactGroup::make($contactGroup);
     }
 
@@ -67,6 +68,8 @@ class ContactGroupController extends Controller
             ->boolean('editPortal')->validate('boolean')->alias('edit_portal')->whenMissing(false)->next()
             ->boolean('showContactForm')->validate('boolean')->alias('show_contact_form')->whenMissing(false)->next()
             ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
+            ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
+            ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->get();
 
         $contactGroupIds = explode(',', $request->contactGroupIds);
@@ -111,6 +114,8 @@ class ContactGroupController extends Controller
             ->string('contactGroupComposedType')->validate('string')->alias('composed_group_type')->whenMissing('one')->onEmpty('one')->next()
             ->string('type')->validate('string|required')->alias('type_id')->next()
             ->string('dynamicFilterType')->validate('string')->alias('dynamic_filter_type')->whenMissing('and')->onEmpty('and')->next()
+            ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
+            ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->get();
 
         //Van dynamisch een statische groep maken
@@ -121,7 +126,7 @@ class ContactGroupController extends Controller
         $contactGroup->fill($data);
         $contactGroup->save();
 
-        return FullContactGroup::make($contactGroup->load('responsibleUser'));
+        return FullContactGroup::make($contactGroup->load('responsibleUser', 'emailTemplateNewContactLink'));
     }
 
     public function destroy(ContactGroup $contactGroup)
@@ -160,7 +165,15 @@ class ContactGroupController extends Controller
     public function addContact(ContactGroup $contactGroup, Contact $contact)
     {
         $this->authorize('addToGroup', $contact);
-        $contactGroup->contacts()->attach($contact);
+
+        if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+            $contactGroup->contacts()->attach($contact);
+
+            if($contactGroup->send_email_new_contact_link){
+                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
+                $contactGroupHelper->processEmailNewContactToGroup();
+            }
+        }
     }
 
     public function removeContact(ContactGroup $contactGroup, Contact $contact)

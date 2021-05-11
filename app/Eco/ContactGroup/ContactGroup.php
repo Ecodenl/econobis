@@ -5,6 +5,7 @@ namespace App\Eco\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -70,6 +71,11 @@ class ContactGroup extends Model
     public function responsibleUser()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function emailTemplateNewContactLink()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_new_contact_link');
     }
 
     public function createdBy()

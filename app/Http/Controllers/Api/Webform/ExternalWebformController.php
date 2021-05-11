@@ -57,6 +57,7 @@ use App\Eco\Team\Team;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
+use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
@@ -1514,9 +1515,21 @@ class ExternalWebformController extends Controller
                 return;
             }
 
-            $contactGroup->contacts()->syncWithoutDetaching($contact);
-            $this->contactGroup = $contactGroup;
-            $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
+            if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+                $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
+            }else{
+                $contactGroup->contacts()->syncWithoutDetaching($contact);
+                $this->contactGroup = $contactGroup;
+                $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
+
+                if($contactGroup->send_email_new_contact_link){
+                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
+                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                    if($processed){
+                        $this->log('Email verzonden naar ' . $contact->id );
+                    }
+                }
+            }
 
         }elseif($data['contact_group_ids']){
             $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids']))->get();
@@ -1528,9 +1541,19 @@ class ExternalWebformController extends Controller
                     if ($contactGroup->type_id != 'static') {
                         $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     }else{
-
-                        $contactGroup->contacts()->syncWithoutDetaching($contact);
-                        $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
+                        if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id );
+                        }else {
+                            $contactGroup->contacts()->syncWithoutDetaching($contact);
+                            $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
+                            if ($contactGroup->send_email_new_contact_link) {
+                                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
+                                $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                                if ($processed) {
+                                    $this->log('Email verzonden naar ' . $contact->id);
+                                }
+                            }
+                        }
                     }
                 }
                 $this->contactGroups = $contactGroups;

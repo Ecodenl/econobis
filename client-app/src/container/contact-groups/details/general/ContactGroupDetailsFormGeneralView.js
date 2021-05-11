@@ -20,6 +20,8 @@ const ContactGroupDetailsFormGeneralView = props => {
         showPortal,
         editPortal,
         showContactForm,
+        sendEmailNewContactLink,
+        emailTemplateNewContactLink = {},
     } = props.contactGroupDetails;
 
     return (
@@ -75,6 +77,20 @@ const ContactGroupDetailsFormGeneralView = props => {
             <div className="row">
                 <ViewText label={'Zichtbaar bij contact'} value={showContactForm ? 'Ja' : 'Nee'} />
                 <ViewText label={'Type'} value={type ? type.name : ''} />
+            </div>
+
+            <div className="row">
+                <ViewText
+                    label={'Verstuur e-mail bij nieuwe contactkoppeling'}
+                    value={sendEmailNewContactLink ? 'Ja' : 'Nee'}
+                />
+
+                {sendEmailNewContactLink == true && (
+                    <ViewText
+                        label={'Template email nieuwe contactkoppeling'}
+                        value={emailTemplateNewContactLink ? emailTemplateNewContactLink.name : ''}
+                    />
+                )}
             </div>
 
             <div className="row">

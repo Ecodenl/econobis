@@ -35,9 +35,9 @@ use Config;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ParticipationProjectController extends Controller
 {
@@ -134,11 +134,17 @@ class ParticipationProjectController extends Controller
             $participation = $this->createParticipantProject($contact, $project, $request, $portalUser, $responsibleUserId);
 
             /**
-             * Alleen aanmaken en mailen als Mollie is uitgeschakeld, als Mollie
+             * Alleen aanmaken bevestigingsformulier en mailen als Mollie is uitgeschakeld, als Mollie
              * is ingeschakeld willen we deze stap pas na de betaling uitvoeren.
              */
-            if(!$project->uses_mollie) {
-                $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $this->participationMutation);
+            try {
+                if(!$project->uses_mollie) {
+                    $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $this->participationMutation);
+                }
+            }
+            catch(\Exception $e){
+                Log::error('Er ging wat fout bij het maken of mailen van bevestigingsformulier. Participation id: ' . $participation->id);
+                Log::error($e->getMessage());
             }
         });
 

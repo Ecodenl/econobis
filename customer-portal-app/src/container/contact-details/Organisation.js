@@ -86,7 +86,7 @@ function ContactDetailsOrganisation({
                                         <Col>
                                             <div className="alert-wrapper">
                                                 <Alert key={'form-general-error-alert'} variant={'warning'}>
-                                                    Niet alle verplichten velden zijn (juist) ingevuld!
+                                                    Niet alle verplichte velden zijn (juist) ingevuld!
                                                 </Alert>
                                             </div>
                                         </Col>

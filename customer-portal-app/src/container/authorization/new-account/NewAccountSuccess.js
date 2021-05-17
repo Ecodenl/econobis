@@ -16,9 +16,10 @@ const NewAccountSuccess = () => {
                             Binnen enkele minuten ontvang je een e-mail met een persoonlijke link. Via deze link kun je
                             je account activeren.
                             <br />
-                            Het kan zijn dat de mail door een spamfilter is geblokkeerd. Spamfilters van bijvoorbeeld
-                            Gmail en Hotmail staan erg "scherp". Kijk even bij de Spam/Reclame of je onze mail daar
-                            terug vindt.
+                            <br />
+                            <strong>Let op:</strong> Het kan zijn dat de mail door een spamfilter is geblokkeerd.
+                            Spamfilters van bijvoorbeeld Gmail en Hotmail staan erg "scherp". Kijk even bij de
+                            Spam/Reclame of je onze mail daar terug vindt.
                         </p>
                         <a onClick={window.close} href="#" className="authorization-link">
                             Sluit venster

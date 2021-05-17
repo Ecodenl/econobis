@@ -217,8 +217,8 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                 <Col>
                                     <div className="alert-wrapper">
                                         <Alert key={'form-general-error-alert'} variant={'warning'}>
-                                            Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
-                                            volgende stap!
+                                            Niet alle verplichte velden zijn ingevuld om verder te gaan naar de volgende
+                                            stap!
                                         </Alert>
                                     </div>
                                 </Col>

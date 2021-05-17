@@ -136,7 +136,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     <Col>
                                         <div className="alert-wrapper">
                                             <Alert key={'form-general-error-alert'} variant={'warning'}>
-                                                Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
+                                                Niet alle verplichte velden zijn ingevuld om verder te gaan naar de
                                                 volgende stap!
                                             </Alert>
                                         </div>

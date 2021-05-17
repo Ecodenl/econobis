@@ -111,13 +111,11 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                             Terug
                                         </Button>
                                         <Button className={'w-button'} size="sm" onClick={handleSubmit}>
-                                            {
-                                                project.usesMollie ? (
-                                                    <>Ga naar bevestigen en betalen</>
-                                                ) : (
-                                                    <>Ga naar bevestigen</>
-                                                )
-                                            }
+                                            {project.usesMollie ? (
+                                                <>Ga naar bevestigen en betalen</>
+                                            ) : (
+                                                <>Ga naar bevestigen</>
+                                            )}
                                         </Button>
                                     </ButtonGroup>
                                 </Col>
@@ -127,7 +125,7 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                     <Col>
                                         <div className="alert-wrapper">
                                             <Alert key={'form-general-error-alert'} variant={'warning'}>
-                                                Niet alle verplichten velden zijn ingevuld om verder te gaan naar de
+                                                Niet alle verplichte velden zijn ingevuld om verder te gaan naar de
                                                 volgende stap!
                                             </Alert>
                                         </div>

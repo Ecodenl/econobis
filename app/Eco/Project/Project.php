@@ -93,7 +93,7 @@ class Project extends Model
     }
 
     public function projectRevenues(){
-        return $this->hasMany(ProjectRevenue::class);
+        return $this->hasMany(ProjectRevenue::class)->whereNull('participation_id');
     }
 
     public function participantsProject(){

@@ -5,8 +5,6 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import ButtonIcon from '../../../../../components/button/ButtonIcon';
 
-// todo: wm moet hier nog wat met revenueKwhSplit ?
-
 class RevenueNewToolbar extends Component {
     constructor(props) {
         super(props);

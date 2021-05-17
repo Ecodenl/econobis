@@ -57,26 +57,28 @@ const RevenueNew = props => {
                             label={'Begin periode'}
                             name={'dateBegin'}
                             value={dateBegin}
-                            onChangeAction={props.handleInputChangeDate}
-                            required={'required'}
-                            error={props.errors.dateBegin}
-                            errorMessage={props.errorMessage.dateBegin}
-                            disabledBefore={props.participation.project.dateInterestBearingKwh}
+                            readOnly={true}
+                            // onChangeAction={props.handleInputChangeDate}
+                            // required={'required'}
+                            // error={props.errors.dateBegin}
+                            // errorMessage={props.errorMessage.dateBegin}
+                            // disabledBefore={props.participation.project.dateInterestBearingKwh}
                         />
                         <InputDate
                             label={'Eind periode'}
                             name={'dateEnd'}
                             value={dateEnd}
-                            onChangeAction={props.handleInputChangeDate}
-                            required={'required'}
-                            error={props.errors.dateEnd}
-                            errorMessage={props.errorMessage.dateEnd}
-                            disabledBefore={dateBegin}
-                            disabledAfter={moment(dateBegin)
-                                .add(1, 'year')
-                                .add(6, 'month')
-                                .add(-1, 'day')
-                                .format('Y-MM-DD')}
+                            readOnly={true}
+                            // onChangeAction={props.handleInputChangeDate}
+                            // required={'required'}
+                            // error={props.errors.dateEnd}
+                            // errorMessage={props.errorMessage.dateEnd}
+                            // disabledBefore={dateBegin}
+                            // disabledAfter={moment(dateBegin)
+                            //     .add(1, 'year')
+                            //     .add(6, 'month')
+                            //     .add(-1, 'day')
+                            //     .format('Y-MM-DD')}
                         />
                     </div>
 
@@ -88,7 +90,7 @@ const RevenueNew = props => {
                         </div>
 
                         <div className="row">
-                            {props.participation.project.kwhStartHighNextRevenue > 0 ? (
+                            {props.participation.kwhStartHighNextRevenue > 0 ? (
                                 <InputText
                                     type={'number'}
                                     label={'Beginstand kWh hoog'}
@@ -117,7 +119,7 @@ const RevenueNew = props => {
                         </div>
 
                         <div className="row">
-                            {props.participation.project.kwhStartHighNextRevenue > 0 ? (
+                            {props.participation.kwhStartHighNextRevenue > 0 ? (
                                 <InputText
                                     type={'number'}
                                     label={'Beginstand kWh laag'}

@@ -70,11 +70,13 @@ class FullParticipantProject extends Resource
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
+                'dateNextRevenueKwh' => $this->date_next_revenue_kwh,
+                'kwhStartHighNextRevenue' => $this->kwh_start_high_next_revenue,
+                'kwhStartLowNextRevenue' => $this->kwh_start_low_next_revenue,
                 'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
                 'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
                 'participantInConfirmedRevenue' => $this->participantInConfirmedRevenue,
-
             ];
     }
 }

@@ -435,6 +435,25 @@ class Contact extends Model
         return false;
     }
 
+    /**
+     * Previous energy supplier
+     * @return int
+     */
+    public function getPreviousContactEnergySupplierIdAttribute()
+    {
+        if(!$this->primaryContactEnergySupplier) {
+            return 0;
+        }
+        $contactEnergySuppliers = $this->contactEnergySuppliers
+            ->whereNotNull('member_since')
+            ->where('member_since', '<', $this->primaryContactEnergySupplier->member_since)
+            ->sortByDesc('member_since');
+        if(count($contactEnergySuppliers) == 0){
+            return 0;
+        }
+        return($contactEnergySuppliers->first()->id);
+    }
+
     public function getPortalSettingsLayoutAssignedAttribute()
     {
         return PortalSettingsLayout::where('is_default', true)->first();

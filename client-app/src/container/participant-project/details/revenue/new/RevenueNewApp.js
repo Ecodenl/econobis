@@ -67,22 +67,47 @@ class RevenueNewApp extends Component {
             axios.spread(participation => {
                 const revenue = this.state.revenue;
                 if (participation) {
-                    revenue.distributionTypeId = 'inPossessionOf';
-                    revenue.dateBegin = participation.project.dateInterestBearingKwh;
-                    revenue.dateEnd = participation.project.dateInterestBearingKwh
-                        ? moment(participation.project.dateInterestBearingKwh)
-                              .endOf('year')
-                              .format('Y-MM-DD')
-                        : '';
-                    revenue.kwhStartHigh = participation.project.kwhStartHighNextRevenue;
-                    revenue.kwhStartLow = participation.project.kwhStartLowNextRevenue;
-                }
+                    console.log(participation);
+                    if (
+                        participation.contact &&
+                        participation.contact.previousContactEnergySupplierId != 0 &&
+                        participation.contact.primaryContactEnergySupplier &&
+                        participation.contact.primaryContactEnergySupplier.memberSince
+                    ) {
+                        console.log(participation.contact.primaryContactEnergySupplier);
+                        const dateSplit = moment(participation.contact.primaryContactEnergySupplier.memberSince)
+                            .subtract(1, 'day')
+                            .format('Y-MM-DD');
+                        let dateBegin =
+                            participation.dateNextRevenueKwh !== null
+                                ? participation.dateNextRevenueKwh
+                                : moment(dateSplit)
+                                      .startOf('year')
+                                      .format('Y-MM-DD');
+                        console.log(dateSplit);
+                        console.log(dateBegin);
+                        if (dateBegin > dateSplit) {
+                            alert('Overstapdatum leverancier kon niet bepaald worden bij contact.');
+                            hashHistory.replace(`/project/deelnemer/${this.props.params.participationId}`);
+                        }
 
-                this.setState({
-                    ...this.state,
-                    participation: participation,
-                    revenue,
-                });
+                        revenue.distributionTypeId = 'inPossessionOf';
+                        revenue.contactEnergySupplierId = participation.contact.previousContactEnergySupplierId;
+                        revenue.dateBegin = dateBegin;
+                        revenue.dateEnd = dateSplit;
+                        revenue.kwhStartHigh = participation.kwhStartHighNextRevenue;
+                        revenue.kwhStartLow = participation.kwhStartLowNextRevenue;
+
+                        this.setState({
+                            ...this.state,
+                            participation: participation,
+                            revenue,
+                        });
+                    } else {
+                        alert('Overstapdatum leverancier kon niet bepaald worden bij contact.');
+                        hashHistory.replace(`/project/deelnemer/${this.props.params.participationId}`);
+                    }
+                }
             })
         );
     }

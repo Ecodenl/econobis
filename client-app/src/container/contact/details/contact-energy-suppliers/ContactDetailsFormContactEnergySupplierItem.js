@@ -80,7 +80,6 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
     //         projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
     //     ).id;
     //
-    //     //todo: WM even als test hier hard gecodeerd?
     //     // const participationId = 348;
     //     // const projectId = 48;
     //     // const hrefNewRevenueKwhSplit = `/project/deelnemer/opbrengst/nieuw/${participationId}/${revenueKwhSplitCategoryId}`;

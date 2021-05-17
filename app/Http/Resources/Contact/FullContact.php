@@ -100,6 +100,7 @@ class FullContact extends Resource
             'collectMandateSignatureDate' => $this->collect_mandate_signature_date,
             'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
+            'previousContactEnergySupplierId' => $this->previous_contact_energy_supplier_id,
         ];
     }
 }

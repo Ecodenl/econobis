@@ -276,26 +276,28 @@ class RevenueFormEdit extends Component {
                         label={'Begin periode'}
                         name={'dateBegin'}
                         value={dateBegin}
-                        onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
-                        error={this.state.errors.dateBegin}
-                        errorMessage={this.state.errorMessage.dateBegin}
-                        disabledBefore={project.dateInterestBearingKwh}
+                        readOnly={true}
+                        // onChangeAction={this.handleInputChangeDate}
+                        // required={'required'}
+                        // error={this.state.errors.dateBegin}
+                        // errorMessage={this.state.errorMessage.dateBegin}
+                        // disabledBefore={project.dateInterestBearingKwh}
                     />
                     <InputDate
                         label={'Eind periode'}
                         name={'dateEnd'}
                         value={dateEnd}
-                        onChangeAction={this.handleInputChangeDate}
-                        required={'required'}
-                        error={this.state.errors.dateEnd}
-                        errorMessage={this.state.errorMessage.dateEnd}
-                        disabledBefore={dateBegin}
-                        disabledAfter={moment(dateBegin)
-                            .add(1, 'year')
-                            .add(6, 'month')
-                            .add(-1, 'day')
-                            .format('Y-MM-DD')}
+                        readOnly={true}
+                        // onChangeAction={this.handleInputChangeDate}
+                        // required={'required'}
+                        // error={this.state.errors.dateEnd}
+                        // errorMessage={this.state.errorMessage.dateEnd}
+                        // disabledBefore={dateBegin}
+                        // disabledAfter={moment(dateBegin)
+                        //     .add(1, 'year')
+                        //     .add(6, 'month')
+                        //     .add(-1, 'day')
+                        //     .format('Y-MM-DD')}
                     />
                 </div>
 

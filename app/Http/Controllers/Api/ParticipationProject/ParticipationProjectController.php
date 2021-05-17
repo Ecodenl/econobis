@@ -197,6 +197,7 @@ class ParticipationProjectController extends ApiController
         ]);
         $participantProject->load([
             'contact',
+            'contact.primaryContactEnergySupplier',
             'project.projectType',
             'project.administration',
             'project.projectValueCourses',

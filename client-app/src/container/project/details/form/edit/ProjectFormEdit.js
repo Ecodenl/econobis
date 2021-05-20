@@ -248,7 +248,10 @@ class ProjectFormEdit extends Component {
             hasErrors = true;
         }
 
-        if (project.isSceProject && validator.isEmpty('' + project.baseProjectCodeRef)) {
+        if (
+            project.isSceProject &&
+            (project.baseProjectCodeRef == null || validator.isEmpty(project.baseProjectCodeRef))
+        ) {
             errors.baseProjectCodeRef = true;
             hasErrors = true;
         }
@@ -635,9 +638,10 @@ class ProjectFormEdit extends Component {
             project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
         }
 
-        // If isSceProject is false, set checkDoubleAddresses and visibleForAllContacts to false and textInfoProjectOnlyMembers to default text
+        // If isSceProject is false, init related fields.
         if (!project.isSceProject) {
             project.checkDoubleAddresses = false;
+            project.baseProjectCodeRef = null;
         }
         if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
             project.checkPostalcodeLink = false;

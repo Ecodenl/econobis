@@ -81,10 +81,12 @@ const ProjectFormViewGeneral = ({
         </div>
         <div className="row">
             <ViewText label={'Controle voor SCE subsidie'} value={isSceProject ? 'Ja' : 'Nee'} />
-            <ViewText
-                label={'Basis project'}
-                value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
-            />
+            {isSceProject == true && (
+                <ViewText
+                    label={'Basis project'}
+                    value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
+                />
+            )}
         </div>
         <div className="row">
             <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />

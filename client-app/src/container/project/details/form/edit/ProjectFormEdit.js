@@ -167,19 +167,6 @@ class ProjectFormEdit extends Component {
         });
     };
 
-    handleInputChangeSubsidyProvided = event => {
-        const target = event.target;
-        const subsidyProvided = target.checked;
-        this.setState({
-            ...this.state,
-            project: {
-                ...this.state.project,
-                subsidyProvided: subsidyProvided,
-                checkDoubleAddresses: subsidyProvided === true ? false : this.state.project.checkDoubleAddresses,
-            },
-        });
-    };
-
     handleInputChangeAdministration = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -651,7 +638,6 @@ class ProjectFormEdit extends Component {
         // If isSceProject is false, set checkDoubleAddresses and visibleForAllContacts to false and textInfoProjectOnlyMembers to default text
         if (!project.isSceProject) {
             project.checkDoubleAddresses = false;
-            project.subsidyProvided = false;
         }
         if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
             project.checkPostalcodeLink = false;
@@ -700,7 +686,6 @@ class ProjectFormEdit extends Component {
             isSceProject,
             baseProjectCodeRef,
             checkDoubleAddresses,
-            subsidyProvided,
             checkPostalcodeLink,
             address,
             postalCode,
@@ -803,7 +788,6 @@ class ProjectFormEdit extends Component {
                     powerKwAvailable={powerKwAvailable}
                     checkDoubleAddresses={checkDoubleAddresses}
                     postalcodeLink={postalcodeLink}
-                    subsidyProvided={subsidyProvided}
                     checkPostalcodeLink={checkPostalcodeLink}
                     requiredParticipants={requiredParticipants}
                     numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}
@@ -826,7 +810,6 @@ class ProjectFormEdit extends Component {
                     visibleForAllContacts={visibleForAllContacts}
                     textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                     handleInputChange={this.handleInputChange}
-                    handleInputChangeSubsidyProvided={this.handleInputChangeSubsidyProvided}
                     handleInputChangeAdministration={this.handleInputChangeAdministration}
                     handleInputChangeDate={this.handleInputChangeDate}
                     handleContactGroupIds={this.handleContactGroupIds}

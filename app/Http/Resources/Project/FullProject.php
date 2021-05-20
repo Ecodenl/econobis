@@ -53,7 +53,6 @@ class FullProject extends Resource
                 'baseProjectCodeRef' => $this->base_project_code_ref,
                 'baseProjectCodeRefWithName' => FullEnumWithIdAndName::make($this->getBaseProjectCodeRef()),
                 'checkDoubleAddresses' => $this->check_double_addresses,
-                'subsidyProvided' => $this->subsidy_provided,
                 'checkPostalcodeLink' => $this->check_postalcode_link,
                 'postalCode' => $this->postal_code,
                 'address' => $this->address,

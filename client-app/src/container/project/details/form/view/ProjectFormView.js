@@ -27,7 +27,6 @@ const ProjectFormView = props => {
         isSceProject,
         baseProjectCodeRefWithName,
         checkDoubleAddresses,
-        subsidyProvided,
         checkPostalcodeLink,
         postalCode,
         address,
@@ -120,7 +119,6 @@ const ProjectFormView = props => {
                 powerKwAvailable={powerKwAvailable}
                 checkDoubleAddresses={checkDoubleAddresses}
                 postalcodeLink={postalcodeLink}
-                subsidyProvided={subsidyProvided}
                 checkPostalcodeLink={checkPostalcodeLink}
                 requiredParticipants={requiredParticipants}
                 numberOfParticipantsStillNeeded={numberOfParticipantsStillNeeded}

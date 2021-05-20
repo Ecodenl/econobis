@@ -17,7 +17,6 @@ const ProjectFormViewGeneral = ({
     requiredParticipants,
     postalcodeLink,
     numberOfParticipantsStillNeeded,
-    subsidyProvided,
     checkPostalcodeLink,
     postalCode,
     address,
@@ -81,7 +80,7 @@ const ProjectFormViewGeneral = ({
             <ViewText label={'Status'} value={projectStatus ? projectStatus.name : ''} />
         </div>
         <div className="row">
-            <ViewText label={'SCE project'} value={isSceProject ? 'Ja' : 'Nee'} />
+            <ViewText label={'Controle voor SCE subsidie'} value={isSceProject ? 'Ja' : 'Nee'} />
             <ViewText
                 label={'Basis project'}
                 value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
@@ -92,7 +91,7 @@ const ProjectFormViewGeneral = ({
             {isSceProject == true && (
                 <ViewText
                     className={'form-group col-sm-6'}
-                    label={'Benodigde aantal deelnemers'}
+                    label={'Benodigd aantal deelnemende leden'}
                     value={requiredParticipants}
                 />
             )}
@@ -103,17 +102,16 @@ const ProjectFormViewGeneral = ({
                     <div className="col-sm-6" />
                     <ViewText
                         className={'form-group col-sm-6'}
-                        label={'Aantal deelnemers nog nodig'}
+                        label={'Aantal deelnemende leden nog nodig'}
                         value={numberOfParticipantsStillNeeded}
                     />
                 </div>
                 <div className="row">
-                    <ViewText label={'Postcoderoos'} value={postalcodeLink} />
-                    <ViewText label={'Controle postcode in postcoderoos'} value={checkPostalcodeLink ? 'Ja' : 'Nee'} />
+                    <ViewText label={'Controle postcoderoosgebied'} value={checkPostalcodeLink ? 'Ja' : 'Nee'} />
+                    <ViewText label={'Postcoderoosgebied'} value={postalcodeLink} />
                 </div>
                 <div className="row">
                     <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />
-                    <ViewText label={'Subsidie toegekend'} value={subsidyProvided ? 'Ja' : 'Nee'} />
                 </div>
             </>
         )}

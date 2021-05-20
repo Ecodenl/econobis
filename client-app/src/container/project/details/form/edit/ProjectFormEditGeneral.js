@@ -26,7 +26,6 @@ const ProjectFormEditGeneral = ({
     requiredParticipants,
     postalcodeLink,
     numberOfParticipantsStillNeeded,
-    subsidyProvided,
     checkPostalcodeLink,
     postalCode,
     address,
@@ -47,7 +46,6 @@ const ProjectFormEditGeneral = ({
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
     handleInputChange,
-    handleInputChangeSubsidyProvided,
     handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
@@ -160,7 +158,7 @@ const ProjectFormEditGeneral = ({
             </div>
             <div className="row">
                 <InputToggle
-                    label={'SCE project'}
+                    label={'Controle voor SCE subsidie'}
                     name={'isSceProject'}
                     value={isSceProject}
                     onChangeAction={handleInputChange}
@@ -188,7 +186,7 @@ const ProjectFormEditGeneral = ({
                 {isSceProject == true && (
                     <ViewText
                         className={'form-group col-sm-6'}
-                        label={'Benodigde aantal deelnemers'}
+                        label={'Benodigd aantal deelnemende leden'}
                         value={requiredParticipants}
                     />
                 )}
@@ -200,21 +198,21 @@ const ProjectFormEditGeneral = ({
                         <div className="form-group col-sm-6" />
                         <ViewText
                             className={'form-group col-sm-6'}
-                            label={'Aantal deelnemers nog nodig'}
+                            label={'Aantal deelnemende leden nog nodig'}
                             value={numberOfParticipantsStillNeeded}
                         />
                     </div>
                     <div className="row">
-                        <InputText
-                            label={'Postcoderoos'}
-                            name={'postalcodeLink'}
-                            value={postalcodeLink}
-                            onChangeAction={handleInputChange}
-                        />
                         <InputToggle
-                            label={'Controle postcode in postcoderoos'}
+                            label={'Controle postcoderoosgebied'}
                             name={'checkPostalcodeLink'}
                             value={checkPostalcodeLink}
+                            onChangeAction={handleInputChange}
+                        />
+                        <InputText
+                            label={'Postcoderoosgebied'}
+                            name={'postalcodeLink'}
+                            value={postalcodeLink}
                             onChangeAction={handleInputChange}
                         />
                     </div>
@@ -224,13 +222,6 @@ const ProjectFormEditGeneral = ({
                             name={'checkDoubleAddresses'}
                             value={checkDoubleAddresses}
                             onChangeAction={handleInputChange}
-                            disabled={subsidyProvided}
-                        />
-                        <InputToggle
-                            label={'Subsidie toegekend'}
-                            name={'subsidyProvided'}
-                            value={subsidyProvided}
-                            onChangeAction={handleInputChangeSubsidyProvided}
                         />
                     </div>
                 </>

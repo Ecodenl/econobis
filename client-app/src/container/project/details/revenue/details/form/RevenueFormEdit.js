@@ -37,9 +37,12 @@ class RevenueFormEdit extends Component {
             payoutTypeId,
             kwhStart,
             kwhEnd,
+            kwhTotal,
             kwhStartHigh,
+            kwhEndCalendarYearHigh,
             kwhEndHigh,
             kwhStartLow,
+            kwhEndCalendarYearLow,
             kwhEndLow,
             revenue,
             datePayed,
@@ -63,9 +66,12 @@ class RevenueFormEdit extends Component {
                 payoutTypeId: payoutTypeId ? payoutTypeId : '',
                 kwhStart: kwhStart ? kwhStart : 0,
                 kwhEnd: kwhEnd ? kwhEnd : 0,
+                kwhTotal: kwhTotal ? kwhTotal : 0,
                 kwhStartHigh: kwhStartHigh ? kwhStartHigh : '',
+                kwhEndCalendarYearHigh: kwhEndCalendarYearHigh ? kwhEndCalendarYearHigh : '',
                 kwhEndHigh: kwhEndHigh ? kwhEndHigh : '',
                 kwhStartLow: kwhStartLow ? kwhStartLow : '',
+                kwhEndCalendarYearLow: kwhEndCalendarYearLow ? kwhEndCalendarYearLow : '',
                 kwhEndLow: kwhEndLow ? kwhEndLow : '',
                 revenue: revenue ? revenue : '',
                 datePayed: datePayed ? moment(datePayed).format('Y-MM-DD') : '',
@@ -81,6 +87,8 @@ class RevenueFormEdit extends Component {
                 dateEnd: false,
                 dateReference: false,
                 payoutTypeId: false,
+                kwhEndCalendarYearHigh: false,
+                kwhEndCalendarYearLow: false,
                 kwhEndHigh: false,
                 kwhEndLow: false,
                 payAmount: false,
@@ -92,6 +100,8 @@ class RevenueFormEdit extends Component {
                 payoutTypeId: '',
                 dateBegin: '',
                 dateEnd: '',
+                kwhEndCalendarYearHigh: '',
+                kwhEndCalendarYearLow: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
                 payAmount: '',
@@ -144,6 +154,7 @@ class RevenueFormEdit extends Component {
             const kwhEnd =
                 (this.state.revenue.kwhEndLow ? parseFloat(this.state.revenue.kwhEndLow) : 0) +
                 (this.state.revenue.kwhEndHigh ? parseFloat(this.state.revenue.kwhEndHigh) : 0);
+            const kwhTotal = kwhEnd - kwhStart;
 
             this.setState({
                 ...this.state,
@@ -151,6 +162,7 @@ class RevenueFormEdit extends Component {
                     ...this.state.revenue,
                     kwhStart,
                     kwhEnd,
+                    kwhTotal,
                 },
             });
         }, 200);
@@ -319,15 +331,60 @@ class RevenueFormEdit extends Component {
             }
         }
         if (this.props.revenue.category.codeRef === 'revenueKwh') {
-            if (parseFloat(revenue.kwhEndHigh) < parseFloat(revenue.kwhStartHigh)) {
+            if (
+                (revenue.kwhEndHigh ? parseFloat(revenue.kwhEndHigh) : 0) <
+                (revenue.kwhStartHigh ? parseFloat(revenue.kwhStartHigh) : 0)
+            ) {
                 errors.kwhEndHigh = true;
                 errorMessage.kwhEndHigh = 'Eindstand kWh hoog mag niet lager zijn dan Beginstand kWh hoog.';
                 hasErrors = true;
             }
-            if (parseFloat(revenue.kwhEndLow) < parseFloat(revenue.kwhStartLow)) {
+            if (
+                (revenue.kwhEndLow ? parseFloat(revenue.kwhEndLow) : 0) <
+                (revenue.kwhStartLow ? parseFloat(revenue.kwhStartLow) : 0)
+            ) {
                 errors.kwhEndLow = true;
                 errorMessage.kwhEndLow = 'Eindstand kWh laag mag niet lager zijn dan Beginstand kWh laag.';
                 hasErrors = true;
+            }
+            if (
+                (revenue.kwhEndCalendarYearHigh && revenue.kwhEndCalendarYearHigh > 0) ||
+                (revenue.kwhEndCalendarYearLow && revenue.kwhEndCalendarYearLow > 0)
+            ) {
+                if (
+                    (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) <
+                    (revenue.kwhStartHigh ? parseFloat(revenue.kwhStartHigh) : 0)
+                ) {
+                    errors.kwhEndCalendarYearHigh = true;
+                    errorMessage.kwhEndCalendarYearHigh =
+                        'Eindstand kWh 31-12 hoog mag niet lager zijn dan Beginstand kWh hoog.';
+                    hasErrors = true;
+                }
+                if (
+                    (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) >
+                    (revenue.kwhEndHigh ? parseFloat(revenue.kwhEndHigh) : 0)
+                ) {
+                    errors.kwhEndHigh = true;
+                    errorMessage.kwhEndHigh = 'Eindstand kWh 31-12 hoog mag niet hoger zijn dan Beginstand kWh hoog.';
+                    hasErrors = true;
+                }
+                if (
+                    (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) <
+                    (revenue.kwhStartLow ? parseFloat(revenue.kwhStartLow) : 0)
+                ) {
+                    errors.kwhEndCalendarYearLow = true;
+                    errorMessage.kwhEndCalendarYearLow =
+                        'Eindstand kWh 31-12 laag mag niet lager zijn dan Beginstand kWh laag.';
+                    hasErrors = true;
+                }
+                if (
+                    (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) >
+                    (revenue.kwhEndLow ? parseFloat(revenue.kwhEndLow) : 0)
+                ) {
+                    errors.kwhEndLow = true;
+                    errorMessage.kwhEndLow = 'Eindstand kWh 31-12 laag mag niet hoger zijn dan Eindstand kWh laag.';
+                    hasErrors = true;
+                }
             }
         }
 
@@ -392,9 +449,12 @@ class RevenueFormEdit extends Component {
             dateConfirmed,
             kwhStart,
             kwhEnd,
+            kwhTotal,
             kwhStartHigh,
+            kwhEndCalendarYearHigh,
             kwhEndHigh,
             kwhStartLow,
+            kwhEndCalendarYearLow,
             kwhEndLow,
             revenue,
             datePayed,
@@ -585,17 +645,7 @@ class RevenueFormEdit extends Component {
                                     onChangeAction={this.handleInputChange}
                                 />
                             )}
-                            <InputText
-                                type={'number'}
-                                label={'Eindstand kWh hoog'}
-                                name={'kwhEndHigh'}
-                                value={kwhEndHigh}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.kwhEndHigh}
-                                errorMessage={this.state.errorMessage.kwhEndHigh}
-                            />
                         </div>
-
                         <div className="row">
                             {this.props.revenue.project.kwhStartLowNextRevenue > 0 ? (
                                 <InputText
@@ -614,6 +664,37 @@ class RevenueFormEdit extends Component {
                                     onChangeAction={this.handleInputChange}
                                 />
                             )}
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh op 31-12 hoog'}
+                                name={'kwhEndCalendarYearHigh'}
+                                value={kwhEndCalendarYearHigh}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.kwhEndCalendarYearHigh}
+                                errorMessage={this.state.errorMessage.kwhEndCalendarYearHigh}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh hoog'}
+                                name={'kwhEndHigh'}
+                                value={kwhEndHigh}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.kwhEndHigh}
+                                errorMessage={this.state.errorMessage.kwhEndHigh}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh op 31-12 laag'}
+                                name={'kwhEndCalendarYearLow'}
+                                value={kwhEndCalendarYearLow}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.kwhEndCalendarYearLow}
+                                errorMessage={this.state.errorMessage.kwhEndCalendarYearLow}
+                            />
                             <InputText
                                 type={'number'}
                                 label={'Eindstand kWh laag'}
@@ -649,6 +730,13 @@ class RevenueFormEdit extends Component {
                                 name={'payoutKwh'}
                                 value={payoutKwh}
                                 onChangeAction={this.handleInputChange}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Totaal productie kWh'}
+                                name={'kwhTotal'}
+                                value={kwhTotal}
+                                readOnly={true}
                             />
                         </div>
                     </React.Fragment>

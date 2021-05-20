@@ -224,7 +224,10 @@ class ProjectNewApp extends Component {
             hasErrors = true;
         }
 
-        if (project.isSceProject && validator.isEmpty('' + project.baseProjectCodeRef)) {
+        if (
+            project.isSceProject &&
+            (project.baseProjectCodeRef == null || validator.isEmpty(project.baseProjectCodeRef))
+        ) {
             errors.baseProjectCodeRef = true;
             hasErrors = true;
         }
@@ -287,13 +290,17 @@ class ProjectNewApp extends Component {
             project.contactGroupIds = '';
         }
 
-        // If isSceProject is false, set checkDoubleAddresses to empty string
+        if (validator.isEmpty('' + project.baseProjectCodeRef)) {
+            project.baseProjectCodeRef = null;
+        }
+        // If isSceProject is false, init related fields.
         if (!project.isSceProject) {
+            project.baseProjectCodeRef = null;
             project.checkDoubleAddresses = false;
             project.visibleForAllContacts = false;
             project.textInfoProjectOnlyMembers = defaultTextInfoProjectOnlyMembers;
         }
-        if (!project.isSceProject && project.projectType.codeRef !== 'postalcode_link_capital') {
+        if (!project.isSceProject) {
             project.checkPostalcodeLink = false;
         }
 

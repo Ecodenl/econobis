@@ -104,15 +104,17 @@ const ProjectFormNewGeneral = ({
                 onChangeAction={handleInputChange}
                 disabled={!useSceProject}
             />
-            <InputSelect
-                label={'Basis project'}
-                name={'baseProjectCodeRef'}
-                options={baseProjectCodeRefs}
-                value={baseProjectCodeRef}
-                onChangeAction={handleInputChange}
-                required={isSceProject ? 'required' : ''}
-                error={errors.baseProjectCodeRef}
-            />
+            {isSceProject == true && (
+                <InputSelect
+                    label={'Basis project'}
+                    name={'baseProjectCodeRef'}
+                    options={baseProjectCodeRefs}
+                    value={baseProjectCodeRef}
+                    onChangeAction={handleInputChange}
+                    required={isSceProject ? 'required' : ''}
+                    error={errors.baseProjectCodeRef}
+                />
+            )}
         </div>
 
         <div className="row">

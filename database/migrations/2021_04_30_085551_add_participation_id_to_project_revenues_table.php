@@ -23,6 +23,8 @@ class AddParticipationIdToProjectRevenuesTable extends Migration
             $table->foreign('participation_id')
                 ->references('id')->on('participation_project')
                 ->onDelete('restrict');
+            $table->integer('kwh_end_calendar_year_high')->nullable()->after('kwh_start_high');
+            $table->integer('kwh_end_calendar_year_low')->nullable()->after('kwh_start_low');
         });
     }
 
@@ -33,6 +35,20 @@ class AddParticipationIdToProjectRevenuesTable extends Migration
      */
     public function down()
     {
+        if (Schema::hasColumn('project_revenues', 'kwh_end_calendar_year_low'))
+        {
+            Schema::table('project_revenues', function (Blueprint $table)
+            {
+                $table->dropColumn('kwh_end_calendar_year_low');
+            });
+        }
+        if (Schema::hasColumn('project_revenues', 'kwh_end_calendar_year_high'))
+        {
+            Schema::table('project_revenues', function (Blueprint $table)
+            {
+                $table->dropColumn('kwh_end_calendar_year_high');
+            });
+        }
         if (Schema::hasColumn('project_revenues', 'participation_id'))
         {
             Schema::table('project_revenues', function (Blueprint $table)

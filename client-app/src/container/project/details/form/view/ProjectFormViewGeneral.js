@@ -17,7 +17,6 @@ const ProjectFormViewGeneral = ({
     requiredParticipants,
     postalcodeLink,
     numberOfParticipantsStillNeeded,
-    subsidyProvided,
     checkPostalcodeLink,
     postalCode,
     address,
@@ -113,7 +112,6 @@ const ProjectFormViewGeneral = ({
                 </div>
                 <div className="row">
                     <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />
-                    <ViewText label={'Subsidie toegekend'} value={subsidyProvided ? 'Ja' : 'Nee'} />
                 </div>
             </>
         )}

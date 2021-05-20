@@ -26,7 +26,6 @@ const ProjectFormEditGeneral = ({
     requiredParticipants,
     postalcodeLink,
     numberOfParticipantsStillNeeded,
-    subsidyProvided,
     checkPostalcodeLink,
     postalCode,
     address,
@@ -47,7 +46,6 @@ const ProjectFormEditGeneral = ({
     visibleForAllContacts,
     textInfoProjectOnlyMembers,
     handleInputChange,
-    handleInputChangeSubsidyProvided,
     handleInputChangeAdministration,
     handleInputChangeDate,
     handleContactGroupIds,
@@ -224,13 +222,6 @@ const ProjectFormEditGeneral = ({
                             name={'checkDoubleAddresses'}
                             value={checkDoubleAddresses}
                             onChangeAction={handleInputChange}
-                            disabled={subsidyProvided}
-                        />
-                        <InputToggle
-                            label={'Subsidie toegekend'}
-                            name={'subsidyProvided'}
-                            value={subsidyProvided}
-                            onChangeAction={handleInputChangeSubsidyProvided}
                         />
                     </div>
                 </>

@@ -38,6 +38,7 @@ class MailboxNewForm extends Component {
                 primary: false,
                 isActive: true,
                 linkContactFromEmailToAddress: false,
+                emailMarkAsSeen: true,
             },
             errors: {
                 name: false,
@@ -176,6 +177,7 @@ class MailboxNewForm extends Component {
             primary,
             isActive,
             linkContactFromEmailToAddress,
+            emailMarkAsSeen,
         } = this.state.mailbox;
 
         return (
@@ -354,6 +356,12 @@ class MailboxNewForm extends Component {
                                 value={imapInboxPrefix}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.imapInboxPrefix}
+                            />
+                            <InputToggle
+                                label={'Zet email als gelezen op server'}
+                                name={'emailMarkAsSeen'}
+                                value={emailMarkAsSeen}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                     </PanelBody>

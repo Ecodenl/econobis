@@ -176,7 +176,7 @@ class MailFetcher
 
     private function fetchEmail($mailId)
     {
-        $emailData = $this->imap->getMail($mailId);
+        $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
 //        dd($emailData);
         try {
             $dateSent = Carbon::parse( $emailData->date ) ;

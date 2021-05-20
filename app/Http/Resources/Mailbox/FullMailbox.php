@@ -48,6 +48,7 @@ class FullMailbox extends Resource
             'isActive' => $this->is_active,
             'primary' => $this->primary,
             'linkContactFromEmailToAddress' => $this->link_contact_from_email_to_address,
+            'emailMarkAsSeen' => $this->email_mark_as_seen,
         ];
     }
 }

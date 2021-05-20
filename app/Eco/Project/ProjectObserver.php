@@ -18,7 +18,7 @@ class ProjectObserver
         $userId = Auth::id();
         $project->created_by_id = $userId;
 
-        if(!$project->administration->uses_mollie){
+        if(!$project->administration || !$project->administration->uses_mollie){
             $project->uses_mollie = false;
         }
     }
@@ -28,7 +28,7 @@ class ProjectObserver
         $userId = Auth::id();
         $project->updated_by_id = $userId;
 
-        if(!$project->administration->uses_mollie){
+        if(!$project->administration || !$project->administration->uses_mollie){
             $project->uses_mollie = false;
         }
     }

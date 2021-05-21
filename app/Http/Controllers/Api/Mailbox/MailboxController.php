@@ -62,6 +62,7 @@ class MailboxController extends Controller
             ->boolean('isActive')->alias('is_active')->next()
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
+            ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
         $mailbox = new Mailbox($data);
@@ -108,6 +109,7 @@ class MailboxController extends Controller
             ->boolean('isActive')->alias('is_active')->next()
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
+            ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->next()
             ->get();
 
         $mailbox->login_tries = 0;

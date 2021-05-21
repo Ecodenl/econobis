@@ -26,6 +26,7 @@ const MailboxDetailsFormGeneralView = props => {
         isActive,
         primary,
         linkContactFromEmailToAddress,
+        emailMarkAsSeen,
     } = props.mailboxDetails;
     const usesMailgun = outgoingServerType === 'mailgun' ? true : false;
 
@@ -107,6 +108,7 @@ const MailboxDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
+                        <ViewText label={'Zet email als gelezen op server'} value={emailMarkAsSeen ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
                 <PanelHeader>

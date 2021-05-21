@@ -157,6 +157,7 @@ class MailboxDetailsFormGeneralEdit extends Component {
             primary,
             isActive,
             linkContactFromEmailToAddress,
+            emailMarkAsSeen,
         } = this.state.mailbox;
 
         return (
@@ -339,6 +340,12 @@ class MailboxDetailsFormGeneralEdit extends Component {
                                 value={imapInboxPrefix}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.imapInboxPrefix}
+                            />
+                            <InputToggle
+                                label={'Zet email als gelezen op server'}
+                                name={'emailMarkAsSeen'}
+                                value={emailMarkAsSeen}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                     </PanelBody>

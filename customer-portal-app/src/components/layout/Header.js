@@ -102,7 +102,9 @@ function Header({ location, history }) {
                             <ThemeSettingsConsumer>
                                 {({ currentThemeSettings }) => (
                                     <div className="header-logo">
-                                        <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
+                                        {currentThemeSettings.portal_logo_file_name !== undefined && (
+                                            <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
+                                        )}
                                     </div>
                                 )}
                             </ThemeSettingsConsumer>

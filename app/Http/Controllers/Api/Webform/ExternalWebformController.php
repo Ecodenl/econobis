@@ -1002,7 +1002,7 @@ class ExternalWebformController extends Controller
         $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
 
         $iban = $this->checkIban($data['iban'], 'persoon.');
-        $contact = Contact::create([
+        $contactNew = Contact::create([
             'type_id' => 'person',
             'status_id' => 'webform',
             'created_with' => 'webform',
@@ -1027,7 +1027,7 @@ class ExternalWebformController extends Controller
             else $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
         }
         $person = Person::create([
-            'contact_id' => $contact->id,
+            'contact_id' => $contactNew->id,
             'title_id' => $titleValidator($data['title_id']),
             'initials' => $data['initials'],
             'first_name' => $data['first_name'],
@@ -1036,7 +1036,8 @@ class ExternalWebformController extends Controller
             'date_of_birth' => $data['date_of_birth'] ?: null,
         ]);
 
-        $this->log('Persoon met id ' . $person->id . ' aangemaakt.');
+        // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
+        $contact = Contact::find($contactNew->id);
 
         // Overige gegevens aan persoon hangen
         $this->addAddressToContact($data, $contact);

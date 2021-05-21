@@ -13,31 +13,33 @@ use Illuminate\Support\Facades\Mail;
 
 class ContactGroupHelper
 {
+    private $contactGroup;
+    private $contact;
+    private $responsibleUser;
+    private $cooperativeName;
 
     public function __construct(ContactGroup $contactGroup, Contact $contact)
     {
-        $this->contact_group = $contactGroup;
+        $this->contactGroup = $contactGroup;
         $this->contact = $contact;
         $this->responsibleUser = $contactGroup->responsibleUser;
         $this->cooperativeName = PortalSettings::get('cooperativeName');
-
     }
 
     public function processEmailNewContactToGroup(){
         set_time_limit(0);
-
         // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
         // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
         (new EmailHelper())->setConfigToDefaultMailbox();
 
-        if (!$this->contact_group) {
+        if (!$this->contactGroup) {
             return false;
         }
         if (!$this->contact) {
             return false;
         }
 
-        $emailTemplate = EmailTemplate::find($this->contact_group->email_template_id_new_contact_link);
+        $emailTemplate = EmailTemplate::find($this->contactGroup->email_template_id_new_contact_link);
         if (!$emailTemplate) {
             return false;
         }
@@ -67,9 +69,9 @@ class ContactGroupHelper
             $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $this->contact);
         }
-        if($this->contact_group) {
-            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'groep', $this->contact_group);
-            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'groep', $this->contact_group);
+        if($this->contactGroup) {
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'groep', $this->contactGroup);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'groep', $this->contactGroup);
         }
 
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'portal' );

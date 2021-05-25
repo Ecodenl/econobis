@@ -100,11 +100,14 @@ function Header({ location, history }) {
                     <Row>
                         <Col xs={6}>
                             <ThemeSettingsConsumer>
-                                {({ currentThemeSettings }) => (
-                                    <div className="header-logo">
-                                        <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
-                                    </div>
-                                )}
+                                {({ currentThemeSettings }) =>
+                                    currentThemeSettings &&
+                                    currentThemeSettings.portal_logo_file_name !== undefined && (
+                                        <div className="header-logo">
+                                            <Image src={`images/${currentThemeSettings.portal_logo_file_name}`} />
+                                        </div>
+                                    )
+                                }
                             </ThemeSettingsConsumer>
                         </Col>
                         <Col xs={6}>

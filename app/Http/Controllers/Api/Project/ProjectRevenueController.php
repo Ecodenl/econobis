@@ -324,8 +324,14 @@ class ProjectRevenueController extends ApiController
                 $totalSumOfParticipationsAndDaysEndCalendarYear = $totalSumOfParticipationsAndDaysEndCalendarYear + $totalDeliveredKwhPeriodEndCalendarYear;
             }
             // Save returns per Kwh period
-            $delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $totalDeliveredKwhPeriodThisParticipant, 2);
-            $delivered_kwh_end_calendar_year = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $totalDeliveredKwhPeriodThisParticipantEndCalendarYear, 2);
+            $delivered_kwh = 0;
+            if($totalSumOfParticipationsAndDays != 0){
+                $delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $totalDeliveredKwhPeriodThisParticipant, 2);
+            }
+            $delivered_kwh_end_calendar_year = 0;
+            if($totalSumOfParticipationsAndDaysEndCalendarYear != 0){
+                $delivered_kwh_end_calendar_year = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $totalDeliveredKwhPeriodThisParticipantEndCalendarYear, 2);
+            }
 
             $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant);
 
@@ -399,7 +405,7 @@ class ProjectRevenueController extends ApiController
         $quantityOfParticipationsEndCalendarYear = 0;
         $totalDeliveredKwhPeriodEndCalendarYear = 0;
 
-        $mutations = $participant->mutationsDefinitive;
+        $mutations = $participant->mutationsDefinitiveForKhwPeriod;
         foreach ($mutations as $index => $mutation) {
             $dateBegin = $dateBeginFromRevenue;
             $dateEnd = $dateEndFromRevenue;
@@ -420,7 +426,7 @@ class ProjectRevenueController extends ApiController
             $quantityOfParticipations += $mutation->quantity;
 
             $kwhEndCalendarYear = ($projectRevenue->kwh_end_calendar_year_high ? $projectRevenue->kwh_end_calendar_year_high : 0) + ($projectRevenue->kwh_end_calendar_year_low ? $projectRevenue->kwh_end_calendar_year_low : 0);
-            if( $kwhEndCalendarYear > 1
+            if( $kwhEndCalendarYear > 0
                 && $dateBegin < $dateEndCalendarYearFromRevenue
                 && $dateEnd > $dateEndCalendarYearFromRevenue ) {
                 $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
@@ -541,10 +547,8 @@ class ProjectRevenueController extends ApiController
 
         $quantityOfParticipations = 0;
 
-        $mutations = $distribution->participation->mutationsDefinitive;
-
+        $mutations = $distribution->participation->mutationsDefinitiveForKhwPeriod;
         foreach ($mutations as $index => $mutation) {
-            echo '---<br/>';
             $dateBegin = $dateBeginFromRevenue;
             $dateEnd = $dateEndFromRevenue;
 
@@ -564,7 +568,7 @@ class ProjectRevenueController extends ApiController
             $quantityOfParticipations += $mutation->quantity;
 
             $kwhEndCalendarYear = ($revenue->kwh_end_calendar_year_high ? $revenue->kwh_end_calendar_year_high : 0) + ($revenue->kwh_end_calendar_year_low ? $revenue->kwh_end_calendar_year_low : 0);
-            if( $kwhEndCalendarYear > 1
+            if( $kwhEndCalendarYear > 0
                 && $dateBegin < $dateEndCalendarYearFromRevenue
                 && $dateEnd > $dateEndCalendarYearFromRevenue ) {
                 $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
@@ -684,7 +688,7 @@ class ProjectRevenueController extends ApiController
         ProjectRevenue $projectRevenue
     )
     {
-        $energySupplierIds = array_unique($projectRevenue->distribution()->pluck('es_id')->toArray());
+        $energySupplierIds = array_unique($projectRevenue->distribution()->whereNotNull('es_id')->pluck('es_id')->toArray());
         foreach ($energySupplierIds as $energySupplierId) {
             $energySupplier = EnergySupplier::find($energySupplierId);
             $this->createEnergySupplierExcel($request, $projectRevenue, $energySupplier, true);

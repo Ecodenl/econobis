@@ -97,6 +97,22 @@ class ParticipantProject extends Model
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'asc');
     }
 
+    public function mutationsDefinitiveForKhwPeriod()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        $mutationTypeFirstDesposit = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $this->project->projectType->id)->first();
+        $mutationTypeWithDrawal = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $this->project->projectType->id)->first();
+        $mutationTypes = [];
+        if($mutationTypeFirstDesposit) {
+            array_push($mutationTypes, $mutationTypeFirstDesposit->id);
+        }
+        if($mutationTypeWithDrawal) {
+            array_push($mutationTypes, $mutationTypeWithDrawal->id);
+        }
+
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->whereIn('type_id', $mutationTypes)->orderBy('date_entry', 'asc');
+    }
+
     public function obligationNumbers()
     {
         return $this->hasMany(ObligationNumber::class, 'participation_id');

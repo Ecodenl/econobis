@@ -66,7 +66,7 @@ class RevenueFormEdit extends Component {
                 payoutTypeId: payoutTypeId ? payoutTypeId : '',
                 kwhStart: kwhStart ? kwhStart : 0,
                 kwhEnd: kwhEnd ? kwhEnd : 0,
-                kwhTotal: kwhTotal ? kwhTotal : 0,
+                kwhTotal: (kwhEnd ? kwhEnd : 0) - (kwhStart ? kwhStart : 0),
                 kwhStartHigh: kwhStartHigh ? kwhStartHigh : '',
                 kwhEndCalendarYearHigh: kwhEndCalendarYearHigh ? kwhEndCalendarYearHigh : '',
                 kwhEndHigh: kwhEndHigh ? kwhEndHigh : '',

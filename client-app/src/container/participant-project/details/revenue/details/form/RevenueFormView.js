@@ -21,12 +21,16 @@ const RevenueFormView = props => {
         kwhStart,
         kwhEnd,
         kwhStartHigh,
+        kwhEndCalendarYearHigh,
         kwhEndHigh,
         kwhStartLow,
+        kwhEndCalendarYearLow,
         kwhEndLow,
         category,
         payoutKwh,
     } = props.revenue;
+
+    const kwhTotal = kwhEnd - kwhStart;
 
     return (
         <div>
@@ -56,11 +60,25 @@ const RevenueFormView = props => {
 
                 <div className="row" onClick={props.switchToEdit}>
                     <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && kwhStartHigh} />
-                    <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
                 </div>
 
                 <div className="row" onClick={props.switchToEdit}>
                     <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && kwhStartLow} />
+                </div>
+
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText
+                        label={'Eindstand kWh op 31-12 hoog'}
+                        value={kwhEndCalendarYearHigh && kwhEndCalendarYearHigh}
+                    />
+                    <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
+                </div>
+
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText
+                        label={'Eindstand kWh op 31-12 laag'}
+                        value={kwhEndCalendarYearLow && kwhEndCalendarYearLow}
+                    />
                     <ViewText label={'Eindstand kWh laag'} value={kwhEndLow && kwhEndLow} />
                 </div>
 
@@ -81,6 +99,7 @@ const RevenueFormView = props => {
                                 })
                         }
                     />
+                    <ViewText label={'Totaal productie kWh'} value={kwhTotal && kwhTotal} />
                 </div>
             </React.Fragment>
         </div>

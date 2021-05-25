@@ -18,9 +18,12 @@ const RevenueNew = props => {
         dateEnd,
         kwhStart,
         kwhEnd,
+        kwhTotal,
         kwhStartHigh,
+        kwhEndCalendarYearHigh,
         kwhEndHigh,
         kwhStartLow,
+        kwhEndCalendarYearLow,
         kwhEndLow,
         categoryId,
         payoutKwh,
@@ -107,15 +110,6 @@ const RevenueNew = props => {
                                     onChangeAction={props.handleInputChange}
                                 />
                             )}
-                            <InputText
-                                type={'number'}
-                                label={'Eindstand kWh hoog'}
-                                name={'kwhEndHigh'}
-                                value={kwhEndHigh}
-                                onChangeAction={props.handleInputChange}
-                                error={props.errors.kwhEndHigh}
-                                errorMessage={props.errorMessage.kwhEndHigh}
-                            />
                         </div>
 
                         <div className="row">
@@ -136,6 +130,38 @@ const RevenueNew = props => {
                                     onChangeAction={props.handleInputChange}
                                 />
                             )}
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh op 31-12 hoog'}
+                                name={'kwhEndCalendarYearHigh'}
+                                value={kwhEndCalendarYearHigh}
+                                onChangeAction={props.handleInputChange}
+                                error={props.errors.kwhEndCalendarYearHigh}
+                                errorMessage={props.errorMessage.kwhEndCalendarYearHigh}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh hoog'}
+                                name={'kwhEndHigh'}
+                                value={kwhEndHigh}
+                                onChangeAction={props.handleInputChange}
+                                error={props.errors.kwhEndHigh}
+                                errorMessage={props.errorMessage.kwhEndHigh}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Eindstand kWh op 31-12 laag'}
+                                name={'kwhEndCalendarYearLow'}
+                                value={kwhEndCalendarYearLow}
+                                onChangeAction={props.handleInputChange}
+                                error={props.errors.kwhEndCalendarYearLow}
+                                errorMessage={props.errorMessage.kwhEndCalendarYearLow}
+                            />
                             <InputText
                                 type={'number'}
                                 label={'Eindstand kWh laag'}
@@ -177,6 +203,13 @@ const RevenueNew = props => {
                                     })
                                 }
                                 onChangeAction={props.handleInputChange}
+                            />
+                            <InputText
+                                type={'number'}
+                                label={'Totaal productie kWh'}
+                                name={'kwhTotal'}
+                                value={kwhTotal}
+                                readOnly={true}
                             />
                         </div>
                     </React.Fragment>

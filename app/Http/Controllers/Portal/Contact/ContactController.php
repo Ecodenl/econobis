@@ -747,7 +747,8 @@ class ContactController extends ApiController
                 if ($project->requiresContactGroups()) {
                     $contactInRequiredContactGroup = false;
                     foreach ($project->requiresContactGroups as $contactGroup) {
-                        if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
+                        $allContacts = (array_unique($contactGroup->getAllContacts()->pluck('id')->toArray()));
+                        if(in_array($contact->id, $allContacts)) {
                             $contactInRequiredContactGroup = true;
                             continue;
                         }

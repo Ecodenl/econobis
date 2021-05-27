@@ -19,9 +19,9 @@ const EmailNewForm = ({
     handleInputChange,
     handleTextChange,
     addAttachment,
+    addDocument,
     deleteAttachment,
 }) => {
-
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <EmailNewFormGeneral
@@ -44,6 +44,7 @@ const EmailNewForm = ({
             <EmailAttachments
                 attachments={email.attachments}
                 addAttachment={addAttachment}
+                addDocument={addDocument}
                 deleteAttachment={deleteAttachment}
             />
         </form>

@@ -6,6 +6,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
 import Panel from '../../../../components/panel/Panel';
+import EmailAttachmentsDocument from './EmailAttachmentsDocument';
 
 class EmailAttachments extends Component {
     constructor(props) {
@@ -13,6 +14,7 @@ class EmailAttachments extends Component {
 
         this.state = {
             showNew: false,
+            selectDocument: false,
         };
     }
 
@@ -22,14 +24,34 @@ class EmailAttachments extends Component {
         });
     };
 
+    toggleSelectDocument = () => {
+        this.setState({
+            selectDocument: !this.state.selectDocument,
+        });
+    };
+
     render() {
         return (
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Bijlagen</span>
-                    <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                        <span className="glyphicon glyphicon-plus" />
-                    </a>
+                    <div className="nav navbar-nav btn-group pull-right" role="group">
+                        <button className="btn btn-link" data-toggle="dropdown">
+                            <span className="glyphicon glyphicon-plus" />
+                        </button>
+                        <ul className="dropdown-menu">
+                            <li>
+                                <a className="btn" onClick={this.toggleSelectDocument}>
+                                    Kies een document
+                                </a>
+                            </li>
+                            <li>
+                                <a className="btn" onClick={this.toggleShowNew}>
+                                    Upload bijlage
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
@@ -43,6 +65,12 @@ class EmailAttachments extends Component {
                             <EmailAttachmentsNew
                                 toggleShowNew={this.toggleShowNew}
                                 addAttachment={this.props.addAttachment}
+                            />
+                        )}
+                        {this.state.selectDocument && (
+                            <EmailAttachmentsDocument
+                                toggleSelectDocument={this.toggleSelectDocument}
+                                addDocument={this.props.addDocument}
                             />
                         )}
                     </div>

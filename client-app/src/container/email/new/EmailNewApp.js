@@ -226,6 +226,28 @@ class EmailNewApp extends Component {
             },
         });
     }
+    addDocument(documentId) {
+        if (documentId) {
+            DocumentDetailsAPI.fetchDocumentDetails(documentId).then(payload => {
+                if (payload.data.data.contact) {
+                    EmailAddressAPI.fetchPrimaryEmailAddressId(payload.data.data.contact.id).then(payload => {
+                        this.setState({
+                            ...this.state,
+                            email: {
+                                ...this.state.email,
+                                to: payload.join(','),
+                            },
+                        });
+                    });
+                }
+                let filename = payload.data.data.filename ? payload.data.data.filename : 'bijlage.pdf';
+
+                DocumentDetailsAPI.download(documentId).then(payload => {
+                    this.addAttachment([new File([payload.data], filename)]);
+                });
+            });
+        }
+    }
 
     deleteAttachment(attachmentName) {
         this.setState({
@@ -384,6 +406,7 @@ class EmailNewApp extends Component {
                             handleInputChange={this.handleInputChange}
                             handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
+                            addDocument={this.addDocument}
                             deleteAttachment={this.deleteAttachment}
                         />
                     </div>

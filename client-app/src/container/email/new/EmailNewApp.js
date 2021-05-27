@@ -57,6 +57,7 @@ class EmailNewApp extends Component {
         this.handleBccIds = this.handleBccIds.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
         this.addAttachment = this.addAttachment.bind(this);
+        this.addDocumentAsAttachment = this.addDocumentAsAttachment.bind(this);
         this.deleteAttachment = this.deleteAttachment.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -226,20 +227,10 @@ class EmailNewApp extends Component {
             },
         });
     }
-    addDocument(documentId) {
+
+    addDocumentAsAttachment(documentId) {
         if (documentId) {
             DocumentDetailsAPI.fetchDocumentDetails(documentId).then(payload => {
-                if (payload.data.data.contact) {
-                    EmailAddressAPI.fetchPrimaryEmailAddressId(payload.data.data.contact.id).then(payload => {
-                        this.setState({
-                            ...this.state,
-                            email: {
-                                ...this.state.email,
-                                to: payload.join(','),
-                            },
-                        });
-                    });
-                }
                 let filename = payload.data.data.filename ? payload.data.data.filename : 'bijlage.pdf';
 
                 DocumentDetailsAPI.download(documentId).then(payload => {
@@ -406,7 +397,7 @@ class EmailNewApp extends Component {
                             handleInputChange={this.handleInputChange}
                             handleTextChange={this.handleTextChange}
                             addAttachment={this.addAttachment}
-                            addDocument={this.addDocument}
+                            addDocumentAsAttachment={this.addDocumentAsAttachment}
                             deleteAttachment={this.deleteAttachment}
                         />
                     </div>

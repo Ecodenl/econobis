@@ -70,7 +70,7 @@ class EmailAttachments extends Component {
                         {this.state.selectDocument && (
                             <EmailAttachmentsDocument
                                 toggleSelectDocument={this.toggleSelectDocument}
-                                addDocument={this.props.addDocument}
+                                addDocumentAsAttachment={this.props.addDocumentAsAttachment}
                             />
                         )}
                     </div>

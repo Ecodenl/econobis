@@ -19,7 +19,7 @@ const EmailNewForm = ({
     handleInputChange,
     handleTextChange,
     addAttachment,
-    addDocument,
+    addDocumentAsAttachment,
     deleteAttachment,
 }) => {
     return (
@@ -44,7 +44,7 @@ const EmailNewForm = ({
             <EmailAttachments
                 attachments={email.attachments}
                 addAttachment={addAttachment}
-                addDocument={addDocument}
+                addDocumentAsAttachment={addDocumentAsAttachment}
                 deleteAttachment={deleteAttachment}
             />
         </form>

@@ -30,6 +30,12 @@ class ProjectFormGeneral extends Component {
         });
     };
 
+    toggleCustomerPortalSettings = () => {
+        this.setState({
+            showCustomerPortalSettings: !this.state.showCustomerPortalSettings,
+        });
+    };
+
     onDivEnter() {
         this.setState({
             activeDiv: 'panel-grey',
@@ -53,9 +59,17 @@ class ProjectFormGeneral extends Component {
             >
                 <PanelBody>
                     {this.state.showEdit && this.props.permissions.manageProject ? (
-                        <ProjectFormEdit switchToView={this.switchToView} />
+                        <ProjectFormEdit
+                            switchToView={this.switchToView}
+                            showCustomerPortalSettings={this.state.showCustomerPortalSettings}
+                            toggleCustomerPortalSettings={this.toggleCustomerPortalSettings}
+                        />
                     ) : (
-                        <ProjectFormView switchToEdit={this.switchToEdit} />
+                        <ProjectFormView
+                            switchToEdit={this.switchToEdit}
+                            showCustomerPortalSettings={this.state.showCustomerPortalSettings}
+                            toggleCustomerPortalSettings={this.toggleCustomerPortalSettings}
+                        />
                     )}
                 </PanelBody>
             </Panel>

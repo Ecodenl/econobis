@@ -87,12 +87,11 @@ const ProjectFormView = props => {
         transactionCostsPercentage3,
     } = props.project;
     return (
-        <section
-            onClick={
-                projectStatus.codeRef === 'concept' || projectStatus.codeRef === 'active' ? props.switchToEdit : null
-            }
-        >
+        <>
             <ProjectFormViewGeneral
+                switchToEdit={props.switchToEdit}
+                showCustomerPortalSettings={props.showCustomerPortalSettings}
+                toggleCustomerPortalSettings={props.toggleCustomerPortalSettings}
                 name={name}
                 code={code}
                 description={description}
@@ -144,63 +143,70 @@ const ProjectFormView = props => {
                 transactionCostsAmount3={transactionCostsAmount3}
                 transactionCostsPercentage3={transactionCostsPercentage3}
             />
+            <section
+                onClick={
+                    projectStatus.codeRef === 'concept' || projectStatus.codeRef === 'active'
+                        ? props.switchToEdit
+                        : null
+                }
+            >
+                {projectType && projectType.codeRef === 'loan' ? (
+                    <ProjectFormViewLoan
+                        amountOfLoanNeeded={amountOfLoanNeeded}
+                        minAmountLoan={minAmountLoan}
+                        maxAmountLoan={maxAmountLoan}
+                        amountDefinitive={amountDefinitive}
+                        amountGranted={amountGranted}
+                        amountOptioned={amountOptioned}
+                        amountInteressed={amountInteressed}
+                    />
+                ) : null}
 
-            {projectType && projectType.codeRef === 'loan' ? (
-                <ProjectFormViewLoan
-                    amountOfLoanNeeded={amountOfLoanNeeded}
-                    minAmountLoan={minAmountLoan}
-                    maxAmountLoan={maxAmountLoan}
-                    amountDefinitive={amountDefinitive}
-                    amountGranted={amountGranted}
-                    amountOptioned={amountOptioned}
-                    amountInteressed={amountInteressed}
-                />
-            ) : null}
+                {projectType && projectType.codeRef === 'obligation' ? (
+                    <ProjectFormViewObligation
+                        participationWorth={participationWorth}
+                        totalParticipations={totalParticipations}
+                        participationsDefinitive={participationsDefinitive}
+                        participationsGranted={participationsGranted}
+                        participationsOptioned={participationsOptioned}
+                        participationsInteressed={participationsInteressed}
+                        powerKwAvailable={powerKwAvailable}
+                        minParticipations={minParticipations}
+                        maxParticipations={maxParticipations}
+                        isParticipationTransferable={isParticipationTransferable}
+                        valueCourses={valueCourses}
+                    />
+                ) : null}
 
-            {projectType && projectType.codeRef === 'obligation' ? (
-                <ProjectFormViewObligation
-                    participationWorth={participationWorth}
-                    totalParticipations={totalParticipations}
-                    participationsDefinitive={participationsDefinitive}
-                    participationsGranted={participationsGranted}
-                    participationsOptioned={participationsOptioned}
-                    participationsInteressed={participationsInteressed}
-                    powerKwAvailable={powerKwAvailable}
-                    minParticipations={minParticipations}
-                    maxParticipations={maxParticipations}
-                    isParticipationTransferable={isParticipationTransferable}
-                    valueCourses={valueCourses}
-                />
-            ) : null}
+                {(projectType && projectType.codeRef === 'capital') ||
+                (projectType && projectType.codeRef === 'postalcode_link_capital') ? (
+                    <ProjectFormViewCapital
+                        participationWorth={participationWorth}
+                        totalParticipations={totalParticipations}
+                        participationsDefinitive={participationsDefinitive}
+                        participationsGranted={participationsGranted}
+                        participationsOptioned={participationsOptioned}
+                        participationsInteressed={participationsInteressed}
+                        powerKwAvailable={powerKwAvailable}
+                        minParticipations={minParticipations}
+                        maxParticipations={maxParticipations}
+                        isParticipationTransferable={isParticipationTransferable}
+                        valueCourses={valueCourses}
+                    />
+                ) : null}
 
-            {(projectType && projectType.codeRef === 'capital') ||
-            (projectType && projectType.codeRef === 'postalcode_link_capital') ? (
-                <ProjectFormViewCapital
-                    participationWorth={participationWorth}
-                    totalParticipations={totalParticipations}
-                    participationsDefinitive={participationsDefinitive}
-                    participationsGranted={participationsGranted}
-                    participationsOptioned={participationsOptioned}
-                    participationsInteressed={participationsInteressed}
-                    powerKwAvailable={powerKwAvailable}
-                    minParticipations={minParticipations}
-                    maxParticipations={maxParticipations}
-                    isParticipationTransferable={isParticipationTransferable}
-                    valueCourses={valueCourses}
-                />
-            ) : null}
-
-            {projectType && projectType.codeRef === 'postalcode_link_capital' ? (
-                <ProjectFormViewPostalcodeLinkCapital
-                    postalcodeLink={postalcodeLink}
-                    ean={ean}
-                    taxReferral={taxReferral}
-                    eanManager={eanManager}
-                    warrantyOrigin={warrantyOrigin}
-                    eanSupply={eanSupply}
-                />
-            ) : null}
-        </section>
+                {projectType && projectType.codeRef === 'postalcode_link_capital' ? (
+                    <ProjectFormViewPostalcodeLinkCapital
+                        postalcodeLink={postalcodeLink}
+                        ean={ean}
+                        taxReferral={taxReferral}
+                        eanManager={eanManager}
+                        warrantyOrigin={warrantyOrigin}
+                        eanSupply={eanSupply}
+                    />
+                ) : null}
+            </section>
+        </>
     );
 };
 

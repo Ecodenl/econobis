@@ -631,6 +631,8 @@ class ProjectFormEdit extends Component {
                 this.props.fetchProject(project.id);
                 this.props.switchToView();
             });
+        } else if (!this.props.showCustomerPortalSettings) {
+            this.props.toggleCustomerPortalSettings();
         }
     };
 
@@ -732,6 +734,8 @@ class ProjectFormEdit extends Component {
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <ProjectFormEditGeneral
+                    showCustomerPortalSettings={this.props.showCustomerPortalSettings}
+                    toggleCustomerPortalSettings={this.props.toggleCustomerPortalSettings}
                     name={name}
                     code={code}
                     description={description}

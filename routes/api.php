@@ -254,6 +254,7 @@ Route::namespace('Api')
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
 
         Route::get('document/grid', 'Document\DocumentController@grid');
+        Route::get('document/peek', 'Document\DocumentController@peek');
         Route::get('document/{document}', 'Document\DocumentController@show');
         Route::get('document/{document}/download', 'Document\DocumentController@download');
         Route::post('document/{document}/delete', 'Document\DocumentController@destroy');

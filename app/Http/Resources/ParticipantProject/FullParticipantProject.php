@@ -9,6 +9,7 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\Project\FullProject;
+use App\Http\Resources\Project\GridProjectRevenue;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -69,10 +70,13 @@ class FullParticipantProject extends Resource
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
+                'dateNextRevenueKwh' => $this->date_next_revenue_kwh,
+                'kwhStartHighNextRevenue' => $this->kwh_start_high_next_revenue,
+                'kwhStartLowNextRevenue' => $this->kwh_start_low_next_revenue,
                 'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
+                'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
                 'participantInConfirmedRevenue' => $this->participantInConfirmedRevenue,
-
             ];
     }
 }

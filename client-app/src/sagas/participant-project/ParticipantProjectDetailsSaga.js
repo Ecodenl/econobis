@@ -12,6 +12,12 @@ export function* fetchParticipantProjectDetailsSaga({ payload }) {
             type: 'FETCH_PARTICIPANT_PROJECT_DETAILS_SUCCESS',
             participantProjectDetails,
         });
+        // todo: wm check of dit nog nodig is?
+        const projectId = participantProjectDetails.projectId;
+        yield put({
+            type: 'FETCH_PROJECT',
+            id: projectId,
+        });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
         yield put({ type: 'FETCH_PARTICIPANT_PROJECT_DETAILS_ERROR', error });

@@ -6,6 +6,8 @@ export default {
     fetchParticipantProject: id => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}`;
 
+        if (id === undefined) return null;
+
         return axiosInstance
             .get(requestUrl)
             .then(response => response.data.data)

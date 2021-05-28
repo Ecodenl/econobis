@@ -26,9 +26,9 @@ const RevenuesListForm = ({
 
     if (projectStatus.codeRef !== 'active') {
         disabled = true;
-        revenueTitleEuro = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
-        revenueTitleKwh = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
-        redemptionTitleEuro = 'Aflossing verdeling kan alleen bij status actief worden toegevoegd';
+        revenueTitleEuro = 'Opbrengst verdeling kan alleen bij projectstatus actief worden toegevoegd';
+        revenueTitleKwh = 'Opbrengst verdeling kan alleen bij projectstatus actief worden toegevoegd';
+        redemptionTitleEuro = 'Aflossing verdeling kan alleen bij projectstatus actief worden toegevoegd';
     }
 
     const revenueEuroCategoryId = projectRevenueCategories.find(

@@ -39,7 +39,7 @@ const InputText = props => {
                     id={id}
                     placeholder={placeholder}
                     name={name}
-                    value={value}
+                    value={value ? value : ''}
                     onClick={onClickAction}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}

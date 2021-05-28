@@ -9,6 +9,7 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -65,6 +66,10 @@ class ParticipantProject extends Model
         return $this->belongsTo(Contact::class);
     }
 
+    public function projectRevenues(){
+        return $this->hasMany(ProjectRevenue::class, 'participation_id');
+    }
+
     public function projectRevenueDistributions()
     {
         return $this->hasMany(ProjectRevenueDistribution::class, 'participation_id');
@@ -90,6 +95,22 @@ class ParticipantProject extends Model
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
 
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'asc');
+    }
+
+    public function mutationsDefinitiveForKhwPeriod()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        $mutationTypeFirstDesposit = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $this->project->projectType->id)->first();
+        $mutationTypeWithDrawal = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $this->project->projectType->id)->first();
+        $mutationTypes = [];
+        if($mutationTypeFirstDesposit) {
+            array_push($mutationTypes, $mutationTypeFirstDesposit->id);
+        }
+        if($mutationTypeWithDrawal) {
+            array_push($mutationTypes, $mutationTypeWithDrawal->id);
+        }
+
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->whereIn('type_id', $mutationTypes)->orderBy('date_entry', 'asc');
     }
 
     public function obligationNumbers()

@@ -21,6 +21,7 @@ class FullProjectRevenue extends Resource
         return
             [
                 'id' => $this->id,
+                'participationId' => $this->participation_id,
                 'typeId' => $this->type_id,
                 'type' => GenericResource::make($this->whenLoaded('type')),
                 'distributionTypeId' => $this->distribution_type_id,
@@ -36,8 +37,10 @@ class FullProjectRevenue extends Resource
                 'kwhStart' => $this->kwh_start,
                 'kwhEnd' => $this->kwh_end,
                 'kwhStartHigh' => $this->kwh_start_high,
+                'kwhEndCalendarYearHigh' => $this->kwh_end_calendar_year_high,
                 'kwhEndHigh' => $this->kwh_end_high,
                 'kwhStartLow' => $this->kwh_start_low,
+                'kwhEndCalendarYearLow' => $this->kwh_end_calendar_year_low,
                 'kwhEndLow' => $this->kwh_end_low,
                 'kwhResult' => $this->kwh_result,
                 'revenue' => $this->revenue,

@@ -39,7 +39,7 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.projectTypeId,
                 },
             };
-        case 'CLEAR_FILTER_CONTACTS':
+        case 'CLEAR_FILTER_PROJECTS':
             return {
                 ...state,
                 ...filtersReducerDefaultState,

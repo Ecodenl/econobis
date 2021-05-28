@@ -98,7 +98,9 @@ class ProjectsListApp extends Component {
                 <div className="panel panel-default col-md-12">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <ProjectsListToolbar />
+                            <ProjectsListToolbar
+                                resetProjectFilters={() => this.resetProjectFilters()}
+                            />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <ProjectsList

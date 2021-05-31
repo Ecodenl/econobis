@@ -402,11 +402,6 @@ class RevenueDistributionForm extends Component {
                                         buttonText={'Selecteer preview rapportage'}
                                         onClickAction={() => this.toggleShowCheckboxList('createReport')}
                                     />
-                                    <ButtonText
-                                        buttonText={'Selecteer preview opbrengst verdeling'}
-                                        onClickAction={() => this.toggleShowCheckboxList('createInvoices')}
-                                        buttonClassName={'btn-primary'}
-                                    />
                                 </React.Fragment>
                             ) : null)}
                     </div>
@@ -457,38 +452,6 @@ class RevenueDistributionForm extends Component {
                                             <ButtonText
                                                 buttonText={'Preview rapportage'}
                                                 onClickAction={this.checkDistributionRevenueReport}
-                                                type={'submit'}
-                                                value={'Submit'}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </PanelBody>
-                        </Panel>
-                    ) : null}
-                    {this.state.showCheckboxList && this.state.createType === 'createInvoices' ? (
-                        <Panel>
-                            <PanelBody>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <InputDate
-                                            label={'Uitkeringsdatum'}
-                                            name="datePayout"
-                                            value={this.state.datePayout}
-                                            onChangeAction={this.handleInputChangeDate}
-                                            required={'required'}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <div className="margin-10-top pull-right btn-group" role="group">
-                                            <ButtonText
-                                                buttonClassName={'btn-default'}
-                                                buttonText={'Annuleren'}
-                                                onClickAction={this.toggleShowCheckboxList}
-                                            />
-                                            <ButtonText
-                                                buttonText={'Opbrengst verdelen'}
-                                                onClickAction={this.checkDistributionRevenueInvoices}
                                                 type={'submit'}
                                                 value={'Submit'}
                                             />

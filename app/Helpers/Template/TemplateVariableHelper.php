@@ -1392,9 +1392,6 @@ class TemplateVariableHelper
                     case 'processed':
                         return 'Verwerkt';
                         break;
-                    case 'processed2':
-                        return 'Via tussentijds';
-                        break;
                     default:
                         return '**onbepaald**';
                         break;

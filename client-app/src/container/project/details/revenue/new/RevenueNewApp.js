@@ -4,7 +4,6 @@ import { hashHistory } from 'react-router';
 
 import RevenueNewToolbar from './RevenueNewToolbar';
 import RevenueNewForm from './RevenueNewForm';
-
 import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
 import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 import Panel from '../../../../../components/panel/Panel';
@@ -29,9 +28,12 @@ class RevenueNewApp extends Component {
                 payoutTypeId: '',
                 kwhStart: 0,
                 kwhEnd: 0,
+                kwhTotal: 0,
                 kwhStartHigh: '',
+                kwhEndCalendarYearHigh: '',
                 kwhEndHigh: '',
                 kwhStartLow: '',
+                kwhEndCalendarYearLow: '',
                 kwhEndLow: '',
                 revenue: '',
                 datePayed: '',
@@ -47,6 +49,8 @@ class RevenueNewApp extends Component {
                 dateEnd: false,
                 dateReference: false,
                 payoutTypeId: false,
+                kwhEndCalendarYearHigh: false,
+                kwhEndCalendarYearLow: false,
                 kwhEndHigh: false,
                 kwhEndLow: false,
                 payAmount: false,
@@ -58,6 +62,8 @@ class RevenueNewApp extends Component {
                 payoutTypeId: '',
                 dateBegin: '',
                 dateEnd: '',
+                kwhEndCalendarYearHigh: '',
+                kwhEndCalendarYearLow: '',
                 kwhEndHigh: '',
                 kwhEndLow: '',
                 payAmount: '',
@@ -160,6 +166,7 @@ class RevenueNewApp extends Component {
             const kwhEnd =
                 (this.state.revenue.kwhEndLow ? parseFloat(this.state.revenue.kwhEndLow) : 0) +
                 (this.state.revenue.kwhEndHigh ? parseFloat(this.state.revenue.kwhEndHigh) : 0);
+            const kwhTotal = kwhEnd - kwhStart;
 
             this.setState({
                 ...this.state,
@@ -167,6 +174,7 @@ class RevenueNewApp extends Component {
                     ...this.state.revenue,
                     kwhStart,
                     kwhEnd,
+                    kwhTotal,
                 },
             });
         }, 200);
@@ -339,15 +347,60 @@ class RevenueNewApp extends Component {
         }
 
         if (category.codeRef === 'revenueKwh') {
-            if (parseFloat(revenue.kwhEndHigh) < parseFloat(revenue.kwhStartHigh)) {
+            if (
+                (revenue.kwhEndHigh ? parseFloat(revenue.kwhEndHigh) : 0) <
+                (revenue.kwhStartHigh ? parseFloat(revenue.kwhStartHigh) : 0)
+            ) {
                 errors.kwhEndHigh = true;
                 errorMessage.kwhEndHigh = 'Eindstand kWh hoog mag niet lager zijn dan Beginstand kWh hoog.';
                 hasErrors = true;
             }
-            if (parseFloat(revenue.kwhEndLow) < parseFloat(revenue.kwhStartLow)) {
+            if (
+                (revenue.kwhEndLow ? parseFloat(revenue.kwhEndLow) : 0) <
+                (revenue.kwhStartLow ? parseFloat(revenue.kwhStartLow) : 0)
+            ) {
                 errors.kwhEndLow = true;
                 errorMessage.kwhEndLow = 'Eindstand kWh laag mag niet lager zijn dan Beginstand kWh laag.';
                 hasErrors = true;
+            }
+            if (
+                (revenue.kwhEndCalendarYearHigh && revenue.kwhEndCalendarYearHigh > 0) ||
+                (revenue.kwhEndCalendarYearLow && revenue.kwhEndCalendarYearLow > 0)
+            ) {
+                if (
+                    (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) <
+                    (revenue.kwhStartHigh ? parseFloat(revenue.kwhStartHigh) : 0)
+                ) {
+                    errors.kwhEndCalendarYearHigh = true;
+                    errorMessage.kwhEndCalendarYearHigh =
+                        'Eindstand kWh 31-12 hoog mag niet lager zijn dan Beginstand kWh hoog.';
+                    hasErrors = true;
+                }
+                if (
+                    (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) >
+                    (revenue.kwhEndHigh ? parseFloat(revenue.kwhEndHigh) : 0)
+                ) {
+                    errors.kwhEndHigh = true;
+                    errorMessage.kwhEndHigh = 'Eindstand kWh 31-12 hoog mag niet hoger zijn dan Beginstand kWh hoog.';
+                    hasErrors = true;
+                }
+                if (
+                    (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) <
+                    (revenue.kwhStartLow ? parseFloat(revenue.kwhStartLow) : 0)
+                ) {
+                    errors.kwhEndCalendarYearLow = true;
+                    errorMessage.kwhEndCalendarYearLow =
+                        'Eindstand kWh 31-12 laag mag niet lager zijn dan Beginstand kWh laag.';
+                    hasErrors = true;
+                }
+                if (
+                    (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) >
+                    (revenue.kwhEndLow ? parseFloat(revenue.kwhEndLow) : 0)
+                ) {
+                    errors.kwhEndLow = true;
+                    errorMessage.kwhEndLow = 'Eindstand kWh 31-12 laag mag niet hoger zijn dan Eindstand kWh laag.';
+                    hasErrors = true;
+                }
             }
         }
 

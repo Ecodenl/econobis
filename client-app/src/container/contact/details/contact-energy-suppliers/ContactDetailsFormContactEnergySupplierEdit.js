@@ -9,6 +9,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment/moment';
 import InputToggle from '../../../../components/form/InputToggle';
+import validator from 'validator';
 moment.locale('nl');
 
 const ContactDetailsFormContactEnergySupplierEdit = props => {
@@ -56,6 +57,8 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                                 name="memberSince"
                                 value={memberSince ? memberSince : ''}
                                 onChangeAction={props.handleInputChangeDate}
+                                required={isCurrentSupplier ? 'required' : ''}
+                                error={props.errors.memberSince}
                             />
                             <InputText
                                 label={'EAN electriciteit'}
@@ -117,12 +120,21 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
                             <InputToggle
                                 label={'Is huidige leverancier'}
                                 name={'isCurrentSupplier'}
-                                value={isCurrentSupplier}
+                                value={Boolean(isCurrentSupplier)}
                                 onChangeAction={props.handleInputChange}
+                                disabled={validator.isEmpty('' + memberSince)}
                             />
                         </div>
 
                         <div className="pull-right btn-group" role="group">
+                            {/*todo: WM dit moet per project participant*/}
+                            {/*{isCurrentSupplier && props.contactDetails.isParticipantPcrProject && (*/}
+                            {/*    <ButtonText*/}
+                            {/*        buttonClassName={'btn-default'}*/}
+                            {/*        buttonText={'Tussentijdse opbrengstverdeling'}*/}
+                            {/*        onClickAction={props.revenueKwhSplit}*/}
+                            {/*    />*/}
+                            {/*)}*/}
                             <ButtonText
                                 buttonClassName={'btn-default'}
                                 buttonText={'Annuleren'}
@@ -144,13 +156,12 @@ const ContactDetailsFormContactEnergySupplierEdit = props => {
 
 const mapStateToProps = state => {
     return {
+        // todo: Deze zou nodig zijn voor button Tussentijdse opbrengstverdeling
+        // contactDetails: state.contactDetails,
         energySuppliers: state.systemData.energySuppliers,
         contactEnergySupplierTypes: state.systemData.contactEnergySupplierTypes,
         contactEnergySupplierStatus: state.systemData.contactEnergySupplierStatus,
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactDetailsFormContactEnergySupplierEdit);
+export default connect(mapStateToProps, null)(ContactDetailsFormContactEnergySupplierEdit);

@@ -111,7 +111,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(RevenueDetailsToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsToolbar);

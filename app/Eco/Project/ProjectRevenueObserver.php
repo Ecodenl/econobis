@@ -41,6 +41,24 @@ class ProjectRevenueObserver
                 {
                     $project->kwh_start_low_next_revenue = $projectRevenue->kwh_end_low;
                 }
+            }elseif($projectRevenue->category->code_ref == 'revenueKwhSplit'){
+                $participant = $projectRevenue->participant;
+                $participant->date_next_revenue_kwh = Carbon::parse($projectRevenue->date_end)->clone()->addDay();
+                if($projectRevenue->kwh_end_high <> 0)
+                {
+                    $participant->kwh_start_high_next_revenue = $projectRevenue->kwh_end_high;
+                }
+                if($projectRevenue->kwh_end_low <> 0)
+                {
+                    $participant->kwh_start_low_next_revenue = $projectRevenue->kwh_end_low;
+                }
+                $participant->save();
+                if($project->date_interest_bearing_kwh == null)
+                {
+                    $project->date_interest_bearing_kwh = $projectRevenue->date_begin;
+                    $project->kwh_start_high_next_revenue = $projectRevenue->kwh_begin_high;
+                    $project->kwh_start_low_next_revenue = $projectRevenue->kwh_begin_low;
+                }
             }
 
             $project->save();

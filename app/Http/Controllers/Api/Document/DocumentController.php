@@ -41,6 +41,13 @@ class DocumentController extends Controller
             ]);
     }
 
+    public function peek(){
+        $this->authorize('view', Document::class);
+//  todo: WM navragen of alle documenten opgehaald moeten worden of alleen bepaalde type of group?
+//        return Document::select('id', 'filename')->where('document_type', 'upload')->get();
+        return Document::select('id', 'filename')->get();
+    }
+
     public function show(Document $document)
     {
         $this->authorize('view', Document::class);

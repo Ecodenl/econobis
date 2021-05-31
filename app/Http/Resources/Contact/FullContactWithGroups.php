@@ -103,6 +103,7 @@ class FullContactWithGroups extends Resource
             'collectMandateFirstRunDate' => $this->collect_mandate_first_run_date,
             'collectMandateCollectionSchema' => $this->collect_mandate_collection_schema,
             'hoomAccountId' => $this->hoom_account_id,
+            'isParticipantPcrProject' => $this->is_participant_pcr_project,
         ];
     }
 }

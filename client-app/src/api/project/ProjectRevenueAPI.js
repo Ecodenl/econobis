@@ -83,11 +83,15 @@ export default {
             });
     },
 
-    createEnergySupplierExcel: (revenueId, templateId, energySupplierId, documentName) => {
-        const requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}/${energySupplierId}`;
-
+    createEnergySupplierExcel: (revenueId, energySupplierId, documentName) => {
+        let requestUrl = '';
+        if (energySupplierId == 0) {
+            requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}`;
+        } else {
+            requestUrl = `${URL_REVENUE}/create-energy-supplier-excel/${revenueId}/${energySupplierId}`;
+        }
         return axiosInstance
-            .post(requestUrl, { documentName: documentName, templateId: templateId })
+            .post(requestUrl, { documentName: documentName })
             .then(response => response.data.data)
             .catch(error => {
                 console.log(error);
@@ -116,12 +120,6 @@ export default {
 
     fetchProjectRevenueDistribution: (id, page) => {
         const requestUrl = `${URL_REVENUE}/${id}/distribution`;
-
-        return axiosInstance.post(requestUrl, { page: page });
-    },
-
-    fetchProjectRevenueParticipants: (id, page) => {
-        const requestUrl = `${URL_REVENUE}/${id}/participants`;
 
         return axiosInstance.post(requestUrl, { page: page });
     },

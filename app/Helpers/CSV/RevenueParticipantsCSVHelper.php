@@ -85,7 +85,20 @@ class RevenueParticipantsCSVHelper
                         * $participant->participationsCurrent, 2);
                 }
 
-                $participant->delivered_total = round((($this->projectRevenue->kwh_end - $this->projectRevenue->kwh_start) / $this->projectRevenue->project->getCurrentParticipations()) * $participant->participations_current,2);
+                // Calculate total kwh
+                $totalKwh = $this->projectRevenue->kwh_end - $this->projectRevenue->kwh_start;
+
+//                //todo: WM moet hier niet een getCurrentParticipationsEndCalendarYear komen en wellicht nieuw veld participant->participations_current_end_of_year?
+//                // Calculate total kwh end calendar year
+//                $kwhEndCalendarYear = $this->projectRevenue->kwh_end_calendar_year_high + $this->projectRevenue->kwh_end_calendar_year_low;
+//                $totalKwhEndCalendarYear = $totalKwh;
+//                if($kwhEndCalendarYear > $this->projectRevenue->kwh_start){
+//                    $totalKwhEndCalendarYear = $kwhEndCalendarYear - $this->projectRevenue->kwh_start;
+//                }
+
+                $participant->delivered_total = round(($totalKwh / $this->projectRevenue->project->getCurrentParticipations()) * $participant->participations_current,2);
+//                //todo: WM moet hier niet een getCurrentParticipationsEndCalendarYear komen en wellicht nieuw veld participant->participations_current_end_of_year?
+//                $participant->delivered_total_end_calendar_year = round(($totalKwhEndCalendarYear / $this->projectRevenue->project->getCurrentParticipations()) * $participant->participations_current,2);
             }
             else{
                 $participant->payout = 0;

@@ -47,7 +47,7 @@ ParticipantFormViewPostalcodeLinkCapital.propTypes = {
     participationWorth: PropTypes.number.isRequired,
     participationsDefinitive: PropTypes.number.isRequired,
     participationsDefinitiveWorth: PropTypes.number.isRequired,
-    powerKwhConsumption: PropTypes.number.isRequired,
+    powerKwhConsumption: PropTypes.number,
 };
 
 export default ParticipantFormViewPostalcodeLinkCapital;

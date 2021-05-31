@@ -48,7 +48,7 @@ function ContactDetailsToolbar({ permissions, type, fullName, id, hoomAccountId,
                                     <ButtonText
                                         onClickAction={toggleShowMakeHoomdossier}
                                         buttonText={hoomAccountId ? 'Hoomdossier aangemaakt' : 'Hoomdossier aanmaken'}
-                                        disabled={hoomAccountId}
+                                        disabled={Boolean(hoomAccountId)}
                                     />
                                 ) : null}
                             </div>

@@ -79,7 +79,7 @@ class ParticipantProjectObserver
                         $distribution->save();
                     }
                 }
-                if($projectRevenue->category->code_ref == 'revenueKwh') {
+                if($projectRevenue->category->code_ref == 'revenueKwh' || $projectRevenue->category->code_ref == 'revenueKwhSplit') {
                     foreach($projectRevenue->distribution as $distribution) {
                         $distribution->calculator()->runRevenueKwh();
                         $distribution->save();

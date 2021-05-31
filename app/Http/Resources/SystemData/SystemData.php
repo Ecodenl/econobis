@@ -132,19 +132,12 @@ class SystemData extends Resource
          */
 
         $sortedEnergySuppliers = EnergySupplier::all()->sortBy(function ($energySupplier) {
-            if($energySupplier->name === 'OM'){
-                return 0;
+            if($energySupplier->order){
+                return $energySupplier->order;
             }
-            if($energySupplier->name === 'Energie VanOns'){
-                return 1;
-            }
-            if($energySupplier->name === 'Greenchoice'){
-                return 2;
-            }
-            return 3 . $energySupplier->name;
+            return 999 . $energySupplier->name;
 
         });
-
         $sortedEnergySuppliers = $sortedEnergySuppliers->values();
 
         return [

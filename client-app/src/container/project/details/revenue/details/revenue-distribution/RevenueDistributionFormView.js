@@ -66,15 +66,12 @@ const RevenueDistributionFormView = props => {
         case 'processed':
             statusText = 'Verwerkt';
             break;
-        case 'processed2':
-            statusText = 'Via tussentijds';
-            break;
     }
 
     return (
         <div
             title={missingContactDataMessage + ' ' + missingIbanDataMessage}
-            className={`row border ${status === 'processed' || status === 'processed2' ? 'warning-row' : ''} ${
+            className={`row border ${status === 'processed' ? 'warning-row' : ''} ${
                 missingDataClass ? missingDataClass : ''
             }`}
         >

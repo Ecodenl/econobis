@@ -502,7 +502,11 @@ class ProjectRevenueController extends ApiController
         $distribution->contact_id = $contact->id;
 
         if($projectRevenue->confirmed) {
-            $distribution->status = 'confirmed';
+            if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
+                $distribution->status = 'processed';
+            } else {
+                $distribution->status = 'confirmed';
+            }
         } else {
             $distribution->status = 'concept';
         }
@@ -893,15 +897,10 @@ class ProjectRevenueController extends ApiController
                         $contactEnergySupplier
                             = $distribution->contact->primaryContactEnergySupplier;
                     }
-                    if(!$distribution->participation->hasRevenueKwhSplit
-                        || ($distribution->revenue->category->code_ref === 'revenueKwhSplit' && !$distribution->participation->hasDefinitiveRevenueKwh)){
+                    if($distribution->revenue->category->code_ref !== 'revenueKwhSplit'){
                         $this->createParticipantMutationForRevenueKwh($distribution, $datePayout, $contactEnergySupplier);
                     }
-                    if( $distribution->revenue->category->code_ref === 'revenueKwh' && $distribution->participation->hasRevenueKwhSplit){
-                        $distribution->status = 'processed2';
-                    }else{
-                        $distribution->status = 'processed';
-                    }
+                    $distribution->status = 'processed';
                     $distribution->save();
                 }else{
                     // indien Opbrengst Euro, dan gaan we of notas en sepa aanmaken of bijschrijven (afhankellijk van payout type)

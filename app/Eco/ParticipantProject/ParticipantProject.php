@@ -268,17 +268,4 @@ class ParticipantProject extends Model
         return Carbon::parse($this->date_begin_next_revenue_kwh)->endOfYear()->format('Y-m-d');
     }
 
-    public function getHasDefinitiveRevenueKwhAttribute()
-    {
-        return ProjectRevenueDistribution::where('participation_id', $this->id)
-            ->where('status', 'processed')
-            ->whereHas('revenue', function ($q) {
-                $q->whereNull('project_revenues.participation_id');
-            })->exists();
-    }
-
-    public function getHasRevenueKwhSplitAttribute()
-    {
-        return count($this->projectRevenues) > 0;
-    }
 }

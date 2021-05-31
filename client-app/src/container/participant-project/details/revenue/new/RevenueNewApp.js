@@ -74,16 +74,12 @@ class RevenueNewApp extends Component {
             axios.spread(participation => {
                 const revenue = this.state.revenue;
                 if (participation) {
-                    // todo: WM opschonen
-                    // console.log(participation);
                     if (
                         participation.contact &&
                         participation.contact.previousContactEnergySupplierId != 0 &&
                         participation.contact.primaryContactEnergySupplier &&
                         participation.contact.primaryContactEnergySupplier.memberSince
                     ) {
-                        // todo: WM opschonen
-                        // console.log(participation.contact.primaryContactEnergySupplier);
                         const dateSplit = moment(participation.contact.primaryContactEnergySupplier.memberSince)
                             .subtract(1, 'day')
                             .format('Y-MM-DD');
@@ -93,9 +89,6 @@ class RevenueNewApp extends Component {
                                 : moment(dateSplit)
                                       .startOf('year')
                                       .format('Y-MM-DD');
-                        // todo: WM opschonen
-                        // console.log(dateSplit);
-                        // console.log(dateBegin);
                         if (dateBegin > dateSplit) {
                             alert('Overstapdatum leverancier kon niet bepaald worden bij contact.');
                             hashHistory.replace(`/project/deelnemer/${this.props.params.participationId}`);

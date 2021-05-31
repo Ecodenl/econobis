@@ -71,6 +71,8 @@ class FullParticipantProject extends Resource
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
                 'dateNextRevenueKwh' => $this->date_next_revenue_kwh,
+                'dateBeginNextRevenueKwh' => $this->date_begin_next_revenue_kwh,
+                'dateEndNextRevenueKwh' => $this->date_end_next_revenue_kwh,
                 'kwhStartHighNextRevenue' => $this->kwh_start_high_next_revenue,
                 'kwhStartLowNextRevenue' => $this->kwh_start_low_next_revenue,
                 'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,

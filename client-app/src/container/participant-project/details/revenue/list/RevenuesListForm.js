@@ -14,6 +14,7 @@ const RevenuesListForm = ({
     projectStatus,
     participantProjectRevenues,
     projectRevenueCategories,
+    participantProjectDetails,
 }) => {
     const revenueKwhSplitCategoryId = projectRevenueCategories.find(
         projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
@@ -38,6 +39,10 @@ const RevenuesListForm = ({
             }
         });
     }
+    const showNewRevenueKwhSplit =
+        participantProjectDetails &&
+        participantProjectDetails.dateBeginNextRevenueKwh !== null &&
+        participantProjectDetails.dateEndNextRevenueKwh !== null;
 
     return (
         <Panel>
@@ -46,9 +51,11 @@ const RevenuesListForm = ({
                 {permissions.manageFinancial && (
                     <React.Fragment>
                         <div className="nav navbar-nav btn-group pull-right" role="group">
-                            <button className="btn btn-link" data-toggle="dropdown">
-                                <span className="glyphicon glyphicon-plus" />
-                            </button>
+                            {showNewRevenueKwhSplit && (
+                                <button className="btn btn-link" data-toggle="dropdown">
+                                    <span className="glyphicon glyphicon-plus" />
+                                </button>
+                            )}
                             <ul className="dropdown-menu">
                                 <li className={disabled || revenueDisabledKwhSplit ? 'disabled' : null}>
                                     {disabled || revenueDisabledKwhSplit ? (

@@ -14,6 +14,7 @@ use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -212,5 +213,72 @@ class ParticipantProject extends Model
         }
 
         return $total;
+    }
+
+    public function getDateBeginNextRevenueKwhAttribute()
+    {
+        if(!empty($this->date_next_revenue_kwh)){
+            return $this->date_next_revenue_kwh;
+        }
+
+        $memberSince = null;
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $memberSince = $this->contact->primaryContactEnergySupplier->member_since;
+        $projectRevenuesKhw = ProjectRevenue::where('project_id', $this->project_id)
+            ->whereNull('participation_id')
+            ->where('date_begin', '<=', $memberSince)
+            ->where('date_end', '>', $memberSince)
+            ->where('confirmed', true)
+            ->orderBy('date_end', 'desc');
+        if ($projectRevenuesKhw->exists()) {
+
+            return $projectRevenuesKhw->first()->date_begin;
+        }elseif(!empty($this->project->date_interest_bearing_kwh) && $memberSince > $this->project->date_interest_bearing_kwh){
+            return $this->project->date_interest_bearing_kwh;
+        }
+        return null;
+    }
+
+    public function getDateEndNextRevenueKwhAttribute()
+    {
+        if(empty($this->date_begin_next_revenue_kwh)){
+            return null;
+        }
+        $memberSince = null;
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $memberSince = $this->contact->primaryContactEnergySupplier->member_since;
+        if($memberSince && $memberSince <= $this->date_begin_next_revenue_kwh){
+            return null;
+        }
+
+        $projectRevenuesKhw = ProjectRevenue::where('project_id', $this->project_id)
+            ->whereNull('participation_id')
+            ->where('date_begin', '<=', $this->date_begin_next_revenue_kwh)
+            ->where('date_end', '>', $this->date_begin_next_revenue_kwh)
+            ->where('confirmed', true)
+            ->orderBy('date_end', 'desc');
+        if ($projectRevenuesKhw->exists()) {
+            return $projectRevenuesKhw->first()->date_end;
+        }
+
+        return Carbon::parse($this->date_begin_next_revenue_kwh)->endOfYear()->format('Y-m-d');
+    }
+
+    public function getHasDefinitiveRevenueKwhAttribute()
+    {
+        return ProjectRevenueDistribution::where('participation_id', $this->id)
+            ->where('status', 'processed')
+            ->whereHas('revenue', function ($q) {
+                $q->whereNull('project_revenues.participation_id');
+            })->exists();
+    }
+
+    public function getHasRevenueKwhSplitAttribute()
+    {
+        return count($this->projectRevenues) > 0;
     }
 }

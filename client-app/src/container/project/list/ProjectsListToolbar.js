@@ -19,6 +19,7 @@ const ProjectsListToolbar = props => {
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
                     {permissions.manageProject && <ButtonIcon iconName={'glyphicon-plus'} onClickAction={newProject} />}
+                    <ButtonIcon iconName={'glyphicon-refresh'} onClickAction={props.resetProjectFilters} />
                 </div>
             </div>
             <div className="col-md-4">

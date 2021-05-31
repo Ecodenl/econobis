@@ -2,13 +2,22 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchProjects, clearProjects } from '../../../actions/project/ProjectsActions';
+import { setProjectCodeFilter, setProjectFilter, setTypeProjectFilter, clearFilterProjects } from '../../../actions/project/ProjectsFiltersActions';
 import { setProjectsPagination } from '../../../actions/project/ProjectsPaginationActions';
 import ProjectsListToolbar from './ProjectsListToolbar';
 import ProjectsList from './ProjectsList';
+import {bindActionCreators} from "redux";
+import filterHelper from "../../../helpers/FilterHelper";
+import {isEmpty} from "lodash";
 
 class ProjectsListApp extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            filterType: 'and',
+            amountOfFilters: 0,
+        };
 
         this.fetchProjectsData = this.fetchProjectsData.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -18,15 +27,39 @@ class ProjectsListApp extends Component {
         this.fetchProjectsData();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (this.props.params.value !== nextProps.params.value) {
+            if (!isEmpty(nextProps.params)) {
+                switch (nextProps.params.filter) {
+                    case 'type':
+                        this.props.clearFilterProjects();
+                        this.props.setTypeProjectFilter(nextProps.params.value);
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                this.props.clearFilterProjects();
+            }
+
+            setTimeout(() => {
+                this.fetchProjectsData();
+            }, 100);
+        }
+    }
+
     componentWillUnmount() {
         this.props.clearProjects();
     }
 
     fetchProjectsData() {
         setTimeout(() => {
+            const filters = filterHelper(this.props.projectsFilters);
+            const sorts = this.props.projectsSorts;
             const pagination = { limit: 20, offset: this.props.projectsPagination.offset };
+            const filterType = this.state.filterType;
 
-            this.props.fetchProjects(pagination);
+            this.props.fetchProjects(filters, sorts, pagination, filterType);
         }, 100);
     }
 
@@ -39,18 +72,43 @@ class ProjectsListApp extends Component {
         this.fetchProjectsData();
     }
 
+    resetProjectFilters = () => {
+        this.props.clearFilterProjects();
+
+        this.setState({
+            filterType: 'and',
+            amountOfFilters: 0,
+            extraFilters: [],
+        });
+
+        this.fetchProjectsData();
+    };
+
+    onSubmitFilter() {
+        this.props.clearProjects();
+
+        this.props.setProjectsPagination({ page: 0, offset: 0 });
+
+        this.fetchProjectsData();
+    }
+
     render() {
         return (
             <div>
                 <div className="panel panel-default col-md-12">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <ProjectsListToolbar />
+                            <ProjectsListToolbar
+                                resetProjectFilters={() => this.resetProjectFilters()}
+                            />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <ProjectsList
+                                projects={this.props.projects}
+                                projectsPagination={this.props.projectsPagination}
+                                onSubmitFilter={() => this.onSubmitFilter()}
                                 handlePageClick={this.handlePageClick}
-                                fetchProjectsData={this.fetchProjectsData}
+                                fetchProjectsListData={this.fetchProjectsData}
                             />
                         </div>
                     </div>
@@ -62,21 +120,26 @@ class ProjectsListApp extends Component {
 
 const mapStateToProps = state => {
     return {
+        projects: state.projects.list,
+        projectsFilters: state.projects.filters,
+        projectsSorts: state.projects.sorts,
         projectsPagination: state.projects.pagination,
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    fetchProjects: pagination => {
-        dispatch(fetchProjects(pagination));
-    },
-    clearProjects: () => {
-        dispatch(clearProjects());
-    },
-    setProjectsPagination: pagination => {
-        dispatch(setProjectsPagination(pagination));
-    },
-});
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            fetchProjects,
+            clearProjects,
+            setProjectCodeFilter,
+            setProjectFilter,
+            setTypeProjectFilter,
+            clearFilterProjects,
+            setProjectsPagination,
+        }, dispatch
+    );
+};
 
 export default connect(
     mapStateToProps,

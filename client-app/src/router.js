@@ -409,6 +409,7 @@ const Routes = () => {
                     <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
                     <Route path="project/:id" component={ProjectGeneralApp} />
                     <Route path="projecten" component={ProjectsListApp} />
+                    <Route path="projecten/:filter/:value" component={ProjectsListApp} />
                     <Route path="deelnemers" component={ParticipantListApp} />
                     <Route path="project/deelnemer/:participationId/overdragen" component={ParticipationTransferApp} />
                     <Route path="project/deelnemer/nieuw/:projectId" component={ParticipantNewApp} />

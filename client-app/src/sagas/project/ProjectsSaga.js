@@ -1,11 +1,16 @@
 import { put, call } from 'redux-saga/effects';
 import ProjectsAPI from '../../api/project/ProjectsAPI';
 
-export function* fetchProjectsSaga({ pagination }) {
+export function* fetchProjectsSaga({ filters, sorts, pagination, filterType }) {
     try {
         yield put({ type: 'IS_LOADING' });
         yield put({ type: 'FETCH_PROJECTS_LOADING' });
-        const projects = yield call(ProjectsAPI.fetchProjects, { pagination });
+        const projects = yield call(ProjectsAPI.fetchProjects, {
+            filters,
+            sorts,
+            pagination,
+            filterType,
+        });
         yield put({ type: 'FETCH_PROJECTS_SUCCESS', projects });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {

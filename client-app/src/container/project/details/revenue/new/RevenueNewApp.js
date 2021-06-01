@@ -363,44 +363,50 @@ class RevenueNewApp extends Component {
                 errorMessage.kwhEndLow = 'Eindstand kWh laag mag niet lager zijn dan Beginstand kWh laag.';
                 hasErrors = true;
             }
-            if (
-                (revenue.kwhEndCalendarYearHigh && revenue.kwhEndCalendarYearHigh > 0) ||
-                (revenue.kwhEndCalendarYearLow && revenue.kwhEndCalendarYearLow > 0)
-            ) {
+            if (moment(revenue.dateBegin).year() !== moment(revenue.dateEnd).year()) {
                 if (
-                    (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) <
-                    (revenue.kwhStartHigh ? parseFloat(revenue.kwhStartHigh) : 0)
+                    (revenue.kwhEndCalendarYearHigh && revenue.kwhEndCalendarYearHigh > 0) ||
+                    (revenue.kwhEndCalendarYearLow && revenue.kwhEndCalendarYearLow > 0)
                 ) {
-                    errors.kwhEndCalendarYearHigh = true;
-                    errorMessage.kwhEndCalendarYearHigh =
-                        'Eindstand kWh 31-12 hoog mag niet lager zijn dan Beginstand kWh hoog.';
-                    hasErrors = true;
+                    if (
+                        (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) <
+                        (revenue.kwhStartHigh ? parseFloat(revenue.kwhStartHigh) : 0)
+                    ) {
+                        errors.kwhEndCalendarYearHigh = true;
+                        errorMessage.kwhEndCalendarYearHigh =
+                            'Eindstand kWh 31-12 hoog mag niet lager zijn dan Beginstand kWh hoog.';
+                        hasErrors = true;
+                    }
+                    if (
+                        (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) >
+                        (revenue.kwhEndHigh ? parseFloat(revenue.kwhEndHigh) : 0)
+                    ) {
+                        errors.kwhEndHigh = true;
+                        errorMessage.kwhEndHigh =
+                            'Eindstand kWh 31-12 hoog mag niet hoger zijn dan Beginstand kWh hoog.';
+                        hasErrors = true;
+                    }
+                    if (
+                        (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) <
+                        (revenue.kwhStartLow ? parseFloat(revenue.kwhStartLow) : 0)
+                    ) {
+                        errors.kwhEndCalendarYearLow = true;
+                        errorMessage.kwhEndCalendarYearLow =
+                            'Eindstand kWh 31-12 laag mag niet lager zijn dan Beginstand kWh laag.';
+                        hasErrors = true;
+                    }
+                    if (
+                        (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) >
+                        (revenue.kwhEndLow ? parseFloat(revenue.kwhEndLow) : 0)
+                    ) {
+                        errors.kwhEndLow = true;
+                        errorMessage.kwhEndLow = 'Eindstand kWh 31-12 laag mag niet hoger zijn dan Eindstand kWh laag.';
+                        hasErrors = true;
+                    }
                 }
-                if (
-                    (revenue.kwhEndCalendarYearHigh ? parseFloat(revenue.kwhEndCalendarYearHigh) : 0) >
-                    (revenue.kwhEndHigh ? parseFloat(revenue.kwhEndHigh) : 0)
-                ) {
-                    errors.kwhEndHigh = true;
-                    errorMessage.kwhEndHigh = 'Eindstand kWh 31-12 hoog mag niet hoger zijn dan Beginstand kWh hoog.';
-                    hasErrors = true;
-                }
-                if (
-                    (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) <
-                    (revenue.kwhStartLow ? parseFloat(revenue.kwhStartLow) : 0)
-                ) {
-                    errors.kwhEndCalendarYearLow = true;
-                    errorMessage.kwhEndCalendarYearLow =
-                        'Eindstand kWh 31-12 laag mag niet lager zijn dan Beginstand kWh laag.';
-                    hasErrors = true;
-                }
-                if (
-                    (revenue.kwhEndCalendarYearLow ? parseFloat(revenue.kwhEndCalendarYearLow) : 0) >
-                    (revenue.kwhEndLow ? parseFloat(revenue.kwhEndLow) : 0)
-                ) {
-                    errors.kwhEndLow = true;
-                    errorMessage.kwhEndLow = 'Eindstand kWh 31-12 laag mag niet hoger zijn dan Eindstand kWh laag.';
-                    hasErrors = true;
-                }
+            } else {
+                revenue.kwhEndCalendarYearHigh = null;
+                revenue.kwhEndCalendarYearLow = null;
             }
         }
 

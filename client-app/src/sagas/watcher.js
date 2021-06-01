@@ -72,6 +72,7 @@ import {
     fetchParticipantProjectDetailsSaga,
     deleteParticipantProjectSaga,
     deleteObligationNumberSaga,
+    deleteRevenueSplitSaga,
 } from './participant-project/ParticipantProjectDetailsSaga';
 import { fetchIntakeDetailsSaga, deleteIntakeMeasureRequestedSaga, deleteIntakeSaga } from './intake/IntakeDetailsSaga';
 import { fetchIntakesSaga } from './intake/IntakesSaga';
@@ -199,6 +200,7 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_PARTICIPANT_PROJECT_DETAILS', fetchParticipantProjectDetailsSaga);
     yield takeLatest('DELETE_PARTICIPANT_PROJECT', deleteParticipantProjectSaga);
     yield takeLatest('DELETE_OBLIGATION_NUMBER', deleteObligationNumberSaga);
+    yield takeLatest('DELETE_REVENUE_SPLIT', deleteRevenueSplitSaga);
     // Project
     yield takeLatest('FETCH_PROJECTS', fetchProjectsSaga);
     yield takeLatest('FETCH_PROJECT', fetchProjectSaga);

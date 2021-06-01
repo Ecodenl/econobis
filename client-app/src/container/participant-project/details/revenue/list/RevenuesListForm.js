@@ -30,12 +30,14 @@ const RevenuesListForm = ({
             'Tussentijdse (deelnemer) opbrengst verdeling kan alleen bij projectstatus actief worden toegevoegd';
     } else {
         participantProjectRevenues.map(participantProjectRevenue => {
-            if (
-                participantProjectRevenue.categoryId == revenueKwhSplitCategoryId &&
-                participantProjectRevenue.confirmed == 0
-            ) {
-                revenueDisabledKwhSplit = true;
-                revenueTitleKwhSplit = 'Lopende tussentijdse (deelnemer) kwh opbrengst verdeling al actief';
+            if (participantProjectRevenue.categoryId == revenueKwhSplitCategoryId) {
+                if (participantProjectRevenue.confirmed == 0) {
+                    revenueDisabledKwhSplit = true;
+                    revenueTitleKwhSplit = 'Lopende tussentijdse (deelnemer) kwh opbrengstverdeling al actief';
+                } else if (participantProjectDetails.hasNotConfirmedRevenuesKwh) {
+                    revenueDisabledKwhSplit = true;
+                    revenueTitleKwhSplit = 'Lopende kwh opbrengstverdeling al actief';
+                }
             }
         });
     }

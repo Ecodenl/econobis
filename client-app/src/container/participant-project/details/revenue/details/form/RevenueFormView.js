@@ -58,29 +58,45 @@ const RevenueFormView = props => {
                     <span className={'h5 text-bold'}>Opbrengst kWh</span>
                 </div>
 
-                <div className="row" onClick={props.switchToEdit}>
-                    <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && kwhStartHigh} />
-                </div>
+                {moment(dateBegin).year() !== moment(dateEnd).year() ? (
+                    <>
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && kwhStartHigh} />
+                        </div>
 
-                <div className="row" onClick={props.switchToEdit}>
-                    <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && kwhStartLow} />
-                </div>
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && kwhStartLow} />
+                        </div>
 
-                <div className="row" onClick={props.switchToEdit}>
-                    <ViewText
-                        label={'Eindstand kWh op 31-12 hoog'}
-                        value={kwhEndCalendarYearHigh && kwhEndCalendarYearHigh}
-                    />
-                    <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
-                </div>
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText
+                                label={'Eindstand kWh op 31-12 hoog'}
+                                value={kwhEndCalendarYearHigh && kwhEndCalendarYearHigh}
+                            />
+                            <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
+                        </div>
 
-                <div className="row" onClick={props.switchToEdit}>
-                    <ViewText
-                        label={'Eindstand kWh op 31-12 laag'}
-                        value={kwhEndCalendarYearLow && kwhEndCalendarYearLow}
-                    />
-                    <ViewText label={'Eindstand kWh laag'} value={kwhEndLow && kwhEndLow} />
-                </div>
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText
+                                label={'Eindstand kWh op 31-12 laag'}
+                                value={kwhEndCalendarYearLow && kwhEndCalendarYearLow}
+                            />
+                            <ViewText label={'Eindstand kWh laag'} value={kwhEndLow && kwhEndLow} />
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText label={'Beginstand kWh hoog'} value={kwhStartHigh && kwhStartHigh} />
+                            <ViewText label={'Eindstand kWh hoog'} value={kwhEndHigh && kwhEndHigh} />
+                        </div>
+
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText label={'Beginstand kWh laag'} value={kwhStartLow && kwhStartLow} />
+                            <ViewText label={'Eindstand kWh laag'} value={kwhEndLow && kwhEndLow} />
+                        </div>
+                    </>
+                )}
 
                 <div className="row" onClick={props.switchToEdit}>
                     <ViewText label={'Beginstand kWh'} value={kwhStart && kwhStart} />

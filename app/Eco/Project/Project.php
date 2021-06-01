@@ -180,6 +180,21 @@ class Project extends Model
         return false;
     }
 
+    public function getHasNotConfirmedRevenuesKwhSplit(){
+
+        foreach($this->projectRevenues as $revenue){
+            foreach ($this->participantsProject as $participant) {
+                foreach ($participant->projectRevenues as $revenue) {
+                    if(!$revenue->confirmed){
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function participantMutations()
     {
         return $this->hasManyThrough(ParticipantMutation::class ,ParticipantProject::class, 'project_id', 'participation_id');

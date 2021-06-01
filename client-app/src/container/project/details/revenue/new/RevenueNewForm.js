@@ -23,7 +23,6 @@ const RevenueNew = props => {
         dateBegin,
         dateEnd,
         dateReference,
-        dateConfirmed,
         payoutTypeId,
         kwhStart,
         kwhEnd,
@@ -200,85 +199,148 @@ const RevenueNew = props => {
                         </div>
                     </div>
 
-                    <div className="row">
-                        {props.project.kwhStartHighNextRevenue > 0 ? (
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh hoog'}
-                                name={'kwhStartHigh'}
-                                value={kwhStartHigh}
-                                readOnly={true}
-                            />
-                        ) : (
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh hoog'}
-                                name={'kwhStartHigh'}
-                                value={kwhStartHigh}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        )}
-                    </div>
-                    <div className="row">
-                        {props.project.kwhStartHighNextRevenue > 0 ? (
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh laag'}
-                                name={'kwhStartLow'}
-                                value={kwhStartLow}
-                                readOnly={true}
-                            />
-                        ) : (
-                            <InputText
-                                type={'number'}
-                                label={'Beginstand kWh laag'}
-                                name={'kwhStartLow'}
-                                value={kwhStartLow}
-                                onChangeAction={props.handleInputChange}
-                            />
-                        )}
-                    </div>
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Eindstand kWh op 31-12 hoog'}
-                            name={'kwhEndCalendarYearHigh'}
-                            value={kwhEndCalendarYearHigh}
-                            onChangeAction={props.handleInputChange}
-                            error={props.errors.kwhEndCalendarYearHigh}
-                            errorMessage={props.errorMessage.kwhEndCalendarYearHigh}
-                        />
-                        <InputText
-                            type={'number'}
-                            label={'Eindstand kWh hoog'}
-                            name={'kwhEndHigh'}
-                            value={kwhEndHigh}
-                            onChangeAction={props.handleInputChange}
-                            error={props.errors.kwhEndHigh}
-                            errorMessage={props.errorMessage.kwhEndHigh}
-                        />
-                    </div>
+                    {moment(dateBegin).year() !== moment(dateEnd).year() ? (
+                        <>
+                            <div className="row">
+                                {props.project.kwhStartHighNextRevenue > 0 ? (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh hoog'}
+                                        name={'kwhStartHigh'}
+                                        value={kwhStartHigh}
+                                        readOnly={true}
+                                    />
+                                ) : (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh hoog'}
+                                        name={'kwhStartHigh'}
+                                        value={kwhStartHigh}
+                                        onChangeAction={props.handleInputChange}
+                                    />
+                                )}
+                            </div>
+                            <div className="row">
+                                {props.project.kwhStartHighNextRevenue > 0 ? (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh laag'}
+                                        name={'kwhStartLow'}
+                                        value={kwhStartLow}
+                                        readOnly={true}
+                                    />
+                                ) : (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh laag'}
+                                        name={'kwhStartLow'}
+                                        value={kwhStartLow}
+                                        onChangeAction={props.handleInputChange}
+                                    />
+                                )}
+                            </div>
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={'Eindstand kWh op 31-12 hoog'}
+                                    name={'kwhEndCalendarYearHigh'}
+                                    value={kwhEndCalendarYearHigh}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.kwhEndCalendarYearHigh}
+                                    errorMessage={props.errorMessage.kwhEndCalendarYearHigh}
+                                />
+                                <InputText
+                                    type={'number'}
+                                    label={'Eindstand kWh hoog'}
+                                    name={'kwhEndHigh'}
+                                    value={kwhEndHigh}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.kwhEndHigh}
+                                    errorMessage={props.errorMessage.kwhEndHigh}
+                                />
+                            </div>
 
-                    <div className="row">
-                        <InputText
-                            type={'number'}
-                            label={'Eindstand kWh op 31-12 laag'}
-                            name={'kwhEndCalendarYearLow'}
-                            value={kwhEndCalendarYearLow}
-                            onChangeAction={props.handleInputChange}
-                            error={props.errors.kwhEndCalendarYearLow}
-                            errorMessage={props.errorMessage.kwhEndCalendarYearLow}
-                        />
-                        <InputText
-                            type={'number'}
-                            label={'Eindstand kWh laag'}
-                            name={'kwhEndLow'}
-                            value={kwhEndLow}
-                            onChangeAction={props.handleInputChange}
-                            error={props.errors.kwhEndLow}
-                            errorMessage={props.errorMessage.kwhEndLow}
-                        />
-                    </div>
+                            <div className="row">
+                                <InputText
+                                    type={'number'}
+                                    label={'Eindstand kWh op 31-12 laag'}
+                                    name={'kwhEndCalendarYearLow'}
+                                    value={kwhEndCalendarYearLow}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.kwhEndCalendarYearLow}
+                                    errorMessage={props.errorMessage.kwhEndCalendarYearLow}
+                                />
+                                <InputText
+                                    type={'number'}
+                                    label={'Eindstand kWh laag'}
+                                    name={'kwhEndLow'}
+                                    value={kwhEndLow}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.kwhEndLow}
+                                    errorMessage={props.errorMessage.kwhEndLow}
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="row">
+                                {props.project.kwhStartHighNextRevenue > 0 ? (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh hoog'}
+                                        name={'kwhStartHigh'}
+                                        value={kwhStartHigh}
+                                        readOnly={true}
+                                    />
+                                ) : (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh hoog'}
+                                        name={'kwhStartHigh'}
+                                        value={kwhStartHigh}
+                                        onChangeAction={props.handleInputChange}
+                                    />
+                                )}
+                                <InputText
+                                    type={'number'}
+                                    label={'Eindstand kWh hoog'}
+                                    name={'kwhEndHigh'}
+                                    value={kwhEndHigh}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.kwhEndHigh}
+                                    errorMessage={props.errorMessage.kwhEndHigh}
+                                />
+                            </div>
+                            <div className="row">
+                                {props.project.kwhStartHighNextRevenue > 0 ? (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh laag'}
+                                        name={'kwhStartLow'}
+                                        value={kwhStartLow}
+                                        readOnly={true}
+                                    />
+                                ) : (
+                                    <InputText
+                                        type={'number'}
+                                        label={'Beginstand kWh laag'}
+                                        name={'kwhStartLow'}
+                                        value={kwhStartLow}
+                                        onChangeAction={props.handleInputChange}
+                                    />
+                                )}
+                                <InputText
+                                    type={'number'}
+                                    label={'Eindstand kWh laag'}
+                                    name={'kwhEndLow'}
+                                    value={kwhEndLow}
+                                    onChangeAction={props.handleInputChange}
+                                    error={props.errors.kwhEndLow}
+                                    errorMessage={props.errorMessage.kwhEndLow}
+                                />
+                            </div>
+                        </>
+                    )}
 
                     <div className="row">
                         <InputText

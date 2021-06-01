@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../../../components/modal/Modal';
-import { deleteRevenue } from '../../../../../actions/project/ProjectDetailsActions';
+import { deleteRevenueSplit } from '../../../../../actions/participants-project/ParticipantProjectDetailsActions';
 
-const ProjectDetailsFormValueCourseDelete = props => {
+const ParticipantProjectRevenuesListFormDelete = props => {
     const confirmAction = () => {
-        props.deleteRevenue(props.id);
+        props.deleteRevenueSplit(props.id);
         props.closeDeleteItemModal();
     };
 
@@ -24,12 +24,9 @@ const ProjectDetailsFormValueCourseDelete = props => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    deleteRevenue: id => {
-        dispatch(deleteRevenue(id));
+    deleteRevenueSplit: id => {
+        dispatch(deleteRevenueSplit(id));
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ProjectDetailsFormValueCourseDelete);
+export default connect(null, mapDispatchToProps)(ParticipantProjectRevenuesListFormDelete);

@@ -97,6 +97,7 @@ class FullProject extends Resource
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),
                 'usesMollie' => $this->uses_mollie,
                 'hasPaymentInvoices' => $this->getHasPaymentInvoices(),
+                'hasNotConfirmedRevenuesKwhSplit' => $this->getHasNotConfirmedRevenuesKwhSplit(),
                 'requiresContactGroups' => GenericResource::make($this->whenLoaded('requiresContactGroups')),
                 'amountOfLoanNeeded' => $this->amount_of_loan_needed,
                 'minAmountLoan' => $this->min_amount_loan,

@@ -79,6 +79,7 @@ class FullParticipantProject extends Resource
                 'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
                 'participantInConfirmedRevenue' => $this->participantInConfirmedRevenue,
+                'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),
             ];
     }
 }

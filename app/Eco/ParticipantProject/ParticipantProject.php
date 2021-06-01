@@ -182,6 +182,17 @@ class ParticipantProject extends Model
         return $projectRevenueDistributions->count() > 0;
     }
 
+    public function getHasNotConfirmedRevenuesKwh(){
+
+        foreach($this->project->projectRevenues as $revenue){
+            if($revenue->category->code_ref == 'revenueKwh' && !$revenue->confirmed){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getParticipationsReturnsTotalAttribute()
     {
         $total = 0;

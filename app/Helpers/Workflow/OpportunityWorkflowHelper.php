@@ -32,6 +32,10 @@ class OpportunityWorkflowHelper
         if (!$this->opportunity_status) {
             return false;
         }
+        if (!$this->opportunity_status->uses_wf) {
+            return false;
+        }
+
         if (!$this->contact) {
             return false;
         }

@@ -39,6 +39,9 @@ class IntakeWorkflowHelper
         if (!$this->measureCategory) {
             return false;
         }
+        if (!$this->measureCategory->uses_wf_create_opportunity) {
+            return false;
+        }
 
         $this->opportunity = Opportunity::create([
             'measure_category_id' => $this->measureCategory->id,

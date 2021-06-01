@@ -35,6 +35,10 @@ class TaskWorkflowHelper
         if (!$this->task_type) {
             return false;
         }
+        if (!$this->task_type->uses_wf_completed_task) {
+            return false;
+        }
+
         if (!$this->contact) {
             return false;
         }
@@ -63,6 +67,10 @@ class TaskWorkflowHelper
         if (!$this->task_type) {
             return false;
         }
+        if (!$this->task_type->uses_wf_expired_task) {
+            return false;
+        }
+
         if (!$this->responsibleUser && !$this->responsibleTeam) {
             return false;
         }
@@ -98,6 +106,10 @@ class TaskWorkflowHelper
         if (!$this->task_type) {
             return false;
         }
+        if (!$this->task_type->uses_wf_new_task) {
+            return false;
+        }
+
         if (!$this->responsibleUser && !$this->responsibleTeam) {
             return false;
         }

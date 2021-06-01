@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import { alphaSortForSelect } from '../../helpers/sortingHelper';
 
 const InputReactSelect = props => {
     const {
@@ -37,7 +38,7 @@ const InputReactSelect = props => {
                     name={name}
                     value={value}
                     onChange={onChange}
-                    options={options}
+                    options={options.sort(alphaSortForSelect)}
                     valueKey={optionId}
                     labelKey={optionName}
                     placeholder={''}

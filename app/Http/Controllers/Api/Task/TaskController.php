@@ -119,12 +119,14 @@ class TaskController extends Controller
         }
         $task->save();
 
-        $taskWorkflowHelper = new TaskWorkflowHelper($task);
-        $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
-        if($processed)
-        {
-            $task->date_sent_wf_new_task =  Carbon::now();
-            $task->save();
+        if ($task->task_type->uses_wf_new_task) {
+            $taskWorkflowHelper = new TaskWorkflowHelper($task);
+            $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
+            if($processed)
+            {
+                $task->date_sent_wf_new_task =  Carbon::now();
+                $task->save();
+            }
         }
 
         return $this->show($task);

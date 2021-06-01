@@ -32,6 +32,10 @@ class QuotationRequestWorkflowHelper
         if (!$this->quotationRequest_status) {
             return false;
         }
+        if (!$this->quotationRequest_status->uses_wf) {
+            return false;
+        }
+
         if (!$this->contact) {
             return false;
         }

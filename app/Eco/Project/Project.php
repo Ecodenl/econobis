@@ -181,11 +181,11 @@ class Project extends Model
     }
 
     public function getHasNotConfirmedRevenuesKwhSplit(){
-
-        foreach($this->projectRevenues as $revenue){
-            foreach ($this->participantsProject as $participant) {
+        if($this->projectType->code_ref == 'postalcode_link_capital') {
+            $participants = $this->participantsProject()->get();
+            foreach ($participants as $participant) {
                 foreach ($participant->projectRevenues as $revenue) {
-                    if(!$revenue->confirmed){
+                    if (!$revenue->confirmed) {
                         return true;
                     }
                 }

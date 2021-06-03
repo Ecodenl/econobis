@@ -184,9 +184,11 @@ class ParticipantProject extends Model
 
     public function getHasNotConfirmedRevenuesKwh(){
 
-        foreach($this->project->projectRevenues as $revenue){
-            if($revenue->category->code_ref == 'revenueKwh' && !$revenue->confirmed){
-                return true;
+        if($this->project->projectType->code_ref == 'postalcode_link_capital') {
+            foreach ($this->project->projectRevenues as $revenue) {
+                if ($revenue->category->code_ref == 'revenueKwh' && !$revenue->confirmed) {
+                    return true;
+                }
             }
         }
 

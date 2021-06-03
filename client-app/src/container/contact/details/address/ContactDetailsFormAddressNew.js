@@ -62,7 +62,7 @@ class ContactDetailsFormAddressNew extends Component {
                 validator.isEmpty(address.street)
             ) {
                 AddressAPI.getPicoAddress(address.postalCode, address.number).then(payload => {
-                    console.log(payload);
+                    // console.log(payload);
                     this.setState({
                         ...this.state,
                         address: {

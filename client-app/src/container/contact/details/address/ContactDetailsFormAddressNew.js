@@ -144,6 +144,11 @@ class ContactDetailsFormAddressNew extends Component {
             hasErrors = true;
         }
 
+        if (address.typeId === 'old' && (address.endDate === null || validator.isEmpty(address.endDate))) {
+            errors.endDate = true;
+            hasErrors = true;
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form

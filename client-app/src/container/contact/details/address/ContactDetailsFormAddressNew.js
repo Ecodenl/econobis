@@ -62,7 +62,7 @@ class ContactDetailsFormAddressNew extends Component {
                 validator.isEmpty(address.street)
             ) {
                 AddressAPI.getPicoAddress(address.postalCode, address.number).then(payload => {
-                    console.log(payload);
+                    // console.log(payload);
                     this.setState({
                         ...this.state,
                         address: {
@@ -141,6 +141,11 @@ class ContactDetailsFormAddressNew extends Component {
 
         if (validator.isEmpty(address.typeId)) {
             errors.typeId = true;
+            hasErrors = true;
+        }
+
+        if (address.typeId === 'old' && (address.endDate === null || validator.isEmpty(address.endDate))) {
+            errors.endDate = true;
             hasErrors = true;
         }
 

@@ -303,8 +303,11 @@ class EnergySupplierExcelHelper
 
                 foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
                     $rowData = [];
-                    $rowData[] = $this->projectRevenue->project->ean;
-                    $rowData[] = $this->projectRevenue->project->ean_manager;
+
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_begin);
                     $rowData[] = $this->formatDate($deliveredKwhPeriod->date_end);
                     $rowData[] = $distribution->contact->full_name;
@@ -627,8 +630,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = \Config::get('app.name');
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
-                    $rowData[] = $this->projectRevenue->project->ean;
-                    $rowData[] = $this->projectRevenue->project->ean_manager;
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
                     $rowData[] = '';
                     $rowData[] = '';
                     $rowData[] = '';

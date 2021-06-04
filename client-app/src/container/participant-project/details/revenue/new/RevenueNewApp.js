@@ -84,8 +84,8 @@ class RevenueNewApp extends Component {
                             .subtract(1, 'day')
                             .format('Y-MM-DD');
                         let dateBegin =
-                            participation.dateNextRevenueKwh !== null
-                                ? participation.dateNextRevenueKwh
+                            participation.dateBeginNextRevenueKwh !== null
+                                ? participation.dateBeginNextRevenueKwh
                                 : moment(dateSplit)
                                       .startOf('year')
                                       .format('Y-MM-DD');
@@ -98,8 +98,8 @@ class RevenueNewApp extends Component {
                         revenue.contactEnergySupplierId = participation.contact.previousContactEnergySupplierId;
                         revenue.dateBegin = dateBegin;
                         revenue.dateEnd = dateSplit;
-                        revenue.kwhStartHigh = participation.kwhStartHighNextRevenue;
-                        revenue.kwhStartLow = participation.kwhStartLowNextRevenue;
+                        revenue.kwhStartHigh = participation.nextRevenueKwhStartHigh;
+                        revenue.kwhStartLow = participation.nextRevenueKwhStartLow;
 
                         this.setState({
                             ...this.state,

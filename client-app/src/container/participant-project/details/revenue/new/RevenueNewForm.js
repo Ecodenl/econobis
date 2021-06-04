@@ -69,7 +69,8 @@ const RevenueNew = props => {
                         {moment(dateBegin).year() !== moment(dateEnd).year() ? (
                             <>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ? (
+                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}
                                             label={'Beginstand kWh hoog'}
@@ -88,7 +89,8 @@ const RevenueNew = props => {
                                     )}
                                 </div>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ? (
+                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}
                                             label={'Beginstand kWh laag'}
@@ -150,7 +152,8 @@ const RevenueNew = props => {
                         ) : (
                             <>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ? (
+                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}
                                             label={'Beginstand kWh hoog'}
@@ -178,7 +181,8 @@ const RevenueNew = props => {
                                     />
                                 </div>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ? (
+                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}
                                             label={'Beginstand kWh laag'}

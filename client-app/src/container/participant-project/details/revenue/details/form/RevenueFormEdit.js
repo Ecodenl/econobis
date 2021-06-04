@@ -312,6 +312,10 @@ class RevenueFormEdit extends Component {
         } = this.state.revenue;
 
         const project = this.props.revenue.project;
+        const participantInConfirmedRevenue = this.props.revenue.participantInConfirmedRevenue;
+        const participantKwhStartHighNextRevenue = this.props.revenue.participantKwhStartHighNextRevenue;
+        const participantKwhStartLowNextRevenue = this.props.revenue.participantKwhStartLowNextRevenue;
+
         const { category } = this.props.revenue;
         let projectTypeCodeRef = '';
         if (project && project.projectType && project.projectType.codeRef) {
@@ -354,7 +358,7 @@ class RevenueFormEdit extends Component {
                     {moment(dateBegin).year() !== moment(dateEnd).year() ? (
                         <>
                             <div className="row">
-                                {this.props.revenue.project.kwhStartHighNextRevenue > 0 ? (
+                                {participantKwhStartHighNextRevenue > 0 || participantInConfirmedRevenue ? (
                                     <InputText
                                         type={'number'}
                                         label={'Beginstand kWh hoog'}
@@ -373,7 +377,7 @@ class RevenueFormEdit extends Component {
                                 )}
                             </div>
                             <div className="row">
-                                {this.props.revenue.project.kwhStartLowNextRevenue > 0 ? (
+                                {participantKwhStartLowNextRevenue > 0 || participantInConfirmedRevenue ? (
                                     <InputText
                                         type={'number'}
                                         label={'Beginstand kWh laag'}
@@ -435,7 +439,7 @@ class RevenueFormEdit extends Component {
                     ) : (
                         <>
                             <div className="row">
-                                {this.props.revenue.project.kwhStartHighNextRevenue > 0 ? (
+                                {participantKwhStartHighNextRevenue > 0 || participantInConfirmedRevenue ? (
                                     <InputText
                                         type={'number'}
                                         label={'Beginstand kWh hoog'}
@@ -463,7 +467,7 @@ class RevenueFormEdit extends Component {
                                 />
                             </div>
                             <div className="row">
-                                {this.props.revenue.project.kwhStartLowNextRevenue > 0 ? (
+                                {participantKwhStartLowNextRevenue > 0 || participantInConfirmedRevenue ? (
                                     <InputText
                                         type={'number'}
                                         label={'Beginstand kWh laag'}

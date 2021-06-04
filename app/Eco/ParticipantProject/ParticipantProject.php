@@ -10,6 +10,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
@@ -238,16 +239,10 @@ class ParticipantProject extends Model
         if (empty($this->contact->primaryContactEnergySupplier->member_since)){
             return null;
         }
-        $memberSince = $this->contact->primaryContactEnergySupplier->member_since;
-        $projectRevenuesKhw = ProjectRevenue::where('project_id', $this->project_id)
-            ->whereNull('participation_id')
-            ->where('date_begin', '<=', $memberSince)
-            ->where('date_end', '>', $memberSince)
-            ->where('confirmed', true)
-            ->orderBy('date_end', 'desc');
-        if ($projectRevenuesKhw->exists()) {
-
-            return $projectRevenuesKhw->first()->date_begin;
+        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->date_begin;
         }elseif(!empty($this->project->date_interest_bearing_kwh) && $memberSince > $this->project->date_interest_bearing_kwh){
             return $this->project->date_interest_bearing_kwh;
         }
@@ -268,17 +263,77 @@ class ParticipantProject extends Model
             return null;
         }
 
-        $projectRevenuesKhw = ProjectRevenue::where('project_id', $this->project_id)
-            ->whereNull('participation_id')
-            ->where('date_begin', '<=', $this->date_begin_next_revenue_kwh)
-            ->where('date_end', '>', $this->date_begin_next_revenue_kwh)
-            ->where('confirmed', true)
-            ->orderBy('date_end', 'desc');
-        if ($projectRevenuesKhw->exists()) {
-            return $projectRevenuesKhw->first()->date_end;
+        $checkDate = $this->date_begin_next_revenue_kwh;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->date_end;
         }
 
         return Carbon::parse($this->date_begin_next_revenue_kwh)->endOfYear()->format('Y-m-d');
+    }
+
+    public function getNextRevenueKwhStartHighAttribute()
+    {
+        if($this->kwh_start_high_next_revenue != null){
+            return $this->kwh_start_high_next_revenue;
+        }
+
+        $memberSince = null;
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->kwh_start_high;
+        }
+        return null;
+    }
+
+    public function getNextRevenueKwhStartLowAttribute()
+    {
+        if($this->kwh_start_low_next_revenue != null){
+            return $this->kwh_start_low_next_revenue;
+        }
+
+        $memberSince = null;
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->kwh_start_low;
+        }
+        return null;
+    }
+
+    /**
+     * @param $checkDate
+     * @return mixed
+     */
+    protected function getProjectRevenueKhw($checkDate)
+    {
+        $projectRevenueCategory = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first();
+        $projectRevenuesKhw = ProjectRevenue::where('project_id', $this->project_id)
+            ->whereNull('participation_id')
+            ->where('category_id', $projectRevenueCategory->id)
+            ->where('date_begin', '<=', $checkDate)
+            ->where('date_end', '>', $checkDate)
+            ->where('confirmed', true)
+            ->orderBy('date_end', 'desc');
+        if ($projectRevenuesKhw->exists()) {
+            $projectRevenueKhw = $projectRevenuesKhw->first();
+            $participantInDistribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenueKhw->id)
+                ->where('participation_id', $this->id)
+                ->whereIn('status', ['confirmed'])
+                ->exists();
+            if($participantInDistribution) {
+                return $projectRevenuesKhw->first();
+            }
+        }
+
+        return null;
     }
 
 }

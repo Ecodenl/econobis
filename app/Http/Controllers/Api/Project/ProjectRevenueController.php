@@ -16,6 +16,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
 use App\Eco\Project\ProjectType;
@@ -213,9 +214,11 @@ class ProjectRevenueController extends ApiController
         }
 
         // If period is changed then remove all values from revenue distribution period
-        if($projectRevenue->isDirty('date_begin') ||
-            $projectRevenue->isDirty('date_end')) {
+        if($projectRevenue->category->code_ref != 'revenueKwhSplit') {
+            if ($projectRevenue->isDirty('date_begin') ||
+                $projectRevenue->isDirty('date_end')) {
                 $projectRevenue->deliveredKwhPeriod()->delete();
+            }
         }
         $projectRevenue->save();
 
@@ -225,32 +228,82 @@ class ProjectRevenueController extends ApiController
             $projectRevenue->confirmed
         ) {
             if($projectRevenue->category->code_ref == 'revenueKwh'){
+                $projectRevenueCategory = ProjectRevenueCategory::where('code_ref', 'revenueKwhSplit')->first();
                 $projectRevenuesKhwSplit = ProjectRevenue::where('project_id', $projectRevenue->project_id)
                     ->whereNotNull('participation_id')
+                    ->where('category_id', $projectRevenueCategory->id)
                     ->where('date_end', '>=', $projectRevenue->date_begin)
                     ->where('date_end', '<', $projectRevenue->date_end)
                     ->where('confirmed', true)
                     ->orderBy('date_end', 'desc');
                 // revenue khw split present, then make closing revenue khw splits
                 if ($projectRevenuesKhwSplit->exists()) {
-                    $projectRevenueKhwSplit = $projectRevenuesKhwSplit->first();
-                    if ($projectRevenueKhwSplit && $projectRevenueKhwSplit->date_end != $projectRevenue->date_end){
-                        $this->createClosingReveneuKhwSplit($projectRevenue, $projectRevenueKhwSplit);
+                    $lastProjectRevenueKhwSplit = $projectRevenuesKhwSplit->first();
+                    if ($lastProjectRevenueKhwSplit && $lastProjectRevenueKhwSplit->date_end != $projectRevenue->date_end){
+
+                        $contactEnergySupplier = $lastProjectRevenueKhwSplit->participant->contact->primaryContactEnergySupplier;
+                        $closingReveneuKhwSplit = new ProjectRevenue();
+                        $closingReveneuKhwSplit->category_id = $lastProjectRevenueKhwSplit->category_id;
+                        $closingReveneuKhwSplit->project_id = $lastProjectRevenueKhwSplit->project_id;
+                        $closingReveneuKhwSplit->participation_id = $lastProjectRevenueKhwSplit->participation_id;
+                        $closingReveneuKhwSplit->contact_energy_supplier_id = $contactEnergySupplier->id;
+                        $closingReveneuKhwSplit->distribution_type_id = $lastProjectRevenueKhwSplit->distribution_type_id;
+                        $closingReveneuKhwSplit->confirmed = true;
+                        $closingReveneuKhwSplit->date_begin = Carbon::parse($lastProjectRevenueKhwSplit->date_end)->addDay();
+                        $closingReveneuKhwSplit->date_end = Carbon::parse($projectRevenue->date_end);
+                        $closingReveneuKhwSplit->date_reference = Carbon::parse($projectRevenue->date_reference);
+                        $closingReveneuKhwSplit->date_confirmed = Carbon::parse($projectRevenue->date_confirmed);
+                        $closingReveneuKhwSplit->kwh_start = $lastProjectRevenueKhwSplit->kwh_end;
+                        $closingReveneuKhwSplit->kwh_end = $projectRevenue->kwh_end;
+                        $closingReveneuKhwSplit->kwh_start_high = $lastProjectRevenueKhwSplit->kwh_end_high;
+                        $closingReveneuKhwSplit->kwh_end_high = $projectRevenue->kwh_end_high;
+                        $closingReveneuKhwSplit->kwh_start_low = $lastProjectRevenueKhwSplit->kwh_end_low;
+                        $closingReveneuKhwSplit->kwh_end_low = $projectRevenue->kwh_end_low;
+                        $closingReveneuKhwSplit->payout_kwh = $projectRevenue->payout_kwh;
+
+                        $closingReveneuKhwSplit->save();
+                        $this->saveParticipantsOfDistribution($closingReveneuKhwSplit, true);
                     }
                 }
             }
             if($projectRevenue->category->code_ref == 'revenueKwhSplit'){
+                $projectRevenueCategory = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first();
                 $projectRevenuesKhw = ProjectRevenue::where('project_id', $projectRevenue->project_id)
                     ->whereNull('participation_id')
+                    ->where('category_id', $projectRevenueCategory->id)
                     ->where('date_begin', '<=', $projectRevenue->date_begin)
                     ->where('date_end', '>', $projectRevenue->date_begin)
                     ->where('confirmed', true)
                     ->orderBy('date_end', 'desc');
-                // revenue khw split present, then make closing revenue khw splits
+
+                // revenue khw present, then make closing revenue khw splits
                 if ($projectRevenuesKhw->exists()) {
-                    $projectRevenueKhw = $projectRevenuesKhw->first();;
+                    $projectRevenueKhw = $projectRevenuesKhw->first();
                     if ($projectRevenueKhw && $projectRevenueKhw->date_end != $projectRevenue->date_end){
-                        $this->createClosingReveneuKhwSplit($projectRevenueKhw, $projectRevenue);
+
+                        $contactEnergySupplier = $projectRevenue->participant->contact->primaryContactEnergySupplier;
+                        $closingReveneuKhwSplit = new ProjectRevenue();
+                        $closingReveneuKhwSplit->category_id = $projectRevenue->category_id;
+                        $closingReveneuKhwSplit->project_id = $projectRevenue->project_id;
+                        $closingReveneuKhwSplit->participation_id = $projectRevenue->participation_id;
+                        $closingReveneuKhwSplit->contact_energy_supplier_id = $contactEnergySupplier->id;
+                        $closingReveneuKhwSplit->distribution_type_id = $projectRevenue->distribution_type_id;
+                        $closingReveneuKhwSplit->confirmed = true;
+                        $closingReveneuKhwSplit->date_begin = Carbon::parse($projectRevenue->date_end)->addDay();
+                        $closingReveneuKhwSplit->date_end = Carbon::parse($projectRevenueKhw->date_end);
+                        $closingReveneuKhwSplit->date_reference = Carbon::parse($projectRevenue->date_reference);
+                        $closingReveneuKhwSplit->date_confirmed = Carbon::parse($projectRevenue->date_confirmed);
+                        $closingReveneuKhwSplit->kwh_start = $projectRevenue->kwh_end;
+                        $closingReveneuKhwSplit->kwh_end = $projectRevenueKhw->kwh_end;
+                        $closingReveneuKhwSplit->kwh_start_high = $projectRevenue->kwh_end_high;
+                        $closingReveneuKhwSplit->kwh_end_high = $projectRevenueKhw->kwh_end_high;
+                        $closingReveneuKhwSplit->kwh_start_low = $projectRevenue->kwh_end_low;
+                        $closingReveneuKhwSplit->kwh_end_low = $projectRevenueKhw->kwh_end_low;
+                        $closingReveneuKhwSplit->payout_kwh = $projectRevenue->payout_kwh;
+
+                        $closingReveneuKhwSplit->save();
+                        $this->saveParticipantsOfDistribution($closingReveneuKhwSplit, true);
+
                     }
                 }
             }
@@ -263,39 +316,14 @@ class ProjectRevenueController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
-    public function createClosingReveneuKhwSplit(ProjectRevenue $projectRevenue, ProjectRevenue $lastProjectRevenueKhwSplit )
-    {
-        $contactEnergySupplier = $lastProjectRevenueKhwSplit->participant->contact->primaryContactEnergySupplier;
-        $closingReveneuKhwSplit = new ProjectRevenue();
-        $closingReveneuKhwSplit->category_id = $lastProjectRevenueKhwSplit->category_id;
-        $closingReveneuKhwSplit->project_id = $lastProjectRevenueKhwSplit->project_id;
-        $closingReveneuKhwSplit->participation_id = $lastProjectRevenueKhwSplit->participation_id;
-        $closingReveneuKhwSplit->contact_energy_supplier_id = $contactEnergySupplier->id;
-        $closingReveneuKhwSplit->distribution_type_id = $lastProjectRevenueKhwSplit->distribution_type_id;
-        $closingReveneuKhwSplit->confirmed = true;
-        $closingReveneuKhwSplit->date_begin = Carbon::parse($lastProjectRevenueKhwSplit->date_end)->addDay();
-        $closingReveneuKhwSplit->date_end = $projectRevenue->date_end;
-        $closingReveneuKhwSplit->date_reference = $projectRevenue->date_reference;
-        $closingReveneuKhwSplit->date_confirmed = $projectRevenue->date_confirmed;
-        $closingReveneuKhwSplit->kwh_start = $lastProjectRevenueKhwSplit->kwh_end;
-        $closingReveneuKhwSplit->kwh_end = $projectRevenue->kwh_end;
-        $closingReveneuKhwSplit->kwh_start_high = $lastProjectRevenueKhwSplit->kwh_end_high;
-        $closingReveneuKhwSplit->kwh_end_high = $projectRevenue->kwh_end_high;
-        $closingReveneuKhwSplit->kwh_start_low = $lastProjectRevenueKhwSplit->kwh_end_low;
-        $closingReveneuKhwSplit->kwh_end_low = $projectRevenue->kwh_end_low;
-        $closingReveneuKhwSplit->payout_kwh = $projectRevenue->payout_kwh;
-
-        $closingReveneuKhwSplit->save();
-        $this->saveParticipantsOfDistribution($closingReveneuKhwSplit, true);
-
-
-    }
-
     public function saveParticipantsOfDistribution(ProjectRevenue $projectRevenue, $closing)
     {
         $project = $projectRevenue->project;
 
         if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
+
+            $projectRevenueKhwCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first()->id;
+            $projectRevenueKhwSplitCategoryId = ProjectRevenueCategory::where('code_ref', 'revenueKwhSplit')->first()->id;
 
             if(!$closing) {
                 // Calculate total kwh
@@ -314,7 +342,27 @@ class ProjectRevenueController extends ApiController
                 $totalSumOfParticipationsAndDaysEndCalendarYear = 0;
                 $totalDeliveredKwhPeriodThisParticipantEndCalendarYear = 0;
                 $quantityOfParticipationsThisParticipantEndCalendarYear = 0;
+
                 foreach ($project->participantsProject as $participant) {
+
+                    $projectRevenuesKhw = ProjectRevenue::where('project_id', $projectRevenue->project_id)
+                        ->whereNull('participation_id')
+                        ->where('category_id', $projectRevenueKhwCategoryId)
+                        ->where('date_begin', '<=', $projectRevenue->date_begin)
+                        ->where('date_end', '>', $projectRevenue->date_begin)
+                        ->where('confirmed', true)
+                        ->orderBy('date_end', 'desc');
+                    if ($projectRevenuesKhw->exists()) {
+                        $projectRevenueKhw = $projectRevenuesKhw->first();
+                        $participantInDistribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenueKhw->id)
+                            ->where('participation_id', $participant->id)
+                            ->whereIn('status', ['confirmed'])
+                            ->exists();
+                        if (!$participantInDistribution) {
+                            continue;
+                        }
+                    }
+
                     $result = $this->determineTotalDistribution($projectRevenue, $participant);
                     $totalDeliveredKwhPeriod = $result['totalDeliveredKwhPeriod'];
                     $quantityOfParticipations = $result['quantityOfParticipations'];
@@ -340,24 +388,48 @@ class ProjectRevenueController extends ApiController
                 if ($totalSumOfParticipationsAndDaysEndCalendarYear != 0) {
                     $delivered_kwh_end_calendar_year = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $totalDeliveredKwhPeriodThisParticipantEndCalendarYear, 2);
                 }
+
+                $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant);
             }
 
-            $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant);
-
             if($closing){
-                $distributionParticipations = ProjectRevenueDistribution::where('participation_id', $projectRevenue->participation_id)->get();
-                foreach ($distributionParticipations as $distributionParticipation) {
-                    if($distributionParticipation->revenue->participation_id == null){
-                        $distribution->delivered_total += $distributionParticipation->delivered_total;
-                        $distribution->delivered_total_end_calendar_year += $distributionParticipation->delivered_total_end_calendar_year;
-                        $distribution->participations_amount += $distributionParticipation->participations_amount;
-                        $distribution->participations_amount_end_calendar_year += $distributionParticipation->participations_amount_end_calendar_year;
-                    }else{
-                        $distribution->delivered_total -= $distributionParticipation->delivered_total;
-                        $distribution->delivered_total_end_calendar_year -= $distributionParticipation->delivered_total_end_calendar_year;
-                        $distribution->participations_amount -= $distributionParticipation->participations_amount;
-                        $distribution->participations_amount_end_calendar_year -= $distributionParticipation->participations_amount_end_calendar_year;
+
+                $projectRevenuesKhw = ProjectRevenue::where('project_id', $projectRevenue->project_id)
+                    ->whereNull('participation_id')
+                    ->where('category_id', $projectRevenueKhwCategoryId)
+                    ->where('date_begin', '<=', $projectRevenue->date_begin)
+                    ->where('date_end', '>', $projectRevenue->date_begin)
+                    ->where('confirmed', true)
+                    ->orderBy('date_end', 'desc');
+                if ($projectRevenuesKhw->exists()) {
+                    $projectRevenueKhwDateBegin = $projectRevenuesKhw->first()->date_begin;
+                    $projectRevenueKhwDateEnd = $projectRevenuesKhw->first()->date_end;
+
+                    $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant);
+
+                    $distributionsParticipation = ProjectRevenueDistribution::where('participation_id', $projectRevenue->participation_id)
+                        ->whereHas('revenue', function ($q) use($projectRevenueKhwCategoryId, $projectRevenueKhwSplitCategoryId, $projectRevenueKhwDateBegin, $projectRevenueKhwDateEnd){
+                            $q->whereIn('project_revenues.category_id', [$projectRevenueKhwCategoryId, $projectRevenueKhwSplitCategoryId ])
+                                ->where('date_begin', '>=', $projectRevenueKhwDateBegin)
+                                ->where('date_end', '<=', $projectRevenueKhwDateEnd)
+                                ->where('confirmed', true)
+                                ->orderBy('date_end', 'desc');
+                        })
+                        ->get();
+                    foreach ($distributionsParticipation as $distributionParticipation) {
+                        if($distributionParticipation->revenue->participation_id == null){
+                            $distribution->delivered_total += $distributionParticipation->delivered_total;
+                            $distribution->delivered_total_end_calendar_year += $distributionParticipation->delivered_total_end_calendar_year;
+                            $distribution->participations_amount += $distributionParticipation->participations_amount;
+                            $distribution->participations_amount_end_calendar_year += $distributionParticipation->participations_amount_end_calendar_year;
+                        }else{
+                            $distribution->delivered_total -= $distributionParticipation->delivered_total;
+                            $distribution->delivered_total_end_calendar_year -= $distributionParticipation->delivered_total_end_calendar_year;
+                            $distribution->participations_amount -= $distributionParticipation->participations_amount;
+                            $distribution->participations_amount_end_calendar_year -= $distributionParticipation->participations_amount_end_calendar_year;
+                        }
                     }
+
                 }
             }else{
                 $distribution->delivered_total = $delivered_kwh;
@@ -469,6 +541,7 @@ class ProjectRevenueController extends ApiController
             $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
             $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
             $totalDeliveredKwhPeriod += $deliveredKwhPeriod;
+
         }
         $returnParm['quantityOfParticipations'] = $quantityOfParticipations;
         $returnParm['totalDeliveredKwhPeriod'] = $totalDeliveredKwhPeriod;
@@ -1442,7 +1515,7 @@ class ProjectRevenueController extends ApiController
     protected function setMailConfigByDistribution(ProjectRevenueDistribution $distribution)
     {
         // Standaard vanuit primaire mailbox mailen
-        $mailboxToSendFrom = Mailbox::getDefault();;
+        $mailboxToSendFrom = Mailbox::getDefault();
 
         // Als er een mailbox aan de administratie is gekoppeld, dan deze gebruiken
         $project = $distribution->revenue->project;

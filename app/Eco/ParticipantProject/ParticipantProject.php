@@ -235,7 +235,6 @@ class ParticipantProject extends Model
             return $this->date_next_revenue_kwh;
         }
 
-        $memberSince = null;
         if (empty($this->contact->primaryContactEnergySupplier->member_since)){
             return null;
         }
@@ -243,7 +242,7 @@ class ParticipantProject extends Model
         $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
         if ($projectRevenueKhw != null) {
             return $projectRevenueKhw->date_begin;
-        }elseif(!empty($this->project->date_interest_bearing_kwh) && $memberSince > $this->project->date_interest_bearing_kwh){
+        }elseif(!empty($this->project->date_interest_bearing_kwh) && $checkDate > $this->project->date_interest_bearing_kwh){
             return $this->project->date_interest_bearing_kwh;
         }
         return null;
@@ -278,7 +277,6 @@ class ParticipantProject extends Model
             return $this->kwh_start_high_next_revenue;
         }
 
-        $memberSince = null;
         if (empty($this->contact->primaryContactEnergySupplier->member_since)){
             return null;
         }
@@ -296,7 +294,6 @@ class ParticipantProject extends Model
             return $this->kwh_start_low_next_revenue;
         }
 
-        $memberSince = null;
         if (empty($this->contact->primaryContactEnergySupplier->member_since)){
             return null;
         }

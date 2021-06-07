@@ -69,7 +69,7 @@ const RevenueNew = props => {
                         {moment(dateBegin).year() !== moment(dateEnd).year() ? (
                             <>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    {props.participation.nextRevenueKwhStartHigh > 0 ||
                                     props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}
@@ -89,7 +89,7 @@ const RevenueNew = props => {
                                     )}
                                 </div>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    {props.participation.nextRevenueKwhStartLow > 0 ||
                                     props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}
@@ -152,7 +152,7 @@ const RevenueNew = props => {
                         ) : (
                             <>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    {props.participation.nextRevenueKwhStartHigh > 0 ||
                                     props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}
@@ -181,7 +181,7 @@ const RevenueNew = props => {
                                     />
                                 </div>
                                 <div className="row">
-                                    {props.participation.kwhStartHighNextRevenue > 0 ||
+                                    {props.participation.nextRevenueKwhStartLow > 0 ||
                                     props.participation.participantInConfirmedRevenue ? (
                                         <InputText
                                             type={'number'}

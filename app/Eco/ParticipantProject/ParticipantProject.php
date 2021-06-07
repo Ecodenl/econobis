@@ -284,6 +284,8 @@ class ParticipantProject extends Model
         $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
         if ($projectRevenueKhw != null) {
             return $projectRevenueKhw->kwh_start_high;
+        }elseif(!empty($this->project->kwh_start_high_next_revenue)){
+            return $this->project->kwh_start_high_next_revenue;
         }
         return null;
     }
@@ -301,6 +303,8 @@ class ParticipantProject extends Model
         $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
         if ($projectRevenueKhw != null) {
             return $projectRevenueKhw->kwh_start_low;
+        }elseif(!empty($this->project->kwh_start_low_next_revenue)){
+            return $this->project->kwh_start_low_next_revenue;
         }
         return null;
     }

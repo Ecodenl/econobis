@@ -1,6 +1,9 @@
 export default (
     state = [
-
+        {
+            field: 'code',
+            order: 'asc',
+        },
     ],
     action
 ) => {

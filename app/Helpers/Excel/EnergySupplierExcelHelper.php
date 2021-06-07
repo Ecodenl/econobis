@@ -222,6 +222,21 @@ class EnergySupplierExcelHelper
             foreach ($chunk as $distribution) {
 
                 foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
+                    $yearBegin = Carbon::parse($this->projectRevenue->date_begin)->year;
+                    $yearEnd = Carbon::parse($this->projectRevenue->date_end)->year;
+                    if($yearBegin != $yearEnd){
+                        $yearEndKwhPeriod = Carbon::parse($deliveredKwhPeriod->date_begin)->year;
+                        $kwhEndCalendarYear = ($this->projectRevenue->kwh_end_calendar_year_high ? $this->projectRevenue->kwh_end_calendar_year_high : 0) +
+                            ($this->projectRevenue->kwh_end_calendar_year_low ? $this->projectRevenue->kwh_end_calendar_year_low : 0);
+                        if($yearBegin < $yearEndKwhPeriod){
+                            $totalProduction = $kwhEndCalendarYear - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                        }else{
+                            $totalProduction = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - $kwhEndCalendarYear;
+                        }
+                    }else{
+                        $totalProduction = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                    }
+
                     $rowData = [];
 //                    ++$this->counter;
 //                    $rowData[] = $this->counter;
@@ -241,7 +256,7 @@ class EnergySupplierExcelHelper
                     $rowData[] = $this->projectRevenue->project->administration ? $this->projectRevenue->project->administration->name : '';
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = $this->projectRevenue->project->participations_definitive;
-                    $rowData[] = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                    $rowData[] = $totalProduction;
                     $rowData[] = $deliveredKwhPeriod->participations_quantity;
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;
 
@@ -586,6 +601,21 @@ class EnergySupplierExcelHelper
             foreach ($chunk as $distribution) {
 
                 foreach ($distribution->deliveredKwhPeriod->where('delivered_kwh', '!=', 0) as $deliveredKwhPeriod) {
+                    $yearBegin = Carbon::parse($this->projectRevenue->date_begin)->year;
+                    $yearEnd = Carbon::parse($this->projectRevenue->date_end)->year;
+                    if($yearBegin != $yearEnd){
+                        $yearEndKwhPeriod = Carbon::parse($deliveredKwhPeriod->date_begin)->year;
+                        $kwhEndCalendarYear = ($this->projectRevenue->kwh_end_calendar_year_high ? $this->projectRevenue->kwh_end_calendar_year_high : 0) +
+                            ($this->projectRevenue->kwh_end_calendar_year_low ? $this->projectRevenue->kwh_end_calendar_year_low : 0);
+                        if($yearBegin < $yearEndKwhPeriod){
+                            $totalProduction = $kwhEndCalendarYear - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                        }else{
+                            $totalProduction = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - $kwhEndCalendarYear;
+                        }
+                    }else{
+                        $totalProduction = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                    }
+
                     $rowData = [];
                     $rowData[] = $distribution->contact->full_name;
                     $rowData[] = $distribution->contact->person ? $distribution->contact->person->initials : '';
@@ -627,7 +657,7 @@ class EnergySupplierExcelHelper
                     $rowData[] = $deliveredKwhPeriod->delivered_kwh;
                     $rowData[] = \Config::get('app.name');
                     $rowData[] = $this->projectRevenue->project->name;
-                    $rowData[] = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
+                    $rowData[] = $totalProduction;
                     $rowData[] = $this->projectRevenue->project->ean;
                     $rowData[] = $this->projectRevenue->project->ean_manager;
                     $rowData[] = '';

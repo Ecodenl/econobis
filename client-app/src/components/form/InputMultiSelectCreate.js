@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-import { sortBy } from 'lodash';
 
 const InputMultiSelectCreate = props => {
     const {
@@ -39,7 +38,7 @@ const InputMultiSelectCreate = props => {
                         name={name}
                         value={value}
                         onChange={onChangeAction}
-                        options={sortBy(options, x => (x[optionName] ? x[optionName].toUpperCase() : ''))}
+                        options={options}
                         valueKey={optionId}
                         labelKey={optionName}
                         placeholder={''}

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-import { sortBy } from 'lodash';
 
 const InputReactSelectLong = props => {
     const {
@@ -40,7 +39,7 @@ const InputReactSelectLong = props => {
                         name={name}
                         value={value}
                         onChange={onChange}
-                        options={sortBy(options, x => (x[optionName] ? x[optionName].toUpperCase() : ''))}
+                        options={options}
                         valueKey={optionId}
                         labelKey={optionName}
                         placeholder={''}

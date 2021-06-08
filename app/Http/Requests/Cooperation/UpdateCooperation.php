@@ -39,6 +39,7 @@ class UpdateCooperation extends FormRequest
             'logoName' => [''],
             'hoomLink' => [''],
             'hoomKey' => [''],
+            'sendEmail' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
         ];

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import {alphaSortForSelect} from '../../helpers/sortingHelper';
 
 const InputMultiSelectCreate = props => {
     const {
@@ -38,7 +39,7 @@ const InputMultiSelectCreate = props => {
                         name={name}
                         value={value}
                         onChange={onChangeAction}
-                        options={options}
+                        options={options.sort(alphaSortForSelect)}
                         valueKey={optionId}
                         labelKey={optionName}
                         placeholder={''}

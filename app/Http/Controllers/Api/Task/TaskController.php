@@ -119,7 +119,7 @@ class TaskController extends Controller
         }
         $task->save();
 
-        if ($task->task_type->uses_wf_new_task) {
+        if ($task->type->uses_wf_new_task) {
             $taskWorkflowHelper = new TaskWorkflowHelper($task);
             $processed = $taskWorkflowHelper->processWorkflowEmailNewTask();
             if($processed)

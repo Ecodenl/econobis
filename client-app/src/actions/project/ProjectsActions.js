@@ -1,7 +1,10 @@
-export const fetchProjects = pagination => {
+export const fetchProjects = (filters, sorts, pagination, filterType) => {
     return {
         type: 'FETCH_PROJECTS',
+        filters,
+        sorts,
         pagination,
+        filterType,
     };
 };
 

@@ -116,7 +116,7 @@ function Steps({
                 />
             );
         case 5:
-            return <StepFive />;
+            return <StepFive contactProjectData={contactProjectData} />;
         default:
             return null;
     }

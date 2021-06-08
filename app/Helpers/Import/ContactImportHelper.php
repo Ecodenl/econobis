@@ -101,7 +101,12 @@ class ContactImportHelper
     public function validateHeaders($line)
     {
         foreach ($line as $k => $lineField){
-            if(mb_detect_encoding($lineField) === false){
+            // when encoding isn't UTF-8 encode lineField to utf8.
+            $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
+            if(false === $encodingLineField){
+                $line[$k] = utf8_encode($lineField);
+            }
+            if(mb_detect_encoding($line[$k]) === false){
                 return [
                     'field' => 'Bestand',
                     'value' => 'Fout gecodeerd',
@@ -109,8 +114,6 @@ class ContactImportHelper
                     'message' => 'Het bestand is fout gecodeerd.',
                     'prio' => 1
                 ];
-            }else {
-                $line[$k] = $this->convertToUTF8($lineField);
             }
         }
 
@@ -160,7 +163,12 @@ class ContactImportHelper
         $prio = 3;
 
         foreach ($line as $k => $lineField) {
-            if (mb_detect_encoding($lineField) === false) {
+            // when encoding isn't UTF-8 encode lineField to utf8.
+            $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
+            if(false === $encodingLineField){
+                $line[$k] = utf8_encode($lineField);
+            }
+            if (mb_detect_encoding($line[$k]) === false) {
                 array_push($field, self::HEADERS[$k]);
                 array_push($value, 'Waarde kan niet gelezen worden.');
                 array_push($message, 'Veld is niet juist gecodeerd.');
@@ -296,7 +304,11 @@ class ContactImportHelper
         $header = true;
         while ($line = fgetcsv($csv, 1024, ";")) {
             foreach($line as $k => $field){
-                $line[$k] = $this->convertToUTF8($field);
+                // when encoding isn't UTF-8 encode lineField to utf8.
+                $encodingLineField= mb_detect_encoding( $field, 'UTF-8', true);
+                if(false === $encodingLineField){
+                    $line[$k] = utf8_encode($field);
+                }
             };
             if ($header) {
                 $header = false;
@@ -387,17 +399,6 @@ class ContactImportHelper
             }
         }
         return 'succes';
-    }
-
-    public function convertToUTF8($field){
-
-        $encoding = mb_detect_encoding($field);
-
-        if( $encoding !== "UTF-8" ) {
-            $field = iconv($encoding, "UTF-8//TRANSLIT", $field);
-        }
-
-        return $field;
     }
 }
 

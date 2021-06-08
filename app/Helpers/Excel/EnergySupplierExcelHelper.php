@@ -412,8 +412,10 @@ class EnergySupplierExcelHelper
 
                 if($distribution->revenue->category->code_ref === 'revenueKwhSplit'){
                     $rowData = [];
-                    $rowData[] = $this->projectRevenue->project->ean;
-                    $rowData[] = $this->projectRevenue->project->ean_manager;
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate($this->projectRevenue->date_end);
                     $rowData[] = $distribution->contact->full_name;
@@ -829,8 +831,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = \Config::get('app.name');
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = $totalProduction;
-                    $rowData[] = $this->projectRevenue->project->ean;
-                    $rowData[] = $this->projectRevenue->project->ean_manager;
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
                     $rowData[] = '';
                     $rowData[] = '';
                     $rowData[] = '';

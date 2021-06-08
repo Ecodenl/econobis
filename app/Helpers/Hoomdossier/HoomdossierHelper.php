@@ -49,7 +49,7 @@ class HoomdossierHelper
         }
 
         // Send email to contact
-        if($this->cooperation->hoom_email_template_id) {
+        if($this->cooperation->hoom_email_template_id && $this->cooperation->send_email) {
             $this->sendMail();
         }
 

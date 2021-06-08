@@ -8,7 +8,6 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
-use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -23,8 +22,8 @@ use Illuminate\Support\Facades\Log;
 use Mail;
 use Config;
 
-class SendEmailsWithVariables implements ShouldQueue
-{
+class SendEmailsWithVariables implements ShouldQueue {
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
@@ -44,8 +43,7 @@ class SendEmailsWithVariables implements ShouldQueue
      */
     private $firstCall;
 
-    public function __construct(Email $email, $tos, $userId, $firstCall = true)
-    {
+    public function __construct(Email $email, $tos, $userId, $firstCall = true) {
         $this->email = $email;
         $this->tos = $tos;
         $this->userId = $userId;
@@ -64,35 +62,30 @@ class SendEmailsWithVariables implements ShouldQueue
         }
     }
 
-    public function handle()
-    {
+    public function handle() {
         $this->validateRequest();
 
-        // Variabele om vast te leggen of een email helemaal is verwerkt
-        // Groupsmails worden in chunks verzonden, als een mail nog niet helemaal is verwerkt
-        // kan deze variabele op false worden gezet zodat de mail niet naar "verzonden" wordt verplaatst.
         $didFinishEmail = true;
 
-        //user voor observer
+        // Observer
         Auth::setUser(User::find($this->userId));
 
         $email = $this->email;
-
         $mailbox = $email->mailbox;
 
         (new EmailHelper())->setConfigToMailbox($mailbox);
 
-        //First see if the to's are contact, user or created option
         $emailsToContact = [];
         $emailsToEmailAddress = [];
         $tos = $this->tos;
 
-// Bij emailsToContact werd per contact een aparte email gemaakt
-// Ze willen nu altijd alle Aan's bij elkaar in 1 email.
-// In dat geval (meerdere Aan's, is de email niet persoonlijk en kunnen dus ook contact mergevelden niet gebruikt worden
-// Dat willen ze wel behouden als de email voor 1 contact bestemd is.
-
-        if(!empty($tos)) {
+        /**
+         * Bij emailsToContact werd per contact een aparte email gemaakt
+         * Ze willen nu altijd alle Aan's bij elkaar in 1 email.
+         * In dat geval (meerdere Aan's, is de email niet persoonlijk en kunnen dus ook contact mergevelden niet gebruikt worden
+         * Dat willen ze wel behouden als de email voor 1 contact bestemd is.
+         */
+        if (!empty($tos)) {
             if (count($tos) == 1 && is_numeric($tos[0])) {
                 $emailAddress = EmailAddress::find($tos[0]);
                 $emailsToContact[] = $emailAddress;
@@ -108,7 +101,9 @@ class SendEmailsWithVariables implements ShouldQueue
             }
         }
 
-        // Als dit een volgende aanroep in een batch is zijn de cc's  en bcc's al verzonden
+        /**
+         * If this is a following job in a batch, then CC's and BCC's are already sent.
+         */
         $ccBccSent = !$this->firstCall;
 
         $amounfOfEmailsSend = 0;
@@ -117,22 +112,42 @@ class SendEmailsWithVariables implements ShouldQueue
         $mergedHtmlBody = $email->html_body;
         $saveHtmlBody = $email->html_body;
 
-        //First send emails to all emails
+        /**
+         * Send emails to all emails when available.
+         */
         if (!empty($emailsToEmailAddress)) {
-            $mail = Mail::to($emailsToEmailAddress);
 
-            ($this->ccs != []) ? $mail->cc($this->ccs) : null;
-            ($this->bccs != []) ? $mail->bcc($this->bccs) : null;
-            if(!empty($email->subject) )
-            {
+            /**
+             * Setup
+             */
+            $mail = Mail::to($emailsToEmailAddress);
+            $subjectWithVariables = 'Econobis';
+
+            if($this->ccs != []) $mail->cc($this->ccs);
+            if($this->bccs != []) $mail->bcc($this->bccs);
+
+            /**
+             * Replace variables subject
+             */
+            if (!empty($email->subject)) {
                 $subjectWithVariables = $email->subject;
                 $subjectWithVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithVariables, 'ik', Auth::user());
 
-            }else{
-                $subjectWithVariables = 'Econobis';
+                if ($email->contactGroup) {
+                    $subjectWithVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithVariables, 'groep', $email->contactGroup);
+                }
             }
 
+            $email->subject = $subjectWithVariables;
+
+            /**
+             * Replace variables body
+             */
             $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($email->html_body, 'ik', Auth::user());
+
+            if ($email->contactGroup) {
+                $htmlBodyWithVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithVariables, 'groep', $email->contactGroup);
+            }
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
 
             try {
@@ -151,19 +166,25 @@ class SendEmailsWithVariables implements ShouldQueue
                 Log::error('Mail ' . $email->id . '  naar e-mailadres kon niet worden verzonden');
                 Log::error($e->getMessage());
                 $jobLog = new JobsLog();
-                $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress ) . ' kon niet worden verzonden';
+                $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress) . ' kon niet worden verzonden';
                 $jobLog->user_id = $this->userId;
                 $jobLog->job_category_id = 'email';
                 $jobLog->save();
             }
-
         }
 
-        //Send mail to all contacts
+        /**
+         * Send emails to all contacts when available.
+         */
         if (!empty($emailsToContact)) {
             foreach ($emailsToContact as $emailToContact) {
 
+                /**
+                 * Setup
+                 */
                 $mail = Mail::to($emailToContact->email);
+                $subjectWithContactVariables = 'Econobis';
+
                 if (!$ccBccSent) {
                     ($this->ccs != []) ? $mail->cc($this->ccs) : null;
                     ($this->bccs != []) ? $mail->bcc($this->bccs) : null;
@@ -171,26 +192,36 @@ class SendEmailsWithVariables implements ShouldQueue
                     $this->ccs = [];
                     $this->bccs = [];
                 }
-                if(!empty($email->subject) )
-                {
+
+                /**
+                 * Replace variables subject
+                 */
+                if (!empty($email->subject)) {
                     $subjectWithContactVariables = $email->subject;
                     $subjectWithContactVariables = str_replace('{contactpersoon}', $emailAddress->contact->full_name, $subjectWithContactVariables);
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'contact', $emailAddress->contact);
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'ik', Auth::user());
-                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'portal' );
-                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'contacten_portal' );
-                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables,'cooperatie' );
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'portal');
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'contacten_portal');
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables, 'cooperatie');
 
-                }else{
-                    $subjectWithContactVariables = 'Econobis';
+                    if ($email->contactGroup) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'groep', $email->contactGroup);
+                    }
                 }
 
+                $email->subject = $subjectWithContactVariables;
+
+                /**
+                 * Replace variables body
+                 */
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'contacten_portal' );
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables,'cooperatie' );
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables, 'portal');
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables, 'contacten_portal');
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables, 'cooperatie');
+
                 if ($email->intake) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake', $email->intake);
                 }
@@ -200,19 +231,26 @@ class SendEmailsWithVariables implements ShouldQueue
                 if ($email->quotationRequest) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'offerteverzoek', $email->quotationRequest);
                 }
-                if($email->opportunity) {
+                if ($email->opportunity) {
                     $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'kans', $email->opportunity);
-                    if($email->opportunity->intake) {
+                    if ($email->opportunity->intake) {
                         $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'intake',
                             $email->opportunity->intake);
-                        if($email->opportunity->intake->campaign) {
+                        if ($email->opportunity->intake->campaign) {
                             $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'campagne',
                                 $email->opportunity->intake->campaign);
                         }
                     }
                 }
+                if ($email->contactGroup) {
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'groep', $email->contactGroup);
+                }
 
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+
+                /**
+                 * Execute
+                 */
                 try {
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                     $amounfOfEmailsSend++;
@@ -230,12 +268,14 @@ class SendEmailsWithVariables implements ShouldQueue
                     $jobLog->job_category_id = 'email';
                     $jobLog->save();
                 }
-
             }
         }
 
-        //send mail to group contacts
-        // We versturen er een max aantal per keer om een timeout te voorkomen
+        /**
+         * Send emails to GroupContacts when available.
+         *
+         * We send a maximum amount each time to prevent timeouts.
+         */
         $groupEmailAdresses = $email->groupEmailAddresses()
             ->limit(Config::get('queue.email.chunk_size'))
             ->get();
@@ -243,40 +283,65 @@ class SendEmailsWithVariables implements ShouldQueue
         if ($groupEmailAdresses) {
             foreach ($groupEmailAdresses as $emailAddress) {
 
+                /**
+                 * Setup
+                 */
                 $mail = Mail::to($emailAddress->email);
+                $subjectWithContactVariables = 'Econobis';
+
                 if (!$ccBccSent) {
-                    ($this->ccs != []) ? $mail->cc($this->ccs) : null;
-                    ($this->bccs != []) ? $mail->bcc($this->bccs) : null;
+                    if($this->ccs != []) $mail->cc($this->ccs);
+                    if($this->bccs != []) $mail->bcc($this->bccs);
                     $ccBccSent = true;
                     $this->ccs = [];
                     $this->bccs = [];
                 }
-                if(!empty($email->subject) )
-                {
+
+                /**
+                 * Replace variables subject
+                 */
+                if (!empty($email->subject)) {
                     $subjectWithContactVariables = $email->subject;
                     $subjectWithContactVariables = str_replace('{contactpersoon}', $emailAddress->contact->full_name, $subjectWithContactVariables);
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'contact', $emailAddress->contact);
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'ik', Auth::user());
-                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'portal' );
-                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables,'contacten_portal' );
-                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables,'cooperatie' );
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'portal');
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'contacten_portal');
+                    $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables, 'cooperatie');
 
-                }else{
-                    $subjectWithContactVariables = 'Econobis';
+                    if ($email->contactGroup) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'groep', $email->contactGroup);
+                    }
                 }
 
+                $email->subject = $subjectWithContactVariables;
+
+                /**
+                 * Replace body subject
+                 */
                 $htmlBodyWithContactVariables = TemplateTableHelper::replaceTemplateTables($email->html_body, $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'contact', $emailAddress->contact);
                 $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'ik', Auth::user());
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'portal' );
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables,'contacten_portal' );
-                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables,'cooperatie' );
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables, 'portal');
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBodyWithContactVariables, 'contacten_portal');
+                $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBodyWithContactVariables, 'cooperatie');
+
+                if ($email->contactGroup) {
+                    $htmlBodyWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($htmlBodyWithContactVariables, 'groep', $email->contactGroup);
+                }
+
                 $htmlBodyWithContactVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
+
+                /**
+                 * Execute
+                 */
                 try {
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                     $amounfOfEmailsSend++;
 
-                    //  Bij groups email slaan we htmlbody met niet gevulde mergevelden op.
+                    /**
+                     * With Group emails we won't save htmlbody with merged fields.
+                     */
                     $mergedSubject = $saveSubject;
                     $mergedHtmlBody = $saveHtmlBody;
 
@@ -289,21 +354,24 @@ class SendEmailsWithVariables implements ShouldQueue
                     $jobLog->job_category_id = 'email';
                     $jobLog->save();
                 }
-                // Email always detach from table otherwise the jobs can stay in a loop when error occur in try/catch while sending
+
+                /**
+                 * Email always detach from table otherwise the jobs
+                 * can stay in a loop when error occur in try/catch while sending.
+                 */
                 $email->groupEmailAddresses()->detach($emailAddress->id);
             }
 
+            /**
+             * Check if there are more Group email address to send to.
+             *
+             * Create a new Job to pick these up.
+             */
             if ($email->groupEmailAddresses()->exists()) {
-                // Er zijn nog meer groepEmailAdressen om naar te versturen; nieuwe Job aanmaken om deze op te pikken
                 $didFinishEmail = false;
                 self::dispatch($email, [], $this->userId, false);
             }
-
         }
-
-//        if ($amounfOfEmailsSend === 1) {
-//            $email->html_body = $mergedHtmlBody;
-//        }
 
         if ($didFinishEmail) {
             $email->subject = $mergedSubject;
@@ -313,15 +381,14 @@ class SendEmailsWithVariables implements ShouldQueue
             $email->save();
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'E-mail(s) verstuurd.';
+            $jobLog->value = 'E-mail(s) verstuurd: didFinish.';
             $jobLog->user_id = $this->userId;
             $jobLog->job_category_id = 'email';
             $jobLog->save();
         }
     }
 
-    public function failed(\Exception $exception)
-    {
+    public function failed(\Exception $exception) {
         $jobLog = new JobsLog();
         $jobLog->value = 'E-mail(s) versturen mislukt.';
         $jobLog->user_id = $this->userId;
@@ -331,8 +398,7 @@ class SendEmailsWithVariables implements ShouldQueue
         Log::error('E-mail maken mislukt:' . $exception->getMessage());
     }
 
-    private function validateRequest()
-    {
+    private function validateRequest() {
         if ($this->email->from != $this->email->mailbox->email) throw new \Exception('A mail can only be send with the same address as the sending mailbox');
     }
 }

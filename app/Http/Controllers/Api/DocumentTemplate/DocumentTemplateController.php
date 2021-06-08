@@ -148,7 +148,7 @@ class DocumentTemplateController extends Controller
     {
         $userRoles = Auth::user()->roles()->pluck('name')->toArray();
 
-        $documentTemplates = DocumentTemplate::where('template_type', 'general')->where('active', true)->with('roles')->get();
+        $documentTemplates = DocumentTemplate::where('template_type', 'general')->where('active', true)->with('roles')->get()->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE);
 
         $validDocumentTemplates = collect();
 
@@ -165,7 +165,7 @@ class DocumentTemplateController extends Controller
 
     public function peekNotGeneral()
     {
-        $documentTemplates = DocumentTemplate::where('template_type', '!=', 'general')->where('active', true)->get();
+        $documentTemplates = DocumentTemplate::where('template_type', '!=', 'general')->where('active', true)->get()->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE);
 
         return DocumentTemplatePeek::collection($documentTemplates);
     }

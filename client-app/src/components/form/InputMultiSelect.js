@@ -21,26 +21,30 @@ const InputMultiSelect = props => {
     } = props;
 
     return (
-        <div className="form-group col-sm-6">
-            <label htmlFor={id} className={`col-sm-6 ${required}`}>
-                {label}
-            </label>
-            <div className={`${size}`}>
-                <Select
-                    id={id}
-                    name={name}
-                    value={value}
-                    onChange={onChangeAction}
-                    options={options}
-                    valueKey={optionId}
-                    labelKey={optionName}
-                    placeholder={''}
-                    noResultsText={'Geen resultaat gevonden'}
-                    multi={multi}
-                    simpleValue
-                    removeSelected
-                    className={error ? ' has-error z-index-10' : ' z-index-10'}
-                />
+        <div className="form-group col-sm-12">
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor={id} className={`col-sm-12 ${required}`}>
+                        {label}
+                    </label>
+                </div>
+                <div className={`${size}`}>
+                    <Select
+                        id={id}
+                        name={name}
+                        value={value}
+                        onChange={onChangeAction}
+                        options={options}
+                        valueKey={optionId}
+                        labelKey={optionName}
+                        placeholder={''}
+                        noResultsText={'Geen resultaat gevonden'}
+                        multi={multi}
+                        simpleValue
+                        removeSelected
+                        className={error ? ' has-error z-index-10' : ' z-index-10'}
+                    />
+                </div>
             </div>
         </div>
     );

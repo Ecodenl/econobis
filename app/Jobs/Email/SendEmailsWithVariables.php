@@ -3,13 +3,11 @@
 namespace App\Jobs\Email;
 
 
-use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
-use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -138,9 +136,9 @@ class SendEmailsWithVariables implements ShouldQueue {
                 if ($email->contactGroup) {
                     $subjectWithVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithVariables, 'groep', $email->contactGroup);
                 }
-
-                $email->subject = $subjectWithVariables;
             }
+
+            $email->subject = $subjectWithVariables;
 
             /**
              * Replace variables body
@@ -168,7 +166,7 @@ class SendEmailsWithVariables implements ShouldQueue {
                 Log::error('Mail ' . $email->id . '  naar e-mailadres kon niet worden verzonden');
                 Log::error($e->getMessage());
                 $jobLog = new JobsLog();
-                $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress) . ' kon niet worden verzonden';
+                $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress) . ' kon niet worden verzonden';
                 $jobLog->user_id = $this->userId;
                 $jobLog->job_category_id = 'email';
                 $jobLog->save();
@@ -210,9 +208,9 @@ class SendEmailsWithVariables implements ShouldQueue {
                     if ($email->contactGroup) {
                         $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'groep', $email->contactGroup);
                     }
-
-                    $email->subject = $subjectWithContactVariables;
                 }
+
+                $email->subject = $subjectWithContactVariables;
 
                 /**
                  * Replace variables body
@@ -314,9 +312,9 @@ class SendEmailsWithVariables implements ShouldQueue {
                     if ($email->contactGroup) {
                         $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'groep', $email->contactGroup);
                     }
-
-                    $email->subject = $subjectWithContactVariables;
                 }
+
+                $email->subject = $subjectWithContactVariables;
 
                 /**
                  * Replace body subject

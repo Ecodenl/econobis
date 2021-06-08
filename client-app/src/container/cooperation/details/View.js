@@ -49,6 +49,15 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         <ViewText label={'Hoom groep'} value={formData.hoomGroup && formData.hoomGroup.name} />
                     </div>
                 </PanelBody>
+                <PanelHeader>
+                    <span className="h5 text-bold">Laposta gegevens</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Laposta link'} value={formData.lapostaLink} />
+                        <ViewText label={'Laposta key'} value={formData.lapostaKey} />
+                    </div>
+                </PanelBody>
             </Panel>
         </section>
     );

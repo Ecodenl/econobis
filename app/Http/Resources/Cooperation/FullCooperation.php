@@ -35,6 +35,8 @@ class FullCooperation extends Resource
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],
             'hoomGroupId' => $this->hoom_group_id ? $this->hoom_group_id : '',
             'hoomGroup' => ['name' => $this->contactGroup ? $this->contactGroup->name : ''],
+            'lapostaLink' => $this->laposta_link,
+            'lapostaKey' => $this->laposta_key,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'createdById' => $this->created_by_id,

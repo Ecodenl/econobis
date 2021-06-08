@@ -234,6 +234,29 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                     </div>
                 </PanelBody>
 
+                <PanelHeader>
+                    <span className="h5 text-bold">Laposta gegevens</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <InputText
+                            label="Laposta link"
+                            name={'lapostaLink'}
+                            value={values.lapostaLink}
+                            onChangeAction={handleChange}
+                            onBlurAction={handleBlur}
+                            error={errors.lapostaLink && touched.lapostaLink}
+                            errorMessage={errors.lapostaLink}
+                        />
+                        <InputText
+                            label="Laposta key"
+                            name={'lapostaKey'}
+                            value={values.lapostaKey}
+                            onChangeAction={handleChange}
+                        />
+                    </div>
+                </PanelBody>
+
                 <PanelBody>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={toggleEdit} />

@@ -26,6 +26,8 @@ const INITIAL_STATE = {
         hoomKey: '',
         hoomEmailTemplateId: '',
         hoomGroupId: '',
+        lapostaLink: '',
+        lapostaKey: '',
     },
     isLoading: true,
     showEdit: false,

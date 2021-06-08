@@ -47,7 +47,7 @@ const InputReactSelectLong = props => {
                         multi={multi}
                         simpleValue
                         removeSelected
-                        className={error ? ' has-error' : ''}
+                        className={error ? ' has-error z-index-10' : ' z-index-10'}
                         isLoading={isLoading}
                         disabled={disabled}
                     />

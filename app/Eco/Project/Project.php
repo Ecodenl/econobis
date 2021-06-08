@@ -93,7 +93,7 @@ class Project extends Model
     }
 
     public function projectRevenues(){
-        return $this->hasMany(ProjectRevenue::class);
+        return $this->hasMany(ProjectRevenue::class)->whereNull('participation_id');
     }
 
     public function participantsProject(){
@@ -173,6 +173,21 @@ class Project extends Model
             foreach ($revenue->distribution as $distribution) {
                 if($distribution->paymentInvoices()->count() > 0){
                     return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public function getHasNotConfirmedRevenuesKwhSplit(){
+        if($this->projectType->code_ref == 'postalcode_link_capital') {
+            $participants = $this->participantsProject()->get();
+            foreach ($participants as $participant) {
+                foreach ($participant->projectRevenues as $revenue) {
+                    if (!$revenue->confirmed) {
+                        return true;
+                    }
                 }
             }
         }

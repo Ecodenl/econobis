@@ -38,4 +38,5 @@ class ContactEnergySupplier extends Model
     public function createdBy(){
         return $this->belongsTo(User::class);
     }
+
 }

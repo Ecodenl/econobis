@@ -15,6 +15,7 @@ const RevenuesListForm = ({
     projectType,
     projectRevenues,
     projectRevenueCategories,
+    hasNotConfirmedRevenuesKwhSplit,
 }) => {
     let disabled = false;
     let revenueDisabledEuro = false;
@@ -26,9 +27,9 @@ const RevenuesListForm = ({
 
     if (projectStatus.codeRef !== 'active') {
         disabled = true;
-        revenueTitleEuro = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
-        revenueTitleKwh = 'Opbrengst verdeling kan alleen bij status actief worden toegevoegd';
-        redemptionTitleEuro = 'Aflossing verdeling kan alleen bij status actief worden toegevoegd';
+        revenueTitleEuro = 'Opbrengst verdeling kan alleen bij projectstatus actief worden toegevoegd';
+        revenueTitleKwh = 'Opbrengst verdeling kan alleen bij projectstatus actief worden toegevoegd';
+        redemptionTitleEuro = 'Aflossing verdeling kan alleen bij projectstatus actief worden toegevoegd';
     }
 
     const revenueEuroCategoryId = projectRevenueCategories.find(
@@ -44,17 +45,22 @@ const RevenuesListForm = ({
     projectRevenues.map(projectRevenue => {
         if (projectRevenue.categoryId == revenueEuroCategoryId && projectRevenue.confirmed == 0) {
             revenueDisabledEuro = true;
-            revenueTitleEuro = 'Lopende euro opbrengst verdeling al actief';
+            revenueTitleEuro = 'Lopende euro opbrengstverdeling al actief';
         }
 
-        if (projectRevenue.categoryId == revenueKwhCategoryId && projectRevenue.confirmed == 0) {
-            revenueDisabledKwh = true;
-            revenueTitleKwh = 'Lopende kwh opbrengst is verdeling al actief';
+        if (projectRevenue.categoryId == revenueKwhCategoryId) {
+            if (projectRevenue.confirmed == 0) {
+                revenueDisabledKwh = true;
+                revenueTitleKwh = 'Lopende kwh opbrengstverdeling al actief';
+            } else if (hasNotConfirmedRevenuesKwhSplit) {
+                revenueDisabledKwh = true;
+                revenueTitleKwh = 'Lopende tussentijdse (deelnemer) kwh opbrengstverdeling(en) al actief';
+            }
         }
 
         if (projectRevenue.categoryId == redemptionEuroCategoryId && projectRevenue.confirmed == 0) {
             redemptionDisabledEuro = true;
-            redemptionTitleEuro = 'Lopende euro aflossing verdeling al actief';
+            redemptionTitleEuro = 'Lopende euro aflossingsverdeling al actief';
         }
     });
 
@@ -196,6 +202,7 @@ const mapStateToProps = state => {
         projectRevenues: state.projectDetails.revenues,
         projectType: state.projectDetails.projectType,
         projectRevenueCategories: state.systemData.projectRevenueCategories,
+        hasNotConfirmedRevenuesKwhSplit: state.projectDetails.hasNotConfirmedRevenuesKwhSplit,
     };
 };
 

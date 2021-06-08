@@ -58,6 +58,17 @@ class ProjectRevenueDistribution extends Model
         return number_format( $this->delivered_total, '2',',', '.' );
     }
 
+    public function getKwhReturnEndCalendarYearAttribute(){
+        $deliveredEndCalendarYear = $this->delivered_total_end_calendar_year ? $this->delivered_total_end_calendar_year : 0;
+        $payoutKwh = $this->payout_kwh ? $this->payout_kwh : 0;
+        return $deliveredEndCalendarYear * $payoutKwh;
+    }
+
+    public function getDeliveredEndCalendarYearStringAttribute()
+    {
+        return number_format( $this->delivered_total_end_calendar_year, '2',',', '.' );
+    }
+
     public function calculator()
     {
         return new ProjectRevenueDistributionCalculator($this);

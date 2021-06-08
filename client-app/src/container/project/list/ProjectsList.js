@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
 import ProjectsListItem from './ProjectsListItem';
 import ProjectsDeleteItem from './ProjectsDeleteItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import ProjectsListHead from "./ProjectsListHead";
+import ProjectsListFilter from "./ProjectsListFilter";
 
 class ProjectsList extends Component {
     constructor(props) {
@@ -22,6 +23,13 @@ class ProjectsList extends Component {
             },
         };
     }
+
+    // On key Enter filter form will submit
+    handleKeyUp = e => {
+        if (e.keyCode === 13) {
+            this.props.onSubmitFilter();
+        }
+    };
 
     showDeleteItemModal = (id, name) => {
         this.setState({
@@ -48,7 +56,7 @@ class ProjectsList extends Component {
     };
 
     render() {
-        const { data = [], meta = {} } = this.props.projects;
+        const {data = [], meta = {}} = this.props.projects;
 
         let loadingText = '';
         let loading = true;
@@ -65,45 +73,40 @@ class ProjectsList extends Component {
 
         return (
             <div>
-                <DataTable>
-                    <DataTableHead>
-                        <tr className="thead-title-quaternary">
-                            <DataTableHeadTitle title={'Projectcode'} width={'10%'} />
-                            <DataTableHeadTitle title={'Project'} width={'18%'} />
-                            <DataTableHeadTitle title={'Type project'} width={'10%'} />
-                            <DataTableHeadTitle title={'# deelnames nodig'} width={'8%'} />
-                            <DataTableHeadTitle title={'Uitgegeven deelnames'} width={'8%'} />
-                            <DataTableHeadTitle title={'Uit te geven deelnames'} width={'8%'} />
-                            <DataTableHeadTitle title={'Lening nodig'} width={'8%'} />
-                            <DataTableHeadTitle title={'Lening opgehaald'} width={'8%'} />
-                            <DataTableHeadTitle title={'Lening uit te geven'} width={'8%'} />
-                            <DataTableHeadTitle title={'Percentage uitgegeven'} width={'8%'} />
-                            <DataTableHeadTitle title={''} width={'6%'} />
-                        </tr>
-                    </DataTableHead>
-                    <DataTableBody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={11}>{loadingText}</td>
-                            </tr>
-                        ) : (
-                            data.map(project => (
-                                <ProjectsListItem
-                                    key={project.id}
-                                    {...project}
-                                    showDeleteItemModal={this.showDeleteItemModal}
-                                />
-                            ))
-                        )}
-                    </DataTableBody>
-                </DataTable>
-                <div className="col-md-6 col-md-offset-3">
-                    <DataTablePagination
-                        onPageChangeAction={this.props.handlePageClick}
-                        totalRecords={meta.total}
-                        initialPage={this.props.projectsPagination.page}
-                    />
-                </div>
+                <form onKeyUp={this.handleKeyUp}>
+                    <DataTable>
+                        <DataTableHead>
+                            <ProjectsListHead
+                                fetchProjectsListData={() => this.props.fetchProjectsListData()}
+                            />
+                            <ProjectsListFilter
+                                onSubmitFilter={this.props.onSubmitFilter}
+                            />
+                        </DataTableHead>
+                        <DataTableBody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={11}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                data.map(project => (
+                                    <ProjectsListItem
+                                        key={project.id}
+                                        {...project}
+                                        showDeleteItemModal={this.showDeleteItemModal}
+                                    />
+                                ))
+                            )}
+                        </DataTableBody>
+                    </DataTable>
+                    <div className="col-md-6 col-md-offset-3">
+                        <DataTablePagination
+                            onPageChangeAction={this.props.handlePageClick}
+                            totalRecords={meta.total}
+                            initialPage={this.props.projectsPagination.page}
+                        />
+                    </div>
+                </form>
                 {this.state.showDeleteItem && (
                     <ProjectsDeleteItem
                         closeDeleteItemModal={this.closeDeleteItemModal}

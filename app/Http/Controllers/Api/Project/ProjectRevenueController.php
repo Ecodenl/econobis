@@ -389,7 +389,7 @@ class ProjectRevenueController extends ApiController
                     $delivered_kwh_end_calendar_year = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $totalDeliveredKwhPeriodThisParticipantEndCalendarYear, 2);
                 }
 
-                $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant);
+                $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
             }
 
             if($closing){
@@ -405,7 +405,7 @@ class ProjectRevenueController extends ApiController
                     $projectRevenueKhwDateBegin = $projectRevenuesKhw->first()->date_begin;
                     $projectRevenueKhwDateEnd = $projectRevenuesKhw->first()->date_end;
 
-                    $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant);
+                    $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
 
                     $distributionsParticipation = ProjectRevenueDistribution::where('participation_id', $projectRevenue->participation_id)
                         ->whereHas('revenue', function ($q) use($projectRevenueKhwCategoryId, $projectRevenueKhwSplitCategoryId, $projectRevenueKhwDateBegin, $projectRevenueKhwDateEnd){
@@ -420,13 +420,11 @@ class ProjectRevenueController extends ApiController
                         if($distributionParticipation->revenue->participation_id == null){
                             $distribution->delivered_total += $distributionParticipation->delivered_total;
                             $distribution->delivered_total_end_calendar_year += $distributionParticipation->delivered_total_end_calendar_year;
-                            $distribution->participations_amount += $distributionParticipation->participations_amount;
-                            $distribution->participations_amount_end_calendar_year += $distributionParticipation->participations_amount_end_calendar_year;
+                            $distribution->participations_amount = $distributionParticipation->participations_amount;
+                            $distribution->participations_amount_end_calendar_year = $distributionParticipation->participations_amount_end_calendar_year;
                         }else{
                             $distribution->delivered_total -= $distributionParticipation->delivered_total;
                             $distribution->delivered_total_end_calendar_year -= $distributionParticipation->delivered_total_end_calendar_year;
-                            $distribution->participations_amount -= $distributionParticipation->participations_amount;
-                            $distribution->participations_amount_end_calendar_year -= $distributionParticipation->participations_amount_end_calendar_year;
                         }
                     }
 
@@ -447,7 +445,7 @@ class ProjectRevenueController extends ApiController
                 $participants = $project->participantsProjectDefinitive;
             }
             foreach ($participants as $participant) {
-                $this->saveDistribution($projectRevenue, $participant);
+                $this->saveDistribution($projectRevenue, $participant, $closing);
             }
         }
 
@@ -550,12 +548,12 @@ class ProjectRevenueController extends ApiController
         return $returnParm;
     }
 
-    public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant)
+    public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
     {
         $contact = Contact::find($participant->contact_id);
         $primaryAddress = $contact->primaryAddress;
 
-        if($projectRevenue->category->code_ref == 'revenueKwhSplit') {
+        if($projectRevenue->category->code_ref == 'revenueKwhSplit' && !$closing) {
             $contactEnergySupplier
                 = ContactEnergySupplier::find($contact->previous_contact_energy_supplier_id);
         }else{

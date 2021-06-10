@@ -66,10 +66,12 @@ class ParticipantProjectObserver
             foreach($participantProject->project->projectRevenues as $projectRevenue) {
                 // If project revenue is already confirmed then continue
                 if($projectRevenue->confirmed) continue;
+                // If project revenue split then continue
+                if($projectRevenue->category->code_ref == 'revenueKwhSplit') continue;
 
                 $projectRevenueController = new ProjectRevenueController();
 
-                $projectRevenueController->saveDistribution($projectRevenue, $participantProject);
+                $projectRevenueController->saveDistribution($projectRevenue, $participantProject, false);
 
                 $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
                 if($projectRevenue->category->code_ref == 'revenueEuro'
@@ -79,7 +81,7 @@ class ParticipantProjectObserver
                         $distribution->save();
                     }
                 }
-                if($projectRevenue->category->code_ref == 'revenueKwh' || $projectRevenue->category->code_ref == 'revenueKwhSplit') {
+                if($projectRevenue->category->code_ref == 'revenueKwh') {
                     foreach($projectRevenue->distribution as $distribution) {
                         $distribution->calculator()->runRevenueKwh();
                         $distribution->save();

@@ -456,9 +456,12 @@ class EnergySupplierExcelHelper
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->delivered_total;
                     $completeData[] = $rowData;
-                }else{$rowData = [];
-                    $rowData[] = $this->projectRevenue->project->ean;
-                    $rowData[] = $this->projectRevenue->project->ean_manager;
+                }else{
+                    $rowData = [];
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
                     $rowData[] = $this->formatDate($this->projectRevenue->date_begin);
                     $rowData[] = $this->formatDate(Carbon::parse($this->projectRevenue->date_begin)->endOfYear());
                     $rowData[] = $distribution->contact->full_name;
@@ -470,8 +473,8 @@ class EnergySupplierExcelHelper
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
                     $completeData[] = $rowData;
-                    $rowData = [];
 
+                    $rowData = [];
                     $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
                         ? 'EAN: ' . $this->projectRevenue->project->ean : '';
                     $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
@@ -960,8 +963,10 @@ class EnergySupplierExcelHelper
                     $rowData[] = \Config::get('app.name');
                     $rowData[] = $this->projectRevenue->project->name;
                     $rowData[] = $totalProductionEndCalendarYear;
-                    $rowData[] = $this->projectRevenue->project->ean;
-                    $rowData[] = $this->projectRevenue->project->ean_manager;
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean : '';
+                    $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
+                        ? 'EAN: ' . $this->projectRevenue->project->ean_manager : '';
                     $rowData[] = '';
                     $rowData[] = '';
                     $rowData[] = '';

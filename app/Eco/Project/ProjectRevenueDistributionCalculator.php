@@ -46,28 +46,10 @@ class ProjectRevenueDistributionCalculator
         // Calculate total kwh
         $totalKwh = $projectRevenue->kwh_end - $projectRevenue->kwh_start;
 
-        // Calculate total kwh end calendar year
-        $kwhEndCalendarYear = $projectRevenue->kwh_end_calendar_year_high + $projectRevenue->kwh_end_calendar_year_low;
-        $totalKwhEndCalendarYear = $totalKwh;
-        if($kwhEndCalendarYear > $projectRevenue->kwh_start){
-            $totalKwhEndCalendarYear = $kwhEndCalendarYear - $projectRevenue->kwh_start;
-        }
-
         // Total sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
         // With this value we can calculate the amount of kwh per day and per participation ($totalKwh / $totalSumOfParticipationsTimesDays)
         $totalSumOfParticipationsAndDays = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
             return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-        });
-
-        // Total sum end of calendar year of participations times days, for each record in revenue delivered kwh period this is (days_of_period_end_calendar_year * participations_quantity_end_calendar_year)
-        // With this value we can calculate the amount of kwh per day and per participation ($totalKwhEndCalendarYear / $totalSumOfParticipationsTimesDaysEndCalendarYear)
-        $totalSumOfParticipationsAndDaysEndCalendarYear = $projectRevenue->deliveredKwhPeriod->sum(function ($deliveredKwhPeriod) {
-//            return $deliveredKwhPeriod['days_of_period_end_calendar_year'] * $deliveredKwhPeriod['participations_quantity_end_calendar_year'];
-            if(Carbon::parse($deliveredKwhPeriod['date_end']) <= Carbon::parse($deliveredKwhPeriod['date_begin'])->endOfYear()){
-                return $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-            }else{
-                return 0;
-            }
         });
 
         $totalDeliveredKwh = 0;
@@ -77,18 +59,16 @@ class ProjectRevenueDistributionCalculator
             // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
             // With this value we can calculate the amount of kwh returns on this deliverdKwhPeriod
             $sumOfParticipationsTimesDays = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-            $sumOfParticipationsTimesDaysEndCalendarYear = 0;
-            if(Carbon::parse($deliveredKwhPeriod->date_end) <= Carbon::parse($deliveredKwhPeriod->date_begin)->endOfYear()){
-                $sumOfParticipationsTimesDaysEndCalendarYear = $deliveredKwhPeriod['days_of_period'] * $deliveredKwhPeriod['participations_quantity'];
-            }
-            $deliveredKwhPeriodEndCalendarYear = round(($totalKwhEndCalendarYear / $totalSumOfParticipationsAndDaysEndCalendarYear) * $sumOfParticipationsTimesDaysEndCalendarYear, 2);
 
             // Save returns per Kwh period
             $deliveredKwhPeriod->delivered_kwh = round(($totalKwh / $totalSumOfParticipationsAndDays) * $sumOfParticipationsTimesDays, 2);
             $deliveredKwhPeriod->save();
 
             $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
-            $totalDeliveredKwhEndCalendarYear += $deliveredKwhPeriodEndCalendarYear;
+            // If year period is same as year date begin revenue, sum for end calendar year
+            if(Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($this->projectRevenueDistribution->revenue->date_begin)->year){
+                $totalDeliveredKwhEndCalendarYear +=$deliveredKwhPeriod->delivered_kwh;
+            }
         }
 
             // Return total delivered kwh for per distribution

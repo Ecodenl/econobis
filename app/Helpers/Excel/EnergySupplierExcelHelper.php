@@ -339,7 +339,7 @@ class EnergySupplierExcelHelper
                     $kwhEndCalendarYear = ($this->projectRevenue->kwh_end_calendar_year_high ? $this->projectRevenue->kwh_end_calendar_year_high : 0) +
                         ($this->projectRevenue->kwh_end_calendar_year_low ? $this->projectRevenue->kwh_end_calendar_year_low : 0);
                     $totalProductionEndCalendarYear = $kwhEndCalendarYear - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
-                    $totalProductionNextYear = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0) - $kwhEndCalendarYear;
+                    $totalProductionNextYear = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - $kwhEndCalendarYear;
 
                     $rowData = [];
                     $rowData[] = $distribution->participation_id;
@@ -919,7 +919,7 @@ class EnergySupplierExcelHelper
                     $kwhEndCalendarYear = ($this->projectRevenue->kwh_end_calendar_year_high ? $this->projectRevenue->kwh_end_calendar_year_high : 0) +
                         ($this->projectRevenue->kwh_end_calendar_year_low ? $this->projectRevenue->kwh_end_calendar_year_low : 0);
                     $totalProductionEndCalendarYear = $kwhEndCalendarYear - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0);
-                    $totalProductionNextYear = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - ($this->projectRevenue->kwh_start ? $this->projectRevenue->kwh_start : 0) - $kwhEndCalendarYear;
+                    $totalProductionNextYear = ($this->projectRevenue->kwh_end ? $this->projectRevenue->kwh_end : 0) - $kwhEndCalendarYear;
 
                     $rowData = [];
                     $rowData[] = $distribution->contact->full_name;

@@ -402,8 +402,17 @@ class ProjectRevenueController extends ApiController
                     ->where('confirmed', true)
                     ->orderBy('date_end', 'desc');
                 if ($projectRevenuesKhw->exists()) {
-                    $projectRevenueKhwDateBegin = $projectRevenuesKhw->first()->date_begin;
-                    $projectRevenueKhwDateEnd = $projectRevenuesKhw->first()->date_end;
+                    $projectRevenueKhw = $projectRevenuesKhw->first();
+                    $projectRevenueKhwDateBegin = $projectRevenueKhw->date_begin;
+                    $projectRevenueKhwDateEnd = $projectRevenueKhw->date_end;
+
+                    $distributionProjectRevenueKhw = ProjectRevenueDistribution::where('participation_id', $projectRevenue->participation_id)
+                        ->where('revenue_id', $projectRevenueKhw->id)
+                        ->first();
+                    if($distributionProjectRevenueKhw){
+                        $distributionProjectRevenueKhw->delivered_total_last_es = 0;
+                        $distributionProjectRevenueKhw->delivered_total_last_es_end_calendar_year = 0;
+                    }
 
                     $distribution = $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
 
@@ -422,12 +431,28 @@ class ProjectRevenueController extends ApiController
                             $distribution->delivered_total_end_calendar_year += $distributionParticipation->delivered_total_end_calendar_year;
                             $distribution->participations_amount = $distributionParticipation->participations_amount;
                             $distribution->participations_amount_end_calendar_year = $distributionParticipation->participations_amount_end_calendar_year;
+                            if($distributionProjectRevenueKhw && $distributionProjectRevenueKhw->es_id == $distributionParticipation->es_id) {
+                                $distributionProjectRevenueKhw->delivered_total_last_es += $distributionParticipation->delivered_total;
+                            }
                         }else{
                             $distribution->delivered_total -= $distributionParticipation->delivered_total;
                             $distribution->delivered_total_end_calendar_year -= $distributionParticipation->delivered_total_end_calendar_year;
+                            if($distributionProjectRevenueKhw && $distributionProjectRevenueKhw->es_id != $distributionParticipation->es_id) {
+                                $distributionProjectRevenueKhw->delivered_total_last_es -= $distributionParticipation->delivered_total;
+                            }
                         }
                     }
+                    if($distributionProjectRevenueKhw
+                        && $distributionProjectRevenueKhw->delivered_total_last_es != 0
+                        && $distributionProjectRevenueKhw->delivered_total != 0
+                        && $distributionProjectRevenueKhw->delivered_total_end_calendar_year != 0
+                        && $distributionProjectRevenueKhw->delivered_total != $distributionProjectRevenueKhw->delivered_total_end_calendar_year) {
+                        $engerySupplierFactor = $distributionProjectRevenueKhw->delivered_total_last_es / $distributionProjectRevenueKhw->delivered_total;
+                        $deliveredTotalLastEsEndCalendarYear = round($distributionProjectRevenueKhw->delivered_total_end_calendar_year * $engerySupplierFactor, 2);
 
+                        $distributionProjectRevenueKhw->delivered_total_last_es_end_calendar_year = $deliveredTotalLastEsEndCalendarYear;
+                        $distributionProjectRevenueKhw->save();
+                    }
                 }
             }else{
                 $distribution->delivered_total = $delivered_kwh;

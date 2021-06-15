@@ -137,7 +137,7 @@ class InvoicesListItem extends Component {
                 : '';
 
         const compatibleStatus = status.id === 'sent' && usesTwinfield && !compatibleWithTwinfield;
-        const compatibleStatusRowClow = compatibleStatus ? 'in-progress-row' : '';
+        const compatibleStatusRowClow = compatibleStatus ? 'missing-data-row' : '';
         const compatibleStatusTitle = "Er ontbreekt een Twinfield Grootboekrekening nummer bij één of meerdere producten.";
 
         return (

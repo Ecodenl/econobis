@@ -115,6 +115,20 @@ class Invoice extends Model
         return $amountInclVat;
     }
 
+    public function isInvoiceFullyCompatibleWithTwinfield() {
+        if (!$this->administration->uses_twinfield) return false;
+
+        $compatibleCount = 0;
+
+        foreach ($this->invoiceProducts as $invoiceProduct) {
+            if(!empty($invoiceProduct->twinfield_ledger_code)) {
+                $compatibleCount++;
+            }
+        }
+
+        return $compatibleCount === $this->invoiceProducts()->count();
+    }
+
     public function getTotalExclVatInclReductionAttribute()
     {
         $amountExclVat = 0;

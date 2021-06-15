@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import { hashHistory } from 'react-router';
+import {hashHistory} from 'react-router';
 import moment from 'moment';
 import InvoiceListSetPaid from './InvoiceListSetPaid';
 import InvoiceListSendNotification from './InvoiceListSendNotification';
@@ -65,19 +65,19 @@ class InvoicesListItem extends Component {
     }
 
     showSend = () => {
-        this.setState({ showSend: !this.state.showSend });
+        this.setState({showSend: !this.state.showSend});
     };
 
     showSetPaid = () => {
-        this.setState({ showSetPaid: !this.state.showSetPaid });
+        this.setState({showSetPaid: !this.state.showSetPaid});
     };
 
     showSendNotification = () => {
-        this.setState({ showSendNotification: !this.state.showSendNotification });
+        this.setState({showSendNotification: !this.state.showSendNotification});
     };
 
     showSetIrrecoverable = () => {
-        this.setState({ showSetIrrecoverable: !this.state.showSetIrrecoverable });
+        this.setState({showSetIrrecoverable: !this.state.showSetIrrecoverable});
     };
 
     render() {
@@ -122,7 +122,9 @@ class InvoicesListItem extends Component {
             emailToAddress,
             ibanContactOrInvoice,
             subStatus,
+            usesTwinfield,
             invoiceInTwinfield,
+            compatibleWithTwinfield,
         } = this.props;
 
         const inProgressRowClass =
@@ -133,12 +135,18 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'is-resending'
                 ? 'in-progress-row'
                 : '';
+
+        const compatibleStatus = status.id === 'sent' && usesTwinfield && !compatibleWithTwinfield;
+        const compatibleStatusRowClow = compatibleStatus ? 'in-progress-row' : '';
+        const compatibleStatusTitle = "Er ontbreekt een Twinfield Grootboekrekening nummer bij één of meerdere producten.";
+
         return (
             <tr
-                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
+                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass} ${compatibleStatusRowClow}`}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
+                title={compatibleStatus ? compatibleStatusTitle : ''}
             >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
@@ -161,18 +169,18 @@ class InvoicesListItem extends Component {
                 <td>{daysLastReminder}</td>
                 <td>
                     {'€' +
-                        totalInclVatInclReduction.toLocaleString('nl', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                        })}
-                    {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? <br /> : ''}
+                    totalInclVatInclReduction.toLocaleString('nl', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    })}
+                    {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? <br/> : ''}
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? (
                         <span class="error-span">
                             {'€' +
-                                amountOpen.toLocaleString('nl', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2,
-                                })}
+                            amountOpen.toLocaleString('nl', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}
                         </span>
                     ) : (
                         ''
@@ -187,28 +195,28 @@ class InvoicesListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)} title="Open nota">
-                            <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
+                            <span className="glyphicon glyphicon-pencil mybtn-success"/>{' '}
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.viewItem(id)} title="Preview nota">
-                            <span className="glyphicon glyphicon-eye-open mybtn-success" />{' '}
+                            <span className="glyphicon glyphicon-eye-open mybtn-success"/>{' '}
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'to-send' ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota">
-                            <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
+                            <span className="glyphicon glyphicon-envelope mybtn-success"/>{' '}
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'error-sending' ? (
                         <a role="button" onClick={() => this.showSend()} title="Verstuur nota opnieuw">
-                            <span className="glyphicon glyphicon-envelope mybtn-success" />{' '}
+                            <span className="glyphicon glyphicon-envelope mybtn-success"/>{' '}
                         </a>
                     ) : (
                         ''
@@ -217,7 +225,7 @@ class InvoicesListItem extends Component {
                     this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') ? (
                         <a role="button" onClick={() => this.showSetPaid()} title="Zet op betaald">
-                            <span className="glyphicon glyphicon-euro mybtn-success" />{' '}
+                            <span className="glyphicon glyphicon-euro mybtn-success"/>{' '}
                         </a>
                     ) : (
                         ''
@@ -226,7 +234,7 @@ class InvoicesListItem extends Component {
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') &&
                     !this.props.dateExhortation && !this.props.isPaidByMollie ? (
                         <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
-                            <span className="glyphicon glyphicon-bullhorn mybtn-success" />{' '}
+                            <span className="glyphicon glyphicon-bullhorn mybtn-success"/>{' '}
                         </a>
                     ) : (
                         ''
@@ -241,14 +249,14 @@ class InvoicesListItem extends Component {
                     this.props.statusId !== 'paid' &&
                     this.props.statusId !== 'irrecoverable' ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">
-                            <span className="glyphicon glyphicon-remove mybtn-success" />{' '}
+                            <span className="glyphicon glyphicon-remove mybtn-success"/>{' '}
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'to-send' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, number)}>
-                            <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
+                            <span className="glyphicon glyphicon-trash mybtn-danger"/>{' '}
                         </a>
                     ) : (
                         ''

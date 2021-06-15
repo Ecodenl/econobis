@@ -38,6 +38,7 @@ class ContactGroup extends Model
 
     //gebruikt om infinite loop te checken bij samengestelde groepen
     private $hasComposedIds = [];
+    private $hasComposedExceptedIds = [];
 
     public static function getAutoIncrementedName(string $prefix)
     {
@@ -120,6 +121,11 @@ class ContactGroup extends Model
         return $this->belongsToMany(ContactGroup::class, 'composed_contact_group', 'parent_group_id', 'group_id');
     }
 
+    public function contactGroupsExcepted()
+    {
+        return $this->belongsToMany(ContactGroup::class, 'composed_contact_group_excepted', 'parent_group_id', 'group_id');
+    }
+
     public function emails()
     {
         return $this->hasMany(Email::class);
@@ -196,6 +202,40 @@ class ContactGroup extends Model
         return $contacts;
     }
 
+    public function getComposedExceptContactsAttribute()
+    {
+        $contacts = (new Contact())->newCollection();
+
+        foreach ($this->contactGroupsExcepted as $contactGroupExcepted) {
+
+            //als id al is geweest, sneller en tegen infinite loop
+            if (in_array($contactGroupExcepted->id, $this->hasComposedExceptedIds)) {
+                continue;
+            }
+
+            if (count($contacts) == 0) {
+                $contacts = $contactGroupExcepted->getAllContacts();
+            } else {
+                $tempContacts = $contactGroupExcepted->getAllContacts();
+
+                //one - in een van de groepen
+                //all - in alle groepen
+                //
+                //contacts merge(ontdubbelen)
+                if ($tempContacts && $this->composed_group_type === 'one') {
+
+                    $contacts = $contacts->merge($tempContacts);
+                }
+                else if ($tempContacts && $this->composed_group_type === 'all') {
+                    $contacts = $contacts->intersect($tempContacts);
+                }
+            }
+            array_push($this->hasComposedExceptedIds, $contactGroupExcepted->id);
+        }
+
+        return $contacts;
+    }
+
     public function getAllContactsAttribute()
     {
         //gebruikt om infinite loop te checken bij samengestelde groepen
@@ -255,7 +295,7 @@ class ContactGroup extends Model
                 }
             }
         } elseif ($this->type_id === 'composed') {
-            return $this->composed_contacts;
+            return $this->composed_contacts->diff($this->composed_except_contacts);
         }
 
         return false;

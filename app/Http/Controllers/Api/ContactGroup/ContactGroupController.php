@@ -216,6 +216,18 @@ class ContactGroupController extends Controller
         }
     }
 
+    public function detachComposedExceptedContactGroup(ContactGroup $contactGroup, ContactGroup $contactGroupToDetach)
+    {
+        $contactGroup->contactGroupsExcepted()->detach($contactGroupToDetach);
+    }
+
+    public function attachComposedExceptedContactGroup(ContactGroup $contactGroup, ContactGroup $contactGroupToAttach)
+    {
+        if(!($contactGroup->id === $contactGroupToAttach->id)) {
+            $contactGroup->contactGroupsExcepted()->syncWithoutDetaching($contactGroupToAttach);
+        }
+    }
+
     private function makeStatic(ContactGroup $contactGroup){
         $dynamicContacts = $contactGroup->dynamic_contacts;
 

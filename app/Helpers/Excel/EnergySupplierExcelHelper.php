@@ -456,7 +456,8 @@ class EnergySupplierExcelHelper
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->delivered_total;
                     $completeData[] = $rowData;
-                }else{$rowData = [];
+                }else{
+                    $rowData = [];
                     $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
                         ? 'EAN: ' . $this->projectRevenue->project->ean : '';
                     $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)
@@ -472,8 +473,8 @@ class EnergySupplierExcelHelper
                         ? $distribution->contact->primaryContactEnergySupplier->es_number : '';
                     $rowData[] = $distribution->delivered_total_last_es_end_calendar_year ?  $distribution->delivered_total_last_es_end_calendar_year : $distribution->delivered_total_end_calendar_year;
                     $completeData[] = $rowData;
-                    $rowData = [];
 
+                    $rowData = [];
                     $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean)
                         ? 'EAN: ' . $this->projectRevenue->project->ean : '';
                     $rowData[] = $this->projectRevenue->project && !empty($this->projectRevenue->project->ean_manager)

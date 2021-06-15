@@ -12,6 +12,8 @@ export default function(state = {}, action) {
             };
         case 'CLEAR_CONTACT_GROUP_DETAILS':
             return {};
+        case 'UPDATE_LAPOSTA_LIST_ID':
+            return { ...state, lapostaListId: action.lapostaListId };
         default:
             return state;
     }

@@ -54,7 +54,7 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Laposta link'} value={formData.lapostaLink} />
+                        <ViewText label={'Gebruik Laposta'} value={formData.useLaposta ? 'Ja' : 'Nee'} />
                         <ViewText label={'Laposta key'} value={formData.lapostaKey} />
                     </div>
                 </PanelBody>

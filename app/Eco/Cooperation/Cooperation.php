@@ -17,6 +17,7 @@ class Cooperation extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
+        'use_laposta' => 'bool',
         'created_at' => 'date',
         'updated_at' => 'date',
         'deleted_at' => 'date',
@@ -45,4 +46,5 @@ class Cooperation extends Model
     {
         return $this->belongsTo(EmailTemplate::class, 'hoom_email_template_id');
     }
+
 }

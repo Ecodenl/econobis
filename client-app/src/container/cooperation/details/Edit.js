@@ -13,6 +13,7 @@ import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 import { CooperationValidation } from './Validation';
 import CooperationUploadLogo from './UploadLogo';
+import InputToggle from '../../../components/form/InputToggle';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -239,14 +240,11 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <InputText
-                            label="Laposta link"
-                            name={'lapostaLink'}
-                            value={values.lapostaLink}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.lapostaLink && touched.lapostaLink}
-                            errorMessage={errors.lapostaLink}
+                        <InputToggle
+                            label="Gebruik Laposta"
+                            name={'useLaposta'}
+                            value={values.useLaposta}
+                            onChangeAction={e => setFieldValue('useLaposta', e.target.checked)}
                         />
                         <InputText
                             label="Laposta key"

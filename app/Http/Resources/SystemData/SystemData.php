@@ -162,7 +162,7 @@ class SystemData extends Resource
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
-            'cooperation' => Cooperation::select(['id', 'hoom_link'])->first(),
+            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
 
@@ -198,5 +199,11 @@ export default {
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
+    },
+
+    makeLapostaList: id => {
+        const requestUrl = `contact-group/${id}/make-laposta-list`;
+
+        return axiosInstance.get(requestUrl);
     },
 };

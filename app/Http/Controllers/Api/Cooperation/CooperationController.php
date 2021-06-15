@@ -59,6 +59,7 @@ class CooperationController extends ApiController
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
+        $cooperation->use_laposta = $cooperation->use_laposta == 'true';
         $cooperation->save();
 
         // Store attachment when given

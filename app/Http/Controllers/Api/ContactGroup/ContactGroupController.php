@@ -8,6 +8,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
+use App\Helpers\Laposta\LapostaHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
@@ -238,5 +239,11 @@ class ContactGroupController extends Controller
             $contactGroup->composed_of = 'contacts';
         }
 
+    }
+
+    public function makeLapostaList(ContactGroup $contactGroup) {
+        $lapostaHelper = new LapostaHelper($contactGroup);
+
+        return $lapostaHelper->createList();
     }
 }

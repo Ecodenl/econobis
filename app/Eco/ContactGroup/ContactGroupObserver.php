@@ -9,6 +9,7 @@
 namespace App\Eco\ContactGroup;
 
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ContactGroupObserver
@@ -19,6 +20,13 @@ class ContactGroupObserver
         $userId = Auth::id();
         if($userId){
             $contactGroup->created_by_id = $userId;
+        }
+    }
+
+    public function updating(ContactGroup $contactGroup)
+    {
+        if($contactGroup->isDirty('laposta_list_id')) {
+            $contactGroup->laposta_list_created_at = Carbon::now();
         }
     }
 }

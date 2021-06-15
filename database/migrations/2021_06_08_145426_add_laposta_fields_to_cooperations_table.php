@@ -15,7 +15,7 @@ class AddLapostaFieldsToCooperationsTable extends Migration
     {
         Schema::table('cooperations', function (Blueprint $table) {
             $table->string('laposta_key')->nullable()->after('hoom_group_id');
-            $table->string('laposta_link')->nullable()->after('hoom_group_id');
+            $table->boolean('use_laposta')->default(false)->after('hoom_group_id');
         });
     }
 
@@ -26,11 +26,11 @@ class AddLapostaFieldsToCooperationsTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('cooperations', 'laposta_link'))
+        if (Schema::hasColumn('cooperations', 'use_laposta'))
         {
             Schema::table('cooperations', function (Blueprint $table)
             {
-                $table->dropColumn('laposta_link');
+                $table->dropColumn('use_laposta');
             });
         }
         if (Schema::hasColumn('cooperations', 'laposta_key'))
@@ -40,6 +40,5 @@ class AddLapostaFieldsToCooperationsTable extends Migration
                 $table->dropColumn('laposta_key');
             });
         }
-
     }
 }

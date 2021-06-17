@@ -183,7 +183,7 @@ class ExternalWebformController extends Controller
         if($contact && !$this->newContactCreated){
             if($data['contact']['iban'] != ''
                 && $data['contact']['iban'] != $contact->iban){
-                $iban = $this->checkIban(strtoupper($data['contact']['iban']), 'contact.');
+                $iban = $this->checkIban($data['contact']['iban'], 'contact.');
                 $contact->iban = $iban;
                 $contact->save();
                 $this->log("IBAN gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
@@ -1844,7 +1844,8 @@ class ExternalWebformController extends Controller
             $this->log($error);
             $this->addTaskError($error);
         }
-        return $iban;
+
+        return strtoupper($iban);
     }
 
     protected function mailLog(array $data, bool $success, Webform $webform = null)

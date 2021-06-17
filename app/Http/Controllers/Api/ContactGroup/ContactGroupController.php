@@ -127,6 +127,9 @@ class ContactGroupController extends Controller
         $contactGroup->fill($data);
         $contactGroup->save();
 
+        $lapostaHelper = new LapostaHelper($contactGroup);
+        $lapostaHelper->updateList();
+
         return FullContactGroup::make($contactGroup->load('responsibleUser', 'emailTemplateNewContactLink'));
     }
 
@@ -151,6 +154,10 @@ class ContactGroupController extends Controller
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+
+        $lapostaHelper = new LapostaHelper($contactGroup);
+        $lapostaHelper->deleteList();
+
     }
 
     public function contacts(ContactGroup $contactGroup)
@@ -241,7 +248,7 @@ class ContactGroupController extends Controller
 
     }
 
-    public function makeLapostaList(ContactGroup $contactGroup) {
+    public function createLapostaList(ContactGroup $contactGroup) {
         $lapostaHelper = new LapostaHelper($contactGroup);
 
         return $lapostaHelper->createList();

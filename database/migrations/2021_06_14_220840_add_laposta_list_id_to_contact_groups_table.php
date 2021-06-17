@@ -14,8 +14,8 @@ class AddLapostaListIdToContactGroupsTable extends Migration
     public function up()
     {
         Schema::table('contact_groups', function (Blueprint $table) {
-            $table->integer('laposta_list_id')->nullable(true);
-            $table->dateTime('laposta_list_created_at')->nullable(true);
+            $table->string('laposta_list_id')->nullable();
+            $table->dateTime('laposta_list_created_at')->nullable();
         });
     }
 

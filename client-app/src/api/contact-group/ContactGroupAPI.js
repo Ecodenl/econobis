@@ -201,8 +201,8 @@ export default {
             .catch(error => error.response);
     },
 
-    makeLapostaList: id => {
-        const requestUrl = `contact-group/${id}/make-laposta-list`;
+    createLapostaList: id => {
+        const requestUrl = `contact-group/${id}/create-laposta-list`;
 
         return axiosInstance.get(requestUrl);
     },

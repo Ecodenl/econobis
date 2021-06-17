@@ -143,7 +143,7 @@ Route::namespace('Api')
         Route::post('contact-group/{contactGroup}/contacts/remove/{contact}', 'ContactGroup\ContactGroupController@removeContact');
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
-        Route::get('contact-group/{contactGroup}/make-laposta-list', 'ContactGroup\ContactGroupController@makeLapostaList');
+        Route::get('contact-group/{contactGroup}/create-laposta-list', 'ContactGroup\ContactGroupController@createLapostaList');
 
         Route::post('distribution/create-revenue-report', 'Project\ProjectRevenueController@createRevenueReport');
         Route::post('distribution/create-payment-invoices', 'Project\ProjectRevenueController@createPaymentInvoices');

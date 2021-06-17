@@ -13,14 +13,14 @@ import { hashHistory } from 'react-router';
 
 function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, cooperation, isLoading }) {
     const [showDelete, setShowDelete] = useState(false);
-    const [showMakeLapostaList, setShowMakeLapostaList] = useState(false);
+    const [showCreateLapostaList, setShowCreateLapostaList] = useState(false);
 
     function toggleDelete() {
         setShowDelete(!showDelete);
     }
 
-    function toggleShowMakeLapostaList() {
-        setShowMakeLapostaList(!showMakeLapostaList);
+    function toggleShowCreateLapostaList() {
+        setShowCreateLapostaList(!showCreateLapostaList);
     }
 
     const { id, name, type, numberOfContacts = 0, composedOf } = contactGroup;
@@ -50,7 +50,7 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
                                 />
                                 {cooperation && cooperation.use_laposta && (
                                     <ButtonText
-                                        onClickAction={toggleShowMakeLapostaList}
+                                        onClickAction={toggleShowCreateLapostaList}
                                         buttonText={
                                             lapostaListId ? 'Laposta lijst aangemaakt' : 'Laposta lijst aanmaken'
                                         }
@@ -77,7 +77,7 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
                     contactGroupType={type.id}
                 />
             )}
-            {showMakeLapostaList && <ContactGroupDetailsLapostaList closeModal={toggleShowMakeLapostaList} />}
+            {showCreateLapostaList && <ContactGroupDetailsLapostaList closeModal={toggleShowCreateLapostaList} />}
         </div>
     );
 }

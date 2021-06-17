@@ -9,14 +9,14 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
     const [errors, setErrors] = useState([]);
 
     useEffect(function() {
-        ContactGroupAPI.makeLapostaList(id)
+        ContactGroupAPI.createLapostaList(id)
             .then(payload => {
                 setMessage('Laposta lijst is succesvol aangemaakt');
                 updateContactGroupLapostaList(1);
                 setTimeout(closeModal, 2000);
             })
             .catch(error => {
-                if (error.response && error.response.status === 422) {
+                if (error.response && error.response.status === 400) {
                     if (error.response.data && error.response.data.errors) {
                         if (error.response.data.errors.econobis && error.response.data.errors.econobis.length) {
                             setMessage('Niet alle benodigde gegevens zijn ingevuld:');
@@ -29,9 +29,10 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
                                 ').'
                         );
                         let messageErrors = [];
-                        for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
-                            messageErrors.push(`${value}`);
-                        }
+                        // for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
+                        //     messageErrors.push(`${value}`);
+                        // }
+                        messageErrors.push(error.response.data.message);
 
                         setErrors(messageErrors);
                     }

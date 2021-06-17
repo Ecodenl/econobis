@@ -8,6 +8,7 @@ import ContactDetailsFormContactEnergySupplierView from './ContactDetailsFormCon
 import ContactDetailsFormContactEnergySupplierEdit from './ContactDetailsFormContactEnergySupplierEdit';
 import ContactDetailsFormContactEnergySupplierDelete from './ContactDetailsFormContactEnergySupplierDelete';
 import { isEqual } from 'lodash';
+import { hashHistory } from 'react-router';
 
 class ContactDetailsFormContactEnergySupplierItem extends Component {
     constructor(props) {
@@ -20,6 +21,9 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
             showDelete: false,
             contactEnergySupplier: {
                 ...props.contactEnergySupplier,
+            },
+            errors: {
+                memberSince: false,
             },
         };
 
@@ -68,6 +72,23 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
         this.closeEdit();
     };
 
+    //todo: WM even als test. ik denk dat we voor Tussenstijdse opbrengstverdelingen een list moeten maken over deelnames, wellicht in harmonica ??
+    // revenueKwhSplit = () => {
+    //     console.log('do revenueKwhSplit');
+    //
+    //     const revenueKwhSplitCategoryId = this.props.projectRevenueCategories.find(
+    //         projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
+    //     ).id;
+    //
+    //     // const participationId = 348;
+    //     // const projectId = 48;
+    //     // const hrefNewRevenueKwhSplit = `/project/deelnemer/opbrengst/nieuw/${participationId}/${revenueKwhSplitCategoryId}`;
+    //     const revenueId = 121;
+    //     const hrefNewRevenueKwhSplit = `/project/deelnemer/opbrengst/${revenueId}`;
+    //
+    //     hashHistory.push(hrefNewRevenueKwhSplit);
+    // };
+
     toggleDelete = () => {
         this.setState({ showDelete: !this.state.showDelete });
     };
@@ -101,10 +122,25 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
 
         const { contactEnergySupplier } = this.state;
 
-        ContactEnergySupplierAPI.updateContactEnergySupplier(contactEnergySupplier).then(payload => {
-            this.props.updateContactEnergySupplier(payload);
-            this.closeEdit();
-        });
+        let errors = {};
+        let hasErrors = false;
+
+        if (
+            contactEnergySupplier.isCurrentSupplier &&
+            (!contactEnergySupplier.memberSince || validator.isEmpty(contactEnergySupplier.memberSince))
+        ) {
+            errors.memberSince = true;
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        !hasErrors &&
+            ContactEnergySupplierAPI.updateContactEnergySupplier(contactEnergySupplier).then(payload => {
+                this.props.updateContactEnergySupplier(payload);
+                this.closeEdit();
+            });
     };
 
     render() {
@@ -123,10 +159,13 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
                     (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
                         <ContactDetailsFormContactEnergySupplierEdit
                             contactEnergySupplier={this.state.contactEnergySupplier}
+                            errors={this.state.errors}
                             handleInputChange={this.handleInputChange}
                             handleInputChangeDate={this.handleInputChangeDate}
                             handleSubmit={this.handleSubmit}
                             cancelEdit={this.cancelEdit}
+                            //todo: WM even als test. ik denk dat we voor Tussenstijdse opbrengstverdelingen een list moeten maken over deelnames, wellicht in harmonica ??
+                            // revenueKwhSplit={this.revenueKwhSplit}
                         />
                     )}
                 {this.state.showDelete && (
@@ -143,6 +182,8 @@ class ContactDetailsFormContactEnergySupplierItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        //todo: WM even als test. ik denk dat we voor Tussenstijdse opbrengstverdelingen een list moeten maken over deelnames, wellicht in harmonica ??
+        // projectRevenueCategories: state.systemData.projectRevenueCategories,
     };
 };
 
@@ -152,7 +193,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsFormContactEnergySupplierItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormContactEnergySupplierItem);

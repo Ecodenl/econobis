@@ -33,7 +33,7 @@ const InputSelect = props => {
                     className={`form-control input-sm ${className}` + (error && ' has-error')}
                     id={id}
                     name={name}
-                    value={value}
+                    value={value ? value : ''}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}
                     readOnly={readOnly}

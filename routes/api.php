@@ -256,6 +256,7 @@ Route::namespace('Api')
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
 
         Route::get('document/grid', 'Document\DocumentController@grid');
+        Route::get('document/peek', 'Document\DocumentController@peek');
         Route::get('document/{document}', 'Document\DocumentController@show');
         Route::get('document/{document}/download', 'Document\DocumentController@download');
         Route::post('document/{document}/delete', 'Document\DocumentController@destroy');
@@ -302,9 +303,9 @@ Route::namespace('Api')
         Route::get('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@show');
         Route::get('project/revenue/{projectRevenue}/csv', 'Project\ProjectRevenueController@csv');
         Route::post('project/revenue/{projectRevenue}/distribution', 'Project\ProjectRevenueController@getRevenueDistribution');
-        Route::post('project/revenue/{projectRevenue}/participants', 'Project\ProjectRevenueController@getRevenueParticipants');
         Route::post('project/revenue/create-energy-supplier-report/{projectRevenue}/{documentTemplate}', 'Project\ProjectRevenueController@createEnergySupplierReport');
-        Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierExcel');
+        Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}', 'Project\ProjectRevenueController@createEnergySupplierAllExcel');
+        Route::post('project/revenue/create-energy-supplier-excel/{projectRevenue}/{energySupplier}', 'Project\ProjectRevenueController@createEnergySupplierOneExcel');
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');

@@ -99,7 +99,7 @@ class EmailTemplateController
 
     public function peek()
     {
-        return EmailTemplatePeek::collection(EmailTemplate::get());
+        return EmailTemplatePeek::collection(EmailTemplate::get()->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE));
     }
 
 }

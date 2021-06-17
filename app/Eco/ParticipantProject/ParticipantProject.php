@@ -9,10 +9,13 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -65,6 +68,10 @@ class ParticipantProject extends Model
         return $this->belongsTo(Contact::class);
     }
 
+    public function projectRevenues(){
+        return $this->hasMany(ProjectRevenue::class, 'participation_id');
+    }
+
     public function projectRevenueDistributions()
     {
         return $this->hasMany(ProjectRevenueDistribution::class, 'participation_id');
@@ -90,6 +97,22 @@ class ParticipantProject extends Model
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
 
         return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->orderBy('date_entry', 'asc');
+    }
+
+    public function mutationsDefinitiveForKhwPeriod()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        $mutationTypeFirstDesposit = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $this->project->projectType->id)->first();
+        $mutationTypeWithDrawal = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $this->project->projectType->id)->first();
+        $mutationTypes = [];
+        if($mutationTypeFirstDesposit) {
+            array_push($mutationTypes, $mutationTypeFirstDesposit->id);
+        }
+        if($mutationTypeWithDrawal) {
+            array_push($mutationTypes, $mutationTypeWithDrawal->id);
+        }
+
+        return $this->hasMany(ParticipantMutation::class, 'participation_id')->where('status_id', $mutationStatusFinal)->whereIn('type_id', $mutationTypes)->orderBy('date_entry', 'asc');
     }
 
     public function obligationNumbers()
@@ -160,6 +183,19 @@ class ParticipantProject extends Model
         return $projectRevenueDistributions->count() > 0;
     }
 
+    public function getHasNotConfirmedRevenuesKwh(){
+
+        if($this->project->projectType->code_ref == 'postalcode_link_capital') {
+            foreach ($this->project->projectRevenues as $revenue) {
+                if ($revenue->category->code_ref == 'revenueKwh' && !$revenue->confirmed) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function getParticipationsReturnsTotalAttribute()
     {
         $total = 0;
@@ -192,4 +228,113 @@ class ParticipantProject extends Model
 
         return $total;
     }
+
+    public function getDateBeginNextRevenueKwhAttribute()
+    {
+        if(!empty($this->date_next_revenue_kwh)){
+            return $this->date_next_revenue_kwh;
+        }
+
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->date_begin;
+        }elseif(!empty($this->project->date_interest_bearing_kwh) && $checkDate > $this->project->date_interest_bearing_kwh){
+            return $this->project->date_interest_bearing_kwh;
+        }
+        return null;
+    }
+
+    public function getDateEndNextRevenueKwhAttribute()
+    {
+        if(empty($this->date_begin_next_revenue_kwh)){
+            return null;
+        }
+        $memberSince = null;
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $memberSince = $this->contact->primaryContactEnergySupplier->member_since;
+        if($memberSince && $memberSince <= $this->date_begin_next_revenue_kwh){
+            return null;
+        }
+
+        $checkDate = $this->date_begin_next_revenue_kwh;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->date_end;
+        }
+
+        return Carbon::parse($this->date_begin_next_revenue_kwh)->endOfYear()->format('Y-m-d');
+    }
+
+    public function getNextRevenueKwhStartHighAttribute()
+    {
+        if($this->kwh_start_high_next_revenue != null){
+            return $this->kwh_start_high_next_revenue;
+        }
+
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->kwh_start_high;
+        }elseif(!empty($this->project->kwh_start_high_next_revenue)){
+            return $this->project->kwh_start_high_next_revenue;
+        }
+        return null;
+    }
+
+    public function getNextRevenueKwhStartLowAttribute()
+    {
+        if($this->kwh_start_low_next_revenue != null){
+            return $this->kwh_start_low_next_revenue;
+        }
+
+        if (empty($this->contact->primaryContactEnergySupplier->member_since)){
+            return null;
+        }
+        $checkDate = $this->contact->primaryContactEnergySupplier->member_since;
+        $projectRevenueKhw = $this->getProjectRevenueKhw($checkDate);
+        if ($projectRevenueKhw != null) {
+            return $projectRevenueKhw->kwh_start_low;
+        }elseif(!empty($this->project->kwh_start_low_next_revenue)){
+            return $this->project->kwh_start_low_next_revenue;
+        }
+        return null;
+    }
+
+    /**
+     * @param $checkDate
+     * @return mixed
+     */
+    protected function getProjectRevenueKhw($checkDate)
+    {
+        $projectRevenueCategory = ProjectRevenueCategory::where('code_ref', 'revenueKwh')->first();
+        $projectRevenuesKhw = ProjectRevenue::where('project_id', $this->project_id)
+            ->whereNull('participation_id')
+            ->where('category_id', $projectRevenueCategory->id)
+            ->where('date_begin', '<=', $checkDate)
+            ->where('date_end', '>', $checkDate)
+            ->where('confirmed', true)
+            ->orderBy('date_end', 'desc');
+        if ($projectRevenuesKhw->exists()) {
+            $projectRevenueKhw = $projectRevenuesKhw->first();
+            $participantInDistribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenueKhw->id)
+                ->where('participation_id', $this->id)
+                ->whereIn('status', ['confirmed'])
+                ->exists();
+            if($participantInDistribution) {
+                return $projectRevenuesKhw->first();
+            }
+        }
+
+        return null;
+    }
+
 }

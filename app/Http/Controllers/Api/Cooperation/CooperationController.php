@@ -39,6 +39,7 @@ class CooperationController extends ApiController
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
+        $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->save();
 
         // Store attachment when given
@@ -59,6 +60,7 @@ class CooperationController extends ApiController
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
+        $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $cooperation->use_laposta == 'true';
         $cooperation->save();
 

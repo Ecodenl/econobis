@@ -36,8 +36,9 @@ class ProjectDetailsForm extends Component {
                 {this.props.project.projectType && this.props.project.projectType.codeRef !== 'loan' ? (
                     <ProjectDetailsFormValueCourse />
                 ) : null}
-
-                <RevenuesListForm projectId={this.props.project.id} />
+                {this.props.project.projectStatus.codeRef !== 'concept' && (
+                    <RevenuesListForm projectId={this.props.project.id} />
+                )}
                 <ProjectDetailsFormConclusion />
             </div>
         );

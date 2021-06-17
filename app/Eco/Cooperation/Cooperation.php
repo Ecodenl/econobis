@@ -17,6 +17,7 @@ class Cooperation extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
+        'send_email' => 'boolean',
         'use_laposta' => 'bool',
         'created_at' => 'date',
         'updated_at' => 'date',

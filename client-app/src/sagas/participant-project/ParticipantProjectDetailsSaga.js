@@ -1,8 +1,8 @@
 import { put, call } from 'redux-saga/effects';
 import ParticipantProjectDetailsAPI from '../../api/participant-project/ParticipantProjectDetailsAPI';
-import ParticipantMutationAPI from '../../api/participant-project/ParticipantMutationAPI';
 import ParticipantObligationNumberAPI from '../../api/participant-project/ParticipantObligationNumberAPI';
 import { browserHistory, hashHistory } from 'react-router';
+import ProjectRevenueAPI from '../../api/project/ProjectRevenueAPI';
 
 export function* fetchParticipantProjectDetailsSaga({ payload }) {
     try {
@@ -11,6 +11,12 @@ export function* fetchParticipantProjectDetailsSaga({ payload }) {
         yield put({
             type: 'FETCH_PARTICIPANT_PROJECT_DETAILS_SUCCESS',
             participantProjectDetails,
+        });
+        // todo: wm check of dit nog nodig is?
+        const projectId = participantProjectDetails.projectId;
+        yield put({
+            type: 'FETCH_PROJECT',
+            id: projectId,
         });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {
@@ -36,5 +42,14 @@ export function* deleteObligationNumberSaga({ id }) {
         yield put({ type: 'DELETE_OBLIGATION_NUMBER_SUCCESS', id });
     } catch (error) {
         yield put({ type: 'DELETE_OBLIGATION_NUMBER_ERROR', error });
+    }
+}
+
+export function* deleteRevenueSplitSaga({ id }) {
+    try {
+        yield call(ProjectRevenueAPI.deleteProjectRevenue, id);
+        yield put({ type: 'DELETE_REVENUE_SPLIT_SUCCESS', id });
+    } catch (error) {
+        yield put({ type: 'DELETE_REVENUE_SPLIT_ERROR', error });
     }
 }

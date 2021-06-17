@@ -53,6 +53,7 @@ class ProjectRevenueDistributionCalculator
         });
 
         $totalDeliveredKwh = 0;
+        $totalDeliveredKwhEndCalendarYear = 0;
 
         foreach ($this->projectRevenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod) {
             // Sum of participations times days, for each record in revenue delivered kwh period this is (days_of_period * participations_quantity)
@@ -64,13 +65,21 @@ class ProjectRevenueDistributionCalculator
             $deliveredKwhPeriod->save();
 
             $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
+            // If year period is same as year date begin revenue, sum for end calendar year
+            if(Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($this->projectRevenueDistribution->revenue->date_begin)->year){
+                $totalDeliveredKwhEndCalendarYear +=$deliveredKwhPeriod->delivered_kwh;
+            }
         }
 
             // Return total delivered kwh for per distribution
         $this->projectRevenueDistribution->delivered_total = $totalDeliveredKwh;
+        $this->projectRevenueDistribution->delivered_total_end_calendar_year = $totalDeliveredKwhEndCalendarYear;
         $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
         $lastDeliveredKwhPeriod = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first();
+        $dateEndCalendarYear = Carbon::parse($projectRevenue->date_begin)->endOfYear();
+        $lastDeliveredKwhPeriodEndCalendarYear = $this->projectRevenueDistribution->deliveredKwhPeriod()->where('date_end', '<=', $dateEndCalendarYear)->orderBy('id', 'desc')->first();
         $this->projectRevenueDistribution->participations_amount = $lastDeliveredKwhPeriod ? $lastDeliveredKwhPeriod->participations_quantity : 0;
+        $this->projectRevenueDistribution->participations_amount_end_calendar_year = $lastDeliveredKwhPeriodEndCalendarYear ? $lastDeliveredKwhPeriodEndCalendarYear->participations_quantity : 0;
 
         return $this->projectRevenueDistribution;
     }

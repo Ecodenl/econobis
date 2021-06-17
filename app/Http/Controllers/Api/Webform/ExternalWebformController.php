@@ -1844,7 +1844,8 @@ class ExternalWebformController extends Controller
             $this->log($error);
             $this->addTaskError($error);
         }
-        return $iban;
+
+        return strtoupper($iban);
     }
 
     protected function mailLog(array $data, bool $success, Webform $webform = null)

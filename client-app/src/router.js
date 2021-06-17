@@ -100,6 +100,12 @@ const InvoicePreviewApp = React.lazy(() => import('./container/financial/order/p
 const ParticipantNewApp = React.lazy(() => import('./container/participant-project/new/ParticipantNewApp'));
 const ParticipantListApp = React.lazy(() => import('./container/participant/list/ParticipantsListApp'));
 const ParticipantDetailsApp = React.lazy(() => import('./container/participant-project/details/ParticipantDetailsApp'));
+const ParticipantProjectRevenueDetailsApp = React.lazy(() =>
+    import('./container/participant-project/details/revenue/details/RevenueDetailsApp')
+);
+const ParticipantProjectRevenueNewApp = React.lazy(() =>
+    import('./container/participant-project/details/revenue/new/RevenueNewApp')
+);
 const ParticipationTransferApp = React.lazy(() =>
     import('./container/participant-project/details/transfer/ParticipationTransferApp')
 );
@@ -111,6 +117,9 @@ const ProjectsListApp = React.lazy(() => import('./container/project/list/Projec
 const ProjectDetailsApp = React.lazy(() => import('./container/project/details/ProjectDetailsApp'));
 const ProjectGeneralApp = React.lazy(() => import('./container/project/general/ProjectGeneralApp'));
 const ProjectNewApp = React.lazy(() => import('./container/project/new/ProjectNewApp'));
+const ProjectRevenueDetailsApp = React.lazy(() =>
+    import('./container/project/details/revenue/details/RevenueDetailsApp')
+);
 const ProjectRevenueNewApp = React.lazy(() => import('./container/project/details/revenue/new/RevenueNewApp'));
 const IntakeDetailsApp = React.lazy(() => import('./container/intake/details/IntakeDetailsApp'));
 const IntakeNewApp = React.lazy(() => import('./container/intake/new/IntakeNewApp'));
@@ -127,7 +136,6 @@ const TeamDetailsApp = React.lazy(() => import('./container/team/details/TeamDet
 const UserDetailsApp = React.lazy(() => import('./container/users/details/UserDetailsApp'));
 const UserNewApp = React.lazy(() => import('./container/users/new/UserNewApp'));
 const UsersListApp = React.lazy(() => import('./container/users/list/UsersListApp'));
-const RevenueDetailsApp = React.lazy(() => import('./container/project/details/revenue/details/RevenueDetailsApp'));
 const FinancialApp = React.lazy(() => import('./container/financial/FinancialApp'));
 const InvoiceSendApp = React.lazy(() => import('./container/financial/invoice/send/InvoiceSendApp'));
 const OrderCreateApp = React.lazy(() => import('./container/financial/order/create/OrderCreateApp'));
@@ -396,16 +404,22 @@ const Routes = () => {
                         component={EnergySupplierExcelNewApp}
                     />
                     <Route path="project/details/:id" component={ProjectDetailsApp} />
-                    <Route path="project/opbrengst/:id" component={RevenueDetailsApp} />
+                    <Route path="project/opbrengst/:id" component={ProjectRevenueDetailsApp} />
                     <Route path="project/opbrengst/:id/rapportage" component={PaymentInvoiceCreateApp} />
                     <Route path="project/preview-rapportage" component={ParticipantReportCreateApp} />
                     <Route path="project/:id" component={ProjectGeneralApp} />
                     <Route path="projecten" component={ProjectsListApp} />
+                    <Route path="projecten/:filter/:value" component={ProjectsListApp} />
                     <Route path="deelnemers" component={ParticipantListApp} />
                     <Route path="project/deelnemer/:participationId/overdragen" component={ParticipationTransferApp} />
                     <Route path="project/deelnemer/nieuw/:projectId" component={ParticipantNewApp} />
                     <Route path="project/deelnemer/nieuw/contact/:contactId" component={ParticipantNewApp} />
                     <Route path="project/deelnemer/:id" component={ParticipantDetailsApp} />
+                    <Route
+                        path="project/deelnemer/opbrengst/nieuw/:projectId/:participationId/:categoryId"
+                        component={ParticipantProjectRevenueNewApp}
+                    />
+                    <Route path="project/deelnemer/opbrengst/:id" component={ParticipantProjectRevenueDetailsApp} />
                     /* Processes */
                     <route path="processen" component={ProcessesListApp} />
                     /* Task / notes */

@@ -155,10 +155,12 @@ class ParticipantExcelHelper
                 // Addresses
                 if ($participant->contact->addresses) {
                     foreach (AddressType::collection() as $type) {
-                        $address = $participant->contact->addresses()->where('type_id', $type->id)->first();
+                        $address = $participant->contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
+                        if(!$address){
+                            $address = $participant->contact->addresses()->where('type_id', $type->id)->first();
+                        }
 
                         $addressArr = [];
-
                         $addressArr['street'] = ($address ? $address->street : '');
                         $addressArr['number'] = ($address ? $address->number : '');
                         $addressArr['addition'] = ($address ? $address->addition : '');

@@ -43,10 +43,16 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Home e-mail template'}
+                            label={'Hoom e-mail template'}
                             value={formData.hoomEmailTemplate && formData.hoomEmailTemplate.name}
                         />
                         <ViewText label={'Hoom groep'} value={formData.hoomGroup && formData.hoomGroup.name} />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Stuurt e-mail bij nieuw Hoomdossier'}
+                            value={formData.sendEmail ? 'Ja' : 'Nee'}
+                        />
                     </div>
                 </PanelBody>
                 <PanelHeader>

@@ -451,6 +451,7 @@ class ProjectRevenueController extends ApiController
                         $deliveredTotalLastEsEndCalendarYear = round($distributionProjectRevenueKhw->delivered_total_end_calendar_year * $engerySupplierFactor, 2);
 
                         $distributionProjectRevenueKhw->delivered_total_last_es_end_calendar_year = $deliveredTotalLastEsEndCalendarYear;
+                        $distributionProjectRevenueKhw->date_begin_last_es = $projectRevenue->date_begin;
                         $distributionProjectRevenueKhw->save();
                     }
                 }

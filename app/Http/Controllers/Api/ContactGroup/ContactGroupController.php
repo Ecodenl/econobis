@@ -8,7 +8,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
-use App\Helpers\Laposta\LapostaHelper;
+use App\Helpers\Laposta\LapostaListHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
@@ -127,8 +127,8 @@ class ContactGroupController extends Controller
         $contactGroup->fill($data);
         $contactGroup->save();
 
-        $lapostaHelper = new LapostaHelper($contactGroup);
-        $lapostaHelper->updateList();
+        $lapostaListHelper = new LapostaListHelper($contactGroup);
+        $lapostaListHelper->updateList();
 
         return FullContactGroup::make($contactGroup->load('responsibleUser', 'emailTemplateNewContactLink'));
     }
@@ -155,8 +155,8 @@ class ContactGroupController extends Controller
             abort(501, 'Er is helaas een fout opgetreden.');
         }
 
-        $lapostaHelper = new LapostaHelper($contactGroup);
-        $lapostaHelper->deleteList();
+        $lapostaListHelper = new LapostaListHelper($contactGroup);
+        $lapostaListHelper->deleteList();
 
     }
 
@@ -249,8 +249,8 @@ class ContactGroupController extends Controller
     }
 
     public function createLapostaList(ContactGroup $contactGroup) {
-        $lapostaHelper = new LapostaHelper($contactGroup);
+        $lapostaListHelper = new LapostaListHelper($contactGroup);
 
-        return $lapostaHelper->createList();
+        return $lapostaListHelper->createList();
     }
 }

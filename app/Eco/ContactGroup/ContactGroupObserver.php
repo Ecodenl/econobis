@@ -23,10 +23,4 @@ class ContactGroupObserver
         }
     }
 
-    public function updating(ContactGroup $contactGroup)
-    {
-        if($contactGroup->isDirty('laposta_list_id')) {
-            $contactGroup->laposta_list_created_at = Carbon::now();
-        }
-    }
 }

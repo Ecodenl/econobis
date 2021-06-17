@@ -8,6 +8,7 @@
 
 namespace App\Eco\EmailAddress;
 
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 
 class EmailAddressObserver
@@ -33,6 +34,16 @@ class EmailAddressObserver
             if($oldPrimaryEmailAddress){
                 $oldPrimaryEmailAddress->primary = false;
                 $oldPrimaryEmailAddress->save();
+
+                foreach($emailAddress->contact->groups as $contactGroup){
+                    if($contactGroup->laposta_list_id) {
+                        $contactGroupsPivot= $contactGroup->pivot;
+                        if($contactGroupsPivot->laposta_member_id){
+                            $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact);
+                            $lapostaMemberHelper->updateMember();
+                        }
+                    }
+                }
             }
         }
 

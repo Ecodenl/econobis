@@ -9,6 +9,7 @@ use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
 use App\Helpers\Laposta\LapostaListHelper;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
@@ -175,7 +176,13 @@ class ContactGroupController extends Controller
         $this->authorize('addToGroup', $contact);
 
         if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+
             $contactGroup->contacts()->attach($contact);
+
+            if($contactGroup->laposta_list_id){
+                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                $lapostaMemberHelper->createMember();
+            }
 
             if($contactGroup->send_email_new_contact_link){
                 $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
@@ -187,6 +194,12 @@ class ContactGroupController extends Controller
     public function removeContact(ContactGroup $contactGroup, Contact $contact)
     {
         $this->authorize('removeFromGroup', $contact);
+
+        if($contactGroup->laposta_list_id){
+            $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+            $lapostaMemberHelper->deleteMember();
+        }
+
         $contactGroup->contacts()->detach($contact);
     }
 

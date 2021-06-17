@@ -5,27 +5,31 @@ namespace App\Helpers\Laposta;
 
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Laposta;
-use Laposta_Field;
-use Laposta_List;
 use Laposta_Member;
 
-class LapostaListHelper
+class LapostaMemberHelper
 {
-    private contactGroupsPivot;
+    private $contactGroupsPivot;
     private $contactGroup;
     private $contact;
     private $cooperation;
 
-    public function __construct(ContactGroupsPivot $contactGroupsPivot)
+    public function __construct(ContactGroup $contactGroup, Contact $contact)
     {
         $this->contactGroup= $contactGroup;
         $this->contact= $contact;
         $this->cooperation = Cooperation::first();
+        $this->contactGroupsPivot = null;
+        if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+            $this->contactGroupsPivot= $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
+        }
     }
 
     public function createMember() {
@@ -34,15 +38,21 @@ class LapostaListHelper
         $this->validateGeneral();
 
         // Check if all necessary fields are filled
-        $this->validateRequiredCreateMemberFields();
+        $this->validateRequiredMemberFields();
 
         $lapostaResponse = $this->createMemberToLaposta();
-        dd($lapostaResponse);
         $lapostaMemberId = $lapostaResponse['member']['member_id'];
 
+        if($this->contactGroupsPivot != null) {
+            $this->contactGroup->contacts()->detach($this->contact);
+        }
+
         // When success save member id
-        $this->contactGroupsPivot->laposta_member_id = $lapostaMemberId;
-        $this->contactGroupsPivot->save();
+        $this->contactGroup->contacts()->attach($this->contact, [
+            'laposta_member_id' => $lapostaMemberId,
+            'laposta_member_created_at' => Carbon::now(),
+            'laposta_member_since' => Carbon::now(),
+            ]);
 
         // Return member id
         return $lapostaMemberId;
@@ -54,12 +64,12 @@ class LapostaListHelper
         $this->validateGeneral();
 
         // Check if all necessary fields are filled
-        $this->validateRequiredUpdateMemberFields();
+        $this->validateRequiredMemberFields();
 
         $lapostaResponse = $this->updateMemberToLaposta();
 
         // Return member id
-        return $this->contactGroupsPivot->laposta_member_id;
+//        return $this->contactGroupsPivot->laposta_member_id;
     }
 
     public function deleteMember() {
@@ -67,11 +77,7 @@ class LapostaListHelper
         // General checks before API call
         $this->validateGeneral();
 
-        $lapostaResponse = $this->deletMemberToLaposta();
-
-        // When success save member id
-        $this->contactGroupsPivot->laposta_member_id = null;
-        $this->contactGroupsPivot->save();
+        $lapostaResponse = $this->deleteMemberToLaposta();
 
         // Return member id
         return null;
@@ -89,6 +95,10 @@ class LapostaListHelper
             $errorsCheckBefore[] = 'Geen key Laposta bekend';
         }
 
+        if(!$this->contactGroup->laposta_list_id) {
+            $errorsCheckBefore[] = 'Koppeling Laposta niet bekend';
+        }
+
         $errors = null;
         if(count($errorsCheckBefore)) {
             $errors = array("econobis" => $errorsCheckBefore);
@@ -100,16 +110,38 @@ class LapostaListHelper
         return true;
     }
 
-    private function validateRequiredCreateMemberFields()
+    private function validateRequiredMemberFields()
     {
         $errorsCheckBefore = [];
 
-        if($this->contactGroup->laposta_list_id) {
-            $errorsCheckBefore[] = 'Koppeling Laposta bestaat al';
+        if(empty($this->contact->primaryEmailAddress->email)) {
+            $errorsCheckBefore[] = 'Contact primaire email ontbreekt';
         }
 
-        if(!$this->contactGroup->name) {
-            $errorsCheckBefore[] = 'Contactgroep naam ontbreekt';
+        if(empty($this->contact->number)) {
+            $errorsCheckBefore[] = 'Contact nummer ontbreekt';
+        }
+
+        if($this->contact->type_id === ContactType::PERSON) {
+            if (!$this->contact->person) {
+                $errorsCheckBefore[] = 'Contact persoon ontbreekt';
+            }
+            if (empty($this->contact->person->first_name) && empty($this->contact->person->initials)) {
+                $errorsCheckBefore[] = 'Contact voornaam en initials ontbreken';
+            }
+            if (empty($this->contact->person->first_name) && empty($this->contact->person->initials)) {
+                $errorsCheckBefore[] = 'Contact voornaam en initials ontbreken';
+            }
+            if (empty($this->contact->person->last_name)) {
+                $errorsCheckBefore[] = 'Contact achternaam ontbreekt';
+            }
+        } elseif ($this->contact->type_id === ContactType::ORGANISATION) {
+            if (empty($this->contact->full_name)) {
+                $errorsCheckBefore[] = 'Contact organisatienaam ontbreekt';
+            }
+        }else{
+            $errorsCheckBefore[] = 'Contact type is niet Persoon of Organisatie';
+
         }
 
         $errors = null;
@@ -119,121 +151,30 @@ class LapostaListHelper
         if($errors) throw ValidationException::withMessages($errors);
 
         return true;
-    }
-
-    private function validateRequiredUpdateMemberFields()
-    {
-        $errorsCheckBefore = [];
-
-        if(!$this->contactGroup->laposta_list_id) {
-            $errorsCheckBefore[] = 'Koppeling Laposta niet bekend';
-        }
-
-        if(!$this->contactGroup->name) {
-            $errorsCheckBefore[] = 'Contactgroep naam ontbreekt';
-        }
-
-        $errors = null;
-        if(count($errorsCheckBefore)) {
-            $errors = array("econobis" => $errorsCheckBefore);
-        };
-        if($errors) throw ValidationException::withMessages($errors);
-
-        return true;
-    }
-
-    private function createListToLaposta()
-    {
-        $list = new Laposta_List();
-        $listData = [
-            'name' => $this->contactGroup->name ? $this->contactGroup->name : '',
-            'remarks' => $this->contactGroup->description ? $this->contactGroup->description : '',
-        ];
-
-        try {
-            $response = $list->create($listData);
-
-            return $response;
-        } catch (\Exception $e) {
-            if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het aanmaken van een Laposta lijst voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
-                abort($e->getHttpStatus(), $e->getMessage());
-            } else {
-                Log::error('Er is iets misgegaan met bij het aanmaken van een Laposta lijst voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
-                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
-            }
-        }
-    }
-
-    private function createFields()
-    {
-        $fieldData = [
-            'name' => 'Contact nummer',
-            'datatype' => 'text',
-            'required' => true,
-            'in_form' => true,
-            'in_list' => true,
-        ];
-        $this->createFieldToLaposta($fieldData);
-
-        $fieldData = [
-            'name' => 'Contact titel',
-            'datatype' => 'text',
-            'required' => false,
-            'in_form' => true,
-            'in_list' => true,
-        ];
-        $this->createFieldToLaposta($fieldData);
-
-        $fieldData = [
-            'name' => 'Contact voornaam',
-            'datatype' => 'text',
-            'required' => true,
-            'in_form' => true,
-            'in_list' => true,
-        ];
-        $this->createFieldToLaposta($fieldData);
-
-        $fieldData = [
-            'name' => 'Contact achternaam',
-            'datatype' => 'text',
-            'required' => true,
-            'in_form' => true,
-            'in_list' => true,
-        ];
-        $this->createFieldToLaposta($fieldData);
-
-    }
-    private function createFieldToLaposta($fieldData)
-    {
-        $field = new Laposta_Field($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');
-
-        try {
-            $response = $field->create($fieldData);
-
-            return $response;
-        } catch (\Exception $e) {
-            if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het aanmaken van een Laposta veld ' . $fieldData['name'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
-                abort($e->getHttpStatus(), $e->getMessage());
-            } else {
-                Log::error('Er is iets misgegaan met bij het aanmaken van een Laposta veld ' . $fieldData['name'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
-                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
-            }
-        }
     }
 
     private function createMemberToLaposta()
     {
         $member = new Laposta_Member($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');
-        $memberFieldData = [
-            'contactnummer' => 'C12345',
-            'contactvoornaam' => 'Wim',
-            'contactachternaam' => 'Test'
-        ];
+        $memberFieldData = [];
+        if($this->contact->type_id === ContactType::PERSON) {
+            $memberFieldData = [
+                'contactnummer' => $this->contact->number ? $this->contact->number : '',
+                'contactvoornaam' => $this->contact->person->first_name ? $this->contact->person->first_name : $this->contact->person->initials,
+                'contacttitel' => $this->contact->person->title ? $this->contact->person->title->name : '',
+                'contactachternaam' => $this->contact->person->last_name . ($this->contact->person->last_name_prefix ? ', ' . $this->contact->person->last_name_prefix : ''),
+            ];
+        }
+        if($this->contact->type_id === ContactType::ORGANISATION) {
+            $memberFieldData = [
+                'contactnummer' => $this->contact->number ? $this->contact->number : '',
+                'contactachternaam' => $this->contact->full_name ? $this->contact->full_name : '',
+            ];
+        }
+
         $memberData = [
-            'ip' => '213.125.75.154',
-            'email' => 'wim@mosmania.nl',
+            'ip' => $_SERVER['SERVER_ADDR'],
+            'email' => $this->contact->primaryEmailAddress->email ? $this->contact->primaryEmailAddress->email : '',
             'custom_fields' => $memberFieldData,
         ];
 
@@ -251,40 +192,57 @@ class LapostaListHelper
         }
     }
 
-    private function updateListToLaposta()
+    private function updateMemberToLaposta()
     {
-        $list = new Laposta_List();
-        $listData = [
-            'name' => $this->contactGroup->name ? $this->contactGroup->name : '',
-            'remarks' => $this->contactGroup->description ? $this->contactGroup->description : ''];
+        $member = new Laposta_Member($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');
+        $memberFieldData = [];
+        if($this->contact->type_id === ContactType::PERSON) {
+            $memberFieldData = [
+                'contactnummer' => $this->contact->number ? $this->contact->number : '',
+                'contactvoornaam' => $this->contact->person->first_name ? $this->contact->person->first_name : $this->contact->person->initials,
+                'contacttitel' => $this->contact->person->title ? $this->contact->person->title->name : '',
+                'contactachternaam' => $this->contact->person->last_name . ($this->contact->person->last_name_prefix ? ', ' . $this->contact->person->last_name_prefix : ''),
+            ];
+        }
+        if($this->contact->type_id === ContactType::ORGANISATION) {
+            $memberFieldData = [
+                'contactnummer' => $this->contact->number ? $this->contact->number : '',
+                'contactachternaam' => $this->contact->full_name ? $this->contact->full_name : '',
+            ];
+        }
+
+        $memberData = [
+            'email' => $this->contact->primaryEmailAddress->email ? $this->contact->primaryEmailAddress->email : '',
+            'custom_fields' => $memberFieldData,
+        ];
 
         try {
-            $response = $list->update($this->contactGroup->laposta_list_id, $listData);
+            $response = $member->update($this->contactGroupsPivot->laposta_member_id, $memberData);
             return $response;
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::error('Er is iets misgegaan bij het synchroniseren van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het synchroniseren naar Laposta voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
+                Log::error('Er is iets misgegaan met bij het synchroniseren van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }
     }
 
-    private function deleteListToLaposta()
+    private function deleteMemberToLaposta()
     {
-        $list = new Laposta_List();
+        $member = new Laposta_Member($this->contactGroup->laposta_list_id ? $this->contactGroup->laposta_list_id : '');
 
         try {
-            $response = $list->delete($this->contactGroup->laposta_list_id);
+            $response = $member->delete($this->contactGroupsPivot->laposta_member_id);
             return $response;
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het verwijderen van gekoppelde Laposta lijst voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::error('Er is iets misgegaan bij het verwijderen van gekoppelde Laposta relatie voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het verwijderen van gekoppelde Laposta lijst voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
+                Log::error('Er is iets misgegaan met bij het verwijderen van gekoppelde Laposta relatie voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }

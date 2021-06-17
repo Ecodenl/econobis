@@ -6,6 +6,7 @@ namespace App\Helpers\Laposta;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Laposta;
@@ -36,9 +37,15 @@ class LapostaListHelper
 
         // When success save list id
         $this->contactGroup->laposta_list_id = $lapostaListId;
+        $this->contactGroup->laposta_list_created_at = Carbon::now();
         $this->contactGroup->save();
 
         $this->createFields();
+
+        foreach($this->contactGroup->contacts as $contact){
+            $lapostaMemberHelper = new LapostaMemberHelper($this->contactGroup, $contact);
+            $lapostaMemberHelper->createMember();
+        }
 
         // Return list id
         return $lapostaListId;
@@ -184,7 +191,7 @@ class LapostaListHelper
         $fieldData = [
             'name' => 'Contact voornaam',
             'datatype' => 'text',
-            'required' => true,
+            'required' => false,
             'in_form' => true,
             'in_list' => true,
         ];

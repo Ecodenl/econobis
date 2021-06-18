@@ -175,7 +175,7 @@ class InvoicesListItem extends Component {
                     })}
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? <br/> : ''}
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? (
-                        <span class="error-span">
+                        <span className="error-span">
                             {'€' +
                             amountOpen.toLocaleString('nl', {
                                 minimumFractionDigits: 2,

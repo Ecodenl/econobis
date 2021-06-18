@@ -156,10 +156,14 @@ class QuotationRequestController extends ApiController
         //optional
         if ($data['dateRecorded']) {
             $quotationRequest->date_recorded = $data['dateRecorded'];
+        } else {
+            $quotationRequest->date_recorded = null;
         }
 
         if ($data['dateReleased']) {
             $quotationRequest->date_released = $data['dateReleased'];
+        } else {
+            $quotationRequest->date_released = null;
         }
 
         if (isset($data['quotationText'])) {

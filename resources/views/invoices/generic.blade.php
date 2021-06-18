@@ -111,10 +111,10 @@
             </tr>
             <tr>
                 <td class="align-left">{{ $contactPerson ? $invoice->order->contact->addressLines['city'] : $invoice->order->contact->addressLines['country'] }}</td>
-                <td class="align-left">{!! $invoice->administration->country ? $invoice->administration->country->name : 'nbsp;' !!}</td>
+                <td class="align-left">{!! $invoice->administration->country ? $invoice->administration->country->name : '&nbsp;' !!}</td>
             </tr>
             <tr>
-                <td class="align-left">{!! ($contactPerson) ? $invoice->order->contact->addressLines['country'] : 'nbsp;' !!}</td>
+                <td class="align-left">{!! ($contactPerson) ? $invoice->order->contact->addressLines['country'] : '&nbsp;' !!}</td>
                 <td class="align-left"><a href="{{ 'mailto: ' . $invoice->administration->email }}">{{ $invoice->administration->email }}</a></td>
             </tr>
             <tr>

@@ -60,7 +60,7 @@ class ContactGroup extends Model
 
     public function contacts()
     {
-        return $this->belongsToMany(Contact::class, 'contact_groups_pivot')->withPivot('laposta_member_created_at', 'laposta_member_since', 'laposta_member_id');
+        return $this->belongsToMany(Contact::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_member_created_at', 'laposta_member_since');
     }
 
     public function participants()

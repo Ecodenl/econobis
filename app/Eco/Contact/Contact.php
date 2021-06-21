@@ -141,7 +141,7 @@ class Contact extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_created_at', 'laposta_member_since', 'laposta_member_id')->orderBy('contact_groups.id', 'desc');
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_member_created_at', 'laposta_member_since')->orderBy('contact_groups.id', 'desc');
     }
 
     public function isPerson()

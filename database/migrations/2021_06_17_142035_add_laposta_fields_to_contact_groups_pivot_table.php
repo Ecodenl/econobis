@@ -15,6 +15,7 @@ class AddLapostaFieldsToContactGroupsPivotTable extends Migration
     {
         Schema::table('contact_groups_pivot', function (Blueprint $table) {
             $table->string('laposta_member_id')->nullable();
+            $table->string('laposta_member_state', 25)->nullable();
             $table->dateTime('laposta_member_created_at')->nullable();
             $table->date('laposta_member_since')->nullable();
         });

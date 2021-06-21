@@ -23,12 +23,24 @@ class LapostaMemberHelper
 
     public function __construct(ContactGroup $contactGroup, Contact $contact)
     {
+        $this->contactGroup = null;
+        // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
+        if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed' ){
+            $simulatedContactGroup = ContactGroup::find($contactGroup->simulated_group_id);
+            if($simulatedContactGroup){
+                $this->contactGroup = $simulatedContactGroup;
+            }
+        }else{
+            $this->contactGroup = $contactGroup;
+        }
+
+
         $this->contactGroup= $contactGroup;
         $this->contact= $contact;
         $this->cooperation = Cooperation::first();
         $this->contactGroupsPivot = null;
         if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
-            $this->contactGroupsPivot= $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
+            $this->contactGroupsPivot = $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
         }
     }
 

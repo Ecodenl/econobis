@@ -74,6 +74,7 @@ class LapostaListHelper
 
         // When success save list id
         $this->contactGroup->laposta_list_id = null;
+        $this->contactGroup->laposta_list_created_at = null;
         $this->contactGroup->save();
 
         // Return list id

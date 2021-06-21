@@ -262,7 +262,31 @@ class ContactGroupController extends Controller
     }
 
     public function createLapostaList(ContactGroup $contactGroup) {
-        $lapostaListHelper = new LapostaListHelper($contactGroup);
+
+        //Van dynamic eerst een static groep maken
+        if($contactGroup->type_id === 'dynamic' ){
+            $contactGroupNew = $contactGroup->replicate();
+            $contactGroupNew->type_id = 'simulated';
+            $contactGroupNew->save();
+
+            $contactGroup->simulated_group_id = $contactGroupNew->id;
+            $contactGroup->save();
+
+            $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get());
+        }
+
+        //Van composed eerst een static groep maken
+        if($contactGroup->type_id === 'composed' ){
+            $contactGroupNew = $contactGroup->replicate();
+            $contactGroupNew->type_id = 'simulated';
+            $contactGroupNew->save();
+
+            $contactGroup->simulated_group_id = $contactGroupNew->id;
+            $contactGroup->save();
+            $contactGroupNew->contacts()->sync($contactGroup->composed_contacts->pluck("id"));
+        }
+
+        $lapostaListHelper = new LapostaListHelper($contactGroupNew);
 
         return $lapostaListHelper->createList();
     }

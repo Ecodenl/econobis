@@ -48,7 +48,7 @@ class LapostaHelper
                             if($contact){
                                 $lapostaMemberId = $contactGroupsPivot->laposta_member_id;
                                 $lapostaMemberState = $lapostaMemberState;
-                                $lapostaMemberCreatedAt = $contactGroupsPivot->laposta_created_at;
+                                $lapostaMemberCreatedAt = $contactGroupsPivot->laposta_member_created_at;
                                 $lapostaMemberSince = $contactGroupsPivot->laposta_member_since;
 
                                 // Detach first

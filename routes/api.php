@@ -135,6 +135,8 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/name', 'ContactGroup\ContactGroupController@getName');
         Route::post('contact-group/composed/{contactGroup}/{contactGroupToDetach}/detach', 'ContactGroup\ContactGroupController@detachComposedContactGroup');
         Route::post('contact-group/composed/{contactGroup}/{contactGroupToAttach}/attach', 'ContactGroup\ContactGroupController@attachComposedContactGroup');
+        Route::post('contact-group/composed/{contactGroup}/{contactGroupToDetach}/detach/except', 'ContactGroup\ContactGroupController@detachComposedExceptedContactGroup');
+        Route::post('contact-group/composed/{contactGroup}/{contactGroupToAttach}/attach/except', 'ContactGroup\ContactGroupController@attachComposedExceptedContactGroup');
         Route::post('contact-group/', 'ContactGroup\ContactGroupController@store');
         Route::post('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@update');
         Route::post('contact-group/{contactGroup}/delete', 'ContactGroup\ContactGroupController@destroy');

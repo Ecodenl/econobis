@@ -54,6 +54,7 @@ class GridInvoice extends Resource
             'subStatus' => $this->sub_status,
             'usesTwinfield' => $this->administration->uses_twinfield,
             'invoiceInTwinfield' => ($this->administration->uses_twinfield && $this->twinfield_number && !empty($this->twinfield_number)) ? true : false,
+            'compatibleWithTwinfield' => $this->isInvoiceFullyCompatibleWithTwinfield(),
             'twinfieldNumber' => $this->twinfield_number,
 
             'emailToAddress' => $this->emailToAddress ? $this->emailToAddress : 'Geen e-mail bekend',

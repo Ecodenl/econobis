@@ -44,6 +44,7 @@ class FullContactGroup extends Resource
             'filters' => $this->filters,
             'extraFilters' => $this->extraFilters,
             'composedGroups' => $this->contactGroups()->get(),
+            'composedExceptGroups' => $this->contactGroupsExcepted()->get(),
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
             'contactGroupComposedType' => $this->composed_group_type,
             'dynamicFilterType' => $this->dynamic_filter_type,

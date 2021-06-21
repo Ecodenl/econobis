@@ -23,3 +23,15 @@ export const attachComposedGroup = (contactGroupId, contactGroupToAttachId) => (
     contactGroupId,
     contactGroupToAttachId,
 });
+
+export const deleteComposedExceptGroup = (contactGroupId, contactGroupToDetachId) => ({
+    type: 'DELETE_COMPOSED_EXCEPT_GROUP',
+    contactGroupId,
+    contactGroupToDetachId,
+});
+
+export const attachComposedExceptGroup = (contactGroupId, contactGroupToAttachId) => ({
+    type: 'ATTACH_COMPOSED_EXCEPT_GROUP',
+    contactGroupId,
+    contactGroupToAttachId,
+});

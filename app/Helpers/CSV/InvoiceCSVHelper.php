@@ -85,10 +85,14 @@ class InvoiceCSVHelper
                 $invoice->date_invoice = $this->formatDate($invoice->date_requested);
             }
 
+            $invoice->date_paid = $this->formatDate($invoice->date_paid);
+            $invoice->online_date_paid = $this->formatDate($invoice->online_date_paid);
+
             //afronden
             $invoice->total_incl_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_incl_vat_incl_reduction);
             $invoice->total_excl_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_excl_vat_incl_reduction);
             $invoice->total_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_vat_incl_reduction);
+            $invoice->amount_paid = $this->formatFinancial($invoice->amount_paid);
         });
 
         $csv = $this->csvExporter->build($chunk, [
@@ -135,7 +139,12 @@ class InvoiceCSVHelper
             'date_collection_formatted' => 'Incassodatum',
             'collection_iban' => 'Ibannr',
             'collection_iban_attn' => 'Iban t.n.v.',
-        ], $headers);
+            'date_paid' => 'Datum betaald',
+            'amount_paid' => 'Bedrag betaald',
+            'payment_reference' => 'Betalingskenmerk',
+            'online_reference' => '(online) betalingskenmerk',
+            'online_date_paid' => '(online) datum betaald'
+         ], $headers);
             $headers = false;
         }
 
@@ -143,7 +152,7 @@ class InvoiceCSVHelper
     }
 
     private function formatDate($date) {
-        $formatDate = $date ? new Carbon($date) : false;
+        $formatDate = $date ? Carbon::parse($date) : false;
         return $formatDate ? $formatDate->format('d-m-Y') : '';
     }
 

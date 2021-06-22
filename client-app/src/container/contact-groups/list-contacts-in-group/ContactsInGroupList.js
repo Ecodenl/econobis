@@ -6,6 +6,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactsInGroupListHead from './ContactsInGroupListHead';
 import ContactsInGroupListItem from './ContactsInGroupListItem';
 import ContactsInGroupDeleteItem from './ContactsInGroupDeleteItem';
+import ContactsInGroupEditItem from './ContactsInGroupEditItem';
 import { connect } from 'react-redux';
 
 class ContactsInGroupList extends Component {
@@ -14,9 +15,15 @@ class ContactsInGroupList extends Component {
 
         this.state = {
             showDeleteItem: false,
+            showEditItem: false,
             deleteItem: {
                 id: '',
                 fullName: '',
+            },
+            editItem: {
+                id: '',
+                emailAddress: '',
+                lapostaMemberSince: '',
             },
         };
     }
@@ -41,6 +48,32 @@ class ContactsInGroupList extends Component {
                 ...this.state.deleteItem,
                 id: '',
                 fullName: '',
+            },
+        });
+    };
+
+    showEditItemModal = (id, emailAddress, lapostaMemberSince) => {
+        this.setState({
+            ...this.state,
+            showEditItem: true,
+            editItem: {
+                ...this.state.editItem,
+                id: id,
+                emailAddress: emailAddress,
+                lapostaMemberSince: lapostaMemberSince,
+            },
+        });
+    };
+
+    closeEditItemModal = () => {
+        this.setState({
+            ...this.state,
+            showEditItem: false,
+            editItem: {
+                ...this.state.editItem,
+                id: '',
+                emailAddress: '',
+                lapostaMemberSince: '',
             },
         });
     };
@@ -74,6 +107,7 @@ class ContactsInGroupList extends Component {
                             <ContactsInGroupListHead
                                 showCheckbox={this.props.showCheckboxList}
                                 refreshContactsInGroupData={() => this.props.refreshContactsInGroupData()}
+                                isUsedInLaposta={this.props.contactGroupDetails.isUsedInLaposta}
                             />
                         </DataTableHead>
                         <DataTableBody>
@@ -88,6 +122,9 @@ class ContactsInGroupList extends Component {
                                             key={contactInGroup.id}
                                             {...contactInGroup}
                                             showDeleteItemModal={this.showDeleteItemModal}
+                                            showEditItemModal={this.showEditItemModal}
+                                            groupId={this.props.groupId}
+                                            isUsedInLaposta={this.props.contactGroupDetails.isUsedInLaposta}
                                         />
                                     );
                                 })
@@ -102,6 +139,14 @@ class ContactsInGroupList extends Component {
                         {...this.state.deleteItem}
                     />
                 )}
+                {this.state.showEditItem && (
+                    <ContactsInGroupEditItem
+                        closeEditItemModal={this.closeEditItemModal}
+                        groupId={this.props.groupId}
+                        {...this.state.editItem}
+                        refreshContactsInGroupData={this.props.refreshContactsInGroupData}
+                    />
+                )}
             </div>
         );
     }
@@ -111,6 +156,7 @@ const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
+        contactGroupDetails: state.contactGroupDetails,
     };
 };
 

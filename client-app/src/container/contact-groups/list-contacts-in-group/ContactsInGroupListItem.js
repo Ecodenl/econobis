@@ -42,16 +42,20 @@ class ContactsInGroupListItem extends Component {
             lapostaMemberState,
             lapostaMemberSince,
             permissions,
+            isUsedInLaposta,
         } = this.props;
 
         let lapostaMemberStatus = '';
         switch (lapostaMemberState) {
             case 'active':
                 lapostaMemberStatus = 'Actief';
+                break;
             case 'unsubscribed':
                 lapostaMemberStatus = 'Uitgeschreven';
+                break;
             default:
                 lapostaMemberStatus = '';
+                break;
         }
 
         return (
@@ -65,14 +69,21 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs hidden-sm">{typeName} </td>
                 <td>{fullName}</td>
                 <td className="hidden-xs">{emailAddress}</td>
-                <td className="hidden-xs">{lapostaMemberId}</td>
-                <td className="hidden-xs">{lapostaMemberStatus}</td>
-                <td className="hidden-xs hidden-sm">
-                    {lapostaMemberSince ? moment(lapostaMemberSince).format('DD-MM-Y') : ''}
-                </td>
+                {isUsedInLaposta && (
+                    <>
+                        <td className="hidden-xs">{lapostaMemberId}</td>
+                        <td className="hidden-xs">{lapostaMemberStatus}</td>
+                        <td className="hidden-xs hidden-sm">
+                            {lapostaMemberSince ? moment(lapostaMemberSince).format('DD-MM-Y') : ''}
+                        </td>
+                    </>
+                )}
                 <td>
-                    {this.state.showActionButtons ? (
-                        <a role="button" onClick={() => this.openItem(id)}>
+                    {this.state.showActionButtons && isUsedInLaposta && lapostaMemberId !== null ? (
+                        <a
+                            role="button"
+                            onClick={this.props.showEditItemModal.bind(this, id, emailAddress, lapostaMemberSince)}
+                        >
                             <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                         </a>
                     ) : (

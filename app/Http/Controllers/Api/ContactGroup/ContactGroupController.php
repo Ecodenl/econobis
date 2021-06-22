@@ -20,6 +20,7 @@ use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -203,6 +204,35 @@ class ContactGroupController extends Controller
         $contactGroup->contacts()->detach($contact);
     }
 
+    public function updateContact(ContactGroup $contactGroup, Contact $contact, Request $request)
+    {
+        $this->authorize('updateFromGroup', $contact);
+
+        //Van dynamic eerst een static groep maken
+        if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed'){
+            $contactGroupUpdate = $contactGroup->simulatedGroup;
+        }else{
+            $contactGroupUpdate = $contactGroup;
+        }
+
+        if($contactGroupUpdate->contacts()->where('contact_id', $contact->id)->exists()){
+            $contactGroupsPivot = $contactGroupUpdate->contacts()->where('contact_id', $contact->id)->first()->pivot;
+            if($contactGroupsPivot != null) {
+                $lapostaMemberId = $contactGroupsPivot->laposta_member_id;
+                $lapostaMemberState = $contactGroupsPivot->laposta_member_state;
+                $lapostaMemberCreatedAt = $contactGroupsPivot->laposta_member_created_at;
+                $contactGroupUpdate->contacts()->detach($contact);
+
+                $contactGroupUpdate->contacts()->attach($contact, [
+                    'laposta_member_id' => $lapostaMemberId,
+                    'laposta_member_state' => $lapostaMemberState,
+                    'laposta_member_created_at' => $lapostaMemberCreatedAt,
+                    'laposta_member_since' => Carbon::parse($request->get('lapostaMemberSince')),
+                ]);
+            }
+        }
+    }
+
     public function addContacts(ContactGroup $contactGroup, Request $request)
     {
 
@@ -284,6 +314,11 @@ class ContactGroupController extends Controller
 
         // Laposta list aanmaken
 
+        //Van static groep maken
+        if($contactGroup->type_id === 'static' ){
+            $contactGroupNew = $contactGroup;
+        }
+
         //Van dynamic eerst een static groep maken
         if($contactGroup->type_id === 'dynamic' ){
             $contactGroupNew = $contactGroup->replicate();
@@ -305,6 +340,10 @@ class ContactGroupController extends Controller
             $contactGroup->simulated_group_id = $contactGroupNew->id;
             $contactGroup->save();
             $contactGroupNew->contacts()->sync($contactGroup->composed_contacts->pluck("id"));
+        }
+
+        if(!$contactGroupNew){
+            return null;
         }
 
         $lapostaListHelper = new LapostaListHelper($contactGroupNew);

@@ -61,8 +61,7 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
                         </div>
                         <div className="col-md-6">
                             <h4 className="text-center">
-                                {name}
-                                {composedOfType}
+                                {name} {composedOfType}
                             </h4>
                         </div>
                         <div className="col-md-2" />

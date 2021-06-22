@@ -42,6 +42,7 @@ const ContactGroupsListFilter = props => {
                 />
             </th>
             <th />
+            <th />
 
             <th>
                 <select className="form-control input-sm" value={props.filters.status.data} onChange={onStatusChange}>
@@ -87,7 +88,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactGroupsListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupsListFilter);

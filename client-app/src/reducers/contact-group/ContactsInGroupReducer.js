@@ -6,6 +6,8 @@ export default function(state = [], action) {
             return (state.contactsInGroup = []);
         case 'DELETE_CONTACT_IN_GROUP_SUCCESS':
             return state.filter(contactInGroup => contactInGroup.id !== action.id);
+        case 'UPDATE_CONTACT_IN_GROUP_SUCCESS':
+            return state;
         default:
             return state;
     }

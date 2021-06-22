@@ -141,6 +141,7 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/contacts', 'ContactGroup\ContactGroupController@contacts');
         Route::post('contact-group/{contactGroup}/contacts/add/{contact}', 'ContactGroup\ContactGroupController@addContact');
         Route::post('contact-group/{contactGroup}/contacts/remove/{contact}', 'ContactGroup\ContactGroupController@removeContact');
+        Route::post('contact-group/{contactGroup}/contacts/update/{contact}', 'ContactGroup\ContactGroupController@updateContact');
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
         Route::get('contact-group/{contactGroup}/create-laposta-list', 'ContactGroup\ContactGroupController@createLapostaList');

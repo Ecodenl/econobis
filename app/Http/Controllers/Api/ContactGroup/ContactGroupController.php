@@ -13,7 +13,7 @@ use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\Contact\GridContact;
+use App\Http\Resources\Contact\GridContactGroupContacts;
 use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ContactGroup\GridContactGroup;
@@ -168,7 +168,7 @@ class ContactGroupController extends Controller
 
     public function gridContacts(ContactGroup $contactGroup)
     {
-        return GridContact::collection($contactGroup->all_contacts);
+        return GridContactGroupContacts::collection($contactGroup->all_contact_group_contacts);
     }
 
     public function addContact(ContactGroup $contactGroup, Contact $contact)
@@ -262,6 +262,27 @@ class ContactGroupController extends Controller
     }
 
     public function createLapostaList(ContactGroup $contactGroup) {
+
+
+        // Laposta list bijwerken
+        if($contactGroup->is_used_in_laposta){
+
+            //Van dynamic eerst een static groep maken
+            if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed'){
+                $contactGroup->simulatedGroup->name = $contactGroup->name;
+                $contactGroup->simulatedGroup->description = $contactGroup->description;
+                $contactGroup->simulatedGroup->save();
+                $lapostaListHelper = new LapostaListHelper($contactGroup->simulatedGroup);
+                return $lapostaListHelper->updateList();
+
+            }else{
+                $lapostaListHelper = new LapostaListHelper($contactGroup);
+                return $lapostaListHelper->updateList();
+            }
+
+        }
+
+        // Laposta list aanmaken
 
         //Van dynamic eerst een static groep maken
         if($contactGroup->type_id === 'dynamic' ){

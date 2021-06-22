@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import LapostaIcon from '../../../images/logo/laposta-16x16.png';
 
 class ContactGroupsListItem extends Component {
     constructor(props) {
@@ -35,7 +36,21 @@ class ContactGroupsListItem extends Component {
     }
 
     render() {
-        const { id, name, numberOfContacts, closedStatus, permissions, type, isUsedInComposedGroup } = this.props;
+        const {
+            id,
+            name,
+            numberOfContacts,
+            closedStatus,
+            permissions,
+            type,
+            isUsedInComposedGroup,
+            isUsedInLaposta,
+        } = this.props;
+
+        const style = {
+            height: '16px',
+            width: 'auto',
+        };
 
         return (
             <tr
@@ -45,6 +60,11 @@ class ContactGroupsListItem extends Component {
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{name}</td>
+                <td>
+                    {isUsedInLaposta ? (
+                        <img src={LapostaIcon} className="laposta-icon" alt="In laposta" style={style} />
+                    ) : null}
+                </td>
                 <td className="link-underline" onClick={() => this.openContactsInGroup(id)}>
                     {numberOfContacts}
                 </td>

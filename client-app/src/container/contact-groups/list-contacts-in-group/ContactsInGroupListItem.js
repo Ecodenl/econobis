@@ -3,8 +3,6 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
-import { setCheckedContact } from '../../../actions/contact-group/ContactsInGroupActions';
-
 class ContactsInGroupListItem extends Component {
     constructor(props) {
         super(props);
@@ -39,14 +37,23 @@ class ContactsInGroupListItem extends Component {
             number,
             typeName,
             fullName,
-            streetAndNumber,
-            postalCode,
-            city,
             emailAddress,
-            phoneNumber,
-            createdAt,
+            lapostaMemberId,
+            lapostaMemberState,
+            lapostaMemberSince,
             permissions,
         } = this.props;
+
+        let lapostaMemberStatus = '';
+        switch (lapostaMemberState) {
+            case 'active':
+                lapostaMemberStatus = 'Actief';
+            case 'unsubscribed':
+                lapostaMemberStatus = 'Uitgeschreven';
+            default:
+                lapostaMemberStatus = '';
+        }
+
         return (
             <tr
                 className={this.state.highlightRow}
@@ -57,12 +64,12 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs">{number}</td>
                 <td className="hidden-xs hidden-sm">{typeName} </td>
                 <td>{fullName}</td>
-                <td className="hidden-xs">{streetAndNumber}</td>
-                <td className="hidden-xs">{postalCode}</td>
-                <td className="hidden-xs">{city}</td>
                 <td className="hidden-xs">{emailAddress}</td>
-                <td>{phoneNumber}</td>
-                <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>
+                <td className="hidden-xs">{lapostaMemberId}</td>
+                <td className="hidden-xs">{lapostaMemberStatus}</td>
+                <td className="hidden-xs hidden-sm">
+                    {lapostaMemberSince ? moment(lapostaMemberSince).format('DD-MM-Y') : ''}
+                </td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

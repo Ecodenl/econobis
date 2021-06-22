@@ -73,6 +73,11 @@ class ContactGroup extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function simulatedGroup()
+    {
+        return $this->belongsTo(ContactGroup::class);
+    }
+
     public function emailTemplateNewContactLink()
     {
         return $this->belongsTo(EmailTemplate::class, 'email_template_id_new_contact_link');
@@ -196,6 +201,24 @@ class ContactGroup extends Model
         return $contacts;
     }
 
+    public function getAllContactGroupContactsAttribute()
+    {
+        $groupContacts = $this->all_contacts;
+        foreach ($groupContacts as $groupContact){
+
+            $contactGroupsPivot = null;
+            if($groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->exists()){
+                $contactGroupsPivot = $groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->first()->pivot;
+            }
+
+            $groupContact->laposta_member_id = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_id : null;
+            $groupContact->laposta_member_state = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_state : null;
+            $groupContact->laposta_member_created_at = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_created_at : null;
+            $groupContact->laposta_member_since = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_since : null;
+        }
+        return $groupContacts;
+    }
+
     public function getAllContactsAttribute()
     {
         //gebruikt om infinite loop te checken bij samengestelde groepen
@@ -205,15 +228,14 @@ class ContactGroup extends Model
 
         $this->hasComposedIds = [];
 
-        if($this->composed_of === 'contacts') {
-            return $contacts ? $contacts->unique('id')->values() : new Collection();
+        if(!$contacts){
+            return new Collection();
         }
-        else if($this->composed_of === 'participants'){
-            return $contacts ? $contacts->unique('id')->values() : new Collection();
+
+        foreach($contacts as $contact){
+
         }
-        else if($this->composed_of === 'both'){
-            return $contacts ? $contacts->unique('id')->values() : new Collection();
-        }
+        return $contacts->unique('id')->values();
     }
 
     public function getAllContacts()
@@ -275,4 +297,19 @@ class ContactGroup extends Model
 
         return false;
     }
+
+    // syncronized with lapasta
+    public function getIsUsedInLapostaAttribute(){
+
+        // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
+        if($this->type_id === 'dynamic' || $this->type_id === 'composed' ){
+            if($this->simulatedGroup){
+                return ContactGroup::where('id', $this->simulatedGroup->id)->whereNotNull('laposta_list_id')->exists();
+            }
+        }else{
+            return ContactGroup::where('id', $this->id)->whereNotNull('laposta_list_id')->exists();
+        }
+
+        return false;
+   }
 }

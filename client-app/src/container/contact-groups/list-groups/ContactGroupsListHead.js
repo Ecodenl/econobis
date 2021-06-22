@@ -16,7 +16,8 @@ const ContactGroupsListHead = props => {
 
     return (
         <tr className="thead-title">
-            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Name'} width={'30%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Name'} width={'28%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={''} width={'2%'} />
             <DataTableHeadTitle title={'Aantal leden'} width={'20%'} />
             <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'30%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'typeId'} title={'Type'} width={'15%'} setSorts={setSorts} />
@@ -31,7 +32,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ContactGroupsListHead);
+export default connect(null, mapDispatchToProps)(ContactGroupsListHead);

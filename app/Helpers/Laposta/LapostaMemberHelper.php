@@ -26,10 +26,7 @@ class LapostaMemberHelper
         $this->contactGroup = null;
         // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
         if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed' ){
-            $simulatedContactGroup = ContactGroup::find($contactGroup->simulated_group_id);
-            if($simulatedContactGroup){
-                $this->contactGroup = $simulatedContactGroup;
-            }
+            $this->contactGroup = $contactGroup->simulatedGroup;
         }else{
             $this->contactGroup = $contactGroup;
         }

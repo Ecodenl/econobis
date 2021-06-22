@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
-import { isEmpty } from 'lodash';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -52,9 +51,10 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
                                     <ButtonText
                                         onClickAction={toggleShowCreateLapostaList}
                                         buttonText={
-                                            lapostaListId ? 'Laposta lijst aangemaakt' : 'Laposta lijst aanmaken'
+                                            contactGroup.isUsedInLaposta
+                                                ? 'Laposta lijst bijwerken'
+                                                : 'Laposta lijst aanmaken'
                                         }
-                                        disabled={lapostaListId}
                                     />
                                 )}
                             </div>

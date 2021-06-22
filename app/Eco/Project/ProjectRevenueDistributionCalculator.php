@@ -66,7 +66,7 @@ class ProjectRevenueDistributionCalculator
 
             $totalDeliveredKwh += $deliveredKwhPeriod->delivered_kwh;
             // If year period is same as year date begin revenue, sum for end calendar year
-            if(Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($this->projectRevenueDistribution->revenue->date_begin)->year){
+            if( ($projectRevenue->kwh_end_calendar_year_high + $projectRevenue->kwh_end_calendar_year_low) > 0 != null && Carbon::parse($deliveredKwhPeriod->date_begin)->year == Carbon::parse($this->projectRevenueDistribution->revenue->date_begin)->year){
                 $totalDeliveredKwhEndCalendarYear +=$deliveredKwhPeriod->delivered_kwh;
             }
         }
@@ -77,7 +77,7 @@ class ProjectRevenueDistributionCalculator
         $this->projectRevenueDistribution->payout_kwh = $projectRevenue->payout_kwh;
         $lastDeliveredKwhPeriod = $this->projectRevenueDistribution->deliveredKwhPeriod()->orderBy('id', 'desc')->first();
         $dateEndCalendarYear = Carbon::parse($projectRevenue->date_begin)->endOfYear();
-        $lastDeliveredKwhPeriodEndCalendarYear = $this->projectRevenueDistribution->deliveredKwhPeriod()->where('date_end', '<=', $dateEndCalendarYear)->orderBy('id', 'desc')->first();
+        $lastDeliveredKwhPeriodEndCalendarYear = $this->projectRevenueDistribution->deliveredKwhPeriod()->where('date_begin', '<=', $dateEndCalendarYear)->where('date_end', '>=', $dateEndCalendarYear)->orderBy('id', 'desc')->first();
         $this->projectRevenueDistribution->participations_amount = $lastDeliveredKwhPeriod ? $lastDeliveredKwhPeriod->participations_quantity : 0;
         $this->projectRevenueDistribution->participations_amount_end_calendar_year = $lastDeliveredKwhPeriodEndCalendarYear ? $lastDeliveredKwhPeriodEndCalendarYear->participations_quantity : 0;
 

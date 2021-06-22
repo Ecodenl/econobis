@@ -83,8 +83,15 @@ export default props => {
                             <Row className="justify-content-center align-content-center full-height">
                                 <Col xs="12" sm="6" md="4" lg="3" xl="2">
                                     <img src="images/logo.png" alt="" className="image logo-container" />
-
-                                    {!portalActive ? (
+                                    {isLoading ? (
+                                        <React.Fragment>
+                                            <Row className="justify-content-center">
+                                                <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                                    Applicatie wordt geladen...
+                                                </Alert>
+                                            </Row>
+                                        </React.Fragment>
+                                    ) : !portalActive ? (
                                         <React.Fragment>
                                             <Row className="justify-content-center">
                                                 <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>

@@ -142,6 +142,15 @@ class ContactGroupController extends Controller
         try {
             DB::beginTransaction();
 
+            if($contactGroup->simulatedGroup){
+                $deleteContactGroupSimulatedGroup = new DeleteContactGroup($contactGroup->simulatedGroup);
+                $resultSimulatedGroup = $deleteContactGroupSimulatedGroup->delete();
+                if(count($resultSimulatedGroup) > 0){
+                    DB::rollBack();
+                    abort(412, implode(";", array_unique($resultSimulatedGroup)));
+                }
+            }
+
             $deleteContactGroup = new DeleteContactGroup($contactGroup);
             $result = $deleteContactGroup->delete();
 
@@ -156,9 +165,6 @@ class ContactGroupController extends Controller
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-
-        $lapostaListHelper = new LapostaListHelper($contactGroup);
-        $lapostaListHelper->deleteList();
 
     }
 

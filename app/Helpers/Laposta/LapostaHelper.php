@@ -4,7 +4,6 @@
 namespace App\Helpers\Laposta;
 
 
-use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use Illuminate\Support\Facades\Log;
@@ -28,53 +27,22 @@ class LapostaHelper
         $this->validateGeneral();
 
         foreach($this->getAllLists() as $list){
-
             $listId = $list['list']['list_id'];
             $contactGroup = ContactGroup::where('laposta_list_id', $listId)->first();
             if($contactGroup){
-
                 $allMembersOfList = $this->getAllMembersOfListFromLaposta($listId);
                 foreach($allMembersOfList as $member){
-
                     $lapostaMemberId = $member['member']['member_id'];
                     $lapostaMemberState = $member['member']['state'];
-
                     if($contactGroup->contacts()->where('laposta_member_id', $lapostaMemberId)->exists()){
                         $contactGroupsPivot= $contactGroup->contacts()->where('laposta_member_id', $lapostaMemberId)->first()->pivot;
-
                         if($contactGroupsPivot != null) {
-
-                            $contact = Contact::find($contactGroupsPivot->contact_id);
-                            if($contact){
-                                $lapostaMemberId = $contactGroupsPivot->laposta_member_id;
-                                $lapostaMemberState = $lapostaMemberState;
-                                $lapostaMemberCreatedAt = $contactGroupsPivot->laposta_member_created_at;
-                                $lapostaMemberSince = $contactGroupsPivot->laposta_member_since;
-
-                                // Detach first
-                                $contactGroup->contacts()->detach($contact);
-
-                                // Attach back with extra data
-                                $contactGroup->contacts()->attach($contact, [
-                                    'laposta_member_id' => $lapostaMemberId,
-                                    'laposta_member_state' => $lapostaMemberState,
-                                    'laposta_member_created_at' => $lapostaMemberCreatedAt,
-                                    'laposta_member_since' =>$lapostaMemberSince,
-                                ]);
-
-                            }
-
-
+                            $contactGroup->contacts()->updateExistingPivot($contactGroupsPivot->contact_id, ['laposta_member_state' => $lapostaMemberState]);
                         }
-
                     }
                 }
-
-
             }
-
         }
-
     }
 
     private function getAllLists() {

@@ -32,7 +32,7 @@ class ContactsEditItem extends React.Component {
             });
             setTimeout(() => {
                 this.props.refreshContactsInGroupData();
-            }, 200);
+            }, 500);
             this.props.closeEditItemModal();
         };
 

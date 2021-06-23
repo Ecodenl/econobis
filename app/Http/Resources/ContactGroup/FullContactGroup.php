@@ -52,8 +52,8 @@ class FullContactGroup extends Resource
             'emailTemplateIdNewContactLink' => $this->email_template_id_new_contact_link,
             'emailTemplateNewContactLink' => FullEmailTemplate::make($this->whenLoaded('emailTemplateNewContactLink')),
             'isUsedInLaposta' => $this->is_used_in_laposta,
-            'lapostaListId' => $this->laposta_list_id,
-            'lapostaListCreatedAt' => $this->laposta_list_created_at,
+            'lapostaListId' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_id : $this->laposta_list_id,
+            'lapostaListCreatedAt' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_created_at : $this->laposta_list_created_at,
         ];
     }
 }

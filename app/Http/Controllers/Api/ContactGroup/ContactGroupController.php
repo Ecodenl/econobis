@@ -221,22 +221,7 @@ class ContactGroupController extends Controller
             $contactGroupUpdate = $contactGroup;
         }
 
-        if($contactGroupUpdate->contacts()->where('contact_id', $contact->id)->exists()){
-            $contactGroupsPivot = $contactGroupUpdate->contacts()->where('contact_id', $contact->id)->first()->pivot;
-            if($contactGroupsPivot != null) {
-                $lapostaMemberId = $contactGroupsPivot->laposta_member_id;
-                $lapostaMemberState = $contactGroupsPivot->laposta_member_state;
-                $lapostaMemberCreatedAt = $contactGroupsPivot->laposta_member_created_at;
-                $contactGroupUpdate->contacts()->detach($contact);
-
-                $contactGroupUpdate->contacts()->attach($contact, [
-                    'laposta_member_id' => $lapostaMemberId,
-                    'laposta_member_state' => $lapostaMemberState,
-                    'laposta_member_created_at' => $lapostaMemberCreatedAt,
-                    'laposta_member_since' => Carbon::parse($request->get('lapostaMemberSince')),
-                ]);
-            }
-        }
+        $contactGroupUpdate->contacts()->updateExistingPivot($contact->id, ['laposta_member_since' => Carbon::parse($request->get('lapostaMemberSince'))]);
     }
 
     public function addContacts(ContactGroup $contactGroup, Request $request)
@@ -299,17 +284,29 @@ class ContactGroupController extends Controller
 
     public function createLapostaList(ContactGroup $contactGroup) {
 
-
         // Laposta list bijwerken
         if($contactGroup->is_used_in_laposta){
 
-            //Van dynamic eerst een static groep maken
-            if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed'){
+            // via simulategroup
+            if($contactGroup->simulatedGroup){
                 $contactGroup->simulatedGroup->name = $contactGroup->name;
                 $contactGroup->simulatedGroup->description = $contactGroup->description;
                 $contactGroup->simulatedGroup->save();
                 $lapostaListHelper = new LapostaListHelper($contactGroup->simulatedGroup);
-                return $lapostaListHelper->updateList();
+                $lapostaListId = $lapostaListHelper->updateList();
+
+                $contactGroupToAdd = $contactGroup->getAllContacts()->diff($contactGroup->simulatedGroup->getAllContacts());
+                foreach ($contactGroupToAdd as $contact){
+                    $contactGroupController = new ContactGroupController();
+                    $contactGroupController->addContact($contactGroup->simulatedGroup, $contact);
+                }
+                $contactGroupToRemove = $contactGroup->simulatedGroup->getAllContacts()->diff($contactGroup->getAllContacts());
+                foreach ($contactGroupToRemove as $contact){
+                    $contactGroupController = new ContactGroupController();
+                    $contactGroupController->removeContact($contactGroup->simulatedGroup, $contact);
+                }
+
+                return $lapostaListId;
 
             }else{
                 $lapostaListHelper = new LapostaListHelper($contactGroup);

@@ -240,7 +240,7 @@ class ContactGroup extends Model
 
     public function getAllContacts()
     {
-        if ($this->type_id === 'static') {
+        if ($this->type_id === 'static' || $this->type_id === 'simulated') {
             if ($this->composed_of === 'contacts') {
                 return $this->contacts()->get();
             } else {

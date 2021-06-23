@@ -326,6 +326,7 @@ class ContactGroupController extends Controller
         if($contactGroup->type_id === 'dynamic' ){
             $contactGroupNew = $contactGroup->replicate();
             $contactGroupNew->type_id = 'simulated';
+            $contactGroupNew->show_contact_form = false;
             $contactGroupNew->save();
 
             $contactGroup->simulated_group_id = $contactGroupNew->id;

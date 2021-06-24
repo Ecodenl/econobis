@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNumberOfRemindersToInvoicesTable extends Migration
+class AddNumberOfRemindersToOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddNumberOfRemindersToInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::table('invoices', function (Blueprint $table) {
-            $table->smallInteger('number_of_invoice_reminders')->nullable()->default(null)->after('date_collection');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->smallInteger('number_of_invoice_reminders')->nullable()->default(null)->after('invoice_text');
         });
     }
 
@@ -25,8 +25,8 @@ class AddNumberOfRemindersToInvoicesTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('invoices', 'number_of_invoice_reminders')) {
-            Schema::table('invoices', function (Blueprint $table) {
+        if (Schema::hasColumn('orders', 'number_of_invoice_reminders')) {
+            Schema::table('orders', function (Blueprint $table) {
                 $table->dropColumn('number_of_invoice_reminders');
             });
         }

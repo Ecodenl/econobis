@@ -30,9 +30,6 @@ class ContactsEditItem extends React.Component {
             this.props.updateContactInGroup(this.props.groupId, this.props.id, {
                 lapostaMemberSince: this.state.lapostaMemberSince,
             });
-            setTimeout(() => {
-                this.props.refreshContactsInGroupData();
-            }, 500);
             this.props.closeEditItemModal();
         };
 
@@ -74,4 +71,7 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ContactsEditItem);
+export default connect(
+    null,
+    mapDispatchToProps
+)(ContactsEditItem);

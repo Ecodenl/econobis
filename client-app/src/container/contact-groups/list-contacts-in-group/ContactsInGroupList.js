@@ -106,7 +106,7 @@ class ContactsInGroupList extends Component {
                         <DataTableHead>
                             <ContactsInGroupListHead
                                 showCheckbox={this.props.showCheckboxList}
-                                refreshContactsInGroupData={() => this.props.refreshContactsInGroupData()}
+                                refreshContactsInGroupData={this.props.refreshContactsInGroupData}
                                 isUsedInLaposta={this.props.contactGroupDetails.isUsedInLaposta}
                             />
                         </DataTableHead>

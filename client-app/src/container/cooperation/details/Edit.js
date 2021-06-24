@@ -13,10 +13,11 @@ import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 import { CooperationValidation } from './Validation';
 import CooperationUploadLogo from './UploadLogo';
-import {Switch} from "react-router";
-import InputToggle from "../../../components/form/InputToggle";
+import InputToggle from '../../../components/form/InputToggle';
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+import { connect } from 'react-redux';
 
-function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
+function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -77,6 +78,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
             .then(payload => {
                 updateResult(payload.data.data);
                 toggleEdit();
+                fetchSystemData();
             })
             .catch(error => {
                 alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
@@ -239,7 +241,10 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                             label={'Stuur e-mail bij nieuw Hoomdossier'}
                             name={'sendEmail'}
                             value={!!values.sendEmail}
-                            onChangeAction={(event) => { event.persist(); setFieldValue(event.target.name, event.target.checked) }}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
                         />
                     </div>
                 </PanelBody>
@@ -281,4 +286,14 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
         </section>
     );
 }
-export default CooperationDetailsFormEdit;
+
+const mapDispatchToProps = dispatch => ({
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
+    },
+});
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(CooperationDetailsFormEdit);

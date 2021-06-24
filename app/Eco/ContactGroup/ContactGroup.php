@@ -352,4 +352,22 @@ class ContactGroup extends Model
 
         return false;
    }
+
+    // syncronized with lapasta
+    public function getSimulatedGroupUpToDateAttribute(){
+
+        if($this->simulatedGroup){
+            $contactGroupToAdd = $this->getAllContacts()->diff($this->simulatedGroup->getAllContacts());
+            if(count($contactGroupToAdd)){
+                return false;
+            }
+            $contactGroupToRemove = $this->simulatedGroup->getAllContacts()->diff($this->getAllContacts());
+            if(count($contactGroupToRemove)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

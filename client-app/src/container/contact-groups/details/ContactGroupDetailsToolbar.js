@@ -51,9 +51,19 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
                                     <ButtonText
                                         onClickAction={toggleShowCreateLapostaList}
                                         buttonText={
-                                            contactGroup.isUsedInLaposta
+                                            !contactGroup.isUsedInLaposta
+                                                ? 'Laposta lijst aanmaken'
+                                                : !contactGroup.simulatedGroupUpToDate
                                                 ? 'Laposta lijst bijwerken'
-                                                : 'Laposta lijst aanmaken'
+                                                : 'Laposta lijst actueel'
+                                        }
+                                        disabled={Boolean(
+                                            contactGroup.isUsedInLaposta && contactGroup.simulatedGroupUpToDate
+                                        )}
+                                        buttonClassName={
+                                            contactGroup.isUsedInLaposta && !contactGroup.simulatedGroupUpToDate
+                                                ? 'btn-danger'
+                                                : 'btn-success'
                                         }
                                     />
                                 )}

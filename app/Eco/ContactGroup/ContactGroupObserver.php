@@ -23,4 +23,15 @@ class ContactGroupObserver
         }
     }
 
+    public function saved(ContactGroup $contactGroup)
+    {
+        if($contactGroup->simulatedGroup && ($contactGroup->isDirty('name') || $contactGroup->isDirty('description')) ) {
+            $contactGroup->simulatedGroup->name = $contactGroup->name;
+            $contactGroup->simulatedGroup->description = $contactGroup->description;
+            $contactGroup->simulatedGroup->save();
+        }
+
+    }
+
+
 }

@@ -24,6 +24,7 @@ class GridContactGroup extends Resource
             'type' => FullEnumWithIdAndName::make($this->getType()),
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
             'isUsedInLaposta' => $this->is_used_in_laposta,
+            'simulatedGroupUpToDate' => $this->simulated_group_up_to_date,
         ];
     }
 }

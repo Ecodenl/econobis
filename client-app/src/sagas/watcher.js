@@ -27,6 +27,8 @@ import {
     addContactToGroupSaga,
     deleteComposedGroupSaga,
     attachComposedGroupSaga,
+    deleteComposedExceptGroupSaga,
+    attachComposedExceptGroupSaga,
 } from './contact-group/ContactGroupsSaga';
 import {
     fetchContactsInGroupSaga,
@@ -155,6 +157,8 @@ export default function* watchSagas() {
     yield takeLatest('UPDATE_CONTACT_IN_GROUP', updateContactInGroupSaga);
     yield takeLatest('DELETE_COMPOSED_GROUP', deleteComposedGroupSaga);
     yield takeLatest('ATTACH_COMPOSED_GROUP', attachComposedGroupSaga);
+    yield takeLatest('DELETE_COMPOSED_EXCEPT_GROUP', deleteComposedExceptGroupSaga);
+    yield takeLatest('ATTACH_COMPOSED_EXCEPT_GROUP', attachComposedExceptGroupSaga);
     // Documents
     yield takeLatest('FETCH_DOCUMENTS', fetchDocumentsSaga);
     yield takeLatest('DELETE_DOCUMENT', deleteDocumentSaga);

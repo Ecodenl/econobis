@@ -201,6 +201,28 @@ export default {
             .catch(error => error.response);
     },
 
+    deleteComposedExceptGroup: ({ contactGroupId, contactGroupToDetachId }) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach/except`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios
+            .post(requestUrl)
+            .then(response => response.data.data)
+            .catch(error => error.response);
+    },
+
+    attachComposedExceptGroup: ({ contactGroupId, contactGroupToAttachId }) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToAttachId}/attach/except`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios
+            .post(requestUrl)
+            .then(response => response.data.data)
+            .catch(error => error.response);
+    },
+
     createLapostaList: id => {
         const requestUrl = `contact-group/${id}/create-laposta-list`;
 

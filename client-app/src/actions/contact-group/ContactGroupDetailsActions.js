@@ -24,6 +24,18 @@ export const attachComposedGroup = (contactGroupId, contactGroupToAttachId) => (
     contactGroupToAttachId,
 });
 
+export const deleteComposedExceptGroup = (contactGroupId, contactGroupToDetachId) => ({
+    type: 'DELETE_COMPOSED_EXCEPT_GROUP',
+    contactGroupId,
+    contactGroupToDetachId,
+});
+
+export const attachComposedExceptGroup = (contactGroupId, contactGroupToAttachId) => ({
+    type: 'ATTACH_COMPOSED_EXCEPT_GROUP',
+    contactGroupId,
+    contactGroupToAttachId,
+});
+
 export const updateContactGroupLapostaList = lapostaListId => {
     return {
         type: 'UPDATE_LAPOSTA_LIST_ID',

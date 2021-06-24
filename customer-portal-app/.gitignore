@@ -8,7 +8,7 @@
 # testing
 /coverage
 
-# production portal
+# build portal
 /portal
 /build/images/logo*
 /build/favicon*

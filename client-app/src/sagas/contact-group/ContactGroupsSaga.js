@@ -55,3 +55,21 @@ export function* attachComposedGroupSaga({ contactGroupId, contactGroupToAttachI
         yield put({ type: 'ATTACH_COMPOSED_GROUP_ERROR', error });
     }
 }
+
+export function* deleteComposedExceptGroupSaga({ contactGroupId, contactGroupToDetachId }) {
+    try {
+        yield call(ContactGroupAPI.deleteComposedExceptGroup, { contactGroupId, contactGroupToDetachId });
+        yield put({ type: 'DELETE_COMPOSED_GROUP_SUCCESS', contactGroupToDetachId });
+    } catch (error) {
+        yield put({ type: 'DELETE_COMPOSED_GROUP_ERROR', error });
+    }
+}
+
+export function* attachComposedExceptGroupSaga({ contactGroupId, contactGroupToAttachId }) {
+    try {
+        yield call(ContactGroupAPI.attachComposedExceptGroup, { contactGroupId, contactGroupToAttachId });
+        yield put({ type: 'ATTACH_COMPOSED_EXCEPT_GROUP_SUCCESS', contactGroupId });
+    } catch (error) {
+        yield put({ type: 'ATTACH_COMPOSED_EXCEPT_GROUP_ERROR', error });
+    }
+}

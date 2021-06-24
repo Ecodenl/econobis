@@ -145,13 +145,6 @@ export default {
                                         administration: { fld: ['name'] },
                                     },
                                 },
-                                // todo WM: deze hebben we hier bij contact niet meer nodig, nog goed testen, dan opschonen
-                                // mutations: {
-                                //     fld: ['isPaidByMollie', 'econobisPaymentLink'],
-                                //     rlt: {
-                                //         status: { fld: ['codeRef'] },
-                                //     },
-                                // },
                             },
                         },
                     },

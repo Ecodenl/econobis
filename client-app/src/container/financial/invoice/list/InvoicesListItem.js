@@ -122,7 +122,9 @@ class InvoicesListItem extends Component {
             emailToAddress,
             ibanContactOrInvoice,
             subStatus,
+            usesTwinfield,
             invoiceInTwinfield,
+            compatibleWithTwinfield,
         } = this.props;
 
         const inProgressRowClass =
@@ -133,12 +135,21 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'is-resending'
                 ? 'in-progress-row'
                 : '';
+        const compatibleStatus =
+            (this.props.statusId === 'to-send' || this.props.statusId === 'sent') &&
+            usesTwinfield &&
+            !compatibleWithTwinfield;
+        const compatibleStatusRowClow = compatibleStatus ? 'missing-data-row' : '';
+        const compatibleStatusTitle =
+            'Er ontbreekt een Twinfield Grootboekrekening koppeling bij één of meerdere producten.';
+
         return (
             <tr
-                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass}`}
+                className={`${this.state.highlightRow} ${hideRowClass} ${inProgressRowClass} ${compatibleStatusRowClow}`}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
+                title={compatibleStatus ? compatibleStatusTitle : ''}
             >
                 {this.props.showSelectInvoicesToSend && (
                     <td>
@@ -167,7 +178,7 @@ class InvoicesListItem extends Component {
                         })}
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? <br /> : ''}
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? (
-                        <span class="error-span">
+                        <span className="error-span">
                             {'€' +
                                 amountOpen.toLocaleString('nl', {
                                     minimumFractionDigits: 2,
@@ -224,7 +235,8 @@ class InvoicesListItem extends Component {
                     )}
                     {this.state.showActionButtons &&
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') &&
-                    !this.props.dateExhortation && !this.props.isPaidByMollie ? (
+                    !this.props.dateExhortation &&
+                    !this.props.isPaidByMollie ? (
                         <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
                             <span className="glyphicon glyphicon-bullhorn mybtn-success" />{' '}
                         </a>

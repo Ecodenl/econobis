@@ -15,7 +15,6 @@ moment.locale('nl');
 const OrderProductsFormEdit = props => {
     const {
         product,
-        description,
         costCenterId,
         amount,
         amountReduction,
@@ -64,7 +63,7 @@ const OrderProductsFormEdit = props => {
                                 label={'Omschrijving'}
                                 id={'description'}
                                 name={'description'}
-                                value={description}
+                                value={product.invoiceText}
                                 readOnly={true}
                             />
                             <InputText

@@ -8,8 +8,9 @@ const IntakeDetailsOpportunitiesList = props => {
         <div>
             <div className="row border header">
                 <div className="col-sm-2">Nummer</div>
-                <div className="col-sm-3">Datum</div>
-                <div className="col-sm-3">Maatregel</div>
+                <div className="col-sm-2">Datum</div>
+                <div className="col-sm-2">Maatregel</div>
+                <div className="col-sm-2">Maatregel specifiek</div>
                 <div className="col-sm-2">Status</div>
                 <div className="col-sm-2">Aantal offertes</div>
             </div>

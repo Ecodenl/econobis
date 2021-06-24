@@ -115,6 +115,20 @@ class Invoice extends Model
         return $amountInclVat;
     }
 
+    public function isInvoiceFullyCompatibleWithTwinfield() {
+        if (!$this->administration->uses_twinfield) return false;
+
+        $compatibleCount = 0;
+
+        foreach ($this->invoiceProducts as $invoiceProduct) {
+            if(!empty($invoiceProduct->twinfield_ledger_code)) {
+                $compatibleCount++;
+            }
+        }
+
+        return $compatibleCount === $this->invoiceProducts()->count();
+    }
+
     public function getTotalExclVatInclReductionAttribute()
     {
         $amountExclVat = 0;
@@ -137,9 +151,22 @@ class Invoice extends Model
         return $vat;
     }
 
+    public function getOnlineDatePaidAttribute()
+    {
+        $molliePayment = $this->lastMolliePayment()->first();
+
+        return $molliePayment ? $molliePayment->date_paid : null;
+    }
+
+    public function getOnlineReferenceAttribute()
+    {
+        $molliePayment = $this->lastMolliePayment()->first();
+
+        return $molliePayment ? $molliePayment->mollie_id : null;
+    }
+
     public function getDatePaidAttribute()
     {
-
         $latest_payment = InvoicePayment::where('invoice_id', $this->id)->where('amount','>', 0)->orderBy('date_paid', 'desc')->first();
 
         return $latest_payment ? $latest_payment->date_paid : null;
@@ -147,7 +174,6 @@ class Invoice extends Model
 
     public function getPaymentReferenceAttribute()
     {
-
         $latest_payment = InvoicePayment::where('invoice_id', $this->id)->where('amount','>', 0)->orderBy('date_paid', 'desc')->first();
 
         return $latest_payment ? $latest_payment->payment_reference : null;
@@ -356,6 +382,10 @@ class Invoice extends Model
     public function getIsPaidByMollieAttribute()
     {
         return $this->molliePayments()->whereNotNull('date_paid')->exists();
+    }
+
+    public function getAmountPaidAttribute() {
+        return InvoicePayment::where('invoice_id', $this->id)->sum('amount');
     }
 
     public function getEconobisPaymentLinkAttribute()

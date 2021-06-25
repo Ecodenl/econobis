@@ -50,9 +50,12 @@ class LapostaMemberHelper
         $this->validateRequiredMemberFields();
 
         $lapostaResponse = $this->createMemberToLaposta();
+        if($lapostaResponse == null){
+            return null;
+        }
+
         $lapostaMemberId = $lapostaResponse['member']['member_id'];
         $lapostaMemberState = $lapostaResponse['member']['state'];
-
         $this->contactGroup->contacts()->updateExistingPivot($this->contact->id,
             [
                 'laposta_member_id' => $lapostaMemberId,
@@ -74,9 +77,12 @@ class LapostaMemberHelper
         $this->validateRequiredMemberFields();
 
         $lapostaResponse = $this->updateMemberToLaposta();
+        if($lapostaResponse == null){
+            return null;
+        }
 
         // Return member id
-//        return $this->contactGroupsPivot->laposta_member_id;
+        return $this->contactGroupsPivot ? $this->contactGroupsPivot->laposta_member_id : null;
     }
 
     public function deleteMember() {
@@ -85,6 +91,9 @@ class LapostaMemberHelper
         $this->validateGeneral();
 
         $lapostaResponse = $this->deleteMemberToLaposta();
+        if($lapostaResponse == null){
+            return null;
+        }
 
         // When success save member id
         $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, [
@@ -199,10 +208,10 @@ class LapostaMemberHelper
         } catch (\Exception $e) {
             if ($e->getMessage()) {
                 Log::error('Er is iets misgegaan bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
-                abort($e->getHttpStatus(), $e->getMessage());
+//                abort($e->getHttpStatus(), $e->getMessage());
             } else {
                 Log::error('Er is iets misgegaan met bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
-                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+//                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }
     }
@@ -237,10 +246,10 @@ class LapostaMemberHelper
         } catch (\Exception $e) {
             if ($e->getMessage()) {
                 Log::error('Er is iets misgegaan bij het synchroniseren van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
-                abort($e->getHttpStatus(), $e->getMessage());
+//                abort($e->getHttpStatus(), $e->getMessage());
             } else {
                 Log::error('Er is iets misgegaan met bij het synchroniseren van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
-                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+//                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }
     }
@@ -255,10 +264,10 @@ class LapostaMemberHelper
         } catch (\Exception $e) {
             if ($e->getMessage()) {
                 Log::error('Er is iets misgegaan bij het verwijderen van gekoppelde Laposta relatie voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
-                abort($e->getHttpStatus(), $e->getMessage());
+//                abort($e->getHttpStatus(), $e->getMessage());
             } else {
                 Log::error('Er is iets misgegaan met bij het verwijderen van gekoppelde Laposta relatie voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
-                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+//                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }
     }

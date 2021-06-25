@@ -58,9 +58,19 @@ class ContactsInGroupListItem extends Component {
                 break;
         }
 
+        const missingDataClass =
+            isUsedInLaposta && (lapostaMemberId === null || lapostaMemberState === 'unknown')
+                ? 'missing-data-row'
+                : null;
+        const missingContactDataMessage =
+            isUsedInLaposta && (lapostaMemberId === null || lapostaMemberState === 'unknown')
+                ? 'Koppeling niet gevonden in Laposta'
+                : '';
+
         return (
             <tr
-                className={this.state.highlightRow}
+                title={missingContactDataMessage}
+                className={this.state.highlightRow + ' ' + missingDataClass ? missingDataClass : ''}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}

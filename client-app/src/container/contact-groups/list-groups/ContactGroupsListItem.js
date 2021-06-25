@@ -54,10 +54,18 @@ class ContactGroupsListItem extends Component {
             height: '16px',
             width: 'auto',
         };
-        const missingDataClass = isUsedInLaposta && !simulatedGroupUpToDate ? 'missing-data-row' : null;
+        const missingDataClass =
+            isUsedInLaposta && (!simulatedGroupUpToDate || numberOfLapostaMembers != numberOfContacts)
+                ? 'missing-data-row'
+                : null;
+        const missingContactDataMessage =
+            isUsedInLaposta && (!simulatedGroupUpToDate || numberOfLapostaMembers != numberOfContacts)
+                ? 'Niet actueel met Laposta'
+                : '';
 
         return (
             <tr
+                title={missingContactDataMessage}
                 className={this.state.highlightRow + ' ' + missingDataClass ? missingDataClass : ''}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}

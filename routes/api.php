@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
-use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 /*
@@ -505,6 +504,7 @@ Route::namespace('Api')
         Route::get('cooperation', 'Cooperation\CooperationController@show');
         Route::post('cooperation', 'Cooperation\CooperationController@store');
         Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
+        Route::post('cooperation/{cooperation}/sync-state-all-members-laposta', 'Cooperation\CooperationController@syncStateAllMembersLaposta');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

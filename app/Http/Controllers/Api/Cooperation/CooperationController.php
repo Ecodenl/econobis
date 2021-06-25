@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Cooperation;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Helpers\Laposta\LapostaHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Cooperation\CreateCooperation;
 use App\Http\Requests\Cooperation\UpdateCooperation;
@@ -97,4 +98,11 @@ class CooperationController extends ApiController
 
         $cooperation->save();
     }
+
+    public function syncStateAllMembersLaposta(Cooperation $cooperation){
+        $LapostaHelper = new LapostaHelper();
+        return $LapostaHelper->processStateAllMembersLaposta();
+    }
+
+
 }

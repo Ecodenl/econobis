@@ -259,7 +259,11 @@ class InvoicesListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons && this.props.statusId === 'to-send' ? (
-                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, number)}>
+                        <a
+                            role="button"
+                            onClick={this.props.showDeleteItemModal.bind(this, id, number)}
+                            title="Verwijder nota"
+                        >
                             <span className="glyphicon glyphicon-trash mybtn-danger" />{' '}
                         </a>
                     ) : (

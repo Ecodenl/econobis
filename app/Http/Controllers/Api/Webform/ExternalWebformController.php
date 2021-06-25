@@ -299,6 +299,8 @@ class ExternalWebformController extends Controller
                 'order_volgende_nota_datum' => 'date_next_invoice',
                 'order_begindatum' => 'date_start',
                 'order_aanvraagdatum' => 'date_requested',
+                'order_betreft' => 'subject',
+                'order_opmerking' => 'invoice_text',
             ],
             'intake' => [
                 // Intake
@@ -1769,18 +1771,18 @@ class ExternalWebformController extends Controller
                 $dateStart = new Carbon();
             }
 
-
             $order = Order::create([
                 'contact_id' => $contact->id,
                 'administration_id' => $product->administration_id,
                 'status_id' => $statusId,
-                'subject' => $product->name,
+                'subject' => ( $data['order_betreft'] && !empty($data['order_betreft']) )? $data['order_betreft'] : $product->name,
                 'payment_type_id' => $paymentTypeId,
                 'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
                 'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
+                'invoice_text' => $data['order_opmerking'],
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');

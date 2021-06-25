@@ -10,6 +10,7 @@ export default function(state = { isLoading: false }, action) {
                 data: action.contactGroups.data.data,
                 meta: {
                     total: action.contactGroups.data.meta.total,
+                    useLaposta: action.contactGroups.data.meta.useLaposta,
                 },
                 isLoading: false,
             };

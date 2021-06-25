@@ -25,6 +25,7 @@ class GridContactGroup extends Resource
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
             'isUsedInLaposta' => $this->is_used_in_laposta,
             'simulatedGroupUpToDate' => $this->simulated_group_up_to_date,
+            'numberOfLapostaMembers' => $this->number_of_laposta_members,
         ];
     }
 }

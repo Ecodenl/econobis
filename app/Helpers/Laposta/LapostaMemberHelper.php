@@ -53,16 +53,12 @@ class LapostaMemberHelper
         $lapostaMemberId = $lapostaResponse['member']['member_id'];
         $lapostaMemberState = $lapostaResponse['member']['state'];
 
-        if($this->contactGroupsPivot != null) {
-            $this->contactGroup->contacts()->detach($this->contact);
-        }
-
-        // When success save member id
-        $this->contactGroup->contacts()->attach($this->contact, [
-            'laposta_member_id' => $lapostaMemberId,
-            'laposta_member_state' => $lapostaMemberState,
-            'laposta_member_created_at' => Carbon::now(),
-            'laposta_member_since' => Carbon::now(),
+        $this->contactGroup->contacts()->updateExistingPivot($this->contact->id,
+            [
+                'laposta_member_id' => $lapostaMemberId,
+                'laposta_member_state' => $lapostaMemberState,
+                'laposta_member_created_at' => Carbon::now(),
+                'laposta_member_since' => Carbon::now(),
             ]);
 
         // Return member id
@@ -89,6 +85,14 @@ class LapostaMemberHelper
         $this->validateGeneral();
 
         $lapostaResponse = $this->deleteMemberToLaposta();
+
+        // When success save member id
+        $this->contactGroup->contacts()->updateExistingPivot($this->contact->id, [
+            'laposta_member_id' => null,
+            'laposta_member_state' => null,
+            'laposta_member_created_at' => null,
+            'laposta_member_since' => null,
+        ]);
 
         // Return member id
         return null;

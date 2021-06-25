@@ -353,7 +353,7 @@ class ContactGroup extends Model
         return false;
    }
 
-    // syncronized with lapasta
+    // simulategroup up-to-date?
     public function getSimulatedGroupUpToDateAttribute(){
 
         if($this->simulatedGroup){
@@ -368,6 +368,17 @@ class ContactGroup extends Model
         }
 
         return true;
+    }
+
+    // simulategroup up-to-date?
+    public function getNumberOfLapostaMembersAttribute(){
+
+        if($this->simulatedGroup){
+            $numberOfLapostaMembers = $this->simulatedGroup->contacts()->whereNotNull('laposta_member_id')->count();
+        }else{
+            $numberOfLapostaMembers = $this->contacts()->whereNotNull('laposta_member_id')->count();
+        }
+        return $numberOfLapostaMembers;
     }
 
 }

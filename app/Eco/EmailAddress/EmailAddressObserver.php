@@ -34,14 +34,17 @@ class EmailAddressObserver
             if($oldPrimaryEmailAddress){
                 $oldPrimaryEmailAddress->primary = false;
                 $oldPrimaryEmailAddress->save();
+            }
 
-                foreach($emailAddress->contact->groups as $contactGroup){
-                    if($contactGroup->laposta_list_id) {
-                        $contactGroupsPivot= $contactGroup->pivot;
-                        if($contactGroupsPivot->laposta_member_id){
-                            $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact);
-                            $lapostaMemberHelper->updateMember();
-                        }
+            foreach($emailAddress->contact->groups as $contactGroup){
+                if($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot= $contactGroup->pivot;
+                    if($contactGroupsPivot->laposta_member_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact);
+                        $lapostaMemberHelper->updateMember();
+                    }else{
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact);
+                        $lapostaMemberHelper->createMember();
                     }
                 }
             }
@@ -66,5 +69,22 @@ class EmailAddressObserver
         }
 
     }
+
+    public function deleted(EmailAddress $emailAddress)
+    {
+        // Als primary emailaddress verwijderd wordt, dan evt. ook laposta members verwijderen.
+        if($emailAddress->primary == true) {
+            foreach ($emailAddress->contact->groups as $contactGroup) {
+                if ($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot = $contactGroup->pivot;
+                    if ($contactGroupsPivot->laposta_member_id) {
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact);
+                        $lapostaMemberHelper->deleteMember();
+                    }
+                }
+            }
+        }
+    }
+
 
 }

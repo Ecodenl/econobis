@@ -16,12 +16,18 @@ const ContactGroupsListHead = props => {
 
     return (
         <tr className="thead-title">
-            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Name'} width={'28%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={''} width={'2%'} />
-            <DataTableHeadTitle title={'Aantal leden'} width={'20%'} />
-            <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'30%'} setSorts={setSorts} />
+            {props.useLaposta ? (
+                <>
+                    <DataTableHeadTitleAndSort sortColumn={'name'} title={'Name'} width={'30%'} setSorts={setSorts} />
+                    <DataTableHeadTitle title={'Aantal relaties Laposta'} width={'15%'} />
+                </>
+            ) : (
+                <DataTableHeadTitleAndSort sortColumn={'name'} title={'Name'} width={'45%'} setSorts={setSorts} />
+            )}
+            <DataTableHeadTitle title={'Aantal leden'} width={'15%'} />
+            <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'typeId'} title={'Type'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitle title={''} width={'5%'} />
+            <DataTableHeadTitle title={''} width={'10%'} />
         </tr>
     );
 };

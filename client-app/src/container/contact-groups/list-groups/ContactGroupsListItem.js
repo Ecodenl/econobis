@@ -45,26 +45,35 @@ class ContactGroupsListItem extends Component {
             type,
             isUsedInComposedGroup,
             isUsedInLaposta,
+            simulatedGroupUpToDate,
+            numberOfLapostaMembers,
+            useLaposta,
         } = this.props;
 
         const style = {
             height: '16px',
             width: 'auto',
         };
+        const missingDataClass = isUsedInLaposta && !simulatedGroupUpToDate ? 'missing-data-row' : null;
 
         return (
             <tr
-                className={this.state.highlightRow}
+                className={this.state.highlightRow + ' ' + missingDataClass ? missingDataClass : ''}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{name}</td>
-                <td>
-                    {isUsedInLaposta ? (
-                        <img src={LapostaIcon} className="laposta-icon" alt="In laposta" style={style} />
-                    ) : null}
-                </td>
+                {useLaposta ? (
+                    <td>
+                        {isUsedInLaposta ? (
+                            <>
+                                <img src={LapostaIcon} className="laposta-icon" alt="In laposta" style={style} />
+                                {' (' + numberOfLapostaMembers + ')'}
+                            </>
+                        ) : null}
+                    </td>
+                ) : null}
                 <td className="link-underline" onClick={() => this.openContactsInGroup(id)}>
                     {numberOfContacts}
                 </td>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ComposedContactGroup;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
@@ -29,11 +30,13 @@ class ContactGroupController extends Controller
     public function grid(RequestQuery $query)
     {
         $contactGroups = $query->get();
-
+        $cooperation = Cooperation::first();
+        $useLaposta = $cooperation ? $cooperation->use_laposta : false;
         return GridContactGroup::collection($contactGroups)
             ->additional([
                 'meta' => [
                     'total' => $query->total(),
+                    'useLaposta' => $useLaposta,
                 ]
             ]);
     }
@@ -129,8 +132,15 @@ class ContactGroupController extends Controller
         $contactGroup->fill($data);
         $contactGroup->save();
 
-        $lapostaListHelper = new LapostaListHelper($contactGroup);
-        $lapostaListHelper->updateList();
+        if($contactGroup->is_used_in_laposta){
+            if($contactGroup->simulatedGroup){
+                $lapostaListHelper = new LapostaListHelper($contactGroup->simulatedGroup);
+                $lapostaListHelper->updateList();
+            } else {
+                $lapostaListHelper = new LapostaListHelper($contactGroup);
+                $lapostaListHelper->updateList();
+            }
+        }
 
         return FullContactGroup::make($contactGroup->load('responsibleUser', 'emailTemplateNewContactLink'));
     }
@@ -185,7 +195,6 @@ class ContactGroupController extends Controller
         if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
 
             $contactGroup->contacts()->attach($contact);
-
             if($contactGroup->laposta_list_id){
                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
                 $lapostaMemberHelper->createMember();
@@ -203,8 +212,11 @@ class ContactGroupController extends Controller
         $this->authorize('removeFromGroup', $contact);
 
         if($contactGroup->laposta_list_id){
-            $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
-            $lapostaMemberHelper->deleteMember();
+            if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()
+            && $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot->laposta_member_id !== null){
+                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                $lapostaMemberHelper->deleteMember();
+            }
         }
 
         $contactGroup->contacts()->detach($contact);
@@ -226,7 +238,6 @@ class ContactGroupController extends Controller
 
     public function addContacts(ContactGroup $contactGroup, Request $request)
     {
-
         $contactIds = $request->input();
 
         $contactGroup->contacts()->syncWithoutDetaching($contactIds);

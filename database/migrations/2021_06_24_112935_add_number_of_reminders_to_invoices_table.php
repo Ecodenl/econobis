@@ -14,7 +14,7 @@ class AddNumberOfRemindersToInvoicesTable extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-            $table->smallInteger('number_of_invoice_reminders')->nullable()->default(null)->after('date_collection');
+            $table->smallInteger('number_of_invoice_reminders')->default(3)->after('date_collection');
         });
     }
 

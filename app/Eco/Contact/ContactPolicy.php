@@ -106,6 +106,17 @@ class ContactPolicy
     }
 
     /**
+     * Determine whether the user can update a contact from a Group
+     *
+     * @param  \App\Eco\User\User  $user
+     * @return mixed
+     */
+    public function updateFromGroup(User $user, Contact $contact)
+    {
+        return $user->can('update', $contact);
+    }
+
+    /**
      * Determine if user can import contacts
      *
      * @param  \App\Eco\User\User  $user

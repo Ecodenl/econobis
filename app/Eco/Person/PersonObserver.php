@@ -10,6 +10,7 @@ namespace App\Eco\Person;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use Illuminate\Support\Str;
 
 class PersonObserver
@@ -34,10 +35,32 @@ class PersonObserver
             }
         }
 
+        if($person->isDirty(['title_id'])){
+            foreach($person->contact->groups as $contactGroup){
+                if($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot= $contactGroup->pivot;
+                    if($contactGroupsPivot->laposta_member_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $person->contact);
+                        $lapostaMemberHelper->updateMember();
+                    }
+                }
+            }
+        }
+
         if($person->isDirty(['initials', 'first_name', 'last_name', 'last_name_prefix'])){
             $contact = $person->contact;
             $contact->full_name = $this->contactFullNameFormat($person);
             $contact->save();
+
+            foreach($contact->groups as $contactGroup){
+                if($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot= $contactGroup->pivot;
+                    if($contactGroupsPivot->laposta_member_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                        $lapostaMemberHelper->updateMember();
+                    }
+                }
+            }
         }
 
         if($person->isDirty('primary') && $person->primary == true){

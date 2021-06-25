@@ -212,6 +212,9 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             showContactForm,
             type,
             sendEmailNewContactLink,
+            isUsedInLaposta,
+            lapostaListId,
+            lapostaListCreatedAt,
             emailTemplateIdNewContactLink,
         } = this.state.contactGroup;
 
@@ -437,6 +440,23 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         readOnly={true}
                     />
                 </div>
+
+                {isUsedInLaposta && (
+                    <div className="row">
+                        <InputText
+                            label="Laposta lijst id"
+                            name={'lapostaListId'}
+                            value={lapostaListId}
+                            readOnly={true}
+                        />
+                        <InputText
+                            label={'Gemaakt in Laposta op'}
+                            name={'lapostaListCreatedAt'}
+                            value={lapostaListCreatedAt && moment(lapostaListCreatedAt).format('DD-MM-Y')}
+                            readOnly={true}
+                        />
+                    </div>
+                )}
 
                 {this.state.errorMessage && (
                     <div className={'row'}>

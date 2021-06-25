@@ -16,8 +16,6 @@ class ContactsInGroupListToolbar extends Component {
         this.state = {
             showModalAddToGroup: false,
             showModalEmail: false,
-            groupName: '',
-            sendEmailNewContactLink: '',
         };
     }
 
@@ -26,12 +24,6 @@ class ContactsInGroupListToolbar extends Component {
             showModalAddToGroup: false,
         });
     };
-
-    componentDidMount() {
-        ContactGroupAPI.fetchContactGroup(this.props.groupId).then(payload => {
-            this.setState({ groupName: payload.name, sendEmailNewContactLink: payload.sendEmailNewContactLink });
-        });
-    }
 
     addPersonToGroup = contactId => {
         const contact = {
@@ -68,7 +60,7 @@ class ContactsInGroupListToolbar extends Component {
                 fileDownload(
                     payload.data,
                     'Groep-' +
-                        this.state.groupName.substring(0, 20) +
+                        this.props.contactGroupDetails.name.substring(0, 20) +
                         '-' +
                         moment().format('YYYY-MM-DD HH:mm:ss') +
                         '.csv'
@@ -85,7 +77,7 @@ class ContactsInGroupListToolbar extends Component {
     }
 
     render() {
-        const { permissions } = this.props;
+        const { permissions, contactGroupDetails } = this.props;
         return (
             <div className="row">
                 <div className="col-md-4">
@@ -94,10 +86,10 @@ class ContactsInGroupListToolbar extends Component {
                             iconName={'glyphicon-refresh'}
                             onClickAction={this.props.refreshContactsInGroupData}
                         />
-                        {this.props.permissions.updatePerson &&
-                            this.props.permissions.updateOrganisation &&
-                            this.props.contactGroupType &&
-                            this.props.contactGroupType.id === 'static' && (
+                        {permissions.updatePerson &&
+                            permissions.updateOrganisation &&
+                            contactGroupDetails.type &&
+                            contactGroupDetails.type.id === 'static' && (
                                 <div className="nav navbar-nav btn-group">
                                     <button onClick={this.toggleModalAddToGroup} className="btn btn-success btn-sm">
                                         <span className="glyphicon glyphicon-plus" />
@@ -110,7 +102,7 @@ class ContactsInGroupListToolbar extends Component {
                 </div>
                 <div className="col-md-4">
                     <h3 className="text-center table-title" onClick={() => this.openGroupDetails()} role="button">
-                        Contacten in groep: {this.state.groupName}
+                        Contacten in groep: {contactGroupDetails.name}
                     </h3>
                 </div>
                 <div className="col-md-4" />
@@ -119,8 +111,8 @@ class ContactsInGroupListToolbar extends Component {
                     <ContactListAddPersonToGroup
                         closeModalAddToGroup={this.closeModalAddToGroup}
                         addPersonToGroup={this.addPersonToGroup}
-                        groupName={this.state.groupName}
-                        sendEmailNewContactLink={this.state.sendEmailNewContactLink}
+                        groupName={contactGroupDetails.name}
+                        sendEmailNewContactLink={contactGroupDetails.sendEmailNewContactLink}
                     />
                 )}
             </div>
@@ -130,7 +122,7 @@ class ContactsInGroupListToolbar extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        contactGroupType: state.contactGroupDetails.type,
+        contactGroupDetails: state.contactGroupDetails,
     };
 };
 

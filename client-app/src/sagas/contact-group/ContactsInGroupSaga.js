@@ -21,3 +21,14 @@ export function* deleteContactInGroupSaga({ contactGroup, id }) {
         yield put({ type: 'DELETE_CONTACT_IN_GROUP_ERROR', error });
     }
 }
+
+export function* updateContactInGroupSaga({ contactGroup, id, lapostaMemberSince }) {
+    try {
+        yield call(ContactsInGroupAPI.updateContactInGroup, contactGroup, id, lapostaMemberSince);
+        yield put({ type: 'UPDATE_CONTACT_IN_GROUP_SUCCESS', id });
+        yield put({ type: 'CLEAR_CONTACTS_IN_GROUP' });
+        yield put({ type: 'FETCH_CONTACTS_IN_GROUP', contactGroup });
+    } catch (error) {
+        yield put({ type: 'UPDATE_CONTACT_IN_GROUP_ERROR', error });
+    }
+}

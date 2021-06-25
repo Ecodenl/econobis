@@ -21,6 +21,9 @@ const ContactGroupDetailsFormGeneralView = props => {
         editPortal,
         showContactForm,
         sendEmailNewContactLink,
+        isUsedInLaposta,
+        lapostaListId,
+        lapostaListCreatedAt,
         emailTemplateNewContactLink = {},
     } = props.contactGroupDetails;
 
@@ -97,6 +100,16 @@ const ContactGroupDetailsFormGeneralView = props => {
                 <ViewText label={'Gemaakt op'} value={createdAt && moment(createdAt).format('DD-MM-Y')} />
                 <ViewText label="Gemaakt door" value={createdBy && createdBy.fullName} />
             </div>
+
+            {isUsedInLaposta && (
+                <div className="row">
+                    <ViewText label="Laposta lijst id" value={lapostaListId} />
+                    <ViewText
+                        label={'Gemaakt in Laposta op'}
+                        value={lapostaListCreatedAt && moment(lapostaListCreatedAt).format('DD-MM-Y')}
+                    />
+                </div>
+            )}
         </div>
     );
 };

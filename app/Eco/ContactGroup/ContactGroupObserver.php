@@ -9,6 +9,7 @@
 namespace App\Eco\ContactGroup;
 
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ContactGroupObserver
@@ -21,4 +22,16 @@ class ContactGroupObserver
             $contactGroup->created_by_id = $userId;
         }
     }
+
+    public function saved(ContactGroup $contactGroup)
+    {
+        if($contactGroup->simulatedGroup && ($contactGroup->isDirty('name') || $contactGroup->isDirty('description')) ) {
+            $contactGroup->simulatedGroup->name = $contactGroup->name;
+            $contactGroup->simulatedGroup->description = $contactGroup->description;
+            $contactGroup->simulatedGroup->save();
+        }
+
+    }
+
+
 }

@@ -55,6 +55,15 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         />
                     </div>
                 </PanelBody>
+                <PanelHeader>
+                    <span className="h5 text-bold">Laposta gegevens</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Gebruik Laposta'} value={formData.useLaposta ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Laposta key'} value={formData.lapostaKey} />
+                    </div>
+                </PanelBody>
             </Panel>
         </section>
     );

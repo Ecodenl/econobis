@@ -26,6 +26,8 @@ const INITIAL_STATE = {
         hoomKey: '',
         hoomEmailTemplateId: '',
         hoomGroupId: '',
+        useLaposta: false,
+        lapostaKey: '',
     },
     isLoading: true,
     showEdit: false,
@@ -98,31 +100,33 @@ function CooperationDetailsApp({ permissions }) {
     return (
         <div className="row">
             <div className="col-md-9">
-                <div className="col-md-12 margin-10-top">
-                    <Panel>
-                        <PanelBody className={'panel-small'}>
-                            <CooperationDetailsToolbar />
-                        </PanelBody>
-                    </Panel>
-                </div>
+                {state.isLoading ? (
+                    'Laden...'
+                ) : (
+                    <>
+                        <div className="col-md-12 margin-10-top">
+                            <Panel>
+                                <PanelBody className={'panel-small'}>
+                                    <CooperationDetailsToolbar formData={state.result} />
+                                </PanelBody>
+                            </Panel>
+                        </div>
 
-                <div className="col-md-12 margin-10-top">
-                    {state.isLoading ? (
-                        'Laden...'
-                    ) : (
-                        <>
-                            {state.showEdit && permissions.manageCooperationSettings ? (
-                                <CooperationDetailsFormEdit
-                                    formData={state.result}
-                                    toggleEdit={toggleEdit}
-                                    updateResult={updateResult}
-                                />
-                            ) : (
-                                <CooperationDetailsFormView formData={state.result} toggleEdit={toggleEdit} />
-                            )}
-                        </>
-                    )}
-                </div>
+                        <div className="col-md-12 margin-10-top">
+                            <>
+                                {state.showEdit && permissions.manageCooperationSettings ? (
+                                    <CooperationDetailsFormEdit
+                                        formData={state.result}
+                                        toggleEdit={toggleEdit}
+                                        updateResult={updateResult}
+                                    />
+                                ) : (
+                                    <CooperationDetailsFormView formData={state.result} toggleEdit={toggleEdit} />
+                                )}
+                            </>
+                        </div>
+                    </>
+                )}
             </div>
             <div className="col-md-3" />
         </div>

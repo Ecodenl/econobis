@@ -41,6 +41,7 @@ const ContactGroupsListFilter = props => {
                     onChange={onNameChange}
                 />
             </th>
+            {props.useLaposta ? <th /> : null}
             <th />
 
             <th>
@@ -87,7 +88,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactGroupsListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupsListFilter);

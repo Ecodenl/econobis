@@ -1532,6 +1532,9 @@ class TemplateVariableHelper
             case 'maatregel_categorie':
                 return optional(optional($model->opportunity)->measureCategory)->name;
                 break;
+            case 'maatregel_specifiek':
+                return implode(', ', optional(optional($model->opportunity)->measures)->pluck('name' )->toArray() ) ;
+                break;
             case 'offertetekst':
             case 'tekst':
             case 'toelichting':

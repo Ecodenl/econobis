@@ -64,12 +64,13 @@ class ProductsList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Productcode'} width={'15%'} />
+                            <DataTableHeadTitle title={'Productcode'} width={'20%'} />
                             <DataTableHeadTitle title={'Product'} width={'20%'} />
-                            <DataTableHeadTitle title={'Prijs ex. BTW'} width={'15%'} />
-                            <DataTableHeadTitle title={'BTW percentage'} width={'15%'} />
-                            <DataTableHeadTitle title={'Prijs incl. BTW'} width={'15%'} />
+                            <DataTableHeadTitle title={'Prijs ex. BTW'} width={'10%'} />
+                            <DataTableHeadTitle title={'BTW percentage'} width={'10%'} />
+                            <DataTableHeadTitle title={'Prijs incl. BTW'} width={'10%'} />
                             <DataTableHeadTitle title={'Administratie'} width={'15%'} />
+                            <DataTableHeadTitle title={'Gearchiveerd'} width={'5%'} />
                             <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
                     </DataTableHead>

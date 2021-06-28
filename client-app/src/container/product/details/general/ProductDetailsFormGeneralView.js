@@ -16,6 +16,7 @@ const ProductDetailsFormGeneralView = props => {
         administration,
         ledger,
         costCenter,
+        active,
     } = props.productDetails;
 
     return (
@@ -54,6 +55,10 @@ const ProductDetailsFormGeneralView = props => {
                             <ViewText label={'Kostenplaats'} value={costCenter ? costCenter.description : ''} />
                         </div>
                     ) : null}
+
+                    <div className="row">
+                        <ViewText label={'Gearchiveerd'} value={active ? 'Nee' : 'Ja'} />
+                    </div>
                 </PanelBody>
             </Panel>
         </div>

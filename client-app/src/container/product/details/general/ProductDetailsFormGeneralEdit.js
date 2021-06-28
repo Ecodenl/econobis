@@ -8,6 +8,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputSelect from '../../../../components/form/InputSelect';
 import ProductDetailsFormGeneralEditConfirm from './ProductDetailsFormGeneralEditConfirm';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class ProductDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class ProductDetailsFormGeneralEdit extends Component {
             administrationId,
             ledgerId,
             costCenterId,
+            active,
         } = props.productDetails;
 
         this.state = {
@@ -44,6 +46,7 @@ class ProductDetailsFormGeneralEdit extends Component {
                 administrationId: administrationId ? administrationId : '',
                 ledgerId: ledgerId ? ledgerId : '',
                 costCenterId: costCenterId ? costCenterId : '',
+                active: active,
             },
             errors: {
                 code: false,
@@ -296,6 +299,7 @@ class ProductDetailsFormGeneralEdit extends Component {
             administrationId,
             ledgerId,
             costCenterId,
+            active,
         } = this.state.product;
 
         let ledgerOptions = this.props.ledgers;
@@ -421,6 +425,18 @@ class ProductDetailsFormGeneralEdit extends Component {
                                 />
                             </div>
                         ) : null}
+
+                        <div className={'row'}>
+                            <InputToggle
+                                label={'Archief'}
+                                name={'active'}
+                                value={!!!active}
+                                onChangeAction={event => {
+                                    event.persist();
+                                    this.handleInputChange(event);
+                                }}
+                            />
+                        </div>
 
                         {this.state.errorMessage && (
                             <div className="col-sm-10 col-md-offset-1 alert alert-danger">

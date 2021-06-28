@@ -222,7 +222,10 @@ class InvoiceProductsFormNewProduct extends Component {
         let productCodeNotUnique = false;
         this.props.products
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map(existingProduct => existingProduct.code === product.code && (productCodeNotUnique = true));
+            .map(
+                existingProduct =>
+                    existingProduct.code === product.code && (productCodeNotUnique = true) && existingProduct.active
+            );
 
         if (productCodeNotUnique) {
             errorMessage = 'Productcode moet uniek zijn.';
@@ -238,8 +241,10 @@ class InvoiceProductsFormNewProduct extends Component {
         let productNameNotUnique = false;
         this.props.products
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map(existingProduct => existingProduct.name === product.name && (productNameNotUnique = true)
-        );
+            .map(
+                existingProduct =>
+                    existingProduct.name === product.name && (productNameNotUnique = true) && existingProduct.active
+            );
 
         if (productNameNotUnique) {
             errorMessage = 'Productnaam moet uniek zijn.';

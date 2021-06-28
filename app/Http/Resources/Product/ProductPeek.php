@@ -18,6 +18,7 @@ class ProductPeek extends Resource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'active' => $this->active,
         ];
     }
 }

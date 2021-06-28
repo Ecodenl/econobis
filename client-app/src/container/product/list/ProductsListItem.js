@@ -31,7 +31,7 @@ class ProductsListItem extends Component {
     }
 
     render() {
-        const { id, code, name, currentPrice, administration } = this.props;
+        const { id, code, name, currentPrice, administration, active } = this.props;
         let vatPercentage = '';
 
         if (currentPrice) {
@@ -78,6 +78,7 @@ class ProductsListItem extends Component {
                     </td>
                 )}
                 <td>{administration ? administration.name : ''}</td>
+                <td>{active ? 'Nee' : 'Ja'}</td>
                 <td>
                     {this.state.showActionButtons && this.props.permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

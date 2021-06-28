@@ -1775,14 +1775,14 @@ class ExternalWebformController extends Controller
                 'contact_id' => $contact->id,
                 'administration_id' => $product->administration_id,
                 'status_id' => $statusId,
-                'subject' => ( $data['order_betreft'] && !empty($data['order_betreft']) )? $data['order_betreft'] : $product->name,
+                'subject' => ( isset($data['subject']) && !empty($data['subject']) ) ? $data['subject'] : $product->name,
                 'payment_type_id' => $paymentTypeId,
                 'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
                 'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
-                'invoice_text' => $data['order_opmerking'],
+                'invoice_text' => ( isset($data['invoice_text']) && !empty($data['invoice_text']) ) ? $data['invoice_text'] : null,
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');

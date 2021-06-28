@@ -59,6 +59,7 @@ class FullAdministration extends Resource
                 'sepaCreditorId' => $this->sepa_creditor_id,
                 'rsinNumber' => $this->rsin_number,
                 'defaultPaymentTerm' => $this->default_payment_term,
+                'numberOfInvoiceReminders' => $this->number_of_invoice_reminders,
                 'logoFilename' => $this->logo_filename,
                 'logoName' => $this->logo_name,
 

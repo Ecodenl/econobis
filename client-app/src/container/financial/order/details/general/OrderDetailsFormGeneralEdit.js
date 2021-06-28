@@ -33,6 +33,7 @@ class OrderDetailsFormGeneralEdit extends Component {
             collectionFrequencyId,
             IBAN,
             ibanAttn,
+            numberOfInvoiceReminders,
             poNumber,
             invoiceText,
             dateRequested,
@@ -60,6 +61,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                 collectionFrequencyId: collectionFrequencyId ? collectionFrequencyId : 'once',
                 IBAN: IBAN ? IBAN : '',
                 ibanAttn: ibanAttn ? ibanAttn : '',
+                numberOfInvoiceReminders: numberOfInvoiceReminders ? numberOfInvoiceReminders : '',
                 poNumber: poNumber ? poNumber : '',
                 invoiceText: invoiceText ? invoiceText : '',
                 dateRequested: dateRequested ? dateRequested : '',
@@ -228,6 +230,7 @@ class OrderDetailsFormGeneralEdit extends Component {
             collectionFrequencyId,
             IBAN,
             ibanAttn,
+            numberOfInvoiceReminders,
             poNumber,
             invoiceText,
             dateRequested,
@@ -387,6 +390,22 @@ class OrderDetailsFormGeneralEdit extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
+                            <InputSelect
+                                label={'Aantal keer herinneringen nota'}
+                                id={'numberOfInvoiceReminders'}
+                                size={'col-sm-6'}
+                                name={'numberOfInvoiceReminders'}
+                                options={[
+                                    { id: '1', name: '1x' },
+                                    { id: '2', name: '2x' },
+                                    { id: '3', name: '3x' },
+                                ]}
+                                value={numberOfInvoiceReminders}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-6" />
                             <InputText
                                 label="Opdracht nummer klant"
                                 name={'poNumber'}

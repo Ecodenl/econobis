@@ -67,6 +67,7 @@ class FullOrder extends Resource
 
                 'totalInclVatInclReduction' => $this->getTotalInclVatInclReductionAttribute(),
                 'totalInclVatInclReductionPerYear' => $this->getTotalInclVatInclReductionPerYearAttribute(),
+                'numberOfInvoiceReminders' => $this->number_of_invoice_reminders,
                 'poNumber' => $this->po_number,
                 'IBAN' => $this->IBAN,
                 'ibanAttn' => $this->iban_attn,

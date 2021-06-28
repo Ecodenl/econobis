@@ -30,6 +30,7 @@ const AdministrationDetailsFormGeneralView = props => {
         sepaCreditorId,
         rsinNumber,
         defaultPaymentTerm,
+        numberOfInvoiceReminders,
         logoName,
         mailboxEmail,
         usesTwinfield,
@@ -123,13 +124,25 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'E-mail template aanmaning'}
                             value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
                         />
-                        <ViewText label={'Logo'} value={logoName} />
+                        <ViewText
+                            label={'Aantal keer herinneringen nota'}
+                            value={
+                                numberOfInvoiceReminders === 1
+                                    ? '1x'
+                                    : numberOfInvoiceReminders === 2
+                                    ? '2x'
+                                    : numberOfInvoiceReminders === 3
+                                    ? '3x'
+                                    : ''
+                            }
+                        />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'E-mail template waardestaat'}
                             value={emailTemplateFinancialOverview ? emailTemplateFinancialOverview.name : ''}
                         />
+                        <ViewText label={'Logo'} value={logoName} />
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />

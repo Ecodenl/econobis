@@ -72,6 +72,7 @@ class FullInvoice extends Resource
 
                 'daysToExpire' => $this->days_to_expire,
                 'daysLastReminder' => $this->days_last_reminder,
+                'numberOfInvoiceReminders' => $this->number_of_invoice_reminders,
                 'totalInclVatInclReduction' => $this->getTotalInclVatInclReductionAttribute(),
 
                 'taskCount' => $this->tasks()->count(),

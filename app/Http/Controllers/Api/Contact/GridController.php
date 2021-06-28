@@ -97,6 +97,9 @@ class GridController extends Controller
             case 'opportunity':
                 return 'App\Eco\Measure\MeasureCategory';
                 break;
+            case 'campaign':
+                return 'App\Eco\Campaign\Campaign';
+                break;
             case 'country':
                 return 'App\Eco\Country\Country';
                 break;

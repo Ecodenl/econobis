@@ -201,6 +201,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownRelations',
                 dropDownOptions: this.props.primaryOccupations,
             },
+            campaign: {
+                name: 'Campagne',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.campaigns,
+            },
             opportunity: {
                 name: 'Kans',
                 type: 'dropdownHas',
@@ -334,6 +339,7 @@ const mapStateToProps = state => {
         staticContactGroups: state.systemData.staticContactGroups,
         primaryOccupations: state.systemData.primaryOccupations,
         measureCategories: state.systemData.measureCategories,
+        campaigns: state.systemData.campaigns,
         products: state.systemData.products,
         energySuppliers: state.systemData.energySuppliers,
         countries: state.systemData.countries,

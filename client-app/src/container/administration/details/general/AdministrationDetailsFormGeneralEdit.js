@@ -55,6 +55,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             sepaCreditorId,
             rsinNumber,
             defaultPaymentTerm,
+            numberOfInvoiceReminders,
             logoName,
             ibanAttn,
             mailboxId,
@@ -104,6 +105,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 sepaCreditorId: sepaCreditorId ? sepaCreditorId : '',
                 rsinNumber: rsinNumber ? rsinNumber : '',
                 defaultPaymentTerm: defaultPaymentTerm ? defaultPaymentTerm : '',
+                numberOfInvoiceReminders: numberOfInvoiceReminders ? numberOfInvoiceReminders : '',
                 logoName: logoName ? logoName : '',
                 emailTemplateIdCollection: emailTemplateIdCollection ? emailTemplateIdCollection : '',
                 emailTemplateIdTransfer: emailTemplateIdTransfer ? emailTemplateIdTransfer : '',
@@ -442,6 +444,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('sepaCreditorId', administration.sepaCreditorId);
             data.append('rsinNumber', administration.rsinNumber);
             data.append('defaultPaymentTerm', administration.defaultPaymentTerm);
+            data.append('numberOfInvoiceReminders', administration.numberOfInvoiceReminders);
             data.append('emailTemplateIdCollection', administration.emailTemplateIdCollection);
             data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
@@ -497,6 +500,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             sepaCreditorId,
             rsinNumber,
             defaultPaymentTerm,
+            numberOfInvoiceReminders,
             attachment,
             logoName,
             ibanAttn,
@@ -722,18 +726,20 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
-                            <div className="form-group col-sm-6">
-                                <label className="col-sm-6">Kies logo</label>
-                                <div className="col-sm-6">
-                                    <input
-                                        type="text"
-                                        className="form-control input-sm col-sm-6"
-                                        value={attachment ? attachment.name : logoName}
-                                        onClick={this.toggleNewLogo}
-                                        onChange={() => {}}
-                                    />
-                                </div>
-                            </div>
+                            <InputSelect
+                                label={'Aantal keer herinneringen nota'}
+                                id={'numberOfInvoiceReminders'}
+                                size={'col-sm-6'}
+                                name={'numberOfInvoiceReminders'}
+                                options={[
+                                    { id: '1', name: '1x' },
+                                    { id: '2', name: '2x' },
+                                    { id: '3', name: '3x' },
+                                ]}
+                                value={numberOfInvoiceReminders}
+                                onChangeAction={this.handleInputChange}
+                                emptyOption={false}
+                            />
                         </div>
 
                         <div className="row">
@@ -746,6 +752,18 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
+                            <div className="form-group col-sm-6">
+                                <label className="col-sm-6">Kies logo</label>
+                                <div className="col-sm-6">
+                                    <input
+                                        type="text"
+                                        className="form-control input-sm col-sm-6"
+                                        value={attachment ? attachment.name : logoName}
+                                        onClick={this.toggleNewLogo}
+                                        onChange={() => {}}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="row">
                             <InputSelect

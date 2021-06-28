@@ -49,6 +49,7 @@ class AdministrationNewForm extends Component {
                 sepaCreditorId: '',
                 rsinNumber: '',
                 defaultPaymentTerm: '',
+                numberOfInvoiceReminders: 3,
                 emailTemplateIdCollection: '',
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
@@ -353,6 +354,7 @@ class AdministrationNewForm extends Component {
             data.append('sepaCreditorId', administration.sepaCreditorId);
             data.append('rsinNumber', administration.rsinNumber);
             data.append('defaultPaymentTerm', administration.defaultPaymentTerm);
+            data.append('numberOfInvoiceReminders', administration.numberOfInvoiceReminders);
             data.append('emailTemplateIdCollection', administration.emailTemplateIdCollection);
             data.append('emailTemplateIdTransfer', administration.emailTemplateIdTransfer);
             data.append('emailTemplateReminderId', administration.emailTemplateReminderId);
@@ -404,6 +406,7 @@ class AdministrationNewForm extends Component {
             sepaCreditorId,
             rsinNumber,
             defaultPaymentTerm,
+            numberOfInvoiceReminders,
             attachment,
             emailTemplateIdCollection,
             emailTemplateIdTransfer,
@@ -616,6 +619,32 @@ class AdministrationNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
+                            <InputSelect
+                                label={'Aantal keer herinneringen nota'}
+                                id={'numberOfInvoiceReminders'}
+                                size={'col-sm-6'}
+                                name={'numberOfInvoiceReminders'}
+                                options={[
+                                    { id: '1', name: '1x' },
+                                    { id: '2', name: '2x' },
+                                    { id: '3', name: '3x' },
+                                ]}
+                                value={numberOfInvoiceReminders}
+                                onChangeAction={this.handleInputChange}
+                                emptyOption={false}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputReactSelect
+                                label={'E-mail template waardestaat'}
+                                name={'emailTemplateFinancialOverviewId'}
+                                options={this.state.emailTemplates}
+                                value={emailTemplateFinancialOverviewId}
+                                onChangeAction={this.handleReactSelectChange}
+                                isLoading={this.state.peekLoading.emailTemplates}
+                                multi={false}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">
@@ -630,18 +659,6 @@ class AdministrationNewForm extends Component {
                         </div>
 
                         <div className="row">
-                            <InputReactSelect
-                                label={'E-mail template waardestaat'}
-                                name={'emailTemplateFinancialOverviewId'}
-                                options={this.state.emailTemplates}
-                                value={emailTemplateFinancialOverviewId}
-                                onChangeAction={this.handleReactSelectChange}
-                                isLoading={this.state.peekLoading.emailTemplates}
-                                multi={false}
-                            />
-                        </div>
-
-                        <div className="row">
                             <InputSelect
                                 label={"Afzender van Rapportages en nota's is e-mail adres"}
                                 id="mailboxId"
@@ -652,12 +669,6 @@ class AdministrationNewForm extends Component {
                                 value={mailboxId}
                                 onChangeAction={this.handleInputChange}
                             />
-                            {/*<InputToggle*/}
-                            {/*label={'Gebruikt BTW'}*/}
-                            {/*name={'usesVat'}*/}
-                            {/*value={usesVat}*/}
-                            {/*onChangeAction={this.handleInputChange}*/}
-                            {/*/>*/}
                             <ViewText
                                 label={'Gebruikt BTW'}
                                 value={usesVat ? 'Ja' : 'Nee'}
@@ -697,21 +708,21 @@ class AdministrationNewForm extends Component {
 
                         {this.props.meDetails.email === 'support@econobis.nl' && (
                             <div className="row">
-                            <InputToggle
-                                label={'Gebruikt Mollie'}
-                                name={'usesMollie'}
-                                value={usesMollie}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            {usesMollie && (
-                                <InputText
-                                    label="Mollie API key"
-                                    name={'mollieApiKey'}
-                                    value={mollieApiKey}
+                                <InputToggle
+                                    label={'Gebruikt Mollie'}
+                                    name={'usesMollie'}
+                                    value={usesMollie}
                                     onChangeAction={this.handleInputChange}
                                 />
-                            )}
-                        </div>
+                                {usesMollie && (
+                                    <InputText
+                                        label="Mollie API key"
+                                        name={'mollieApiKey'}
+                                        value={mollieApiKey}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                )}
+                            </div>
                         )}
 
                         <div className="row">

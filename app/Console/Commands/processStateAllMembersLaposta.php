@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\User\User;
 use App\Helpers\Laposta\LapostaHelper;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class processStateAllMembersLaposta extends Command
@@ -31,6 +33,10 @@ class processStateAllMembersLaposta extends Command
     public function __construct()
     {
         parent::__construct();
+        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+        if($adminUser){
+            Auth::setUser($adminUser);
+        }
     }
 
     /**
@@ -46,6 +52,6 @@ class processStateAllMembersLaposta extends Command
             $lapostaHelper->processStateAllMembersLaposta();
         }
 
-        Log::info("State laposta relatie in Econobis contacten bijgewerkt.");
+        Log::info("State laposta relaties in Econobis contacten bijgewerkt.");
     }
 }

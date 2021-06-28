@@ -315,7 +315,7 @@ class ContactGroupController extends Controller
 
     }
 
-    public function createLapostaList(ContactGroup $contactGroup) {
+    public function syncLapostaList(ContactGroup $contactGroup) {
 
         // Laposta list bijwerken
         if($contactGroup->is_used_in_laposta){

@@ -12,14 +12,14 @@ import { hashHistory } from 'react-router';
 
 function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, cooperation, isLoading }) {
     const [showDelete, setShowDelete] = useState(false);
-    const [showCreateLapostaList, setShowCreateLapostaList] = useState(false);
+    const [showSyncLapostaList, setShowSyncLapostaList] = useState(false);
 
     function toggleDelete() {
         setShowDelete(!showDelete);
     }
 
-    function toggleShowCreateLapostaList() {
-        setShowCreateLapostaList(!showCreateLapostaList);
+    function toggleShowSyncLapostaList() {
+        setShowSyncLapostaList(!showSyncLapostaList);
     }
 
     const { id, name, type, numberOfContacts = 0, composedOf } = contactGroup;
@@ -49,7 +49,7 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
                                 />
                                 {cooperation && cooperation.use_laposta && (
                                     <ButtonText
-                                        onClickAction={toggleShowCreateLapostaList}
+                                        onClickAction={toggleShowSyncLapostaList}
                                         buttonText={
                                             !contactGroup.isUsedInLaposta
                                                 ? 'Laposta lijst aanmaken'
@@ -86,7 +86,7 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
                     contactGroupType={type.id}
                 />
             )}
-            {showCreateLapostaList && <ContactGroupDetailsLapostaList closeModal={toggleShowCreateLapostaList} />}
+            {showSyncLapostaList && <ContactGroupDetailsLapostaList closeModal={toggleShowSyncLapostaList} />}
         </div>
     );
 }

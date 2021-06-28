@@ -53,6 +53,12 @@ class ContactsInGroupListItem extends Component {
             case 'unsubscribed':
                 lapostaMemberStatus = 'Uitgeschreven';
                 break;
+            case 'unknown':
+                lapostaMemberStatus = 'Niet bekend in Laposta';
+                break;
+            case 'inprogress':
+                lapostaMemberStatus = 'Wordt bijgewerkt';
+                break;
             default:
                 lapostaMemberStatus = '';
                 break;

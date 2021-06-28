@@ -223,8 +223,8 @@ export default {
             .catch(error => error.response);
     },
 
-    createLapostaList: id => {
-        const requestUrl = `contact-group/${id}/create-laposta-list`;
+    syncLapostaList: id => {
+        const requestUrl = `contact-group/${id}/sync-laposta-list`;
 
         return axiosInstance.get(requestUrl);
     },

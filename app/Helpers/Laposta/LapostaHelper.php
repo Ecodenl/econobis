@@ -6,6 +6,7 @@ namespace App\Helpers\Laposta;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
+use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Laposta;
@@ -26,6 +27,17 @@ class LapostaHelper
         // General checks before API call
         $this->validateGeneral();
 
+        $allContactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->get();
+        foreach($allContactGroups as $contactGroup){
+            $checkContactGroup = $contactGroup->simulatedGroup ? $contactGroup->simulatedGroup : $contactGroup;
+            $processState = $checkContactGroup->laposta_list_id ? 'inprogress' : 'unknown';
+            $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id');
+            foreach ($lapostaContacts as $lapostaContact){
+                $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => $processState]);
+            }
+        }
+
+        // Sync state all members from laposta
         foreach($this->getAllLists() as $list){
             $listId = $list['list']['list_id'];
             $contactGroup = ContactGroup::where('laposta_list_id', $listId)->first();
@@ -43,6 +55,25 @@ class LapostaHelper
                 }
             }
         }
+
+        $allContactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->get();
+        foreach($allContactGroups as $contactGroup){
+            $checkContactGroup = $contactGroup->simulatedGroup ? $contactGroup->simulatedGroup : $contactGroup;
+            $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id')->where('pivot.laposta_member_state', 'inprogress');
+            foreach ($lapostaContacts as $lapostaContact){
+                if($checkContactGroup->type_id == 'simulated'){
+                    $checkContactGroup->contacts()->detach($lapostaContact);
+                } else {
+                    $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown']);
+                }
+            }
+
+            if($contactGroup->is_used_in_laposta) {
+                $contactGroupController = new ContactGroupController();
+                $contactGroupController->syncLapostaList($contactGroup);
+            }
+        }
+
     }
 
     private function getAllLists() {

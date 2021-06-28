@@ -13,11 +13,22 @@ use App\Helpers\RequestQuery\RequestFilter;
 
 class Filter extends RequestFilter
 {
-    protected $fields = [];
+    protected $fields = [
+        'code',
+        'name',
+        'active'
+    ];
 
-    protected $mapping = [];
+    protected $mapping = [
+        'code' => 'products.code',
+        'name' => 'products.name',
+        'active' => 'products.active'
+    ];
 
     protected $joins = [];
 
-    protected $defaultTypes = [];
+    protected $defaultTypes = [
+        '*' => 'ct',
+        'active' => 'eq',
+    ];
 }

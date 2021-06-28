@@ -31,7 +31,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TeamsListToolbar);
+export default connect(mapStateToProps, null)(TeamsListToolbar);

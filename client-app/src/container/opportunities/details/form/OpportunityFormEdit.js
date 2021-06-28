@@ -261,7 +261,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OpportunityFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(OpportunityFormEdit);

@@ -89,7 +89,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(IntakeMeasuresRequestedItem);
+export default connect(mapStateToProps, null)(IntakeMeasuresRequestedItem);

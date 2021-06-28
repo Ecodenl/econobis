@@ -156,7 +156,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(LedgerNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(LedgerNewForm);

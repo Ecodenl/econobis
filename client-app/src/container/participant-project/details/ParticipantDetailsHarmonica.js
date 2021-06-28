@@ -31,9 +31,7 @@ class ParticipantDetailsHarmonica extends Component {
 
     newDocument = type => {
         hashHistory.push(
-            `/document/nieuw/${type}/project/${this.props.participant.projectId}/deelnemer/${
-                this.props.participant.id
-            }/contact/${this.props.participant.contact.id}`
+            `/document/nieuw/${type}/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
         );
     };
 
@@ -78,7 +76,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ParticipantDetailsHarmonica);
+export default connect(mapStateToProps, null)(ParticipantDetailsHarmonica);

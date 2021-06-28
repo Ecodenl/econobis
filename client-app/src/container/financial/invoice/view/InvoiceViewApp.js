@@ -79,7 +79,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoiceViewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceViewApp);

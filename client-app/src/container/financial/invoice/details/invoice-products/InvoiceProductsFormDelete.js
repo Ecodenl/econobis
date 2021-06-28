@@ -32,7 +32,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(InvoiceProductsFormDelete);
+export default connect(null, mapDispatchToProps)(InvoiceProductsFormDelete);

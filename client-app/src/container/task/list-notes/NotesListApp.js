@@ -98,7 +98,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ fetchNotes, clearNotes, clearFilterNotes, setNotesPagination }, dispatch);
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(NotesListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(NotesListApp);

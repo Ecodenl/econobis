@@ -124,7 +124,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderDetailsFormGeneral);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderDetailsFormGeneral);

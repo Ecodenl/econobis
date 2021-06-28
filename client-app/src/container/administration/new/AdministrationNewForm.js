@@ -697,21 +697,21 @@ class AdministrationNewForm extends Component {
 
                         {this.props.meDetails.email === 'support@econobis.nl' && (
                             <div className="row">
-                            <InputToggle
-                                label={'Gebruikt Mollie'}
-                                name={'usesMollie'}
-                                value={usesMollie}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            {usesMollie && (
-                                <InputText
-                                    label="Mollie API key"
-                                    name={'mollieApiKey'}
-                                    value={mollieApiKey}
+                                <InputToggle
+                                    label={'Gebruikt Mollie'}
+                                    name={'usesMollie'}
+                                    value={usesMollie}
                                     onChangeAction={this.handleInputChange}
                                 />
-                            )}
-                        </div>
+                                {usesMollie && (
+                                    <InputText
+                                        label="Mollie API key"
+                                        name={'mollieApiKey'}
+                                        value={mollieApiKey}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                )}
+                            </div>
                         )}
 
                         <div className="row">

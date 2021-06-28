@@ -90,7 +90,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactDetailsFormPortalUser);
+export default connect(mapStateToProps, null)(ContactDetailsFormPortalUser);

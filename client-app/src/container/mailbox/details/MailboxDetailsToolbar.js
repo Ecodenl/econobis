@@ -26,7 +26,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(UserDetailsToolbar);
+export default connect(mapStateToProps, null)(UserDetailsToolbar);

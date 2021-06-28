@@ -30,7 +30,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(OrderDeleteItem);
+export default connect(null, mapDispatchToProps)(OrderDeleteItem);

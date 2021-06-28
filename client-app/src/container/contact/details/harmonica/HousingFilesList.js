@@ -64,7 +64,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(HousingFileList);
+export default connect(mapStateToProps, null)(HousingFileList);

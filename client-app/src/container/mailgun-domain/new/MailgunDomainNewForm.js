@@ -139,7 +139,4 @@ class MailgunDomainNewForm extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(MailgunDomainNewForm);
+export default connect(null, mapDispatchToProps)(MailgunDomainNewForm);

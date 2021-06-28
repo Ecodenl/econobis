@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import validator from 'validator';
 import _ from 'lodash';
 
 import {
-    fetchContactGroupDetails, attachComposedExceptGroup,
+    fetchContactGroupDetails,
+    attachComposedExceptGroup,
 } from '../../../../../actions/contact-group/ContactGroupDetailsActions';
 import GroupAPI from '../../../../../api/contact-group/ContactGroupAPI';
 import Modal from '../../../../../components/modal/Modal';
@@ -25,7 +26,7 @@ class ContactGroupComposedExceptGroupAddGroup extends Component {
 
     componentDidMount() {
         GroupAPI.peekContactGroups().then(payload => {
-            this.setState({contactGroups: payload});
+            this.setState({ contactGroups: payload });
         });
     }
 
@@ -50,7 +51,7 @@ class ContactGroupComposedExceptGroupAddGroup extends Component {
             hasErrors = true;
         }
 
-        this.setState({...this.state, errors: errors});
+        this.setState({ ...this.state, errors: errors });
 
         if (!hasErrors) {
             this.props.attachComposedExceptGroup(this.props.contactGroupId, this.state.contactGroupToAttachId);
@@ -107,7 +108,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactGroupComposedExceptGroupAddGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupComposedExceptGroupAddGroup);

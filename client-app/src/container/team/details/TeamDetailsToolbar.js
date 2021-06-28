@@ -49,7 +49,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TeamToolbar);
+export default connect(mapStateToProps, null)(TeamToolbar);

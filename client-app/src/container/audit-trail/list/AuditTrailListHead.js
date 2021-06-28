@@ -52,7 +52,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(AuditTrailListHead);
+export default connect(null, mapDispatchToProps)(AuditTrailListHead);

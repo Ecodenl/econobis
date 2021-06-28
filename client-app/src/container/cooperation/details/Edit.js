@@ -13,8 +13,8 @@ import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 import { CooperationValidation } from './Validation';
 import CooperationUploadLogo from './UploadLogo';
-import {Switch} from "react-router";
-import InputToggle from "../../../components/form/InputToggle";
+import { Switch } from 'react-router';
+import InputToggle from '../../../components/form/InputToggle';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -239,7 +239,10 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                             label={'Stuur e-mail bij nieuw Hoomdossier'}
                             name={'sendEmail'}
                             value={!!values.sendEmail}
-                            onChangeAction={(event) => { event.persist(); setFieldValue(event.target.name, event.target.checked) }}
+                            onChangeAction={event => {
+                                event.persist();
+                                setFieldValue(event.target.name, event.target.checked);
+                            }}
                         />
                     </div>
                 </PanelBody>

@@ -127,7 +127,4 @@ class CostCenterDetailsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(CostCenterDetailsFormGeneralEdit);
+export default connect(null, mapDispatchToProps)(CostCenterDetailsFormGeneralEdit);

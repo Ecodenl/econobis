@@ -144,7 +144,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CostCenterNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CostCenterNewForm);

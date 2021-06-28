@@ -70,7 +70,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(IntakeDetailsFormGeneral);
+export default connect(mapStateToProps, null)(IntakeDetailsFormGeneral);

@@ -78,7 +78,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(LedgersListApp);
+export default connect(null, mapDispatchToProps)(LedgersListApp);

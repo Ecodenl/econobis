@@ -49,7 +49,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ContactDetailsEmailDelete);
+export default connect(null, mapDispatchToProps)(ContactDetailsEmailDelete);

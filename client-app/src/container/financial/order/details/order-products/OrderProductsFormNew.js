@@ -401,7 +401,7 @@ class OrderProductsFormNew extends Component {
                                 label={'Product'}
                                 id="productId"
                                 name={'productId'}
-                                options={this.props.products}
+                                options={this.props.products.sort((a, b) => a.name.localeCompare(b.name))}
                                 value={productId}
                                 onChangeAction={this.handleChangeProduct}
                                 required={'required'}

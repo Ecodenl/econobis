@@ -223,7 +223,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(UserNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(UserNewForm);

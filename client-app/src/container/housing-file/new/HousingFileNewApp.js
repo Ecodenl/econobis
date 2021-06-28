@@ -50,7 +50,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(HousingFileNewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileNewApp);

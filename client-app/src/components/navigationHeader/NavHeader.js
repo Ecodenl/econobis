@@ -72,7 +72,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(
-    mapStateToProps,
-    null
-)(NavHeader);
+export default connect(mapStateToProps, null)(NavHeader);

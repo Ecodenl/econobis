@@ -123,7 +123,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MailboxDetailsUsersNew);
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsUsersNew);

@@ -213,7 +213,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(WebformNewForm);
+export default connect(mapStateToProps, null)(WebformNewForm);

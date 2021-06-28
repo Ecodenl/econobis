@@ -29,7 +29,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(AdministrationDeleteItem);
+export default connect(null, mapDispatchToProps)(AdministrationDeleteItem);

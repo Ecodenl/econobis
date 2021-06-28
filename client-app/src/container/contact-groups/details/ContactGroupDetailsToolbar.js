@@ -68,7 +68,12 @@ class UserDetailsToolbar extends Component {
                     </Panel>
                 </div>
                 {this.state.showDelete && (
-                    <ContactGroupDetailsDelete closeDeleteItemModal={this.toggleDelete} name={name} id={id} contactGroupType={type.id}/>
+                    <ContactGroupDetailsDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        name={name}
+                        id={id}
+                        contactGroupType={type.id}
+                    />
                 )}
             </div>
         );
@@ -82,7 +87,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(UserDetailsToolbar);
+export default connect(mapStateToProps, null)(UserDetailsToolbar);

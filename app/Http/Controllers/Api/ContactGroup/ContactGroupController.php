@@ -341,7 +341,9 @@ class ContactGroupController extends Controller
 
                 $contactGroupToUpdate = $contactGroup->simulatedGroup->contacts->whereNull('pivot.laposta_member_id');
                 foreach ($contactGroupToUpdate as $contact){
-                    if($contactGroup->simulatedGroup->laposta_list_id){
+//todo wm: voor nu even aftesten op aanwezigheid primaire emailadres totdat we fout afhandeling op order hebben
+//                    if($contactGroup->simulatedGroup->laposta_list_id){
+                    if($contactGroup->simulatedGroup->laposta_list_id && !empty($contact->primaryEmailAddress->email) ){
                         $lapostaMemberHelper = new LapostaMemberHelper($contactGroup->simulatedGroup, $contact);
                         $lapostaMemberHelper->createMember();
                     }

@@ -12,6 +12,7 @@ import Alert from 'react-bootstrap/Alert';
 
 const Register = ({ location, match, login }) => {
     const [showError, toggleError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
     const registrationCode = decodeURIComponent(match.params.registrationCode);
     const email = decodeURIComponent(match.params.email);
@@ -31,6 +32,7 @@ const Register = ({ location, match, login }) => {
                 AuthAPI.login({ username: email, password: values.password })
                     .then(payload => {
                         toggleError(false);
+                        setErrorMessage('');
                         login(payload.data, () => {});
 
                         setTimeout(() => {
@@ -40,11 +42,15 @@ const Register = ({ location, match, login }) => {
                     .catch(error => {
                         // If login fails show error and then set submitting back to false
                         toggleError(true);
+                        setErrorMessage('Er is iets fout gegaan bij automatisch inloggen na activeren.');
                         actions.setSubmitting(false);
                     });
             })
             .catch(error => {
                 toggleError(true);
+                setErrorMessage(
+                    'Er is iets fout gegaan bij activeren. Controleer of de activatie link juist en volledig is.'
+                );
                 // If login fails show error and then set submitting back to false
                 actions.setSubmitting(false);
             });
@@ -81,8 +87,7 @@ const Register = ({ location, match, login }) => {
                                     {showError ? (
                                         <Row>
                                             <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                                Er is iets fout gegaan bij activeren. Controleer of je de activatie link
-                                                juist en volledig is.
+                                                {errorMessage}
                                             </Alert>
                                         </Row>
                                     ) : null}{' '}

@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { AuthConsumer } from '../../../context/AuthContext';
 import ButtonText from '../../../components/button/ButtonText';
+import Alert from 'react-bootstrap/Alert';
 
 const Register = ({ location, match, login }) => {
     const [showError, toggleError] = useState(false);
@@ -43,6 +44,7 @@ const Register = ({ location, match, login }) => {
                     });
             })
             .catch(error => {
+                toggleError(true);
                 // If login fails show error and then set submitting back to false
                 actions.setSubmitting(false);
             });
@@ -76,6 +78,14 @@ const Register = ({ location, match, login }) => {
                                 <>
                                     <h3 className={'authorization-text'}>Account activeren</h3>
                                     <RegisterForm handleSubmit={handleSubmit} email={email} />
+                                    {showError ? (
+                                        <Row>
+                                            <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                                Er is iets fout gegaan bij activeren. Controleer of je de activatie link
+                                                juist en volledig is.
+                                            </Alert>
+                                        </Row>
+                                    ) : null}{' '}
                                 </>
                             )}
                         </Col>

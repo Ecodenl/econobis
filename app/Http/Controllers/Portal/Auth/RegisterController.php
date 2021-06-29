@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use JosKolenberg\LaravelJory\Facades\Jory;
@@ -22,6 +23,8 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        Log::info("Registratie poging van: |" . $request->get('email') . "| met portal registration code: |" . $request->get('registrationCode') . "|");
+
         // Voor aanmaak van Contact wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
         $responsibleUserId = PortalSettings::get('responsibleUserId');
         if (!$responsibleUserId) {

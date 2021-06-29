@@ -99,9 +99,9 @@ class CooperationController extends ApiController
         $cooperation->save();
     }
 
-    public function syncStateAllMembersLaposta(Cooperation $cooperation){
+    public function syncAllWithLaposta(Cooperation $cooperation){
         $LapostaHelper = new LapostaHelper();
-        return $LapostaHelper->processStateAllMembersLaposta();
+        return $LapostaHelper->syncAllWithLaposta();
     }
 
 

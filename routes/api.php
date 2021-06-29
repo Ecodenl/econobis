@@ -504,7 +504,7 @@ Route::namespace('Api')
         Route::get('cooperation', 'Cooperation\CooperationController@show');
         Route::post('cooperation', 'Cooperation\CooperationController@store');
         Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
-        Route::post('cooperation/{cooperation}/sync-state-all-members-laposta', 'Cooperation\CooperationController@syncStateAllMembersLaposta');
+        Route::post('cooperation/{cooperation}/sync-all-with-laposta', 'Cooperation\CooperationController@syncAllWithLaposta');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

@@ -120,7 +120,7 @@ class LapostaMemberHelper
         }
 
         if(!$this->contactGroup->laposta_list_id) {
-            $errorsCheckBefore[] = 'Koppeling Laposta niet bekend';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Koppeling Laposta lijst niet bekend';
         }
 
         $errors = null;
@@ -139,32 +139,29 @@ class LapostaMemberHelper
         $errorsCheckBefore = [];
 
         if(empty($this->contact->primaryEmailAddress->email)) {
-            $errorsCheckBefore[] = 'Contact primaire email ontbreekt';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Primaire email ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
         }
 
         if(empty($this->contact->number)) {
-            $errorsCheckBefore[] = 'Contact nummer ontbreekt';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Nummer ontbreekt voor contact ' . $this->contact->full_name;
         }
 
         if($this->contact->type_id === ContactType::PERSON) {
             if (!$this->contact->person) {
-                $errorsCheckBefore[] = 'Contact persoon ontbreekt';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Persoon data ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
             if (empty($this->contact->person->first_name) && empty($this->contact->person->initials)) {
-                $errorsCheckBefore[] = 'Contact voornaam en initials ontbreken';
-            }
-            if (empty($this->contact->person->first_name) && empty($this->contact->person->initials)) {
-                $errorsCheckBefore[] = 'Contact voornaam en initials ontbreken';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Voornaam en initials ontbreken voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
             if (empty($this->contact->person->last_name)) {
-                $errorsCheckBefore[] = 'Contact achternaam ontbreekt';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Achternaam ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
         } elseif ($this->contact->type_id === ContactType::ORGANISATION) {
             if (empty($this->contact->full_name)) {
-                $errorsCheckBefore[] = 'Contact organisatienaam ontbreekt';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Organisatienaam ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
         }else{
-            $errorsCheckBefore[] = 'Contact type is niet Persoon of Organisatie';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Contact type is niet Persoon of Organisatie voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
 
         }
 
@@ -206,11 +203,12 @@ class LapostaMemberHelper
             $response = $member->create($memberData);
             return $response;
         } catch (\Exception $e) {
+            $message = 'Er is iets misgegaan bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus();
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
+                Log::error( $message . ' - ' . $e->getMessage());
 //                abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
+                Log::error($message);
 //                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
             }
         }

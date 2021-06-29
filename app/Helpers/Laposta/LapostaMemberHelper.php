@@ -197,7 +197,7 @@ class LapostaMemberHelper
         }
 
         $memberData = [
-            'ip' => $_SERVER['SERVER_ADDR'],
+            'ip' => isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '0.0.0.0',
             'email' => $this->contact->primaryEmailAddress->email ? $this->contact->primaryEmailAddress->email : '',
             'custom_fields' => $memberFieldData,
         ];

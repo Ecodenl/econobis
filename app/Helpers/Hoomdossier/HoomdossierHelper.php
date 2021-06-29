@@ -9,6 +9,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Helpers\Email\EmailHelper;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Hoomdossier\Templates\HoomdossierMail;
 use GuzzleHttp\Client;
@@ -46,6 +47,11 @@ class HoomdossierHelper
             $hoomdossierContactGroup = ContactGroup::find($this->cooperation->hoom_group_id);
 
             $hoomdossierContactGroup->contacts()->syncWithoutDetaching($this->contact);
+
+            if($hoomdossierContactGroup->laposta_list_id){
+                $lapostaMemberHelper = new LapostaMemberHelper($hoomdossierContactGroup, $this->contact);
+                $lapostaMemberHelper->createMember();
+            }
         }
 
         // Send email to contact

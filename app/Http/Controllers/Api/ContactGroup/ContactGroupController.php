@@ -241,6 +241,16 @@ class ContactGroupController extends Controller
         $contactIds = $request->input();
 
         $contactGroup->contacts()->syncWithoutDetaching($contactIds);
+
+        if($contactGroup->laposta_list_id){
+            foreach ($contactIds as $contactId) {
+                $contact = Contact::find($contactId);
+                if($contact) {
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                    $lapostaMemberHelper->createMember();
+                }
+            }
+        }
     }
 
     public function tasks(ContactGroup $contactGroup)
@@ -305,7 +315,7 @@ class ContactGroupController extends Controller
 
     }
 
-    public function createLapostaList(ContactGroup $contactGroup) {
+    public function syncLapostaList(ContactGroup $contactGroup) {
 
         // Laposta list bijwerken
         if($contactGroup->is_used_in_laposta){
@@ -327,6 +337,14 @@ class ContactGroupController extends Controller
                 foreach ($contactGroupToRemove as $contact){
                     $contactGroupController = new ContactGroupController();
                     $contactGroupController->removeContact($contactGroup->simulatedGroup, $contact);
+                }
+
+                $contactGroupToUpdate = $contactGroup->simulatedGroup->contacts->whereNull('pivot.laposta_member_id');
+                foreach ($contactGroupToUpdate as $contact){
+                    if($contactGroup->simulatedGroup->laposta_list_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup->simulatedGroup, $contact);
+                        $lapostaMemberHelper->createMember();
+                    }
                 }
 
                 return $lapostaListId;

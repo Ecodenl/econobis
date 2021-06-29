@@ -9,7 +9,7 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
     const [errors, setErrors] = useState([]);
 
     useEffect(function() {
-        ContactGroupAPI.createLapostaList(id)
+        ContactGroupAPI.syncLapostaList(id)
             .then(payload => {
                 setMessage('Laposta lijst is succesvol aangemaakt');
                 updateContactGroupLapostaList(1);

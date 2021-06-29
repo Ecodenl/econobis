@@ -365,6 +365,9 @@ class ContactGroup extends Model
             if(count($contactGroupToRemove)){
                 return false;
             }
+            if(count($this->simulatedGroup->contacts->whereNull('pivot.laposta_member_id')) > 0){
+                return false;
+            }
         }
 
         return true;

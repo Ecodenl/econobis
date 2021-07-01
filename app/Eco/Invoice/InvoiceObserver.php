@@ -34,6 +34,7 @@ class InvoiceObserver
 
         $invoice->administration_id = $order->administration_id;
         $invoice->payment_type_id = $order->payment_type_id;
+        $invoice->number_of_invoice_reminders = $order->number_of_invoice_reminders ? $order->number_of_invoice_reminders : $invoice->administration->number_of_invoice_reminders;
 
         // Code voor Mollie om de factuur van buitenaf veilig op te kunnen roepen.
         $invoice->code = Str::random(32);

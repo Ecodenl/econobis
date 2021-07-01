@@ -143,7 +143,7 @@ class Order extends Model
         return OrderStatus::get($this->status_id);
     }
 
-        public function getTotalInclVatInclReductionAttribute()
+    public function getTotalInclVatInclReductionAttribute()
     {
         $amountInclVat = 0;
 

@@ -299,6 +299,8 @@ class ExternalWebformController extends Controller
                 'order_volgende_nota_datum' => 'date_next_invoice',
                 'order_begindatum' => 'date_start',
                 'order_aanvraagdatum' => 'date_requested',
+                'order_betreft' => 'subject',
+                'order_opmerking' => 'invoice_text',
             ],
             'intake' => [
                 // Intake
@@ -1769,18 +1771,22 @@ class ExternalWebformController extends Controller
                 $dateStart = new Carbon();
             }
 
-
             $order = Order::create([
                 'contact_id' => $contact->id,
                 'administration_id' => $product->administration_id,
                 'status_id' => $statusId,
-                'subject' => $product->name,
+                'subject' => ( isset($data['subject']) && !empty($data['subject']) ) ? $data['subject'] : $product->name,
                 'payment_type_id' => $paymentTypeId,
+                'email_template_id_transfer' => $product->administration ? $product->administration->email_template_id_transfer : null,
+                'email_template_id_collection' => $product->administration ? $product->administration->email_template_id_collection : null,
+                'email_template_reminder_id' => $product->administration ? $product->administration->email_template_reminder_id : null,
+                'email_template_exhortation_id' => $product->administration ? $product->administration->email_template_exhortation_id : null,
                 'IBAN' => $iban,
                 'iban_attn' => $data['iban_attn'],
                 'date_requested' => $dateRequested,
                 'date_next_invoice' => $dateNextInvoice,
                 'collection_frequency_id' => $collectionFrequencyId,
+                'invoice_text' => ( isset($data['invoice_text']) && !empty($data['invoice_text']) ) ? $data['invoice_text'] : null,
             ]);
 
             $this->log('Order met id ' . $order->id . ' aangemaakt.');

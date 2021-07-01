@@ -21,6 +21,7 @@ const OrderDetailsFormGeneralView = props => {
         collectionFrequency,
         IBAN,
         ibanAttn,
+        numberOfInvoiceReminders,
         poNumber,
         invoiceText,
         dateRequested,
@@ -81,6 +82,21 @@ const OrderDetailsFormGeneralView = props => {
                             label={'E-mail template aanmaning'}
                             value={emailTemplateExhortation ? emailTemplateExhortation.name : ''}
                         />
+                        <ViewText
+                            label={'Aantal keer herinneringen nota'}
+                            value={
+                                numberOfInvoiceReminders === 1
+                                    ? '1x'
+                                    : numberOfInvoiceReminders === 2
+                                    ? '2x'
+                                    : numberOfInvoiceReminders === 3
+                                    ? '3x'
+                                    : ''
+                            }
+                        />
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-6" />
                         <ViewText label={'Opdracht nummer klant'} value={poNumber} />
                     </div>
 

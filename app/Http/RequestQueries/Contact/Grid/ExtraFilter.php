@@ -29,6 +29,7 @@ class ExtraFilter extends RequestExtraFilter
         'occupation',
         'occupationPrimary',
         'opportunity',
+        'campaign',
         'product',
         'dateStart',
         'dateFinish',
@@ -355,6 +356,37 @@ class ExtraFilter extends RequestExtraFilter
                 default:
                     $query->whereHas('opportunities', function ($query) use ($type, $data) {
                         RequestFilter::applyFilter($query, 'measure_category_id', $type, $data);
+                    });
+                    break;
+            }
+        }
+
+    }
+
+    protected function applyCampaignFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('intakes');
+                    break;
+                default:
+                    $query->whereDoesntHave('intakes');
+                    break;
+            }
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('intakes')
+                            ->orWhereDoesntHave('intakes', function ($query) use ($type, $data) {
+                                RequestFilter::applyFilter($query, 'campaign_id', 'eq', $data);
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('intakes', function ($query) use ($type, $data) {
+                        RequestFilter::applyFilter($query, 'campaign_id', $type, $data);
                     });
                     break;
             }

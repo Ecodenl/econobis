@@ -172,22 +172,7 @@ function ProjectList(props) {
                                 <tbody>
                                     {contactProjectsArray.map(project => (
                                         <tr key={project.id}>
-                                            <td>
-                                                {project.administrationName}
-                                                {/*todo WM: opschonen log na implementatie / test check op dubbele adressen*/}
-                                                {/*<br />*/}
-                                                {/*SCE of PCR: {project.isSceOrPcrProject ? 'Ja' : 'Nee'}*/}
-                                                {/*<br />*/}
-                                                {/*Postcoderoos: {project.postalcodeLink}*/}
-                                                {/*<br />*/}
-                                                {/*Aanwezig: {project.hasParticipation ? 'Ja' : 'Nee'}*/}
-                                                {/*<br />*/}
-                                                {/*Wijzig: {project.allowChangeParticipation ? 'Ja' : 'Nee'}*/}
-                                                {/*<br />*/}
-                                                {/*Mollie: {project.allowPayMollie ? 'Ja' : 'Nee'}*/}
-                                                {/*<br />*/}
-                                                {/*Inschrijven: {project.allowRegisterToProject ? 'Ja' : 'Nee'}*/}
-                                            </td>
+                                            <td>{project.administrationName}</td>
                                             <td>
                                                 {project.allowChangeParticipation ? (
                                                     <>
@@ -222,7 +207,7 @@ function ProjectList(props) {
                                                         {!project.allowRegisterToProject ? (
                                                             <>
                                                                 <FaInfoCircle
-                                                                    color={'red'}
+                                                                    color={'blue'}
                                                                     size={'15px'}
                                                                     data-tip={`${project.textNotAllowedRegisterToProject}`}
                                                                     data-for={`project-${project.id}`}

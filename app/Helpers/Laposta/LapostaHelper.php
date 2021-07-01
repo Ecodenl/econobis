@@ -24,6 +24,8 @@ class LapostaHelper
 
     public function syncAllWithLaposta() {
 
+        $messages = [];
+
         // General checks before API call
         $this->validateGeneral();
 
@@ -43,19 +45,29 @@ class LapostaHelper
         $allContactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->get();
         foreach($allContactGroups as $contactGroup){
             $checkContactGroup = $contactGroup->simulatedGroup ? $contactGroup->simulatedGroup : $contactGroup;
-            $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id')->where('pivot.laposta_member_state', 'inprogress');
-            foreach ($lapostaContacts as $lapostaContact){
-                if($checkContactGroup->type_id == 'simulated'){
-                    $checkContactGroup->contacts()->detach($lapostaContact);
-                } else {
-                    $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown']);
-                }
-            }
 
-            if($contactGroup->is_used_in_laposta) {
+            if($contactGroup->is_used_in_laposta){
+                $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id')->where('pivot.laposta_member_state', 'inprogress');
+                foreach ($lapostaContacts as $lapostaContact){
+                    if($checkContactGroup->type_id == 'simulated'){
+                        $checkContactGroup->contacts()->detach($lapostaContact);
+                    } else {
+                        $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown']);
+                    }
+                }
+
+                //find contactgroup again, because data of check group can be changed.
+                $syncContactGroup = ContactGroup::find($contactGroup->id);
+
                 $contactGroupController = new ContactGroupController();
-                $contactGroupController->syncLapostaList($contactGroup);
+                $contactGroupController->syncLapostaList($syncContactGroup);
+
+                $messages = array_merge($messages, $contactGroupController->getErrorMessagesLaposta() );
             }
+        }
+
+        if(count($messages)) {
+            throw ValidationException::withMessages(array("econobis" => $messages));
         }
 
     }

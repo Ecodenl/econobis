@@ -16,29 +16,26 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
                 setTimeout(closeModal, 2000);
             })
             .catch(error => {
-                if (error.response && error.response.status === 400) {
+                if (error.response && error.response.status === 422) {
                     if (error.response.data && error.response.data.errors) {
                         if (error.response.data.errors.econobis && error.response.data.errors.econobis.length) {
-                            setMessage('Niet alle benodigde gegevens zijn ingevuld:');
+                            setMessage('De volgende fouten gevonden tijdens synchronisatie:');
                             setErrors(error.response.data.errors.econobis);
                         }
                     } else if (error.response.data && error.response.data.message) {
                         setMessage(
-                            'Er is iets misgegaan bij het aanmaken van het laposta lijst (' +
-                                error.response.status +
-                                ').'
+                            'Er is iets misgegaan bij het synchroniseren met Laposta (' + error.response.status + ').'
                         );
                         let messageErrors = [];
-                        // for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
-                        //     messageErrors.push(`${value}`);
-                        // }
-                        messageErrors.push(error.response.data.message);
+                        for (const [key, value] of Object.entries(JSON.parse(error.response.data.message))) {
+                            messageErrors.push(`${value}`);
+                        }
 
                         setErrors(messageErrors);
                     }
                 } else {
                     setMessage(
-                        'Er is iets misgegaan bij het aanmaken van het laposta lijst (' +
+                        'Er is iets misgegaan bij het synchroniseren met Laposta (' +
                             (error.response && error.response.status) +
                             ').'
                     );
@@ -52,7 +49,7 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
             closeModal={closeModal}
             buttonCancelText={'Sluiten'}
             showConfirmAction={false}
-            title="Laposta lijst aanmaken"
+            title="Synchroniseren met Laposta"
         >
             <p>{message}</p>
             {errors.length ? (

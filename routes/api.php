@@ -145,7 +145,7 @@ Route::namespace('Api')
         Route::post('contact-group/{contactGroup}/contacts/update/{contact}', 'ContactGroup\ContactGroupController@updateContact');
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
-        Route::get('contact-group/{contactGroup}/sync-laposta-list', 'ContactGroup\ContactGroupController@syncLapostaList');
+        Route::get('contact-group/{contactGroup}/sync-laposta-list', 'ContactGroup\ContactGroupController@syncContactGroupLapostaList');
 
         Route::post('distribution/create-revenue-report', 'Project\ProjectRevenueController@createRevenueReport');
         Route::post('distribution/create-payment-invoices', 'Project\ProjectRevenueController@createPaymentInvoices');

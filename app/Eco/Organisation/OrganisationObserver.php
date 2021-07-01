@@ -38,7 +38,7 @@ class OrganisationObserver
                 if($contactGroup->laposta_list_id) {
                     $contactGroupsPivot= $contactGroup->pivot;
                     if($contactGroupsPivot->laposta_member_id){
-                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                         $lapostaMemberHelper->updateMember();
                     }
                 }

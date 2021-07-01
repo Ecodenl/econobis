@@ -49,7 +49,7 @@ class HoomdossierHelper
             $hoomdossierContactGroup->contacts()->syncWithoutDetaching($this->contact);
 
             if($hoomdossierContactGroup->laposta_list_id){
-                $lapostaMemberHelper = new LapostaMemberHelper($hoomdossierContactGroup, $this->contact);
+                $lapostaMemberHelper = new LapostaMemberHelper($hoomdossierContactGroup, $this->contact, false);
                 $lapostaMemberHelper->createMember();
             }
         }

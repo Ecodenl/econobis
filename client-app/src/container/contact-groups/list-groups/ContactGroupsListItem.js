@@ -45,7 +45,7 @@ class ContactGroupsListItem extends Component {
             type,
             isUsedInComposedGroup,
             isUsedInLaposta,
-            simulatedGroupUpToDate,
+            groupUpToDateWithLaposta,
             numberOfLapostaMembers,
             useLaposta,
         } = this.props;
@@ -55,11 +55,11 @@ class ContactGroupsListItem extends Component {
             width: 'auto',
         };
         const missingDataClass =
-            isUsedInLaposta && (!simulatedGroupUpToDate || numberOfLapostaMembers != numberOfContacts)
+            isUsedInLaposta && (!groupUpToDateWithLaposta || numberOfLapostaMembers != numberOfContacts)
                 ? 'missing-data-row'
                 : null;
         const missingContactDataMessage =
-            isUsedInLaposta && (!simulatedGroupUpToDate || numberOfLapostaMembers != numberOfContacts)
+            isUsedInLaposta && (!groupUpToDateWithLaposta || numberOfLapostaMembers != numberOfContacts)
                 ? 'Niet actueel met Laposta'
                 : '';
 

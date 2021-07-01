@@ -31,7 +31,7 @@ function CooperationDetailsToolbar({ permissions, isLoading, formData }) {
                         </div>
                         {!isLoading && (
                             <div className="col-md-4">
-                                <h4 className="text-center">Coöperatie instellingenx</h4>
+                                <h4 className="text-center">Coöperatie instellingen</h4>
                             </div>
                         )}
                         <div className="col-md-4" />

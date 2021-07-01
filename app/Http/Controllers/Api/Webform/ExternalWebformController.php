@@ -1525,7 +1525,7 @@ class ExternalWebformController extends Controller
                 $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
 
                 if($contactGroup->laposta_list_id){
-                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                     $lapostaMemberId = $lapostaMemberHelper->createMember();
                     $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
                 }
@@ -1556,7 +1556,7 @@ class ExternalWebformController extends Controller
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
 
                             if($contactGroup->laposta_list_id){
-                                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                                 $lapostaMemberId = $lapostaMemberHelper->createMember();
                                 $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
                             }

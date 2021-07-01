@@ -353,23 +353,34 @@ class ContactGroup extends Model
         return false;
    }
 
-    // simulategroup up-to-date?
-    public function getSimulatedGroupUpToDateAttribute(){
+    // Contactgroup up-to-date with Laposta?
+    public function getGroupUpToDateWithLapostaAttribute(){
 
-        if($this->simulatedGroup){
-            $contactGroupToAdd = $this->getAllContacts()->diff($this->simulatedGroup->getAllContacts());
-            if(count($contactGroupToAdd)){
-                return false;
-            }
-            $contactGroupToRemove = $this->simulatedGroup->getAllContacts()->diff($this->getAllContacts());
-            if(count($contactGroupToRemove)){
-                return false;
-            }
-            if(count($this->simulatedGroup->contacts->whereNull('pivot.laposta_member_id')) > 0){
-                return false;
+        if($this->is_used_in_laposta){
+            if($this->simulatedGroup){
+                $contactGroupToAdd = $this->getAllContacts()->diff($this->simulatedGroup->getAllContacts());
+                if(count($contactGroupToAdd)){
+                    return false;
+                }
+                $contactGroupToRemove = $this->simulatedGroup->getAllContacts()->diff($this->getAllContacts());
+                if(count($contactGroupToRemove)){
+                    return false;
+                }
+                if(count($this->simulatedGroup->contacts->whereNull('pivot.laposta_member_id')) > 0){
+                    return false;
+                }
+                if(count($this->simulatedGroup->contacts->where('pivot.laposta_member_state', 'unknown')) > 0){
+                    return false;
+                }
+            } else {
+                if(count($this->contacts->whereNull('pivot.laposta_member_id')) > 0){
+                    return false;
+                }
+                if(count($this->contacts->where('pivot.laposta_member_state', 'unknown')) > 0){
+                    return false;
+                }
             }
         }
-
         return true;
     }
 

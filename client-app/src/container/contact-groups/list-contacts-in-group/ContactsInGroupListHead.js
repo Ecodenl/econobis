@@ -9,9 +9,8 @@ const ContactsInGroupListHead = props => {
                 <>
                     <DataTableHeadTitle RowClassName={'hidden-xs'} title={'#'} width={'10%'} />
                     <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'10%'} />
-                    <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'20%'} />
-                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'20%'} />
-                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Laposta Id'} width={'10%'} />
+                    <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'25%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'25%'} />
                     <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Laposta status'} width={'10%'} />
                     <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Toegevoegd op'} width={'10%'} />
                     <th width="10%" />

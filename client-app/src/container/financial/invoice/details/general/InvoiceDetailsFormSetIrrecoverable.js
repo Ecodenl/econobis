@@ -37,7 +37,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(InvoiceDetailsFormSetIrrecoverable);
+export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSetIrrecoverable);

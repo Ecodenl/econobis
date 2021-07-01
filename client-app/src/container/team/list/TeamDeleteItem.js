@@ -29,7 +29,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(TeamDeleteItem);
+export default connect(null, mapDispatchToProps)(TeamDeleteItem);

@@ -52,7 +52,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(IntakeMeasuresRequestedView);
+export default connect(mapStateToProps, null)(IntakeMeasuresRequestedView);

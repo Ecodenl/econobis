@@ -57,7 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(WebformsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(WebformsListApp);

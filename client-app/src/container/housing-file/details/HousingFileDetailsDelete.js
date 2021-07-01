@@ -31,7 +31,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(HousingFileDetailsDelete);
+export default connect(null, mapDispatchToProps)(HousingFileDetailsDelete);

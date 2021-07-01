@@ -30,7 +30,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(OpportunityDeleteItem);
+export default connect(null, mapDispatchToProps)(OpportunityDeleteItem);

@@ -31,7 +31,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(QuotationRequestDetailsDelete);
+export default connect(null, mapDispatchToProps)(QuotationRequestDetailsDelete);

@@ -37,7 +37,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(NotesListToolbar);
+export default connect(mapStateToProps, null)(NotesListToolbar);

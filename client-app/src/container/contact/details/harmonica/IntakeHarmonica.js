@@ -33,7 +33,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(IntakeHarmonica);
+export default connect(mapStateToProps, null)(IntakeHarmonica);

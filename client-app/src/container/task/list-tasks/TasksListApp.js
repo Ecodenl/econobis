@@ -133,7 +133,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TasksListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(TasksListApp);

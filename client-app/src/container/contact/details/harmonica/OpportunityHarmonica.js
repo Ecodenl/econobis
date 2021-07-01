@@ -32,7 +32,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(OpportunityHarmonica);
+export default connect(mapStateToProps, null)(OpportunityHarmonica);

@@ -150,7 +150,4 @@ function mapStateToProps(state) {
 const mapDispatchToProps = dispatch =>
     bindActionCreators({ fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

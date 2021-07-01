@@ -61,7 +61,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(InvoiceListSendNotification);
+export default connect(null, mapDispatchToProps)(InvoiceListSendNotification);

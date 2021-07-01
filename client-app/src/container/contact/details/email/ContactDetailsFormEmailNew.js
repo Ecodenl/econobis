@@ -151,7 +151,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsFormEmailNew);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormEmailNew);

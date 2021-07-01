@@ -62,7 +62,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(MailgunDomainsListItem);
+export default connect(mapStateToProps, null)(MailgunDomainsListItem);

@@ -51,7 +51,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(InvoiceViewForm);
+export default connect(mapStateToProps, null)(InvoiceViewForm);

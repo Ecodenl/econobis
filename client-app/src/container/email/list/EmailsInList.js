@@ -65,7 +65,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(EmailsInList);
+export default connect(mapStateToProps, null)(EmailsInList);

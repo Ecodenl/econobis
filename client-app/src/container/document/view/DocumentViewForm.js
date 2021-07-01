@@ -67,7 +67,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(DocumentViewForm);
+export default connect(mapStateToProps, null)(DocumentViewForm);

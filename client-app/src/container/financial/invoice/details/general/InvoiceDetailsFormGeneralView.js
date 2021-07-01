@@ -48,14 +48,12 @@ const InvoiceDetailsFormGeneralView = props => {
                         <ViewText label={'Status'} value={status ? status.name : ''} />
                     </div>
 
-                    {
-                        status && status.id === 'sent' && isPaidByMollie && (
-                            <div className="row">
-                                <ViewText/>
-                                <ViewText label={'Substatus'} value="Mollie betaald" />
-                            </div>
-                        )
-                    }
+                    {status && status.id === 'sent' && isPaidByMollie && (
+                        <div className="row">
+                            <ViewText />
+                            <ViewText label={'Substatus'} value="Mollie betaald" />
+                        </div>
+                    )}
 
                     <div className="row">
                         <ViewText label={'Betaalwijze'} value={paymentType ? paymentType.name : ''} />

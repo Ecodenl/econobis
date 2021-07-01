@@ -14,8 +14,12 @@ const ParticipantDetailsMutationMolliePaymentsList = ({ molliePayments }) => {
             {molliePayments.map(molliePayment => (
                 <div className="row border">
                     <div className="col-sm-2">{molliePayment.mollieId}</div>
-                    <div className="col-sm-2">{molliePayment.dateActivated ? moment(molliePayment.dateActivated).format('L HH:mm') : ''}</div>
-                    <div className="col-sm-2">{molliePayment.datePaid ? moment(molliePayment.datePaid).format('L HH:mm') : ''}</div>
+                    <div className="col-sm-2">
+                        {molliePayment.dateActivated ? moment(molliePayment.dateActivated).format('L HH:mm') : ''}
+                    </div>
+                    <div className="col-sm-2">
+                        {molliePayment.datePaid ? moment(molliePayment.datePaid).format('L HH:mm') : ''}
+                    </div>
                     <div className="col-sm-3">{molliePayment.iban}</div>
                     <div className="col-sm-3">{molliePayment.ibanName}</div>
                 </div>

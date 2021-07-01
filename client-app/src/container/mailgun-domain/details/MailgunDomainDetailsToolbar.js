@@ -34,7 +34,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(MeilgunDomainDetailsToolbar);
+export default connect(mapStateToProps, null)(MeilgunDomainDetailsToolbar);

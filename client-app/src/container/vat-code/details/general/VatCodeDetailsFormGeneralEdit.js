@@ -162,7 +162,4 @@ class VatCodeDetailsFormGeneralEdit extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(VatCodeDetailsFormGeneralEdit);
+export default connect(null, mapDispatchToProps)(VatCodeDetailsFormGeneralEdit);

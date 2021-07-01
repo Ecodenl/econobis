@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 
 import ViewText from '../../../../components/form/ViewText';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
-import ButtonText from "../../../../components/button/ButtonText";
+import ButtonText from '../../../../components/button/ButtonText';
 
 const createMarkup = value => {
     return { __html: value };
@@ -90,21 +90,26 @@ const EmailFormView = props => {
             <div className="row">
                 <ViewText
                     label={'Contacten'}
-                    value={(manyContacts && !props.showContacten) ? (
-                        <ButtonText
-                            buttonClassName={'btn-success btn-padding-small'}
-                            buttonText={'Toon contacten (' + contacts.length + ')'}
-                            onClickAction={props.toggleShowContacten}
-                        />
-                    ) : (
-                        contacts && contacts.map(contact => {
-                        return <span>
-                        <Link to={`/contact/${contact.id}`} className="link-underline">
-                        {contact.fullName}
-                        </Link>{' '}<br/>
-                        </span>
-                    })
-                    )
+                    value={
+                        manyContacts && !props.showContacten ? (
+                            <ButtonText
+                                buttonClassName={'btn-success btn-padding-small'}
+                                buttonText={'Toon contacten (' + contacts.length + ')'}
+                                onClickAction={props.toggleShowContacten}
+                            />
+                        ) : (
+                            contacts &&
+                            contacts.map(contact => {
+                                return (
+                                    <span>
+                                        <Link to={`/contact/${contact.id}`} className="link-underline">
+                                            {contact.fullName}
+                                        </Link>{' '}
+                                        <br />
+                                    </span>
+                                );
+                            })
+                        )
                     }
                 />
                 <ViewText
@@ -113,18 +118,21 @@ const EmailFormView = props => {
                     link={intake ? 'intake/' + intake.id : ''}
                 />
             </div>
-            {manyContacts && props.showContacten &&
-            <div className="row" onClick={props.toggleShowContacten}>
-                <ViewText label={''}
-                    value={<ButtonText
-                        buttonClassName={'btn-success btn-padding-small'}
-                        buttonText={'Verberg contacten'}
-                        onClickAction={props.toggleShowContacten}
-                    />}
-                />
-                <div className="col-md-6" />
-            </div>
-            }
+            {manyContacts && props.showContacten && (
+                <div className="row" onClick={props.toggleShowContacten}>
+                    <ViewText
+                        label={''}
+                        value={
+                            <ButtonText
+                                buttonClassName={'btn-success btn-padding-small'}
+                                buttonText={'Verberg contacten'}
+                                onClickAction={props.toggleShowContacten}
+                            />
+                        }
+                    />
+                    <div className="col-md-6" />
+                </div>
+            )}
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Taak'} value={task ? task.noteSummary : ''} link={task ? 'taak/' + task.id : ''} />

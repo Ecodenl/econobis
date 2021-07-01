@@ -37,7 +37,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(IntakeMeasuresRequestedDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(IntakeMeasuresRequestedDelete);

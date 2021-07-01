@@ -34,7 +34,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(DocumentViewToolbar);
+export default connect(mapStateToProps, null)(DocumentViewToolbar);

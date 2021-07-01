@@ -30,7 +30,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(AuditTrailListToolbar);
+export default connect(mapStateToProps, null)(AuditTrailListToolbar);

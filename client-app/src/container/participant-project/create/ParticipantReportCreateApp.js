@@ -198,7 +198,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParticipantReportCreateApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantReportCreateApp);

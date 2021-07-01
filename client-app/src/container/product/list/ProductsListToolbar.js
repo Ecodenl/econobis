@@ -36,7 +36,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ProductsListToolbar);
+export default connect(mapStateToProps, null)(ProductsListToolbar);

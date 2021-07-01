@@ -94,7 +94,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(DocumentNewFormUpload);
+export default connect(mapStateToProps, null)(DocumentNewFormUpload);

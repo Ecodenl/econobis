@@ -184,7 +184,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TaskNewForm);
+export default connect(mapStateToProps, null)(TaskNewForm);

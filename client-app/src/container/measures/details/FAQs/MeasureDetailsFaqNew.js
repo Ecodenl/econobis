@@ -150,7 +150,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MeasureDetailsFaqNew);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetailsFaqNew);

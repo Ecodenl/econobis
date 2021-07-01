@@ -33,7 +33,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TaskHarmonica);
+export default connect(mapStateToProps, null)(TaskHarmonica);

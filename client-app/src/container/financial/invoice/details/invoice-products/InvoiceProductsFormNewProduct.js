@@ -18,7 +18,11 @@ class InvoiceProductsFormNewProduct extends Component {
         super(props);
 
         this.state = {
-            vatPercentages: [{ id: '0', name: '0' }, { id: '9', name: '9' }, { id: '21', name: '21' }],
+            vatPercentages: [
+                { id: '0', name: '0' },
+                { id: '9', name: '9' },
+                { id: '21', name: '21' },
+            ],
             errorMessage: false,
             price: '0',
             totalPrice: '0',
@@ -476,7 +480,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoiceProductsFormNewProduct);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormNewProduct);

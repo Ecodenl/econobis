@@ -22,9 +22,7 @@ class QuotationRequestDetailsToolbar extends Component {
 
     sendMail = () => {
         hashHistory.push(
-            `/email/nieuw/offerteverzoek/${this.props.quotationRequestDetails.id}/${
-                this.props.quotationRequestDetails.organisation.contactId
-            }`
+            `/email/nieuw/offerteverzoek/${this.props.quotationRequestDetails.id}/${this.props.quotationRequestDetails.organisation.contactId}`
         );
     };
 

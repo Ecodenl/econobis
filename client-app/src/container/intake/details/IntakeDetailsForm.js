@@ -47,7 +47,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(IntakeDetailsForm);
+export default connect(mapStateToProps, null)(IntakeDetailsForm);

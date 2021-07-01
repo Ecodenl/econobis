@@ -115,7 +115,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(OrderDetailsHarmonica);
+export default connect(mapStateToProps, null)(OrderDetailsHarmonica);

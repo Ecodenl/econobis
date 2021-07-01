@@ -39,7 +39,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(HousingFileHarmonica);
+export default connect(mapStateToProps, null)(HousingFileHarmonica);

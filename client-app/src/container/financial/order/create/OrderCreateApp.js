@@ -101,7 +101,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderCreateApp);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderCreateApp);

@@ -10,7 +10,13 @@ import ButtonText from '../../../components/button/ButtonText';
 import ContactGroupDetailsLapostaList from '../../contact-groups/details/ContactGroupDetailsLapostaList';
 import { hashHistory } from 'react-router';
 
-function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, cooperation, isLoading }) {
+function ContactGroupDetailsToolbar({
+    permissions,
+    contactGroup,
+    cooperation,
+    isLoading,
+    callFetchContactGroupDetails,
+}) {
     const [showDelete, setShowDelete] = useState(false);
     const [showSyncLapostaList, setShowSyncLapostaList] = useState(false);
 
@@ -19,6 +25,9 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
     }
 
     function toggleShowSyncLapostaList() {
+        if (showSyncLapostaList) {
+            callFetchContactGroupDetails();
+        }
         setShowSyncLapostaList(!showSyncLapostaList);
     }
 
@@ -94,7 +103,6 @@ function ContactGroupDetailsToolbar({ permissions, contactGroup, lapostaListId, 
 const mapStateToProps = state => {
     return {
         contactGroup: state.contactGroupDetails,
-        lapostaListId: state.contactGroupDetails.lapostaListId,
         cooperation: state.systemData.cooperation,
         permissions: state.meDetails.permissions,
     };

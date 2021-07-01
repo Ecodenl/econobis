@@ -2,7 +2,7 @@ export const fetchProducts = (filters, filterType) => {
     return {
         type: 'FETCH_PRODUCTS',
         filters,
-        filterType
+        filterType,
     };
 };
 

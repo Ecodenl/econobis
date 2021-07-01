@@ -8,7 +8,7 @@ export function* fetchProductsSaga({ filters, filterType }) {
         yield put({ type: 'IS_LOADING' });
         const products = yield call(ProductsAPI.fetchProducts, {
             filters: filters,
-            filterType: filterType
+            filterType: filterType,
         });
         yield put({ type: 'FETCH_PRODUCTS_SUCCESS', products });
         yield put({ type: 'IS_LOADING_COMPLETE' });

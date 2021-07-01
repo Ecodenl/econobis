@@ -3,7 +3,7 @@ import axiosInstance from '../default-setup/AxiosInstance';
 const URL_PRODUCT = `${URL_API}/api/product`;
 
 export default {
-    fetchProducts: ({filters, filterType}) => {
+    fetchProducts: ({ filters, filterType }) => {
         const requestUrl = `${URL_PRODUCT}/grid`;
 
         return axiosInstance.get(requestUrl, {

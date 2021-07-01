@@ -51,8 +51,12 @@ const ProductsListFilter = props => {
                     onChange={onActiveProductChange}
                 >
                     <option />
-                    <option key={1} value={1}>Nee</option>
-                    <option key={0} value={0}>Ja</option>
+                    <option key={1} value={1}>
+                        Nee
+                    </option>
+                    <option key={0} value={0}>
+                        Ja
+                    </option>
                 </select>
             </th>
             <th />

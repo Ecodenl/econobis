@@ -6,14 +6,14 @@ import ProductsList from './ProductsList';
 import ProductsListToolbar from './ProductsListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import filterHelper from "../../../helpers/FilterHelper";
-import {bindActionCreators} from "redux";
+import filterHelper from '../../../helpers/FilterHelper';
+import { bindActionCreators } from 'redux';
 import {
     clearFilterProducts,
     setActiveProductFilter,
     setProductCodeFilter,
-    setProductFilter
-} from "../../../actions/product/ProductsFiltersActions";
+    setProductFilter,
+} from '../../../actions/product/ProductsFiltersActions';
 
 class ProductsListApp extends Component {
     constructor(props) {
@@ -57,7 +57,7 @@ class ProductsListApp extends Component {
 
             this.props.fetchProducts(filters, filterType);
         }, 100);
-    }
+    };
 
     onSubmitFilter() {
         this.props.clearProducts();

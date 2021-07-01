@@ -7,7 +7,7 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 import ProductsListItem from './ProductsListItem';
 import ProductDeleteItem from './ProductDeleteItem';
 import { connect } from 'react-redux';
-import ProductsListFilter from "./ProductsListFilter";
+import ProductsListFilter from './ProductsListFilter';
 
 class ProductsList extends Component {
     constructor(props) {

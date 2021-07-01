@@ -24,4 +24,10 @@ class Joiner extends RequestJoiner
         $query->join('addresses', 'housing_files.address_id', '=', 'addresses.id');
         $query->join('contacts', 'addresses.contact_id', '=', 'contacts.id');
     }
+
+    protected function applyEnergyLabelJoin($query)
+    {
+        $query->join('energy_labels', 'housing_files.energy_label_id', '=', 'energy_labels.id', 'left outer');
+    }
+
 }

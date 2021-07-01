@@ -28,7 +28,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         super(props);
 
         this.manageUsesTwinfield =
-            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'info@xaris.nl'
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
                 ? true
                 : false;
 
@@ -814,7 +814,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             />
                         )}
 
-                        {this.props.meDetails.email === 'support@econobis.nl' && (
+                        {(this.props.meDetails.email === 'support@econobis.nl' ||
+                            this.props.meDetails.email === 'software@xaris.nl') && (
                             <div className="row">
                                 <InputToggle
                                     label={'Gebruikt Mollie'}

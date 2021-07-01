@@ -20,8 +20,11 @@ class LapostaMemberHelper
     private $contactGroup;
     private $contact;
     private $cooperation;
+    private $collectMessages;
 
-    public function __construct(ContactGroup $contactGroup, Contact $contact)
+    private array $messages = [];
+
+    public function __construct(ContactGroup $contactGroup, Contact $contact, $collectMessages = false)
     {
         $this->contactGroup = null;
         // Dynamic of Composed groups worden met simulated group gesyncroniseerd met laposta.
@@ -31,9 +34,9 @@ class LapostaMemberHelper
             $this->contactGroup = $contactGroup;
         }
 
-
-        $this->contactGroup= $contactGroup;
-        $this->contact= $contact;
+        $this->collectMessages = $collectMessages;
+        $this->contactGroup = $contactGroup;
+        $this->contact = $contact;
         $this->cooperation = Cooperation::first();
         $this->contactGroupsPivot = null;
         if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
@@ -41,13 +44,24 @@ class LapostaMemberHelper
         }
     }
 
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
     public function createMember() {
 
         // General checks before API call
-        $this->validateGeneral();
+        $dataOk = $this->validateGeneral();
+        if(!$dataOk){
+            return null;
+        }
 
         // Check if all necessary fields are filled
-        $this->validateRequiredMemberFields();
+        $dataOk = $this->validateRequiredMemberFields();
+        if(!$dataOk){
+            return null;
+        }
 
         $lapostaResponse = $this->createMemberToLaposta();
         if($lapostaResponse == null){
@@ -71,10 +85,16 @@ class LapostaMemberHelper
     public function updateMember() {
 
         // General checks before API call
-        $this->validateGeneral();
+        $dataOk = $this->validateGeneral();
+        if(!$dataOk){
+            return null;
+        }
 
         // Check if all necessary fields are filled
-        $this->validateRequiredMemberFields();
+        $dataOk = $this->validateRequiredMemberFields();
+        if(!$dataOk){
+            return null;
+        }
 
         $lapostaResponse = $this->updateMemberToLaposta();
         if($lapostaResponse == null){
@@ -88,7 +108,10 @@ class LapostaMemberHelper
     public function deleteMember() {
 
         // General checks before API call
-        $this->validateGeneral();
+        $dataOk = $this->validateGeneral();
+        if(!$dataOk){
+            return null;
+        }
 
         $lapostaResponse = $this->deleteMemberToLaposta();
         if($lapostaResponse == null){
@@ -120,14 +143,21 @@ class LapostaMemberHelper
         }
 
         if(!$this->contactGroup->laposta_list_id) {
-            $errorsCheckBefore[] = 'Koppeling Laposta niet bekend';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Koppeling Laposta lijst niet bekend';
         }
 
         $errors = null;
         if(count($errorsCheckBefore)) {
             $errors = array("econobis" => $errorsCheckBefore);
         };
-        if($errors) throw ValidationException::withMessages($errors);
+        if($errors){
+            if($this->collectMessages){
+                $this->messages = $errorsCheckBefore;
+                return false;
+            }else{
+                throw ValidationException::withMessages($errors);
+            }
+        }
 
         Laposta::setApiKey($this->cooperation->laposta_key);
 
@@ -139,32 +169,29 @@ class LapostaMemberHelper
         $errorsCheckBefore = [];
 
         if(empty($this->contact->primaryEmailAddress->email)) {
-            $errorsCheckBefore[] = 'Contact primaire email ontbreekt';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Primaire email ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
         }
 
         if(empty($this->contact->number)) {
-            $errorsCheckBefore[] = 'Contact nummer ontbreekt';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Nummer ontbreekt voor contact ' . $this->contact->full_name;
         }
 
         if($this->contact->type_id === ContactType::PERSON) {
             if (!$this->contact->person) {
-                $errorsCheckBefore[] = 'Contact persoon ontbreekt';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Persoon data ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
             if (empty($this->contact->person->first_name) && empty($this->contact->person->initials)) {
-                $errorsCheckBefore[] = 'Contact voornaam en initials ontbreken';
-            }
-            if (empty($this->contact->person->first_name) && empty($this->contact->person->initials)) {
-                $errorsCheckBefore[] = 'Contact voornaam en initials ontbreken';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Voornaam en initials ontbreken voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
             if (empty($this->contact->person->last_name)) {
-                $errorsCheckBefore[] = 'Contact achternaam ontbreekt';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Achternaam ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
         } elseif ($this->contact->type_id === ContactType::ORGANISATION) {
             if (empty($this->contact->full_name)) {
-                $errorsCheckBefore[] = 'Contact organisatienaam ontbreekt';
+                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Organisatienaam ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
             }
         }else{
-            $errorsCheckBefore[] = 'Contact type is niet Persoon of Organisatie';
+            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Contact type is niet Persoon of Organisatie voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
 
         }
 
@@ -172,7 +199,14 @@ class LapostaMemberHelper
         if(count($errorsCheckBefore)) {
             $errors = array("econobis" => $errorsCheckBefore);
         };
-        if($errors) throw ValidationException::withMessages($errors);
+        if($errors){
+            if($this->collectMessages){
+                $this->messages = $errorsCheckBefore;
+                return false;
+            }else{
+                throw ValidationException::withMessages($errors);
+            }
+        }
 
         return true;
     }
@@ -206,12 +240,23 @@ class LapostaMemberHelper
             $response = $member->create($memberData);
             return $response;
         } catch (\Exception $e) {
+            $message = 'Groep: ' . $this->contactGroup->name . ' - Fout bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ', melding Laposta: ' ;
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
-//                abort($e->getHttpStatus(), $e->getMessage());
+                Log::error( $message . $e->getMessage() . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+                if($this->collectMessages){
+                    $this->messages = [$message . $e->getMessage()];
+                    return null;
+                }else{
+                    abort($e->getHttpStatus(), $e->getMessage());
+                }
             } else {
-                Log::error('Er is iets misgegaan met bij het aanmaken van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
-//                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                Log::error( $message . 'Onbekend. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+                if($this->collectMessages){
+                    $this->messages = array("laposta" => [$message . 'Onbekend']);
+                    return null;
+                }else{
+                    abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                }
             }
         }
     }
@@ -244,12 +289,23 @@ class LapostaMemberHelper
             $response = $member->update($this->contactGroupsPivot->laposta_member_id, $memberData);
             return $response;
         } catch (\Exception $e) {
+            $message = 'Groep: ' . $this->contactGroup->name . ' - Fout bij het synchroniseren van een Laposta relatie ' . $memberData['email'] . ', melding Laposta: ' ;
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het synchroniseren van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage());
-//                abort($e->getHttpStatus(), $e->getMessage());
+                Log::error( $message . $e->getMessage() . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+                if($this->collectMessages){
+                    $this->messages = array("laposta" => [$message . $e->getMessage()]);
+                    return null;
+                }else{
+                    abort($e->getHttpStatus(), $e->getMessage());
+                }
             } else {
-                Log::error('Er is iets misgegaan met bij het synchroniseren van een Laposta relatie ' . $memberData['email'] . ' voor contactgroep id ' . $this->contactGroup->id . ', melding: ' . $e->getHttpStatus());
-//                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                Log::error( $message . 'Onbekend. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+                if($this->collectMessages){
+                    $this->messages = array("laposta" => [$message . 'Onbekend']);
+                    return null;
+                }else{
+                    abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                }
             }
         }
     }
@@ -262,12 +318,23 @@ class LapostaMemberHelper
             $response = $member->delete($this->contactGroupsPivot->laposta_member_id);
             return $response;
         } catch (\Exception $e) {
+            $message = 'Groep: ' . $this->contactGroup->name . ' - Fout bij het verwijderen van gekoppelde Laposta relatie (contactnummer: ' . $this->contact->number . '), melding Laposta: ' ;
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het verwijderen van gekoppelde Laposta relatie voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
-//                abort($e->getHttpStatus(), $e->getMessage());
+                Log::error( $message . $e->getMessage() . '. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+                if($this->collectMessages){
+                    $this->messages = array("laposta" => [$message . $e->getMessage()]);
+                    return null;
+                }else{
+                    abort($e->getHttpStatus(), $e->getMessage());
+                }
             } else {
-                Log::error('Er is iets misgegaan met bij het verwijderen van gekoppelde Laposta relatie voor contactgroep id ' . $this->contactGroup->id .  ', melding: ' . $e->getHttpStatus() );
-//                abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                Log::error( $message . 'Onbekend. Contactgroup id: ' . $this->contactGroup->id . '. Http status: ' . $e->getHttpStatus() . '.');
+                if($this->collectMessages){
+                    $this->messages = array("laposta" => [$message . 'Onbekend']);
+                    return null;
+                }else{
+                    abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren naar Laposta');
+                }
             }
         }
     }

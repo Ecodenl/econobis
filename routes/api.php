@@ -145,7 +145,7 @@ Route::namespace('Api')
         Route::post('contact-group/{contactGroup}/contacts/update/{contact}', 'ContactGroup\ContactGroupController@updateContact');
         Route::get('contact-group/{contactGroup}/contacts/grid', 'ContactGroup\ContactGroupController@gridContacts');
         Route::post('contact-group/{contactGroup}/contacts/add-many', 'ContactGroup\ContactGroupController@addContacts');
-        Route::get('contact-group/{contactGroup}/sync-laposta-list', 'ContactGroup\ContactGroupController@syncLapostaList');
+        Route::get('contact-group/{contactGroup}/sync-laposta-list', 'ContactGroup\ContactGroupController@syncContactGroupLapostaList');
 
         Route::post('distribution/create-revenue-report', 'Project\ProjectRevenueController@createRevenueReport');
         Route::post('distribution/create-payment-invoices', 'Project\ProjectRevenueController@createPaymentInvoices');
@@ -504,7 +504,7 @@ Route::namespace('Api')
         Route::get('cooperation', 'Cooperation\CooperationController@show');
         Route::post('cooperation', 'Cooperation\CooperationController@store');
         Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
-        Route::post('cooperation/{cooperation}/sync-state-all-members-laposta', 'Cooperation\CooperationController@syncStateAllMembersLaposta');
+        Route::post('cooperation/{cooperation}/sync-all-with-laposta', 'Cooperation\CooperationController@syncAllWithLaposta');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

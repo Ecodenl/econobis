@@ -17,11 +17,20 @@ class LapostaListHelper
 {
     private $contactGroup;
     private $cooperation;
+    private $collectMessages;
 
-    public function __construct(ContactGroup $contactGroup)
+    protected $messages = [];
+
+    public function __construct(ContactGroup $contactGroup, $collectMessages)
     {
         $this->contactGroup= $contactGroup;
         $this->cooperation = Cooperation::first();
+        $this->collectMessages = $collectMessages;
+    }
+
+    public function getMessages()
+    {
+        return $this->messages;
     }
 
     public function createList() {
@@ -43,7 +52,7 @@ class LapostaListHelper
         $this->createFields();
 
         foreach($this->contactGroup->contacts as $contact){
-            $lapostaMemberHelper = new LapostaMemberHelper($this->contactGroup, $contact);
+            $lapostaMemberHelper = new LapostaMemberHelper($this->contactGroup, $contact, false);
             $lapostaMemberHelper->createMember();
         }
 
@@ -97,7 +106,13 @@ class LapostaListHelper
         if(count($errorsCheckBefore)) {
             $errors = array("econobis" => $errorsCheckBefore);
         };
-        if($errors) throw ValidationException::withMessages($errors);
+        if($errors){
+            if($this->collectMessages){
+                $this->messages = $errors;
+            }else{
+                throw ValidationException::withMessages($errors);
+            }
+        }
 
         Laposta::setApiKey($this->cooperation->laposta_key);
 
@@ -120,7 +135,13 @@ class LapostaListHelper
         if(count($errorsCheckBefore)) {
             $errors = array("econobis" => $errorsCheckBefore);
         };
-        if($errors) throw ValidationException::withMessages($errors);
+        if($errors) {
+            if($this->collectMessages){
+                $this->messages = $errors;
+            }else{
+                throw ValidationException::withMessages($errors);
+            }
+        }
 
         return true;
     }
@@ -141,7 +162,13 @@ class LapostaListHelper
         if(count($errorsCheckBefore)) {
             $errors = array("econobis" => $errorsCheckBefore);
         };
-        if($errors) throw ValidationException::withMessages($errors);
+        if($errors) {
+            if($this->collectMessages){
+                $this->messages = $errors;
+            }else{
+                throw ValidationException::withMessages($errors);
+            }
+        }
 
         return true;
     }

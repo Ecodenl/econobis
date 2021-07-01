@@ -87,7 +87,6 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs">{emailAddress}</td>
                 {isUsedInLaposta && (
                     <>
-                        <td className="hidden-xs">{lapostaMemberId}</td>
                         <td className="hidden-xs">{lapostaMemberStatus}</td>
                         <td className="hidden-xs hidden-sm">
                             {lapostaMemberSince ? moment(lapostaMemberSince).format('DD-MM-Y') : ''}

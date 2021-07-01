@@ -20,8 +20,8 @@ export default {
         return axiosInstance.post(requestUrl, payload);
     },
 
-    syncStateAllMembersLaposta: id => {
-        const requestUrl = `cooperation/${id}/sync-state-all-members-laposta`;
+    syncAllWithLaposta: id => {
+        const requestUrl = `cooperation/${id}/sync-all-with-laposta`;
 
         return axiosInstance.post(requestUrl);
     },

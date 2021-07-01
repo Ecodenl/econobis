@@ -22,7 +22,9 @@ class LapostaHelper
         $this->cooperation = Cooperation::first();
     }
 
-    public function processStateAllMembersLaposta() {
+    public function syncAllWithLaposta() {
+
+        $messages = [];
 
         // General checks before API call
         $this->validateGeneral();
@@ -36,6 +38,53 @@ class LapostaHelper
                 $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => $processState]);
             }
         }
+
+        // Sync state all members from laposta
+        $this->syncStateAllMembersLaposta();
+
+        $allContactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->get();
+        foreach($allContactGroups as $contactGroup){
+            $checkContactGroup = $contactGroup->simulatedGroup ? $contactGroup->simulatedGroup : $contactGroup;
+
+            if($contactGroup->is_used_in_laposta){
+                $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id')->where('pivot.laposta_member_state', 'inprogress');
+                foreach ($lapostaContacts as $lapostaContact){
+                    if($checkContactGroup->type_id == 'simulated'){
+                        $checkContactGroup->contacts()->detach($lapostaContact);
+                    } else {
+                        $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown']);
+                    }
+                }
+
+                //find contactgroup again, because data of check group can be changed.
+                $syncContactGroup = ContactGroup::find($contactGroup->id);
+
+                $contactGroupController = new ContactGroupController();
+                $contactGroupController->syncLapostaList($syncContactGroup);
+
+                $messages = array_merge($messages, $contactGroupController->getErrorMessagesLaposta() );
+            }
+        }
+
+        if(count($messages)) {
+            throw ValidationException::withMessages(array("econobis" => $messages));
+        }
+
+    }
+
+    public function processStateAllMembersLaposta() {
+
+        if(!$this->cooperation->use_laposta || !$this->cooperation->laposta_key) {
+            return;
+        }
+
+        Laposta::setApiKey($this->cooperation->laposta_key);
+
+        // Sync state all members from laposta
+        $this->syncStateAllMembersLaposta();
+
+    }
+    protected function syncStateAllMembersLaposta() {
 
         // Sync state all members from laposta
         foreach($this->getAllLists() as $list){
@@ -53,24 +102,6 @@ class LapostaHelper
                         }
                     }
                 }
-            }
-        }
-
-        $allContactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->get();
-        foreach($allContactGroups as $contactGroup){
-            $checkContactGroup = $contactGroup->simulatedGroup ? $contactGroup->simulatedGroup : $contactGroup;
-            $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id')->where('pivot.laposta_member_state', 'inprogress');
-            foreach ($lapostaContacts as $lapostaContact){
-                if($checkContactGroup->type_id == 'simulated'){
-                    $checkContactGroup->contacts()->detach($lapostaContact);
-                } else {
-                    $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown']);
-                }
-            }
-
-            if($contactGroup->is_used_in_laposta) {
-                $contactGroupController = new ContactGroupController();
-                $contactGroupController->syncLapostaList($contactGroup);
             }
         }
 
@@ -142,4 +173,5 @@ class LapostaHelper
             }
         }
     }
+
 }

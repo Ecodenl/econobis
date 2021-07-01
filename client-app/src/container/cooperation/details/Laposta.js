@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
-import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
-import { updateContactGroupLapostaList } from '../../../actions/contact-group/ContactGroupDetailsActions';
+import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 
-function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapostaList }) {
-    const [message, setMessage] = useState('Aanmaken laposta lijst gestart');
+function CooperationDetailsLaposta({ closeModal, formData }) {
+    const [message, setMessage] = useState('Synchronisatie laposta gestart');
     const [errors, setErrors] = useState([]);
 
     useEffect(function() {
-        ContactGroupAPI.syncLapostaList(id)
+        CooperationDetailsAPI.syncAllWithLaposta(formData.id)
             .then(payload => {
-                setMessage('Laposta lijst is succesvol aangemaakt');
-                updateContactGroupLapostaList(1);
+                setMessage('Synchronisatie is succesvol uitgevoerd');
                 setTimeout(closeModal, 2000);
             })
             .catch(error => {
@@ -63,16 +60,4 @@ function ContactGroupDetailsLapostaList({ closeModal, id, updateContactGroupLapo
     );
 }
 
-const mapStateToProps = state => {
-    return {
-        id: state.contactGroupDetails.id,
-    };
-};
-
-const mapDispatchToProps = dispatch => ({
-    updateContactGroupLapostaList: lapostaListId => {
-        dispatch(updateContactGroupLapostaList(lapostaListId));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupDetailsLapostaList);
+export default CooperationDetailsLaposta;

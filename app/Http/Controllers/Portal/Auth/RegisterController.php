@@ -31,6 +31,12 @@ class RegisterController extends Controller
             abort(501, 'Er is helaas een fout opgetreden (1).');
         }
 
+        if(PortalUser::where('email', $request->get('email'))->exists()){
+            Log::info("Account is reeds geactiveerd van: |" . $request->get('email') . "|.");
+            abort(423, 'Account is reeds geactiveerd.');
+//            throw ValidationException::withMessages(['misc', 'An account already exists for this contact.']);
+        }
+
         $responsibleUser = User::find($responsibleUserId);
         $responsibleUser->occupation = '@portal-update@';
         Auth::setUser($responsibleUser);

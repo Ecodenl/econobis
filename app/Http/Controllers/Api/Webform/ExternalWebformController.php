@@ -317,6 +317,7 @@ class ExternalWebformController extends Controller
                 // HousingFile
                 'woondossier_woningtype_id' => 'building_type_id',
                 'woondossier_bouwjaar' => 'build_year',
+                'woondossier_koophuis' => 'is_house_for_sale',
                 'woondossier_gebruiksoppervlakte' => 'surface',
                 'woondossier_daktype_id' => 'roof_type_id',
                 'woondossier_energielabel_id' => 'energy_label_id',
@@ -1222,6 +1223,7 @@ class ExternalWebformController extends Controller
     {
         if($data['building_type_id'] == ''
             && $data['build_year'] == ''
+            && $data['is_house_for_sale'] == ''
             && $data['surface'] == ''
             && $data['roof_type_id'] == ''
             && $data['energy_label_id'] == ''
@@ -1293,12 +1295,13 @@ class ExternalWebformController extends Controller
                 'address_id' =>  $address->id,
                 'building_type_id' => $buildingType ? $buildingType->id : null,
                 'build_year' => $buildYear ? $buildYear : null,
+                'is_house_for_sale' => $data['is_house_for_sale'] == '0' ? false : true,
                 'surface' => is_numeric($data['surface']) ? $data['surface'] : null,
                 'roof_type_id' => $rofeType ? $rofeType->id : null,
                 'energy_label_id' => $eneryLabel ? $eneryLabel->id : null,
                 'floors' => is_numeric($data['floors']) ? $data['floors'] : null,
                 'energy_label_status_id' => $eneryLabelStatus ? $eneryLabelStatus->id : null,
-                'is_monument' => (bool)$data['is_monument'],
+                'is_monument' => $data['is_monument'] == '1' ? true : false,
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -1324,12 +1327,13 @@ class ExternalWebformController extends Controller
 
             $housingFile->building_type_id = $buildingType ? $buildingType->id : null;
             $housingFile->build_year = $buildYear ? $buildYear : null;
+            $housingFile->is_house_for_sale = $data['is_house_for_sale'] == '0' ? false : true;
             $housingFile->surface = is_numeric($data['surface']) ? $data['surface'] : null;
             $housingFile->roof_type_id = $rofeType ? $rofeType->id : null;
             $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : null;
             $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
             $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
-            $housingFile->is_monument = (bool)$data['is_monument'];
+            $housingFile->is_monument = $data['is_monument'] == '1' ? true : false;
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 

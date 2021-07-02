@@ -44,7 +44,7 @@ class FinancialOverviewProjectCSVHelper
             $chunk->load([
                 'participantProject.contact',
                 'participantProject.project',
-        ]);
+            ]);
 
             if($this->projectTypeCodeRef === 'loan'){
                 $this->csvExporter->beforeEach(function ($participant) {
@@ -88,6 +88,8 @@ class FinancialOverviewProjectCSVHelper
 
             $headers = false;
         }
+        if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');
+
         return Reader::BOM_UTF8 . $csv->getCsv();
     }
 

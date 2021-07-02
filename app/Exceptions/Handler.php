@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Laravel\Passport\Exceptions\OAuthServerException as PassportException;
 use League\OAuth2\Server\Exception\OAuthServerException as LeagueException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -34,8 +35,12 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
+        if (app()->bound('sentry') && $this->shouldReport($exception)) {
+            app('sentry')->captureException($exception);
+        }
+
         parent::report($exception);
     }
 

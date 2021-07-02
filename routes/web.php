@@ -24,4 +24,3 @@ Route::get('/portal/mollie/redirect/{participantMutationCode}', [ParticipantMuta
 
 // Welcome
 Route::get('/', 'HomeController@welcome');
-

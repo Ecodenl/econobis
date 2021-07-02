@@ -73,9 +73,6 @@ export default {
 
     validationSchemaAdditional: Yup.object().shape({
         person: Yup.object().shape({
-            titleId: Yup.string()
-                .nullable()
-                .required('Verplicht'),
             firstName: Yup.string()
                 .trim()
                 .required('Verplicht'),

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import InvoiceMolliePaymentsFormView from './InvoiceMolliePaymentsFormView';
 
 class InvoiceMolliePaymentsFormItem extends Component {
@@ -15,9 +15,7 @@ class InvoiceMolliePaymentsFormItem extends Component {
     render() {
         return (
             <div>
-                <InvoiceMolliePaymentsFormView
-                    molliePayment={this.state.molliePayment}
-                />
+                <InvoiceMolliePaymentsFormView molliePayment={this.state.molliePayment} />
             </div>
         );
     }

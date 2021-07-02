@@ -87,7 +87,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TaskDetailsToolbar);
+export default connect(mapStateToProps, null)(TaskDetailsToolbar);

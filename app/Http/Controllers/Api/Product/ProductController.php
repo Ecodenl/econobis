@@ -87,9 +87,16 @@ class ProductController extends ApiController
             ->string('invoiceFrequencyId')->whenMissing(null)->onEmpty(null)->alias('invoice_frequency_id')->next()
             ->string('paymentTypeId')->whenMissing(null)->onEmpty(null)->alias('payment_type_id')->next()
             ->string('administrationId')->validate('required|exists:administrations,id')->alias('administration_id')->next()
+            ->boolean('active')->validate('required|boolean')->next()
             ->string('ledgerId')->validate('exists:ledgers,id,deleted_at,NULL')->alias('ledger_id')->whenMissing(null)->onEmpty(null)->next()
             ->string('costCenterId')->validate('exists:cost_centers,id,deleted_at,NULL')->whenMissing(null)->onEmpty(null)->alias('cost_center_id')->next()
             ->get();
+
+        /**
+         * Frontend uses a reversed display of the boolean
+         * (represented as 'archived' instead of 'active').
+         */
+        $data['active'] = !$data['active'];
 
         $product = $product->fill($data);
 

@@ -80,7 +80,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderToolbar);

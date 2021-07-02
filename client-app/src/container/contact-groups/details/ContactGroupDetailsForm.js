@@ -40,7 +40,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ContactGroupDetailsForm);
+export default connect(mapStateToProps, null)(ContactGroupDetailsForm);

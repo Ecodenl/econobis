@@ -57,7 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MailgunDomainsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(MailgunDomainsListApp);

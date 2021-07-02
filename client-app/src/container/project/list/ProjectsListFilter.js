@@ -1,6 +1,6 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import {
     setProjectCodeFilter,
@@ -10,7 +10,6 @@ import {
 } from '../../../actions/project/ProjectsFiltersActions';
 
 const ProjectsListFilter = props => {
-
     const onProjectCodeChange = e => {
         props.setProjectCodeFilter(e.target.value);
     };
@@ -42,9 +41,12 @@ const ProjectsListFilter = props => {
                 />
             </th>
             <th>
-                <select className="form-control input-sm" value={props.filters.projectTypeId.data}
-                        onChange={onTypeProjectChange}>
-                    <option/>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.projectTypeId.data}
+                    onChange={onTypeProjectChange}
+                >
+                    <option />
                     {props.projectTypes.map(projectType => {
                         return (
                             <option key={projectType.id} value={projectType.id}>
@@ -54,14 +56,14 @@ const ProjectsListFilter = props => {
                     })}
                 </select>
             </th>
-            <th/>
-            <th/>
-            <th/>
-            <th/>
-            <th/>
-            <th/>
-            <th/>
-            <th/>
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
+            <th />
         </tr>
     );
 };
@@ -84,7 +86,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProjectsListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsListFilter);

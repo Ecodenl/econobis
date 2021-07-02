@@ -149,7 +149,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsFormPhoneNew);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormPhoneNew);

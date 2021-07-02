@@ -120,7 +120,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(DocumentsList);
+export default connect(mapStateToProps, null)(DocumentsList);

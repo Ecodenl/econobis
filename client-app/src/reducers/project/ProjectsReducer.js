@@ -2,8 +2,8 @@ import { combineReducers } from 'redux';
 
 import ProjectsListReducer from './ProjectsListReducer';
 import ProjectsPaginationReducer from './ProjectsPaginationReducer';
-import ProjectsFiltersReducer from "./ProjectsFiltersReducer";
-import ProjectsSortsReducer from "./ProjectsSortsReducer";
+import ProjectsFiltersReducer from './ProjectsFiltersReducer';
+import ProjectsSortsReducer from './ProjectsSortsReducer';
 
 const ProjectsReducer = combineReducers({
     list: ProjectsListReducer,

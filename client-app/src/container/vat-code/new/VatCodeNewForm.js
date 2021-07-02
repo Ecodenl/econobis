@@ -168,7 +168,4 @@ class VatCodeNewForm extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(VatCodeNewForm);
+export default connect(null, mapDispatchToProps)(VatCodeNewForm);

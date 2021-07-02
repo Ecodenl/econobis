@@ -7,7 +7,7 @@ import InputMultiSelectCreate from '../../../../components/form/InputMultiSelect
 
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
-import InputText from "../../../../components/form/InputText";
+import InputText from '../../../../components/form/InputText';
 
 const EmailNewFormGeneral = ({
     email,
@@ -47,11 +47,13 @@ const EmailNewFormGeneral = ({
                             label={
                                 <span>
                                     Groep
-                                        <br />
-                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
-                                            Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet de e-mail adressen van anderen. Samenvoegvelden werken.
-                                        </small>
-                                </span>}
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet
+                                        de e-mail adressen van anderen. Samenvoegvelden werken.
+                                    </small>
+                                </span>
+                            }
                             name={'contactGroupName'}
                             value={contactGroupName}
                             readOnly={true}
@@ -75,7 +77,8 @@ const EmailNewFormGeneral = ({
                                     ) : (
                                         ''
                                     )}
-                                </span>}
+                                </span>
+                            }
                             name={'to'}
                             value={to}
                             options={emailAddresses}
@@ -89,7 +92,7 @@ const EmailNewFormGeneral = ({
                 </div>
                 <div className="row">
                     <InputMultiSelectCreate
-                        label={contactGroupId ? "Extra contacten" : "Cc selecteren"}
+                        label={contactGroupId ? 'Extra contacten' : 'Cc selecteren'}
                         name={'cc'}
                         value={cc}
                         options={emailAddresses}
@@ -108,7 +111,7 @@ const EmailNewFormGeneral = ({
                             onChangeAction={handleBccIds}
                         />
                     </div>
-                ) : ( null )}
+                ) : null}
                 <div className="row">
                     <InputMultiSelect
                         label="Template"

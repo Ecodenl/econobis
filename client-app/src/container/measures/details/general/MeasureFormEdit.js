@@ -119,7 +119,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MeasureFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureFormEdit);

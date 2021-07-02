@@ -76,7 +76,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OpportunitiesListToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListToolbar);

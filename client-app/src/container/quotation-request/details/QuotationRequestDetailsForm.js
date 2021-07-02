@@ -42,7 +42,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(QuotationRequestDetailsForm);
+export default connect(mapStateToProps, null)(QuotationRequestDetailsForm);

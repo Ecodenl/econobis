@@ -3,10 +3,13 @@ import ProductsAPI from '../../api/product/ProductsAPI';
 import ProductDetailsAPI from '../../api/product/ProductDetailsAPI';
 import { hashHistory } from 'react-router';
 
-export function* fetchProductsSaga() {
+export function* fetchProductsSaga({ filters, filterType }) {
     try {
         yield put({ type: 'IS_LOADING' });
-        const products = yield call(ProductsAPI.fetchProducts);
+        const products = yield call(ProductsAPI.fetchProducts, {
+            filters: filters,
+            filterType: filterType,
+        });
         yield put({ type: 'FETCH_PRODUCTS_SUCCESS', products });
         yield put({ type: 'IS_LOADING_COMPLETE' });
     } catch (error) {

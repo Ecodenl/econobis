@@ -78,7 +78,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ContactsListHead);
+export default connect(null, mapDispatchToProps)(ContactsListHead);

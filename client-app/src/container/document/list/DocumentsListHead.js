@@ -44,7 +44,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(DocumentsListHead);
+export default connect(null, mapDispatchToProps)(DocumentsListHead);

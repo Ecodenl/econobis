@@ -31,7 +31,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(InvoiceViewToolbar);
+export default connect(mapStateToProps, null)(InvoiceViewToolbar);

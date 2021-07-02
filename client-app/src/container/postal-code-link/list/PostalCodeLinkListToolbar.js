@@ -27,7 +27,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(PostalCodeLinkListToolbar);
+export default connect(mapStateToProps, null)(PostalCodeLinkListToolbar);

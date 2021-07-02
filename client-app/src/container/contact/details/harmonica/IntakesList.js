@@ -66,7 +66,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(IntakesList);
+export default connect(mapStateToProps, null)(IntakesList);

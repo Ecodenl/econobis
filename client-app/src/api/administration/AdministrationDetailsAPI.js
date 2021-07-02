@@ -71,9 +71,7 @@ export default {
     },
 
     attachUser: administrationUser => {
-        const requestUrl = `${URL_ADMINISTRATION}/${administrationUser.administrationId}/${
-            administrationUser.userId
-        }/attach`;
+        const requestUrl = `${URL_ADMINISTRATION}/${administrationUser.administrationId}/${administrationUser.userId}/attach`;
         const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
         axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 

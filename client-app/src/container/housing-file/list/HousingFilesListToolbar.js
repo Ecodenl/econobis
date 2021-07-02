@@ -29,7 +29,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(HousingFilesListToolbar);
+export default connect(mapStateToProps, null)(HousingFilesListToolbar);

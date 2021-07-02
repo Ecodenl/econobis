@@ -38,7 +38,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ContactGroupComposedGroupDelete);
+export default connect(null, mapDispatchToProps)(ContactGroupComposedGroupDelete);

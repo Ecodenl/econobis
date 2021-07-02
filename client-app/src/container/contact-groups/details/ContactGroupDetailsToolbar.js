@@ -1,111 +1,90 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { browserHistory } from 'react-router';
 
+import ButtonIcon from '../../../components/button/ButtonIcon';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ButtonIcon from '../../../components/button/ButtonIcon';
-import ContactGroupDetailsDelete from './ContactGroupDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
-import ContactGroupDetailsLapostaList from '../../contact-groups/details/ContactGroupDetailsLapostaList';
 import { hashHistory } from 'react-router';
+import ContactGroupDetailsDelete from './ContactGroupDetailsDelete';
 
-function ContactGroupDetailsToolbar({
-    permissions,
-    contactGroup,
-    cooperation,
-    isLoading,
-    callFetchContactGroupDetails,
-}) {
-    const [showDelete, setShowDelete] = useState(false);
-    const [showSyncLapostaList, setShowSyncLapostaList] = useState(false);
+class UserDetailsToolbar extends Component {
+    constructor(props) {
+        super(props);
 
-    function toggleDelete() {
-        setShowDelete(!showDelete);
+        this.state = {
+            showDelete: false,
+        };
     }
 
-    function toggleShowSyncLapostaList() {
-        if (showSyncLapostaList) {
-            callFetchContactGroupDetails();
+    toggleDelete = () => {
+        this.setState({ showDelete: !this.state.showDelete });
+    };
+
+    render() {
+        const { id, name, type, numberOfContacts = 0, composedOf } = this.props.contactGroup;
+        let composedOfType = '';
+        if (composedOf === 'contacts') {
+            composedOfType = '(Contacten)';
+        } else if (composedOf === 'participants') {
+            composedOfType = '(Participanten)';
+        } else if (composedOf === 'both') {
+            composedOfType = '(Samengesteld)';
         }
-        setShowSyncLapostaList(!showSyncLapostaList);
-    }
 
-    const { id, name, type, numberOfContacts = 0, composedOf } = contactGroup;
-    let composedOfType = '';
-    if (composedOf === 'contacts') {
-        composedOfType = '(Contacten)';
-    } else if (composedOf === 'participants') {
-        composedOfType = '(Participanten)';
-    } else if (composedOf === 'both') {
-        composedOfType = '(Samengesteld)';
-    }
-
-    return (
-        <div className="row">
-            <div className="col-sm-12">
-                <Panel>
-                    <PanelBody className={'panel-small'}>
-                        <div className="col-md-4">
-                            <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                                {permissions.manageGroup && !contactGroup.isUsedInComposedGroup && (
-                                    <ButtonIcon iconName={'glyphicon-trash'} onClickAction={toggleDelete} />
-                                )}
-                                <ButtonText
-                                    buttonText={`Open lijst (${numberOfContacts})`}
-                                    onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}
-                                />
-                                {cooperation && cooperation.use_laposta && (
-                                    <ButtonText
-                                        onClickAction={toggleShowSyncLapostaList}
-                                        buttonText={
-                                            !contactGroup.isUsedInLaposta
-                                                ? 'Laposta lijst aanmaken'
-                                                : !contactGroup.groupUpToDateWithLaposta
-                                                ? 'Laposta lijst bijwerken'
-                                                : 'Laposta lijst actueel'
-                                        }
-                                        disabled={Boolean(
-                                            contactGroup.isUsedInLaposta && contactGroup.groupUpToDateWithLaposta
-                                        )}
-                                        buttonClassName={
-                                            contactGroup.isUsedInLaposta && !contactGroup.groupUpToDateWithLaposta
-                                                ? 'btn-danger'
-                                                : 'btn-success'
-                                        }
+        return (
+            <div className="row">
+                <div className="col-sm-12">
+                    <Panel>
+                        <PanelBody className={'panel-small'}>
+                            <div className="col-md-2">
+                                <div className="btn-group" role="group">
+                                    <ButtonIcon
+                                        iconName={'glyphicon-arrow-left'}
+                                        onClickAction={browserHistory.goBack}
                                     />
-                                )}
+                                    {this.props.permissions.manageGroup &&
+                                        !this.props.contactGroup.isUsedInComposedGroup && (
+                                            <ButtonIcon
+                                                iconName={'glyphicon-trash'}
+                                                onClickAction={this.toggleDelete}
+                                            />
+                                        )}
+                                    <ButtonText
+                                        buttonText={`Open lijst (${numberOfContacts})`}
+                                        onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="col-md-6">
-                            <h4 className="text-center">
-                                {name} {composedOfType}
-                            </h4>
-                        </div>
-                        <div className="col-md-2" />
-                    </PanelBody>
-                </Panel>
+                            <div className="col-md-8">
+                                <h4 className="text-center">
+                                    {name}
+                                    {composedOfType}
+                                </h4>
+                            </div>
+                            <div className="col-md-2" />
+                        </PanelBody>
+                    </Panel>
+                </div>
+                {this.state.showDelete && (
+                    <ContactGroupDetailsDelete
+                        closeDeleteItemModal={this.toggleDelete}
+                        name={name}
+                        id={id}
+                        contactGroupType={type.id}
+                    />
+                )}
             </div>
-            {showDelete && (
-                <ContactGroupDetailsDelete
-                    closeDeleteItemModal={toggleDelete}
-                    name={name}
-                    id={id}
-                    contactGroupType={type.id}
-                />
-            )}
-            {showSyncLapostaList && <ContactGroupDetailsLapostaList closeModal={toggleShowSyncLapostaList} />}
-        </div>
-    );
+        );
+    }
 }
 
 const mapStateToProps = state => {
     return {
         contactGroup: state.contactGroupDetails,
-        cooperation: state.systemData.cooperation,
         permissions: state.meDetails.permissions,
     };
 };
 
-export default connect(mapStateToProps, null)(ContactGroupDetailsToolbar);
+export default connect(mapStateToProps, null)(UserDetailsToolbar);

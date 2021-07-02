@@ -259,7 +259,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParticipantsListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListFilter);

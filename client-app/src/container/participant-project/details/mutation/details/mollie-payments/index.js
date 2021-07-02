@@ -17,7 +17,9 @@ const ParticipantDetailsMutationMolliePayments = ({ molliePayments }) => {
                     <span className="h5">Online betalingtransacties</span>
                 </div>
             </PanelHeader>
-            {showMolliePayments ? <ParticipantDetailsMutationMolliePaymentsList molliePayments={molliePayments} /> : null}
+            {showMolliePayments ? (
+                <ParticipantDetailsMutationMolliePaymentsList molliePayments={molliePayments} />
+            ) : null}
         </div>
     );
 };

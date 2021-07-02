@@ -32,11 +32,8 @@ const ProductsListToolbar = props => {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        products: state.products,
+        products: state.products.list,
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ProductsListToolbar);
+export default connect(mapStateToProps)(ProductsListToolbar);

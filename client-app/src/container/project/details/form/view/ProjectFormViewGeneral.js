@@ -83,44 +83,44 @@ const ProjectFormViewGeneral = ({
             </div>
             <div className="row">
                 <ViewText label={'Controle voor SCE subsidie'} value={isSceProject ? 'Ja' : 'Nee'} />
-            {isSceProject == true && (
-                <ViewText
-                    label={'Basis project'}
-                    value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
-                />
-            )}
-        </div>
-        <div className="row">
-            <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
-            {isSceProject == true && (
-                <ViewText
-                    className={'form-group col-sm-6'}
-                    label={'Benodigd aantal deelnemende leden'}
-                    value={requiredParticipants}
-                />
-            )}
-        </div>
-        {isSceProject == true && (
-            <>
-                <div className="row">
-                    <div className="col-sm-6" />
+                {isSceProject == true && (
+                    <ViewText
+                        label={'Basis project'}
+                        value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
+                    />
+                )}
+            </div>
+            <div className="row">
+                <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
+                {isSceProject == true && (
                     <ViewText
                         className={'form-group col-sm-6'}
-                        label={'Aantal deelnemende leden nog nodig'}
-                        value={numberOfParticipantsStillNeeded}
+                        label={'Benodigd aantal deelnemende leden'}
+                        value={requiredParticipants}
                     />
-                </div>
-                <div className="row">
-                    <ViewText label={'Controle postcoderoosgebied'} value={checkPostalcodeLink ? 'Ja' : 'Nee'} />
-                    <ViewText label={'Postcoderoosgebied'} value={postalcodeLink} />
-                </div>
-                <div className="row">
-                    <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />
-                </div>
-            </>
-        )}
-        <div className="row">
-            <div className="col-sm-3">
+                )}
+            </div>
+            {isSceProject == true && (
+                <>
+                    <div className="row">
+                        <div className="col-sm-6" />
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Aantal deelnemende leden nog nodig'}
+                            value={numberOfParticipantsStillNeeded}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Controle postcoderoosgebied'} value={checkPostalcodeLink ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Postcoderoosgebied'} value={postalcodeLink} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Controle op dubbele adressen'} value={checkDoubleAddresses ? 'Ja' : 'Nee'} />
+                    </div>
+                </>
+            )}
+            <div className="row">
+                <div className="col-sm-3">
                     <label htmlFor="description" className="col-sm-12">
                         Omschrijving
                     </label>
@@ -149,41 +149,46 @@ const ProjectFormViewGeneral = ({
                     value={dateEndRegistrations ? moment(dateEndRegistrations).format('L') : ''}
                 />
 
-            <ViewText label={'Administratie'} value={administration ? administration.name : ''} />
-        </div>
-        <div className="row">
-            <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
-            <ViewText label={'Deelname aan groep verplicht'} value={isMembershipRequired ? 'Ja' : 'Nee'} />
-        </div>
-        <div className="row">
-            <ViewText label={'Einde project'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
+                <ViewText label={'Administratie'} value={administration ? administration.name : ''} />
+            </div>
+            <div className="row">
+                <ViewText label={'Start project'} value={dateStart ? moment(dateStart).format('L') : ''} />
+                <ViewText label={'Deelname aan groep verplicht'} value={isMembershipRequired ? 'Ja' : 'Nee'} />
+            </div>
+            <div className="row">
+                <ViewText label={'Einde project'} value={dateEnd ? moment(dateEnd).format('L') : ''} />
+                {isMembershipRequired ? (
+                    <ViewText
+                        label={'Onderdeel van groep'}
+                        value={
+                            requiresContactGroups &&
+                            requiresContactGroups.map(requiresContactGroup => requiresContactGroup.name).join(', ')
+                        }
+                    />
+                ) : null}
+            </div>
             {isMembershipRequired ? (
-                <ViewText
-                    label={'Onderdeel van groep'}
-                    value={
-                        requiresContactGroups &&
-                        requiresContactGroups.map(requiresContactGroup => requiresContactGroup.name).join(', ')
-                    }
-                />
-            ) : null}
-        </div>
-        {isMembershipRequired ? (
-            <>
-                <div className="row">
-                    <div className="col-sm-6" />
-                    <ViewText label={'Zichtbaar voor alle contacten'} value={visibleForAllContacts ? 'Ja' : 'Nee'} />
-                </div>
-                {visibleForAllContacts ? (
+                <>
                     <div className="row">
                         <div className="col-sm-6" />
-                        <ViewText label={'Groepsinfo tekst'} value={textInfoProjectOnlyMembers} />
+                        <ViewText
+                            label={'Zichtbaar voor alle contacten'}
+                            value={visibleForAllContacts ? 'Ja' : 'Nee'}
+                        />
                     </div>
-                ) : null}
-            </>
-        ) : null}
-        <div className="row">
-            <ViewText label={'Start productie'} value={dateProduction ? moment(dateProduction).format('L') : ''} />
-            <ViewText label={'Standaard ingangsdatum mutatie'} value={dateEntry ? moment(dateEntry).format('L') : ''}
+                    {visibleForAllContacts ? (
+                        <div className="row">
+                            <div className="col-sm-6" />
+                            <ViewText label={'Groepsinfo tekst'} value={textInfoProjectOnlyMembers} />
+                        </div>
+                    ) : null}
+                </>
+            ) : null}
+            <div className="row">
+                <ViewText label={'Start productie'} value={dateProduction ? moment(dateProduction).format('L') : ''} />
+                <ViewText
+                    label={'Standaard ingangsdatum mutatie'}
+                    value={dateEntry ? moment(dateEntry).format('L') : ''}
                 />
             </div>
             <hr />
@@ -284,128 +289,130 @@ const ProjectFormViewGeneral = ({
                     <ViewText
                         label={'Vragen over lid worden aan of uit?'}
                         value={showQuestionAboutMembership ? 'Ja' : 'Nee'}
-                    />{showQuestionAboutMembership == true && (
-                <ViewText
-                    label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
-                    value={useTransactionCostsWithMembership ? 'Ja' : 'Nee'}
-                />
-            )}
-        </div>
-        {showQuestionAboutMembership == true && (
-            <>
-                <div className={'row'}>
+                    />
+                    {showQuestionAboutMembership == true && (
+                        <ViewText
+                            label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
+                            value={useTransactionCostsWithMembership ? 'Ja' : 'Nee'}
+                        />
+                    )}
+                </div>
+                {showQuestionAboutMembership == true && (
+                    <>
+                        <div className={'row'}>
+                            <ViewTextLong
+                                label={'Leden groep'}
+                                value={questionAboutMembershipGroup ? questionAboutMembershipGroup.name : ''}
+                            />
+                        </div>
+                        <hr />
+                        <div className={'row'}>
+                            <ViewTextLong label={'Regel tekst bij leden'} value={textIsMember} />
+                        </div>
+                        <hr />
+                        <div className={'row'}>
+                            <ViewTextLong label={'Regel tekst bij niet leden'} value={textIsNoMember} />
+                        </div>
+                        <div className={'row'}>
+                            <ViewTextLong label={'Keuzetekst (1) bij niet leden'} value={textBecomeMember} />
+                        </div>
+                        <div className={'row'}>
+                            <ViewTextLong
+                                label={'Contacten die keuze 1 maken toevoegen aan'}
+                                value={memberGroup ? memberGroup.name : ''}
+                            />
+                        </div>
+                        <div className={'row'}>
+                            <ViewTextLong label={'Keuzetekst (2) bij niet leden'} value={textBecomeNoMember} />
+                        </div>
+                        <div className={'row'}>
+                            <ViewTextLong
+                                label={'Contacten die keuze 2 maken toevoegen aan'}
+                                value={noMemberGroup ? noMemberGroup.name : ''}
+                            />
+                        </div>
+                    </>
+                )}
+                <hr />
+                <div className="row">
+                    <label htmlFor="agreeTerms" className="col-sm-12">
+                        <strong>Voorwaarden</strong>
+                    </label>
+                </div>
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="textAgreeTerms" className="col-sm-12">
+                            Voorwaarden tekst
+                        </label>
+                    </div>
+                    <div className="col-sm-9" id="textAgreeTerms">
+                        {textAgreeTerms}
+                    </div>
+                </div>
+                <hr />
+                <div className="row">
+                    <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
+                </div>
+                <div className="row">
+                    <ViewTextLong label={'Voorwaarden link tekst'} value={textLinkAgreeTerms} />
+                </div>
+                <hr />
+                <div className="row">
+                    <ViewTextLong label={'Project informatie link'} value={linkUnderstandInfo} />
+                </div>
+                <div className="row">
+                    <ViewTextLong label={'Project informatie link tekst'} value={textLinkUnderstandInfo} />
+                </div>
+                <hr />
+                <div className="row">
+                    <label htmlFor="confirmAgreement" className="col-sm-12">
+                        <strong>Bevestigen</strong>
+                    </label>
+                </div>
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="textAcceptAgreement" className="col-sm-12">
+                            Bevestigen tekst
+                        </label>
+                    </div>
+                    <div className="col-sm-9" id="textAcceptAgreement">
+                        {textAcceptAgreement}
+                    </div>
+                </div>
+                <div className="row">
+                    <ViewTextLong label={'Bevestigen knop tekst'} value={textAcceptAgreementQuestion} />
+                </div>
+                <div className="row">
                     <ViewTextLong
-                        label={'Leden groep'}
-                        value={questionAboutMembershipGroup ? questionAboutMembershipGroup.name : ''}
+                        label={'Document template inschrijfformulier'}
+                        value={documentTemplateAgreement ? documentTemplateAgreement.name : ''}
+                    />
+                </div>
+                <div className="row">
+                    <ViewTextLong
+                        label={'Email template inschrijfbevestiging'}
+                        value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
                     />
                 </div>
                 <hr />
-                <div className={'row'}>
-                    <ViewTextLong label={'Regel tekst bij leden'} value={textIsMember} />
+                <div className="row">
+                    <label htmlFor="confirmAgreementAndPayment" className="col-sm-12">
+                        <strong>Bevestigen en betalen</strong>
+                    </label>
+                </div>
+                <div className="row">
+                    <ViewText label={'Direct elektronisch betalen via Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
                 </div>
                 <hr />
-                <div className={'row'}>
-                    <ViewTextLong label={'Regel tekst bij niet leden'} value={textIsNoMember} />
+                <div className="row">
+                    <label htmlFor="registrationConfirmed" className="col-sm-12">
+                        <strong>Bevestiging inschrijving</strong>
+                    </label>
                 </div>
-                <div className={'row'}>
-                    <ViewTextLong label={'Keuzetekst (1) bij niet leden'} value={textBecomeMember} />
+                <div className="row">
+                    <ViewTextLong label={'Inschrijving afgerond tekst'} value={textRegistrationFinished} />
                 </div>
-                <div className={'row'}>
-                    <ViewTextLong
-                        label={'Contacten die keuze 1 maken toevoegen aan'}
-                        value={memberGroup ? memberGroup.name : ''}
-                    />
-                </div>
-                <div className={'row'}>
-                    <ViewTextLong label={'Keuzetekst (2) bij niet leden'} value={textBecomeNoMember} />
-                </div>
-                <div className={'row'}>
-                    <ViewTextLong
-                        label={'Contacten die keuze 2 maken toevoegen aan'}
-                        value={noMemberGroup ? noMemberGroup.name : ''}
-                    />
-                </div>
-            </>
-        )}
-        <hr />
-        <div className="row">
-            <label htmlFor="agreeTerms" className="col-sm-12">
-                <strong>Voorwaarden</strong>
-            </label>
-        </div>
-        <div className="row">
-            <div className="col-sm-3">
-                <label htmlFor="textAgreeTerms" className="col-sm-12">
-                    Voorwaarden tekst
-                </label>
-            </div>
-            <div className="col-sm-9" id="textAgreeTerms">
-                {textAgreeTerms}
-            </div>
-        </div>
-        <hr />
-        <div className="row">
-            <ViewTextLong label={'Voorwaarden link'} value={linkAgreeTerms} />
-        </div>
-        <div className="row">
-            <ViewTextLong label={'Voorwaarden link tekst'} value={textLinkAgreeTerms} />
-        </div>
-        <hr />
-        <div className="row">
-            <ViewTextLong label={'Project informatie link'} value={linkUnderstandInfo} />
-        </div>
-        <div className="row">
-            <ViewTextLong label={'Project informatie link tekst'} value={textLinkUnderstandInfo} />
-        </div>
-        <hr />
-        <div className="row">
-            <label htmlFor="confirmAgreement" className="col-sm-12">
-                <strong>Bevestigen</strong>
-            </label>
-        </div>
-        <div className="row">
-            <div className="col-sm-3">
-                <label htmlFor="textAcceptAgreement" className="col-sm-12">
-                    Bevestigen tekst
-                </label>
-            </div>
-            <div className="col-sm-9" id="textAcceptAgreement">
-                {textAcceptAgreement}
-            </div>
-        </div>
-        <div className="row">
-            <ViewTextLong label={'Bevestigen knop tekst'} value={textAcceptAgreementQuestion} />
-        </div>
-        <div className="row">
-            <ViewTextLong
-                label={'Document template inschrijfformulier'}
-                value={documentTemplateAgreement ? documentTemplateAgreement.name : ''}
-            />
-        </div>
-        <div className="row">
-            <ViewTextLong
-                label={'Email template inschrijfbevestiging'}
-                value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
-            />
-        </div>
-        <hr />
-        <div className="row">
-            <label htmlFor="confirmAgreementAndPayment" className="col-sm-12">
-                <strong>Bevestigen en betalen</strong>
-            </label>
-        </div>
-        <div className="row">
-            <ViewText label={'Direct elektronisch betalen via Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
-        </div>
-        <hr />
-        <div className="row">
-            <label htmlFor="registrationConfirmed" className="col-sm-12">
-                <strong>Bevestiging inschrijving</strong>
-            </label>
-        </div>
-        <div className="row">
-            <ViewTextLong label={'Inschrijving afgerond tekst'} value={textRegistrationFinished} />
-        </div></section>
+            </section>
         ) : null}
     </React.Fragment>
 );

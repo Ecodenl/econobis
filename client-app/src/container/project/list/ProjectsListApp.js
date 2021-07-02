@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchProjects, clearProjects } from '../../../actions/project/ProjectsActions';
-import { setProjectCodeFilter, setProjectFilter, setTypeProjectFilter, clearFilterProjects } from '../../../actions/project/ProjectsFiltersActions';
+import {
+    setProjectCodeFilter,
+    setProjectFilter,
+    setTypeProjectFilter,
+    clearFilterProjects,
+} from '../../../actions/project/ProjectsFiltersActions';
 import { setProjectsPagination } from '../../../actions/project/ProjectsPaginationActions';
 import ProjectsListToolbar from './ProjectsListToolbar';
 import ProjectsList from './ProjectsList';
-import {bindActionCreators} from "redux";
-import filterHelper from "../../../helpers/FilterHelper";
-import {isEmpty} from "lodash";
+import { bindActionCreators } from 'redux';
+import filterHelper from '../../../helpers/FilterHelper';
+import { isEmpty } from 'lodash';
 
 class ProjectsListApp extends Component {
     constructor(props) {
@@ -98,9 +103,7 @@ class ProjectsListApp extends Component {
                 <div className="panel panel-default col-md-12">
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
-                            <ProjectsListToolbar
-                                resetProjectFilters={() => this.resetProjectFilters()}
-                            />
+                            <ProjectsListToolbar resetProjectFilters={() => this.resetProjectFilters()} />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <ProjectsList
@@ -137,11 +140,9 @@ const mapDispatchToProps = dispatch => {
             setTypeProjectFilter,
             clearFilterProjects,
             setProjectsPagination,
-        }, dispatch
+        },
+        dispatch
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ProjectsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsListApp);

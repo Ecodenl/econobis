@@ -39,7 +39,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactDetailsFormPortalUserDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormPortalUserDelete);

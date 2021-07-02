@@ -75,7 +75,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(InvoiceDetailsHarmonica);
+export default connect(mapStateToProps, null)(InvoiceDetailsHarmonica);

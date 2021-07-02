@@ -57,7 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(TeamsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamsListApp);

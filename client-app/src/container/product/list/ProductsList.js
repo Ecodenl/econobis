@@ -7,6 +7,7 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 import ProductsListItem from './ProductsListItem';
 import ProductDeleteItem from './ProductDeleteItem';
 import { connect } from 'react-redux';
+import ProductsListFilter from './ProductsListFilter';
 
 class ProductsList extends Component {
     constructor(props) {
@@ -20,6 +21,13 @@ class ProductsList extends Component {
             },
         };
     }
+
+    // On key Enter filter form will submit
+    handleKeyUp = e => {
+        if (e.keyCode === 13) {
+            this.props.onSubmitFilter();
+        }
+    };
 
     showDeleteItemModal = (id, name) => {
         this.setState({
@@ -61,36 +69,40 @@ class ProductsList extends Component {
 
         return (
             <div>
-                <DataTable>
-                    <DataTableHead>
-                        <tr className="thead-title">
-                            <DataTableHeadTitle title={'Productcode'} width={'15%'} />
-                            <DataTableHeadTitle title={'Product'} width={'20%'} />
-                            <DataTableHeadTitle title={'Prijs ex. BTW'} width={'15%'} />
-                            <DataTableHeadTitle title={'BTW percentage'} width={'15%'} />
-                            <DataTableHeadTitle title={'Prijs incl. BTW'} width={'15%'} />
-                            <DataTableHeadTitle title={'Administratie'} width={'15%'} />
-                            <DataTableHeadTitle title={''} width={'5%'} />
-                        </tr>
-                    </DataTableHead>
-                    <DataTableBody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={7}>{loadingText}</td>
+                <form onKeyUp={this.handleKeyUp}>
+                    <DataTable>
+                        <DataTableHead>
+                            <tr className="thead-title">
+                                <DataTableHeadTitle title={'Productcode'} width={'20%'} />
+                                <DataTableHeadTitle title={'Product'} width={'20%'} />
+                                <DataTableHeadTitle title={'Prijs ex. BTW'} width={'10%'} />
+                                <DataTableHeadTitle title={'BTW percentage'} width={'10%'} />
+                                <DataTableHeadTitle title={'Prijs incl. BTW'} width={'10%'} />
+                                <DataTableHeadTitle title={'Administratie'} width={'15%'} />
+                                <DataTableHeadTitle title={'Gearchiveerd'} width={'5%'} />
+                                <DataTableHeadTitle title={''} width={'5%'} />
                             </tr>
-                        ) : (
-                            this.props.products.map(product => {
-                                return (
-                                    <ProductsListItem
-                                        key={product.id}
-                                        showDeleteItemModal={this.showDeleteItemModal}
-                                        {...product}
-                                    />
-                                );
-                            })
-                        )}
-                    </DataTableBody>
-                </DataTable>
+                            <ProductsListFilter onSubmitFilter={this.props.onSubmitFilter} />
+                        </DataTableHead>
+                        <DataTableBody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={8}>{loadingText}</td>
+                                </tr>
+                            ) : (
+                                this.props.products.map(product => {
+                                    return (
+                                        <ProductsListItem
+                                            key={product.id}
+                                            showDeleteItemModal={this.showDeleteItemModal}
+                                            {...product}
+                                        />
+                                    );
+                                })
+                            )}
+                        </DataTableBody>
+                    </DataTable>
+                </form>
 
                 {this.state.showDeleteItem && (
                     <ProductDeleteItem closeDeleteItemModal={this.closeDeleteItemModal} {...this.state.deleteItem} />
@@ -102,9 +114,10 @@ class ProductsList extends Component {
 
 const mapStateToProps = state => {
     return {
+        products: state.products.list,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
     };
 };
 
-export default connect(mapStateToProps)(ProductsList);
+export default connect(mapStateToProps, null)(ProductsList);

@@ -58,7 +58,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(UserDetailsFormRoleListItem);
+export default connect(null, mapDispatchToProps)(UserDetailsFormRoleListItem);

@@ -36,9 +36,7 @@ class InvoiceDetailsForm extends Component {
                 <InvoiceDetailsFormGeneral />
                 <InvoiceProductsForm />
                 <InvoicePaymentsForm />
-                { this.props.invoiceDetails.usesMollie && (
-                    <InvoiceMolliePaymentsForm />
-                )}
+                {this.props.invoiceDetails.usesMollie && <InvoiceMolliePaymentsForm />}
                 <InvoiceDetailsFormConclusion />
             </div>
         );

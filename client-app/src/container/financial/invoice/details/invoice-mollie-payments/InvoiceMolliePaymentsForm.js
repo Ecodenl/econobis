@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import InvoiceMolliePaymentsFormList from './InvoiceMolliePaymentsFormList';
 import Panel from '../../../../../components/panel/Panel';

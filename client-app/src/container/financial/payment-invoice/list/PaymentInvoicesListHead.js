@@ -30,7 +30,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(PaymentInvoicesListHead);
+export default connect(null, mapDispatchToProps)(PaymentInvoicesListHead);

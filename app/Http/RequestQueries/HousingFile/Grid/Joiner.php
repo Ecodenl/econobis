@@ -21,8 +21,8 @@ class Joiner extends RequestJoiner
 
     protected function applyContactJoin($query)
     {
-        $query->join('addresses', 'housing_files.address_id', '=', 'addresses.id');
-        $query->join('contacts', 'addresses.contact_id', '=', 'contacts.id');
+        $query->join('addresses as contactAddress', 'housing_files.address_id', '=', 'contactAddress.id');
+        $query->join('contacts', 'contactAddress.contact_id', '=', 'contacts.id');
     }
 
     protected function applyEnergyLabelJoin($query)

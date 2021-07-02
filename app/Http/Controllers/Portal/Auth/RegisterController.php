@@ -33,7 +33,7 @@ class RegisterController extends Controller
 
         if(PortalUser::where('email', $request->get('email'))->exists()){
             Log::info("Account is reeds geactiveerd van: |" . $request->get('email') . "|.");
-            abort(423, 'Account is reeds geactiveerd.');
+            abort(423, 'Account is reeds geactiveerd. Om in te loggen of wachtwoord vergeten:');
 //            throw ValidationException::withMessages(['misc', 'An account already exists for this contact.']);
         }
 

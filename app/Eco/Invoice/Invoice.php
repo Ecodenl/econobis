@@ -390,6 +390,9 @@ class Invoice extends Model
 
     public function getEconobisPaymentLinkAttribute()
     {
+        if(!$this->code || empty($this->code)){
+            return '';
+        }
         return route('mollie.pay', [
             'invoiceCode' => $this->code,
         ]);

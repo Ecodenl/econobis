@@ -27,6 +27,7 @@
         "php-imap/php-imap": "^4.0",
         "php-twinfield/twinfield": "2.7.*",
         "phpoffice/phpspreadsheet": "^1.7",
+        "sentry/sentry-laravel": "^2.7",
         "spatie/laravel-permission": "^3.0",
         "spatie/valuestore": "^1.2",
         "usmanhalalit/laracsv": "1.*@dev",

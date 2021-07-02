@@ -706,7 +706,8 @@ class AdministrationNewForm extends Component {
                             />
                         )}
 
-                        {this.props.meDetails.email === 'support@econobis.nl' && (
+                        {(this.props.meDetails.email === 'support@econobis.nl' ||
+                            this.props.meDetails.email === 'software@xaris.nl') && (
                             <div className="row">
                                 <InputToggle
                                     label={'Gebruikt Mollie'}

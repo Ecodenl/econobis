@@ -49,11 +49,15 @@ class UserController extends Controller
         $user = new User();
         $user->fill($data);
 
-        $alfrescoHelper = new AlfrescoHelper( \Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
-
         //checks if account exists
-        $exists = $alfrescoHelper->checkIfAccountExists($user);
-        $exists ? $user->has_alfresco_account = 1 : $user->has_alfresco_account = 0;
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            $alfrescoHelper = new AlfrescoHelper( \Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
+            $exists = $alfrescoHelper->checkIfAccountExists($user);
+            $exists ? $user->has_alfresco_account = 1 : $user->has_alfresco_account = 0;
+        } else {
+            $user->has_alfresco_account = 0;
+        }
+
 
         $user->alfresco_password = 'nvt';
         $user->save();

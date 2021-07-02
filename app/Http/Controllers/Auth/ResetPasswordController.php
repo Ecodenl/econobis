@@ -96,17 +96,17 @@ class ResetPasswordController extends Controller
             $user = User::where('email', $request->input('email'))->first();
 
             $didCreateAlfrescoAccount = false;
-            if(!$user->has_alfresco_account){
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
-            if(!$alfrescoHelper->checkIfAccountExists($user)) {
-                $alfrescoHelper->createNewAccount($user, $request->input('password'));
-                $didCreateAlfrescoAccount = true;
-                $user->has_alfresco_account = 1;
-            }
-            else{
-                $alfrescoHelper->assignUserToPrivateSite($user->email);
-                $user->has_alfresco_account = 1;
-            }
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && !$user->has_alfresco_account){
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
+                if(!$alfrescoHelper->checkIfAccountExists($user)) {
+                    $alfrescoHelper->createNewAccount($user, $request->input('password'));
+                    $didCreateAlfrescoAccount = true;
+                    $user->has_alfresco_account = 1;
+                }
+                else{
+                    $alfrescoHelper->assignUserToPrivateSite($user->email);
+                    $user->has_alfresco_account = 1;
+                }
             }
             $user->save();
             $this->sendResetResponse($didCreateAlfrescoAccount, $user);

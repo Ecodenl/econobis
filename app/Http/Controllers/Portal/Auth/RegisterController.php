@@ -62,6 +62,8 @@ class RegisterController extends Controller
 
         DB::commit();
 
+        $portalUser->sendAccountActivatedNotification();
+
 //        Passport::actingAs($portalUser);
 
         return Jory::on($contact);

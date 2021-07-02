@@ -8,9 +8,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { AuthConsumer } from '../../../context/AuthContext';
 import ButtonText from '../../../components/button/ButtonText';
+import Alert from 'react-bootstrap/Alert';
 
 const Register = ({ location, match, login }) => {
     const [showError, toggleError] = useState(false);
+    const [showLoginLink, setLoginLink] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [showSuccessMessage, toggleSuccessMessage] = useState(false);
     const registrationCode = decodeURIComponent(match.params.registrationCode);
     const email = decodeURIComponent(match.params.email);
@@ -30,6 +33,8 @@ const Register = ({ location, match, login }) => {
                 AuthAPI.login({ username: email, password: values.password })
                     .then(payload => {
                         toggleError(false);
+                        setLoginLink(false);
+                        setErrorMessage('');
                         login(payload.data, () => {});
 
                         setTimeout(() => {
@@ -39,10 +44,29 @@ const Register = ({ location, match, login }) => {
                     .catch(error => {
                         // If login fails show error and then set submitting back to false
                         toggleError(true);
+                        setLoginLink(true);
+                        setErrorMessage('Er is iets fout gegaan bij automatisch inloggen na activeren.');
                         actions.setSubmitting(false);
                     });
             })
             .catch(error => {
+                console.log(error.response.status);
+                console.log(error.response.data.message);
+                toggleError(true);
+                if (
+                    error.response &&
+                    error.response.data &&
+                    error.response.data.message &&
+                    error.response.status === 423
+                ) {
+                    setLoginLink(true);
+                    setErrorMessage(error.response.data.message);
+                } else {
+                    setLoginLink(false);
+                    setErrorMessage(
+                        'Er is iets fout gegaan bij activeren. Controleer of de activatie link juist en volledig is.'
+                    );
+                }
                 // If login fails show error and then set submitting back to false
                 actions.setSubmitting(false);
             });
@@ -75,9 +99,24 @@ const Register = ({ location, match, login }) => {
                             ) : (
                                 <>
                                     <h3 className={'authorization-text'}>Account activeren</h3>
-                                    <RegisterForm handleSubmit={handleSubmit} email={email} />
+                                    {!showLoginLink ? <RegisterForm handleSubmit={handleSubmit} email={email} /> : null}
+                                    {showError ? (
+                                        <Row className={'justify-content-center align-content-center '}>
+                                            <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
+                                                {errorMessage}
+                                            </Alert>
+                                        </Row>
+                                    ) : null}
                                 </>
                             )}
+                            {showLoginLink ? (
+                                <ButtonText
+                                    buttonText={'Ga naar loginscherm'}
+                                    onClickAction={toggleRedirect}
+                                    buttonClassName={'authorization-button'}
+                                    size="sm"
+                                />
+                            ) : null}
                         </Col>
                     </Row>
                 </Container>

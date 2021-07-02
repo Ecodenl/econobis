@@ -162,9 +162,9 @@ const AdministrationDetailsFormGeneralView = props => {
 
                     <div className="row">
                         <ViewText label={'Gebruikt Mollie'} value={usesMollie ? 'Ja' : 'Nee'} />
-                        {props.meDetails.email === 'support@econobis.nl' && usesMollie && (
-                            <ViewText label={'Mollie API key'} value={mollieApiKey} />
-                        )}
+                        {(props.meDetails.email === 'support@econobis.nl' ||
+                            props.meDetails.email === 'software@xaris.nl') &&
+                            usesMollie && <ViewText label={'Mollie API key'} value={mollieApiKey} />}
                     </div>
 
                     {usesTwinfield == true && (

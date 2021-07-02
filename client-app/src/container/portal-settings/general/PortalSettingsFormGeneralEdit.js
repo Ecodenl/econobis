@@ -21,7 +21,7 @@ class PortalSettingsFormGeneralEdit extends Component {
         super(props);
 
         this.manageTechnicalPortalSettings =
-            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'info@xaris.nl'
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
                 ? true
                 : false;
 

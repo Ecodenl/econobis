@@ -37,46 +37,46 @@ class RevenueDistributionCSVHelper
             $chunk->load([
                 'contact.person.title',
                 'contact.primaryAddress',
-        ]);
+            ]);
 
-        $this->csvExporter->beforeEach(function ($distribution) {
-            $distribution->created_at_date = $distribution->created_at->format('d-m-Y');
-            $distribution->updated_at_date = $distribution->updated_at->format('d-m-Y');
+            $this->csvExporter->beforeEach(function ($distribution) {
+                $distribution->created_at_date = $distribution->created_at->format('d-m-Y');
+                $distribution->updated_at_date = $distribution->updated_at->format('d-m-Y');
 
-            $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
-            $distribution->period_end = $this->formatDate($distribution->revenue->date_end);
+                $distribution->period_start = $this->formatDate($distribution->revenue->date_begin);
+                $distribution->period_end = $this->formatDate($distribution->revenue->date_end);
 
-            $distribution->type = $distribution->contact->getType()->name;
+                $distribution->type = $distribution->contact->getType()->name;
 
-            $address = $distribution->contact->primaryAddress;
+                $address = $distribution->contact->primaryAddress;
 
-            $distribution->street = ($address ? $address->street : '');
-            $distribution->street_number = ($address ? $address->number : '');
-            $distribution->addition = ($address ? $address->addition : '');
-            $distribution->postal_code = ($address ? $address->postal_code : '');
-            $distribution->city = ($address ? $address->city : '');
-            $distribution->country = (($address && $address->country) ? $address->country->name : '');
+                $distribution->street = ($address ? $address->street : '');
+                $distribution->street_number = ($address ? $address->number : '');
+                $distribution->addition = ($address ? $address->addition : '');
+                $distribution->postal_code = ($address ? $address->postal_code : '');
+                $distribution->city = ($address ? $address->city : '');
+                $distribution->country = (($address && $address->country) ? $address->country->name : '');
 
-            // person/organisation fields
-            if ($distribution->contact->type_id === 'person') {
-                $distribution->title = $distribution->contact->person->title;
-                $distribution->initials = $distribution->contact->person->initials;
-                $distribution->first_name = $distribution->contact->person->first_name;
-                $distribution->last_name_prefix = $distribution->contact->person->last_name_prefix;
-                $distribution->last_name = $distribution->contact->person->last_name;
-            }
-            // participatios or loan amount field
-            if ($this->projectTypeCodeRef === 'loan') {
-                $distribution->participations_or_loan_amount = $this->formatFinancial($distribution->participations_loan_amount);
-            }else{
-                $distribution->participations_or_loan_amount = $distribution->participations_amount;
-            }
+                // person/organisation fields
+                if ($distribution->contact->type_id === 'person') {
+                    $distribution->title = $distribution->contact->person->title;
+                    $distribution->initials = $distribution->contact->person->initials;
+                    $distribution->first_name = $distribution->contact->person->first_name;
+                    $distribution->last_name_prefix = $distribution->contact->person->last_name_prefix;
+                    $distribution->last_name = $distribution->contact->person->last_name;
+                }
+                // participatios or loan amount field
+                if ($this->projectTypeCodeRef === 'loan') {
+                    $distribution->participations_or_loan_amount = $this->formatFinancial($distribution->participations_loan_amount);
+                }else{
+                    $distribution->participations_or_loan_amount = $distribution->participations_amount;
+                }
 
-            $distribution->date_payout = $this->formatDate($distribution->date_payout);
+                $distribution->date_payout = $this->formatDate($distribution->date_payout);
 
-            $distribution->payout_formatted = $this->formatFinancial($distribution->payout);
-            $distribution->kwh_return_formatted = $this->formatFinancial($distribution->kwh_return);
-        });
+                $distribution->payout_formatted = $this->formatFinancial($distribution->payout);
+                $distribution->kwh_return_formatted = $this->formatFinancial($distribution->kwh_return);
+            });
 
 
             $csv = $this->csvExporter->build($chunk, [
@@ -111,6 +111,7 @@ class RevenueDistributionCSVHelper
             ], $headers);
             $headers = false;
         }
+        if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');
 
         return Reader::BOM_UTF8 . $csv->getCsv();
     }

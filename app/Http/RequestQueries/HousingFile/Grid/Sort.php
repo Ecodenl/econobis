@@ -27,7 +27,7 @@ class Sort extends RequestSort
         'address' => 'address.street',
         'fullName' => 'contact.full_name',
         'buildingType' => 'building_type.name',
-        'energyLabel' => 'energy_label.name',
+        'energyLabel' => 'energy_labels.name',
     ];
 
     protected $joins = [

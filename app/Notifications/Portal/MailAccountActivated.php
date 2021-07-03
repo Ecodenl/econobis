@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Portal;
 
+use App\Helpers\Settings\PortalSettings;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -47,6 +48,6 @@ class MailAccountActivated extends Notification
         return (new MailMessage)
             ->subject("Account geactiveerd")
             ->line($name[1] . " " . $name[0] . ", je account is succesvol geactiveerd.")
-            ->action('Inloggen', url('/portal/#/login'));
+            ->action('Inloggen', 'https://' . PortalSettings::get("portalUrl") . '/#/login');
     }
 }

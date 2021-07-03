@@ -27,6 +27,11 @@ class HousingFile extends Model
         'id'
     ];
 
+    protected $casts = [
+        'is_house_for_sale' => 'boolean',
+        'is_monument' => 'boolean',
+    ];
+
     public function address()
     {
         return $this->belongsTo(Address::class);

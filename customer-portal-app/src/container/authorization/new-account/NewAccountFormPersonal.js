@@ -14,9 +14,6 @@ const validationSchema = Yup.object().shape({
     email: Yup.string()
         .email()
         .required('Verplicht'),
-    personTitleId: Yup.string()
-        .nullable()
-        .required('Verplicht'),
     personFirstName: Yup.string()
         .trim()
         .required('Verplicht'),

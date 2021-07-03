@@ -2,6 +2,7 @@
 
 namespace App\Eco\ParticipantProject;
 
+use App\Eco\Project\ProjectRevenueDistribution;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,6 +28,10 @@ class ParticipantProjectPayoutType extends Model
     public function projectRevenue()
     {
         return $this->hasMany(ProjectRevenue::class, 'id', 'payout_type_id');
+    }
+    public function projectRevenueDistribution()
+    {
+        return $this->hasMany(ProjectRevenueDistribution::class, 'id', 'payout_type_id');
     }
 
 }

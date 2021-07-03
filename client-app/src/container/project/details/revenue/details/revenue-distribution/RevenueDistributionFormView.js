@@ -21,6 +21,7 @@ const RevenueDistributionFormView = props => {
         participationsLoanAmount,
         payout,
         payoutType,
+        payoutTypeCodeRef,
         datePayout,
         energySupplierName,
         status,
@@ -38,7 +39,7 @@ const RevenueDistributionFormView = props => {
     const missingCity = !city || validator.isEmpty(city) ? true : false;
     const missingIban =
         !(props.projectRevenueCategoryCodeRef === 'revenueKwh') &&
-        payoutType === 'Rekening' &&
+        payoutTypeCodeRef === 'account' &&
         (!contactIban || validator.isEmpty(contactIban)) &&
         (!payoutIban || validator.isEmpty(payoutIban))
             ? true

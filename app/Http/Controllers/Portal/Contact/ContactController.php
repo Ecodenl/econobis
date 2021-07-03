@@ -261,6 +261,10 @@ class ContactController extends ApiController
         $person = $contact->person;
         $personData = $request->person;
         if ($person) {
+            if (!isset($personData['titleId']) || empty($personData['titleId']) || $personData['titleId'] == 'null' || $personData['titleId'] == 0 ) {
+                $personData['titleId'] = null;
+            }
+
             $lnp = $person->last_name_prefix;
             if (isset($personData['lastNamePrefixId']) ) {
                 if ($personData['lastNamePrefixId'] == 'null' || $personData['lastNamePrefixId'] == 0) {
@@ -270,6 +274,7 @@ class ContactController extends ApiController
                 }
             }
             $personData['lastNamePrefix'] = $lnp;
+
 
             unset($personData['title']);
             unset($personData['lastNamePrefixId']);

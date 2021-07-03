@@ -20,6 +20,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             fullAddress,
             buildingType,
             buildYear,
+            isHouseForSale,
             surface,
             roofType,
             energyLabel,
@@ -36,6 +37,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 fullAddress,
                 buildingTypeId: buildingType ? buildingType.id : '',
                 buildYear: buildYear ? buildYear : '',
+                isHouseForSale: isHouseForSale ? isHouseForSale : true,
                 surface: surface ? surface : '',
                 roofTypeId: roofType ? roofType.id : '',
                 energyLabelId: energyLabel ? energyLabel.id : '',
@@ -77,6 +79,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             fullName,
             buildingTypeId,
             buildYear,
+            isHouseForSale,
             surface,
             roofTypeId,
             energyLabelId,
@@ -174,6 +177,15 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         label={'Monument'}
                         name={'isMonument'}
                         value={isMonument}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={'Koophuis'}
+                        name={'isHouseForSale'}
+                        value={isHouseForSale}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

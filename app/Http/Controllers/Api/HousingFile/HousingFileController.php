@@ -73,115 +73,46 @@ class HousingFileController extends ApiController
         return FullHousingFile::make($housingFile);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, RequestInput $requestInput)
     {
         $this->authorize('manage', HousingFile::class);
 
-        $data = $request->validate([
-            'addressId' => 'required|exists:addresses,id',
-            'buildingTypeId' => 'exists:building_types,id',
-            'buildYear' => 'integer|between:1500,3000',
-            'surface' => 'integer',
-            'roofTypeId' => 'exists:roof_types,id',
-            'energyLabelId' => 'exists:energy_labels,id',
-            'floors' => 'integer',
-            'energyLabelStatusId' => 'exists:energy_label_status,id',
-            'isMonument' => 'boolean',
-        ]);
+        $data = $requestInput->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
+            ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
+            ->boolean('isHouseForSale')->validate('boolean')->alias('is_house_for_sale')->whenMissing(true)->next()
+            ->integer('surface')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
+            ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()
+            ->integer('energyLabelId')->validate('nullable|exists:energy_labels,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_id')->next()
+            ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
+            ->integer('energyLabelStatusId')->validate('nullable|exists:energy_label_status,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_status_id')->next()
+            ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
+            ->get();
 
-        //basic HousingFile
-        $housingFile = new HousingFile();
-
-        $housingFile->address_id = $data['addressId'];
-
-        if ($data['buildingTypeId']) {
-            $housingFile->building_type_id = $data['buildingTypeId'];
-        }
-
-        if ($data['buildYear']) {
-            $housingFile->build_year = $data['buildYear'];
-        }
-
-        if ($data['surface']) {
-            $housingFile->surface = $data['surface'];
-        }
-
-        if ($data['roofTypeId']) {
-            $housingFile->roof_type_id = $data['roofTypeId'];
-        }
-
-        if ($data['energyLabelId']) {
-            $housingFile->energy_label_id = $data['energyLabelId'];
-        }
-
-        if ($data['floors']) {
-            $housingFile->floors = $data['floors'];
-        }
-
-        if ($data['energyLabelStatusId']) {
-            $housingFile->energy_label_status_id = $data['energyLabelStatusId'];
-        }
-
-        if ($data['isMonument']) {
-            $housingFile->is_monument = $data['isMonument'];
-        }
-
+        $housingFile = new HousingFile($data);
         $housingFile->save();
 
         return $this->show($housingFile);
     }
 
 
-    public function update(Request $request, HousingFile $housingFile)
+    public function update(RequestInput $requestInput, HousingFile $housingFile)
     {
         $this->authorize('manage', HousingFile::class);
 
-        $data = $request->validate([
-            'addressId' => 'required|exists:addresses,id',
-            'buildingTypeId' => 'exists:building_types,id',
-            'buildYear' => 'integer|between:1500,3000',
-            'surface' => 'integer',
-            'roofTypeId' => 'exists:roof_types,id',
-            'energyLabelId' => 'exists:energy_labels,id',
-            'floors' => 'integer',
-            'energyLabelStatusId' => 'exists:energy_label_status,id',
-            'isMonument' => 'boolean',
-        ]);
+        $data = $requestInput->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
+            ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
+            ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
+            ->boolean('isHouseForSale')->validate('boolean')->alias('is_house_for_sale')->whenMissing(true)->next()
+            ->integer('surface')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
+            ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()
+            ->integer('energyLabelId')->validate('nullable|exists:energy_labels,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_id')->next()
+            ->integer('floors')->validate('nullable|integer')->onEmpty(null)->whenMissing(null)->alias('floors')->next()
+            ->integer('energyLabelStatusId')->validate('nullable|exists:energy_label_status,id')->onEmpty(null)->whenMissing(null)->alias('energy_label_status_id')->next()
+            ->boolean('isMonument')->validate('boolean')->alias('is_monument')->whenMissing(false)->next()
+            ->get();
 
-        $housingFile->address_id = $data['addressId'];
-
-        if ($data['buildingTypeId']) {
-            $housingFile->building_type_id = $data['buildingTypeId'];
-        }
-
-        if ($data['buildYear']) {
-            $housingFile->build_year = $data['buildYear'];
-        }
-
-        if ($data['surface']) {
-            $housingFile->surface = $data['surface'];
-        }
-
-        if ($data['roofTypeId']) {
-            $housingFile->roof_type_id = $data['roofTypeId'];
-        }
-
-        if ($data['energyLabelId']) {
-            $housingFile->energy_label_id = $data['energyLabelId'];
-        }
-
-        if ($data['floors']) {
-            $housingFile->floors = $data['floors'];
-        }
-
-        if ($data['energyLabelStatusId']) {
-            $housingFile->energy_label_status_id = $data['energyLabelStatusId'];
-        }
-
-        if ($data['isMonument']) {
-            $housingFile->is_monument = $data['isMonument'];
-        }
-
+        $housingFile->fill($data);
         $housingFile->save();
 
         return $this->show($housingFile);

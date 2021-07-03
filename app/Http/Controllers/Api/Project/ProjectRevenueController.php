@@ -14,6 +14,7 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueCategory;
@@ -621,10 +622,13 @@ class ProjectRevenueController extends ApiController
         }
 
         if($projectRevenue->participantProjectPayoutType) {
+            $distribution->payout_type_id = $projectRevenue->participantProjectPayoutType->id;
             $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
         }elseif($participant->participantProjectPayoutType){
+            $distribution->payout_type_id = $participant->participantProjectPayoutType->id;
             $distribution->payout_type = $participant->participantProjectPayoutType->name;
         }else{
+            $distribution->payout_type_id = null;
             $distribution->payout_type = '';
         }
 
@@ -931,6 +935,8 @@ class ProjectRevenueController extends ApiController
     {
 
         $createdInvoices = [];
+        $payoutTypeAccountId = ParticipantProjectPayoutType::where('code_ref', 'account')->first()->id;
+        $payoutTypeCreditId = ParticipantProjectPayoutType::where('code_ref', 'credit')->first()->id;
 
         if (!($distributions->first())->revenue->project->administration_id) {
             abort(400,
@@ -958,7 +964,7 @@ class ProjectRevenueController extends ApiController
                     $distribution->save();
                 }else{
                     // indien Opbrengst Euro, dan wel voorwaarden inzake adres of IBAN (afhankellijk van payout type)
-                    if ($distribution->payout_type === 'Rekening'
+                    if ($distribution->payout_type_id === $payoutTypeAccountId
                         && ($distribution->payout > 0)
                         && !(empty($distribution->address)
                             || empty($distribution->postal_code)
@@ -970,7 +976,7 @@ class ProjectRevenueController extends ApiController
                             $distribution->status = 'in-progress';
                         $distribution->save();
                     }
-                    if ($distribution->payout_type === 'Bijschrijven'
+                    if ($distribution->payout_type_id === $payoutTypeCreditId
                         && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital' || $distribution->payout > 0)
                     ) {
                         $distribution->status = 'in-progress';
@@ -1001,7 +1007,7 @@ class ProjectRevenueController extends ApiController
                     $distribution->save();
                 }else{
                     // indien Opbrengst Euro, dan gaan we of notas en sepa aanmaken of bijschrijven (afhankellijk van payout type)
-                    if ($distribution->payout_type === 'Rekening')
+                    if ($distribution->payout_type_id === $payoutTypeAccountId)
                     {
                         $currentYear = Carbon::now()->year;
                         // Haal laatst uitgedeelde uitkeringsnotanummer op (binnen aanmaakjaar)
@@ -1039,7 +1045,7 @@ class ProjectRevenueController extends ApiController
                         array_push($createdInvoices, $paymentInvoice);
                     }
 
-                    if ($distribution->payout_type === 'Bijschrijven') {
+                    if ($distribution->payout_type_id === $payoutTypeCreditId) {
                         $participantMutation = new ParticipantMutation();
                         $participantMutation->participation_id = $distribution->participation_id;
                         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')

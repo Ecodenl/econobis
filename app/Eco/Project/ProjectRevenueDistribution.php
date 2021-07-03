@@ -4,6 +4,7 @@ namespace App\Eco\Project;
 
 use App\Eco\Contact\Contact;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,6 +41,10 @@ class ProjectRevenueDistribution extends Model
 
     public function deliveredKwhPeriod(){
         return $this->hasMany(ProjectRevenueDeliveredKwhPeriod::class, 'distribution_id');
+    }
+
+    public function participantProjectPayoutType(){
+        return $this->belongsTo(ParticipantProjectPayoutType::class, 'payout_type_id');
     }
 
     public function contact()

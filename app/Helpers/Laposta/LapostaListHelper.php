@@ -201,7 +201,7 @@ class LapostaListHelper
         $fieldData = [
             'name' => 'Contact nummer',
             'datatype' => 'text',
-            'required' => true,
+            'required' => false,
             'in_form' => true,
             'in_list' => true,
         ];
@@ -228,7 +228,7 @@ class LapostaListHelper
         $fieldData = [
             'name' => 'Contact achternaam',
             'datatype' => 'text',
-            'required' => true,
+            'required' => false,
             'in_form' => true,
             'in_list' => true,
         ];

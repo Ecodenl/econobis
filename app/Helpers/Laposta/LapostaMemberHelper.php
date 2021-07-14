@@ -172,29 +172,6 @@ class LapostaMemberHelper
             $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Primaire email ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
         }
 
-        if(empty($this->contact->number)) {
-            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Nummer ontbreekt voor contact ' . $this->contact->full_name;
-        }
-
-        if($this->contact->type_id === ContactType::PERSON) {
-            if (!$this->contact->person) {
-                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Persoon data ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
-            }
-            if (empty($this->contact->person->first_name) && empty($this->contact->person->initials)) {
-                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Voornaam en initials ontbreken voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
-            }
-            if (empty($this->contact->person->last_name)) {
-                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Achternaam ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
-            }
-        } elseif ($this->contact->type_id === ContactType::ORGANISATION) {
-            if (empty($this->contact->full_name)) {
-                $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Organisatienaam ontbreekt voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
-            }
-        }else{
-            $errorsCheckBefore[] = 'Groep: ' . $this->contactGroup->name . ' - Contact type is niet Persoon of Organisatie voor contact ' . $this->contact->full_name . ' (' . $this->contact->number . ')';
-
-        }
-
         $errors = null;
         if(count($errorsCheckBefore)) {
             $errors = array("econobis" => $errorsCheckBefore);
@@ -218,7 +195,7 @@ class LapostaMemberHelper
         if($this->contact->type_id === ContactType::PERSON) {
             $memberFieldData = [
                 'contactnummer' => $this->contact->number ? $this->contact->number : '',
-                'contactvoornaam' => $this->contact->person->first_name ? $this->contact->person->first_name : $this->contact->person->initials,
+                'contactvoornaam' => $this->contact->person->first_name ? $this->contact->person->first_name : ($this->contact->person->initials ? $this->contact->person->initials : ''),
                 'contacttitel' => $this->contact->person->title ? $this->contact->person->title->name : '',
                 'contactachternaam' => $this->contact->person->last_name . ($this->contact->person->last_name_prefix ? ', ' . $this->contact->person->last_name_prefix : ''),
             ];
@@ -268,7 +245,7 @@ class LapostaMemberHelper
         if($this->contact->type_id === ContactType::PERSON) {
             $memberFieldData = [
                 'contactnummer' => $this->contact->number ? $this->contact->number : '',
-                'contactvoornaam' => $this->contact->person->first_name ? $this->contact->person->first_name : $this->contact->person->initials,
+                'contactvoornaam' => $this->contact->person->first_name ? $this->contact->person->first_name : ($this->contact->person->initials ? $this->contact->person->initials : ''),
                 'contacttitel' => $this->contact->person->title ? $this->contact->person->title->name : '',
                 'contactachternaam' => $this->contact->person->last_name . ($this->contact->person->last_name_prefix ? ', ' . $this->contact->person->last_name_prefix : ''),
             ];

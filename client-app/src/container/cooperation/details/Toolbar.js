@@ -24,7 +24,7 @@ function CooperationDetailsToolbar({ permissions, isLoading, formData }) {
                                 {formData.useLaposta == true ? (
                                     <ButtonText
                                         onClickAction={toggleShowSyncLaposta}
-                                        buttonText={'Synchroniseren Laposta'}
+                                        buttonText={'Synchroniseren LP'}
                                     />
                                 ) : null}
                             </div>

@@ -61,10 +61,10 @@ function ContactGroupDetailsToolbar({
                                         onClickAction={toggleShowSyncLapostaList}
                                         buttonText={
                                             !contactGroup.isUsedInLaposta
-                                                ? 'Laposta lijst aanmaken'
+                                                ? 'LP lijst aanmaken'
                                                 : !contactGroup.groupUpToDateWithLaposta
-                                                ? 'Laposta lijst bijwerken'
-                                                : 'Laposta lijst actueel'
+                                                ? 'LP lijst bijwerken'
+                                                : 'LP lijst actueel'
                                         }
                                         disabled={Boolean(
                                             contactGroup.isUsedInLaposta && contactGroup.groupUpToDateWithLaposta

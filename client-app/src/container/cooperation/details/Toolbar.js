@@ -21,10 +21,10 @@ function CooperationDetailsToolbar({ permissions, isLoading, formData }) {
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex margin-small" role="group">
                                 <ButtonIcon iconName={'glyphicon-arrow-left'} onClickAction={browserHistory.goBack} />
-                                {formData.useLaposta == true ? (
+                                {permissions.manageMarketing && formData.useLaposta == true ? (
                                     <ButtonText
                                         onClickAction={toggleShowSyncLaposta}
-                                        buttonText={'Synchroniseren LP'}
+                                        buttonText={'Synchroniseren LaPosta'}
                                     />
                                 ) : null}
                             </div>

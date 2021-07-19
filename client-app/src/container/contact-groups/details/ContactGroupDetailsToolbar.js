@@ -56,15 +56,15 @@ function ContactGroupDetailsToolbar({
                                     buttonText={`Open lijst (${numberOfContacts})`}
                                     onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}
                                 />
-                                {cooperation && cooperation.use_laposta && (
+                                {permissions.manageMarketing && cooperation && cooperation.use_laposta && (
                                     <ButtonText
                                         onClickAction={toggleShowSyncLapostaList}
                                         buttonText={
                                             !contactGroup.isUsedInLaposta
-                                                ? 'LP lijst aanmaken'
+                                                ? 'LaPosta lijst aanmaken'
                                                 : !contactGroup.groupUpToDateWithLaposta
-                                                ? 'LP lijst bijwerken'
-                                                : 'LP lijst actueel'
+                                                ? 'LaPosta lijst bijwerken'
+                                                : 'LaPosta lijst actueel'
                                         }
                                         disabled={Boolean(
                                             contactGroup.isUsedInLaposta && contactGroup.groupUpToDateWithLaposta

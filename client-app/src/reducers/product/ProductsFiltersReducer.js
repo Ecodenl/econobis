@@ -9,7 +9,7 @@ const filtersReducerDefaultState = {
     },
     active: {
         field: 'active',
-        data: '',
+        data: '1',
     },
 };
 

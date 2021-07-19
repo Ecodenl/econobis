@@ -20,6 +20,10 @@ const ProductsListFilter = props => {
 
     const onActiveProductChange = e => {
         props.setActiveProductFilter(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
     };
 
     return (
@@ -47,7 +51,9 @@ const ProductsListFilter = props => {
             <th>
                 <select
                     className="form-control input-sm"
-                    defaultValue={!props.filters.active.data}
+                    //todo WM: Nog even overleg met Levi inzake deze setting.
+                    // defaultValue={!props.filters.active.data}
+                    value={props.filters.active.data}
                     onChange={onActiveProductChange}
                 >
                     <option />

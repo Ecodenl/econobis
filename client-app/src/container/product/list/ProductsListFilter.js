@@ -51,8 +51,6 @@ const ProductsListFilter = props => {
             <th>
                 <select
                     className="form-control input-sm"
-                    //todo WM: Nog even overleg met Levi inzake deze setting.
-                    // defaultValue={!props.filters.active.data}
                     value={props.filters.active.data}
                     onChange={onActiveProductChange}
                 >

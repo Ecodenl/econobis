@@ -154,7 +154,7 @@ class NewAccountController extends Controller
     {
         // Functie voor afvangen ongeldige waarden in title_id
         $titleValidator = function ($titleId) {
-            if ($titleId != '') {
+            if ($titleId && $titleId != '') {
                 $title = Title::find($titleId);
                 return $title->id;
             }

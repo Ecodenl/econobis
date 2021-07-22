@@ -53,7 +53,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(UserDetailsFormRolesEdit);
+export default connect(mapStateToProps, null)(UserDetailsFormRolesEdit);

@@ -39,7 +39,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ParticipationHarmonica);
+export default connect(mapStateToProps, null)(ParticipationHarmonica);

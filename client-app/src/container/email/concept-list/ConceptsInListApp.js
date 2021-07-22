@@ -83,7 +83,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ConceptsInListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ConceptsInListApp);

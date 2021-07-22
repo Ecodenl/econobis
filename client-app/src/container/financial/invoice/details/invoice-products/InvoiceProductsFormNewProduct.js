@@ -18,7 +18,11 @@ class InvoiceProductsFormNewProduct extends Component {
         super(props);
 
         this.state = {
-            vatPercentages: [{ id: '0', name: '0' }, { id: '9', name: '9' }, { id: '21', name: '21' }],
+            vatPercentages: [
+                { id: '0', name: '0' },
+                { id: '9', name: '9' },
+                { id: '21', name: '21' },
+            ],
             errorMessage: false,
             price: '0',
             totalPrice: '0',
@@ -216,9 +220,12 @@ class InvoiceProductsFormNewProduct extends Component {
         const { product } = this.state;
 
         let productCodeNotUnique = false;
-        this.props.products.map(
-            existingProduct => existingProduct.code == product.code && (productCodeNotUnique = true)
-        );
+        this.props.products
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(
+                existingProduct =>
+                    existingProduct.code === product.code && (productCodeNotUnique = true) && existingProduct.active
+            );
 
         if (productCodeNotUnique) {
             errorMessage = 'Productcode moet uniek zijn.';
@@ -232,9 +239,12 @@ class InvoiceProductsFormNewProduct extends Component {
         }
 
         let productNameNotUnique = false;
-        this.props.products.map(
-            existingProduct => existingProduct.name == product.name && (productNameNotUnique = true)
-        );
+        this.props.products
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(
+                existingProduct =>
+                    existingProduct.name === product.name && (productNameNotUnique = true) && existingProduct.active
+            );
 
         if (productNameNotUnique) {
             errorMessage = 'Productnaam moet uniek zijn.';
@@ -476,7 +486,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(InvoiceProductsFormNewProduct);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceProductsFormNewProduct);

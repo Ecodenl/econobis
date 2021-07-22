@@ -44,7 +44,4 @@ const mapDispatchToProps = dispatch => ({
         dispatch(clearMeasures());
     },
 });
-export default connect(
-    null,
-    mapDispatchToProps
-)(MeasuresListApp);
+export default connect(null, mapDispatchToProps)(MeasuresListApp);

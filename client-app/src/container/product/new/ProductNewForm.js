@@ -72,7 +72,10 @@ class ProductNewForm extends Component {
                 invoiceFrequencyId = 'once';
                 break;
             case 'month':
-                invoiceFrequencies = [{ id: 'once', name: 'Eenmalig' }, { id: 'monthly', name: 'Maand' }];
+                invoiceFrequencies = [
+                    { id: 'once', name: 'Eenmalig' },
+                    { id: 'monthly', name: 'Maand' },
+                ];
 
                 if (
                     invoiceFrequencyId === 'quarterly' ||

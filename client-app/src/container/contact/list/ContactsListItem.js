@@ -108,7 +108,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactsListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsListItem);

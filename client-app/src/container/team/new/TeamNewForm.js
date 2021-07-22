@@ -108,7 +108,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(TeamNewForm);
+export default connect(null, mapDispatchToProps)(TeamNewForm);

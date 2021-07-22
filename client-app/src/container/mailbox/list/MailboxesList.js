@@ -68,7 +68,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(MailboxesList);
+export default connect(mapStateToProps, null)(MailboxesList);

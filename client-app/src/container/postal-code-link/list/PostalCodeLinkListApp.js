@@ -75,7 +75,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PostalCodeLinkListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PostalCodeLinkListApp);

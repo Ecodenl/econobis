@@ -51,7 +51,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ConceptsInList);
+export default connect(mapStateToProps, null)(ConceptsInList);

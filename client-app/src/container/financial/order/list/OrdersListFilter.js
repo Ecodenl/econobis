@@ -167,7 +167,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrdersListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersListFilter);

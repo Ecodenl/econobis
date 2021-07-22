@@ -94,7 +94,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(PaymentInvoicesListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentInvoicesListFilter);

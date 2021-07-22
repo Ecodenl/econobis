@@ -5,7 +5,7 @@ import InputTinyMCE from '../../../../components/form/InputTinyMCE';
 import InputMultiSelectCreate from '../../../../components/form/InputMultiSelectCreate';
 import ViewText from '../../../../components/form/ViewText';
 import moment from 'moment/moment';
-import InputText from "../../../../components/form/InputText";
+import InputText from '../../../../components/form/InputText';
 
 const ConceptFormGeneral = ({
     email,
@@ -41,12 +41,14 @@ const ConceptFormGeneral = ({
                     <InputText
                         label={
                             <span>
-                                    Groep
-                                        <br />
-                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
-                                            Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet de e-mail adressen van anderen. Samenvoegvelden werken.
-                                        </small>
-                                </span>}
+                                Groep
+                                <br />
+                                <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                    Contacten in groep en extra contacten krijgen elk een aparte mail en zien niet de
+                                    e-mail adressen van anderen. Samenvoegvelden werken.
+                                </small>
+                            </span>
+                        }
                         name={'contactGroupName'}
                         value={contactGroupName}
                         readOnly={true}
@@ -67,7 +69,7 @@ const ConceptFormGeneral = ({
             </div>
             <div className="row">
                 <InputMultiSelectCreate
-                    label={contactGroupId ? "Extra contacten" : "Cc selecteren"}
+                    label={contactGroupId ? 'Extra contacten' : 'Cc selecteren'}
                     name={'cc'}
                     value={cc}
                     options={emailAddresses}
@@ -86,7 +88,7 @@ const ConceptFormGeneral = ({
                         onChangeAction={handleBccIds}
                     />
                 </div>
-            ) : ( null )}
+            ) : null}
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">

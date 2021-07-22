@@ -69,7 +69,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(TeamsListItem);
+export default connect(mapStateToProps, null)(TeamsListItem);

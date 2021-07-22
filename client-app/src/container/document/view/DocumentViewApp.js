@@ -79,7 +79,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(DocumentViewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentViewApp);

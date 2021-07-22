@@ -131,7 +131,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MailgunDomainDetailsFormGeneralEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(MailgunDomainDetailsFormGeneralEdit);

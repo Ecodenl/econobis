@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -8,8 +8,8 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ProjectsListItem from './ProjectsListItem';
 import ProjectsDeleteItem from './ProjectsDeleteItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import ProjectsListHead from "./ProjectsListHead";
-import ProjectsListFilter from "./ProjectsListFilter";
+import ProjectsListHead from './ProjectsListHead';
+import ProjectsListFilter from './ProjectsListFilter';
 
 class ProjectsList extends Component {
     constructor(props) {
@@ -56,7 +56,7 @@ class ProjectsList extends Component {
     };
 
     render() {
-        const {data = [], meta = {}} = this.props.projects;
+        const { data = [], meta = {} } = this.props.projects;
 
         let loadingText = '';
         let loading = true;
@@ -76,12 +76,8 @@ class ProjectsList extends Component {
                 <form onKeyUp={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>
-                            <ProjectsListHead
-                                fetchProjectsListData={() => this.props.fetchProjectsListData()}
-                            />
-                            <ProjectsListFilter
-                                onSubmitFilter={this.props.onSubmitFilter}
-                            />
+                            <ProjectsListHead fetchProjectsListData={() => this.props.fetchProjectsListData()} />
+                            <ProjectsListFilter onSubmitFilter={this.props.onSubmitFilter} />
                         </DataTableHead>
                         <DataTableBody>
                             {loading ? (
@@ -128,7 +124,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(ProjectsList);
+export default connect(mapStateToProps, null)(ProjectsList);

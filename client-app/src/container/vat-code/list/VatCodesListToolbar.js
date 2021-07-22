@@ -35,7 +35,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(VatCodesListToolbar);
+export default connect(mapStateToProps, null)(VatCodesListToolbar);

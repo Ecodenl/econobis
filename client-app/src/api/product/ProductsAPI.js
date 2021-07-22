@@ -1,22 +1,23 @@
-import axios from 'axios';
+import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PRODUCT = `${URL_API}/api/product`;
 
 export default {
-    fetchProducts: () => {
+    fetchProducts: ({ filters, filterType }) => {
         const requestUrl = `${URL_PRODUCT}/grid`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios.get(requestUrl);
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                filterType: filterType,
+            },
+        });
     },
 
     peekProducts: () => {
         const requestUrl = `${URL_PRODUCT}/peek`;
-        const AUTH_TOKEN = 'Bearer ' + localStorage.getItem('access_token');
-        axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-        return axios
+        return axiosInstance
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

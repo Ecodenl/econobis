@@ -178,7 +178,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactsListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsListFilter);

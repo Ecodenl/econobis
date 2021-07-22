@@ -33,7 +33,4 @@ const mapStateToProps = state => ({
     permissions: state.meDetails.permissions,
 });
 
-export default connect(
-    mapStateToProps,
-    null
-)(ParticipantsListToolbar);
+export default connect(mapStateToProps, null)(ParticipantsListToolbar);

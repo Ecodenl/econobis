@@ -13,7 +13,7 @@ const InputToggle = props => {
                 </label>
             </div>
             <div className={`${size}`}>
-                <Toggle id={id} name={name} onChange={onChangeAction} checked={value} disabled={disabled} />
+                <Toggle id={id} name={name} onChange={onChangeAction} defaultChecked={value} disabled={disabled} />
             </div>
         </div>
     );

@@ -6,8 +6,8 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import ContactGroupComposedGroupAddGroup from './ContactGroupComposedGroupAddGroup';
 import { connect } from 'react-redux';
-import ContactGroupComposedExceptGroupsList from "./except/ContactGroupComposedExceptGroupsList";
-import ContactGroupComposedExceptGroupAddGroup from "./except/ContactGroupComposedExceptGroupAddGroup";
+import ContactGroupComposedExceptGroupsList from './except/ContactGroupComposedExceptGroupsList';
+import ContactGroupComposedExceptGroupAddGroup from './except/ContactGroupComposedExceptGroupAddGroup';
 
 class ContactGroupComposedGroups extends Component {
     constructor(props) {

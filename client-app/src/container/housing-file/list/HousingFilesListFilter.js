@@ -133,7 +133,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(HousingFilesListFilter);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFilesListFilter);

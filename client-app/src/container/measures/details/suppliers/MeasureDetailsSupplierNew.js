@@ -135,7 +135,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MeasureDetailsSupplierNew);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetailsSupplierNew);

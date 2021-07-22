@@ -78,7 +78,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CampaignsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(CampaignsListApp);

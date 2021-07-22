@@ -110,7 +110,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(FinancialToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialToolbar);

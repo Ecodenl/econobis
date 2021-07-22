@@ -7,9 +7,7 @@ const InvoiceMolliePaymentsFormView = props => {
     const { mollieId, createdAt, datePaid, dateActivated, iban, ibanName } = props.molliePayment;
 
     return (
-        <div
-            className={`row border`}
-        >
+        <div className={`row border`}>
             <div>
                 <div className="col-sm-2">{mollieId}</div>
                 <div className="col-sm-2">{dateActivated ? moment(dateActivated).format('L HH:mm') : ''}</div>

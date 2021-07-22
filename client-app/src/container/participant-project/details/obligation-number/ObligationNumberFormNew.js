@@ -149,7 +149,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ObligationNumberFormNew);
+export default connect(mapStateToProps, mapDispatchToProps)(ObligationNumberFormNew);

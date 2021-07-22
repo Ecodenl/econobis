@@ -64,7 +64,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MailboxDetailsForm);
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsForm);

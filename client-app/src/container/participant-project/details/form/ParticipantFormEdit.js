@@ -410,7 +410,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParticipantFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantFormEdit);

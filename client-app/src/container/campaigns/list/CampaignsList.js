@@ -122,7 +122,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(CampaignsList);
+export default connect(mapStateToProps, null)(CampaignsList);

@@ -72,7 +72,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(WebformsListItem);
+export default connect(mapStateToProps, null)(WebformsListItem);

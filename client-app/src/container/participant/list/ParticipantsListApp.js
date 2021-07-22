@@ -525,7 +525,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ParticipantsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListApp);

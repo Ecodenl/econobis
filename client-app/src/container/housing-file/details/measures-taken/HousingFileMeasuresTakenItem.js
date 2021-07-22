@@ -76,7 +76,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(HousingFileMeasuresTakenItem);
+export default connect(mapStateToProps, null)(HousingFileMeasuresTakenItem);

@@ -42,7 +42,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(InvoiceDetailsFormSendNotification);
+export default connect(null, mapDispatchToProps)(InvoiceDetailsFormSendNotification);

@@ -16,7 +16,15 @@ const IntakeDetailsOpportunityView = props => {
                 <div className="col-sm-2">{number}</div>
                 <div className="col-sm-2">{createdAt ? moment(createdAt).format('L') : ''}</div>
                 <div className="col-sm-2">{measureCategory ? measureCategory.name : ''}</div>
-                <div className="col-sm-2 pre-wrap">{measures.length ? measures.map(measure => { return measure.name }).join(',\n') : ''}</div>
+                <div className="col-sm-2 pre-wrap">
+                    {measures.length
+                        ? measures
+                              .map(measure => {
+                                  return measure.name;
+                              })
+                              .join(',\n')
+                        : ''}
+                </div>
                 <div className="col-sm-2">{status ? status.name : ''}</div>
                 <div className="col-sm-2">{quotationRequests.length}</div>
             </div>

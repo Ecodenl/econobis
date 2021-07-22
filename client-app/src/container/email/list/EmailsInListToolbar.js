@@ -41,7 +41,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(EmailsInListToolbar);
+export default connect(mapStateToProps, null)(EmailsInListToolbar);

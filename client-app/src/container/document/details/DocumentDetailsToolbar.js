@@ -75,7 +75,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(DocumentDetailsToolbar);
+export default connect(mapStateToProps, null)(DocumentDetailsToolbar);

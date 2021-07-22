@@ -151,7 +151,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(HousingFileMeasuresTakenNew);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileMeasuresTakenNew);

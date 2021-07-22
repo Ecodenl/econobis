@@ -246,7 +246,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(CampaignFormEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(CampaignFormEdit);

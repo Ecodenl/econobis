@@ -59,7 +59,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(EmailTemplatesListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplatesListApp);

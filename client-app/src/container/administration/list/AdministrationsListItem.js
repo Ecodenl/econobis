@@ -71,7 +71,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(AdministrationsListItem);
+export default connect(mapStateToProps, null)(AdministrationsListItem);

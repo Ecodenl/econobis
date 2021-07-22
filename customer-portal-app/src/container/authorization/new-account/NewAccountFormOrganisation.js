@@ -17,9 +17,6 @@ const validationSchema = Yup.object().shape({
     organisationName: Yup.string()
         .trim()
         .required('Verplicht'),
-    personTitleId: Yup.string()
-        .nullable()
-        .required('Verplicht'),
     personFirstName: Yup.string()
         .trim()
         .required('Verplicht'),

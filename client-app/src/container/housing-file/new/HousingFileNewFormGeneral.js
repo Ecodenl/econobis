@@ -21,6 +21,7 @@ class HousingFileNewFormGeneral extends Component {
                 addressId: props.addressId,
                 buildingTypeId: '',
                 buildYear: '',
+                isHouseForSale: '',
                 surface: '',
                 roofTypeId: '',
                 energyLabelId: '',
@@ -60,6 +61,7 @@ class HousingFileNewFormGeneral extends Component {
             addressId,
             buildingTypeId,
             buildYear,
+            isHouseForSale,
             surface,
             roofTypeId,
             energyLabelId,
@@ -179,6 +181,15 @@ class HousingFileNewFormGeneral extends Component {
                         label={'Monument'}
                         name={'isMonument'}
                         value={isMonument}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputToggle
+                        label={'Koophuis'}
+                        name={'isHouseForSale'}
+                        value={isHouseForSale}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

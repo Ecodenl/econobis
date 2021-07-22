@@ -34,6 +34,7 @@ class FullHousingFile extends Resource
                 'fullAddress' => $this->address->present()->streetAndNumber(),
                 'buildingType' => GenericResource::make($this->whenLoaded('buildingType')),
                 'buildYear' => $this->build_year,
+                'isHouseForSale' => $this->is_house_for_sale,
                 'surface' => $this->surface,
                 'roofType' => GenericResource::make($this->whenLoaded('roofType')),
                 'energyLabel' => GenericResource::make($this->whenLoaded('energyLabel')),

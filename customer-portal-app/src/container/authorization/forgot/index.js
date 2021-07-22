@@ -58,7 +58,7 @@ const Forgot = props => {
                             </Row>
                             <Row className={'justify-content-center '}>
                                 <p className={'authorization-text'}>
-                                    Vul het e-mailadres in waarmee je inlogt en die bij ons bekend is. Je ontvangt van
+                                    Vul het e-mailadres in waarmee je inlogt en dat bij ons bekend is. Je ontvangt van
                                     ons een e-mail waarmee je een nieuw wachtwoord kunt instellen.
                                 </p>
                             </Row>

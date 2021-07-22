@@ -41,6 +41,7 @@ class FullProjectRevenueDistribution extends Resource
                 'participationsLoanAmount' => $this->participations_loan_amount,
                 'payout' => $this->payout,
                 'payoutType' => $this->payout_type,
+                'payoutTypeCodeRef' => $this->participantProjectPayoutType ? $this->participantProjectPayoutType->code_ref : '',
                 'datePayout' => $this->date_payout,
                 'energySupplierName' => $this->energy_supplier_name,
                 'energySupplierEanElectricity' => $this->energy_supplier_ean_electricity,

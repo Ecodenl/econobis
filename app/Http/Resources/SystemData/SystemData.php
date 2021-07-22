@@ -108,7 +108,7 @@ class SystemData extends Resource
     {
         $environment = App::environment();
         //for testing
-        if ($environment == 'production') {
+        if ($environment == 'production' && \Auth::user()->email != 'support@econobis.nl' && \Auth::user()->email != 'software@xaris.nl') {
             $usersAll = FullUser::collection(User::where('id', '!=', '1')->orderBy('last_name', 'asc')->get());
             $users = FullUser::collection(User::where('id', '!=', '1')->where('active', true)->orderBy('last_name', 'asc')->get());
             $usersExtraAdministration = FullUser::collection(User::where('id', '1')->orderBy('last_name', 'asc')->get());

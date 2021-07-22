@@ -105,7 +105,7 @@ class DeleteContactGroup implements DeleteInterface
     public function customDeleteActions()
     {
         if($this->contactGroup->laposta_list_id != null){
-            $lapostaListHelper = new LapostaListHelper($this->contactGroup);
+            $lapostaListHelper = new LapostaListHelper($this->contactGroup, false);
             $lapostaListHelper->deleteList();
         }
 

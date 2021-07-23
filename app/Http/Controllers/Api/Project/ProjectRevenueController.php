@@ -545,29 +545,33 @@ class ProjectRevenueController extends ApiController
 
             $dateEndForPeriod = clone $dateEnd;
             $dateEndCalendarYearFromRevenueForPeriod = clone $dateEndCalendarYearFromRevenue;
-            $quantityOfParticipations += $mutation->quantity;
 
-            $kwhEndCalendarYear = ($projectRevenue->kwh_end_calendar_year_high ? $projectRevenue->kwh_end_calendar_year_high : 0) + ($projectRevenue->kwh_end_calendar_year_low ? $projectRevenue->kwh_end_calendar_year_low : 0);
-            if( $kwhEndCalendarYear > 0
-                && $dateBegin < $dateEndCalendarYearFromRevenue
-                && $dateEnd > $dateEndCalendarYearFromRevenue ) {
-                $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
-
-                $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
-                $totalDeliveredKwhPeriod += $deliveredKwhPeriod;
-
-                $quantityOfParticipationsEndCalendarYear = $quantityOfParticipations;
-                $totalDeliveredKwhPeriodEndCalendarYear = $totalDeliveredKwhPeriod;
-
-                $dateBegin = $dateEndCalendarYearFromRevenue->copy()->addDay();
-
+            if($dateBegin >= $dateBeginFromRevenue && $dateBegin <= $dateEndFromRevenue){
+                $quantityOfParticipations += $mutation->quantity;
             }
 
-            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
-            $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
-            $totalDeliveredKwhPeriod += $deliveredKwhPeriod;
+            if($dateEnd >= $dateBegin){
+                $kwhEndCalendarYear = ($projectRevenue->kwh_end_calendar_year_high ? $projectRevenue->kwh_end_calendar_year_high : 0) + ($projectRevenue->kwh_end_calendar_year_low ? $projectRevenue->kwh_end_calendar_year_low : 0);
+                if( $kwhEndCalendarYear > 0
+                    && $dateBegin < $dateEndCalendarYearFromRevenue
+                    && $dateEnd > $dateEndCalendarYearFromRevenue ) {
+                    $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
 
+                    $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
+                    $totalDeliveredKwhPeriod += $deliveredKwhPeriod;
+
+                    $quantityOfParticipationsEndCalendarYear = $quantityOfParticipations;
+                    $totalDeliveredKwhPeriodEndCalendarYear = $totalDeliveredKwhPeriod;
+
+                    $dateBegin = $dateEndCalendarYearFromRevenue->copy()->addDay();
+
+                }
+                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
+                $deliveredKwhPeriod = $daysOfPeriod * $quantityOfParticipations;
+                $totalDeliveredKwhPeriod += $deliveredKwhPeriod;
+            }
         }
+
         $returnParm['quantityOfParticipations'] = $quantityOfParticipations;
         $returnParm['totalDeliveredKwhPeriod'] = $totalDeliveredKwhPeriod;
         $returnParm['quantityOfParticipationsEndCalendarYear'] = $quantityOfParticipationsEndCalendarYear;

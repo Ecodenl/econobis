@@ -538,6 +538,10 @@ class ProjectRevenueController extends ApiController
                 $dateEnd = Carbon::parse($nextMutation->date_entry)->subDay();
             }
 
+            if($dateEnd > $dateEndFromRevenue) {
+                $dateEnd = clone $dateEndFromRevenue;
+            }
+
             $dateEntry = Carbon::parse($mutation->date_entry);
 
             // If date entry is after date begin then date begin is equal to date entry
@@ -692,6 +696,10 @@ class ProjectRevenueController extends ApiController
                 $dateEnd = Carbon::parse($nextMutation->date_entry)->subDay();
             }
 
+            if($dateEnd > $dateEndFromRevenue) {
+                $dateEnd = clone $dateEndFromRevenue;
+            }
+
             $dateEntry = Carbon::parse($mutation->date_entry);
 
             // If date entry is after date begin then date begin is equal to date entry
@@ -699,13 +707,36 @@ class ProjectRevenueController extends ApiController
 
             $dateEndForPeriod = clone $dateEnd;
             $dateEndCalendarYearFromRevenueForPeriod = clone $dateEndCalendarYearFromRevenue;
-            $quantityOfParticipations += $mutation->quantity;
+            if($dateBegin >= $dateBeginFromRevenue && $dateBegin <= $dateEndFromRevenue){
+                $quantityOfParticipations += $mutation->quantity;
+            }
 
-            $kwhEndCalendarYear = ($revenue->kwh_end_calendar_year_high ? $revenue->kwh_end_calendar_year_high : 0) + ($revenue->kwh_end_calendar_year_low ? $revenue->kwh_end_calendar_year_low : 0);
-            if( $kwhEndCalendarYear > 0
-                && $dateBegin < $dateEndCalendarYearFromRevenue
-                && $dateEnd > $dateEndCalendarYearFromRevenue ) {
-                $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
+            if($dateEnd >= $dateBegin) {
+
+                $kwhEndCalendarYear = ($revenue->kwh_end_calendar_year_high ? $revenue->kwh_end_calendar_year_high : 0) + ($revenue->kwh_end_calendar_year_low ? $revenue->kwh_end_calendar_year_low : 0);
+                if ( $kwhEndCalendarYear > 0
+                    && $dateBegin < $dateEndCalendarYearFromRevenue
+                    && $dateEnd > $dateEndCalendarYearFromRevenue ) {
+                    $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
+
+                    $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
+                        [
+                            'distribution_id' => $distributionId,
+                            'revenue_id' => $revenue->id,
+                            'date_begin' => $dateBegin
+                        ],
+                        [
+                            'date_end' => $dateEndCalendarYearFromRevenue,
+                            'days_of_period' => $daysOfPeriod,
+                            'participations_quantity' => $quantityOfParticipations
+                        ]
+                    );
+                    $deliveredKwhPeriod->save();
+
+                    $dateBegin = $dateEndCalendarYearFromRevenue->copy()->addDay();
+                }
+
+                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
 
                 $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
                     [
@@ -714,31 +745,13 @@ class ProjectRevenueController extends ApiController
                         'date_begin' => $dateBegin
                     ],
                     [
-                        'date_end' => $dateEndCalendarYearFromRevenue,
+                        'date_end' => $dateEnd,
                         'days_of_period' => $daysOfPeriod,
                         'participations_quantity' => $quantityOfParticipations
                     ]
                 );
                 $deliveredKwhPeriod->save();
-
-                $dateBegin = $dateEndCalendarYearFromRevenue->copy()->addDay();
             }
-
-            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
-
-            $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
-                [
-                    'distribution_id' => $distributionId,
-                    'revenue_id' => $revenue->id,
-                    'date_begin' => $dateBegin
-                ],
-                [
-                    'date_end' => $dateEnd,
-                    'days_of_period' => $daysOfPeriod,
-                    'participations_quantity' => $quantityOfParticipations
-                ]
-            );
-            $deliveredKwhPeriod->save();
         }
     }
 

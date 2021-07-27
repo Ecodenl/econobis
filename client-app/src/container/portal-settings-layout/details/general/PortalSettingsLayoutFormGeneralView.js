@@ -86,7 +86,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Login/Header - achtergrond afbeelding kleur'}
+                            label={'1. Login/Header - achtergrond afbeelding kleur'}
                             divSize={'col-sm-8'}
                             value={loginHeaderBackgroundColor}
                             className={'col-sm-8 form-group'}
@@ -111,7 +111,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Login/Header - achtergrond afbeelding tekst kleur'}
+                            label={'2. Login/Header - achtergrond afbeelding tekst kleur'}
                             divSize={'col-sm-8'}
                             value={loginHeaderBackgroundTextColor}
                             className={'col-sm-8 form-group'}
@@ -119,7 +119,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Header - menu/poppetje kleur'}
+                            label={'3. Header - menu/poppetje kleur'}
                             divSize={'col-sm-8'}
                             value={headerIconsColor}
                             className={'col-sm-8 form-group'}
@@ -145,7 +145,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Login - veld achtergrond kleur'}
+                            label={'4. Login - veld achtergrond kleur'}
                             divSize={'col-sm-8'}
                             value={loginFieldBackgroundColor}
                             className={'col-sm-8 form-group'}
@@ -178,7 +178,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Login - veld tekst kleur'}
+                            label={'5. Login - veld tekst kleur'}
                             divSize={'col-sm-8'}
                             value={loginFieldBackgroundTextColor}
                             className={'col-sm-8 form-group'}
@@ -186,7 +186,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Achtergrond kleur'}
+                            label={'6. Achtergrond kleur'}
                             divSize={'col-sm-8'}
                             value={portalBackgroundColor}
                             className={'col-sm-8 form-group'}
@@ -211,7 +211,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Achtergrond tekst kleur'}
+                            label={'7. Achtergrond tekst kleur'}
                             divSize={'col-sm-8'}
                             value={portalBackgroundTextColor}
                             className={'col-sm-8 form-group'}
@@ -219,7 +219,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Buttonknop kleur'}
+                            label={'8. Buttonknop kleur'}
                             divSize={'col-sm-8'}
                             value={buttonColor}
                             className={'col-sm-8 form-group'}
@@ -244,7 +244,7 @@ const PortalSettingsLayoutDetailsFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Buttonknop tekst kleur'}
+                            label={'9. Buttonknop tekst kleur'}
                             divSize={'col-sm-8'}
                             value={buttonTextColor}
                             className={'col-sm-8 form-group'}

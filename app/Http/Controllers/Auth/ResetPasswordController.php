@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Email\EmailHelper;
 use App\Http\Controllers\Controller;
 use App\Notifications\MailNewAccount;
 use App\Notifications\MailNewAccountAlfresco;
@@ -122,6 +123,7 @@ class ResetPasswordController extends Controller
     //redirect is handled by react, we send succes e-mail
     protected function sendResetResponse($didCreateAlfrescoAccount, User $user)
     {
+        (new EmailHelper())->setConfigToDefaultMailbox();
         if($user->visit_count !== 0){
             $user->notify(new MailPasswordReset());
         }

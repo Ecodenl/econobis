@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import GeneralSearchModalModelList from './GeneralSearchModalModelList';
 import Draggable from 'react-draggable';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 class GeneralSearchModal extends Component {
     constructor(props) {
@@ -58,6 +60,7 @@ class GeneralSearchModal extends Component {
             right: this.state.offsetRight,
             bottom: this.state.offsetBottom,
         };
+        const { permissions = {} } = this.props.meDetails;
 
         return (
             <Draggable handle=".modal-header" onStart={this.onStart} onStop={this.onStop} bounds={bounds}>
@@ -71,6 +74,29 @@ class GeneralSearchModal extends Component {
                                         X
                                     </span>
                                 </h4>
+                            </div>
+                            <div className="col-md-12">
+                                <div className="nav navbar-nav btn-group" role="group">
+                                    <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                        <span className="glyphicon glyphicon-plus" /> Nieuw contact
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        {permissions.createPerson && (
+                                            <li>
+                                                <Link onClick={this.props.closeModal} to="contact/nieuw/persoon">
+                                                    Persoon
+                                                </Link>
+                                            </li>
+                                        )}
+                                        {permissions.createOrganisation && (
+                                            <li>
+                                                <Link onClick={this.props.closeModal} to="contact/nieuw/organisatie">
+                                                    Organisatie
+                                                </Link>
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
                             </div>
                             <div className="modal-body search-modal-body">
                                 <div className="col-md-12 margin-30-top">
@@ -93,4 +119,10 @@ class GeneralSearchModal extends Component {
     }
 }
 
-export default GeneralSearchModal;
+const mapStateToProps = state => {
+    return {
+        meDetails: state.meDetails,
+    };
+};
+
+export default connect(mapStateToProps, null)(GeneralSearchModal);

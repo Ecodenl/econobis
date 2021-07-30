@@ -19,6 +19,7 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectType;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
@@ -149,8 +150,11 @@ class ContactController extends ApiController
 
     public function getContactProjects(Contact $contact)
     {
-
-        $projects = Project::where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
+        // only active projects that are todoy in registration period, and no PCR projects anymore
+        $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
+        $projects = Project::whereIn('project_status_id', [2])
+            ->where('project_type_id', '!=', $pcrTypeId)
+            ->where('date_start_registrations', '<=', Carbon::today()->format('Y-m-d'))
             ->where('date_end_registrations', '>=', Carbon::today()->format('Y-m-d'))
             ->get();
         foreach ($projects as $key => $project) {

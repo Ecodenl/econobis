@@ -91,7 +91,8 @@ class EmailController
         //From -> mailbox email
         //Cc -> empty
         //Bcc -> empty
-        $email->to = [$email->from];
+        $emailAddressesIds = EmailAddress::whereIn('contact_id', $email->contacts->pluck('id'))->pluck('id');
+        $email->to = $emailAddressesIds->count() > 0 ? $emailAddressesIds : [$email->from];
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];
@@ -133,9 +134,20 @@ class EmailController
 
         $cc = array_values($cc);
 
-        $email->to = $to;
+        $toMixed = [];
+        foreach($to as $toEmailAddress){
+            $emailAddressesIds = EmailAddress::where('email', $toEmailAddress)->pluck('id');
+            $toMixed = array_merge($toMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$toEmailAddress]);
+        }
+        $ccMixed = [];
+        foreach($cc as $ccEmailAddress){
+            $emailAddressesIds = EmailAddress::where('email', $ccEmailAddress)->pluck('id');
+            $ccMixed = array_merge($ccMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$ccEmailAddress]);
+        }
+
+        $email->to = $toMixed;
         $email->from = $email->mailbox->email;
-        $email->cc = $cc;
+        $email->cc = $ccMixed;
         $email->bcc = [];
         $email->reply_type_id = 'reply-all';
         $email->old_email_id = $email->id;

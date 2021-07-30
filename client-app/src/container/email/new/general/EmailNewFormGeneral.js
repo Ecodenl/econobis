@@ -25,6 +25,15 @@ const EmailNewFormGeneral = ({
     handleTextChange,
 }) => {
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, contactGroupId } = email;
+
+    let includesEmailAddress = false;
+    const toArray = to.split(',');
+    toArray.map(item => {
+        if (item.includes('@')) {
+            includesEmailAddress = true;
+        }
+    });
+
     return (
         <Panel>
             <PanelBody>
@@ -68,6 +77,17 @@ const EmailNewFormGeneral = ({
                                             <br />
                                             <small style={{ color: 'red', fontWeight: 'normal' }}>
                                                 Meer dan 1 geselecteerd.
+                                            </small>
+                                            <br />
+                                            <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                Samenvoegvelden contact niet mogelijk.
+                                            </small>
+                                        </React.Fragment>
+                                    ) : includesEmailAddress ? (
+                                        <React.Fragment>
+                                            <br />
+                                            <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                Geen contact geselecteerd, maar "los" emailadres ingevuld.
                                             </small>
                                             <br />
                                             <small style={{ color: 'red', fontWeight: 'normal' }}>

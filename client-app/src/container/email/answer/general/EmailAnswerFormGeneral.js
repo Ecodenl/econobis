@@ -22,6 +22,14 @@ const EmailAnswerFormGeneral = ({
 }) => {
     const { mailboxId, to, cc, bcc, subject, htmlBody, emailTemplateId } = email;
 
+    let includesEmailAddress = false;
+    const toArray = to.split(',');
+    toArray.map(item => {
+        if (item.includes('@')) {
+            includesEmailAddress = true;
+        }
+    });
+
     return (
         <PanelBody>
             <div className="row">
@@ -39,7 +47,36 @@ const EmailAnswerFormGeneral = ({
             </div>
             <div className="row">
                 <InputMultiSelectCreate
-                    label="Aan selecteren"
+                    label={
+                        <span>
+                            Aan selecteren
+                            {(to + '').split(',').length > 1 ? (
+                                <React.Fragment>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Meer dan 1 geselecteerd.
+                                    </small>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Samenvoegvelden contact niet mogelijk.
+                                    </small>
+                                </React.Fragment>
+                            ) : includesEmailAddress ? (
+                                <React.Fragment>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Geen contact geselecteerd, maar "los" emailadres ingevuld.
+                                    </small>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Samenvoegvelden contact niet mogelijk.
+                                    </small>
+                                </React.Fragment>
+                            ) : (
+                                ''
+                            )}
+                        </span>
+                    }
                     name={'to'}
                     value={to}
                     options={emailAddresses}

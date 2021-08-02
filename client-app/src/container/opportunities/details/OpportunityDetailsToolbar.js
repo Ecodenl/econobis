@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { browserHistory, hashHistory } from 'react-router';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -20,6 +20,10 @@ class OpportunityDetailsToolbar extends Component {
         this.setState({ showDelete: !this.state.showDelete });
     };
 
+    sendMail = () => {
+        hashHistory.push(`/email/nieuw/kans/${this.props.opportunity.id}/${this.props.opportunity.intake.contact.id}`);
+    };
+
     render() {
         const { measureCategory, intake, id } = this.props.opportunity;
 
@@ -37,6 +41,7 @@ class OpportunityDetailsToolbar extends Component {
                                     {this.props.permissions.manageOpportunity && (
                                         <ButtonIcon iconName={'glyphicon-trash'} onClickAction={this.toggleDelete} />
                                     )}
+                                    <ButtonIcon iconName={'glyphicon-envelope'} onClickAction={this.sendMail} />
                                 </div>
                             </div>
                             <div className="col-md-8">

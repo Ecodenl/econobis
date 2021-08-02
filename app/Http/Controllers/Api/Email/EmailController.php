@@ -173,6 +173,7 @@ class EmailController
         $email->reply_type_id = 'forward';
         $email->intake_id = null;
         $email->task_id = null;
+        $email->opportunity_id =null;
         $email->quotation_request_id =null;
         $email->contact_group_id = null;
 
@@ -262,6 +263,7 @@ class EmailController
         $email->bcc = $sanitizedData['bcc'];
         $email->intake_id = $sanitizedData['intake_id'];
         $email->task_id = $sanitizedData['task_id'];
+        $email->opportunity_id = $sanitizedData['opportunity_id'];
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->contact_group_id = $sanitizedData['contact_group_id'];
         $email->reply_type_id = $sanitizedData['reply_type_id'];
@@ -436,6 +438,7 @@ class EmailController
         $email->to = $sanitizedData['to'];
         $email->cc = $sanitizedData['cc'];
         $email->bcc = $sanitizedData['bcc'];
+        $email->opportunity_id = $sanitizedData['opportunity_id'];
         $email->quotation_request_id = $sanitizedData['quotation_request_id'];
         $email->intake_id = $sanitizedData['intake_id'];
         $email->task_id = $sanitizedData['task_id'];
@@ -458,6 +461,7 @@ class EmailController
             'to' => 'required',
             'cc' => '',
             'bcc' => '',
+            'opportunityId' => '',
             'quotationRequestId' => '',
             'intakeId' => '',
             'taskId' => '',
@@ -532,6 +536,13 @@ class EmailController
             $data['contactGroupId'] = null;
         }
 
+        if(!array_key_exists('opportunityId', $data)){
+            $data['opportunityId'] = null;
+        }
+        if($data['opportunityId'] == ''){
+            $data['opportunityId'] = null;
+        }
+
         if(!array_key_exists('quotationRequestId', $data)){
             $data['quotationRequestId'] = null;
         }
@@ -557,6 +568,7 @@ class EmailController
             'to' => $emails['to'],
             'cc' => $emails['cc'],
             'bcc' => $emails['bcc'],
+            'opportunity_id' => $data['opportunityId'],
             'quotation_request_id' => $data['quotationRequestId'],
             'intake_id' => $data['intakeId'],
             'task_id' => $data['taskId'],

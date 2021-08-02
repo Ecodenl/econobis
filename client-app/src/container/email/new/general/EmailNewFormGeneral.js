@@ -26,8 +26,13 @@ const EmailNewFormGeneral = ({
 }) => {
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, contactGroupId } = email;
 
+    let toArray = [];
     let includesEmailAddress = false;
-    const toArray = to.split(',');
+    if (!Array.isArray(to)) {
+        toArray = to.split(',');
+    } else {
+        toArray = to;
+    }
     toArray.map(item => {
         if (item.includes('@')) {
             includesEmailAddress = true;

@@ -64,7 +64,7 @@ class OpportunityDetailsHarmonica extends Component {
     }
 
     newEmail() {
-        hashHistory.push(`/email/nieuw`);
+        hashHistory.push(`/email/nieuw/kans/${this.props.id}/${this.props.opportunityDetails.intake.contact.id}`);
     }
 
     render() {

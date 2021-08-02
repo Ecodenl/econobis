@@ -35,6 +35,7 @@ class EmailNewApp extends Component {
                 htmlBody: '',
                 attachments: [],
                 quotationRequestId: props.params.quotationRequestId ? props.params.quotationRequestId : '',
+                opportunityId: props.params.opportunityId ? props.params.opportunityId : '',
                 intakeId: props.params.intakeId ? props.params.intakeId : '',
                 taskId: props.params.taskId ? props.params.taskId : '',
                 replyTypeId: props.params.replyTypeId ? props.params.replyTypeId : '',
@@ -335,6 +336,7 @@ class EmailNewApp extends Component {
             // data.append('subject', email.subject);
             // data.append('htmlBody', email.htmlBody);
             data.append('quotationRequestId', email.quotationRequestId);
+            data.append('opportunityId', email.opportunityId);
             data.append('intakeId', email.intakeId);
             data.append('taskId', email.taskId);
             data.append('contactGroupId', email.contactGroupId);

@@ -124,6 +124,20 @@ class GeneralSearchController
 
         }
 
+        usort($data['Contacten'], $this->sortOnFoundValue());
+        usort($data['Adressen'], $this->sortOnFoundValue());
+        usort($data['E-mailadressen'], $this->sortOnFoundValue());
+
         return $data;
+    }
+
+    /**
+     * @return \Closure
+     */
+    private function sortOnFoundValue(): \Closure
+    {
+        return function ($a, $b) {
+            return strcmp(strtolower($a['found_value']), strtolower($b['found_value']));
+        };
     }
 }

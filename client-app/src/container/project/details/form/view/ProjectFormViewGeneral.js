@@ -191,18 +191,20 @@ const ProjectFormViewGeneral = ({
                     value={dateEntry ? moment(dateEntry).format('L') : ''}
                 />
             </div>
-            <hr />
         </section>
-
-        <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
-            {showCustomerPortalSettings ? (
-                <span className="glyphicon glyphicon-menu-down" />
-            ) : (
-                <span className="glyphicon glyphicon-menu-right" />
-            )}
-            &nbsp;Contacten portal instellingen
-        </h4>
-        {/*<h4>Contacten portal instellingen</h4>*/}
+        {projectType.codeRef !== 'postalcode_link_capital' && (
+            <section>
+                <hr />
+                <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
+                    {showCustomerPortalSettings ? (
+                        <span className="glyphicon glyphicon-menu-down" />
+                    ) : (
+                        <span className="glyphicon glyphicon-menu-right" />
+                    )}
+                    &nbsp;Contacten portal instellingen
+                </h4>
+            </section>
+        )}
         {showCustomerPortalSettings ? (
             <section
                 onClick={

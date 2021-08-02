@@ -3,6 +3,7 @@
 namespace App\Eco\Portal;
 
 use App\Eco;
+use App\Notifications\Portal\MailAccountActivated;
 use App\Notifications\Portal\MailResetPasswordToken;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -45,5 +46,12 @@ class PortalUser extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new MailResetPasswordToken($token, $this->email));
+    }
+
+    /**
+     * Send a confirmation email to the user about the activated account.
+     */
+    public function sendAccountActivatedNotification() {
+        $this->notify(new MailAccountActivated($this->contact->full_name));
     }
 }

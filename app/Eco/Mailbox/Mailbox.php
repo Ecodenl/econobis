@@ -26,6 +26,7 @@ class Mailbox extends Model
         'primary' => 'boolean',
         'valid' => 'boolean',
         'link_contact_from_email_to_address' => 'boolean',
+        'uses_gmail_api' => 'boolean',
     ];
 
     public function users()
@@ -41,6 +42,11 @@ class Mailbox extends Model
     public function mailgunDomain()
     {
         return $this->belongsTo(MailgunDomain::class);
+    }
+
+    public function gmailApiSettings()
+    {
+        return $this->hasOne(MailboxGmailApiSettings::class);
     }
 
     public static function getDefault()

@@ -12,7 +12,9 @@
 */
 
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
+use App\Http\Controllers\Api\Mailbox\GmailController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
+use Illuminate\Http\Request;
 
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
 
@@ -25,3 +27,13 @@ Route::get('/portal/mollie/redirect/{participantMutationCode}', [ParticipantMuta
 // Welcome
 Route::get('/', 'HomeController@welcome');
 
+// Todo dit moet api url worden vanuit de voorkant
+Route::get('/oauth/gmail/auth/{mailbox}', [GmailController::class, 'auth'])->name('oauth.gmail.auth');
+
+Route::get('/oauth/gmail/callback', [GmailController::class, 'callback'])->name('oauth.gmail.callback');
+
+//Route::get('/oauth/gmail/callback', function (Request $request){
+//    dd($request);
+//
+////    return redirect()->to('/oauth/gmail/checkuser');
+//});

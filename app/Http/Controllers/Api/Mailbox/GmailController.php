@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Mailbox;
 
 use App\Eco\Mailbox\Mailbox;
 use App\Http\Controllers\Controller;
+use Exception;
 use Google\Client;
 use Google_Client;
 use Google_Service_Gmail;
@@ -63,24 +64,18 @@ class GmailController extends Controller
             ]
         ]);
 
-        // Todo juist tonen van errormelding
-        if($request->error) {
-            dd($request->error);
-        }
-
-        $authCode = $request->code;
-
         // Exchange authorization code for an access token.
-        $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-        $client->setAccessToken($accessToken);
-
-        $gmailApiSettings->token = json_encode($client->getAccessToken());
-        $gmailApiSettings->save();
+        $accessToken = $client->fetchAccessTokenWithAuthCode($request->code);
 
         // Check to see if there was an error.
         if (array_key_exists('error', $accessToken)) {
             throw new Exception(join(', ', $accessToken));
         }
+
+        $client->setAccessToken($accessToken);
+
+        $gmailApiSettings->token = json_encode($client->getAccessToken());
+        $gmailApiSettings->save();
 
         // TODO Return to mailbox default page
         $this->auth($mailbox);
@@ -93,7 +88,7 @@ class GmailController extends Controller
 
         $client = new Google_Client();
         $client->setApplicationName('Econobis');
-        $client->setScopes(Google_Service_Gmail::GMAIL_READONLY);
+        $client->setScopes([Google_Service_Gmail::GMAIL_MODIFY, Google_Service_Gmail::GMAIL_SEND]);
 
         // TODO get config from database
         $client->setAuthConfig([

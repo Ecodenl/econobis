@@ -21,8 +21,10 @@ use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\CostCenter\CostCenter;
 use App\Eco\Ledger\Ledger;
+use App\Eco\Mailbox\IncomingServerType;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxIgnoreType;
+use App\Eco\Mailbox\OutgoingServerType;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderCollectionFrequency;
@@ -175,6 +177,7 @@ class SystemData extends Resource
             'ledgers' => FullLedger::collection(Ledger::all()),
             'mailboxesInvalid' => Mailbox::where('is_active', 1)->where('valid', 0)->count(),
             'mailboxIgnoreTypes' => FullEnumWithIdAndName::collection(MailboxIgnoreType::collection()),
+            'mailboxServerTypes' => ['incomingServerTypes' => FullEnumWithIdAndName::collection(IncomingServerType::collection()), 'outgoingServerTypes' => FullEnumWithIdAndName::collection(OutgoingServerType::collection())],
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'measureCategories' => MeasureCategory::select(['id', 'name'])->get(),
             'measures' => MeasurePeek::collection(Measure::all()),

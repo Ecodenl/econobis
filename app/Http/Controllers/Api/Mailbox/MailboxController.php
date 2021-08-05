@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Mailbox;
 
 use App\Eco\Mailbox\ImapEncryptionType;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Mailbox\MailboxGmailApiSettings;
 use App\Eco\Mailbox\MailboxIgnore;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailValidator;
@@ -26,6 +27,7 @@ use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
 use App\Http\Resources\User\UserPeek;
 use Doctrine\Common\Annotations\Annotation\Enum;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MailboxController extends Controller
@@ -42,7 +44,7 @@ class MailboxController extends Controller
         return GridMailbox::collection($mailboxes);
     }
 
-    public function store(RequestInput $input)
+    public function store(Request $request, RequestInput $input)
     {
         $this->authorize('create', Mailbox::class);
 
@@ -73,10 +75,18 @@ class MailboxController extends Controller
             $this->makePrimary($mailbox);
         }
 
+        if($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
+            $this->storeOrUpdateGmailApiSettings($mailbox, $request->gmailApiSettings);
+        }
+
         $mailbox->users()->attach(Auth::user());
 
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
-        new MailFetcher($mailbox);
+        if($mailbox->incoming_server_type === 'gmail') {
+//            new MailFetcherGmail($mailbox);
+        } else  {
+            new MailFetcher($mailbox);
+        }
 
         return GenericResource::make($mailbox);
     }
@@ -85,11 +95,12 @@ class MailboxController extends Controller
     {
         $this->authorize('view', Mailbox::class);
 
-        $mailbox->load(['users', 'mailboxIgnores']);
+        $mailbox->load(['users', 'mailboxIgnores', 'gmailApiSettings']);
+
         return FullMailbox::make($mailbox);
     }
 
-    public function update(Mailbox $mailbox, RequestInput $input)
+    public function update(Mailbox $mailbox, Request $request, RequestInput $input)
     {
         $this->authorize('create', Mailbox::class);
 
@@ -105,6 +116,7 @@ class MailboxController extends Controller
             ->string('username')->alias('username')->next()
             ->string('password')->whenMissing($mailbox->password)->onEmpty($mailbox->password)->alias('password')->next()
             ->integer('mailgunDomainId')->whenMissing(null)->onEmpty(null)->alias('mailgun_domain_id')->next()
+            ->string('incomingServerType')->alias('incoming_server_type')->next()
             ->string('outgoingServerType')->alias('outgoing_server_type')->next()
             ->boolean('isActive')->alias('is_active')->next()
             ->boolean('primary')->next()
@@ -116,13 +128,21 @@ class MailboxController extends Controller
         $mailbox->update($data);
         $mailbox->save();
 
+        if($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
+            $this->storeOrUpdateGmailApiSettings($mailbox, $request->gmailApiSettings);
+        }
+
         // Als de mailbox als primair is gemarkeerd, functie aanroepen om te zorgen dat alle andere mailboxen niet meer primair zijn.
         if($mailbox->primary){
             $this->makePrimary($mailbox);
         }
 
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
-        new MailFetcher($mailbox);
+        if($mailbox->incoming_server_type === 'gmail') {
+//            new MailFetcherGmail($mailbox);
+        } else {
+            new MailFetcher($mailbox);
+        }
 
         return $this->show($mailbox);
     }
@@ -228,4 +248,15 @@ class MailboxController extends Controller
         $mailbox->save();
     }
 
+    private function storeOrUpdateGmailApiSettings(Mailbox $mailbox, $inputGmailApiSettings)
+    {
+        $gmailApiSettings = MailboxGmailApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
+
+        $gmailApiSettings->client_id = $inputGmailApiSettings['clientId'];
+        $gmailApiSettings->project_id = $inputGmailApiSettings['projectId'];
+        $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
+        $gmailApiSettings->token = '';
+
+        $gmailApiSettings->save();
+    }
 }

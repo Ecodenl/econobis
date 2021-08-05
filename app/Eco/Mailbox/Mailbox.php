@@ -26,7 +26,6 @@ class Mailbox extends Model
         'primary' => 'boolean',
         'valid' => 'boolean',
         'link_contact_from_email_to_address' => 'boolean',
-        'uses_gmail_api' => 'boolean',
     ];
 
     public function users()

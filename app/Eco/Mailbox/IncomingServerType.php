@@ -4,7 +4,7 @@ namespace App\Eco\Mailbox;
 
 use JosKolenberg\Enum\EnumWithIdAndName;
 
-class OutgoingServerType extends EnumWithIdAndName
+class IncomingServerType extends EnumWithIdAndName
 {
 
     /**
@@ -15,8 +15,7 @@ class OutgoingServerType extends EnumWithIdAndName
     protected static function seed()
     {
         return [
-            new static('smtp', 'SMTP'),
-            new static('mailgun', 'Mailgun'),
+            new static('imap', 'IMAP'),
             new static('gmail', 'Gmail'),
         ];
     }

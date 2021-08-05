@@ -49,6 +49,7 @@ class FullMailbox extends Resource
             'primary' => $this->primary,
             'linkContactFromEmailToAddress' => $this->link_contact_from_email_to_address,
             'emailMarkAsSeen' => $this->email_mark_as_seen,
+            'gmailApiSettings' => new FullGmailApiSettings($this->whenLoaded('gmailApiSettings')),
         ];
     }
 }

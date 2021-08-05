@@ -6,8 +6,10 @@ import Panel from '../../../../components/panel/Panel';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../components/panel/PanelBody';
 import moment from 'moment/moment';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { REDIRECT_URL } from '../../../../constants';
 
-const MailboxDetailsFormGeneralView = props => {
+function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
     const {
         name,
         email,
@@ -21,27 +23,33 @@ const MailboxDetailsFormGeneralView = props => {
         dateLastFetched,
         imapIdLastFetched,
         username,
+        incomingServerType,
         outgoingServerType,
+        mailboxServerTypes,
         mailgunDomain,
         isActive,
         primary,
         linkContactFromEmailToAddress,
         emailMarkAsSeen,
-    } = props.mailboxDetails;
-    const usesMailgun = outgoingServerType === 'mailgun' ? true : false;
+        gmailApiSettings,
+    } = mailboxDetails;
 
     return (
-        <div onClick={props.switchToEdit}>
+        <div onClick={switchToEdit}>
             <Panel>
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Weergavenaam'} value={name} />
                         <ViewText label={'E-mail'} value={email} />
                     </div>
-                    <div className="row">
-                        <ViewText label={'Gebruikersnaam'} value={username} />
-                        <ViewText label={'Wachtwoord'} value="••••••••••" />
-                    </div>
+
+                    {incomingServerType === 'gmail' && outgoingServerType === 'gmail' ? null : (
+                        <div className="row">
+                            <ViewText label={'Gebruikersnaam'} value={username} />
+                            <ViewText label={'Wachtwoord'} value="••••••••••" />
+                        </div>
+                    )}
+
                     <div className="row">
                         <ViewText label="Actief" value={isActive ? 'Ja' : 'Nee'} />
                         <ViewText label={'Primair (verzend wachtwoord mails)'} value={primary ? 'Ja' : 'Nee'} />
@@ -63,56 +71,111 @@ const MailboxDetailsFormGeneralView = props => {
                 </PanelBody>
 
                 <PanelHeader>
-                    <span className="h5">Servergegevens</span>
+                    <span className="h5">
+                        <strong>Servergegevens</strong>
+                    </span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label="Inkomend" value={imapHost} />
-                        <ViewText
-                            label={'Gebruikt mailgun'}
-                            value={props.mailboxDetails.outgoingServerType === 'mailgun' ? 'Ja' : 'Nee'}
-                        />
+                        <ViewText label={'Inkomende mail type'} value={mailboxServerTypes.incomingServerType?.name} />
+                        <ViewText label={'Uitgaande mail type'} value={mailboxServerTypes.outgoingServerType?.name} />
                     </div>
                     <div className="row">
-                        <div className="col-md-6" />
-                        {usesMailgun ? (
-                            <ViewText label="Uitgaand" value={mailgunDomain} />
+                        {incomingServerType === 'imap' ? (
+                            <ViewText label="Inkomend" value={imapHost} />
                         ) : (
-                            <ViewText label="Uitgaand" value={smtpHost} />
+                            <div className="form-group col-sm-6" />
                         )}
+
+                        {outgoingServerType === 'smtp' ? <ViewText label="Uitgaand" value={smtpHost} /> : null}
+
+                        {outgoingServerType === 'mailgun' ? <ViewText label="Uitgaand" value={mailgunDomain} /> : null}
                     </div>
                 </PanelBody>
 
+                {(incomingServerType === 'gmail' || outgoingServerType === 'gmail') && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5">
+                                <strong>Servergegevens</strong>
+                            </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText label={'Project id'} value={gmailApiSettings?.projectId} />
+                                <div className="form-group col-sm-6">
+                                    <label className="col-sm-6">Redirect url</label>
+                                    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>
+                                        {REDIRECT_URL}
+                                        <CopyToClipboard text={REDIRECT_URL}>
+                                            <span
+                                                className="glyphicon glyphicon-copy mybtn-success pull-right"
+                                                style={{ top: '5px' }}
+                                                role="button"
+                                                onClick={null}
+                                                title={'Kopieer sleutel'}
+                                            />
+                                        </CopyToClipboard>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
+                                <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
+                            </div>
+                        </PanelBody>
+                    </>
+                )}
+
                 <PanelHeader>
-                    <span className="h5">Extra instellingen</span>
+                    <span className="h5">
+                        <strong>Extra instellingen</strong>
+                    </span>
                 </PanelHeader>
                 <PanelBody>
-                    <div className="row">
-                        <ViewText label={'Imap poort'} value={imapPort} />
-                        {!usesMailgun && <ViewText label="Smtp poort" value={smtpPort} />}
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Imap versleutelde verbinding'}
-                            value={
-                                imapEncryption === 'ssl'
-                                    ? 'SSL'
-                                    : imapEncryption === 'ssl/novalidate-cert'
-                                    ? 'SSL - self-signed certificate'
-                                    : imapEncryption === 'tls'
-                                    ? 'TLS'
-                                    : ''
-                            }
-                        />
-                        {!usesMailgun && <ViewText label="Smtp versleutelde verbinding" value={smtpEncryption} />}
-                    </div>
+                    {incomingServerType !== 'imap' && outgoingServerType !== 'smtp' ? null : (
+                        <>
+                            <div className="row">
+                                {incomingServerType === 'imap' ? (
+                                    <ViewText label={'Imap poort'} value={imapPort} />
+                                ) : (
+                                    <div className="form-group col-sm-6" />
+                                )}
+                                {outgoingServerType === 'smtp' && <ViewText label="Smtp poort" value={smtpPort} />}
+                            </div>
+                            <div className="row">
+                                {incomingServerType === 'imap' ? (
+                                    <ViewText
+                                        label={'Imap versleutelde verbinding'}
+                                        value={
+                                            imapEncryption === 'ssl'
+                                                ? 'SSL'
+                                                : imapEncryption === 'ssl/novalidate-cert'
+                                                ? 'SSL - self-signed certificate'
+                                                : imapEncryption === 'tls'
+                                                ? 'TLS'
+                                                : ''
+                                        }
+                                    />
+                                ) : (
+                                    <div className="form-group col-sm-6" />
+                                )}
+
+                                {outgoingServerType === 'smtp' && (
+                                    <ViewText label="Smtp versleutelde verbinding" value={smtpEncryption} />
+                                )}
+                            </div>
+                        </>
+                    )}
                     <div className="row">
                         <ViewText label={'Inbox prefix'} value={imapInboxPrefix} />
                         <ViewText label={'Zet email als gelezen op server'} value={emailMarkAsSeen ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
                 <PanelHeader>
-                    <span className="h5">Log</span>
+                    <span className="h5">
+                        <strong>Log</strong>
+                    </span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
@@ -127,7 +190,7 @@ const MailboxDetailsFormGeneralView = props => {
             </Panel>
         </div>
     );
-};
+}
 
 const mapStateToProps = state => {
     return {

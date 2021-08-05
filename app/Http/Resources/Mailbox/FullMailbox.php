@@ -9,6 +9,8 @@
 namespace App\Http\Resources\Mailbox;
 
 
+use App\Eco\Mailbox\IncomingServerType;
+use App\Eco\Mailbox\OutgoingServerType;
 use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -46,6 +48,10 @@ class FullMailbox extends Resource
             'mailgunDomain' => $this->mailgunDomain ? $this->mailgunDomain->domain : '',
             'incomingServerType' => $this->incoming_server_type,
             'outgoingServerType' => $this->outgoing_server_type,
+            'mailboxServerTypes' => [
+                'incomingServerType' => ['code' => $this->incoming_server_type, 'name' => IncomingServerType::get($this->incoming_server_type)->getName()],
+                'outgoingServerType' => ['code' => $this->outgoing_server_type, 'name' => OutgoingServerType::get($this->outgoing_server_type)->getName()],
+            ],
             'isActive' => $this->is_active,
             'primary' => $this->primary,
             'linkContactFromEmailToAddress' => $this->link_contact_from_email_to_address,

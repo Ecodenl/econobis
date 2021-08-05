@@ -20,7 +20,13 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
             });
     }
 
-    return <MailboxDefaultFormGeneral initialValues={mailboxDetails} processSubmit={processSubmit} />;
+    return (
+        <MailboxDefaultFormGeneral
+            initialValues={mailboxDetails}
+            processSubmit={processSubmit}
+            switchToView={switchToView}
+        />
+    );
 }
 
 const mapStateToProps = state => {

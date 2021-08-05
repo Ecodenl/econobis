@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import InputText from '../../../../../components/form/InputText';
 import InputSelect from '../../../../../components/form/InputSelect';
@@ -195,7 +194,7 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                     </span>
                 </PanelHeader>
                 <PanelBody>
-                    {values.incomingServerType === 'gmail' && values.outgoingServerType === 'gmail' ? null : (
+                    {values.incomingServerType !== 'imap' && values.outgoingServerType !== 'smtp' ? null : (
                         <>
                             <div className="row">
                                 {values.incomingServerType === 'imap' ? (

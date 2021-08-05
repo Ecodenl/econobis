@@ -3,8 +3,7 @@ import PanelHeader from '../../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputText from '../../../../../components/form/InputText';
 import CopyToClipboard from 'react-copy-to-clipboard';
-
-const REDIRECT_URL = `${window.URL_API}/oauth/gmail/callback`;
+import { REDIRECT_URL } from '../../../../../constants';
 
 function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handleBlur }) {
     return (

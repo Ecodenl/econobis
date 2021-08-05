@@ -5,7 +5,7 @@ import MailboxDetailsFormGeneralEdit from './MailboxDetailsFormGeneralEdit';
 import MailboxDetailsFormGeneralView from './MailboxDetailsFormGeneralView';
 
 function MailboxDetailsFormGeneral({ meDetails }) {
-    const [state, setState] = useState({ showEdit: true, activeDiv: '' });
+    const [state, setState] = useState({ showEdit: false, activeDiv: '' });
 
     function switchToEdit() {
         setState({

@@ -317,9 +317,15 @@ class TemplateVariableHelper
                 return $model->iban;
                 break;
             case 'iban_gedeeltelijk':
-                if($model->iban && strlen($model->iban)>12)
+                if($model->iban && strlen($model->iban)>13)
                 {
-                    return substr($model->iban, 0, 6) . '*' . substr($model->iban, -4);
+                    $numberOfHiddenCharacters = strlen($model->iban) - 11;
+                    $partialHiddenIban = substr($model->iban, 0, 7);
+                    while($numberOfHiddenCharacters > 0) {
+                        $partialHiddenIban = $partialHiddenIban . '*';
+                        $numberOfHiddenCharacters--;
+                    }
+                    return $partialHiddenIban . substr($model->iban, -4);
                 } else {
                     return '';
                 }

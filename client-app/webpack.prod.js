@@ -12,16 +12,12 @@ module.exports = merge(common, {
     output: {
         path: path.join(__dirname, '../public/js'),
         filename: '[name].[chunkhash].js',
-        publicPath: './js/'
+        publicPath: './js/',
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/welcome.blade.php',
             filename: '../../resources/views/welcome.blade.php',
         }),
-        new webpack.DefinePlugin({
-            'process.env.GRANT_TYPE': JSON.stringify(process.env.GRANT_TYPE),
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-        })
-    ]
+    ],
 });

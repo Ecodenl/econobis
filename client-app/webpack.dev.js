@@ -22,5 +22,9 @@ module.exports = merge(common, {
             template: 'src/index.html',
         }),
         new webpack.HotModuleReplacementPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.GRANT_TYPE': JSON.stringify(process.env.GRANT_TYPE),
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        }),
     ],
 });

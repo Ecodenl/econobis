@@ -316,6 +316,14 @@ class TemplateVariableHelper
             case 'iban':
                 return $model->iban;
                 break;
+            case 'iban_gedeeltelijk':
+                if($model->iban && strlen($model->iban)>12)
+                {
+                    return substr($model->iban, 0, 6) . '*' . substr($model->iban, -4);
+                } else {
+                    return '';
+                }
+                break;
             case 'iban_tnv':
                 return $model->iban_attn;
                 break;

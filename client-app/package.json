@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "eslint **/*.{js,jsx} --quiet",
-    "serve": "webpack-dev-server --open --config webpack.dev.js",
+    "serve": "webpack serve --open --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "build:local": "webpack --config webpack.prod.local.js",
     "test": "jest --config=jest.config.json",

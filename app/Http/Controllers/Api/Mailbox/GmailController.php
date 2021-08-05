@@ -60,7 +60,7 @@ class GmailController extends Controller
                 "token_uri" => "https://oauth2.googleapis.com/token",
                 "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs",
                 "client_secret" => $gmailApiSettings->client_secret,
-                "redirect_uris" => [config('app.url') . '/oauth/gmail/callback']
+                "redirect_uris" => [config('app.url') . 'oauth/gmail/callback']
             ]
         ]);
 
@@ -90,7 +90,6 @@ class GmailController extends Controller
         $client->setApplicationName('Econobis');
         $client->setScopes([Google_Service_Gmail::GMAIL_MODIFY, Google_Service_Gmail::GMAIL_SEND]);
 
-        // TODO get config from database
         $client->setAuthConfig([
             "web" => [
                 "client_id" => $gmailApiSettings->client_id,
@@ -99,7 +98,7 @@ class GmailController extends Controller
                 "token_uri" => "https://oauth2.googleapis.com/token",
                 "auth_provider_x509_cert_url" => "https://www.googleapis.com/oauth2/v1/certs",
                 "client_secret" => $gmailApiSettings->client_secret,
-                "redirect_uris" => [config('app.url') . '/oauth/gmail/callback']
+                "redirect_uris" => [config('app.url') . 'oauth/gmail/callback']
               ]
         ]);
         $client->setAccessType('offline');

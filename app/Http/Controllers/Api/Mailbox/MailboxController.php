@@ -14,9 +14,11 @@ use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailboxGmailApiSettings;
 use App\Eco\Mailbox\MailboxIgnore;
 use App\Eco\Mailbox\MailFetcher;
+use App\Eco\Mailbox\MailFetcherGmail;
 use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
+use App\Helpers\Gmail\GmailHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Email\GridEmailTemplate;
@@ -83,7 +85,7 @@ class MailboxController extends Controller
 
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         if($mailbox->incoming_server_type === 'gmail') {
-//            new MailFetcherGmail($mailbox);
+            new MailFetcherGmail($mailbox);
         } else  {
             new MailFetcher($mailbox);
         }
@@ -139,7 +141,15 @@ class MailboxController extends Controller
 
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
         if($mailbox->incoming_server_type === 'gmail') {
-//            new MailFetcherGmail($mailbox);
+            $gmailHelper = new GmailHelper($mailbox);
+            $client = $gmailHelper->connect();
+
+            if(isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
+                return response()->json($client, 401);
+            }
+
+
+            new MailFetcherGmail($mailbox);
         } else {
             new MailFetcher($mailbox);
         }

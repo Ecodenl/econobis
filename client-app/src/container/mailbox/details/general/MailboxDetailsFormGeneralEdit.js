@@ -15,6 +15,11 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
                 switchToView();
             })
             .catch(error => {
+                console.log(error);
+                if (error.response.status === 401 && error.response.data.message === 'gmail_unauthorised') {
+                    window.location = error.response.data.authUrl;
+                }
+
                 setSubmitting(false);
                 alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
             });

@@ -97,7 +97,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                     <>
                         <PanelHeader>
                             <span className="h5">
-                                <strong>Servergegevens</strong>
+                                <strong>Gmail api instellingen</strong>
                             </span>
                         </PanelHeader>
                         <PanelBody>

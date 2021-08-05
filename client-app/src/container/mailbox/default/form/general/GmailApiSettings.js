@@ -19,7 +19,7 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handl
                     <InputText
                         label={'Project id'}
                         name={'gmailApiSettings.projectId'}
-                        value={values.gmailApiSettings.projectId}
+                        value={values.gmailApiSettings?.projectId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                     />
@@ -43,14 +43,14 @@ function MailboxDefaultFormGeneralGmailApiSettings({ values, handleChange, handl
                     <InputText
                         label={'Client id'}
                         name={'gmailApiSettings.clientId'}
-                        value={values.gmailApiSettings.clientId}
+                        value={values.gmailApiSettings?.clientId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                     />
                     <InputText
                         label={'Client secret'}
                         name={'gmailApiSettings.clientSecret'}
-                        value={values.gmailApiSettings.clientSecret}
+                        value={values.gmailApiSettings?.clientSecret}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                     />

@@ -50,26 +50,28 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                             errorMessage={errors.email}
                         />
                     </div>
-                    <div className="row">
-                        <InputText
-                            label="Gebruikersnaam"
-                            name={'username'}
-                            value={values.username}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.username && touched.username}
-                            errorMessage={errors.username}
-                        />
-                        <InputText
-                            label={'Wachtwoord'}
-                            name={'password'}
-                            value={values.password}
-                            onChangeAction={handleChange}
-                            onBlurAction={handleBlur}
-                            error={errors.password && touched.password}
-                            errorMessage={errors.password}
-                        />
-                    </div>
+                    {values.incomingServerType === 'gmail' && values.outgoingServerType === 'gmail' ? null : (
+                        <div className="row">
+                            <InputText
+                                label="Gebruikersnaam"
+                                name={'username'}
+                                value={values.username}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                error={errors.username && touched.username}
+                                errorMessage={errors.username}
+                            />
+                            <InputText
+                                label={'Wachtwoord'}
+                                name={'password'}
+                                value={values.password}
+                                onChangeAction={handleChange}
+                                onBlurAction={handleBlur}
+                                error={errors.password && touched.password}
+                                errorMessage={errors.password}
+                            />
+                        </div>
+                    )}
                     <div className="row">
                         <InputToggle
                             label="Actief"
@@ -277,20 +279,26 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                 {values.id && (
                     <>
                         <PanelHeader>
-                            <span className="h5">Log</span>
+                            <span className="h5">
+                                <strong>Log</strong>
+                            </span>
                         </PanelHeader>
                         <PanelBody>
                             <div className="row">
                                 <ViewText
                                     label={'Datum email laatst opgehaald'}
-                                    value={values.dateLastFetched}
                                     value={
                                         values.dateLastFetched
                                             ? moment(values.dateLastFetched).format('L HH:mm:ss')
                                             : 'Nog niet bepaald'
                                     }
+                                    className={'form-group col-sm-6'}
                                 />
-                                <ViewText label={'UID email laatst opgehaald'} value={values.imapIdLastFetched} />
+                                <ViewText
+                                    label={'UID email laatst opgehaald'}
+                                    value={values.imapIdLastFetched}
+                                    className={'form-group col-sm-6'}
+                                />
                             </div>
                         </PanelBody>
                     </>

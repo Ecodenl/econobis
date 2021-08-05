@@ -8,7 +8,7 @@ export default function(state = [], action) {
         case 'UPDATE_MAILBOX_DETAILS':
             return {
                 ...state,
-                ...action.mailbox.data.data,
+                ...action.mailbox,
             };
         case 'NEW_MAILBOX_USER':
             return {

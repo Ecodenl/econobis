@@ -56,12 +56,6 @@ class EmailAnswerApp extends Component {
     }
 
     componentDidMount() {
-        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
-            this.setState({
-                emailAddresses: [...this.state.emailAddresses, ...payload],
-            });
-        });
-
         let type = '';
 
         switch (this.props.params.type) {
@@ -81,15 +75,29 @@ class EmailAnswerApp extends Component {
                 type = 'reply';
         }
 
+        EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
+            this.setState({
+                emailAddresses: [...this.state.emailAddresses, ...payload],
+            });
+            this.fetchEmailByType(type);
+        });
+
         EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState({
                 emailTemplates: payload,
             });
         });
 
+        MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
+            this.setState({
+                mailboxAddresses: payload,
+            });
+        });
+    }
+
+    fetchEmailByType(type) {
         EmailAPI.fetchEmailByType(this.props.params.id, type).then(payload => {
             const extraOptions = this.createExtraOptions(payload.to, payload.cc, payload.bcc);
-
             this.setState({
                 ...this.state,
                 oldEmailId: payload.id,
@@ -108,12 +116,6 @@ class EmailAnswerApp extends Component {
                 },
                 emailAddresses: [...this.state.emailAddresses, ...extraOptions],
                 hasLoaded: true,
-            });
-        });
-
-        MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
-            this.setState({
-                mailboxAddresses: payload,
             });
         });
     }

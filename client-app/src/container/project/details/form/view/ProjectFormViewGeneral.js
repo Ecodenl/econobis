@@ -348,7 +348,11 @@ const ProjectFormViewGeneral = ({
                         </label>
                     </div>
                     <div className="col-sm-9" id="textAgreeTerms">
-                        {textAgreeTerms}
+                        <p
+                            dangerouslySetInnerHTML={{
+                                __html: textAgreeTerms.replace(/\n/g, '<br />'),
+                            }}
+                        />
                     </div>
                 </div>
                 <hr />
@@ -378,7 +382,11 @@ const ProjectFormViewGeneral = ({
                         </label>
                     </div>
                     <div className="col-sm-9" id="textAcceptAgreement">
-                        {textAcceptAgreement}
+                        <p
+                            dangerouslySetInnerHTML={{
+                                __html: textAcceptAgreement.replace(/\n/g, '<br />'),
+                            }}
+                        />
                     </div>
                 </div>
                 <div className="row">

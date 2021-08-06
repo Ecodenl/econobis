@@ -39,7 +39,7 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                 <Col xs={12} md={10}>
                                     <p
                                         dangerouslySetInnerHTML={{
-                                            __html: contactProjectData.textAgreeTermsMerged,
+                                            __html: contactProjectData.textAgreeTermsMerged.replace(/\n/g, '<br />'),
                                         }}
                                     />
                                 </Col>
@@ -61,7 +61,10 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                     htmlFor="did_accept_agreement"
                                                     className="checkbox-label w-form-label"
                                                     dangerouslySetInnerHTML={{
-                                                        __html: contactProjectData.textLinkAgreeTermsMerged,
+                                                        __html: contactProjectData.textLinkAgreeTermsMerged.replace(
+                                                            /\n/g,
+                                                            '<br />'
+                                                        ),
                                                     }}
                                                 />
                                                 {touched[field.name] && errors[field.name] ? (
@@ -91,7 +94,10 @@ function StepThree({ project, contactProjectData, previous, next, initialRegiste
                                                     htmlFor="did_understand_info"
                                                     className="checkbox-label w-form-label"
                                                     dangerouslySetInnerHTML={{
-                                                        __html: contactProjectData.textLinkUnderstandInfoMerged,
+                                                        __html: contactProjectData.textLinkUnderstandInfoMerged.replace(
+                                                            /\n/g,
+                                                            '<br />'
+                                                        ),
                                                     }}
                                                 />
                                                 {touched[field.name] && errors[field.name] ? (

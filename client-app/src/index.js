@@ -35,15 +35,14 @@ const IEPage = () => {
         <div>
             <div>
                 <pre>
-                    <h1>Sorry, Econobis werkt niet in Internet Explorer!</h1>
+                    <h1>Sorry, Econobis werkt niet met uw browser!</h1>
                 </pre>
             </div>
             <div>
                 <pre>
                     <p>
-                        Internet explorer wordt niet meer ondersteund door Microsoft, en deze website. Probeer ons
-                        nogmaals te bereiken op browsers die wij wel ondersteunen, zoals: Microsoft Edge, Chrome, Safari
-                        of Firefox.
+                        Het lijkt erop dat u met een oudere versie van uw browser werkt of Internet Explorer gebruikt.
+                        Kies een andere browser of werk uw browser bij naar de laatste versie.
                     </p>
                 </pre>
             </div>

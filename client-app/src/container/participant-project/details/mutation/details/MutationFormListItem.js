@@ -75,6 +75,7 @@ class MutationFormListItem extends Component {
             errors: {},
             errorMessage: {},
             showErrorModal: false,
+            modalTitle: '',
             modalErrorMessage: '',
         };
     }
@@ -260,6 +261,7 @@ class MutationFormListItem extends Component {
                     }
                     this.setState({
                         showErrorModal: true,
+                        modalTitle: 'Mutatie kan niet worden gewijzigd',
                         modalErrorMessage: errorMessage,
                     });
                 });
@@ -290,13 +292,14 @@ class MutationFormListItem extends Component {
                 }
                 this.setState({
                     showErrorModal: true,
+                    modalTitle: 'Mutatie kan niet worden verwijderd',
                     modalErrorMessage: errorMessage,
                 });
             });
     };
 
     closeErrorModal = () => {
-        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+        this.setState({ showErrorModal: false, modalTitle: '', modalErrorMessage: '' });
     };
 
     render() {
@@ -365,7 +368,7 @@ class MutationFormListItem extends Component {
                 {this.state.showErrorModal && (
                     <ErrorModal
                         closeModal={this.closeErrorModal}
-                        title={'Fout bij opslaan'}
+                        title={this.state.modalTitle}
                         errorMessage={this.state.modalErrorMessage}
                     />
                 )}

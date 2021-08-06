@@ -308,7 +308,7 @@ class ContactCSVHelper
                 'occupationDateOfBirth' => 'Geboortedatum',
                 'occupationPrimaryEmailAddress.email' => 'Primair e-mailadres',
                 'occupationPrimaryTelephoneNumber.number' => 'Primair telefoonnummer',
-                'occupationRole' => 'Rol',
+                'occupationRole' => 'Rol van contact',
             ], $headers);
             $headers = false;
         }

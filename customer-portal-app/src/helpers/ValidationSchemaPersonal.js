@@ -124,7 +124,7 @@ export default {
             .trim()
             .nullable()
             .required('Verplicht')
-            .test('iban', 'Ongeldige IBAN !', value => ibantools.isValidIBAN(value)),
+            .test('iban', 'Ongeldige IBAN of gebruik geen spaties.', value => ibantools.isValidIBAN(value)),
         ibanAttn: Yup.string()
             .trim()
             .nullable()

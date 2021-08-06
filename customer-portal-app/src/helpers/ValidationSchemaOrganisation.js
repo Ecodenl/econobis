@@ -125,14 +125,6 @@ export default {
                 .matches(/(\d.*){10}/, 'Minimaal 10 cijfers nodig')
                 .required('Verplicht'),
         }),
-        iban: Yup.string()
-            .trim()
-            .nullable()
-            .required('Verplicht'),
-        ibanAttn: Yup.string()
-            .trim()
-            .nullable()
-            .required('Verplicht'),
         visitAddress: Yup.object().shape({
             street: Yup.string()
                 .trim()
@@ -162,6 +154,15 @@ export default {
                 .trim()
                 .required('Verplicht'),
         }),
+        iban: Yup.string()
+            .trim()
+            .nullable()
+            .required('yyVerplicht')
+            .test('iban', 'Ongeldige IBAN of gebruik geen spaties.', value => ibantools.isValidIBAN(value)),
+        ibanAttn: Yup.string()
+            .trim()
+            .nullable()
+            .required('Verplicht'),
     }),
 
     validationSchemaPcrAdditional: Yup.object().shape({

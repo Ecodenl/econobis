@@ -154,7 +154,14 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                 <hr />
                                 <Row>
                                     <Col xs={12} md={10}>
-                                        <p>{contactProjectData.textAcceptAgreementMerged}</p>
+                                        <p
+                                            dangerouslySetInnerHTML={{
+                                                __html: contactProjectData.textAcceptAgreementMerged.replace(
+                                                    /\n/g,
+                                                    '<br />'
+                                                ),
+                                            }}
+                                        />
                                     </Col>
                                 </Row>
                                 <Row>

@@ -29,7 +29,6 @@ class InvoiceSendViewEmail extends Component {
     }
 
     render() {
-        // console.log(this.props.isLoading);
         return this.props.isLoading ? (
             <div>Gegevens aan het laden.</div>
         ) : !this.state.email ? (

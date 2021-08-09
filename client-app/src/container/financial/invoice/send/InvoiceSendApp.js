@@ -17,6 +17,7 @@ class InvoiceSendApp extends Component {
         this.state = {
             invoices: [],
             invoiceId: '',
+            isLoading: false,
         };
     }
 
@@ -26,11 +27,17 @@ class InvoiceSendApp extends Component {
 
     componentDidMount() {
         this.props.fetchAdministrationDetails(this.props.params.id);
-        InvoicesAPI.getInvoicesForSending(this.props.invoicePreviewSend).then(payload => {
-            this.setState({
-                invoices: payload.data,
+        this.setState({ isLoading: true });
+        InvoicesAPI.getInvoicesForSending(this.props.invoicePreviewSend)
+            .then(payload => {
+                this.setState({
+                    invoices: payload.data,
+                    isLoading: false,
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false });
             });
-        });
     }
 
     changeInvoice = invoiceId => {
@@ -66,6 +73,7 @@ class InvoiceSendApp extends Component {
                                 <PanelBody className={'panel-invoices-list'}>
                                     <InvoiceSendList
                                         invoices={this.state.invoices}
+                                        isLoading={this.state.isLoading}
                                         changeInvoice={this.changeInvoice}
                                     />
                                 </PanelBody>
@@ -76,7 +84,11 @@ class InvoiceSendApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody>
-                                    <InvoiceSendViewPdf invoiceId={this.state.invoiceId} />
+                                    <InvoiceSendViewPdf
+                                        invoiceId={this.state.invoiceId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfInvoices={this.state.invoices ? this.state.invoices.length : -1}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>
@@ -85,7 +97,11 @@ class InvoiceSendApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody>
-                                    <InvoiceSendViewEmail invoiceId={this.state.invoiceId} />
+                                    <InvoiceSendViewEmail
+                                        invoiceId={this.state.invoiceId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfInvoices={this.state.invoices ? this.state.invoices.length : -1}
+                                    />
                                 </PanelBody>
                             </Panel>
                         </div>

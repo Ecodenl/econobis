@@ -29,8 +29,15 @@ class InvoiceSendViewEmail extends Component {
     }
 
     render() {
-        return !this.state.email ? (
-            <div>Geen gegevens gevonden.</div>
+        // console.log(this.props.isLoading);
+        return this.props.isLoading ? (
+            <div>Gegevens aan het laden.</div>
+        ) : !this.state.email ? (
+            this.props.amountOfInvoices > 0 ? (
+                <div>Selecteer een contact om een preview te zien.</div>
+            ) : (
+                <div>Geen gegevens gevonden.</div>
+            )
         ) : (
             <div>
                 <div className="row margin-10-top">

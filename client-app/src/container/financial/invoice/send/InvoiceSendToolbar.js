@@ -53,7 +53,7 @@ class InvoiceSendToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">Te verzenden nota's versturen({this.props.amountOfInvoices})</h4>
+                    <h4 className="text-center">Te verzenden nota's versturen ({this.props.amountOfInvoices})</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showSend && this.props.type === 'email' && (

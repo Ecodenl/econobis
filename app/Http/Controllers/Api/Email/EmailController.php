@@ -91,8 +91,12 @@ class EmailController
         //From -> mailbox email
         //Cc -> empty
         //Bcc -> empty
-        $emailAddressesIds = EmailAddress::whereIn('contact_id', $email->contacts->pluck('id'))->pluck('id');
-        $email->to = $emailAddressesIds->count() > 0 ? $emailAddressesIds : [$email->from];
+
+        $toMixed = [];
+        $emailAddressesIds = EmailAddress::where('email', [$email->from])->pluck('id');
+        $toMixed = array_merge($toMixed, $emailAddressesIds->count() > 0 ? $emailAddressesIds->toArray() : [$email->from]);
+
+        $email->to = $toMixed;
         $email->from = $email->mailbox->email;
         $email->cc = [];
         $email->bcc = [];

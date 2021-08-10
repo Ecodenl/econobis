@@ -6,7 +6,7 @@ namespace App\Eco\Mailbox;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Helpers\Gmail\GmailHelper;
+use App\Helpers\Gmail\GmailConnectionManager;
 use Carbon\Carbon;
 use Google_Service_Gmail;
 use Illuminate\Support\Facades\Log;
@@ -101,12 +101,14 @@ class MailFetcherGmail
 
     private function initGmailConfig()
     {
-        $gmailHelper = new GmailHelper($this->mailbox);
-        $client = $gmailHelper->connect();
+        $gmailConnectionManager = new GmailConnectionManager($this->mailbox);
+        $client = $gmailConnectionManager->connect();
 
         if(isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
-            return $client;
+            return false;
         }
+
+//        return true;
 
         $service = new Google_Service_Gmail($client);
 

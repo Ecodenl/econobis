@@ -18,7 +18,7 @@ use App\Eco\Mailbox\MailFetcherGmail;
 use App\Eco\Mailbox\MailValidator;
 use App\Eco\Mailbox\SmtpEncryptionType;
 use App\Eco\User\User;
-use App\Helpers\Gmail\GmailHelper;
+use App\Helpers\Gmail\GmailConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Email\GridEmailTemplate;
@@ -29,6 +29,8 @@ use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
 use App\Http\Resources\User\UserPeek;
 use Doctrine\Common\Annotations\Annotation\Enum;
+use http\Header;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -73,20 +75,25 @@ class MailboxController extends Controller
         $mailbox->save();
 
         // Als de mailbox als primair is gemarkeerd, functie aanroepen om te zorgen dat alle andere mailboxen niet meer primair zijn.
-        if($mailbox->primary){
+        if ($mailbox->primary) {
             $this->makePrimary($mailbox);
         }
 
-        if($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
+        if ($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
             $this->storeOrUpdateGmailApiSettings($mailbox, $request->gmailApiSettings);
         }
 
         $mailbox->users()->attach(Auth::user());
 
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
-        if($mailbox->incoming_server_type === 'gmail') {
-            new MailFetcherGmail($mailbox);
-        } else  {
+        if ($mailbox->incoming_server_type === 'gmail') {
+            $gmailConnectionManager = new GmailConnectionManager($mailbox);
+            $client = $gmailConnectionManager->connect();
+
+            if (isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
+                return response()->json($client, 401);
+            }
+        } else {
             new MailFetcher($mailbox);
         }
 
@@ -130,26 +137,23 @@ class MailboxController extends Controller
         $mailbox->update($data);
         $mailbox->save();
 
-        if($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
+        if ($mailbox->incoming_server_type == 'gmail' || $mailbox->outgoing_server_type == 'gmail') {
             $this->storeOrUpdateGmailApiSettings($mailbox, $request->gmailApiSettings);
         }
 
         // Als de mailbox als primair is gemarkeerd, functie aanroepen om te zorgen dat alle andere mailboxen niet meer primair zijn.
-        if($mailbox->primary){
+        if ($mailbox->primary) {
             $this->makePrimary($mailbox);
         }
 
         //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
-        if($mailbox->incoming_server_type === 'gmail') {
-            $gmailHelper = new GmailHelper($mailbox);
-            $client = $gmailHelper->connect();
+        if ($mailbox->incoming_server_type === 'gmail') {
+            $gmailConnectionManager = new GmailConnectionManager($mailbox);
+            $client = $gmailConnectionManager->connect();
 
-            if(isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
+            if (isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
                 return response()->json($client, 401);
             }
-
-
-            new MailFetcherGmail($mailbox);
         } else {
             new MailFetcher($mailbox);
         }
@@ -177,10 +181,10 @@ class MailboxController extends Controller
     {
         $this->authorize('view', Mailbox::class);
 
-        if(!$mailbox->is_active){
+        if (!$mailbox->is_active) {
             return 'This mailbox is not active';
         }
-        if(!$mailbox->valid){
+        if (!$mailbox->valid) {
             return 'This mailbox is invalid';
         }
 
@@ -196,7 +200,7 @@ class MailboxController extends Controller
 
         $mailboxes = $user->mailboxes()->get();
 
-        foreach($mailboxes as $mailbox){
+        foreach ($mailboxes as $mailbox) {
             $this->receive($mailbox);
         }
     }
@@ -215,7 +219,11 @@ class MailboxController extends Controller
     {
         $mailboxes = Mailbox::where('valid', 1)->where('is_active', 1)->get();
         foreach ($mailboxes as $mailbox) {
-            $mailFetcher = new MailFetcher($mailbox);
+            if ($mailbox->incoming_server_type === 'gmail') {
+                $mailFetcher = new MailFetcherGmail($mailbox);
+            } else {
+                $mailFetcher = new MailFetcher($mailbox);
+            }
             $mailFetcher->fetchNew();
         }
     }
@@ -248,7 +256,7 @@ class MailboxController extends Controller
         // Oude primary mailbox niet meer primary maken
         foreach (Mailbox::where('primary', 1)
                      ->where('id', '<>', $mailbox->id) // Is onnodig voor huidige mailbox
-                     ->get() as $mb){
+            ->get() as $mb) {
             // Zal er eigenlijk altijd exact één moeten zijn, maar voor de zekerheid toch maar in een loop
             $mb->primary = false;
             $mb->save();
@@ -258,7 +266,7 @@ class MailboxController extends Controller
         $mailbox->save();
     }
 
-    private function storeOrUpdateGmailApiSettings(Mailbox $mailbox, $inputGmailApiSettings)
+    private function storeOrUpdateGmailApiSettings(Mailbox $mailbox, array $inputGmailApiSettings): void
     {
         $gmailApiSettings = MailboxGmailApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
 
@@ -268,5 +276,23 @@ class MailboxController extends Controller
         $gmailApiSettings->token = '';
 
         $gmailApiSettings->save();
+    }
+
+    public function gmailApiConnectionCallback(Request $request)
+    {
+        $state = json_decode(base64_decode($request->state));
+
+        $mailbox = Mailbox::where('email', $state->email)->first();
+
+        if (!$mailbox || !$request->code) return;
+
+        $gmailConnectionManager = new GmailConnectionManager($mailbox);
+
+        $appUrl = config('app.url');
+
+        if (config('app.env') === 'local') $appUrl = str_replace('https', 'http', $appUrl);
+
+        // TODO If callback is not valid then show message to the user
+        if ($gmailConnectionManager->callback($request->code)) header("Location: {$appUrl}#/mailbox/{$mailbox->id}");
     }
 }

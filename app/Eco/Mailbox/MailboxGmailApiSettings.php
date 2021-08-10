@@ -15,8 +15,8 @@ class MailboxGmailApiSettings extends Model
     protected $table = 'mailbox_gmail_api_settings';
 
     protected $encryptable = [
-//        'client_secret',
-//        'token',
+        'client_secret',
+        'token',
     ];
 
     public function mailbox()

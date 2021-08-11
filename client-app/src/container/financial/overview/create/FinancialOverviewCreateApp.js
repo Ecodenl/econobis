@@ -16,6 +16,7 @@ class FinancialOverviewCreateApp extends Component {
         this.state = {
             financialOverviewContacts: [],
             financialOverviewContactId: '',
+            isLoading: false,
         };
     }
 
@@ -24,15 +25,21 @@ class FinancialOverviewCreateApp extends Component {
     }
 
     callGetFinancialOverviewContactsForSending = () => {
+        this.setState({ isLoading: true });
         FinancialOverviewContactsAPI.getFinancialOverviewContactsForSending(
             this.props.params.id,
             this.props.selectedIds,
             this.props.params.type
-        ).then(payload => {
-            this.setState({
-                financialOverviewContacts: payload.data.data,
+        )
+            .then(payload => {
+                this.setState({
+                    financialOverviewContacts: payload.data.data,
+                    isLoading: false,
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false });
             });
-        });
     };
 
     changeFinancialOverviewContact = financialOverviewContactId => {
@@ -53,6 +60,11 @@ class FinancialOverviewCreateApp extends Component {
                                     <FinancialOverviewCreateToolbar
                                         type={this.props.params.type}
                                         selectedIds={this.props.selectedIds}
+                                        amountOfFinancialOverviewContacts={
+                                            this.state.financialOverviewContacts
+                                                ? this.state.financialOverviewContacts.length
+                                                : 0
+                                        }
                                         financialOverviewId={this.props.params.id}
                                     />
                                 </PanelBody>
@@ -67,6 +79,7 @@ class FinancialOverviewCreateApp extends Component {
                                 <PanelBody className={'panel-financial-overview-contacts-list'}>
                                     <FinancialOverviewCreateList
                                         financialOverviewContacts={this.state.financialOverviewContacts}
+                                        isLoading={this.state.isLoading}
                                         changeFinancialOverviewContact={this.changeFinancialOverviewContact}
                                     />
                                 </PanelBody>
@@ -81,6 +94,12 @@ class FinancialOverviewCreateApp extends Component {
                                         <PanelBody>
                                             <FinancialOverviewCreateViewPdf
                                                 financialOverviewContactId={this.state.financialOverviewContactId}
+                                                isLoading={this.state.isLoading}
+                                                amountOfFinancialOverviewContacts={
+                                                    this.state.financialOverviewContacts
+                                                        ? this.state.financialOverviewContacts.length
+                                                        : -1
+                                                }
                                             />
                                         </PanelBody>
                                     </Panel>
@@ -92,6 +111,12 @@ class FinancialOverviewCreateApp extends Component {
                                         <PanelBody>
                                             <FinancialOverviewCreateViewEmail
                                                 financialOverviewContactId={this.state.financialOverviewContactId}
+                                                isLoading={this.state.isLoading}
+                                                amountOfFinancialOverviewContacts={
+                                                    this.state.financialOverviewContacts
+                                                        ? this.state.financialOverviewContacts.length
+                                                        : -1
+                                                }
                                             />
                                         </PanelBody>
                                     </Panel>

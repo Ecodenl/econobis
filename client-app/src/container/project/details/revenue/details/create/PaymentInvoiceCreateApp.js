@@ -25,15 +25,22 @@ class PaymentInvoiceCreateApp extends Component {
             // messages: '',
             redirect: '',
             isBusy: false,
+            isLoading: false,
         };
     }
 
     componentDidMount() {
-        ProjectRevenueAPI.fetchProjectRevenue(this.props.params.id).then(payload => {
-            this.setState({
-                distribution: payload,
+        this.setState({ isLoading: true });
+        ProjectRevenueAPI.fetchProjectRevenue(this.props.params.id)
+            .then(payload => {
+                this.setState({
+                    distribution: payload,
+                    isLoading: false,
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false });
             });
-        });
 
         ProjectsAPI.peekDistributionsById(this.props.reportPreview.distributionIds).then(payload => {
             this.setState({
@@ -133,6 +140,7 @@ class PaymentInvoiceCreateApp extends Component {
                                 <PanelBody className={'panel-invoice-payments-list'}>
                                     <PaymentInvoiceCreateList
                                         distributions={this.state.distributions}
+                                        isLoading={this.state.isLoading}
                                         changeDistribution={this.changeDistribution}
                                     />
                                 </PanelBody>
@@ -148,6 +156,10 @@ class PaymentInvoiceCreateApp extends Component {
                                         documentTemplateId={this.props.reportPreview.templateId}
                                         emailTemplateId={this.props.reportPreview.emailTemplateId}
                                         distributionId={this.state.distributionId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfDistributions={
+                                            this.state.distributions ? this.state.distributions.length : -1
+                                        }
                                     />
                                 </PanelBody>
                             </Panel>
@@ -162,6 +174,10 @@ class PaymentInvoiceCreateApp extends Component {
                                         documentTemplateId={this.props.reportPreview.templateId}
                                         emailTemplateId={this.props.reportPreview.emailTemplateId}
                                         distributionId={this.state.distributionId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfDistributions={
+                                            this.state.distributions ? this.state.distributions.length : -1
+                                        }
                                     />
                                 </PanelBody>
                             </Panel>

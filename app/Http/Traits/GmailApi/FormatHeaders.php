@@ -3,10 +3,11 @@
 namespace App\Http\Traits\GmailApi;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 trait FormatHeaders
 {
-    private function reformatHeaders(array $headers): array
+    private function reformatHeaders(array $headers): Collection
     {
         $result = [];
 
@@ -32,7 +33,7 @@ trait FormatHeaders
             }
         }
 
-        return $result;
+        return collect($result);
     }
 
     /**

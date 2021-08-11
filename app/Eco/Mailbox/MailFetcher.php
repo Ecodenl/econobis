@@ -12,12 +12,14 @@ namespace App\Eco\Mailbox;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Http\Traits\Email\EmailRelations;
+use App\Http\Traits\Email\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Storage;
 
 class MailFetcher
 {
+    use Storage, EmailRelations;
 
     /**
      * @var Mailbox
@@ -107,8 +109,6 @@ class MailFetcher
     {
         return $this->imap;
     }
-
-
 
     private function fetchEmail($mailId)
     {
@@ -204,47 +204,6 @@ class MailFetcher
         $this->fetchedEmails[] = $email;
     }
 
-    public function addRelationToContacts(Email $email){
-
-        //soms niet koppelen
-        $mailboxIgnores = $email->mailbox->mailboxIgnores;
-
-        foreach ($mailboxIgnores as $ignore){
-            switch ($ignore->type_id) {
-                case 'e-mail':
-                   if($ignore->value === $email->from){
-                       return false;
-                   }
-                    break;
-                case 'domain':
-                    $domain = preg_replace( '!^.+?([^@]+)$!', '$1', $email->from);
-                    if ($ignore->value === $domain) {
-                        return false;
-                    }
-                    break;
-            }
-        }
-
-        $emailAddressesIds = [];
-        // Link contact from email to address
-        if($email->mailbox->link_contact_from_email_to_address) {
-            if(!empty($email->to)) {
-                $emailAddressesIds = EmailAddress::where('email', $email->to)->pluck('contact_id')->toArray();
-            }
-        // Link contact from email from address
-        } else {
-            if(!empty($email->from)) {
-                $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
-            }
-        }
-
-        if(!empty($emailAddressesIds)) {
-            //If contact has twice same emailaddress
-            $uniqueEmailAddressesIds = array_unique($emailAddressesIds);
-            $email->contacts()->attach($uniqueEmailAddressesIds);
-        }
-    }
-
     public function getFetchedEmails()
     {
         return $this->fetchedEmails;
@@ -281,38 +240,5 @@ class MailFetcher
             $mb->save();
         }
 
-    }
-
-    private function initStorageDir()
-    {
-        $storageDir = $this->getStorageDir();
-
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0777, true);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    private function getStorageDir()
-    {
-        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' ;
-    }
-
-    /**
-     * @return string
-     */
-    private function getAttachmentDBName()
-    {
-        return 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' . DIRECTORY_SEPARATOR;
-    }
-
-    /**
-     * @return string
-     */
-    private function getStorageRootDir()
-    {
-        return Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
     }
 }

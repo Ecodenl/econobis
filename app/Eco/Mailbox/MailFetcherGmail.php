@@ -7,6 +7,9 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Helpers\Gmail\GmailConnectionManager;
+use App\Http\Traits\Email\EmailRelations;
+use App\Http\Traits\Email\Storage;
+use App\Http\Traits\GmailApi\Attachment;
 use App\Http\Traits\GmailApi\FormatHeaders;
 use App\Http\Traits\GmailApi\HasDecodableBody;
 use App\Http\Traits\GmailApi\HasParts;
@@ -16,11 +19,11 @@ use Google_Client;
 use Google_Service_Gmail;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Storage;
+
 
 class MailFetcherGmail
 {
-    use FormatHeaders, HasParts, HasDecodableBody;
+    use FormatHeaders, HasParts, HasDecodableBody, Attachment, Storage, EmailRelations;
 
     /**
      * @var Mailbox
@@ -29,9 +32,12 @@ class MailFetcherGmail
     private Google_Service_Gmail $gmailService;
     private string $user = 'me';
     private array $fetchedEmails = [];
-    private $payload;
-    private $parts;
+    private \Google_Service_Gmail_MessagePart $payload;
+    private Collection $parts;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
@@ -42,8 +48,6 @@ class MailFetcherGmail
 
     public function fetchNew()
     {
-//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
-
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
         } else {
@@ -79,9 +83,6 @@ class MailFetcherGmail
     {
         $messageId = $message->getId();
 
-        // TODO Check if message_id already exists in database, then continue
-
-
         // Fetch the full email
         $this->fetchEmail($messageId);
     }
@@ -99,39 +100,6 @@ class MailFetcherGmail
         $this->service = new Google_Service_Gmail($client);
     }
 
-    private function initStorageDir()
-    {
-        $storageDir = $this->getStorageDir();
-
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0777, true);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    private function getStorageDir()
-    {
-        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox';
-    }
-
-    /**
-     * @return string
-     */
-    private function getAttachmentDBName()
-    {
-        return 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' . DIRECTORY_SEPARATOR;
-    }
-
-    /**
-     * @return string
-     */
-    private function getStorageRootDir()
-    {
-        return Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
-    }
-
     private function fetchEmail(string $messageId)
     {
         $optParamsGet['format'] = 'full';
@@ -140,7 +108,7 @@ class MailFetcherGmail
         $messagePayload = $message->getPayload();
         $headers = $this->reformatHeaders($messagePayload->getHeaders());
 
-        $this->payload = $message->getPayload();
+        $this->payload = $messagePayload;
         if ($this->payload) {
             $this->parts = collect($this->payload->getParts());
         }
@@ -168,7 +136,7 @@ class MailFetcherGmail
         }
 
         if (strlen($textHtml) > 250000) {
-            $textHtml = substr($emailData->textHtml, 0, 250000);
+            $textHtml = substr($textHtml, 0, 250000);
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
@@ -197,18 +165,7 @@ class MailFetcherGmail
         //if from email exists in any of the email addresses make a pivot record.
         $this->addRelationToContacts($email);
 
-//        foreach ($emailData->getAttachments() as $attachment) {
-//            $name = substr($attachment->filePath, strrpos($attachment->filePath, DIRECTORY_SEPARATOR) + 1);
-//
-//            $filename = $this->getAttachmentDBName() . $name;
-//
-//            $emailAttachment = new EmailAttachment([
-//                'filename' => $filename,
-//                'name' => $attachment->name,
-//                'email_id' => $email->id,
-//            ]);
-//            $emailAttachment->save();
-//        }
+        $this->storeAttachments($messageId, $email);
 
         $this->fetchedEmails[] = $email;
     }
@@ -261,47 +218,5 @@ class MailFetcherGmail
         }
 
         return null;
-    }
-
-    public function addRelationToContacts(Email $email)
-    {
-
-        //soms niet koppelen
-        $mailboxIgnores = $email->mailbox->mailboxIgnores;
-
-        foreach ($mailboxIgnores as $ignore) {
-            switch ($ignore->type_id) {
-                case 'e-mail':
-                    if ($ignore->value === $email->from) {
-                        return false;
-                    }
-                    break;
-                case 'domain':
-                    $domain = preg_replace('!^.+?([^@]+)$!', '$1', $email->from);
-                    if ($ignore->value === $domain) {
-                        return false;
-                    }
-                    break;
-            }
-        }
-
-        $emailAddressesIds = [];
-        // Link contact from email to address
-        if ($email->mailbox->link_contact_from_email_to_address) {
-            if (!empty($email->to)) {
-                $emailAddressesIds = EmailAddress::where('email', $email->to)->pluck('contact_id')->toArray();
-            }
-            // Link contact from email from address
-        } else {
-            if (!empty($email->from)) {
-                $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
-            }
-        }
-
-        if (!empty($emailAddressesIds)) {
-            //If contact has twice same emailaddress
-            $uniqueEmailAddressesIds = array_unique($emailAddressesIds);
-            $email->contacts()->attach($uniqueEmailAddressesIds);
-        }
     }
 }

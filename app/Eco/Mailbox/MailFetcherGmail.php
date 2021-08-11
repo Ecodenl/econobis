@@ -7,19 +7,30 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Helpers\Gmail\GmailConnectionManager;
+use App\Http\Traits\GmailApi\FormatHeaders;
+use App\Http\Traits\GmailApi\HasDecodableBody;
+use App\Http\Traits\GmailApi\HasParts;
 use Carbon\Carbon;
+use Exception;
+use Google_Client;
 use Google_Service_Gmail;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Storage;
 
 class MailFetcherGmail
 {
+    use FormatHeaders, HasParts, HasDecodableBody;
+
     /**
      * @var Mailbox
      */
-    private $mailbox;
-    private $imap;
-    private $fetchedEmails = [];
+    private Mailbox $mailbox;
+    private Google_Service_Gmail $gmailService;
+    private string $user = 'me';
+    private array $fetchedEmails = [];
+    private $payload;
+    private $parts;
 
     public function __construct(Mailbox $mailbox)
     {
@@ -33,129 +44,60 @@ class MailFetcherGmail
     {
 //        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
 
-        dd('--- the end of fetch new ---');
-        if($this->mailbox->date_last_fetched) {
+        if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->format('Y-m-d');
-        }else{
+        } else {
             $dateLastFetched = Carbon::now()->format('Y-m-d');
         }
 
         $dateTime = Carbon::now();
 
-        if($this->mailbox->imap_id_last_fetched) {
-            $imapIdLastFetched = $this->mailbox->imap_id_last_fetched;
-        }else{
-            $imapIdLastFetched = 0;
-        }
-
         try {
             // Get all emails (messages)
-            // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
-            $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
+            $optParams['labelIds'] = 'INBOX';
+            $optParams['q'] = 'after:' . $dateLastFetched;
+            $listMessages = $this->service->users_messages->listUsersMessages($this->user, $optParams);
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
-        } catch(PhpImap\Exceptions\ConnectionException $ex) {
-            echo "IMAP connection failed: " . $ex;
+        } catch (\Google\Service\Exception $ex) {
+            echo "Gmail connection failed: " . $ex;
             die();
-        } catch(\Exception $ex2) {
-            try {
-                $mailIds = $this->imap->searchMailbox('ALL');
-//                Log::info("Search ALL : " . implode(',', $mailIds));
-            } catch(PhpImap\Exceptions\ConnectionException $ex) {
-                echo "IMAP connection failed: " . $ex;
-                die();
-            }
         }
 
-        if(count($mailIds) > 0){
-            // we sort ids descending for processing, so when a fetch email failed, new emails still are being fetched.
-            rsort($mailIds);
-//            Log::info("Laatste imap Id vooraf: " . $imapIdLastFetched );
-//            Log::info("Mailids: " . implode(',', $mailIds) );
-            foreach($mailIds as $mailId){
-//                Log::info("Imap Id : " . $mailId);
-                if($mailId <= $imapIdLastFetched){
-                    // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
-                    // Dus kunnen we helemaal stoppen met de loop
-                    break;
-                }
-                if(Email::whereMailboxId($this->mailbox->id)
-                    ->whereImapId($mailId)
-                    ->exists()){
-                    // Deze mail bestaat al, er vanuit gaan dat alle opvolgende dus ook al eerder zijn opgehaald
-                    // Dus kunnen we helemaal stoppen met de loop
-                    break;
-                }
-
-                set_time_limit(180);
-                $this->fetchEmail($mailId);
-            }
-            $imapIdLastFetched = $mailIds[0];
-//            Log::info("Laatste imap Id achteraf: " . $imapIdLastFetched);
-
-        }
-        $this->mailbox->date_last_fetched = $dateTime;
-        $this->mailbox->imap_id_last_fetched = $imapIdLastFetched;
-        $this->mailbox->save();
-
+        $this->processMessages($listMessages);
     }
 
-    private function initGmailConfig()
+    private function processMessages(\Google_Service_Gmail_ListMessagesResponse $listMessages): void
+    {
+        // Check and fetch email
+        array_map([$this, 'processMessage'], $listMessages->getMessages());
+
+        $this->mailbox->date_last_fetched = Carbon::now();
+        $this->mailbox->save();
+    }
+
+    private function processMessage(\Google_Service_Gmail_Message $message): void
+    {
+        $messageId = $message->getId();
+
+        // TODO Check if message_id already exists in database, then continue
+
+
+        // Fetch the full email
+        $this->fetchEmail($messageId);
+    }
+
+    private function initGmailConfig(): void
     {
         $gmailConnectionManager = new GmailConnectionManager($this->mailbox);
         $client = $gmailConnectionManager->connect();
 
-        if(isset($client['message']) && $client['message'] == 'gmail_unauthorised') {
-            return false;
+        // Todo improve failure message
+        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
+            throw new Exception('InitGmailConfig: ' . $client['message']);
         }
 
-//        return true;
-
-        $service = new Google_Service_Gmail($client);
-
-        $user = 'me';
-
-        $results = $service->users_messages->listUsersMessages($user);
-        dd($results);
-        dd('--- the end ---');
+        $this->service = new Google_Service_Gmail($client);
     }
-
-//    public function getImap()
-//    {
-//        return $this->imap;
-//    }
-//
-//    private function initImapConnection()
-//    {
-//        $mb = $this->mailbox;
-//        $connectionString = '{' . $mb->imap_host . ':' . $mb->imap_port . '/imap';
-//        if ($mb->imap_encryption) {
-//            $connectionString .= '/' . $mb->imap_encryption;
-//        }
-//        else{
-//            $connectionString .= '/novalidate-cert';
-//        }
-//        $connectionString .= '}' . $mb->imap_inbox_prefix;
-//
-//        $storageDir = $this->getStorageDir();
-//
-//        $this->imap = new \PhpImap\Mailbox($connectionString, $mb->username, $mb->password, $storageDir);
-//
-//        try {
-//            $this->imap->checkMailbox();
-//            if($mb->valid == false){
-//                $mb->valid = true;
-//                $mb->login_tries = 0;
-//                $mb->save();
-//            }
-//        }
-//        catch(\Exception $e){
-//            Log::error($e->getMessage());
-//            $mb->valid = false;
-//            $mb->login_tries = $mb->login_tries + 1;
-//            $mb->save();
-//        }
-//
-//    }
 
     private function initStorageDir()
     {
@@ -171,7 +113,7 @@ class MailFetcherGmail
      */
     private function getStorageDir()
     {
-        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' ;
+        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox';
     }
 
     /**
@@ -190,77 +132,64 @@ class MailFetcherGmail
         return Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
     }
 
-    private function fetchEmail($mailId)
+    private function fetchEmail(string $messageId)
     {
-        $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
-//        dd($emailData);
-        try {
-            $dateSent = Carbon::parse( $emailData->date ) ;
-        } catch(\Exception $ex) {
-            try {
-                $dateSentStrip = str_replace(" (GMT+01:00)", "", $emailData->date);
-                $dateSentStrip = str_replace(" (GMT+02:00)", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (GMT+03:00)", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (GMT+04:00)", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (GMT+05:00)", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (GMT+06:00)", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (GMT+07:00)", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (GMT+08:00)", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (West-Europa (standaardtijd))", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (West-Europa (zomertijd))", "", $dateSentStrip);
-                $dateSentStrip = str_replace(" (W. Europe Daylight Time)", "", $dateSentStrip);
-                $dateSent = Carbon::parse( $dateSentStrip );
-            } catch(\Exception $ex2) {
-                Log::error("Failed to retrieve date sent (" . $emailData->date . ") from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex2->getMessage());
-                echo "Failed to retrieve date sent from email: " . $ex2->getMessage();
-                die();
-            }
+        $optParamsGet['format'] = 'full';
+        $message = $this->service->users_messages->get($this->user, $messageId, $optParamsGet);
+
+        $messagePayload = $message->getPayload();
+        $headers = $this->reformatHeaders($messagePayload->getHeaders());
+
+        $this->payload = $message->getPayload();
+        if ($this->payload) {
+            $this->parts = collect($this->payload->getParts());
         }
 
         $textHtml = '';
         try {
-            if ($emailData->textHtml) {
-                $textHtml = $emailData->textHtml;
-            } else {
-                if ($emailData->textPlain) {
-                    $textHtml = nl2br($emailData->textPlain);
-                }
-            }
-        } catch(\Exception $ex) {
-            Log::error("Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
-            echo "Failed to retrieve textHtml or textPlain from email (" . $emailData->id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
+            // TODO check if there is a need to lookup for html or txt/plain
+//            if ($emailData->textHtml) {
+                $textHtml = $this->getHtmlBody();
+//            } else {
+//                if ($emailData->textPlain) {
+//                    $textHtml = nl2br($this->getPlainTextBody());
+//                }
+//            }
+        } catch (\Exception $ex) {
+            Log::error("Failed to retrieve textHtml or textPlain from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
+            echo "Failed to retrieve textHtml or textPlain from email (" . $headers->message_id . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage();
             return;
         }
-        $textHtml = $textHtml?: '';
+        $textHtml = $textHtml ?: '';
         // when encoding isn't UTF-8 encode texthtml to utf8.
-        $currentEncodingTextHtml= mb_detect_encoding( $textHtml, 'UTF-8', true);
-        if(false === $currentEncodingTextHtml){
+        $currentEncodingTextHtml = mb_detect_encoding($textHtml, 'UTF-8', true);
+        if (false === $currentEncodingTextHtml) {
             $textHtml = utf8_encode($textHtml);
         }
 
-        if(strlen($textHtml) > 250000){
+        if (strlen($textHtml) > 250000) {
             $textHtml = substr($emailData->textHtml, 0, 250000);
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
-        $subject = $emailData->subject ? $emailData->subject : '';
+        $subject = $headers['subject'] ?: '';
 
-        if(strlen($subject) > 250){
-            $subject = substr($emailData->textHtml, 0, 249);
+        if (strlen($subject) > 250) {
+            $subject = substr($subject, 0, 249);
         }
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
-            'from' => $emailData->fromAddress,
-            'to' => array_keys($emailData->to),
-            'cc' => array_keys($emailData->cc),
-            'bcc' => array_keys($emailData->bcc),
+            'from' => $headers['from'],
+            'to' => $headers['to'],
+            'cc' => $headers['cc'] ?? [],
+            'bcc' => $headers['bcc'] ?? [],
             'subject' => $subject,
             'html_body' => $textHtml,
-            'date_sent' => $dateSent,
+            'date_sent' => $headers['date'],
             'folder' => 'inbox',
-            'imap_id' => $emailData->id,
-            'message_id' => $emailData->messageId,
+            'imap_id' => null,
+            'message_id' => $headers['message_id'],
             'status' => 'unread'
         ]);
         $email->save();
@@ -268,36 +197,87 @@ class MailFetcherGmail
         //if from email exists in any of the email addresses make a pivot record.
         $this->addRelationToContacts($email);
 
-        foreach ($emailData->getAttachments() as $attachment){
-            $name = substr($attachment->filePath, strrpos($attachment->filePath, DIRECTORY_SEPARATOR) + 1);
-
-            $filename = $this->getAttachmentDBName() . $name;
-
-            $emailAttachment = new EmailAttachment([
-                'filename' => $filename,
-                'name' => $attachment->name,
-                'email_id' => $email->id,
-            ]);
-            $emailAttachment->save();
-        }
+//        foreach ($emailData->getAttachments() as $attachment) {
+//            $name = substr($attachment->filePath, strrpos($attachment->filePath, DIRECTORY_SEPARATOR) + 1);
+//
+//            $filename = $this->getAttachmentDBName() . $name;
+//
+//            $emailAttachment = new EmailAttachment([
+//                'filename' => $filename,
+//                'name' => $attachment->name,
+//                'email_id' => $email->id,
+//            ]);
+//            $emailAttachment->save();
+//        }
 
         $this->fetchedEmails[] = $email;
     }
 
-    public function addRelationToContacts(Email $email){
+    /**
+     * @param bool $raw
+     *
+     * @return string
+     */
+    private function getPlainTextBody(bool $raw = false): ?string
+    {
+        $content = $this->getBody();
+
+        return $raw ? $content : $this->getDecodedBody($content);
+    }
+
+    /**
+     * Gets the HTML body
+     *
+     * @param bool $raw
+     *
+     * @return string
+     */
+    private function getHtmlBody(bool $raw = false): ?string
+    {
+        $content = $this->getBody('text/html');
+
+        return $raw ? $content : $this->getDecodedBody($content);
+    }
+
+    private function getBody(string $type = 'text/plain')
+    {
+        $parts = $this->getAllParts($this->parts);
+
+        try {
+            if (!$parts->isEmpty()) {
+                foreach ($parts as $part) {
+                    if ($part->mimeType == $type) {
+                        return $part->body->data;
+                        //if there are no parts in payload, try to get data from body->data
+                    } elseif ($this->payload->body->data) {
+                        return $this->payload->body->data;
+                    }
+                }
+            } else {
+                return $this->payload->body->data;
+            }
+        } catch (\Exception $exception) {
+            throw new \Exception("Preload or load the single message before getting the body.");
+        }
+
+        return null;
+    }
+
+    public function addRelationToContacts(Email $email)
+    {
 
         //soms niet koppelen
         $mailboxIgnores = $email->mailbox->mailboxIgnores;
 
-        foreach ($mailboxIgnores as $ignore){
+        foreach ($mailboxIgnores as $ignore) {
             switch ($ignore->type_id) {
                 case 'e-mail':
-                   if($ignore->value === $email->from){
-                       return false;
-                   }
+                    if ($ignore->value === $email->from) {
+                        return false;
+                    }
                     break;
                 case 'domain':
-                    $domain = preg_replace( '!^.+?([^@]+)$!', '$1', $email->from);
+                    $domain = preg_replace('!^.+?([^@]+)$!', '$1', $email->from);
                     if ($ignore->value === $domain) {
                         return false;
                     }
@@ -307,28 +287,21 @@ class MailFetcherGmail
 
         $emailAddressesIds = [];
         // Link contact from email to address
-        if($email->mailbox->link_contact_from_email_to_address) {
-            if(!empty($email->to)) {
+        if ($email->mailbox->link_contact_from_email_to_address) {
+            if (!empty($email->to)) {
                 $emailAddressesIds = EmailAddress::where('email', $email->to)->pluck('contact_id')->toArray();
             }
-        // Link contact from email from address
+            // Link contact from email from address
         } else {
-            if(!empty($email->from)) {
+            if (!empty($email->from)) {
                 $emailAddressesIds = EmailAddress::where('email', $email->from)->pluck('contact_id')->toArray();
             }
         }
 
-        if(!empty($emailAddressesIds)) {
+        if (!empty($emailAddressesIds)) {
             //If contact has twice same emailaddress
             $uniqueEmailAddressesIds = array_unique($emailAddressesIds);
             $email->contacts()->attach($uniqueEmailAddressesIds);
         }
     }
-
-    public function getFetchedEmails()
-    {
-        return $this->fetchedEmails;
-    }
-
-
 }

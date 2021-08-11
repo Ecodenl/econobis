@@ -235,7 +235,6 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                             { id: 'tls', name: 'TLS' },
                                         ]}
                                         onChangeAction={handleChange}
-                                        onBlurAction={handleBlur}
                                     />
                                 ) : (
                                     <div className="form-group col-sm-6" />
@@ -247,8 +246,7 @@ function MailboxDefaultFormGeneral({ initialValues, processSubmit, mailgunDomain
                                         name={'smtpEncryption'}
                                         value={values.smtpEncryption}
                                         options={[{ id: 'ssl', name: 'SSL' }, { id: 'tls', name: 'TLS' }]}
-                                        onChangeAction={(value, name) => setFieldValue(name, value)}
-                                        onBlurAction={handleBlur}
+                                        onChangeAction={handleChange}
                                     />
                                 )}
                             </div>

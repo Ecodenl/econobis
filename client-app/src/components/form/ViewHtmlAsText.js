@@ -30,7 +30,7 @@ const ViewHtmlAsText = props => {
             </label>
             <Panel className="col-sm-9">
                 <Frame>
-                    <div id={id} dangerouslySetInnerHTML={createMarkup()} />
+                    <div id={id} style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={createMarkup()} />
                 </Frame>
             </Panel>
         </div>

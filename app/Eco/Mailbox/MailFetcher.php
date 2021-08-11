@@ -108,71 +108,7 @@ class MailFetcher
         return $this->imap;
     }
 
-    private function initImapConnection()
-    {
-        $mb = $this->mailbox;
-        $connectionString = '{' . $mb->imap_host . ':' . $mb->imap_port . '/imap';
-        if ($mb->imap_encryption) {
-            $connectionString .= '/' . $mb->imap_encryption;
-        }
-        else{
-            $connectionString .= '/novalidate-cert';
-        }
-        $connectionString .= '}' . $mb->imap_inbox_prefix;
 
-        $storageDir = $this->getStorageDir();
-
-        $this->imap = new \PhpImap\Mailbox($connectionString, $mb->username, $mb->password, $storageDir);
-
-        try {
-            $this->imap->checkMailbox();
-            if($mb->valid == false){
-                $mb->valid = true;
-                $mb->login_tries = 0;
-                $mb->save();
-            }
-        }
-        catch(\Exception $e){
-            Log::error($e->getMessage());
-            $mb->valid = false;
-            $mb->login_tries = $mb->login_tries + 1;
-            $mb->save();
-        }
-
-    }
-
-    private function initStorageDir()
-    {
-        $storageDir = $this->getStorageDir();
-
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0777, true);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    private function getStorageDir()
-    {
-        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' ;
-    }
-
-    /**
-     * @return string
-     */
-    private function getAttachmentDBName()
-    {
-        return 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' . DIRECTORY_SEPARATOR;
-    }
-
-    /**
-     * @return string
-     */
-    private function getStorageRootDir()
-    {
-        return Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
-    }
 
     private function fetchEmail($mailId)
     {
@@ -227,10 +163,10 @@ class MailFetcher
             $textHtml .= '<p>Deze mail is langer dan 250.000 karakters en hierdoor ingekort.</p>';
         }
 
-        $subject = $emailData->subject ? $emailData->subject : '';
+        $subject = $emailData->subject ?: '';
 
         if(strlen($subject) > 250){
-            $subject = substr($emailData->textHtml, 0, 249);
+            $subject = substr($subject, 0, 249);
         }
 
         $email = new Email([
@@ -314,5 +250,69 @@ class MailFetcher
         return $this->fetchedEmails;
     }
 
+    private function initImapConnection()
+    {
+        $mb = $this->mailbox;
+        $connectionString = '{' . $mb->imap_host . ':' . $mb->imap_port . '/imap';
+        if ($mb->imap_encryption) {
+            $connectionString .= '/' . $mb->imap_encryption;
+        }
+        else{
+            $connectionString .= '/novalidate-cert';
+        }
+        $connectionString .= '}' . $mb->imap_inbox_prefix;
 
+        $storageDir = $this->getStorageDir();
+
+        $this->imap = new \PhpImap\Mailbox($connectionString, $mb->username, $mb->password, $storageDir);
+
+        try {
+            $this->imap->checkMailbox();
+            if($mb->valid == false){
+                $mb->valid = true;
+                $mb->login_tries = 0;
+                $mb->save();
+            }
+        }
+        catch(\Exception $e){
+            Log::error($e->getMessage());
+            $mb->valid = false;
+            $mb->login_tries = $mb->login_tries + 1;
+            $mb->save();
+        }
+
+    }
+
+    private function initStorageDir()
+    {
+        $storageDir = $this->getStorageDir();
+
+        if (!is_dir($storageDir)) {
+            mkdir($storageDir, 0777, true);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function getStorageDir()
+    {
+        return $this->getStorageRootDir() . DIRECTORY_SEPARATOR . 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' ;
+    }
+
+    /**
+     * @return string
+     */
+    private function getAttachmentDBName()
+    {
+        return 'mailbox_' . $this->mailbox->id . DIRECTORY_SEPARATOR . 'inbox' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @return string
+     */
+    private function getStorageRootDir()
+    {
+        return Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
+    }
 }

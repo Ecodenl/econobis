@@ -21,6 +21,8 @@ class ProjectValueCourseObserver
     }
 
     public function saved(ProjectValueCourse $projectValueCourse) {
+        set_time_limit(300);
+
         $currentBookWorth = $projectValueCourse->project->currentBookWorth();
 
         $participantMutationController = new ParticipantMutationController;

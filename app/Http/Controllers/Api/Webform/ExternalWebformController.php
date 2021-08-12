@@ -1437,30 +1437,42 @@ class ExternalWebformController extends Controller
             $dateFinal = null;
             $amountFinal = null;
             $quantityFinal = null;
-            $participation_mutation_date = $data['participation_mutation_date'] ?: null;
+            $participation_mutation_date = $data['participation_mutation_date'] ?: Carbon::today()->format('Y-m-d');
             $participation_mutation_amount = $data['participation_mutation_amount'] ?: null;
             $participation_mutation_quantity = $data['participation_mutation_quantity'] ?: null;
 
             switch($status->code_ref){
                 case 'interest' :
                     $dateInterest = $participation_mutation_date;
-                    $amountInterest = $participation_mutation_amount;
-                    $quantityInterest = $participation_mutation_quantity;
+                    if($projectTypeCodeRef == 'loan'){
+                        $amountInterest = $participation_mutation_amount;
+                    } else {
+                        $quantityInterest = $participation_mutation_quantity;
+                    }
                     break;
                 case 'option' :
                     $dateOption = $participation_mutation_date;
-                    $amountOption = $participation_mutation_amount;
-                    $quantityOption = $participation_mutation_quantity;
+                    if($projectTypeCodeRef == 'loan'){
+                        $amountOption = $participation_mutation_amount;
+                    } else {
+                        $quantityOption = $participation_mutation_quantity;
+                    }
                     break;
                 case 'granted' :
                     $dateGranted = $participation_mutation_date;
-                    $amountGranted = $participation_mutation_amount;
-                    $quantityGranted = $participation_mutation_quantity;
+                    if($projectTypeCodeRef == 'loan'){
+                        $amountGranted = $participation_mutation_amount;
+                    } else {
+                        $quantityGranted = $participation_mutation_quantity;
+                    }
                     break;
                 case 'final' :
                     $dateFinal = $participation_mutation_date;
-                    $amountFinal = $participation_mutation_amount;
-                    $quantityFinal = $participation_mutation_quantity;
+                    if($projectTypeCodeRef == 'loan'){
+                        $amountFinal = $participation_mutation_amount;
+                    } else {
+                        $quantityFinal = $participation_mutation_quantity;
+                    }
                     break;
             }
 
@@ -1472,7 +1484,7 @@ class ExternalWebformController extends Controller
                 'payment_reference' => $data['participation_mutation_payment_reference'],
                 'date_payment' => Carbon::make($data['participation_mutation_date_payment']),
                 'date_contract_retour' => Carbon::make($data['participation_mutation_date_contract_retour']),
-                'amount' => $participation_mutation_amount,
+                'amount' => $projectTypeCodeRef == 'loan' ? $participation_mutation_amount : null,
                 'quantity' => $participation_mutation_quantity,
                 'date_interest' => $dateInterest,
                 'amount_interest' => $amountInterest,

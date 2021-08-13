@@ -360,6 +360,38 @@ class Contact extends Model
         return array_merge($staticGroups, $dynamicGroupsForContact);
     }
 
+    public function getAllGroups()
+    {
+        //statische groepen
+        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
+
+        //dynamische groepen
+        $dynamicGroups = ContactGroup::where('type_id', 'dynamic')->get();
+
+        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
+            foreach ($dynamicGroup->all_contacts as $dynamic_contact){
+                if($dynamic_contact->id === $this->id){
+                    return true;
+                }
+            }
+            return false;
+        })->pluck('id')->toArray();
+
+        //samengestelde groepen
+        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+
+        $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
+            foreach ($composedGroup->all_contacts as $composed_contact){
+                if($composed_contact->id === $this->id){
+                    return true;
+                }
+            }
+            return false;
+        })->pluck('id')->toArray();
+
+        return array_merge($staticGroups, $dynamicGroupsForContact, $composedGroupsForContact);
+    }
+
     public function getVisibleGroups(){
 
         //statische groepen

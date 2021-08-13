@@ -167,7 +167,7 @@ class ContactController extends ApiController
     {
         $this->setContactProjectIndicators($project, $contact, null, 0);
 
-        $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllStaticAndDynamicGroups() );
+        $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllGroups() );
 
         $textIsMemberMerged = $project->text_is_member;
         $textIsMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textIsMemberMerged, 'contact', $contact);

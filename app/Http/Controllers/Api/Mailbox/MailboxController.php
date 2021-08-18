@@ -188,7 +188,11 @@ class MailboxController extends Controller
             return 'This mailbox is invalid';
         }
 
-        $mailFetcher = new MailFetcher($mailbox);
+        if ($mailbox->incoming_server_type === 'gmail') {
+            $mailFetcher = new MailFetcherGmail($mailbox);
+        } else {
+            $mailFetcher = new MailFetcher($mailbox);
+        }
         $mailFetcher->fetchNew();
     }
 

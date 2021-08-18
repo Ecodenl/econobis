@@ -93,12 +93,12 @@ use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Title\FullTitle;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class SystemData extends Resource
+class SystemData extends JsonResource
 {
     /**
      * Transform the resource into an array.

@@ -12,9 +12,9 @@ namespace App\Http\Resources\Mailbox;
 use App\Eco\Mailbox\IncomingServerType;
 use App\Eco\Mailbox\OutgoingServerType;
 use App\Http\Resources\User\UserPeek;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullMailbox extends Resource
+class FullMailbox extends JsonResource
 {
     /**
      * Transform the resource into an array.

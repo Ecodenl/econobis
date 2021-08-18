@@ -9,9 +9,9 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Measure\FullMeasure;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullAddress extends Resource
+class FullAddress extends JsonResource
 {
     /**
      * Transform the resource into an array.

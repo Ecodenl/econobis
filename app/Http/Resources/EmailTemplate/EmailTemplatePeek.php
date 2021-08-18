@@ -9,9 +9,9 @@
 namespace App\Http\Resources\EmailTemplate;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class EmailTemplatePeek extends Resource
+class EmailTemplatePeek extends JsonResource
 {
     public function toArray($request)
     {

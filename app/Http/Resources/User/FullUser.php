@@ -13,11 +13,11 @@ use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\Title\FullTitle;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class FullUser extends Resource
+class FullUser extends JsonResource
 {
     public function toArray($request)
     {

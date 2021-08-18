@@ -11,9 +11,9 @@ namespace App\Http\Resources\DocumentTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullDocumentTemplate extends Resource
+class FullDocumentTemplate extends JsonResource
 {
     public function toArray($request)
     {

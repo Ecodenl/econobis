@@ -11,9 +11,9 @@ use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Project\GridProjectRevenue;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullParticipantProject extends Resource
+class FullParticipantProject extends JsonResource
 {
     /**
      * Transform the resource into an array.

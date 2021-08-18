@@ -6,9 +6,9 @@ use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\PersonType\FullPersonType;
 use App\Http\Resources\Title\FullTitle;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullPerson extends Resource
+class FullPerson extends JsonResource
 {
     /**
      * Transform the resource into an array.

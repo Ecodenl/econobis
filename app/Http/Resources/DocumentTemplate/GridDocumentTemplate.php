@@ -9,9 +9,9 @@
 namespace App\Http\Resources\DocumentTemplate;
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridDocumentTemplate extends Resource
+class GridDocumentTemplate extends JsonResource
 {
     public function toArray($request)
     {

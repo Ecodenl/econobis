@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Contact;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridContact extends Resource
+class GridContact extends JsonResource
 {
     /**
      * Transform the resource into an array.

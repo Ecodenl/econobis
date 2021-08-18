@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Measure;
 
 use App\Http\Resources\GenericResource;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridMeasure extends Resource
+class GridMeasure extends JsonResource
 {
     /**
      * Transform the resource into an array.

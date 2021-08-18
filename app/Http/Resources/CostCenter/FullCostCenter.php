@@ -8,9 +8,9 @@
 
 namespace App\Http\Resources\CostCenter;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullCostCenter extends Resource
+class FullCostCenter extends JsonResource
 {
     public function toArray($request)
     {

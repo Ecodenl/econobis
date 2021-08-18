@@ -10,9 +10,9 @@ namespace App\Http\Resources\FinancialOverviewContact;
 
 
 use App\Http\Resources\Contact\FullContact;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullFinancialOverviewContact extends Resource
+class FullFinancialOverviewContact extends JsonResource
 {
     public function toArray($request)
     {

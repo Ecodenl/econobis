@@ -5,9 +5,9 @@ namespace App\Http\Resources\Project;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullProjectRevenue extends Resource
+class FullProjectRevenue extends JsonResource
 {
     /**
      * Transform the resource into an array.

@@ -6,21 +6,22 @@
     "type": "project",
     "require": {
         "php": ">=7.4.0",
-        "barryvdh/laravel-cors": "^0.11.3",
         "barryvdh/laravel-dompdf": "^0.8.1",
         "cmpayments/iban": "^1.1",
         "doctrine/dbal": "^2.6",
         "ecodenl/pico-wrapper": "dev-master",
+        "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^6.5.5",
         "iio/libmergepdf": "^4.0",
         "joskolenberg/enum": "^1.2",
-        "joskolenberg/laravel-jory": "^2.0",
+        "joskolenberg/laravel-jory": "^3.1",
         "laracasts/presenter": "^0.2.1",
-        "laravel/framework": "^6.0",
+        "laravel/framework": "^7.0",
         "laravel/helpers": "^1.1",
         "laravel/passport": "^9.3",
-        "laravel/tinker": "~1.0",
+        "laravel/tinker": "~2.0",
+        "laravel/ui": "^2.0",
         "league/oauth2-client": "^2.4",
         "mollie/laravel-mollie": "^2.14",
         "particle/validator": "^2.3",
@@ -37,7 +38,7 @@
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~7.0"
+        "phpunit/phpunit": "~8.5"
     },
     "autoload": {
         "classmap": [

@@ -10,9 +10,9 @@ namespace App\Http\Resources\Administration;
 
 
 use App\Http\Resources\GenericResource;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridAdministration extends Resource
+class GridAdministration extends JsonResource
 {
     public function toArray($request)
     {

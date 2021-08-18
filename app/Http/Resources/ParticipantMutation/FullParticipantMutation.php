@@ -5,9 +5,9 @@ namespace App\Http\Resources\ParticipantMutation;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullParticipantMutation extends Resource
+class FullParticipantMutation extends JsonResource
 {
     /**
      * Transform the resource into an array.

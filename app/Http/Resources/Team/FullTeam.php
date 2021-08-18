@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Team;
 
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullTeam extends Resource
+class FullTeam extends JsonResource
 {
     public function toArray($request)
     {

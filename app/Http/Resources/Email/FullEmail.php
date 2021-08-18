@@ -23,9 +23,9 @@ use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullEmail extends Resource
+class FullEmail extends JsonResource
 {
     public function toArray($request)
     {

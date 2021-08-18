@@ -11,9 +11,9 @@ namespace App\Http\Resources\Invoice;
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Order\FullOrder;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridInvoice extends Resource
+class GridInvoice extends JsonResource
 {
     public function toArray($request)
     {

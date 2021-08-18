@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\ParticipantMutation;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullParticipantMutationStatus extends Resource
+class FullParticipantMutationStatus extends JsonResource
 {
     /**
      * Transform the resource into an array.

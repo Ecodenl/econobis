@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Portal\Documents;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FinancialOverviewDocumentResource extends Resource
+class FinancialOverviewDocumentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

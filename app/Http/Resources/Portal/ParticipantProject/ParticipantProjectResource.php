@@ -6,9 +6,9 @@ use App\Http\Resources\Portal\Administration\CollectionAdministration;
 use App\Http\Resources\Portal\Contact\CollectionContact;
 use App\Http\Resources\Portal\Project\CollectionProject;
 use App\Http\Resources\Portal\ParticipantMutation\ParticipantMutationCollection;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class ParticipantProjectResource extends Resource
+class ParticipantProjectResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

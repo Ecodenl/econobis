@@ -8,9 +8,9 @@
 
 namespace App\Http\Resources\DocumentTemplate;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class DocumentTemplatePeek extends Resource
+class DocumentTemplatePeek extends JsonResource
 {
     public function toArray($request)
     {

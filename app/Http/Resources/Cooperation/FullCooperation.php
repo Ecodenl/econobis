@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Cooperation;
 
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullCooperation extends Resource
+class FullCooperation extends JsonResource
 {
     /**
      * Transform the resource into an array.

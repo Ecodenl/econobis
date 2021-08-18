@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Project;
 
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullProjectValueCourse extends Resource
+class FullProjectValueCourse extends JsonResource
 {
     /**
      * Transform the resource into an array.

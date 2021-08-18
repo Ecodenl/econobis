@@ -10,9 +10,9 @@ namespace App\Http\Resources\Mailbox;
 
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullGmailApiSettings extends Resource
+class FullGmailApiSettings extends JsonResource
 {
     /**
      * Transform the resource into an array.

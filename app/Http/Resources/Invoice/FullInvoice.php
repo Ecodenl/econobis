@@ -8,9 +8,9 @@ use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullInvoice extends Resource
+class FullInvoice extends JsonResource
 {
     /**
      * Transform the resource into an array.

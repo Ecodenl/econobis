@@ -10,9 +10,9 @@ namespace App\Http\Resources\Intake;
 
 
 use App\Http\Resources\Campaign\CampaignByIntake;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridIntake extends Resource
+class GridIntake extends JsonResource
 {
     public function toArray($request)
     {

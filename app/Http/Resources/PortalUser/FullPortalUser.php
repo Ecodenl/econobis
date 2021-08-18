@@ -8,9 +8,9 @@
 
 namespace App\Http\Resources\PortalUser;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullPortalUser extends Resource
+class FullPortalUser extends JsonResource
 {
     public function toArray($request)
     {

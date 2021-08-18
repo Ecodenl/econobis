@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Campaign;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class CampaignByIntake extends Resource
+class CampaignByIntake extends JsonResource
 {
     /**
      * Transform the resource into an array.

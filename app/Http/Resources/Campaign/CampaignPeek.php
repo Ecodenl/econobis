@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Campaign;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class CampaignPeek extends Resource
+class CampaignPeek extends JsonResource
 {
     public function toArray($request)
     {

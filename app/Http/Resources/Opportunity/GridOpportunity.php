@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Opportunity;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridOpportunity extends Resource
+class GridOpportunity extends JsonResource
 {
     /**
      * Transform the resource into an array.

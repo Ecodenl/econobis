@@ -3,10 +3,10 @@
 namespace App\Http\Resources\Invoice;
 
 use App\Http\Resources\Product\FullProduct;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 
-class FullInvoiceProduct extends Resource
+class FullInvoiceProduct extends JsonResource
 {
     /**
      * Transform the resource into an array.

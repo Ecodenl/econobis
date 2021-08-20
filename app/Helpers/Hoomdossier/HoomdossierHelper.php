@@ -166,10 +166,10 @@ class HoomdossierHelper
 
         $subject = str_replace('{cooperatie_naam}', $this->cooperation->name, $subject);
         $subject = str_replace('{contactpersoon}', $this->contact->full_name, $subject);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $this->contact);
 
         $htmlBody = str_replace('{cooperatie_naam}', $this->cooperation->name, $htmlBody);
         $htmlBody = str_replace('{contactpersoon}', $this->contact->full_name, $htmlBody);
-
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $this->contact);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);

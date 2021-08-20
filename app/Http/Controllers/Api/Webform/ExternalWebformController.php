@@ -14,6 +14,7 @@ use App\Eco\Address\AddressType;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
@@ -59,6 +60,7 @@ use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
+use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
@@ -73,6 +75,16 @@ class ExternalWebformController extends Controller
 {
 
     protected $logs = [];
+
+    /**
+     * Het contact record aangemaakt of gevonden.
+     * Bij dit contact wordt eventueel nog hoomdossier aanmaken.
+     * Hier hebben we dan ook createHoomDossier true/false en responsibleIds voor nodig.
+     * @var null
+     */
+    protected $contact = null;
+    protected $createHoomDossier = false;
+    protected $responsibleIds = [];
 
     /**
      * Het address record aangemaakt of gevonden obv postcode en huisnummer.
@@ -148,8 +160,49 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        // Geen fouten onstaan, log weergeven met succes melding.
-        $this->log('Aanroep succesvol afgerond.');
+        // Geen fouten evt nog Hoomdossier aanmaken indien van toepassing
+        $errorCreateHoomDossier = false;
+        if($this->createHoomDossier){
+            $cooperation = Cooperation::first();
+            $this->log("Aanmaken hoomdossier contact");
+            if(!$cooperation || empty($cooperation->hoom_link)){
+                $this->log("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.");
+            }else{
+                if(!$this->contact ){
+                    $this->log("Kan geen Hoomdossier aanmaken want er is geen contact gevonden.");
+                }else{
+                    if($this->contact->hoom_account_id) {
+                        $this->log("Koppeling hoomdossier bestaat al.");
+                    }else{
+                        // aanmaken hoomdossier
+                        try {
+                            $contactController = new ContactController();
+                            $contactController->makeHoomdossier($this->contact);
+
+                            $note = "Webformulier " . $this->webform->name . ".\n\n";
+                            $note .= "Hoomdossier aangemaakt voor contact " . $this->contact->full_name . " (".$this->contact->number.").\n";
+                            $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+                        } catch (\Exception $errorHoomDossier) {
+                            $errorCreateHoomDossier = true;
+                            $this->log("Fout bij aanmaken hoomdossier contact");
+
+                            $note = "Webformulier " . $this->webform->name . ".\n\n";
+                            $note .= "Fout bij aanmaken hoomdossier voor contact " . $this->contact->full_name . " (".$this->contact->number.").\n";
+                            $note .= "Controleer contactgegevens\n";
+                            $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Geen fouten ontstaan, log weergeven met succes melding.
+        if($errorCreateHoomDossier){
+            $this->log('Aanroep succesvol afgerond, alleen fout bij aanmaak Hoomdossier.');
+        }else{
+            $this->log('Aanroep succesvol afgerond.');
+        }
         $this->logInfo();
         return Response::json($this->logs);
     }
@@ -193,6 +246,15 @@ class ExternalWebformController extends Controller
                 $contact->iban_attn = $data['contact']['iban_attn'];
                 $contact->save();
                 $this->log("IBAN tnv gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+            }
+        }
+
+        // Bewaar contact als we later nog Hoomdossier moeten aanmaken
+        if($this->createHoomDossier){
+            if($contact){
+                $this->contact = $contact;
+            }else{
+                $this->contact = null;
             }
         }
 
@@ -256,6 +318,8 @@ class ExternalWebformController extends Controller
                 // Groep
                 'contact_groep' => 'group_name',
                 'contact_groep_ids' => 'contact_group_ids',
+                // Hoomdossier aanmaken
+                'hoomdossier_aanmaken' => 'create_hoom_dossier',
             ],
             'energy_supplier' => [
                 // ContactEnergySupplier
@@ -353,6 +417,10 @@ class ExternalWebformController extends Controller
 
         // Sanitize
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
+
+        // Kijken we later nog Hoomdossier moeten aanmaken
+        $this->createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
+        $this->responsibleIds = $data['responsible_ids'];
 
         return $data;
     }

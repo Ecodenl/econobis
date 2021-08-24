@@ -205,6 +205,26 @@ class SendEmailsWithVariables implements ShouldQueue {
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplatePortalVariables($subjectWithContactVariables, 'contacten_portal');
                     $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateCooperativeVariables($subjectWithContactVariables, 'cooperatie');
 
+                    if ($email->intake) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'intake', $email->intake);
+                    }
+                    if ($email->task) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'taak', $email->task);
+                    }
+                    if ($email->quotationRequest) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'offerteverzoek', $email->quotationRequest);
+                    }
+                    if ($email->opportunity) {
+                        $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'kans', $email->opportunity);
+                        if ($email->opportunity->intake) {
+                            $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'intake',
+                                $email->opportunity->intake);
+                            if ($email->opportunity->intake->campaign) {
+                                $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'campagne',
+                                    $email->opportunity->intake->campaign);
+                            }
+                        }
+                    }
                     if ($email->contactGroup) {
                         $subjectWithContactVariables = TemplateVariableHelper::replaceTemplateVariables($subjectWithContactVariables, 'groep', $email->contactGroup);
                     }

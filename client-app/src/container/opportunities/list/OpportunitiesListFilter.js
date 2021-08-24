@@ -16,7 +16,7 @@ import {
     setFilterOpportunityNumber,
     setFilterOpportunityStatusId,
 } from '../../../actions/opportunity/OpportunitiesFiltersActions';
-import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
+import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
 
 const OpportunitiesListFilter = props => {
     const onNumberChange = e => {
@@ -96,14 +96,14 @@ const OpportunitiesListFilter = props => {
                 </th>
             )}
 
-            <DataTableFilterDateStartEnd
+            <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
                 endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
                 onChangeActionStart={onCreatedAtStartChange}
                 onChangeActionEnd={onCreatedAtEndChange}
             />
 
-            <DataTableFilterDateStartEnd
+            <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.desiredDateStart.data && props.filters.desiredDateStart.data}
                 endDate={props.filters.desiredDateEnd.data && props.filters.desiredDateEnd.data}
                 onChangeActionStart={onDesiredDateStartChange}
@@ -126,6 +126,7 @@ const OpportunitiesListFilter = props => {
                     onChange={onMeasureCategoryChange}
                 />
             </th>
+            <th />
             <th>
                 <input
                     type="text"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Opportunity;
 
+use App\Http\Resources\Measure\FullMeasure;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GridOpportunity extends Resource
@@ -21,6 +22,7 @@ class GridOpportunity extends Resource
             'desiredDate' => $this->desired_date,
             'contactName' => optional(optional($this->intake)->contact)->full_name,
             'measureCategoryName' => $this->measureCategory->name,
+            'measures' => FullMeasure::collection($this->whenLoaded('measures')),
             'campaignName' => optional(optional($this->intake)->campaign)->name,
             'statusName' => optional($this->whenLoaded('status'))->name,
             'amountQuotations' => count($this->quotationRequests),

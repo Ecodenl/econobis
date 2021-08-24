@@ -33,7 +33,7 @@ class OpportunityController extends ApiController
     {
         $opportunities = $requestQuery->get();
 
-        $opportunities->load(['intake.contact', 'measureCategory', 'intake.campaign', 'status', 'quotationRequests']);
+        $opportunities->load(['intake.contact', 'measureCategory', 'measures', 'intake.campaign', 'status', 'quotationRequests']);
 
         return GridOpportunity::collection($opportunities)
             ->additional(['meta' => [

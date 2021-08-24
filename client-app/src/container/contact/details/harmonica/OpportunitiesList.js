@@ -10,9 +10,9 @@ const OpportunitiesList = ({ relatedOpportunities }) => {
 
     return (
         <div>
-            {relatedOpportunities == '' && <div>Geen kansen gevonden.</div>}
+            {relatedOpportunities && relatedOpportunities == '' && <div>Geen kansen gevonden.</div>}
 
-            {relatedOpportunities != '' && (
+            {relatedOpportunities && relatedOpportunities != '' && (
                 <table className="table harmonica-table">
                     <tbody>
                         {relatedOpportunities.map((relatedOpportunity, i) => {
@@ -20,7 +20,8 @@ const OpportunitiesList = ({ relatedOpportunities }) => {
                                 <tr key={i}>
                                     <td className="col-xs-10 clickable" onClick={() => openItem(relatedOpportunity.id)}>
                                         {moment(relatedOpportunity.created_at).format('L')} -{' '}
-                                        {relatedOpportunity.number} - {relatedOpportunity.measure_category.name}{' '}
+                                        {relatedOpportunity.measure_category.name} -{' '}
+                                        {relatedOpportunity.measuresDashSeperated}
                                     </td>
                                 </tr>
                             );

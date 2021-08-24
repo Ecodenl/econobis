@@ -2,8 +2,11 @@
 
 namespace App\Mail;
 
+use App\Eco\Mailbox\Mailbox;
+use App\Mail\CustomMailDriver\GmailapiTransport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Mail\Factory as MailFactory;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Transport\MailgunTransport;
@@ -20,18 +23,25 @@ class ConfigurableMailable extends Mailable
     /**
      * Override Mailable functionality to support mailbox settings on the fly
      *
-     * @param  \Illuminate\Contracts\Mail\Mailer  $mailer
+     * @param  \Illuminate\Contracts\Mail\Factory|\Illuminate\Contracts\Mail\Mailer  $mailer
      * @return void
      */
-    public function send(Mailer $mailer)
+    public function send($mailer)
     {
-        if(config('mail.driver') == 'mailgun') {
+        if(config('mail.default') === 'mailgun') {
             $key = config('services.mailgun.secret');
             $domain = config('services.mailgun.domain');
             $endpoint = config('services.mailgun.endpoint');
 
             $transport = new MailgunTransport(new HttpClient , $key, $domain, $endpoint);
-        }elseif(config('mail.driver') !== 'log') {
+        }elseif(config('mail.default') === 'gmailapi') {
+            // Send mail with gmail?!?!?
+            $mailboxId = config('services.gmailapi.mailbox_id');
+
+            if(!$mailboxId) return;
+
+            $transport = new GmailapiTransport($mailboxId);
+        }elseif(config('mail.default') !== 'log') {
             $host      = config('mail.host');
             $port      = config('mail.port');
             $security  = config('mail.encryption');
@@ -39,7 +49,7 @@ class ConfigurableMailable extends Mailable
             $transport = new Swift_SmtpTransport( $host, $port, $security);
             $transport->setUsername(config('mail.username'));
             $transport->setPassword(config('mail.password'));
-        }else{
+        } else {
             return;
         }
 
@@ -55,5 +65,10 @@ class ConfigurableMailable extends Mailable
                 ->buildAttachments($message)
                 ->runCallbacks($message);
         });
+    }
+
+    private function GmailAuth()
+    {
+
     }
 }

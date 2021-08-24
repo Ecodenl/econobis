@@ -5,6 +5,7 @@ namespace App\Helpers\Email;
 
 use App\Eco\Mailbox\Mailbox;
 use Config;
+use Illuminate\Support\Facades\Log;
 
 class EmailHelper
 {
@@ -30,6 +31,8 @@ class EmailHelper
             $this->setConfigToMailgunMailbox($mailbox);
         } elseif($mailbox->outgoing_server_type === 'smtp'){
             $this->setConfigToSmtpMailbox($mailbox);
+        } elseif($mailbox->outgoing_server_type === 'gmail'){
+            $this->setConfigToGmailApiMailbox($mailbox);
         }
     }
 
@@ -46,7 +49,7 @@ class EmailHelper
         Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
 
         if($this->inProduction()){
-            Config::set('mail.driver', 'mailgun');
+            Config::set('mail.default', 'mailgun');
             Config::set('mail.mailgun_domain', $mailgunDomain->domain);
             Config::set('services.mailgun.domain', $mailgunDomain->domain);
             Config::set('services.mailgun.secret', $mailgunDomain->secret);
@@ -58,7 +61,7 @@ class EmailHelper
         Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
 
         if($this->inProduction()) {
-            Config::set('mail.driver', 'smtp');
+            Config::set('mail.default', 'smtp');
             Config::set('mail.host', $mailbox->smtp_host);
             Config::set('mail.port', $mailbox->smtp_port);
             Config::set('mail.encryption', $mailbox->smtp_encryption);
@@ -67,8 +70,23 @@ class EmailHelper
         }
     }
 
+    protected function setConfigToGmailApiMailbox(Mailbox $mailbox)
+    {
+        $gmailApiSettings = $mailbox->gmailApiSettings;
+        if(!$gmailApiSettings){
+            throw new \Exception('Mailbox ' . $mailbox->id . ' should have configured Gmail api settings.');
+        }
+        if(!$gmailApiSettings->token){
+            throw new \Exception('Mailbox ' . $mailbox->id . ' should have a token.');
+        }
+
+        Config::set('mail.from', ['address' => $mailbox->email, 'name' => $mailbox->name]);
+        Config::set('mail.default', 'gmailapi');
+        Config::set('services.gmailapi.mailbox_id', $mailbox->id);
+    }
+
     protected function inProduction()
     {
-        return config('mail.driver') !== 'log';
+        return config('mail.default') !== 'log';
     }
 }

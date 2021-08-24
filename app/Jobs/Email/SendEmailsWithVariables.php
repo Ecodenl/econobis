@@ -6,6 +6,7 @@ namespace App\Jobs\Email;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\User\User;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateTableHelper;

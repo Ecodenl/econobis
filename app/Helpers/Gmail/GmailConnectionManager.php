@@ -11,6 +11,7 @@ use Google_Client;
 use Google_Service_Gmail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
 class GmailConnectionManager

@@ -80,7 +80,7 @@ class ExternalWebformController extends Controller
      * Het contact record aangemaakt of gevonden.
      * Bij dit contact wordt eventueel nog hoomdossier aanmaken.
      * Hier hebben we dan ook createHoomDossier true/false en responsibleIds voor nodig.
-     * @var null
+     * @var Contact|null
      */
     protected $contact = null;
     protected $createHoomDossier = false;
@@ -107,6 +107,14 @@ class ExternalWebformController extends Controller
      */
     protected $contactGroup = null;
     protected $contactGroups = null;
+
+    /**
+     * Als er een kans is gemaakt bij een intake, dan moet deze kans ook aan de taak worden gekoppeld.
+     * Om heen en weer sturen van deze Opportunity tussen functies te voorkomen deze maar in de class opgeslagen.
+     *
+     * @var Opportunity|null
+     */
+    protected $opportunityForTask = null;
 
     /**
      * Het gevonden webform hebben we op nog een aantal plekken nodig, daarom in class opslaan
@@ -1236,13 +1244,21 @@ class ExternalWebformController extends Controller
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
             foreach ($intakeMeasures as $intakeMeasure) {
                 $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
-                $this->addOpportunity($intakeMeasure, $intake);
+                $opportunity = $this->addOpportunity($intakeMeasure, $intake);
+            }
+            // precies 1 intake maatregel, dan aangemaakte kans straks koppelen aan taak.
+            if(count($intakeMeasures) == 1 && $opportunity != null){
+                $this->opportunityForTask = $opportunity;
             }
 
             // indien intake status 'Afgesloten met kans' en er is specifieke maatregel meegegeven, dan ook meteen kans aanmaken.
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "' aanmaken (status Actief)");
-                $this->addOpportunity($measure, $intake);
+                $opportunity = $this->addOpportunity($measure, $intake);
+                // deze aangemaakte kans straks koppelen aan taak (overschrijft dus evt. de "los" meegegeven intake maatregel.
+                if($opportunity != null){
+                    $this->opportunityForTask = $opportunity;
+                }
             }
 
             // Indien geen intake maatregelen zijn mee gegeven (niet via intake_maatregel_ids en niet via intake_maatregel_id),
@@ -1271,6 +1287,7 @@ class ExternalWebformController extends Controller
     protected function addOpportunity($measure, $intake)
     {
         $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
+        $opportunity = null;
         if($statusOpportunity) {
             $opportunity = Opportunity::create([
                 'measure_category_id' => $measure->measureCategory->id,
@@ -1285,6 +1302,7 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
         }
+        return $opportunity;
     }
 
     protected function addHousingFileToAddress(Address $address, array $data, Webform $webform)
@@ -1690,8 +1708,45 @@ class ExternalWebformController extends Controller
 
         }
 
+        $opportunityForTaskId = null;
+        if($this->opportunityForTask) {
+            $opportunityForTaskId = $this->opportunityForTask->id;
+        }
+
+        if($intake){
+            // Opmerking intake
+            $note = "Nieuwe intake.\n";
+
+            if(count($intake->reasons)>0) {
+                $note .= "Gekoppeld aan motivaties: " . ( implode(', ', $intake->reasons->pluck('name' )->toArray() ) ) . ".\n";
+            }
+
+            if(count($intake->sources)>0) {
+                $note .= "Gekoppeld aan aanmeldingsbronnen: " . ( implode(', ', $intake->sources->pluck('name' )->toArray() ) ) . ".\n";
+            }
+
+            if(count($intake->measuresRequested)>0) {
+                $note .= "Gekoppeld aan interesses: " . ( implode(', ', $intake->measuresRequested->pluck('name' )->toArray() ) ) . ".\n";
+            }
+            if(count($intake->opportunities)>0) {
+                foreach($intake->opportunities as $opportunity){
+                    if(count($opportunity->measures)>0){
+                        $note .= "Met kans maatregelen specifiek: " . ( implode(', ', $opportunity->measures->pluck('name' )->toArray() ) ) . ".\n";
+                    }else{
+                        $note .= "Met kans maatregel categorie: " . ( $opportunity->measureCategory ? $opportunity->measureCategory->name :'' ) . ".\n";
+                    }
+                }
+            }
+            if(!empty($intake->sources)) {
+                $note .= "Opmerkingen bewoner: " . ( $intake->note ) . ".\n\n";
+            }
+
+        }else{
+            // Opmerking webformulier indien geen intake.
+            $note = "Webformulier " . $webform->name . ".\n\n";
+        }
+
         // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
-        $note = "Webformulier " . $webform->name . ".\n\n";
         if($data['note']) $note .= $data['note'] . "\n\n";
         $note .= implode("\n", $this->taskErrors);
 
@@ -1740,6 +1795,7 @@ class ExternalWebformController extends Controller
             'responsible_user_id' => $responsibleUserId,
             'responsible_team_id' => $responsibleTeamId,
             'intake_id' => $intake ? $intake->id : null,
+            'opportunity_id' => $opportunityForTaskId,
             'housing_file_id' => $housingFile ? $housingFile->id : null,
             'project_id' => $participation ? $participation->project_id : null,
             'participation_project_id' => $participation ? $participation->id : null,

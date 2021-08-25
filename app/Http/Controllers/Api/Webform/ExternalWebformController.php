@@ -1737,7 +1737,7 @@ class ExternalWebformController extends Controller
                     }
                 }
             }
-            if(!empty($intake->sources)) {
+            if(!empty($intake->note)) {
                 $note .= "Opmerkingen bewoner: " . ( $intake->note ) . ".\n\n";
             }
 

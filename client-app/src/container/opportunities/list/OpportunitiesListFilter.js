@@ -12,6 +12,7 @@ import {
     setFilterOpportunityDesiredDateStart,
     setFilterOpportunityDesiredDateEnd,
     setFilterOpportunityMeasureCategory,
+    setFilterOpportunityMeasureName,
     setFilterOpportunityName,
     setFilterOpportunityNumber,
     setFilterOpportunityStatusId,
@@ -63,6 +64,10 @@ const OpportunitiesListFilter = props => {
         props.setFilterOpportunityMeasureCategory(e.target.value);
     };
 
+    const onMeasureNameChange = e => {
+        props.setFilterOpportunityMeasureName(e.target.value);
+    };
+
     const onCampaignChange = e => {
         props.setFilterOpportunityCampaign(e.target.value);
     };
@@ -95,21 +100,18 @@ const OpportunitiesListFilter = props => {
                     />
                 </th>
             )}
-
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
                 endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
                 onChangeActionStart={onCreatedAtStartChange}
                 onChangeActionEnd={onCreatedAtEndChange}
             />
-
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.desiredDateStart.data && props.filters.desiredDateStart.data}
                 endDate={props.filters.desiredDateEnd.data && props.filters.desiredDateEnd.data}
                 onChangeActionStart={onDesiredDateStartChange}
                 onChangeActionEnd={onDesiredDateEndChange}
             />
-
             <th>
                 <input
                     type="text"
@@ -126,7 +128,14 @@ const OpportunitiesListFilter = props => {
                     onChange={onMeasureCategoryChange}
                 />
             </th>
-            <th />
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.measureName.data}
+                    onChange={onMeasureNameChange}
+                />
+            </th>
             <th>
                 <input
                     type="text"
@@ -135,7 +144,6 @@ const OpportunitiesListFilter = props => {
                     onChange={onCampaignChange}
                 />
             </th>
-
             <th>
                 <select
                     className="form-control input-sm"
@@ -160,7 +168,6 @@ const OpportunitiesListFilter = props => {
                     onChange={onAmountOfQuotationRequestsChange}
                 />
             </th>
-
             <th />
             <th />
         </tr>
@@ -182,6 +189,7 @@ const mapDispatchToProps = dispatch => {
             setFilterOpportunityDesiredDateStart,
             setFilterOpportunityDesiredDateEnd,
             setFilterOpportunityMeasureCategory,
+            setFilterOpportunityMeasureName,
             setFilterOpportunityName,
             setFilterOpportunityNumber,
             setFilterOpportunityStatusId,

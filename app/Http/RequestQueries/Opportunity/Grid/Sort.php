@@ -20,6 +20,7 @@ class Sort extends RequestSort
         'desiredDate',
         'name',
         'measureCategory',
+        'measureName',
         'campaign',
         'statusId',
         'amountOfQuotationRequests',
@@ -31,12 +32,14 @@ class Sort extends RequestSort
         'desiredDate' => 'opportunities.desired_date',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
+        'measureName' => 'measures.name',
         'campaign' => 'campaigns.name',
         'statusId'  => 'opportunities.status_id',
     ];
 
     protected $joins = [
         'measureCategory' => 'measure_categories',
+        'measureName' => 'measures',
         'campaign' => 'campaigns',
         'name' => 'contacts',
     ];

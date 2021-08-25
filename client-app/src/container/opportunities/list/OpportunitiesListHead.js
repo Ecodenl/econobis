@@ -32,7 +32,7 @@ const OpportunitiesListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort
-                sortColumn={'measures'}
+                sortColumn={'measureName'}
                 title={'Maatregel specifiek'}
                 width={'15%'}
                 setSorts={setSorts}

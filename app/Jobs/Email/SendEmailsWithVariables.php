@@ -30,6 +30,7 @@ class SendEmailsWithVariables implements ShouldQueue {
      * @var Email
      */
     private $email;
+    private $errors = 0;
     private $tos;
     private $ccs;
     private $bccs;
@@ -167,6 +168,7 @@ class SendEmailsWithVariables implements ShouldQueue {
                 Log::error($e->getMessage());
                 $jobLog = new JobsLog();
                 $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress) . ' kon niet worden verzonden';
+                $this->errors++;
                 $jobLog->user_id = $this->userId;
                 $jobLog->job_category_id = 'email';
                 $jobLog->save();
@@ -264,6 +266,7 @@ class SendEmailsWithVariables implements ShouldQueue {
                     Log::error($e->getMessage());
                     $jobLog = new JobsLog();
                     $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres ' . $emailToContact->email . ' kon niet worden verzonden';
+                    $this->errors++;
                     $jobLog->user_id = $this->userId;
                     $jobLog->job_category_id = 'email';
                     $jobLog->save();
@@ -350,6 +353,7 @@ class SendEmailsWithVariables implements ShouldQueue {
                     Log::error($e->getMessage());
                     $jobLog = new JobsLog();
                     $jobLog->value = 'Mail ' . $email->id . ' vanuit groep kon niet worden verzonden naar e-mailadres ' . $emailAddress->email;
+                    $this->errors++;
                     $jobLog->user_id = $this->userId;
                     $jobLog->job_category_id = 'email';
                     $jobLog->save();
@@ -381,7 +385,7 @@ class SendEmailsWithVariables implements ShouldQueue {
             $email->save();
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'E-mail(s) verstuurd: didFinish.';
+            $jobLog->value = 'E-mail(s) versturen klaar.' . ($this->errors > 0 ? ' (met fouten)' : '');
             $jobLog->user_id = $this->userId;
             $jobLog->job_category_id = 'email';
             $jobLog->save();

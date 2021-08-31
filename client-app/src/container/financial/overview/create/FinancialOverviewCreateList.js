@@ -46,9 +46,15 @@ class FinancialOverviewCreateList extends Component {
                         ) : (
                             <Nav id="financialOverviewContact">
                                 <NavText>
-                                    <Link className="send-financial-overview-contacts-list-link">
-                                        Geen waardestaten beschikbaar.
-                                    </Link>
+                                    {this.props.isLoading ? (
+                                        <Link className="send-financial-overview-contacts-list-link">
+                                            Gegevens aan het laden.
+                                        </Link>
+                                    ) : (
+                                        <Link className="send-financial-overview-contacts-list-link">
+                                            Geen waardestaten beschikbaar.
+                                        </Link>
+                                    )}
                                 </NavText>
                             </Nav>
                         )}

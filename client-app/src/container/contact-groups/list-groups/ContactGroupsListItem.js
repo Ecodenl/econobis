@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import LapostaIcon from '../../../images/logo/laposta-16x16.png';
 
 class ContactGroupsListItem extends Component {
     constructor(props) {
@@ -35,16 +36,52 @@ class ContactGroupsListItem extends Component {
     }
 
     render() {
-        const { id, name, numberOfContacts, closedStatus, permissions, type, isUsedInComposedGroup } = this.props;
+        const {
+            id,
+            name,
+            numberOfContacts,
+            closedStatus,
+            permissions,
+            type,
+            isUsedInComposedGroup,
+            isUsedInLaposta,
+            groupUpToDateWithLaposta,
+            numberOfLapostaMembers,
+            useLaposta,
+        } = this.props;
+
+        const style = {
+            height: '16px',
+            width: 'auto',
+        };
+        const missingDataClass =
+            isUsedInLaposta && (!groupUpToDateWithLaposta || numberOfLapostaMembers != numberOfContacts)
+                ? 'missing-data-row'
+                : null;
+        const missingContactDataMessage =
+            isUsedInLaposta && (!groupUpToDateWithLaposta || numberOfLapostaMembers != numberOfContacts)
+                ? 'Niet actueel met Laposta'
+                : '';
 
         return (
             <tr
-                className={this.state.highlightRow}
+                title={missingContactDataMessage}
+                className={this.state.highlightRow + ' ' + missingDataClass ? missingDataClass : ''}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{name}</td>
+                {useLaposta ? (
+                    <td>
+                        {isUsedInLaposta ? (
+                            <>
+                                <img src={LapostaIcon} className="laposta-icon" alt="In laposta" style={style} />
+                                {' (' + numberOfLapostaMembers + ')'}
+                            </>
+                        ) : null}
+                    </td>
+                ) : null}
                 <td className="link-underline" onClick={() => this.openContactsInGroup(id)}>
                     {numberOfContacts}
                 </td>

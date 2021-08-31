@@ -19,6 +19,7 @@ class ContactGroupType extends EnumWithIdAndName
             new static('static', 'Statisch'),
             new static('dynamic', 'Dynamisch'),
             new static('composed', 'Samengesteld'),
+            new static('simulated', 'Gesimuleerd'),
         ];
     }
 

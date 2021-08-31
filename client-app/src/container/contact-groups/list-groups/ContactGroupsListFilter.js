@@ -41,6 +41,7 @@ const ContactGroupsListFilter = props => {
                     onChange={onNameChange}
                 />
             </th>
+            {props.useLaposta ? <th /> : null}
             <th />
 
             <th>

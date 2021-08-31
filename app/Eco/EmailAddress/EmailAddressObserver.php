@@ -8,6 +8,7 @@
 
 namespace App\Eco\EmailAddress;
 
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 
 class EmailAddressObserver
@@ -29,10 +30,23 @@ class EmailAddressObserver
                 ->where('primary', true)
                 ->where('id', '<>', $emailAddress->id)
                 ->first();
-
             if($oldPrimaryEmailAddress){
                 $oldPrimaryEmailAddress->primary = false;
                 $oldPrimaryEmailAddress->save();
+            }
+
+            // Check if any contactgroup contacts are present
+            // If so, then renew emailaddress for every contactgroup that is linked to laposta
+            foreach($emailAddress->contact->groups as $contactGroup){
+                if($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot= $contactGroup->pivot;
+                    if($contactGroupsPivot->laposta_member_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact, false);
+                        $lapostaMemberHelper->deleteMember();
+                    }
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact, false);
+                    $lapostaMemberHelper->createMember();
+                }
             }
         }
 
@@ -52,8 +66,40 @@ class EmailAddressObserver
                 }
 
             }
+
+            // Check if any contactgroup contacts are present
+            // If so, then renew emailaddress for every contactgroup that is linked to laposta
+            foreach($emailAddress->contact->groups as $contactGroup){
+                if($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot= $contactGroup->pivot;
+                    if($contactGroupsPivot->laposta_member_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact, false);
+                        $lapostaMemberHelper->deleteMember();
+                    }
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact, false);
+                    $lapostaMemberHelper->createMember();
+                }
+            }
         }
 
     }
+
+    public function deleted(EmailAddress $emailAddress)
+    {
+        // Check if any contactgroup contacts are present
+        // If so, then delete emailaddress for every contactgroup that is linked to laposta
+        if($emailAddress->primary == true) {
+            foreach ($emailAddress->contact->groups as $contactGroup) {
+                if ($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot = $contactGroup->pivot;
+                    if ($contactGroupsPivot->laposta_member_id) {
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $emailAddress->contact, false);
+                        $lapostaMemberHelper->deleteMember();
+                    }
+                }
+            }
+        }
+    }
+
 
 }

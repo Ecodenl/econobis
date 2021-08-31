@@ -3,8 +3,6 @@ import { hashHistory } from 'react-router';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
-import { setCheckedContact } from '../../../actions/contact-group/ContactsInGroupActions';
-
 class ContactsInGroupListItem extends Component {
     constructor(props) {
         super(props);
@@ -39,17 +37,46 @@ class ContactsInGroupListItem extends Component {
             number,
             typeName,
             fullName,
-            streetAndNumber,
-            postalCode,
-            city,
             emailAddress,
-            phoneNumber,
-            createdAt,
+            lapostaMemberId,
+            lapostaMemberState,
+            lapostaMemberSince,
             permissions,
+            isUsedInLaposta,
         } = this.props;
+
+        let lapostaMemberStatus = '';
+        switch (lapostaMemberState) {
+            case 'active':
+                lapostaMemberStatus = 'Actief';
+                break;
+            case 'unsubscribed':
+                lapostaMemberStatus = 'Uitgeschreven';
+                break;
+            case 'unknown':
+                lapostaMemberStatus = 'Niet bekend in Laposta';
+                break;
+            case 'inprogress':
+                lapostaMemberStatus = 'Wordt bijgewerkt';
+                break;
+            default:
+                lapostaMemberStatus = '';
+                break;
+        }
+
+        const missingDataClass =
+            isUsedInLaposta && (lapostaMemberId === null || lapostaMemberState === 'unknown')
+                ? 'missing-data-row'
+                : null;
+        const missingContactDataMessage =
+            isUsedInLaposta && (lapostaMemberId === null || lapostaMemberState === 'unknown')
+                ? 'Koppeling niet gevonden in Laposta'
+                : '';
+
         return (
             <tr
-                className={this.state.highlightRow}
+                title={missingContactDataMessage}
+                className={this.state.highlightRow + ' ' + missingDataClass ? missingDataClass : ''}
                 onDoubleClick={() => this.openItem(id)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
@@ -57,15 +84,21 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs">{number}</td>
                 <td className="hidden-xs hidden-sm">{typeName} </td>
                 <td>{fullName}</td>
-                <td className="hidden-xs">{streetAndNumber}</td>
-                <td className="hidden-xs">{postalCode}</td>
-                <td className="hidden-xs">{city}</td>
                 <td className="hidden-xs">{emailAddress}</td>
-                <td>{phoneNumber}</td>
-                <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>
+                {isUsedInLaposta && (
+                    <>
+                        <td className="hidden-xs">{lapostaMemberStatus}</td>
+                        <td className="hidden-xs hidden-sm">
+                            {lapostaMemberSince ? moment(lapostaMemberSince).format('DD-MM-Y') : ''}
+                        </td>
+                    </>
+                )}
                 <td>
-                    {this.state.showActionButtons ? (
-                        <a role="button" onClick={() => this.openItem(id)}>
+                    {this.state.showActionButtons && isUsedInLaposta && lapostaMemberId !== null ? (
+                        <a
+                            role="button"
+                            onClick={this.props.showEditItemModal.bind(this, id, emailAddress, lapostaMemberSince)}
+                        >
                             <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                         </a>
                     ) : (

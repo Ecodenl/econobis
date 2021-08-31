@@ -52,6 +52,11 @@ class FullContactGroup extends Resource
             'sendEmailNewContactLink' => $this->send_email_new_contact_link,
             'emailTemplateIdNewContactLink' => $this->email_template_id_new_contact_link,
             'emailTemplateNewContactLink' => FullEmailTemplate::make($this->whenLoaded('emailTemplateNewContactLink')),
+            'isUsedInLaposta' => $this->is_used_in_laposta,
+            'groupUpToDateWithLaposta' => $this->group_up_to_date_with_laposta,
+            'numberOfLapostaMembers' => $this->number_of_laposta_members,
+            'lapostaListId' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_id : $this->laposta_list_id,
+            'lapostaListCreatedAt' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_created_at : $this->laposta_list_created_at,
         ];
     }
 }

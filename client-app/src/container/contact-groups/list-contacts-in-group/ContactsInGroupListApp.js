@@ -38,7 +38,7 @@ class ContactsInGroupListApp extends Component {
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
                             <ContactsInGroupListToolbar
-                                refreshContactsInGroupData={() => this.refreshContactsInGroupData()}
+                                refreshContactsInGroupData={this.refreshContactsInGroupData}
                                 groupId={this.props.params.contactGroup}
                             />
                         </div>
@@ -47,7 +47,7 @@ class ContactsInGroupListApp extends Component {
                             <ContactsInGroupList
                                 contactsInGroup={this.props.contactsInGroup}
                                 groupId={this.props.params.contactGroup}
-                                refreshContactsInGroupData={() => this.refreshContactsInGroupData()}
+                                refreshContactsInGroupData={this.refreshContactsInGroupData}
                             />
                         </div>
                     </div>

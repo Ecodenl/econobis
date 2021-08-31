@@ -35,3 +35,10 @@ export const attachComposedExceptGroup = (contactGroupId, contactGroupToAttachId
     contactGroupId,
     contactGroupToAttachId,
 });
+
+export const updateContactGroupLapostaList = lapostaListId => {
+    return {
+        type: 'UPDATE_LAPOSTA_LIST_ID',
+        lapostaListId,
+    };
+};

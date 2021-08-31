@@ -26,4 +26,15 @@ export default {
             .then(response => response.data.data)
             .catch(error => error.response);
     },
+
+    updateContactInGroup: (contactGroup, id, lapostaMemberSince) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/update/${id}`;
+        const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
+        axios.defaults.headers.common.Authorization = AUTH_TOKEN;
+
+        return axios
+            .post(requestUrl, lapostaMemberSince)
+            .then(response => response.data.data)
+            .catch(error => error.response);
+    },
 };

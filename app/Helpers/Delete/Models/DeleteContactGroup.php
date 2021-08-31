@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Helpers\Delete\DeleteInterface;
+use App\Helpers\Laposta\LapostaListHelper;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -84,6 +85,9 @@ class DeleteContactGroup implements DeleteInterface
             $email->contactGroup()->dissociate();
             $email->save();
         }
+
+        $this->contactGroup->contacts()->detach();
+        $this->contactGroup->participants()->detach();
     }
 
     /**
@@ -100,5 +104,10 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function customDeleteActions()
     {
+        if($this->contactGroup->laposta_list_id != null){
+            $lapostaListHelper = new LapostaListHelper($this->contactGroup, false);
+            $lapostaListHelper->deleteList();
+        }
+
     }
 }

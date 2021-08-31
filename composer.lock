@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "83c96cc63c9a384e3809088739cbd736",
+    "content-hash": "58ba22498975be817938b2b671750767",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1911,6 +1911,50 @@
                 }
             ],
             "time": "2021-02-25T21:54:58+00:00"
+        },
+        {
+            "name": "laposta/laposta-api-php",
+            "version": "v1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laposta/laposta-api-php.git",
+                "reference": "1907c875c05981249c6e026b6e2e1106fc46af3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laposta/laposta-api-php/zipball/1907c875c05981249c6e026b6e2e1106fc46af3e",
+                "reference": "1907c875c05981249c6e026b6e2e1106fc46af3e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/Laposta.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stijn van der Ree",
+                    "email": "stijn@laposta.nl"
+                }
+            ],
+            "description": "Laposta api, free api to laposta.nl",
+            "homepage": "http://laposta.nl",
+            "keywords": [
+                "api",
+                "email",
+                "email-marketing",
+                "marketing",
+                "newsletter"
+            ],
+            "time": "2016-10-09T21:28:26+00:00"
         },
         {
             "name": "laracasts/presenter",

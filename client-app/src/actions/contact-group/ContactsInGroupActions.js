@@ -18,3 +18,12 @@ export const deleteContactInGroup = (contactGroup, id) => {
         id,
     };
 };
+
+export const updateContactInGroup = (contactGroup, id, lapostaMemberSince) => {
+    return {
+        type: 'UPDATE_CONTACT_IN_GROUP',
+        contactGroup,
+        id,
+        lapostaMemberSince,
+    };
+};

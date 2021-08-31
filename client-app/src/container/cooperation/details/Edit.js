@@ -13,10 +13,11 @@ import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 import { CooperationValidation } from './Validation';
 import CooperationUploadLogo from './UploadLogo';
-import { Switch } from 'react-router';
 import InputToggle from '../../../components/form/InputToggle';
+import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+import { connect } from 'react-redux';
 
-function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
+function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -77,6 +78,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
             .then(payload => {
                 updateResult(payload.data.data);
                 toggleEdit();
+                fetchSystemData();
             })
             .catch(error => {
                 alert('Er is iets misgegaan met opslaan. Probeer het nogmaals');
@@ -247,6 +249,26 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
                     </div>
                 </PanelBody>
 
+                <PanelHeader>
+                    <span className="h5 text-bold">Laposta gegevens</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <InputToggle
+                            label="Gebruik Laposta"
+                            name={'useLaposta'}
+                            value={values.useLaposta}
+                            onChangeAction={e => setFieldValue('useLaposta', e.target.checked)}
+                        />
+                        <InputText
+                            label="Laposta key"
+                            name={'lapostaKey'}
+                            value={values.lapostaKey}
+                            onChangeAction={handleChange}
+                        />
+                    </div>
+                </PanelBody>
+
                 <PanelBody>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={toggleEdit} />
@@ -264,4 +286,14 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult }) {
         </section>
     );
 }
-export default CooperationDetailsFormEdit;
+
+const mapDispatchToProps = dispatch => ({
+    fetchSystemData: () => {
+        dispatch(fetchSystemData());
+    },
+});
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(CooperationDetailsFormEdit);

@@ -10,6 +10,7 @@ namespace App\Eco\Organisation;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
+use App\Helpers\Laposta\LapostaMemberHelper;
 
 class OrganisationObserver
 {
@@ -32,6 +33,17 @@ class OrganisationObserver
             $contact = $organisation->contact;
             $contact->full_name = $organisation->name;
             $contact->save();
+
+            foreach($contact->groups as $contactGroup){
+                if($contactGroup->laposta_list_id) {
+                    $contactGroupsPivot= $contactGroup->pivot;
+                    if($contactGroupsPivot->laposta_member_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
+                        $lapostaMemberHelper->updateMember();
+                    }
+                }
+            }
+
         }
     }
 }

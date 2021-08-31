@@ -79,8 +79,14 @@ class ContactGroupsList extends Component {
                 <form onKeyUp={this.handleKeyUp} onSubmit={this.handleKeyUp}>
                     <DataTable>
                         <DataTableHead>
-                            <ContactGroupsListHead fetchContactGroupsData={() => this.props.fetchContactGroupsData()} />
-                            <ContactGroupsListFilter onSubmitFilter={this.props.onSubmitFilter} />
+                            <ContactGroupsListHead
+                                fetchContactGroupsData={() => this.props.fetchContactGroupsData()}
+                                useLaposta={meta.useLaposta}
+                            />
+                            <ContactGroupsListFilter
+                                onSubmitFilter={this.props.onSubmitFilter}
+                                useLaposta={meta.useLaposta}
+                            />
                         </DataTableHead>
                         <DataTableBody>
                             {loading ? (
@@ -93,6 +99,7 @@ class ContactGroupsList extends Component {
                                         key={contactGroup.id}
                                         {...contactGroup}
                                         showDeleteItemModal={this.showDeleteItemModal}
+                                        useLaposta={meta.useLaposta}
                                     />
                                 ))
                             )}

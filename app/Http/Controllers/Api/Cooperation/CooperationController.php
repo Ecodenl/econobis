@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Cooperation;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Helpers\Laposta\LapostaHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Cooperation\CreateCooperation;
 use App\Http\Requests\Cooperation\UpdateCooperation;
@@ -40,6 +41,7 @@ class CooperationController extends ApiController
             $cooperation->hoom_group_id = null;
         }
         $cooperation->send_email = $request->boolean('sendEmail');
+        $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->save();
 
         // Store attachment when given
@@ -61,6 +63,7 @@ class CooperationController extends ApiController
             $cooperation->hoom_group_id = null;
         }
         $cooperation->send_email = $request->boolean('sendEmail');
+        $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->save();
 
         // Store attachment when given
@@ -96,4 +99,11 @@ class CooperationController extends ApiController
 
         $cooperation->save();
     }
+
+    public function syncAllWithLaposta(Cooperation $cooperation){
+        $LapostaHelper = new LapostaHelper();
+        return $LapostaHelper->syncAllWithLaposta();
+    }
+
+
 }

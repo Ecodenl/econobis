@@ -5,32 +5,45 @@ namespace App\Http\Controllers\Api\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ComposedContactGroup;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\CSV\ContactCSVHelper;
 use App\Helpers\Delete\Models\DeleteContactGroup;
+use App\Helpers\Laposta\LapostaListHelper;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
 use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\Contact\GridContact;
+use App\Http\Resources\Contact\GridContactGroupContacts;
 use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class ContactGroupController extends Controller
 {
+    protected array $errorMessagesLaposta = [];
+    public function getErrorMessagesLaposta()
+    {
+        return $this->errorMessagesLaposta;
+    }
+
     public function grid(RequestQuery $query)
     {
         $contactGroups = $query->get();
-
+        $cooperation = Cooperation::first();
+        $useLaposta = $cooperation ? $cooperation->use_laposta : false;
         return GridContactGroup::collection($contactGroups)
             ->additional([
                 'meta' => [
                     'total' => $query->total(),
+                    'useLaposta' => $useLaposta,
                 ]
             ]);
     }
@@ -126,6 +139,16 @@ class ContactGroupController extends Controller
         $contactGroup->fill($data);
         $contactGroup->save();
 
+        if($contactGroup->is_used_in_laposta){
+            if($contactGroup->simulatedGroup){
+                $lapostaListHelper = new LapostaListHelper($contactGroup->simulatedGroup, false);
+                $lapostaListHelper->updateList();
+            } else {
+                $lapostaListHelper = new LapostaListHelper($contactGroup, false);
+                $lapostaListHelper->updateList();
+            }
+        }
+
         return FullContactGroup::make($contactGroup->load('responsibleUser', 'emailTemplateNewContactLink'));
     }
 
@@ -135,6 +158,15 @@ class ContactGroupController extends Controller
 
         try {
             DB::beginTransaction();
+
+            if($contactGroup->simulatedGroup){
+                $deleteContactGroupSimulatedGroup = new DeleteContactGroup($contactGroup->simulatedGroup);
+                $resultSimulatedGroup = $deleteContactGroupSimulatedGroup->delete();
+                if(count($resultSimulatedGroup) > 0){
+                    DB::rollBack();
+                    abort(412, implode(";", array_unique($resultSimulatedGroup)));
+                }
+            }
 
             $deleteContactGroup = new DeleteContactGroup($contactGroup);
             $result = $deleteContactGroup->delete();
@@ -150,6 +182,7 @@ class ContactGroupController extends Controller
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+
     }
 
     public function contacts(ContactGroup $contactGroup)
@@ -159,15 +192,23 @@ class ContactGroupController extends Controller
 
     public function gridContacts(ContactGroup $contactGroup)
     {
-        return GridContact::collection($contactGroup->all_contacts);
+        return GridContactGroupContacts::collection($contactGroup->all_contact_group_contacts);
     }
 
-    public function addContact(ContactGroup $contactGroup, Contact $contact)
+    public function addContact(ContactGroup $contactGroup, Contact $contact, $collectMessages = false)
     {
         $this->authorize('addToGroup', $contact);
 
         if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+
             $contactGroup->contacts()->attach($contact);
+            if($contactGroup->laposta_list_id){
+                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, $collectMessages);
+                $lapostaMemberHelper->createMember();
+                if($collectMessages){
+                    $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
+                }
+            }
 
             if($contactGroup->send_email_new_contact_link){
                 $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
@@ -176,18 +217,59 @@ class ContactGroupController extends Controller
         }
     }
 
-    public function removeContact(ContactGroup $contactGroup, Contact $contact)
+    public function removeContact(ContactGroup $contactGroup, Contact $contact, $collectMessages = false)
     {
         $this->authorize('removeFromGroup', $contact);
+
+        if($contactGroup->laposta_list_id){
+            if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+                $contactGroupPivot = $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
+                if($contactGroupPivot->laposta_member_id !== null
+                    && $contactGroupPivot->laposta_member_state !== 'unknown'
+                    && $contactGroupPivot->laposta_member_state !== 'inprogress'
+                ){
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, $collectMessages);
+                    $lapostaMemberHelper->deleteMember();
+                    if($collectMessages){
+                        $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
+                    }
+
+                }
+            }
+        }
+
         $contactGroup->contacts()->detach($contact);
+    }
+
+    public function updateContact(ContactGroup $contactGroup, Contact $contact, Request $request)
+    {
+        $this->authorize('updateFromGroup', $contact);
+
+        //Van dynamic eerst een static groep maken
+        if($contactGroup->type_id === 'dynamic' || $contactGroup->type_id === 'composed'){
+            $contactGroupUpdate = $contactGroup->simulatedGroup;
+        }else{
+            $contactGroupUpdate = $contactGroup;
+        }
+
+        $contactGroupUpdate->contacts()->updateExistingPivot($contact->id, ['laposta_member_since' => Carbon::parse($request->get('lapostaMemberSince'))]);
     }
 
     public function addContacts(ContactGroup $contactGroup, Request $request)
     {
-
         $contactIds = $request->input();
 
         $contactGroup->contacts()->syncWithoutDetaching($contactIds);
+
+        if($contactGroup->laposta_list_id){
+            foreach ($contactIds as $contactId) {
+                $contact = Contact::find($contactId);
+                if($contact) {
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
+                    $lapostaMemberHelper->createMember();
+                }
+            }
+        }
     }
 
     public function tasks(ContactGroup $contactGroup)
@@ -250,5 +332,116 @@ class ContactGroupController extends Controller
             $contactGroup->composed_of = 'contacts';
         }
 
+    }
+
+
+    public function syncContactGroupLapostaList(ContactGroup $contactGroup)
+    {
+        $this->syncLapostaList($contactGroup);
+
+        if (count($this->getErrorMessagesLaposta())) {
+            throw ValidationException::withMessages(array("econobis" => $this->getErrorMessagesLaposta()));
+        }
+    }
+
+    public function syncLapostaList(ContactGroup $contactGroup) {
+
+        // Laposta list bijwerken
+        if($contactGroup->is_used_in_laposta){
+
+            // via simulategroup
+            if($contactGroup->simulatedGroup){
+                $contactGroup->simulatedGroup->name = $contactGroup->name;
+                $contactGroup->simulatedGroup->description = $contactGroup->description;
+                $contactGroup->simulatedGroup->save();
+                $lapostaListHelper = new LapostaListHelper($contactGroup->simulatedGroup, true);
+                $lapostaListId = $lapostaListHelper->updateList();
+                $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaListHelper->getMessages() );
+
+                $contactGroupToAdd = $contactGroup->getAllContacts()->diff($contactGroup->simulatedGroup->getAllContacts());
+                foreach ($contactGroupToAdd as $contact){
+                    $this->addContact($contactGroup->simulatedGroup, $contact, true);
+                }
+
+                $contactGroupToRemove = $contactGroup->simulatedGroup->getAllContacts()->diff($contactGroup->getAllContacts());
+                foreach ($contactGroupToRemove as $contact){
+                    $this->removeContact($contactGroup->simulatedGroup, $contact, true);
+                }
+
+                $contactGroupToUpdate = $contactGroup->simulatedGroup->contacts->whereNull('pivot.laposta_member_id');
+                foreach ($contactGroupToUpdate as $contact){
+                    if($contactGroup->simulatedGroup->laposta_list_id){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup->simulatedGroup, $contact, true);
+                        $lapostaMemberHelper->createMember();
+                        $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
+                    }
+                }
+
+            }else{
+                $lapostaListHelper = new LapostaListHelper($contactGroup, true);
+                $lapostaListId = $lapostaListHelper->updateList();
+                $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaListHelper->getMessages() );
+
+                if($contactGroup->laposta_list_id){
+                    $contactGroupToUpdate = $contactGroup->contacts->whereNull('pivot.laposta_member_id');
+                    foreach ($contactGroupToUpdate as $contact){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, true);
+                        $lapostaMemberHelper->createMember();
+                        $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
+                    }
+                    $contactGroupToUpdate = $contactGroup->contacts->where('pivot.laposta_member_state', 'unknown');
+                    foreach ($contactGroupToUpdate as $contact){
+                        $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, true);
+                        $lapostaMemberHelper->updateMember();
+                        $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaMemberHelper->getMessages() );
+                    }
+                }
+
+            }
+
+        } else {
+
+            // Laposta list aanmaken
+            $contactGroupNew = null;
+
+            //Van static groep maken
+            if($contactGroup->type_id === 'static' ){
+                $contactGroupNew = $contactGroup;
+            }
+
+            //Van dynamic eerst een static groep maken
+            if($contactGroup->type_id === 'dynamic' ){
+                $contactGroupNew = $contactGroup->replicate();
+                $contactGroupNew->type_id = 'simulated';
+                $contactGroupNew->composed_of = 'contacts';
+                $contactGroupNew->show_contact_form = false;
+                $contactGroupNew->save();
+
+                $contactGroup->simulated_group_id = $contactGroupNew->id;
+                $contactGroup->save();
+                $contactGroupNew->contacts()->sync($contactGroup->dynamic_contacts->get()->pluck("contact_id"));
+            }
+
+            //Van composed eerst een static groep maken
+            if($contactGroup->type_id === 'composed' ){
+                $contactGroupNew = $contactGroup->replicate();
+                $contactGroupNew->type_id = 'simulated';
+                $contactGroupNew->save();
+
+                $contactGroup->simulated_group_id = $contactGroupNew->id;
+                $contactGroup->save();
+                $contactGroupNew->contacts()->sync($contactGroup->composed_contacts->pluck("id"));
+            }
+
+            if(!$contactGroupNew){
+                return null;
+            }
+
+            $lapostaListHelper = new LapostaListHelper($contactGroupNew, true);
+            $lapostaListId = $lapostaListHelper->createList();
+            $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaListHelper->getMessages() );
+        }
+
+        return $lapostaListId;
     }
 }

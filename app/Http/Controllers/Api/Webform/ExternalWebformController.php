@@ -58,6 +58,7 @@ use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Helpers\ContactGroup\ContactGroupHelper;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
@@ -1541,6 +1542,12 @@ class ExternalWebformController extends Controller
                 $this->contactGroup = $contactGroup;
                 $this->log('Contact ' . $contact->id . ' aan groep ' . $data['group_name'] . ' gekoppeld.');
 
+                if($contactGroup->laposta_list_id){
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
+                    $lapostaMemberId = $lapostaMemberHelper->createMember();
+                    $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
+                }
+
                 if($contactGroup->send_email_new_contact_link){
                     $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
                     $processed = $contactGroupHelper->processEmailNewContactToGroup();
@@ -1565,6 +1572,13 @@ class ExternalWebformController extends Controller
                         }else {
                             $contactGroup->contacts()->syncWithoutDetaching($contact);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
+
+                            if($contactGroup->laposta_list_id){
+                                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
+                                $lapostaMemberId = $lapostaMemberHelper->createMember();
+                                $this->log('Contact ' . $contact->id . ' als laposta relatie ' . $lapostaMemberId . ' aangemaakt.');
+                            }
+
                             if ($contactGroup->send_email_new_contact_link) {
                                 $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
                                 $processed = $contactGroupHelper->processEmailNewContactToGroup();

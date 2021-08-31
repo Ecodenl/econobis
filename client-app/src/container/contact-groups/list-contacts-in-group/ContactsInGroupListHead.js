@@ -5,16 +5,25 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 const ContactsInGroupListHead = props => {
     return (
         <tr className="thead-title-quaternary">
-            <DataTableHeadTitle RowClassName={'hidden-xs'} title={'#'} width={'3%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'5%'} />
-            <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'11%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Adres'} width={'12%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Postcode'} width={'7%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Plaats'} width={'10%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'12%'} />
-            <DataTableHeadTitle sortColumn={'phoneNumber'} title={'Telefoon'} width={'7%'} />
-            <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Gemaakt op'} width={'10%'} />
-            <th width="3%" />
+            {props.isUsedInLaposta ? (
+                <>
+                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'#'} width={'10%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'10%'} />
+                    <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'25%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'25%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Laposta status'} width={'10%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Toegevoegd op'} width={'10%'} />
+                    <th width="10%" />
+                </>
+            ) : (
+                <>
+                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'#'} width={'15%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'15%'} />
+                    <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'30%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'30%'} />
+                    <th width="10%" />
+                </>
+            )}
         </tr>
     );
 };

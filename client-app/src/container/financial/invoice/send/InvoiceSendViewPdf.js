@@ -42,7 +42,7 @@ class InvoiceSendViewPdf extends Component {
             <div>Gegevens aan het laden.</div>
         ) : !this.state.file ? (
             this.props.amountOfInvoices > 0 ? (
-                <div>Selecteer een contact om een preview te zien.</div>
+                <div>Selecteer links in het scherm een contact om een preview te zien.</div>
             ) : (
                 <div>Geen gegevens gevonden.</div>
             )

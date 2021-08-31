@@ -38,9 +38,13 @@ class PaymentInvoiceCreateList extends Component {
                         ) : (
                             <Nav id="order">
                                 <NavText>
-                                    <Link className="send-payment-invoices-list-link">
-                                        Geen opbrengstverdeling beschikbaar.
-                                    </Link>
+                                    {this.props.isLoading ? (
+                                        <Link className="send-payment-invoices-list-link">Gegevens aan het laden.</Link>
+                                    ) : (
+                                        <Link className="send-payment-invoices-list-link">
+                                            Geen opbrengstverdeling beschikbaar.
+                                        </Link>
+                                    )}
                                 </NavText>
                             </Nav>
                         )}

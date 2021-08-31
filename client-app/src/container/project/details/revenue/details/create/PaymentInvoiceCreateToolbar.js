@@ -15,7 +15,7 @@ const PaymentInvoiceCreateToolbar = ({ amountOfDistributions, createRevenueRepor
             </div>
         </div>
         <div className="col-md-4">
-            <h4 className="text-center">Rapportage aanmaken({amountOfDistributions})</h4>
+            <h4 className="text-center">Rapportage aanmaken ({amountOfDistributions})</h4>
         </div>
         <div className="col-md-4" />
     </div>

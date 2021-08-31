@@ -25,15 +25,22 @@ class ParticipantReportCreateApp extends Component {
             // messages: '',
             redirect: '',
             isBusy: false,
+            isLoading: false,
         };
     }
 
     componentDidMount() {
-        ProjectsAPI.peekParticipantsById(this.props.reportPreview.participantIds).then(payload => {
-            this.setState({
-                participants: payload.data,
+        this.setState({ isLoading: true });
+        ProjectsAPI.peekParticipantsById(this.props.reportPreview.participantIds)
+            .then(payload => {
+                this.setState({
+                    participants: payload.data,
+                    isLoading: false,
+                });
+            })
+            .catch(error => {
+                this.setState({ isLoading: false });
             });
-        });
     }
 
     componentWillUnmount() {
@@ -120,6 +127,7 @@ class ParticipantReportCreateApp extends Component {
                                 <PanelBody className={'panel-invoice-payments-list'}>
                                     <ParticipantReportCreateList
                                         participants={this.state.participants}
+                                        isLoading={this.state.isLoading}
                                         changeParticipant={this.changeParticipant}
                                     />
                                 </PanelBody>
@@ -135,6 +143,10 @@ class ParticipantReportCreateApp extends Component {
                                         documentTemplateId={this.props.reportPreview.templateId}
                                         emailTemplateId={this.props.reportPreview.emailTemplateId}
                                         participantId={this.state.participantId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfParticipants={
+                                            this.state.participants ? this.state.participants.length : -1
+                                        }
                                     />
                                 </PanelBody>
                             </Panel>
@@ -149,6 +161,10 @@ class ParticipantReportCreateApp extends Component {
                                         documentTemplateId={this.props.reportPreview.templateId}
                                         emailTemplateId={this.props.reportPreview.emailTemplateId}
                                         participantId={this.state.participantId}
+                                        isLoading={this.state.isLoading}
+                                        amountOfParticipants={
+                                            this.state.participants ? this.state.participants.length : -1
+                                        }
                                     />
                                 </PanelBody>
                             </Panel>

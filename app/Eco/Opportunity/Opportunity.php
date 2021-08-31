@@ -20,6 +20,8 @@ class Opportunity extends Model
 
     protected $table = 'opportunities';
 
+    protected $appends = ['measuresDashSeperated'];
+
     protected $guarded = ['id'];
     //Relations
     public function measureCategory()
@@ -78,5 +80,10 @@ class Opportunity extends Model
 
     public function emails(){
         return $this->hasMany(Email::class)->orderBy('emails.id', 'desc');
+    }
+
+    public function getMeasuresDashSeperatedAttribute()
+    {
+        return implode('-', $this->measures->pluck('name' )->toArray() );
     }
 }

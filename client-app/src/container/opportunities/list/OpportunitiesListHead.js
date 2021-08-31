@@ -17,11 +17,11 @@ const OpportunitiesListHead = props => {
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'20%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'desiredDate'}
                 title={'Datum Uitvoering'}
-                width={'17%'}
+                width={'10%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'10%'} setSorts={setSorts} />
@@ -31,12 +31,18 @@ const OpportunitiesListHead = props => {
                 width={'10%'}
                 setSorts={setSorts}
             />
+            <DataTableHeadTitleAndSort
+                sortColumn={'measureName'}
+                title={'Maatregel specifiek'}
+                width={'15%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'amountOfQuotationRequests'}
                 title={'Aantal offertes'}
-                width={'7%'}
+                width={'9%'}
                 setSorts={setSorts}
             />
             <th width="6%" />

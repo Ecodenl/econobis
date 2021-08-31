@@ -27,6 +27,10 @@ const filtersReducerDefaultState = {
         field: 'measureCategory',
         data: '',
     },
+    measureName: {
+        field: 'measureName',
+        data: '',
+    },
     campaign: {
         field: 'campaign',
         data: '',
@@ -97,6 +101,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 measureCategory: {
                     ...state.measureCategory,
                     data: action.measureCategory,
+                },
+            };
+        case 'SET_FILTER_OPPORTUNITY_MEASURE_NAME':
+            return {
+                ...state,
+                measureName: {
+                    ...state.measureName,
+                    data: action.measureName,
                 },
             };
         case 'SET_FILTER_OPPORTUNITY_CAMPAIGN':

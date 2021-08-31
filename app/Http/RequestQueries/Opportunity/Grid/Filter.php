@@ -23,6 +23,7 @@ class Filter extends RequestFilter
         'desiredDateEnd',
         'name',
         'measureCategory',
+        'measureName',
         'campaign',
         'statusId',
         'amountOfQuotationRequests',
@@ -32,12 +33,14 @@ class Filter extends RequestFilter
         'number' => 'opportunities.number',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
+        'measureName' => 'measures.name',
         'campaign' => 'campaigns.name',
         'statusId'  => 'opportunities.status_id',
     ];
 
     protected $joins = [
         'measureCategory' => 'measure_categories',
+        'measureName' => 'measures',
         'campaign' => 'campaigns',
         'name' => 'contacts',
     ];

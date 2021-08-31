@@ -14,6 +14,7 @@ use App\Eco\Address\AddressType;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\ContactEnergySupplier;
@@ -60,6 +61,7 @@ use App\Eco\Webform\Webform;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
+use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
@@ -74,6 +76,16 @@ class ExternalWebformController extends Controller
 {
 
     protected $logs = [];
+
+    /**
+     * Het contact record aangemaakt of gevonden.
+     * Bij dit contact wordt eventueel nog hoomdossier aanmaken.
+     * Hier hebben we dan ook createHoomDossier true/false en responsibleIds voor nodig.
+     * @var Contact|null
+     */
+    protected $contact = null;
+    protected $createHoomDossier = false;
+    protected $responsibleIds = [];
 
     /**
      * Het address record aangemaakt of gevonden obv postcode en huisnummer.
@@ -96,6 +108,14 @@ class ExternalWebformController extends Controller
      */
     protected $contactGroup = null;
     protected $contactGroups = null;
+
+    /**
+     * Als er een kans is gemaakt bij een intake, dan moet deze kans ook aan de taak worden gekoppeld.
+     * Om heen en weer sturen van deze Opportunity tussen functies te voorkomen deze maar in de class opgeslagen.
+     *
+     * @var Opportunity|null
+     */
+    protected $opportunityForTask = null;
 
     /**
      * Het gevonden webform hebben we op nog een aantal plekken nodig, daarom in class opslaan
@@ -149,8 +169,49 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        // Geen fouten onstaan, log weergeven met succes melding.
-        $this->log('Aanroep succesvol afgerond.');
+        // Geen fouten evt nog Hoomdossier aanmaken indien van toepassing
+        $errorCreateHoomDossier = false;
+        if($this->createHoomDossier){
+            $cooperation = Cooperation::first();
+            $this->log("Aanmaken hoomdossier contact");
+            if(!$cooperation || empty($cooperation->hoom_link)){
+                $this->log("Kan geen Hoomdossier aanmaken want er is bij cooperatie geen hoomdossier link gevonden.");
+            }else{
+                if(!$this->contact ){
+                    $this->log("Kan geen Hoomdossier aanmaken want er is geen contact gevonden.");
+                }else{
+                    if($this->contact->hoom_account_id) {
+                        $this->log("Koppeling hoomdossier bestaat al.");
+                    }else{
+                        // aanmaken hoomdossier
+                        try {
+                            $contactController = new ContactController();
+                            $contactController->makeHoomdossier($this->contact);
+
+                            $note = "Webformulier " . $this->webform->name . ".\n\n";
+                            $note .= "Hoomdossier aangemaakt voor contact " . $this->contact->full_name . " (".$this->contact->number.").\n";
+                            $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+
+                        } catch (\Exception $errorHoomDossier) {
+                            $errorCreateHoomDossier = true;
+                            $this->log("Fout bij aanmaken hoomdossier contact");
+
+                            $note = "Webformulier " . $this->webform->name . ".\n\n";
+                            $note .= "Fout bij aanmaken hoomdossier voor contact " . $this->contact->full_name . " (".$this->contact->number.").\n";
+                            $note .= "Controleer contactgegevens\n";
+                            $this->addTaskCheckContact($this->responsibleIds, $this->contact, $this->webform, $note);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Geen fouten ontstaan, log weergeven met succes melding.
+        if($errorCreateHoomDossier){
+            $this->log('Aanroep succesvol afgerond, alleen fout bij aanmaak Hoomdossier.');
+        }else{
+            $this->log('Aanroep succesvol afgerond.');
+        }
         $this->logInfo();
         return Response::json($this->logs);
     }
@@ -194,6 +255,15 @@ class ExternalWebformController extends Controller
                 $contact->iban_attn = $data['contact']['iban_attn'];
                 $contact->save();
                 $this->log("IBAN tnv gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+            }
+        }
+
+        // Bewaar contact als we later nog Hoomdossier moeten aanmaken
+        if($this->createHoomDossier){
+            if($contact){
+                $this->contact = $contact;
+            }else{
+                $this->contact = null;
             }
         }
 
@@ -257,6 +327,8 @@ class ExternalWebformController extends Controller
                 // Groep
                 'contact_groep' => 'group_name',
                 'contact_groep_ids' => 'contact_group_ids',
+                // Hoomdossier aanmaken
+                'hoomdossier_aanmaken' => 'create_hoom_dossier',
             ],
             'energy_supplier' => [
                 // ContactEnergySupplier
@@ -354,6 +426,10 @@ class ExternalWebformController extends Controller
 
         // Sanitize
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
+
+        // Kijken we later nog Hoomdossier moeten aanmaken
+        $this->createHoomDossier = (bool)$data['contact']['create_hoom_dossier'];
+        $this->responsibleIds = $data['responsible_ids'];
 
         return $data;
     }
@@ -1169,13 +1245,21 @@ class ExternalWebformController extends Controller
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
             foreach ($intakeMeasures as $intakeMeasure) {
                 $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
-                $this->addOpportunity($intakeMeasure, $intake);
+                $opportunity = $this->addOpportunity($intakeMeasure, $intake);
+            }
+            // precies 1 intake maatregel, dan aangemaakte kans straks koppelen aan taak.
+            if(count($intakeMeasures) == 1 && $opportunity != null){
+                $this->opportunityForTask = $opportunity;
             }
 
             // indien intake status 'Afgesloten met kans' en er is specifieke maatregel meegegeven, dan ook meteen kans aanmaken.
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "' aanmaken (status Actief)");
-                $this->addOpportunity($measure, $intake);
+                $opportunity = $this->addOpportunity($measure, $intake);
+                // deze aangemaakte kans straks koppelen aan taak (overschrijft dus evt. de "los" meegegeven intake maatregel.
+                if($opportunity != null){
+                    $this->opportunityForTask = $opportunity;
+                }
             }
 
             // Indien geen intake maatregelen zijn mee gegeven (niet via intake_maatregel_ids en niet via intake_maatregel_id),
@@ -1204,6 +1288,7 @@ class ExternalWebformController extends Controller
     protected function addOpportunity($measure, $intake)
     {
         $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
+        $opportunity = null;
         if($statusOpportunity) {
             $opportunity = Opportunity::create([
                 'measure_category_id' => $measure->measureCategory->id,
@@ -1218,6 +1303,7 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
         }
+        return $opportunity;
     }
 
     protected function addHousingFileToAddress(Address $address, array $data, Webform $webform)
@@ -1636,8 +1722,45 @@ class ExternalWebformController extends Controller
 
         }
 
+        $opportunityForTaskId = null;
+        if($this->opportunityForTask) {
+            $opportunityForTaskId = $this->opportunityForTask->id;
+        }
+
+        if($intake){
+            // Opmerking intake
+            $note = "Nieuwe intake.\n";
+
+            if(count($intake->reasons)>0) {
+                $note .= "Gekoppeld aan motivaties: " . ( implode(', ', $intake->reasons->pluck('name' )->toArray() ) ) . ".\n";
+            }
+
+            if(count($intake->sources)>0) {
+                $note .= "Gekoppeld aan aanmeldingsbronnen: " . ( implode(', ', $intake->sources->pluck('name' )->toArray() ) ) . ".\n";
+            }
+
+            if(count($intake->measuresRequested)>0) {
+                $note .= "Gekoppeld aan interesses: " . ( implode(', ', $intake->measuresRequested->pluck('name' )->toArray() ) ) . ".\n";
+            }
+            if(count($intake->opportunities)>0) {
+                foreach($intake->opportunities as $opportunity){
+                    if(count($opportunity->measures)>0){
+                        $note .= "Met kans maatregelen specifiek: " . ( implode(', ', $opportunity->measures->pluck('name' )->toArray() ) ) . ".\n";
+                    }else{
+                        $note .= "Met kans maatregel categorie: " . ( $opportunity->measureCategory ? $opportunity->measureCategory->name :'' ) . ".\n";
+                    }
+                }
+            }
+            if(!empty($intake->note)) {
+                $note .= "Opmerkingen bewoner: " . ( $intake->note ) . ".\n\n";
+            }
+
+        }else{
+            // Opmerking webformulier indien geen intake.
+            $note = "Webformulier " . $webform->name . ".\n\n";
+        }
+
         // Opmerkingen over eventuele ongeldige ibans toevoegen als notitie aan taak
-        $note = "Webformulier " . $webform->name . ".\n\n";
         if($data['note']) $note .= $data['note'] . "\n\n";
         $note .= implode("\n", $this->taskErrors);
 
@@ -1686,6 +1809,7 @@ class ExternalWebformController extends Controller
             'responsible_user_id' => $responsibleUserId,
             'responsible_team_id' => $responsibleTeamId,
             'intake_id' => $intake ? $intake->id : null,
+            'opportunity_id' => $opportunityForTaskId,
             'housing_file_id' => $housingFile ? $housingFile->id : null,
             'project_id' => $participation ? $participation->project_id : null,
             'participation_project_id' => $participation ? $participation->id : null,

@@ -19,6 +19,12 @@ class Joiner extends RequestJoiner
         $query->join('measure_categories', 'opportunities.measure_category_id', '=', 'measure_categories.id');
     }
 
+    protected function applyMeasuresJoin($query)
+    {
+        $query->join('measure_opportunity', 'opportunities.id', '=', 'measure_opportunity.opportunity_id');
+        $query->join('measures', 'measure_opportunity.measure_id', '=', 'measures.id');
+    }
+
     protected function applyCampaignsJoin($query)
     {
         $query->join('intakes', 'opportunities.intake_id', '=', 'intakes.id');

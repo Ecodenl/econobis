@@ -489,6 +489,24 @@ class TemplateVariableHelper
             case 'interesses':
                 return implode(', ', $model->measuresRequested->pluck('name' )->toArray() ) ;
                 break;
+            case 'interesses_tabel':
+                $tabel = "
+                <table style='width:auto; border-collapse: collapse;'>
+                  <tr>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Interesses</th>
+                </tr>";
+                foreach($model->measuresRequested as $measureRequested){
+                    $tabel .= "
+                    <tr>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $measureRequested->name ? $measureRequested->name : '' ) . "</td>
+                    </tr>";
+                }
+                $tabel .= "</table>";
+                return $tabel;
+                break;
+            case 'opmerkingen_bewoner':
+                return $model->note;
+                break;
             case 'gemaakt_op':
                 return $model->created_at ? Carbon::parse($model->created_at)->format('d/m/Y') : null;
                 break;
@@ -1547,7 +1565,28 @@ class TemplateVariableHelper
                 return optional(optional($model->opportunity)->measureCategory)->name;
                 break;
             case 'maatregel_specifiek':
-                return implode(', ', optional(optional($model->opportunity)->measures)->pluck('name' )->toArray() ) ;
+                return implode(', ', optional(optional($model->opportunity)->measures)->pluck('name' )->toArray() );
+                break;
+            case 'interesses':
+                return implode(', ', optional(optional($model->opportunity)->intake)->measuresRequested->pluck('name' )->toArray() );
+                break;
+            case 'interesses_tabel':
+                $tabel = "
+                <table style='width:auto; border-collapse: collapse;'>
+                  <tr>
+                    <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Interesses</th>
+                </tr>";
+                foreach($model->opportunity->intake->measuresRequested as $measureRequested){
+                    $tabel .= "
+                    <tr>
+                      <td style='border: 1px solid #000000; text-align: left; padding: 8px; font-weight: normal'>" . ( $measureRequested->name ? $measureRequested->name : '' ) . "</td>
+                    </tr>";
+                }
+                $tabel .= "</table>";
+                return $tabel;
+                break;
+            case 'opmerkingen_bewoner':
+                return optional(optional($model->opportunity)->intake)->note;
                 break;
             case 'offertetekst':
             case 'tekst':

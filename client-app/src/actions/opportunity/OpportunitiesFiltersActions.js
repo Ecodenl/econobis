@@ -33,6 +33,11 @@ export const setFilterOpportunityMeasureCategory = measureCategory => ({
     measureCategory,
 });
 
+export const setFilterOpportunityMeasureName = measureName => ({
+    type: 'SET_FILTER_OPPORTUNITY_MEASURE_NAME',
+    measureName,
+});
+
 export const setFilterOpportunityCampaign = campaign => ({
     type: 'SET_FILTER_OPPORTUNITY_CAMPAIGN',
     campaign,

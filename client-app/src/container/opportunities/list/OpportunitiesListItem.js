@@ -45,6 +45,7 @@ class OpportunitiesListItem extends Component {
             desiredDate,
             contactName,
             measureCategoryName,
+            measures,
             campaignName,
             statusName,
             amountQuotations,
@@ -66,6 +67,15 @@ class OpportunitiesListItem extends Component {
                 <td>{desiredDate ? moment(desiredDate).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{contactName}</td>
                 <td>{measureCategoryName}</td>
+                <td className="pre-wrap">
+                    {measures.length
+                        ? measures
+                              .map(measure => {
+                                  return measure.name;
+                              })
+                              .join(',\n')
+                        : ''}
+                </td>
                 <td>{campaignName}</td>
                 <td>{statusName}</td>
                 <td>{amountQuotations}</td>

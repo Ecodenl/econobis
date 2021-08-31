@@ -45,7 +45,11 @@ class InvoiceSendList extends Component {
                         ) : (
                             <Nav id="invoice">
                                 <NavText>
-                                    <Link className="send-invoices-list-link">Geen nota's beschikbaar.</Link>
+                                    {this.props.isLoading ? (
+                                        <Link className="send-invoices-list-link">Gegevens aan het laden.</Link>
+                                    ) : (
+                                        <Link className="send-invoices-list-link">Geen nota's beschikbaar.</Link>
+                                    )}
                                 </NavText>
                             </Nav>
                         )}

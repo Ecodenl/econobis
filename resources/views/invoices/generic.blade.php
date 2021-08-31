@@ -159,7 +159,7 @@
 
         @foreach($invoice->invoiceProducts as $invoiceProduct)
             <tr>
-                <td class="align-left">{{ $invoiceProduct->description }}</td>
+                <td class="align-left">{!! (str_replace('€', '&euro;', $invoiceProduct->description)) !!}</td>
                 <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($invoiceProduct->price, $invoiceProduct->price_number_of_decimals, ',', '.') }}</td>
                 <td class="align-right">{{ $invoiceProduct->amount }}</td>
                 <td class="align-right">@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
@@ -225,7 +225,7 @@
         </tr>
     </table>
 
-    <div class="conclusion-text">{{ $invoice->order->invoice_text }}</div>
+    <div class="conclusion-text">{!! (str_replace('€', '&euro;', $invoice->order->invoice_text)) !!}</div>
 
     @if($invoice->order->po_number)
         <div class="conclusion-text">

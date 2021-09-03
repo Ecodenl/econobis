@@ -21,6 +21,7 @@ const ContactsInGroupListHead = props => {
                     <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'15%'} />
                     <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'30%'} />
                     <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'30%'} />
+                    <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Toegevoegd op'} width={'10%'} />
                     <th width="10%" />
                 </>
             )}

@@ -40,7 +40,7 @@ class ContactsInGroupListItem extends Component {
             emailAddress,
             lapostaMemberId,
             lapostaMemberState,
-            lapostaMemberSince,
+            memberToGroupSince,
             permissions,
             isUsedInLaposta,
         } = this.props;
@@ -85,19 +85,19 @@ class ContactsInGroupListItem extends Component {
                 <td className="hidden-xs hidden-sm">{typeName} </td>
                 <td>{fullName}</td>
                 <td className="hidden-xs">{emailAddress}</td>
-                {isUsedInLaposta && (
-                    <>
-                        <td className="hidden-xs">{lapostaMemberStatus}</td>
-                        <td className="hidden-xs hidden-sm">
-                            {lapostaMemberSince ? moment(lapostaMemberSince).format('DD-MM-Y') : ''}
-                        </td>
-                    </>
-                )}
+                {isUsedInLaposta && <td className="hidden-xs">{lapostaMemberStatus}</td>}
+                <td className="hidden-xs hidden-sm">
+                    {memberToGroupSince ? moment(memberToGroupSince).format('DD-MM-Y') : ''}
+                </td>
                 <td>
-                    {this.state.showActionButtons && isUsedInLaposta && lapostaMemberId !== null ? (
+                    {this.state.showActionButtons &&
+                    permissions.updatePerson &&
+                    permissions.updateOrganisation &&
+                    ((isUsedInLaposta && lapostaMemberId !== null) ||
+                        (this.props.contactGroupType && this.props.contactGroupType.id === 'static')) ? (
                         <a
                             role="button"
-                            onClick={this.props.showEditItemModal.bind(this, id, emailAddress, lapostaMemberSince)}
+                            onClick={this.props.showEditItemModal.bind(this, id, emailAddress, memberToGroupSince)}
                         >
                             <span className="glyphicon glyphicon-pencil mybtn-success" />{' '}
                         </a>

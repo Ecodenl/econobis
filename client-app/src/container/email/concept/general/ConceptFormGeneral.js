@@ -2,9 +2,7 @@ import React from 'react';
 
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputTinyMCE from '../../../../components/form/InputTinyMCE';
-import InputMultiSelectCreate from '../../../../components/form/InputMultiSelectCreate';
-import ViewText from '../../../../components/form/ViewText';
-import moment from 'moment/moment';
+import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputText from '../../../../components/form/InputText';
 
 const ConceptFormGeneral = ({
@@ -54,7 +52,7 @@ const ConceptFormGeneral = ({
                         readOnly={true}
                     />
                 ) : (
-                    <InputMultiSelectCreate
+                    <InputMultiSelect
                         label="Aan selecteren"
                         name={'to'}
                         value={to}
@@ -68,24 +66,26 @@ const ConceptFormGeneral = ({
                 )}
             </div>
             <div className="row">
-                <InputMultiSelectCreate
+                <InputMultiSelect
                     label={contactGroupId ? 'Extra contacten' : 'Cc selecteren'}
                     name={'cc'}
                     value={cc}
                     options={emailAddresses}
                     optionName={'name'}
                     onChangeAction={handleCcIds}
+                    allowCreate={true}
                 />
             </div>
             {!contactGroupId ? (
                 <div className="row">
-                    <InputMultiSelectCreate
+                    <InputMultiSelect
                         label="Bcc selecteren"
                         name={'bcc'}
                         value={bcc}
                         options={emailAddresses}
                         optionName={'name'}
                         onChangeAction={handleBccIds}
+                        allowCreate={true}
                     />
                 </div>
             ) : null}

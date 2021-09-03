@@ -1,7 +1,6 @@
 import React from 'react';
 
 import PanelBody from '../../../../components/panel/PanelBody';
-import InputMultiSelectCreate from '../../../../components/form/InputMultiSelectCreate';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 
@@ -30,7 +29,7 @@ const EmailAnswerFormGeneral = ({
         toArray = to;
     }
     toArray.map(item => {
-        if (item.includes('@')) {
+        if (item && item.includes('@')) {
             includesEmailAddress = true;
         }
     });
@@ -51,7 +50,7 @@ const EmailAnswerFormGeneral = ({
                 />
             </div>
             <div className="row">
-                <InputMultiSelectCreate
+                <InputMultiSelect
                     label={
                         <span>
                             Aan selecteren
@@ -93,25 +92,25 @@ const EmailAnswerFormGeneral = ({
                 />
             </div>
             <div className="row">
-                <InputMultiSelectCreate
+                <InputMultiSelect
                     label="Cc selecteren"
                     name={'cc'}
                     value={cc}
                     options={emailAddresses}
                     optionName={'name'}
                     onChangeAction={handleCcIds}
-                    error={errors.to}
+                    error={errors.cc}
                 />
             </div>
             <div className="row">
-                <InputMultiSelectCreate
+                <InputMultiSelect
                     label="Bcc selecteren"
                     name={'bcc'}
                     value={bcc}
                     options={emailAddresses}
                     optionName={'name'}
                     onChangeAction={handleBccIds}
-                    error={errors.to}
+                    error={errors.bcc}
                 />
             </div>
 

@@ -387,6 +387,41 @@ class EmailController
         return $people;
     }
 
+    public function search(Request $request)
+    {
+        $contacts = Contact::select('contacts.id', 'contacts.full_name')
+            ->join('email_addresses', 'contacts.id', '=', 'email_addresses.contact_id');
+
+        foreach(explode(" ", $request->input('searchTerm')) as $searchTerm) {
+            $contacts->where('contacts.full_name', 'like', '%' . $searchTerm . '%');
+            $contacts->orWhere('email_addresses.email', 'like', '%' . $searchTerm . '%');
+        }
+        $contacts = $contacts->get();
+
+        $people = [];
+        foreach($contacts as $contact) {
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if ($emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }
+            foreach ($contact->emailAddresses as $emailAddress) {
+                if (!$emailAddress->primary) {
+                    $people[] = [
+                        'id' => $emailAddress->id,
+                        'name' => $contact->full_name . ' (' . $emailAddress->email . ')',
+                        'email' => $emailAddress->email
+                    ];
+                }
+            }
+        }
+        return $people;
+    }
+
     public function downloadEmailAttachment(EmailAttachment $emailAttachment)
     {
         $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);

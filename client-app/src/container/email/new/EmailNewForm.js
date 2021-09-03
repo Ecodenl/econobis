@@ -13,6 +13,7 @@ const EmailNewForm = ({
     handleSubmit,
     handleFromIds,
     handleEmailTemplates,
+    handleCreateToIds,
     handleToIds,
     handleCcIds,
     handleBccIds,
@@ -34,6 +35,7 @@ const EmailNewForm = ({
                 handleSubmit={handleSubmit}
                 handleFromIds={handleFromIds}
                 handleEmailTemplates={handleEmailTemplates}
+                handleCreateToIds={handleCreateToIds}
                 handleToIds={handleToIds}
                 handleCcIds={handleCcIds}
                 handleBccIds={handleBccIds}

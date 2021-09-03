@@ -1,20 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
+import ReactAsyncSelect from 'react-select/async/dist/react-select.esm';
 
-const InputReactSelectLong = props => {
+const AsyncSelectSet = props => {
     const {
         label,
+        size,
         id,
         name,
         value,
         options,
+        loadOptions,
         optionId,
         optionName,
-        // onCreateOption,
+        onCreateOption,
         onChangeAction,
+        handleInputChange,
         required,
-        // allowCreate,
+        allowCreate,
         multi,
         error,
         errorMessage,
@@ -24,9 +27,9 @@ const InputReactSelectLong = props => {
         clearable,
     } = props;
 
-    // const onPromptTextCreator = label => {
-    //     return `Maak optie "${label}" aan`;
-    // };
+    const onPromptTextCreator = label => {
+        return `Maak optie "${label}" aan`;
+    };
 
     const customStyles = {
         option: provided => ({ ...provided, fontSize: '12px' }),
@@ -34,66 +37,58 @@ const InputReactSelectLong = props => {
         menu: provided => ({ ...provided, zIndex: 20 }),
     };
 
-    // if (value != '' && options && options.length > 0) {
-    //     let valueArray = [];
-    //     if (!Array.isArray(value)) {
-    //         valueArray = value.toString().split(',');
-    //     } else {
-    //         valueArray = value;
-    //     }
-    //
-    //     let newValues = [];
-    //     valueArray.map(valueItem => {
-    //         if (!searchNewItem(valueItem, options)) {
-    //             newValues.push({
-    //                 id: valueItem,
-    //                 name: valueItem,
-    //                 email: valueItem,
-    //             });
-    //         }
-    //     });
-    //     options.push(...newValues);
-    // }
-    //
-    // function searchNewItem(idKey, myArray) {
-    //     for (var i = 0; i < myArray.length; i++) {
-    //         if (myArray[i].id == idKey) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    if (value != '' && options && options.length > 0) {
+        let valueArray = [];
+        if (!Array.isArray(value)) {
+            valueArray = value.toString().split(',');
+        } else {
+            valueArray = value;
+        }
+
+        let newValues = [];
+        valueArray.map(valueItem => {
+            if (!searchNewItem(valueItem, options)) {
+                newValues.push({
+                    id: valueItem,
+                    name: valueItem,
+                    email: valueItem,
+                });
+            }
+        });
+        options.push(...newValues);
+    }
+
+    function searchNewItem(idKey, myArray) {
+        for (var i = 0; i < myArray.length; i++) {
+            if (myArray[i].id == idKey) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     return (
-        <div className={`form-group col-sm-12`}>
-            <div className={`row`}>
-                <div className={`col-sm-3`}>
+        <div className="form-group col-sm-12">
+            <div className="row">
+                <div className="col-sm-3">
                     <label htmlFor={id} className={`col-sm-12 ${required}`}>
                         {label}
                     </label>
                 </div>
-                <div className={`col-sm-8`}>
-                    <Select
+                <div className={`${size}`}>
+                    {/*<AsyncSelect {...props} />*/}
+                    <ReactAsyncSelect
                         id={id}
                         name={name}
-                        value={
-                            options && value
-                                ? multi
-                                    ? options.map(option => {
-                                          if (value.includes(option[optionId])) {
-                                              return option;
-                                          }
-                                      })
-                                    : options.find(option => option[optionId] === value)
-                                : ''
-                        }
                         onChange={
                             multi
                                 ? option => onChangeAction(option ? option.map(item => item[optionId]).join() : '')
-                                : option => onChangeAction(option ? option[optionId] : '', name)
+                                : option => onChangeAction(option ? option[optionId] : '')
                         }
-                        // onCreateOption={onCreateOption}
-                        options={options}
+                        onCreateOption={onCreateOption}
+                        // options={options}
+                        loadOptions={loadOptions}
+                        onInputChange={handleInputChange}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}
                         placeholder={placeholder}
@@ -111,16 +106,16 @@ const InputReactSelectLong = props => {
                         isDisabled={disabled}
                         styles={customStyles}
                         isClearable={clearable}
-                        // formatCreateLabel={onPromptTextCreator}
-                        // getNewOptionData={(optionId, optionName) =>
-                        //     allowCreate
-                        //         ? {
-                        //               id: optionName,
-                        //               name: optionName,
-                        //               __isNew__: true,
-                        //       }
-                        //         : {}
-                        // }
+                        formatCreateLabel={onPromptTextCreator}
+                        getNewOptionData={(optionId, optionName) =>
+                            allowCreate
+                                ? {
+                                      id: optionName,
+                                      name: optionName,
+                                      __isNew__: true,
+                                  }
+                                : {}
+                        }
                         theme={theme => ({
                             ...theme,
                             colors: {
@@ -145,8 +140,10 @@ const InputReactSelectLong = props => {
     );
 };
 
-InputReactSelectLong.defaultProps = {
-    // allowCreate: false,
+AsyncSelectSet.defaultProps = {
+    allowCreate: false,
+    className: '',
+    size: 'col-sm-6',
     optionId: 'id',
     optionName: 'name',
     disabled: false,
@@ -160,16 +157,20 @@ InputReactSelectLong.defaultProps = {
     clearable: false,
 };
 
-InputReactSelectLong.propTypes = {
-    // allowCreate: PropTypes.bool,
+AsyncSelectSet.propTypes = {
+    allowCreate: PropTypes.bool,
     label: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    size: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     options: PropTypes.array,
     optionId: PropTypes.string,
     optionName: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    onCreateOption: PropTypes.func,
     onChangeAction: PropTypes.func,
+    handleInputChange: PropTypes.func,
     onBlurAction: PropTypes.func,
     required: PropTypes.string,
     disabled: PropTypes.bool,
@@ -181,4 +182,4 @@ InputReactSelectLong.propTypes = {
     clearable: PropTypes.bool,
 };
 
-export default InputReactSelectLong;
+export default AsyncSelectSet;

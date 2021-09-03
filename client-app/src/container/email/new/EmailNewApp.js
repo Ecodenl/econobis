@@ -10,7 +10,6 @@ import EmailAPI from '../../../api/email/EmailAPI';
 import EmailAddressAPI from '../../../api/contact/EmailAddressAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
-import { isEqual } from 'lodash';
 import { connect } from 'react-redux';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import Modal from '../../../components/modal/Modal';
@@ -53,6 +52,7 @@ class EmailNewApp extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleFromIds = this.handleFromIds.bind(this);
         this.handleEmailTemplates = this.handleEmailTemplates.bind(this);
+        this.handleCreateToIds = this.handleCreateToIds.bind(this);
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
@@ -84,6 +84,7 @@ class EmailNewApp extends Component {
         }
 
         EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
+            console.log(payload);
             this.setState({
                 emailAddresses: payload,
             });
@@ -164,6 +165,31 @@ class EmailNewApp extends Component {
             email: {
                 ...this.state.email,
                 to: selectedOption,
+            },
+        });
+    }
+
+    handleCreateToIds(selectedOption) {
+        let toArray = [];
+        let includesEmailAddress = false;
+        if (!Array.isArray(this.state.email.to)) {
+            toArray = this.state.email.to.split(',');
+        } else {
+            toArray = this.state.email.to;
+        }
+        toArray.push(selectedOption);
+
+        toArray.map(item => {
+            if (item && item.includes('@')) {
+                includesEmailAddress = true;
+            }
+        });
+
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                to: toArray.join(','),
             },
         });
     }
@@ -393,6 +419,7 @@ class EmailNewApp extends Component {
                             handleSubmit={this.handleSubmit}
                             handleFromIds={this.handleFromIds}
                             handleEmailTemplates={this.handleEmailTemplates}
+                            handleCreateToIds={this.handleCreateToIds}
                             handleToIds={this.handleToIds}
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}

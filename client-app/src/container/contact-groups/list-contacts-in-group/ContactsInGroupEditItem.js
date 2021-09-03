@@ -10,25 +10,25 @@ import moment from 'moment';
 class ContactsEditItem extends React.Component {
     constructor(props) {
         super(props);
-
+        console.log(props);
         this.state = {
-            lapostaMemberSince: props.lapostaMemberSince,
+            memberToGroupSince: props.memberToGroupSince,
         };
     }
 
-    handleChangeDate = lapostaMemberSince => {
-        const formattedDate = lapostaMemberSince ? moment(lapostaMemberSince).format('Y-MM-DD') : '';
+    handleChangeDate = memberToGroupSince => {
+        const formattedDate = memberToGroupSince ? moment(memberToGroupSince).format('Y-MM-DD') : '';
 
         this.setState({
             ...this.state,
-            lapostaMemberSince: formattedDate,
+            memberToGroupSince: formattedDate,
         });
     };
 
     render() {
         const confirmAction = () => {
             this.props.updateContactInGroup(this.props.groupId, this.props.id, {
-                lapostaMemberSince: this.state.lapostaMemberSince,
+                memberToGroupSince: this.state.memberToGroupSince,
             });
             this.props.closeEditItemModal();
         };
@@ -54,8 +54,8 @@ class ContactsEditItem extends React.Component {
                     <InputDate
                         label={'Wijzig datum toegevoegd op'}
                         divSize={'col-xs-12'}
-                        name={'lapostaMemberSince'}
-                        value={this.props.lapostaMemberSince}
+                        name={'memberToGroupSince'}
+                        value={this.props.memberToGroupSince}
                         onChangeAction={this.handleChangeDate}
                     />
                 </div>
@@ -66,12 +66,9 @@ class ContactsEditItem extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    updateContactInGroup: (contactGroupId, id, lapostaMemberSince) => {
-        dispatch(updateContactInGroup(contactGroupId, id, lapostaMemberSince));
+    updateContactInGroup: (contactGroupId, id, memberToGroupSince) => {
+        dispatch(updateContactInGroup(contactGroupId, id, memberToGroupSince));
     },
 });
 
-export default connect(
-    null,
-    mapDispatchToProps
-)(ContactsEditItem);
+export default connect(null, mapDispatchToProps)(ContactsEditItem);

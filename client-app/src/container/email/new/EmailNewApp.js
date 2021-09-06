@@ -52,7 +52,6 @@ class EmailNewApp extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleFromIds = this.handleFromIds.bind(this);
         this.handleEmailTemplates = this.handleEmailTemplates.bind(this);
-        this.handleCreateToIds = this.handleCreateToIds.bind(this);
         this.handleToIds = this.handleToIds.bind(this);
         this.handleCcIds = this.handleCcIds.bind(this);
         this.handleBccIds = this.handleBccIds.bind(this);
@@ -84,7 +83,6 @@ class EmailNewApp extends Component {
         }
 
         EmailAddressAPI.fetchEmailAddressessPeek().then(payload => {
-            console.log(payload);
             this.setState({
                 emailAddresses: payload,
             });
@@ -165,31 +163,6 @@ class EmailNewApp extends Component {
             email: {
                 ...this.state.email,
                 to: selectedOption,
-            },
-        });
-    }
-
-    handleCreateToIds(selectedOption) {
-        let toArray = [];
-        let includesEmailAddress = false;
-        if (!Array.isArray(this.state.email.to)) {
-            toArray = this.state.email.to.split(',');
-        } else {
-            toArray = this.state.email.to;
-        }
-        toArray.push(selectedOption);
-
-        toArray.map(item => {
-            if (item && item.includes('@')) {
-                includesEmailAddress = true;
-            }
-        });
-
-        this.setState({
-            ...this.state,
-            email: {
-                ...this.state.email,
-                to: toArray.join(','),
             },
         });
     }
@@ -354,7 +327,6 @@ class EmailNewApp extends Component {
                 email.bcc = email.bcc.split(',');
             }
             const data = new FormData();
-            //
 
             data.append('to', JSON.stringify(email.to));
             data.append('cc', JSON.stringify(email.cc));
@@ -419,7 +391,6 @@ class EmailNewApp extends Component {
                             handleSubmit={this.handleSubmit}
                             handleFromIds={this.handleFromIds}
                             handleEmailTemplates={this.handleEmailTemplates}
-                            handleCreateToIds={this.handleCreateToIds}
                             handleToIds={this.handleToIds}
                             handleCcIds={this.handleCcIds}
                             handleBccIds={this.handleBccIds}

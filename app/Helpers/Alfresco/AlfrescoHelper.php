@@ -98,7 +98,11 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
-        return $response['message'];
+        if($response['succes']){
+            return '';
+        }else{
+            return $response['message'];
+        }
     }
 
     public function assignUserToPrivateSite($alfresco_username){
@@ -116,7 +120,11 @@ class AlfrescoHelper
 
         $response = $this->executeCurl($url, $args, 'application/json', false, false);
 
-        return $response['message'];
+        if($response['succes']){
+            return '';
+        }else{
+            return $response['message'];
+        }
     }
 
     public function createFile($file, $filename, $map){
@@ -255,6 +263,15 @@ class AlfrescoHelper
                                 Log::error('Alfresco error: unknown');
                             }
                             abort($decoded_response['error']['statusCode']);
+                        }
+                        //niet aborten, wel error in log.
+                        else {
+                            Log::error('Alfresco error (no abort): '
+                                . $decoded_response['error']['statusCode']);
+                            return [
+                                'succes' => true,
+                                'message' => $decoded_response
+                            ];
                         }
                     }
 

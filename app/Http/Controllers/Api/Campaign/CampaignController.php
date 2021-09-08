@@ -43,6 +43,7 @@ class CampaignController extends ApiController
 
     public function show(Campaign $campaign)
     {
+        set_time_limit(180);
         $campaign->load([
             'opportunities.measureCategory',
             'opportunities.intake.contact',

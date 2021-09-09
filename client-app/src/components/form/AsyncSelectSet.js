@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactAsyncSelect from 'react-select/async/dist/react-select.esm';
+import AsyncCreatableSelect from 'react-select/async-creatable';
 
 const AsyncSelectSet = props => {
     const {
@@ -9,11 +9,9 @@ const AsyncSelectSet = props => {
         id,
         name,
         value,
-        options,
         loadOptions,
         optionId,
         optionName,
-        onCreateOption,
         onChangeAction,
         handleInputChange,
         required,
@@ -37,36 +35,6 @@ const AsyncSelectSet = props => {
         menu: provided => ({ ...provided, zIndex: 20 }),
     };
 
-    if (value != '' && options && options.length > 0) {
-        let valueArray = [];
-        if (!Array.isArray(value)) {
-            valueArray = value.toString().split(',');
-        } else {
-            valueArray = value;
-        }
-
-        let newValues = [];
-        valueArray.map(valueItem => {
-            if (!searchNewItem(valueItem, options)) {
-                newValues.push({
-                    id: valueItem,
-                    name: valueItem,
-                    email: valueItem,
-                });
-            }
-        });
-        options.push(...newValues);
-    }
-
-    function searchNewItem(idKey, myArray) {
-        for (var i = 0; i < myArray.length; i++) {
-            if (myArray[i].id == idKey) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     return (
         <div className="form-group col-sm-12">
             <div className="row">
@@ -76,8 +44,7 @@ const AsyncSelectSet = props => {
                     </label>
                 </div>
                 <div className={`${size}`}>
-                    {/*<AsyncSelect {...props} />*/}
-                    <ReactAsyncSelect
+                    <AsyncCreatableSelect
                         id={id}
                         name={name}
                         onChange={
@@ -85,15 +52,14 @@ const AsyncSelectSet = props => {
                                 ? option => onChangeAction(option ? option.map(item => item[optionId]).join() : '')
                                 : option => onChangeAction(option ? option[optionId] : '')
                         }
-                        onCreateOption={onCreateOption}
-                        // options={options}
+                        value={value}
                         loadOptions={loadOptions}
                         onInputChange={handleInputChange}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}
                         placeholder={placeholder}
                         noOptionsMessage={function() {
-                            return 'Geen opties gevonden';
+                            return 'Geen opties gevonden (tik om te zoeken minimaal 2 tekens)';
                         }}
                         loadingMessage={function() {
                             return 'Laden';
@@ -164,14 +130,12 @@ AsyncSelectSet.propTypes = {
     size: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
-    options: PropTypes.array,
+    loadOptions: PropTypes.array,
     optionId: PropTypes.string,
     optionName: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onCreateOption: PropTypes.func,
+    value: PropTypes.oneOfType([PropTypes.email, PropTypes.number]),
     onChangeAction: PropTypes.func,
     handleInputChange: PropTypes.func,
-    onBlurAction: PropTypes.func,
     required: PropTypes.string,
     disabled: PropTypes.bool,
     error: PropTypes.bool,

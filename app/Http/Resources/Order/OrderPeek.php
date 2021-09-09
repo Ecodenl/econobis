@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Order;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderPeek extends Resource
+class OrderPeek extends JsonResource
 {
     public function toArray($request)
     {

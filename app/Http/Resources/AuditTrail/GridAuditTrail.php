@@ -11,9 +11,9 @@ namespace App\Http\Resources\AuditTrail;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridAuditTrail extends Resource
+class GridAuditTrail extends JsonResource
 {
     public function toArray($request)
     {

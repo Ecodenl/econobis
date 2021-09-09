@@ -24,9 +24,9 @@ use App\Http\Resources\Project\ProjectPeek;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullDocument extends Resource
+class FullDocument extends JsonResource
 {
     public function toArray($request)
     {

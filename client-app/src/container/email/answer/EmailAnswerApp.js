@@ -243,6 +243,12 @@ class EmailAnswerApp extends Component {
         });
     };
 
+    toggleButtonLoading = () => {
+        this.setState({
+            buttonLoading: !this.state.buttonLoading,
+        });
+    };
+
     handleSubmit(event, concept = false) {
         event.preventDefault();
 
@@ -357,6 +363,7 @@ class EmailAnswerApp extends Component {
                     })
                     .catch(function(error) {
                         console.log(error);
+                        this.toggleButtonLoading();
                     });
             }
         }

@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Intake;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class IntakePeek extends Resource
+class IntakePeek extends JsonResource
 {
     public function toArray($request)
     {

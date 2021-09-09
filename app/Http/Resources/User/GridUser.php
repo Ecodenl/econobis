@@ -9,9 +9,9 @@
 namespace App\Http\Resources\User;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridUser extends Resource
+class GridUser extends JsonResource
 {
     /**
      * Transform the resource into an array.

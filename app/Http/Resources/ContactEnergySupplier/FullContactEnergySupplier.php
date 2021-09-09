@@ -10,9 +10,9 @@ use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullContactEnergySupplier extends Resource
+class FullContactEnergySupplier extends JsonResource
 {
     /**
      * Transform the resource into an array.

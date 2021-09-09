@@ -257,6 +257,12 @@ class EmailNewApp extends Component {
         });
     };
 
+    toggleButtonLoading = () => {
+        this.setState({
+            buttonLoading: !this.state.buttonLoading,
+        });
+    };
+
     goBack = () => {
         if (this.state.email.htmlBody !== '' || this.state.email.subject !== '') {
             this.toggleShowModal();
@@ -351,6 +357,7 @@ class EmailNewApp extends Component {
                     })
                     .catch(function(error) {
                         console.log(error);
+                        this.toggleButtonLoading();
                     });
             } else {
                 this.setButtonLoading();
@@ -361,6 +368,7 @@ class EmailNewApp extends Component {
                     })
                     .catch(function(error) {
                         console.log(error);
+                        this.toggleButtonLoading();
                     });
             }
         }

@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Measure;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class MeasurePeek extends Resource
+class MeasurePeek extends JsonResource
 {
     public function toArray($request)
     {

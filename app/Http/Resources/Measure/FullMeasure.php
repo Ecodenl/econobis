@@ -11,9 +11,9 @@ use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Intake\FullIntake;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullMeasure extends Resource
+class FullMeasure extends JsonResource
 {
     /**
      * Transform the resource into an array.

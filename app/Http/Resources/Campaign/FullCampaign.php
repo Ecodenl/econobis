@@ -11,9 +11,9 @@ use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Organisation\FullOrganisation;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullCampaign extends Resource
+class FullCampaign extends JsonResource
 {
     /**
      * Transform the resource into an array.

@@ -10,9 +10,9 @@ use App\Http\Resources\Measure\FullMeasure;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullOpportunity extends Resource
+class FullOpportunity extends JsonResource
 {
     /**
      * Transform the resource into an array.

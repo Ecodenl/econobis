@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Task;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class SidebarTask extends Resource
+class SidebarTask extends JsonResource
 {
     /**
      * Transform the resource into an array.

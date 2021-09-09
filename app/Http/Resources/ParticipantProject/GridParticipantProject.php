@@ -5,9 +5,9 @@ namespace App\Http\Resources\ParticipantProject;
 use App\Http\Resources\Contact\FullParticipantContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Project\ProjectPeek;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridParticipantProject extends Resource
+class GridParticipantProject extends JsonResource
 {
     /**
      * Transform the resource into an array.

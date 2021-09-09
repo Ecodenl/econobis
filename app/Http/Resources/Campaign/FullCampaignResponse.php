@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Campaign;
 
 use App\Http\Resources\Contact\FullContact;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullCampaignResponse extends Resource
+class FullCampaignResponse extends JsonResource
 {
     /**
      * Transform the resource into an array.

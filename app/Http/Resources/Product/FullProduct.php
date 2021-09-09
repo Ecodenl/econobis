@@ -6,9 +6,9 @@ use App\Http\Resources\Administration\FullAdministration;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullProduct extends Resource
+class FullProduct extends JsonResource
 {
     /**
      * Transform the resource into an array.

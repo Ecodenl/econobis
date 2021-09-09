@@ -4,9 +4,9 @@ namespace App\Http\Resources\ContactGroup;
 
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class ContactGroupPeek extends Resource
+class ContactGroupPeek extends JsonResource
 {
     /**
      * Transform the resource into an array.

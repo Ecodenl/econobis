@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\Task;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridTask extends Resource
+class GridTask extends JsonResource
 {
     /**
      * Transform the resource into an array.

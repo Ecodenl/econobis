@@ -9,9 +9,9 @@
 namespace App\Http\Resources\HousingFile;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridHousingFile extends Resource
+class GridHousingFile extends JsonResource
 {
     public function toArray($request)
     {

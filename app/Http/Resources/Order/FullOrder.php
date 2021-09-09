@@ -14,9 +14,9 @@ use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullOrder extends Resource
+class FullOrder extends JsonResource
 {
     /**
      * Transform the resource into an array.

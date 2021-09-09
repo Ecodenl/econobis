@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Person;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class PersonPeek extends Resource
+class PersonPeek extends JsonResource
 {
     public function toArray($request)
     {

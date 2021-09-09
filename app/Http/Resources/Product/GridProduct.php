@@ -11,9 +11,9 @@ namespace App\Http\Resources\Product;
 
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\GenericResource;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridProduct extends Resource
+class GridProduct extends JsonResource
 {
     public function toArray($request)
     {

@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Organisation;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrganisationPeek extends Resource
+class OrganisationPeek extends JsonResource
 {
     public function toArray($request)
     {

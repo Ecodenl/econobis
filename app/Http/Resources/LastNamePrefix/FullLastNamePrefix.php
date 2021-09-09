@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources\LastNamePrefix;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullLastNamePrefix extends Resource
+class FullLastNamePrefix extends JsonResource
 {
     /**
      * Transform the resource into an array.

@@ -6,9 +6,9 @@ use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullContactGroup extends Resource
+class FullContactGroup extends JsonResource
 {
     /**
      * Transform the resource into an array.

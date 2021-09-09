@@ -9,9 +9,9 @@
 namespace App\Http\Resources\Opportunity;
 
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class OpportunityPeek extends Resource
+class OpportunityPeek extends JsonResource
 {
     public function toArray($request)
     {

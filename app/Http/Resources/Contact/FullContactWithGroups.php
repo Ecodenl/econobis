@@ -20,9 +20,9 @@ use App\Http\Resources\PhoneNumber\FullPhoneNumber;
 use App\Http\Resources\PortalUser\FullPortalUser;
 use App\Http\Resources\Task\GridTask;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullContactWithGroups extends Resource
+class FullContactWithGroups extends JsonResource
 {
     /**
      * Transform the resource into an array.

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
+use App\Http\Controllers\Api\Mailbox\MailboxController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
@@ -25,3 +26,4 @@ Route::get('/portal/mollie/redirect/{participantMutationCode}', [ParticipantMuta
 // Welcome
 Route::get('/', 'HomeController@welcome');
 
+Route::get('/oauth/gmail/callback', [MailboxController::class, 'gmailApiConnectionCallback'])->name('oauth.gmail.callback');

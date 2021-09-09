@@ -8,10 +8,9 @@
 
 namespace App\Http\Resources\HousingFile;
 
+use Illuminate\Http\Resources\Json\JsonResource;
 
-use Illuminate\Http\Resources\Json\Resource;
-
-class HousingFilePeek extends Resource
+class HousingFilePeek extends JsonResource
 {
     public function toArray($request)
     {

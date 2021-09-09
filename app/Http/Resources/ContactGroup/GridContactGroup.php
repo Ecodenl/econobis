@@ -3,9 +3,9 @@
 namespace App\Http\Resources\ContactGroup;
 
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridContactGroup extends Resource
+class GridContactGroup extends JsonResource
 {
     /**
      * Transform the resource into an array.

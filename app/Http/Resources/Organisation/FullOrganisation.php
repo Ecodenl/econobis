@@ -7,9 +7,9 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\QuotationRequest\FullQuotationRequest;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullOrganisation extends Resource
+class FullOrganisation extends JsonResource
 {
     /**
      * Transform the resource into an array.

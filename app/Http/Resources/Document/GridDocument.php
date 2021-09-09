@@ -10,9 +10,9 @@ namespace App\Http\Resources\Document;
 
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridDocument extends Resource
+class GridDocument extends JsonResource
 {
     public function toArray($request)
     {

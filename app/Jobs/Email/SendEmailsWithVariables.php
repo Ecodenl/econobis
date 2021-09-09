@@ -389,7 +389,7 @@ class SendEmailsWithVariables implements ShouldQueue {
         }
     }
 
-    public function failed(\Exception $exception) {
+    public function failed($exception) {
         $jobLog = new JobsLog();
         $jobLog->value = 'E-mail(s) versturen mislukt.';
         $jobLog->user_id = $this->userId;

@@ -143,6 +143,15 @@ class EmailFormEdit extends Component {
         });
     };
 
+    handleInputReactSelect = (selectedOption, name) => {
+        this.setState({
+            ...this.state,
+            email: {
+                ...this.state.email,
+                [name]: selectedOption,
+            },
+        });
+    };
     handleSubmit = event => {
         event.preventDefault();
 
@@ -274,13 +283,14 @@ class EmailFormEdit extends Component {
                             isLoading={this.state.peekLoading.contacts}
                         />
                     )}
-                    <InputSelect
+                    <InputReactSelect
                         label={'Intake'}
                         size={'col-sm-6'}
                         name={'intakeId'}
                         options={this.state.intakes}
                         value={intakeId}
-                        onChangeAction={this.handleInputChange}
+                        onChangeAction={this.handleInputReactSelect}
+                        multi={false}
                     />
                 </div>
 

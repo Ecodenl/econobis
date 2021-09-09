@@ -119,10 +119,10 @@ class ProjectFormEdit extends Component {
                             ? defaultTextBecomeNoMember
                             : this.state.project.textBecomeNoMember,
                         memberGroupId: isEmpty(this.state.project.memberGroupId)
-                            ? defaultContactGroupMemberId
+                            ? Number(defaultContactGroupMemberId)
                             : this.state.project.memberGroupId,
                         noMemberGroupId: isEmpty(this.state.project.noMemberGroupId)
-                            ? defaultContactGroupNoMemberId
+                            ? Number(defaultContactGroupNoMemberId)
                             : this.state.project.noMemberGroupId,
                     },
                 });

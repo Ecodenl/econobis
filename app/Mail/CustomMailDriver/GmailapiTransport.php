@@ -19,7 +19,7 @@ use Swift_SmtpTransport;
 class GmailapiTransport extends Transport
 {
     private Mailbox $mailbox;
-    private string $user;
+    private string $user = 'me';
     private Google_Service_Gmail $gmailService;
 
     public function __construct(int $mailboxId, $user = 'me')
@@ -38,7 +38,7 @@ class GmailapiTransport extends Transport
         $message->setRaw($msg);
 
         try {
-            $message = $this->gmailService->users_messages->send('me', $message);
+            $message = $this->gmailService->users_messages->send($this->user, $message);
             return $message;
         } catch (Exception $e) {
             print 'An error occurred: ' . $e->getMessage();

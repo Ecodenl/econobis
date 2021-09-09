@@ -29,10 +29,12 @@ function EmailNewFormGeneral(props) {
         handleTextChange,
     } = props;
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, contactGroupId } = email;
+    let includesEmailAddress = false;
+    const selectedTo = getSelectedTo();
 
-    function selectedTo() {
+    function getSelectedTo() {
         let toArray = [];
-        let includesEmailAddress = false;
+
         if (!Array.isArray(to)) {
             toArray = to.split(',');
         } else {
@@ -193,7 +195,7 @@ function EmailNewFormGeneral(props) {
                                 </span>
                             }
                             name={'to'}
-                            value={selectedTo()}
+                            value={getSelectedTo()}
                             loadOptions={getContactOptions}
                             optionName={'name'}
                             onChangeAction={handleToIds}

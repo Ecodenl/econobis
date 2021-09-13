@@ -52,7 +52,7 @@ class ContactsEditItem extends React.Component {
                 </div>
                 <div className="row">
                     <InputDate
-                        label={'Wijzig datum toegevoegd op'}
+                        label={'Wijzig datum toegevoegd aan groep op'}
                         divSize={'col-xs-12'}
                         name={'memberToGroupSince'}
                         value={this.props.memberToGroupSince}

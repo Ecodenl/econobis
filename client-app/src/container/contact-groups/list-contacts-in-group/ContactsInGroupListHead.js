@@ -12,7 +12,11 @@ const ContactsInGroupListHead = props => {
                     <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'25%'} />
                     <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'25%'} />
                     <DataTableHeadTitle RowClassName={'hidden-xs'} title={'Laposta status'} width={'10%'} />
-                    <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Toegevoegd op'} width={'10%'} />
+                    <DataTableHeadTitle
+                        RowClassName={'hidden-xs hidden-sm'}
+                        title={'Toegevoegd aan groep op'}
+                        width={'10%'}
+                    />
                     <th width="10%" />
                 </>
             ) : (
@@ -21,7 +25,11 @@ const ContactsInGroupListHead = props => {
                     <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Type'} width={'15%'} />
                     <DataTableHeadTitle sortColumn={'fullName'} title={'Naam'} width={'30%'} />
                     <DataTableHeadTitle RowClassName={'hidden-xs'} title={'E-mail'} width={'30%'} />
-                    <DataTableHeadTitle RowClassName={'hidden-xs hidden-sm'} title={'Toegevoegd op'} width={'10%'} />
+                    <DataTableHeadTitle
+                        RowClassName={'hidden-xs hidden-sm'}
+                        title={'Toegevoegd aan groep op'}
+                        width={'10%'}
+                    />
                     <th width="10%" />
                 </>
             )}

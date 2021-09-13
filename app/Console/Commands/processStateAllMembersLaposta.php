@@ -33,10 +33,6 @@ class processStateAllMembersLaposta extends Command
     public function __construct()
     {
         parent::__construct();
-        $adminUser = User::where('email', config('app.admin_user.email'))->first();
-        if($adminUser){
-            Auth::setUser($adminUser);
-        }
     }
 
     /**
@@ -46,6 +42,11 @@ class processStateAllMembersLaposta extends Command
      */
     public function handle()
     {
+        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+        if($adminUser){
+            Auth::setUser($adminUser);
+        }
+
         $cooperation = Cooperation::first();
         if($cooperation->use_laposta) {
             $lapostaHelper = new LapostaHelper();

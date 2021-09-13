@@ -238,11 +238,11 @@ class ExternalWebformController extends Controller
 
         $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], $webform);
 
-        // IBAN nummer meegegeven, dan deze wijzigen.
-        // Hoeft niet indien: contact new aangemaakt is, dan is IBAN al overgenomen.
-        // En hoeft dus niet als IBAN niet is meegegeven (leeg maken / verwijderen van IBAN via mutatie kan dus niet).
-        // Voor IBAN tnv idem
+        // Indien contact gevonden en niet new aangemaakt.
         if($contact && !$this->newContactCreated){
+            // IBAN nummer meegegeven, dan deze wijzigen.
+            // En hoeft dus niet als IBAN niet is meegegeven (leeg maken / verwijderen van IBAN via mutatie kan dus niet).
+            // Voor IBAN tnv idem
             if($data['contact']['iban'] != ''
                 && $data['contact']['iban'] != $contact->iban){
                 $iban = $this->checkIban($data['contact']['iban'], 'contact.');
@@ -250,11 +250,51 @@ class ExternalWebformController extends Controller
                 $contact->save();
                 $this->log("IBAN gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
             }
+            // IBAN tnv meegegeven, dan deze wijzigen.
             if($data['contact']['iban_attn'] != ''
                 && $data['contact']['iban_attn'] != $contact->iban_attn){
                 $contact->iban_attn = $data['contact']['iban_attn'];
                 $contact->save();
                 $this->log("IBAN tnv gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+            }
+
+            // Incasso machting gewijzigd.
+            if($data['contact']['is_collect_mandate'] != ''){
+                $isCollectMandate = (bool)$data['contact']['is_collect_mandate'];
+                $contact->is_collect_mandate = $isCollectMandate;
+                $contact->save();
+                $this->log("Incasso machtiging Ja/Nee gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+
+                if(!$isCollectMandate){
+                    $data['contact']['collect_mandate_code'] = '';
+                    $data['contact']['collect_mandate_signature_date'] = null;
+                    $data['contact']['collect_mandate_first_run_date'] = null;
+                    $data['contact']['collect_mandate_collection_schema'] = '';
+                }
+                // Incasso machtigingskenmerk gewijzigd.
+                if($data['contact']['collect_mandate_code'] != $contact->collect_mandate_code){
+                    $contact->collect_mandate_code = $isCollectMandate ? $data['contact']['collect_mandate_code'] : '';
+                    $contact->save();
+                    $this->log("Incasso machtigingskenmerk gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                }
+                // Incasso ondertekening datum gewijzigd.
+                if($data['contact']['collect_mandate_signature_date'] != $contact->collect_mandate_signature_date){
+                    $contact->collect_mandate_signature_date = $isCollectMandate ? Carbon::make($data['contact']['collect_mandate_signature_date']) : null;
+                    $contact->save();
+                    $this->log("Incasso ondertekening datum gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                }
+                // Incasso eerste datum gewijzigd.
+                if($data['contact']['collect_mandate_first_run_date'] != $contact->collect_mandate_first_run_date){
+                    $contact->collect_mandate_first_run_date = $isCollectMandate ? Carbon::make($data['contact']['collect_mandate_first_run_date']) : null;
+                    $contact->save();
+                    $this->log("Incasso eerste datum gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                }
+                // Incasso schema gewijzigd.
+                if($data['contact']['collect_mandate_collection_schema'] != $contact->collect_mandate_collection_schema){
+                    $contact->collect_mandate_collection_schema = $isCollectMandate ? $data['contact']['collect_mandate_collection_schema'] : '';
+                    $contact->save();
+                    $this->log("Incasso schema gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
+                }
             }
         }
 

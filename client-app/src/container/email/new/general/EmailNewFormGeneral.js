@@ -12,6 +12,7 @@ import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
 function EmailNewFormGeneral(props) {
     const [searchTermContact, setSearchTermContact] = useState('');
     const [isLoadingContact, setLoadingContact] = useState(false);
+    const [includesEmailAddress, setIncludesEmailAddress] = useState(false);
 
     let {
         email,
@@ -29,7 +30,6 @@ function EmailNewFormGeneral(props) {
         handleTextChange,
     } = props;
     const { from, to, cc, bcc, subject, htmlBody, emailTemplateId, contactGroupId } = email;
-    let includesEmailAddress = false;
     const selectedTo = getSelectedTo();
 
     function getSelectedTo() {
@@ -43,7 +43,7 @@ function EmailNewFormGeneral(props) {
         let selectedTo = [];
         toArray.map(item => {
             if (item && item.includes('@')) {
-                includesEmailAddress = true;
+                setIncludesEmailAddress(true);
                 selectedTo.push({
                     id: item,
                     name: item,
@@ -59,7 +59,7 @@ function EmailNewFormGeneral(props) {
         return selectedTo;
     }
 
-    function selectedCc() {
+    function getSelectedCc() {
         let ccArray = [];
         if (!Array.isArray(cc)) {
             ccArray = cc.split(',');
@@ -84,7 +84,7 @@ function EmailNewFormGeneral(props) {
         return selectedCc;
     }
 
-    function selectedBcc() {
+    function getSelectedBcc() {
         let bccArray = [];
         if (!Array.isArray(bcc)) {
             bccArray = bcc.split(',');
@@ -211,7 +211,7 @@ function EmailNewFormGeneral(props) {
                     <AsyncSelectSet
                         label={contactGroupId ? 'Extra contacten' : 'Cc selecteren'}
                         name={'cc'}
-                        value={selectedCc()}
+                        value={getSelectedCc()}
                         loadOptions={getContactOptions}
                         optionName={'name'}
                         onChangeAction={handleCcIds}
@@ -226,7 +226,7 @@ function EmailNewFormGeneral(props) {
                         <AsyncSelectSet
                             label="Bcc selecteren"
                             name={'bcc'}
-                            value={selectedBcc()}
+                            value={getSelectedBcc()}
                             loadOptions={getContactOptions}
                             optionName={'name'}
                             onChangeAction={handleBccIds}

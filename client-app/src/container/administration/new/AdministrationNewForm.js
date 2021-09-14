@@ -67,6 +67,8 @@ class AdministrationNewForm extends Component {
                 twinfieldOfficeCode: '',
                 dateSyncTwinfieldContacts: '',
                 dateSyncTwinfieldPayments: '',
+                dateSyncTwinfieldInvoices: '',
+                prefixInvoiceNumber: 'F',
                 usesVat: true,
                 emailBccNotas: '',
                 portalSettingsLayoutId: '',
@@ -90,6 +92,8 @@ class AdministrationNewForm extends Component {
                 twinfieldOfficeCode: false,
                 dateSyncTwinfieldContacts: false,
                 dateSyncTwinfieldPayments: false,
+                dateSyncTwinfieldInvoices: false,
+                prefixInvoiceNumber: false,
                 mailboxId: false,
                 emailBccNotas: false,
                 countryId: false,
@@ -371,6 +375,8 @@ class AdministrationNewForm extends Component {
             data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
             data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
             data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
+            data.append('dateSyncTwinfieldInvoices', administration.dateSyncTwinfieldInvoices);
+            data.append('prefixInvoiceNumber', administration.prefixInvoiceNumber);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
             data.append('portalSettingsLayoutId', administration.portalSettingsLayoutId);
@@ -425,6 +431,8 @@ class AdministrationNewForm extends Component {
             twinfieldOfficeCode,
             dateSyncTwinfieldContacts,
             dateSyncTwinfieldPayments,
+            dateSyncTwinfieldInvoices,
+            prefixInvoiceNumber,
             usesVat,
             emailBccNotas,
             portalSettingsLayoutId,
@@ -432,8 +440,12 @@ class AdministrationNewForm extends Component {
             mollieApiKey,
         } = this.state.administration;
 
-        let disableBeforeDateSyncTwinfieldContacts = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
-        let disableBeforeDateSyncTwinfieldPayments = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
+        // let disableBeforeDateSyncTwinfieldContacts = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
+        // let disableBeforeDateSyncTwinfieldPayments = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
+        // let disableBeforeDateSyncTwinfieldInvoices = moment(moment().format('YYYY') + '-01-01').format('YYYY-01-01');
+        let disableBeforeDateSyncTwinfieldContacts = null;
+        let disableBeforeDateSyncTwinfieldPayments = null;
+        let disableBeforeDateSyncTwinfieldInvoices = null;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -645,6 +657,27 @@ class AdministrationNewForm extends Component {
                                 isLoading={this.state.peekLoading.emailTemplates}
                                 multi={false}
                             />
+                            <InputText
+                                label="Prefix nota nummer"
+                                name={'prefixInvoiceNumber'}
+                                value={prefixInvoiceNumber}
+                                maxLength={5}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.prefixInvoiceNumber}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputSelect
+                                label={"Afzender van Rapportages en nota's is e-mail adres"}
+                                id="mailboxId"
+                                size={'col-sm-6'}
+                                name={'mailboxId'}
+                                options={this.state.mailboxAddresses}
+                                optionName={'email'}
+                                value={mailboxId}
+                                onChangeAction={this.handleInputChange}
+                            />
                             <div className="form-group col-sm-6">
                                 <label className="col-sm-6">Kies logo</label>
                                 <div className="col-sm-6">
@@ -659,31 +692,18 @@ class AdministrationNewForm extends Component {
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={"Afzender van Rapportages en nota's is e-mail adres"}
-                                id="mailboxId"
-                                size={'col-sm-6'}
-                                name={'mailboxId'}
-                                options={this.state.mailboxAddresses}
-                                optionName={'email'}
-                                value={mailboxId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            <ViewText
-                                label={'Gebruikt BTW'}
-                                value={usesVat ? 'Ja' : 'Nee'}
-                                className={'col-sm-6 form-group'}
-                                hidden={true}
-                            />
-                        </div>
-
-                        <div className="row">
                             <InputText
                                 label="Nota's ook mailen in BCC naar"
                                 name={'emailBccNotas'}
                                 value={emailBccNotas}
                                 onChangeAction={this.handleInputChange}
                                 error={this.state.errors.emailBccNotas}
+                            />
+                            <ViewText
+                                label={'Gebruikt BTW'}
+                                value={usesVat ? 'Ja' : 'Nee'}
+                                className={'col-sm-6 form-group'}
+                                hidden={true}
                             />
                         </div>
 
@@ -811,39 +831,56 @@ class AdministrationNewForm extends Component {
                                 </div>
                                 <div className="row">
                                     <InputDate
-                                        label={
-                                            <span>
-                                                Synchroniseer contacten vanaf
-                                                <br />
-                                                <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                                    Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in
-                                                    Twinfield
-                                                </small>
-                                            </span>
-                                        }
+                                        label={'Synchroniseer contacten vanaf'}
                                         name={'dateSyncTwinfieldContacts'}
                                         value={dateSyncTwinfieldContacts}
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldContacts}
                                         error={this.state.errors.dateSyncTwinfieldContacts}
                                     />
+                                    <div className="col-sm-6 form-group">
+                                        <small style={{ fontWeight: 'normal' }}>
+                                            Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in
+                                            Twinfield. Indien gebruik Twinfield aangezet wordt en contacten van
+                                            verzonden of betaalde nota's die (nog) niet gesynchroniseerd zijn met
+                                            Twinfield en die nog niet eerder aangemaakt zijn in Twinfield zullen worden
+                                            aangemaakt bij Opslaan. Laat datum leeg als je geen contacten initieel wil
+                                            aanmaken in Twinfield.
+                                        </small>
+                                    </div>
+                                </div>
+                                <div className="row">
                                     <InputDate
-                                        label={
-                                            <span>
-                                                Synchroniseer betalingen vanaf
-                                                <br />
-                                                <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                                    Nota aanmaakdatum vanaf wanneer betalingen opgehaald worden uit
-                                                    Twinfield
-                                                </small>
-                                            </span>
-                                        }
+                                        label={"Synchroniseer nota's vanaf"}
+                                        name={'dateSyncTwinfieldInvoices'}
+                                        value={dateSyncTwinfieldInvoices}
+                                        onChangeAction={this.handleInputChangeDate}
+                                        disabledBefore={disableBeforeDateSyncTwinfieldInvoices}
+                                        readOnly={usesTwinfield == false}
+                                        error={this.state.errors.dateSyncTwinfieldInvoices}
+                                    />
+                                    <div className="col-sm-6 form-group">
+                                        <small style={{ fontWeight: 'normal' }}>
+                                            Nota aanmaakdatum vanaf wanneer nota's gesynchroniseerd moeten worden naar
+                                            Twinfield
+                                        </small>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <InputDate
+                                        label={'Synchroniseer betalingen vanaf'}
                                         name={'dateSyncTwinfieldPayments'}
                                         value={dateSyncTwinfieldPayments}
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldPayments}
                                         error={this.state.errors.dateSyncTwinfieldPayments}
                                     />
+                                    <div className="col-sm-6 form-group">
+                                        <small style={{ fontWeight: 'normal' }}>
+                                            Nota aanmaakdatum vanaf wanneer betalingen gesynchroniseerd moeten worden
+                                            uit Twinfield
+                                        </small>
+                                    </div>
                                 </div>
                             </React.Fragment>
                         )}

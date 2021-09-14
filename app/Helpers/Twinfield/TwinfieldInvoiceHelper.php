@@ -68,6 +68,7 @@ class TwinfieldInvoiceHelper
         }
 
         set_time_limit(0);
+
         $browseDataApiConnector = new BrowseDataApiConnector($this->connection);
         //Deze function kan je gebruiken om te kijken wel browseDefinition fields er zijn voor een bepaald code
 //        $this->readBrowseDefinition($browseDataApiConnector);
@@ -75,12 +76,19 @@ class TwinfieldInvoiceHelper
         $messages = [];
 
         // We controleren alle invoices met status exported of paid en met koppeling Twinfield
-        // Tenzij er een datum Synchroniseer betalingen vanaf is opgegeven. Dan alleen facturen die vanaf die datum zijn gemaakt.
-        $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
+        // Standaard invoices vanaf 01-01-2019 tenzij anders opgegeven bij administratie.
         if($this->administration->date_sync_twinfield_payments){
-            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->where('created_at', '>=', $this->administration->date_sync_twinfield_payments)->get();
+            $invoicesToBeChecked = $this->administration->invoices()
+                ->whereIn('status_id', ['exported', 'paid'])
+                ->whereNotNull('twinfield_number')
+                ->where('date_sent', '>=', $this->administration->date_sync_twinfield_payments)
+                ->get();
         }else{
-            $invoicesToBeChecked = $this->administration->invoices()->whereIn('status_id', ['exported', 'paid'])->whereNotNull('twinfield_number')->get();
+            $invoicesToBeChecked = $this->administration->invoices()
+                ->whereIn('status_id', ['exported', 'paid'])
+                ->whereNotNull('twinfield_number')
+                ->where('date_sent', '>=', '20190101')
+                ->get();
         }
         foreach ($invoicesToBeChecked as $invoiceToBeChecked)
         {

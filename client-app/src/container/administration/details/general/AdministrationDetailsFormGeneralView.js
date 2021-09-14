@@ -45,19 +45,14 @@ const AdministrationDetailsFormGeneralView = props => {
         twinfieldOfficeCode,
         dateSyncTwinfieldContacts,
         dateSyncTwinfieldPayments,
+        dateSyncTwinfieldInvoices,
+        prefixInvoiceNumber,
         usesVat,
         emailBccNotas,
         portalSettingsLayout,
         usesMollie,
         mollieApiKey,
     } = props.administrationDetails;
-
-    // const dateSyncTwinfieldContactsView = dateSyncTwinfieldContacts
-    //     ? moment(dateSyncTwinfieldContacts).format('L')
-    //     : '';
-    // const dateSyncTwinfieldPaymentsView = dateSyncTwinfieldPayments
-    //     ? moment(dateSyncTwinfieldPayments).format('L')
-    //     : '';
 
     return (
         <div onClick={props.switchToEdit}>
@@ -142,15 +137,16 @@ const AdministrationDetailsFormGeneralView = props => {
                             label={'E-mail template waardestaat'}
                             value={emailTemplateFinancialOverview ? emailTemplateFinancialOverview.name : ''}
                         />
-                        <ViewText label={'Logo'} value={logoName} />
+                        <ViewText label={'Prefix nota nummer'} value={prefixInvoiceNumber} />
                     </div>
                     <div className="row">
                         <ViewText label={"Afzender van Rapportages en nota's is e-mail adres"} value={mailboxEmail} />
-                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
+                        <ViewText label={'Logo'} value={logoName} />
                     </div>
 
                     <div className="row">
                         <ViewText label={"Nota's ook mailen in BCC naar"} value={emailBccNotas ? emailBccNotas : ''} />
+                        <ViewText label={'Gebruikt BTW'} value={usesVat ? 'Ja' : 'Nee'} hidden={true} />
                     </div>
 
                     <div className="row">
@@ -239,35 +235,48 @@ const AdministrationDetailsFormGeneralView = props => {
 
                             <div className="row">
                                 <ViewText
-                                    label={
-                                        <span>
-                                            Synchroniseer contacten vanaf
-                                            <br />
-                                            <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                                Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in
-                                                Twinfield
-                                            </small>
-                                        </span>
-                                    }
+                                    label={'Synchroniseer contacten vanaf'}
                                     value={
                                         dateSyncTwinfieldContacts ? moment(dateSyncTwinfieldContacts).format('L') : ''
                                     }
                                 />
+                                <div className="col-sm-6 form-group">
+                                    <small style={{ fontWeight: 'normal' }}>
+                                        Nota aanmaakdatum vanaf wanneer contacten initieel gemaakt worden in Twinfield.
+                                        Indien gebruik Twinfield aangezet wordt en contacten van verzonden of betaalde
+                                        nota's die (nog) niet gesynchroniseerd zijn met Twinfield en die nog niet eerder
+                                        aangemaakt zijn in Twinfield zullen worden aangemaakt bij Opslaan. Laat datum
+                                        leeg als je geen contacten initieel wil aanmaken in Twinfield.
+                                    </small>
+                                </div>
+                            </div>
+                            <div className="row">
                                 <ViewText
-                                    label={
-                                        <span>
-                                            Synchroniseer betalingen vanaf
-                                            <br />
-                                            <small style={{ color: '#ccc', fontWeight: 'normal' }}>
-                                                Nota aanmaakdatum vanaf wanneer betalingen opgehaald worden uit
-                                                Twinfield
-                                            </small>
-                                        </span>
+                                    label={"Synchroniseer nota's vanaf"}
+                                    value={
+                                        dateSyncTwinfieldInvoices ? moment(dateSyncTwinfieldInvoices).format('L') : ''
                                     }
+                                />
+                                <div className="col-sm-6 form-group">
+                                    <small style={{ fontWeight: 'normal' }}>
+                                        Nota aanmaakdatum vanaf wanneer nota's gesynchroniseerd moeten worden naar
+                                        Twinfield
+                                    </small>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Synchroniseer betalingen vanaf'}
                                     value={
                                         dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''
                                     }
                                 />
+                                <div className="col-sm-6 form-group">
+                                    <small style={{ fontWeight: 'normal' }}>
+                                        Nota aanmaakdatum vanaf wanneer betalingen gesynchroniseerd moeten worden uit
+                                        Twinfield
+                                    </small>
+                                </div>
                             </div>
                         </React.Fragment>
                     )}

@@ -122,6 +122,8 @@ class FullAdministration extends Resource
                 'twinfieldIsValid' => $this->twinfield_is_valid,
                 'dateSyncTwinfieldContacts' => $this->date_sync_twinfield_contacts,
                 'dateSyncTwinfieldPayments' => $this->date_sync_twinfield_payments,
+                'dateSyncTwinfieldInvoices' => $this->date_sync_twinfield_invoices,
+                'prefixInvoiceNumber' => $this->prefix_invoice_number,
 
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,

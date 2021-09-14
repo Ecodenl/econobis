@@ -82,11 +82,27 @@ class TwinfieldSalesTransactionHelper
 
         set_time_limit(0);
 
-        foreach ($this->administration->invoices()->where('status_id', 'sent')->where('date_sent', '>=', '20190101')
-            ->whereDoesntHave('invoiceProducts', function ($query) {
-                $query->whereNull('twinfield_ledger_code');
-            })
-            ->get() as $invoice){
+        // We controleren alle invoices met status exported of paid en met koppeling Twinfield
+        // Standaard invoices vanaf 01-01-2019 tenzij anders opgegeven bij administratie.
+        if($this->administration->date_sync_twinfield_invoices){
+            $invoicesToBeChecked = $this->administration->invoices()
+                ->where('status_id', 'sent')
+                ->where('date_sent', '>=', $this->administration->date_sync_twinfield_invoices)
+                ->whereDoesntHave('invoiceProducts', function ($query) {
+                    $query->whereNull('twinfield_ledger_code');
+                })
+                ->get();
+        }else{
+            $invoicesToBeChecked = $this->administration->invoices()
+                ->where('status_id', 'sent')
+                ->where('date_sent', '>=', '20190101')
+                ->whereDoesntHave('invoiceProducts', function ($query) {
+                    $query->whereNull('twinfield_ledger_code');
+                })
+                ->get();
+        }
+
+        foreach ($invoicesToBeChecked as $invoice){
             $response = $this->createSalesTransation($invoice);
 
             if($response === true){

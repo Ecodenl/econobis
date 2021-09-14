@@ -106,7 +106,7 @@ function EmailAnswerFormGeneral(props) {
     }
 
     const getContactOptions = async () => {
-        if (searchTermContact.length <= 1) return;
+        if (searchTermContact.length <= 2) return;
 
         setLoadingContact(true);
 

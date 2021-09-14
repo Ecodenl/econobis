@@ -3,13 +3,15 @@ import axios from 'axios';
 const URL_CAMPAIGN = `${URL_API}/api/campaign`;
 
 export default {
-    fetchCampaign: id => {
+    fetchCampaign: ({ id, pagination }) => {
         const requestUrl = `${URL_CAMPAIGN}/${id}`;
         const AUTH_TOKEN = `Bearer ${localStorage.getItem('access_token')}`;
         axios.defaults.headers.common.Authorization = AUTH_TOKEN;
 
+        console.log(pagination);
+
         return axios
-            .get(requestUrl)
+            .get(requestUrl + "?page=" + pagination.page)
             .then(response => response.data.data)
             .catch(error => {
                 console.log(error);

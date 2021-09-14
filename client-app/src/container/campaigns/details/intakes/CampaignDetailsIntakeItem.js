@@ -29,14 +29,12 @@ class CampaignDetailsIntakeItem extends Component {
 
     render() {
         return (
-            <div>
-                <CampaignDetailsIntakeView
-                    highlightLine={this.state.highlightLine}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    intake={this.state.intake}
-                />
-            </div>
+            <CampaignDetailsIntakeView
+                highlightLine={this.state.highlightLine}
+                onLineEnter={this.onLineEnter}
+                onLineLeave={this.onLineLeave}
+                intake={this.state.intake}
+            />
         );
     }
 }

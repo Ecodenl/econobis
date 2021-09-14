@@ -111,7 +111,7 @@ class CampaignFormEdit extends Component {
 
         !hasErrors &&
             CampaignDetailsAPI.updateCampaign(campaign.id, campaign).then(payload => {
-                this.props.fetchCampaign(campaign.id);
+                this.props.fetchCampaign(campaign.id, null);
                 this.props.switchToView();
             });
     };
@@ -232,14 +232,14 @@ class CampaignFormEdit extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
+    fetchCampaign: (id, pagination) => {
+        dispatch(fetchCampaign(id, pagination));
     },
 });
 
 const mapStateToProps = state => {
     return {
-        campaign: state.campaignDetails,
+        campaign: state.campaignDetails.details,
         status: state.systemData.campaignStatuses,
         types: state.systemData.campaignTypes,
         measureCategories: state.systemData.measureCategories,

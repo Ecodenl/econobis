@@ -2,10 +2,10 @@ import { put, call } from 'redux-saga/effects';
 import CampaignDetailsAPI from '../../api/campaign/CampaignDetailsAPI';
 import { hashHistory } from 'react-router';
 
-export function* fetchCampaignSaga({ id }) {
+export function* fetchCampaignSaga({ id, pagination }) {
     try {
         yield put({ type: 'IS_LOADING' });
-        const campaign = yield call(CampaignDetailsAPI.fetchCampaign, id);
+        const campaign = yield call(CampaignDetailsAPI.fetchCampaign, { id, pagination });
         yield put({ type: 'FETCH_CAMPAIGN_SUCCESS', campaign });
         // Reload system data
         yield put({ type: 'FETCH_SYSTEM_DATA' });

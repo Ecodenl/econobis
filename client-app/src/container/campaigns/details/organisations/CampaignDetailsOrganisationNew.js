@@ -62,7 +62,7 @@ class CampaignDetailsResponseNew extends Component {
 
         if (!this.state.errors.hasErrors) {
             CampaignDetailsAPI.attachOrganisation(this.props.campaignId, this.state.organisationId).then(() => {
-                this.props.fetchCampaign(this.props.campaignId);
+                this.props.fetchCampaign(this.props.campaignId, null);
                 this.props.toggleShowNew();
             });
         } else {
@@ -123,14 +123,14 @@ class CampaignDetailsResponseNew extends Component {
 
 const mapStateToProps = state => {
     return {
-        campaignId: state.campaignDetails.id,
-        campaignName: state.campaignDetails.name,
+        campaignId: state.campaignDetails.details.id,
+        campaignName: state.campaignDetails.details.name,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
+    fetchCampaign: (id, pagination) => {
+        dispatch(fetchCampaign(id, pagination));
     },
 });
 

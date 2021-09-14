@@ -7,21 +7,22 @@ const CampaignDetailsIntakeView = props => {
     const { id, contact, address, fullAddress, createdAt } = props.intake;
 
     return (
-        <div
-            className={`row border ${props.highlightLine}`}
-            onMouseEnter={() => props.onLineEnter()}
-            onMouseLeave={() => props.onLineLeave()}
-        >
-            <div onClick={() => hashHistory.push(`/intake/${id}`)}>
-                <div className="col-sm-1">{id}</div>
-                <div className="col-sm-1">{contact && contact.type.name}</div>
-                <div className="col-sm-2">{contact && contact.fullName}</div>
-                <div className="col-sm-2">{fullAddress && fullAddress}</div>
-                <div className="col-sm-2">{address && address.postalCode}</div>
-                <div className="col-sm-2">{address && address.city}</div>
-                <div className="col-sm-2">{createdAt ? moment(createdAt).format('L') : ''}</div>
-            </div>
-        </div>
+        <tr onClick={() => hashHistory.push(`/intake/${id}`)}>
+            <td>{id}</td>
+            <td>{contact && contact.type.name}</td>
+            <td>{contact && contact.fullName}</td>
+            <td>{fullAddress && fullAddress}</td>
+            <td>{address && address.postalCode}</td>
+            <td>{address && address.city}</td>
+            <td>{createdAt ? moment(createdAt).format('L') : ''}</td>
+        </tr>
+        // <div
+        //     className={`row border ${props.highlightLine}`}
+        //     onMouseEnter={() => props.onLineEnter()}
+        //     onMouseLeave={() => props.onLineLeave()}
+        // >
+        //
+        // </div>
     );
 };
 

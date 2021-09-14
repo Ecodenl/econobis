@@ -62,7 +62,7 @@ class CampaignFormEdit extends Component {
 
         !hasErrors &&
             CampaignDetailsAPI.updateCampaignOwner(campaign.id, campaign.ownedById).then(payload => {
-                this.props.fetchCampaign(campaign.id);
+                this.props.fetchCampaign(campaign.id, null);
                 this.props.switchToView();
             });
     };
@@ -116,14 +116,14 @@ class CampaignFormEdit extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
+    fetchCampaign: (id, pagination) => {
+        dispatch(fetchCampaign(id, pagination));
     },
 });
 
 const mapStateToProps = state => {
     return {
-        campaign: state.campaignDetails,
+        campaign: state.campaignDetails.details,
         users: state.systemData.users,
     };
 };

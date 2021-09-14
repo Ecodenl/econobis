@@ -29,7 +29,7 @@ const CampaignDetailsResponseList = props => {
 
 const mapStateToProps = state => {
     return {
-        responses: state.campaignDetails.responses,
+        responses: state.campaignDetails.details.responses,
     };
 };
 export default connect(mapStateToProps)(CampaignDetailsResponseList);

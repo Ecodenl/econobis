@@ -43,7 +43,7 @@ class NoteList extends Component {
 
 const mapStateToProps = state => {
     return {
-        relatedNotes: state.campaignDetails.relatedNotes,
+        relatedNotes: state.campaignDetails.details.relatedNotes,
     };
 };
 

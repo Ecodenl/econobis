@@ -50,7 +50,7 @@ const CampaignFormView = props => {
 
 const mapStateToProps = state => {
     return {
-        campaign: state.campaignDetails,
+        campaign: state.campaignDetails.details,
     };
 };
 

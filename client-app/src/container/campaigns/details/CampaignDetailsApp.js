@@ -15,11 +15,19 @@ class CampaignDetailsApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchCampaign(this.props.params.id);
+        this.fetchCampaignData();
     }
 
     componentWillUnmount() {
         this.props.clearCampaign();
+    }
+
+    fetchCampaignData() {
+        setTimeout(() => {
+            const pagination = { page: this.props.campaignPagination.page };
+
+            this.props.fetchCampaign(this.props.params.id, pagination);
+        }, 100);
     }
 
     render() {
@@ -44,13 +52,19 @@ class CampaignDetailsApp extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        campaignPagination: state.campaignDetails.pagination,
+    };
+};
+
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
+    fetchCampaign: (id, pagination) => {
+        dispatch(fetchCampaign(id, pagination));
     },
     clearCampaign: () => {
         dispatch(clearCampaign());
-    },
+    }
 });
 
-export default connect(null, mapDispatchToProps)(CampaignDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(CampaignDetailsApp);

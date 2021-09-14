@@ -45,7 +45,7 @@ class CampaignDetailsForm extends Component {
 
 const mapStateToProps = state => {
     return {
-        campaign: state.campaignDetails,
+        campaign: state.campaignDetails.details,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
     };

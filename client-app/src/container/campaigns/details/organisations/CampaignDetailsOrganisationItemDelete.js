@@ -8,7 +8,7 @@ import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 const CampaignDetailsOrganisationDelete = props => {
     const confirmAction = () => {
         CampaignDetailsAPI.detachOrganisation(props.campaignId, props.organisationId).then(() => {
-            props.fetchCampaign(props.campaignId);
+            props.fetchCampaign(props.campaignId, null);
             props.toggleDelete();
         });
     };
@@ -28,13 +28,13 @@ const CampaignDetailsOrganisationDelete = props => {
 
 const mapStateToProps = state => {
     return {
-        campaignId: state.campaignDetails.id,
+        campaignId: state.campaignDetails.details.id,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchCampaign: id => {
-        dispatch(fetchCampaign(id));
+    fetchCampaign: (id, pagination) => {
+        dispatch(fetchCampaign(id, pagination));
     },
 });
 

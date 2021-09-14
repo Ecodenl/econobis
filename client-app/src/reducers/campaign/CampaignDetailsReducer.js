@@ -1,12 +1,11 @@
-export default function(state = [], action) {
-    switch (action.type) {
-        case 'FETCH_CAMPAIGN_SUCCESS':
-            return {
-                ...action.campaign,
-            };
-        case 'CLEAR_CAMPAIGN':
-            return (state.campaign = []);
-        default:
-            return state;
-    }
-}
+import { combineReducers } from 'redux';
+
+import campaignDetailsViewReducer from './CampaignDetailsViewReducer';
+import campaignPaginationReducer from './CampaignPaginationReducer';
+
+const campaignReducer = combineReducers({
+    details: campaignDetailsViewReducer,
+    pagination: campaignPaginationReducer,
+});
+
+export default campaignReducer;

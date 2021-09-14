@@ -28,7 +28,7 @@ const CampaignDetailsOrganisationsList = props => {
 
 const mapStateToProps = state => {
     return {
-        organisations: state.campaignDetails.organisations,
+        organisations: state.campaignDetails.details.organisations,
     };
 };
 export default connect(mapStateToProps)(CampaignDetailsOrganisationsList);

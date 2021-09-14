@@ -59,7 +59,7 @@ class CampaignDetailsToolbar extends Component {
 
 const mapStateToProps = state => {
     return {
-        campaign: state.campaignDetails,
+        campaign: state.campaignDetails.details,
         permissions: state.meDetails.permissions,
     };
 };

@@ -262,7 +262,6 @@ class ExternalWebformController extends Controller
             if($data['contact']['is_collect_mandate'] != ''){
                 $isCollectMandate = (bool)$data['contact']['is_collect_mandate'];
                 $contact->is_collect_mandate = $isCollectMandate;
-                $contact->save();
                 $this->log("Incasso machtiging Ja/Nee gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
 
                 if(!$isCollectMandate){
@@ -270,7 +269,6 @@ class ExternalWebformController extends Controller
                     $contact->collect_mandate_signature_date = null;
                     $contact->collect_mandate_first_run_date = null;
                     $contact->collect_mandate_collection_schema = '';
-                    $contact->save();
                 }else{
                     if($data['contact']['collect_mandate_code'] == '' && $contact->collect_mandate_code == '') {
                         $data['contact']['collect_mandate_code'] = $contact->number;
@@ -287,28 +285,25 @@ class ExternalWebformController extends Controller
                     // Incasso machtigingskenmerk gewijzigd.
                     if($data['contact']['collect_mandate_code'] != '' && $data['contact']['collect_mandate_code'] != $contact->collect_mandate_code){
                         $contact->collect_mandate_code = $data['contact']['collect_mandate_code'];
-                        $contact->save();
                         $this->log("Incasso machtigingskenmerk gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
                     }
                     // Incasso ondertekening datum gewijzigd.
                     if($data['contact']['collect_mandate_signature_date'] != '' && $data['contact']['collect_mandate_signature_date'] != $contact->collect_mandate_signature_date){
                         $contact->collect_mandate_signature_date = Carbon::make($data['contact']['collect_mandate_signature_date']);
-                        $contact->save();
                         $this->log("Incasso ondertekening datum gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
                     }
                     // Incasso eerste datum gewijzigd.
                     if($data['contact']['collect_mandate_first_run_date'] != '' && $data['contact']['collect_mandate_first_run_date'] != $contact->collect_mandate_first_run_date){
                         $contact->collect_mandate_first_run_date = Carbon::make($data['contact']['collect_mandate_first_run_date']);
-                        $contact->save();
                         $this->log("Incasso eerste datum gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
                     }
                     // Incasso schema gewijzigd.
                     if($data['contact']['collect_mandate_collection_schema'] != '' && $data['contact']['collect_mandate_collection_schema'] != $contact->collect_mandate_collection_schema){
                         $contact->collect_mandate_collection_schema = $data['contact']['collect_mandate_collection_schema'];
-                        $contact->save();
                         $this->log("Incasso schema gewijzigd bij contact " . $contact->full_name . " (".$contact->number.").");
                     }
                 }
+                $contact->save();
             }
         }
 
@@ -1060,6 +1055,22 @@ class ExternalWebformController extends Controller
             return null;
         };
 
+        $isCollectMandate = (bool)$data['is_collect_mandate'];
+        if($isCollectMandate){
+            if($data['collect_mandate_code'] == '') {
+                $data['collect_mandate_code'] = '';
+            }
+            if($data['collect_mandate_signature_date'] == '') {
+                $data['collect_mandate_signature_date'] = Carbon::now();
+            }
+            if($data['collect_mandate_first_run_date'] == '') {
+                $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+            }
+            if($data['collect_mandate_collection_schema'] == '') {
+                $data['collect_mandate_collection_schema'] = 'core';
+            }
+        }
+
         if ($data['organisation_name']) {
             $this->log('Er is een organisatienaam meegegeven; organisatie aanmaken.');
 
@@ -1072,11 +1083,11 @@ class ExternalWebformController extends Controller
                 'iban_attn' => $data['iban_attn'],
                 'did_agree_avg' => (bool)$data['did_agree_avg'],
                 'date_did_agree_avg' => $data['date_did_agree_avg'] ? Carbon::make($data['date_did_agree_avg']): null,
-                'is_collect_mandate' => (bool)$data['is_collect_mandate'],
-                'collect_mandate_code' => $data['is_collect_mandate'] ? $data['collect_mandate_code'] : '',
-                'collect_mandate_signature_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_signature_date']): null,
-                'collect_mandate_first_run_date' => $data['is_collect_mandate'] ? Carbon::make($data['collect_mandate_first_run_date']): null,
-                'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
+                'is_collect_mandate' => $isCollectMandate,
+                'collect_mandate_code' => $isCollectMandate ? $data['collect_mandate_code'] : '',
+                'collect_mandate_signature_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_signature_date']): null,
+                'collect_mandate_first_run_date' => $isCollectMandate ? Carbon::make($data['collect_mandate_first_run_date']): null,
+                'collect_mandate_collection_schema' => $isCollectMandate ? 'core' : '',
                 'owner_id' => $ownerAndResponsibleUser->id,
             ]);
             $this->newContactCreated = true;

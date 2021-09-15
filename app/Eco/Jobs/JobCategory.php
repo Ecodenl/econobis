@@ -21,6 +21,7 @@ class JobCategory extends EnumWithIdAndName
             new static('create-financial-overview-project', 'Aanmaken waardestaat project'),
             new static('sent-financial-overview-contact', 'Maken/versturen waardestaten email'),
             new static('create-financial-overview-contact-post', 'Maken waardestaten post'),
+            new static('sync-laposta', 'Synchronisatie relatie in Laposta'),
         ];
 
     }

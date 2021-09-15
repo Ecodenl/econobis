@@ -75,8 +75,6 @@ class CreateMemberToLaposta implements ShouldQueue
                 [
                     'laposta_member_id' => $lapostaMemberId,
                     'laposta_member_state' => $lapostaMemberState,
-                    'laposta_member_created_at' => Carbon::now(),
-                    'laposta_member_since' => Carbon::now(),
                 ]);
 
             $value = 'Relatie '.$this->contact->primaryEmailAddress->email.') in Laposta aangemaakt.';

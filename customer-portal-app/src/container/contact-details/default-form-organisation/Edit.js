@@ -42,6 +42,7 @@ const DefaultContactOrganisationEdit = function({
                                     touched={touched}
                                     id="name"
                                     placeholder={'Naam'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />

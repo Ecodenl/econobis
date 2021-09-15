@@ -462,6 +462,17 @@ class Contact extends Model
         return( $this->participations && $this->participations->count() > 0 );
     }
 
+    public function getDisableChangeContactNameOnPortalAttribute()
+    {
+        foreach($this->participations as $participation)
+        {
+            if($participation->project && $participation->project->disable_change_contact_name_on_portal ){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getAddressForPostalCodeCheckAttribute()
     {
         if($this->type_id === ContactType::PERSON) {

@@ -45,6 +45,7 @@ const DefaultContactPersonalEdit = function({
                                     id="title_id"
                                     placeholder={'Aanhef'}
                                     options={Titles}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
@@ -61,6 +62,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="initials"
                                     placeholder={'Initialen'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
@@ -75,6 +77,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="first_name"
                                     placeholder={'Voornaam'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
@@ -92,6 +95,7 @@ const DefaultContactPersonalEdit = function({
                                     id="last_name_prefix_id"
                                     options={LastNamePrefixes}
                                     placeholder={'Tussenvoegsel'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />
@@ -106,6 +110,7 @@ const DefaultContactPersonalEdit = function({
                                     touched={touched}
                                     id="last_name"
                                     placeholder={'Achternaam'}
+                                    disabled={initialContact.disableChangeContactNameOnPortal}
                                 />
                             )}
                         />

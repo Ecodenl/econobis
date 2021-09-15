@@ -28,6 +28,7 @@ const ProjectFormEditGeneral = ({
     postalcodeLink,
     numberOfParticipantsStillNeeded,
     checkPostalcodeLink,
+    disableChangeContactNameOnPortal,
     postalCode,
     address,
     city,
@@ -403,6 +404,21 @@ const ProjectFormEditGeneral = ({
             {/*<h4>Contacten portal instellingen</h4>*/}
             {showCustomerPortalSettings ? (
                 <>
+                    <div className="row">
+                        <label htmlFor="contactInfo" className="col-sm-12">
+                            <strong>Contact informatie</strong>
+                        </label>
+                    </div>
+                    <div className="row">
+                        <InputToggle
+                            label={'Blokkeer wijzigen naam via contacten portal'}
+                            name={'disableChangeContactNameOnPortal'}
+                            value={disableChangeContactNameOnPortal}
+                            onChangeAction={handleInputChange}
+                        />
+                    </div>
+
+                    <hr />
                     <div className="row">
                         <label htmlFor="projectInfo" className="col-sm-12">
                             <strong>Project informatie</strong>

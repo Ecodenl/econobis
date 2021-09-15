@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 import ViewTextLong from '../../../../../components/form/ViewTextLong';
+import InputToggle from '../../../../../components/form/InputToggle';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -20,6 +21,7 @@ const ProjectFormViewGeneral = ({
     postalcodeLink,
     numberOfParticipantsStillNeeded,
     checkPostalcodeLink,
+    disableChangeContactNameOnPortal,
     postalCode,
     address,
     city,
@@ -211,6 +213,18 @@ const ProjectFormViewGeneral = ({
                     projectStatus.codeRef === 'concept' || projectStatus.codeRef === 'active' ? switchToEdit : null
                 }
             >
+                <div className="row">
+                    <label htmlFor="contactInfo" className="col-sm-12">
+                        <strong>Contact informatie</strong>
+                    </label>
+                </div>
+                <div className="row">
+                    <ViewText
+                        label={'Blokkeer wijzigen naam via contacten portal'}
+                        value={disableChangeContactNameOnPortal ? 'Ja' : 'Nee'}
+                    />
+                </div>
+                <hr />
                 <div className="row">
                     <label htmlFor="projectInfo" className="col-sm-12">
                         <strong>Project informatie</strong>

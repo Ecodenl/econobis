@@ -45,6 +45,11 @@ class ContactObserver
         else{
             $contact->number = $number;
         }
+
+        if($contact->is_collect_mandate && $contact->collect_mandate_code == ''){
+            $contact->collect_mandate_code = $contact->number;
+        }
+
         $contact->save();
     }
 
